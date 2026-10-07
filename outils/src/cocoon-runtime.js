@@ -68,7 +68,7 @@
       "#cxGate .cx-card{width:min(400px,100%);display:grid;gap:14px;text-align:center}",
       "#cxGate .cx-logo{width:84px;height:84px;margin:0 auto 2px;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,120,.18)}",
       "#cxGate h1{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;font-size:34px;letter-spacing:-.03em;margin:0}",
-      "#cxGate p{margin:0;color:#5A5876;font-size:15.5px;line-height:1.45}#cxGate h1+p{margin-top:-10px}#cxGate h1+p+form,#cxGate h1+p+.cx-inv{margin-top:8px}",
+      "#cxGate p{margin:0;color:#5A5876;font-size:15.5px;line-height:1.45}#cxGate h1+p{margin-top:-10px}#cxGate .cx-pw{position:relative;display:block}#cxGate .cx-pw input{width:100%;box-sizing:border-box;padding-right:52px}#cxGate .cx-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:42px;height:42px;border:0;background:none;border-radius:12px;color:#5A5876;display:grid;place-items:center;cursor:pointer;padding:0}#cxGate .cx-eye[aria-pressed='true']{color:#1C1B2E}html[data-theme='dark'] #cxGate .cx-eye{color:#B6B3CC}#cxGate h1+p+form,#cxGate h1+p+.cx-inv{margin-top:8px}",
       "#cxGate form{display:grid;gap:10px;text-align:left;margin-top:6px}",
       "#cxGate label{font-size:13px;font-weight:600;color:#5A5876;display:grid;gap:5px}",
       "#cxGate input{font:inherit;font-size:16px;padding:13px 14px;border-radius:14px;border:2px solid #E3E0F0;background:#fff;color:#1C1B2E;outline:none}",
@@ -181,6 +181,20 @@
       },
       hide: function () { g.hidden = true; G.mode = null; }
     };
+    /* Petit œil pour afficher le mot de passe pendant qu'on le tape */
+    var EYE = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+    var EYE_OFF = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7c2 0 3.7.7 5.1 1.6M22 12s-3.6 7-10 7c-2 0-3.7-.7-5.1-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="M3 3l18 18"/></svg>';
+    function addEyes() {
+      card.querySelectorAll('input[type="password"]').forEach(function (inp) {
+        if (inp.parentNode.classList && inp.parentNode.classList.contains("cx-pw")) return;
+        var w = document.createElement("span"); w.className = "cx-pw"; inp.parentNode.insertBefore(w, inp); w.appendChild(inp);
+        var b = document.createElement("button"); b.type = "button"; b.className = "cx-eye"; b.setAttribute("aria-label", "Afficher le mot de passe"); b.setAttribute("aria-pressed", "false"); b.innerHTML = EYE;
+        b.addEventListener("mousedown", function (e) { e.preventDefault(); });
+        b.addEventListener("click", function () { var show = inp.type === "password"; inp.type = show ? "text" : "password"; b.innerHTML = show ? EYE_OFF : EYE; b.setAttribute("aria-pressed", String(show)); b.setAttribute("aria-label", show ? "Masquer le mot de passe" : "Afficher le mot de passe"); try { inp.focus({ preventScroll: true }); var n = inp.value.length; inp.setSelectionRange(n, n); } catch (_) {} });
+        w.appendChild(b);
+      });
+    }
+    var _show = G.show; G.show = function () { var r = _show.apply(G, arguments); try { addEyes(); } catch (_) {} return r; };
     function bindGo() { card.querySelectorAll("[data-go]").forEach(function (b) { b.addEventListener("click", function () { G.show(b.getAttribute("data-go")); }); }); }
     return G;
   }
