@@ -1181,6 +1181,13 @@ button.acc-card{cursor:pointer}
 @keyframes doneOut{0%,82%{opacity:1;transform:none}100%{opacity:0;transform:scale(.97)}}
 @keyframes chkPop{0%{transform:scale(.55)}100%{transform:scale(1)}}
 body .view:not([hidden]){animation:viewFade .14s ease-out}@keyframes viewFade{from{opacity:0}}
+.del-x{width:24px;height:24px;border-radius:7px;border:0;background:#E5484D;display:grid;place-items:center;padding:0;margin-top:1px;flex:none;cursor:pointer;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.item .del-x{order:2;width:30px;height:30px;border-radius:10px;margin:0}.del-x svg{width:15px;height:15px}.del-x:active{transform:scale(.9)}
+.item.done{opacity:1!important}.item.done .t-body{opacity:.72}
+.hist-head{display:flex;justify-content:flex-end;padding:0 0 6px}
+.hist-all{display:inline-flex;align-items:center;gap:6px;border:1.5px solid color-mix(in srgb,#E5484D 45%,transparent);background:color-mix(in srgb,#E5484D 10%,var(--surface));color:#C92A2F;border-radius:12px;padding:7px 12px;font-weight:700;font-size:13.5px;cursor:pointer}
+.done-fill{background:color-mix(in srgb,var(--stripe,#3FAE5A) 78%,#1C1B2E)!important}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .hist-all{color:#FF8A8D}}:root[data-theme="dark"] .hist-all{color:#FF8A8D}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -1660,6 +1667,11 @@ function taskRow(t,opts={}){
   const chk=el("button",{class:"check"+(isSel?" sel":""),type:"button","aria-pressed":t.fait?null:String(isSel),"aria-label":t.fait?"Remettre « "+t.titre+" » à faire":(isSel?"Retirer de la sélection":"Sélectionner « "+t.titre+" »"),onclick:()=>toggleDone(t)});
   chk.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   if(S.readOnly||!meId()) chk.disabled=true;
+  let first=chk;
+  if(t.fait){ const okDel=canEditTask(t)&&!S.readOnly&&!!meId();
+    first=el("button",{class:"del-x",type:"button","aria-label":"Supprimer « "+t.titre+" » de l'historique",title:"Supprimer de l'historique",onclick:()=>softDelete([taskEntry(t)],"« "+esc(t.titre)+" » retirée de l'historique.")});
+    first.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg>';
+    if(!okDel) first.style.visibility="hidden"; }
   const meta=el("div",{class:"meta"});
   if(t.prive) meta.append(lockTag("Perso"));
   meta.append(el("span",{class:"tag"},catDot(t.cat),(CAT[t.cat]||CAT.maison).nom));
@@ -1670,7 +1682,7 @@ function taskRow(t,opts={}){
   if(t.fait&&t.faitPar&&!t.prive) meta.append(el("span",{text:"fait par "+membre(t.faitPar).nom+" · "+ago(t.faitLe)}));
   else if(t.fait&&t.faitLe) meta.append(el("span",{text:"fait "+ago(t.faitLe)}));
   else if(t.creePar&&!t.prive) meta.append(el("span",{text:"ajouté par "+membre(t.creePar).nom}));
-  row.append(chk,el("div",{class:"t-body"},el("div",{class:"t-title",text:opts.petName?stripPet(t.titre,opts.petName):t.titre}),meta));
+  row.append(first,el("div",{class:"t-body"},el("div",{class:"t-title",text:opts.petName?stripPet(t.titre,opts.petName):t.titre}),meta));
   const key=(t.prive?"p:":"f:")+t.id;
   const editable=canEditTask(t);
   const more=el("button",{class:"more",type:"button","aria-label":"Modifier « "+t.titre+" »",title:"Modifier",onclick:()=>{ if(S.editing===key){ S.editing=null; S.tdraft=null; } else { S.editing=key; S.tdraft=null; S.confirm=null; } renderTaskViews(); }});
@@ -1693,7 +1705,7 @@ function renderMine(){
   fillList($("persoList"),perso,S.loaded.p?["Rien de perso pour l'instant","Touche + en bas et choisis « Pour moi » : RDV, papiers, achats perso."]:["Chargement…",""]);
   fillList($("assignedList"),assigned,["Rien ne t'a été confié","Les tâches du foyer marquées « pour "+m.nom+" » arrivent ici."],{hideWho:true});
   const done=S.perso.filter(t=>t.fait).concat(S.foyer.filter(t=>t.fait&&(t.pour===me||t.faitPar===me))).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0)).slice(0,30);
-  const dl=$("mDoneList"); dl.innerHTML=""; for(const t of done) dl.append(taskRow(t));
+  const dl=$("mDoneList"); dl.innerHTML=""; { const h=histHead(done); if(h) dl.append(h); } for(const t of done) dl.append(taskRow(t));
   $("mDoneWrap").hidden=!done.length; $("mDoneSummary").textContent="Faites ("+done.length+")";
   const n=perso.length+assigned.length; $("nMoi").textContent=n; $("nMoi").hidden=!n;
 }
@@ -1708,7 +1720,7 @@ function renderFoyer(){
   const done=S.foyer.filter(t=>t.fait&&match(t)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0)).slice(0,40);
   if(!S.loaded.t){ $("openList").innerHTML=""; $("openList").append(el("div",{class:"empty",text:"Chargement des tâches du foyer…"})); }
   else fillList($("openList"),open,[S.foyer.length?"Rien à faire ici":"Aucune tâche pour le foyer",S.foyer.length?"Change de filtre ou touche + pour en ajouter.":"Ajoute la première : « Acheter filtre VMC », « Vermifuge du chat »…"]);
-  const dl=$("doneList"); dl.innerHTML=""; for(const t of done) dl.append(taskRow(t));
+  const dl=$("doneList"); dl.innerHTML=""; { const h=histHead(done); if(h) dl.append(h); } for(const t of done) dl.append(taskRow(t));
   $("doneWrap").hidden=!done.length; $("doneSummary").textContent="Faites ("+done.length+")";
   const n=S.foyer.filter(t=>!t.fait).length; $("nFoyer").textContent=n; $("nFoyer").hidden=!n;
   renderFeed();
@@ -1795,6 +1807,7 @@ function renderProfile(){
   const openL=pet?open.filter(t=>!isCare(t)):open;
   fillList($("pOpen"),openL,pet?["Rien d'autre de prévu","RDV véto, toilettage, garde pendant les vacances : ajoute-les avec les raccourcis ci-dessus."]:["Rien en attente",m.nom+" n'a aucune tâche du foyer pour l'instant."],pet?{hideWho:true,hideConcerne:true,petName:m.nom}:{hideWho:true});
   $("pDoneTitle").textContent=pet?"Historique":"Récemment fait par "+m.nom;
+  { const pd=$("pDone"); setTimeout(()=>{ if(done.length&&pd.firstChild&&!pd.querySelector(".hist-head")){ const h=histHead(done); if(h) pd.prepend(h); } },0); }
   fillList($("pDone"),done.slice(0,10),["Rien pour l'instant",pet?"Chaque soin validé pour "+m.nom+" s'ajoute ici, avec sa date.":"Ce que "+m.nom+" coche dans le foyer s'affiche ici."],pet?{hideWho:true,hideConcerne:true,petName:m.nom}:undefined);
   const docs=pet?[]:S.docs.filter(d=>d.ajoutePar===id).sort((a,b)=>(b.ajouteLe||0)-(a.ajouteLe||0));
   $("pDocsWrap").hidden=!docs.length;
@@ -3353,6 +3366,8 @@ const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase(
 /* ---------- Annuler au lieu de confirmer ---------- */
 const COMMITS=new Set();
 function live(list,col){ const P=S.pendingDel; return P&&P.size?list.filter(x=>!P.has(col+":"+x.id)):list; }
+function histHead(done){ const del=done.filter(t=>canEditTask(t)); if(!del.length||S.readOnly||!meId()) return null;
+  return el("div",{class:"hist-head"},el("button",{type:"button",class:"hist-all",onclick:()=>softDelete(del.map(taskEntry),del.length+" tâche"+(del.length>1?"s":"")+" retirée"+(del.length>1?"s":"")+" de l'historique.")},(()=>{ const sp=el("span"); sp.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>'; return sp; })(),"Tout supprimer")); }
 function taskEntry(t){ return {key:(t.prive?"ptaches:":"taches:")+t.id,arr:t.prive?"perso":"foyer",item:t,run:()=>colFor(t).doc(t.id).delete()}; }
 function toastUndo(html,onUndo,ms){
   const t=$("toast"); t.innerHTML=html;
