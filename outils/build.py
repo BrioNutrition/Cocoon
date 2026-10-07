@@ -75,7 +75,7 @@ ACCOUNT_JS = r"""
         '<div class="cx-row cx-inv"><span class="cx-k">Lien d\'invitation du foyer</span><div class="cx-btns"><button type="button" class="btn" data-a="copy">Copier le lien</button>'+
         (navigator.share?'<button type="button" class="btn ghost" data-a="share">Partager</button>':'')+
         (cocoonHost.isAdmin()?'<button type="button" class="btn ghost" data-a="reset">Nouveau lien</button>':'')+'</div></div>'+
-        '<button type="button" class="btn ghost cx-out" data-a="out">Se déconnecter</button></div>';
+        '<button type="button" class="btn ghost cx-out" data-a="out">Se déconnecter</button><span class="cx-ver">Version '+(window.COCOON_BUILD||"")+'</span></div>';
       box.querySelector(".cx-v").textContent=cocoonHost.email()||"";
     }
     function say(t){ var x=document.querySelector(".toast"); if(window.__cxToast) window.__cxToast(t); else alert(t); }
@@ -89,7 +89,9 @@ ACCOUNT_JS = r"""
     });
   });
 })();
-if("serviceWorker" in navigator&&location.protocol==="https:") addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
+if("serviceWorker" in navigator&&location.protocol==="https:"){ var _had=!!navigator.serviceWorker.controller, _rl=false;
+  navigator.serviceWorker.addEventListener("controllerchange",function(){ if(_had&&!_rl){ _rl=true; location.reload(); } });
+  addEventListener("load",function(){ navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(function(r){ try{ r.update(); }catch(_){} }).catch(function(){}); }); }
 </script>
 """
 INTRO_CSS = """<style>
@@ -106,14 +108,16 @@ html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxI
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>"""
 INTRO_HTML = """<div id="cxIntro" aria-hidden="true"><div class="cxi-c"><img class="cxi-logo" src="icon-192.png" alt=""><div class="cxi-name"><span style="--i:0">C</span><span style="--i:1">o</span><span style="--i:2">c</span><span style="--i:3">o</span><span style="--i:4">o</span><span style="--i:5">n</span></div></div></div>
-<script>(function(){var T=performance.now(),done=false;window.cxIntroOut=function(){if(done)return;done=true;var el=document.getElementById("cxIntro");if(!el)return;var wait=Math.max(0,1250-(performance.now()-T));setTimeout(function(){var c=el.querySelector(".cxi-c");try{c.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(-26px) scale(.94)"}],{duration:420,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"});el.animate([{opacity:1},{opacity:0}],{duration:460,delay:120,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}},wait);};setTimeout(function(){window.cxIntroOut();},9000);})();</script>"""
+<script>(function(){var T=performance.now(),done=false;window.cxIntroOut=function(fast){if(done)return;done=true;var el=document.getElementById("cxIntro");if(!el)return;if(fast){el.remove();return;}var wait=Math.max(0,1250-(performance.now()-T));setTimeout(function(){var c=el.querySelector(".cxi-c");try{c.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(-26px) scale(.94)"}],{duration:420,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"});el.animate([{opacity:1},{opacity:0}],{duration:460,delay:120,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}},wait);};setTimeout(function(){window.cxIntroOut();},9000);})();</script>"""
 ACCOUNT_CSS = """<style>
 .cx-acc{display:grid;gap:12px;background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:14px}
 .cx-row{display:grid;gap:4px}.cx-k{font-size:13px;color:var(--muted);font-weight:600}.cx-v{font-size:15.5px;word-break:break-all}
-.cx-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}.cx-out{justify-self:start}
+.cx-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}.cx-out{justify-self:start}.cx-ver{font-size:12px;color:var(--muted)}
 </style>"""
 
 INTRO = 1
+import datetime as _dt
+BUILD = (_dt.datetime.utcnow()+_dt.timedelta(hours=2)).strftime("%d/%m %H:%M")
 head = f"""<!doctype html>
 <html lang="fr">
 <head>
@@ -134,6 +138,7 @@ head = f"""<!doctype html>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
 {INTRO_CSS}
 <script>try{{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}}catch(e){{document.documentElement.dataset.theme="light";}}</script>
+<script>window.COCOON_BUILD="{BUILD}";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="{SUPABASE_JS}"></script>
 <script src="cocoon-runtime.js"></script>

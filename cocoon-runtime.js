@@ -228,7 +228,7 @@
       if (ev === "SIGNED_OUT" && started) location.reload();
     });
     var s = await sb.auth.getSession();
-    if (s.data && s.data.session) { introOut(); if (!started) afterLogin(s.data.session.user); }
+    if (s.data && s.data.session) { try { if (window.cxIntroOut) window.cxIntroOut(true); } catch (_) {} if (!started) afterLogin(s.data.session.user); }
     else if (!G || G.mode !== "newpw") gate().show(LS.get("cocoon.join") ? "signup" : "login");
   });
 
