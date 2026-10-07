@@ -1277,6 +1277,7 @@ html,body{overflow-anchor:none}
 .coc-mo.emo-in{cursor:default}.coc-mo.emo-in input{flex:1;min-width:0;border:0;background:var(--surface);border-radius:10px;padding:8px 10px;font:inherit;font-size:16px;color:var(--ink)}
 .coc-mo-ok{border:0;border-radius:10px;background:var(--ink);color:var(--surface);font-weight:800;padding:8px 12px;cursor:pointer}
 .coc-panel{overflow-y:auto;overscroll-behavior:contain;max-height:min(80vh,680px)!important}
+.coc-big.tap{transition:opacity .2s ease}.coc-big.tap:active,.coc-big.picking{opacity:.5}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3443,7 +3444,7 @@ function renderCocPanel(){
   if(ci&&ci.type==="photo"&&ci.img){ const im=el("img",{class:"coc-big-photo",alt:""}); im.src=ci.img; ring.append(im); }
   else if(ci&&ci.type==="emoji"&&ci.img){ ring.append(el("span",{class:"coc-big-emo",text:ci.img})); }
   else if(lg){ const im=el("img",{class:"coc-big-logo",alt:""}); im.src=lg.src; ring.append(im); }
-  if(meId()&&!S.readOnly){ ring.classList.add("tap"); ring.setAttribute("role","button"); ring.setAttribute("tabindex","0"); ring.setAttribute("aria-label","Personnaliser l'image du cocon");
+  if(meId()&&!S.readOnly){ ring.classList.add("tap"); if(S.cocPick) ring.classList.add("picking"); ring.setAttribute("role","button"); ring.setAttribute("tabindex","0"); ring.setAttribute("aria-label","Personnaliser l'image du cocon");
     const tg=()=>{ S.cocPick=!S.cocPick; S.cocPlus=false; renderCocPanel(); }; ring.addEventListener("click",tg); ring.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); tg(); } }); }
   const lvTxt=el("div",{class:"coc-lvtxt"},el("span",{class:"coc-eyebrow",text:"Niveau "+(st.lv+1)}),el("b",{text:st.name}),
     el("div",{class:"coc-bar"},(()=>{ const f=el("i"); f.style.width=Math.round(st.prog*100)+"%"; return f; })()),
