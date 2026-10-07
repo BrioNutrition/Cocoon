@@ -95,7 +95,7 @@ ACCOUNT_JS = r"""
         h+=sw("courses","Départ aux courses","Quand quelqu\'un part au magasin, pour ajouter ce qui manque (au plus une fois toutes les 3 h).");
         h+=sw("taches","Tâche qu\'on te confie","Seulement si elle est pour aujourd\'hui ou demain.");
         h+=sw("nuit","Silence la nuit","Rien entre 21h30 et 7h30.");
-        h+='<div class="cx-btns"><button type="button" class="btn ghost" data-a="test">Envoyer un test</button><button type="button" class="btn ghost" data-a="off">Désactiver sur ce téléphone</button></div>';
+        h+='<div class="cx-btns"><button type="button" class="btn ghost" data-a="off">Désactiver sur ce téléphone</button></div>';
       }
       if(msg) h+='<p class="cx-p cx-msg2" role="status">'+esc(msg)+'</p>';
       box.innerHTML=h+'</div>';
@@ -105,7 +105,7 @@ ACCOUNT_JS = r"""
       try{ await P.savePrefs(prefs); say("Réglage enregistré ✓"); }catch(err){ say(err.message||"Réglage non enregistré."); } });
     box.addEventListener("click",async function(e){ var b=e.target.closest("[data-a]"); if(!b||busy) return; var a=b.getAttribute("data-a"); busy=true; b.disabled=true;
       try{
-        if(a==="on"){ await P.enable(); await load(); try{ await P.test(); say("C'est activé ✓ Une notification de test arrive."); }catch(err){ say("Activé sur ce téléphone. Mais "+err.message+"."); } }
+        if(a==="on"){ await P.enable(); await load(); say("C'est activé ✓"); }
         if(a==="off"){ await P.disable(); on=false; say("Notifications désactivées sur ce téléphone."); }
         if(a==="test"){ var r=await P.test(); say(r&&r.sent?"Test envoyé ✓":"Le test n'est arrivé sur aucun téléphone : désactive puis réactive."); }
       }catch(err){ say(err.message||"Ça n'a pas marché."); }
