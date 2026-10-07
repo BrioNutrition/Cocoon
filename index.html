@@ -1267,6 +1267,16 @@ html,body{overflow-anchor:none}
 .coc-opt.photo{width:auto;border-radius:999px;padding:0 14px;display:flex;gap:6px;font-size:13.5px;font-weight:700}
 .coc-file{position:absolute;inset:0;opacity:0;cursor:pointer}
 .coc-pick{--coc-y:color-mix(in srgb,#FFC94A var(--tile-pct),var(--surface))}
+.coc-big.tap{cursor:pointer;-webkit-tap-highlight-color:transparent}.coc-big.tap:focus{outline:none}
+.coc-opt.plus{font-size:26px;font-weight:500;background:transparent;box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--ink) 22%,transparent);line-height:1}
+.coc-opt.plus.open{background:var(--ink);color:var(--surface);box-shadow:none}
+.coc-opt img.ph{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.coc-more{display:grid;gap:8px;padding:0 16px 14px}
+.coc-mo{position:relative;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--sunk);font-weight:700;font-size:14px;cursor:pointer;overflow:hidden}
+.coc-mo-ic{font-size:20px;line-height:1}
+.coc-mo.emo-in{cursor:default}.coc-mo.emo-in input{flex:1;min-width:0;border:0;background:var(--surface);border-radius:10px;padding:8px 10px;font:inherit;font-size:16px;color:var(--ink)}
+.coc-mo-ok{border:0;border-radius:10px;background:var(--ink);color:var(--surface);font-weight:800;padding:8px 12px;cursor:pointer}
+.coc-panel{overflow-y:auto;overscroll-behavior:contain;max-height:min(80vh,680px)!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3433,18 +3443,28 @@ function renderCocPanel(){
   if(ci&&ci.type==="photo"&&ci.img){ const im=el("img",{class:"coc-big-photo",alt:""}); im.src=ci.img; ring.append(im); }
   else if(ci&&ci.type==="emoji"&&ci.img){ ring.append(el("span",{class:"coc-big-emo",text:ci.img})); }
   else if(lg){ const im=el("img",{class:"coc-big-logo",alt:""}); im.src=lg.src; ring.append(im); }
-  if(meId()&&!S.readOnly){ const pb=pencilBtn(()=>{ S.cocPick=!S.cocPick; renderCocPanel(); },"Changer l'image du cocon"); pb.classList.add("coc-pen"); ring.append(pb); }
+  if(meId()&&!S.readOnly){ ring.classList.add("tap"); ring.setAttribute("role","button"); ring.setAttribute("tabindex","0"); ring.setAttribute("aria-label","Personnaliser l'image du cocon");
+    const tg=()=>{ S.cocPick=!S.cocPick; S.cocPlus=false; renderCocPanel(); }; ring.addEventListener("click",tg); ring.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); tg(); } }); }
   const lvTxt=el("div",{class:"coc-lvtxt"},el("span",{class:"coc-eyebrow",text:"Niveau "+(st.lv+1)}),el("b",{text:st.name}),
     el("div",{class:"coc-bar"},(()=>{ const f=el("i"); f.style.width=Math.round(st.prog*100)+"%"; return f; })()),
     el("span",{class:"coc-sub",text:st.nxt?(st.nxt-st.pts)+" point"+(st.nxt-st.pts>1?"s":"")+" avant « "+st.nxtName+" »":"Niveau maximum atteint, bravo !"}));
   p.append(el("div",{class:"coc-top"},ring,lvTxt));
   if(S.cocPick){ const pk=el("div",{class:"coc-pick"});
-    const fi=el("input",{type:"file",accept:"image/*",class:"coc-file"}); fi.addEventListener("change",async()=>{ const f=fi.files&&fi.files[0]; if(!f) return; try{ const url=await cocShrink(f); await cocSetImg("photo",url); }catch(_){ toast("Cette image n'a pas pu être utilisée."); } });
-    const ph=el("label",{class:"coc-opt photo"}); ph.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8.5 4.5 9.6 3h4.8l1.1 1.5H19a2.5 2.5 0 0 1 2.5 2.5v10A2.5 2.5 0 0 1 19 19.5H5A2.5 2.5 0 0 1 2.5 17V7A2.5 2.5 0 0 1 5 4.5zM12 8a4.2 4.2 0 1 0 0 8.4A4.2 4.2 0 0 0 12 8z"/></svg>'; ph.append(el("span",{text:"Photo"}),fi);
-    pk.append(ph);
     const lgo=el("button",{type:"button",class:"coc-opt"+(!ci||ci.type==="logo"?" on":""),"aria-label":"Logo Cocoon",onclick:()=>cocSetImg("logo",null)}); if(lg){ const im=el("img",{alt:""}); im.src=lg.src; lgo.append(im); } pk.append(lgo);
-    for(const e of ["🏡","🐱","🐶","🌿","🌻","⭐","🌙","❤️","☕","🎈"]) pk.append(el("button",{type:"button",class:"coc-opt emo"+(ci&&ci.type==="emoji"&&ci.img===e?" on":""),"aria-label":e,text:e,onclick:()=>cocSetImg("emoji",e)}));
-    p.append(pk); }
+    const base=["🏡","🐱","🐶","🌿","🌻","⭐","🌙","❤️","☕","🎈"];
+    if(ci&&ci.type==="emoji"&&ci.img&&!base.includes(ci.img)) base.push(ci.img);
+    for(const e of base) pk.append(el("button",{type:"button",class:"coc-opt emo"+(ci&&ci.type==="emoji"&&ci.img===e?" on":""),"aria-label":e,text:e,onclick:()=>cocSetImg("emoji",e)}));
+    if(ci&&ci.type==="photo"&&ci.img){ const cur=el("button",{type:"button",class:"coc-opt on","aria-label":"Photo actuelle"}); const im=el("img",{alt:"",class:"ph"}); im.src=ci.img; cur.append(im); pk.append(cur); }
+    pk.append(el("button",{type:"button",class:"coc-opt plus"+(S.cocPlus?" open":""),"aria-label":"Ajouter mon emoji ou ma photo","aria-expanded":String(!!S.cocPlus),text:"+",onclick:()=>{ S.cocPlus=!S.cocPlus; renderCocPanel(); }}));
+    p.append(pk);
+    if(S.cocPlus){ const more=el("div",{class:"coc-more"});
+      const fileOpt=(label,icon,capture)=>{ const lb=el("label",{class:"coc-mo"}); const ic=el("span",{class:"coc-mo-ic",text:icon}); const fi=el("input",{type:"file",accept:"image/*",class:"coc-file"}); if(capture) fi.setAttribute("capture",capture);
+        fi.addEventListener("change",async()=>{ const f=fi.files&&fi.files[0]; if(!f) return; try{ await cocSetImg("photo",await cocShrink(f)); }catch(_){ toast("Cette image n'a pas pu être utilisée."); } }); lb.append(ic,el("span",{text:label}),fi); return lb; };
+      more.append(fileOpt("Prendre une photo","📷","user"),fileOpt("Choisir une photo","🖼️",null));
+      const ew=el("label",{class:"coc-mo emo-in"},el("span",{class:"coc-mo-ic",text:"😊"})); const ei=el("input",{type:"text",inputmode:"text",maxlength:"8",placeholder:"Mon emoji","aria-label":"Taper un emoji"});
+      const okE=el("button",{type:"button",class:"coc-mo-ok",text:"OK",onclick:()=>{ const v=(ei.value||"").trim(); const seg=v?[...(window.Intl&&Intl.Segmenter?new Intl.Segmenter("fr",{granularity:"grapheme"}).segment(v):v)].map(x=>x.segment||x)[0]:""; if(!seg||!/\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(seg)){ toast("Tape un emoji 🙂"); ei.focus(); return; } cocSetImg("emoji",seg); }});
+      ei.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); okE.click(); } });
+      ew.append(ei,okE); more.append(ew); p.append(more); } }
   const fl=el("div",{class:"coc-streak"}); const ic=el("span",{class:"coc-fl big"+(st.streak?"":" off")}); ic.innerHTML=FLAME; fl.append(ic,el("div",{},el("b",{text:st.streak+" jour"+(st.streak>1?"s":"")+" d'affilée"}),el("span",{text:st.today?"La série du foyer est allumée aujourd'hui.":st.streak?"Validez une tâche aujourd'hui pour garder la flamme.":"Validez une tâche pour allumer la flamme du foyer."})));
   const wk=el("div",{class:"coc-week"}); const J=["D","L","M","M","J","V","S"]; for(const x of st.week) wk.append(el("span",{class:"coc-day"+(x.on?" on":"")+(x.fut?" fut":"")+(x.now?" now":"")},el("i"),el("em",{text:J[x.d.getDay()]})));
   p.append(fl,wk);
@@ -3453,7 +3473,7 @@ function renderCocPanel(){
   p.append(el("p",{class:"coc-how",text:"1 tâche validée = 1 point · 1 merci reçu = 2 points. La série du foyer avance chaque jour où au moins une personne valide une tâche."}));
 }
 function cocShrink(file){ return new Promise((ok,ko)=>{ const r=new FileReader(); r.onerror=ko; r.onload=()=>{ const im=new Image(); im.onerror=ko; im.onload=()=>{ const S2=240, c=document.createElement("canvas"); c.width=c.height=S2; const g=c.getContext("2d"); const m=Math.min(im.width,im.height); g.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S2,S2); ok(c.toDataURL("image/jpeg",.85)); }; im.src=r.result; }; r.readAsDataURL(file); }); }
-async function cocSetImg(type,img){ if(!S.db||!meId()) return; try{ await S.db.collection("cocon").doc("_image").set({type,img:img||null,par:meId(),le:Date.now()}); S.cocPick=false; toast("Image du cocon mise à jour."); renderCocPanel(); }catch(e){ writeErr(e); } }
+async function cocSetImg(type,img){ if(!S.db||!meId()) return; try{ await S.db.collection("cocon").doc("_image").set({type,img:img||null,par:meId(),le:Date.now()}); S.cocPick=false; S.cocPlus=false; toast("Image du cocon mise à jour."); renderCocPanel(); }catch(e){ writeErr(e); } }
 function openCoc(){ if(typeof closeNotifs==="function") closeNotifs(); renderCocPanel(); const bb=$("cocBtn").getBoundingClientRect(), P=$("cocPanel");
   const pw=Math.min(380,innerWidth-24), right=Math.max(12,Math.min(Math.round(innerWidth-bb.right-30),innerWidth-pw-12)); P.style.top=Math.round(bb.bottom+12)+"px"; P.style.right=right+"px"; P.style.setProperty("--arrow-r",Math.round(innerWidth-right-(bb.left+bb.width/2)-7)+"px");
   P.hidden=false; $("cocBg").hidden=false; $("cocBtn").setAttribute("aria-expanded","true"); requestAnimationFrame(()=>P.classList.add("on")); }
