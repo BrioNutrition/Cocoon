@@ -1211,12 +1211,10 @@ details.done-list .list,#pDone{overflow-x:clip}
 .done-ic>svg{filter:none!important}
 .done-wk i svg path{fill:#3FAE5A;stroke:#3FAE5A}
 html,body{overflow-anchor:none}
-.wrap.arrive .head,.wrap.arrive .members,.wrap.arrive .view:not([hidden]) > *{will-change:transform,opacity}
 .bell{background:transparent!important;box-shadow:none!important}
 .bell:active svg{transform:scale(.88)}
 #brandHome{cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:14px}
-#brandHome:active{opacity:.7}
-#brandHome:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+#brandHome,#brandHome:active,#brandHome:focus,#brandHome:focus-visible{outline:none;opacity:1;transform:none;background:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3966,6 +3964,9 @@ function sparkle(box,stop){
 }
 /* Vol fluide d'un logo vers le logo du haut : part de la position affichée (flottement inclus),
    suit la position réelle de la cible à chaque image, et se pose pile dessus. */
+/* On retire la classe d'arrivée seulement quand TOUTES ses animations sont finies (sinon un élément saute) */
+function endArrive(W){ const go=()=>{ const an=W.getAnimations({subtree:true}).filter(a=>a.animationName&&/^arrive/.test(a.animationName)&&a.playState!=="finished");
+  if(an.length) Promise.all(an.map(a=>a.finished.catch(()=>{}))).then(()=>setTimeout(go,60)); else W.classList.remove("arrive"); }; setTimeout(go,300); }
 function flyLogo(logo,target,D){
   const wrap=logo.parentElement, wcs=getComputedStyle(wrap), lcs=getComputedStyle(logo);
   const pt=v=>{ const m=String(v||"").match(/-?[0-9.]+/g)||[]; return [parseFloat(m[0]||0),parseFloat(m[1]||0)]; };
@@ -4014,7 +4015,7 @@ async function reveal({hello,lines,minMs,work,before}){
     confetti(tcx,tcy+10); setTimeout(()=>confetti(window.innerWidth/2,window.innerHeight*.45),180);
   }
   stop.done=true; R.hidden=true; R.style.pointerEvents=""; R.classList.remove("in","out"); R.getAnimations({subtree:true}).forEach(a=>a.cancel()); logo.getAnimations().forEach(a=>a.cancel()); logo.style.transform=""; logo.style.animation=""; logo.parentElement.style.cssText=""; $("rvSparks").innerHTML="";
-  const W=document.querySelector(".wrap"); W.classList.add("arrive"); setTimeout(()=>W.classList.remove("arrive"),reduced?1800:1000);
+  const W=document.querySelector(".wrap"); W.classList.add("arrive"); endArrive(W);
   if(err) throw err; return res;
 }
 
@@ -4424,7 +4425,7 @@ async function bootOut(){
   wrap.querySelectorAll("i").forEach(i=>{ i.getAnimations().forEach(a=>a.cancel()); i.style.display="none"; });
   const W=document.querySelector(".wrap"); setTimeout(()=>W.classList.add("arrive"),220);
   await flyLogo(logo,target,980);
-  b.remove(); setTimeout(()=>W.classList.remove("arrive"),1000);
+  b.remove(); endArrive(W);
 }
 bootCheck();
 })();
