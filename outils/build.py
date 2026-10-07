@@ -92,12 +92,28 @@ ACCOUNT_JS = r"""
 if("serviceWorker" in navigator&&location.protocol==="https:") addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
 </script>
 """
+INTRO_CSS = """<style>
+#cxIntro{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:#F6F5FB;pointer-events:none}
+@media (prefers-color-scheme:dark){#cxIntro{background:#15141F}#cxIntro .cxi-name{color:#F3F1FA}}
+#cxIntro .cxi-c{display:flex;flex-direction:column;align-items:center;gap:6px}
+#cxIntro .cxi-logo{width:132px;height:132px;border-radius:30px;margin-bottom:14px;filter:drop-shadow(0 16px 30px rgba(232,118,90,.28));animation:cxiPop .9s cubic-bezier(.34,1.45,.64,1) .05s both}
+#cxIntro .cxi-name{font-family:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;font-weight:800;font-size:58px;letter-spacing:-.045em;line-height:.95;color:#1C1B2E;display:flex}
+#cxIntro .cxi-name span{display:inline-block;animation:cxiRise .7s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(.32s + var(--i) * .06s)}
+@keyframes cxiPop{from{opacity:0;transform:scale(.15) rotate(-30deg)}to{opacity:1;transform:none}}
+@keyframes cxiRise{from{opacity:0;transform:translateY(22px) scale(.9)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#cxIntro *{animation:none!important}}
+#cxGate .cx-card{animation:cxCardIn .5s cubic-bezier(.2,.9,.3,1) both}
+@keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+</style>"""
+INTRO_HTML = """<div id="cxIntro" aria-hidden="true"><div class="cxi-c"><img class="cxi-logo" src="icon-192.png" alt=""><div class="cxi-name"><span style="--i:0">C</span><span style="--i:1">o</span><span style="--i:2">c</span><span style="--i:3">o</span><span style="--i:4">o</span><span style="--i:5">n</span></div></div></div>
+<script>(function(){var T=performance.now(),done=false;window.cxIntroOut=function(){if(done)return;done=true;var el=document.getElementById("cxIntro");if(!el)return;var wait=Math.max(0,1250-(performance.now()-T));setTimeout(function(){var c=el.querySelector(".cxi-c");try{c.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(-26px) scale(.94)"}],{duration:420,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"});el.animate([{opacity:1},{opacity:0}],{duration:460,delay:120,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}},wait);};setTimeout(function(){window.cxIntroOut();},9000);})();</script>"""
 ACCOUNT_CSS = """<style>
 .cx-acc{display:grid;gap:12px;background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:14px}
 .cx-row{display:grid;gap:4px}.cx-k{font-size:13px;color:var(--muted);font-weight:600}.cx-v{font-size:15.5px;word-break:break-all}
 .cx-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}.cx-out{justify-self:start}
 </style>"""
 
+INTRO = 1
 head = f"""<!doctype html>
 <html lang="fr">
 <head>
@@ -113,12 +129,18 @@ head = f"""<!doctype html>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
+{INTRO_CSS}
 <script src="config.js"></script>
-<script src="{SUPABASE_JS}"></script>
+<script id="sbjs" async src="{SUPABASE_JS}"></script>
 <script src="cocoon-runtime.js"></script>
 {ACCOUNT_CSS}
 </head>
 <body>
+{INTRO_HTML}
 """
 html = head + s + ACCOUNT_JS + "\n</body>\n</html>\n"
 open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(html)

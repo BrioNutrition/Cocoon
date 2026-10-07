@@ -25,7 +25,7 @@
     } catch (_) {}
   })();
 
-  if (!window.supabase || !CFG.url || !CFG.key || /VOTRE|xxxx/.test(CFG.url + CFG.key)) {
+  if (!CFG.url || !CFG.key || /VOTRE|xxxx/.test(CFG.url + CFG.key)) {
     document.addEventListener("DOMContentLoaded", function () {
       gate().show("setup");
     });
@@ -33,9 +33,15 @@
     return;
   }
 
-  var sb = window.supabase.createClient(CFG.url, CFG.key, {
-    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: "cocoon.auth" }
+  /* supabase-js est chargé en asynchrone (la page s'affiche tout de suite) */
+  var sb = null;
+  var SBP = new Promise(function (res) {
+    function ok() { if (window.supabase && !sb) { sb = window.supabase.createClient(CFG.url, CFG.key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: "cocoon.auth" } }); res(); } }
+    if (window.supabase) return ok();
+    var t = document.getElementById("sbjs"); if (t) t.addEventListener("load", ok);
+    var iv = setInterval(function () { if (window.supabase) { clearInterval(iv); ok(); } }, 40);
   });
+  function introOut() { try { if (window.cxIntroOut) window.cxIntroOut(); } catch (_) {} }
   var ME = null, FOYER = null, ROLE = "membre", INVITE = null;
   var readyResolve, READY = new Promise(function (r) { readyResolve = r; });
 
@@ -82,7 +88,7 @@
     G = {
       mode: null,
       show: function (mode, extra) {
-        G.mode = mode; g.hidden = false;
+        G.mode = mode; g.hidden = false; if (mode !== "wait") introOut();
         if (mode === "setup") {
           card.innerHTML = head("Cocoon", "L'app n'est pas encore reliée à sa base de données. Renseigne l'adresse et la clé Supabase dans <b>config.js</b>.");
           return;
@@ -214,14 +220,15 @@
       ALL = true;
     } catch (_) {}
   }
-  sb.auth.onAuthStateChange(function (ev, session) {
-    if (ev === "PASSWORD_RECOVERY") { gate().show("newpw"); return; }
-    if (ev === "SIGNED_IN" && session && !started && G && G.mode !== "foyer") afterLogin(session.user);
-    if (ev === "SIGNED_OUT" && started) location.reload();
-  });
-  document.addEventListener("DOMContentLoaded", async function () {
+  var DOMP = new Promise(function (r) { if (document.readyState !== "loading") r(); else document.addEventListener("DOMContentLoaded", r); });
+  Promise.all([SBP, DOMP]).then(async function () {
+    sb.auth.onAuthStateChange(function (ev, session) {
+      if (ev === "PASSWORD_RECOVERY") { gate().show("newpw"); return; }
+      if (ev === "SIGNED_IN" && session && !started && G && G.mode !== "foyer") afterLogin(session.user);
+      if (ev === "SIGNED_OUT" && started) location.reload();
+    });
     var s = await sb.auth.getSession();
-    if (s.data && s.data.session) { if (!started) afterLogin(s.data.session.user); }
+    if (s.data && s.data.session) { introOut(); if (!started) afterLogin(s.data.session.user); }
     else if (!G || G.mode !== "newpw") gate().show(LS.get("cocoon.join") ? "signup" : "login");
   });
 
