@@ -1153,6 +1153,7 @@ button.acc-card{cursor:pointer}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .np-ic{color:color-mix(in srgb,var(--bc) 60%,#fff)}:root:not([data-theme="light"]) .np-g.late{color:#FF9C80}:root:not([data-theme="light"]) .npanel{box-shadow:0 18px 50px rgba(0,0,0,.55)}}
 :root[data-theme="dark"] .np-ic{color:color-mix(in srgb,var(--bc) 60%,#fff)}:root[data-theme="dark"] .np-g.late{color:#FF9C80}:root[data-theme="dark"] .npanel{box-shadow:0 18px 50px rgba(0,0,0,.55)}
 .bell{padding:0;line-height:0;color:var(--muted)}.bell svg{display:block;width:24px;height:24px;transform-origin:50% 12%}.bell[aria-expanded="true"],.bell[aria-pressed="true"]{background:var(--surface);color:var(--ink)}
+.bell .n{top:-3px;right:-3px;min-width:20px;line-height:20px;font-size:11.5px;font-weight:800;padding:0 6px;background:#FFC94A;color:#1C1B2E;box-shadow:0 0 0 2.5px var(--bg)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -2009,7 +2010,7 @@ function renderReminders(){
     g.append(el("div",{class:"group"},el("h3",{},name,el("span",{class:"count",text:String(items.length)})),list));
   }
   if(!any) g.append(el("div",{class:"list"},el("div",{class:"empty"},el("strong",{text:"Aucun rappel"}),"Donne une échéance à une tâche ou une date d'expiration à un document : il apparaîtra ici.")));
-  const urgent=npUnseen(); $("nRappels").textContent=urgent; $("nRappels").hidden=!urgent;
+  const urgent=npUnseen(), nTot=npItems().length; $("nRappels").textContent=nTot>9?"9+":nTot; $("nRappels").hidden=!nTot;
   const bell=$("bellBtn"); if(urgent&&!S.bellRung){ S.bellRung=true; bell.classList.add("ring"); setTimeout(()=>bell.classList.remove("ring"),2600); }
 }
 function renderDocPour(){
@@ -3046,10 +3047,10 @@ $("mhForm").addEventListener("submit",saveMForm);
 let _raf=0;
 function renderAll(){ if(_raf) return; _raf=requestAnimationFrame(()=>{ _raf=0; renderAllNow(); }); }
 function renderBadges(){
-  const me=meId(); const setN=(id,n)=>{ const e=$(id); if(e){ e.textContent=n; e.hidden=!n; } };
+  const me=meId(); const setN=(id,n)=>{ const e=$(id); if(e){ e.textContent=id==="nRappels"&&n>9?"9+":n; e.hidden=!n; } };
   setN("nFoyer",S.foyer.filter(t=>!t.fait).length);
   setN("nMoi",S.perso.filter(t=>!t.fait).length+S.foyer.filter(t=>!t.fait&&t.pour===me).length);
-  const urgent=npUnseen(); setN("nRappels",urgent); if(!$("npanel").hidden) renderNotifs();
+  const urgent=npUnseen(); setN("nRappels",npItems().length); if(!$("npanel").hidden) renderNotifs();
   if(urgent&&!S.bellRung){ S.bellRung=true; const b=$("bellBtn"); b.classList.add("ring"); setTimeout(()=>b.classList.remove("ring"),2600); }
   setN("nBudget",(S.abos||[]).filter(a=>a.actif!==false&&(()=>{ const n=subNext(a); return n&&daysTo(n)<=7; })()).length);
 }
