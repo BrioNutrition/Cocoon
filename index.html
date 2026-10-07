@@ -1247,6 +1247,14 @@ html,body{overflow-anchor:none}
 .merci-b .hs{font-size:14px}
 .merci-pop{position:fixed;z-index:90;font-size:30px;pointer-events:none;transform:translate(-50%,-50%)}
 .np-row.mer .np-t b{white-space:normal;overflow:visible;line-height:1.3}
+.coc-pill,.coc-streak,.coc-big{--coc-y:color-mix(in srgb,#FFC94A var(--tile-pct),var(--surface))}
+.coc-pill{background:var(--coc-y)!important;color:var(--ink)!important;--coc-track:color-mix(in srgb,var(--ink) 16%,transparent)!important}
+.coc-fl,.coc-fl.off{color:var(--ink)!important}.coc-fl.off svg{opacity:.35!important}.coc-fl b{color:var(--ink)}
+.coc-panel{--coc-track:color-mix(in srgb,var(--ink) 12%,transparent)!important}
+.coc-big{border-radius:50%;background:var(--coc-y)}
+.coc-bar i{background:var(--ink)!important}
+.coc-streak{background:var(--coc-y)!important}.coc-streak div>span{color:color-mix(in srgb,var(--ink) 70%,transparent)!important}
+.coc-day.on i{background:var(--ink)!important;box-shadow:0 0 0 3px color-mix(in srgb,#FFC94A 70%,transparent)!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3391,7 +3399,7 @@ async function coconTick(){ const me=meId(); if(!S.db||!me) return;
   const lim=iso(new Date(today().getTime()-70*864e5)); for(const x of Object.keys(j)) if(x<lim) delete j[x];
   try{ await S.db.collection("cocon").doc(me).set({n:(cur.n||0)+1,jours:j,maj:Date.now()}); }catch(_){} }
 function cocRing(st,size){ const r=size/2-3, c=2*Math.PI*r, off=c*(1-st.prog);
-  return '<svg viewBox="0 0 '+size+' '+size+'" width="'+size+'" height="'+size+'" aria-hidden="true"><circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="var(--coc-track)" stroke-width="3"/><circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="'+st.col+'" stroke-width="3" stroke-linecap="round" stroke-dasharray="'+c.toFixed(2)+'" stroke-dashoffset="'+off.toFixed(2)+'" transform="rotate(-90 '+size/2+' '+size/2+')"/></svg>'; }
+  return '<svg viewBox="0 0 '+size+' '+size+'" width="'+size+'" height="'+size+'" aria-hidden="true"><circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="var(--coc-track)" stroke-width="3"/><circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-dasharray="'+c.toFixed(2)+'" stroke-dashoffset="'+off.toFixed(2)+'" transform="rotate(-90 '+size/2+' '+size/2+')"/></svg>'; }
 function renderCocon(){
   const b=$("cocBtn"); if(!b) return; if(!meId()){ b.hidden=true; return; } b.hidden=false;
   const st=cocStats();
@@ -3410,7 +3418,7 @@ function renderCocPanel(){
   const lg=document.querySelector(".brand-logo");
   const ring=el("div",{class:"coc-big",style:"--lvc:"+st.col}); ring.innerHTML=cocRing(st,92); if(lg){ const im=el("img",{class:"coc-big-logo",alt:""}); im.src=lg.src; ring.append(im); }
   const lvTxt=el("div",{class:"coc-lvtxt"},el("span",{class:"coc-eyebrow",text:"Niveau "+(st.lv+1)}),el("b",{text:st.name}),
-    el("div",{class:"coc-bar"},(()=>{ const f=el("i"); f.style.width=Math.round(st.prog*100)+"%"; f.style.background=st.col; return f; })()),
+    el("div",{class:"coc-bar"},(()=>{ const f=el("i"); f.style.width=Math.round(st.prog*100)+"%"; return f; })()),
     el("span",{class:"coc-sub",text:st.nxt?(st.nxt-st.pts)+" point"+(st.nxt-st.pts>1?"s":"")+" avant « "+st.nxtName+" »":"Niveau maximum atteint, bravo !"}));
   p.append(el("div",{class:"coc-top"},ring,lvTxt));
   const fl=el("div",{class:"coc-streak"}); const ic=el("span",{class:"coc-fl big"+(st.streak?"":" off")}); ic.innerHTML=FLAME; fl.append(ic,el("div",{},el("b",{text:st.streak+" jour"+(st.streak>1?"s":"")+" d'affilée"}),el("span",{text:st.today?"La série du foyer est allumée aujourd'hui.":st.streak?"Validez une tâche aujourd'hui pour garder la flamme.":"Validez une tâche pour allumer la flamme du foyer."})));
