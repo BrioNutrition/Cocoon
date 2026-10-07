@@ -68,7 +68,7 @@
       "#cxGate .cx-card{width:min(400px,100%);display:grid;gap:14px;text-align:center}",
       "#cxGate .cx-logo{width:84px;height:84px;margin:0 auto 2px;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,120,.18)}",
       "#cxGate h1{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;font-size:34px;letter-spacing:-.03em;margin:0}",
-      "#cxGate p{margin:0;color:#5A5876;font-size:15.5px;line-height:1.45}",
+      "#cxGate p{margin:0;color:#5A5876;font-size:15.5px;line-height:1.45}#cxGate h1+p{margin-top:-10px}#cxGate h1+p+form,#cxGate h1+p+.cx-inv{margin-top:8px}",
       "#cxGate form{display:grid;gap:10px;text-align:left;margin-top:6px}",
       "#cxGate label{font-size:13px;font-weight:600;color:#5A5876;display:grid;gap:5px}",
       "#cxGate input{font:inherit;font-size:16px;padding:13px 14px;border-radius:14px;border:2px solid #E3E0F0;background:#fff;color:#1C1B2E;outline:none}",
