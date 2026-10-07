@@ -1255,6 +1255,7 @@ html,body{overflow-anchor:none}
 .coc-bar i{background:var(--ink)!important}
 .coc-streak{background:var(--coc-y)!important}.coc-streak div>span{color:color-mix(in srgb,var(--ink) 70%,transparent)!important}
 .coc-day.on i{background:var(--ink)!important;box-shadow:0 0 0 3px color-mix(in srgb,#FFC94A 70%,transparent)!important}
+.coc-day.fut i{background:transparent;box-shadow:inset 0 0 0 2px var(--coc-track)}.coc-day.now em{color:var(--ink)}.coc-day.now:not(.on) i{box-shadow:inset 0 0 0 2px var(--ink)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3391,15 +3392,15 @@ function cocStats(){
   const cur=COC_LV[lv][0], nxt=COC_LV[lv+1]?COC_LV[lv+1][0]:null, prog=nxt?(pts-cur)/(nxt-cur):1;
   let streak=0, d=today(); if(!days.has(iso(d))) d=new Date(d.getTime()-864e5);
   while(days.has(iso(d))){ streak++; d=new Date(d.getTime()-864e5); }
-  const week=[]; for(let i=6;i>=0;i--){ const x=new Date(today().getTime()-i*864e5); week.push({d:x,on:days.has(iso(x))}); }
+  const week=[], t0=today(), mon=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()-((t0.getDay()+6)%7)); for(let i=0;i<7;i++){ const x=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+i); week.push({d:x,on:days.has(iso(x)),fut:x>t0,now:iso(x)===iso(t0)}); }
   return {pts,lv,name:COC_LV[lv][1],col:COC_LV[lv][2],nxt,nxtName:COC_LV[lv+1]?COC_LV[lv+1][1]:null,prog:Math.max(0,Math.min(1,prog)),streak,today:days.has(iso(today())),week};
 }
 async function coconTick(){ const me=meId(); if(!S.db||!me) return;
   const cur=(S.cocon||[]).find(x=>x.id===me)||{n:0,jours:{}}, j=Object.assign({},cur.jours||{}), k=iso(today()); j[k]=(j[k]||0)+1;
   const lim=iso(new Date(today().getTime()-70*864e5)); for(const x of Object.keys(j)) if(x<lim) delete j[x];
   try{ await S.db.collection("cocon").doc(me).set({n:(cur.n||0)+1,jours:j,maj:Date.now()}); }catch(_){} }
-function cocRing(st,size){ const r=size/2-3, c=2*Math.PI*r, off=c*(1-st.prog);
-  return '<svg viewBox="0 0 '+size+' '+size+'" width="'+size+'" height="'+size+'" aria-hidden="true"><circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="var(--coc-track)" stroke-width="3"/><circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-dasharray="'+c.toFixed(2)+'" stroke-dashoffset="'+off.toFixed(2)+'" transform="rotate(-90 '+size/2+' '+size/2+')"/></svg>'; }
+function cocRing(st,size){ const w=size>40?6:3.6, r=size/2-w/2-.5, c=2*Math.PI*r, off=c*(1-st.prog), h=size/2;
+  return '<svg viewBox="0 0 '+size+' '+size+'" width="'+size+'" height="'+size+'" aria-hidden="true"><circle cx="'+h+'" cy="'+h+'" r="'+r+'" fill="none" stroke="var(--coc-track)" stroke-width="'+w+'"/><circle cx="'+h+'" cy="'+h+'" r="'+r+'" fill="none" stroke="var(--ink)" stroke-width="'+w+'" stroke-linecap="round" stroke-dasharray="'+c.toFixed(2)+'" stroke-dashoffset="'+off.toFixed(2)+'" transform="rotate(-90 '+h+' '+h+')"/></svg>'; }
 function renderCocon(){
   const b=$("cocBtn"); if(!b) return; if(!meId()){ b.hidden=true; return; } b.hidden=false;
   const st=cocStats();
@@ -3422,7 +3423,7 @@ function renderCocPanel(){
     el("span",{class:"coc-sub",text:st.nxt?(st.nxt-st.pts)+" point"+(st.nxt-st.pts>1?"s":"")+" avant « "+st.nxtName+" »":"Niveau maximum atteint, bravo !"}));
   p.append(el("div",{class:"coc-top"},ring,lvTxt));
   const fl=el("div",{class:"coc-streak"}); const ic=el("span",{class:"coc-fl big"+(st.streak?"":" off")}); ic.innerHTML=FLAME; fl.append(ic,el("div",{},el("b",{text:st.streak+" jour"+(st.streak>1?"s":"")+" d'affilée"}),el("span",{text:st.today?"La série du foyer est allumée aujourd'hui.":st.streak?"Validez une tâche aujourd'hui pour garder la flamme.":"Validez une tâche pour allumer la flamme du foyer."})));
-  const wk=el("div",{class:"coc-week"}); const J=["D","L","M","M","J","V","S"]; for(const x of st.week) wk.append(el("span",{class:"coc-day"+(x.on?" on":"")},el("i"),el("em",{text:J[x.d.getDay()]})));
+  const wk=el("div",{class:"coc-week"}); const J=["D","L","M","M","J","V","S"]; for(const x of st.week) wk.append(el("span",{class:"coc-day"+(x.on?" on":"")+(x.fut?" fut":"")+(x.now?" now":"")},el("i"),el("em",{text:J[x.d.getDay()]})));
   p.append(fl,wk);
   const me=meId(), recu=(S.mercis||[]).filter(m=>m.a===me).length, donne=(S.mercis||[]).filter(m=>m.de===me).length;
   p.append(el("div",{class:"coc-mercis"},el("span",{class:"coc-hs",text:"🤝"}),el("div",{},el("b",{text:recu+" merci"+(recu>1?"s":"")+" reçu"+(recu>1?"s":"")}),el("span",{text:donne+" envoyé"+(donne>1?"s":"")+" · Dites merci depuis les tâches réalisées des autres."}))));
