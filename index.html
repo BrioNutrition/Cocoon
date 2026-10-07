@@ -3,8 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#F6F5FB" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#15141F" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F6F5FB">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Cocoon">
@@ -19,7 +18,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
 <style>
 #cxIntro{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:#F6F5FB;pointer-events:none}
-@media (prefers-color-scheme:dark){#cxIntro{background:#15141F}#cxIntro .cxi-name{color:#F3F1FA}}
+html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxIntro .cxi-name{color:#F3F1FA}
 #cxIntro .cxi-c{display:flex;flex-direction:column;align-items:center;gap:6px}
 #cxIntro .cxi-logo{width:132px;height:132px;border-radius:30px;margin-bottom:14px;filter:drop-shadow(0 16px 30px rgba(232,118,90,.28));animation:cxiPop .9s cubic-bezier(.34,1.45,.64,1) .05s both}
 #cxIntro .cxi-name{font-family:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;font-weight:800;font-size:58px;letter-spacing:-.045em;line-height:.95;color:#1C1B2E;display:flex}
@@ -30,6 +29,7 @@
 #cxGate .cx-card{animation:cxCardIn .5s cubic-bezier(.2,.9,.3,1) both}
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
+<script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -43,6 +43,7 @@
 <div id="cxIntro" aria-hidden="true"><div class="cxi-c"><img class="cxi-logo" src="icon-192.png" alt=""><div class="cxi-name"><span style="--i:0">C</span><span style="--i:1">o</span><span style="--i:2">c</span><span style="--i:3">o</span><span style="--i:4">o</span><span style="--i:5">n</span></div></div></div>
 <script>(function(){var T=performance.now(),done=false;window.cxIntroOut=function(){if(done)return;done=true;var el=document.getElementById("cxIntro");if(!el)return;var wait=Math.max(0,1250-(performance.now()-T));setTimeout(function(){var c=el.querySelector(".cxi-c");try{c.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(-26px) scale(.94)"}],{duration:420,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"});el.animate([{opacity:1},{opacity:0}],{duration:460,delay:120,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}},wait);};setTimeout(function(){window.cxIntroOut();},9000);})();</script>
 <title>Cocoon</title>
+<script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
 <style>
@@ -4242,9 +4243,9 @@ async function saveOwnProfil(d,membreId){
 
 /* ---------- Thème clair / sombre ---------- */
 function applyTheme(v){ const r=document.documentElement; if(v==="light"||v==="dark") r.dataset.theme=v; else delete r.dataset.theme; try{ localStorage.setItem("cocoon.theme",v||"auto"); }catch(_){} }
-function curTheme(){ return (S.prefs&&S.prefs.theme)||(()=>{ try{ return localStorage.getItem("cocoon.theme"); }catch(_){ return null; } })()||"auto"; }
+function curTheme(){ return (S.prefs&&S.prefs.theme)||(()=>{ try{ return localStorage.getItem("cocoon.theme"); }catch(_){ return null; } })()||"light"; }
 function setTheme(v){ applyTheme(v); S.prefs=Object.assign({},S.prefs||{},{theme:v}); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); }
-try{ const t=localStorage.getItem("cocoon.theme"); if(t) applyTheme(t); }catch(_){}
+try{ const t=localStorage.getItem("cocoon.theme"); if(t) applyTheme(t); else document.documentElement.dataset.theme="light"; }catch(_){ document.documentElement.dataset.theme="light"; }
 
 /* ---------- Liste de courses ---------- */
 const CART='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M1.6 3.3a1 1 0 0 1 1-.8h2.1a1 1 0 0 1 1 .8l.4 1.7h14.3a1 1 0 0 1 1 1.2l-1.8 8a1 1 0 0 1-1 .8H7.7l.4 1.5H19a1 1 0 0 1 0 2H7.3a1 1 0 0 1-1-.8L4 4.5H2.6a1 1 0 0 1-1-1.2z"/><circle cx="8.6" cy="20.4" r="1.8"/><circle cx="17.4" cy="20.4" r="1.8"/></svg>';

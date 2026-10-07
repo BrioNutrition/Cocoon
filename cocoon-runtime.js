@@ -69,7 +69,7 @@
       "#cxGate .cx-msg.err{background:#FFE3DD;color:#8A2A16}",
       "#cxGate .cx-msg[hidden]{display:none}",
       "#cxGate .cx-inv{font-size:14px;padding:10px 12px;border-radius:12px;background:#E5F6EC;color:#1E5B38}",
-      "@media (prefers-color-scheme:dark){#cxGate{background:#15141F;color:#F3F1FA}#cxGate p,#cxGate label{color:#B6B3CC}#cxGate input{background:#211F2E;border-color:#33304A;color:#F3F1FA}#cxGate input:focus{border-color:#F3F1FA}#cxGate .cx-btn{background:#F3F1FA;color:#15141F}#cxGate .cx-link{color:#D8D5EA}}"
+      "html[data-theme=\"dark\"] #cxGate{background:#15141F;color:#F3F1FA}html[data-theme=\"dark\"] #cxGate p,html[data-theme=\"dark\"] #cxGate label{color:#B6B3CC}html[data-theme=\"dark\"] #cxGate input{background:#211F2E;border-color:#33304A;color:#F3F1FA}html[data-theme=\"dark\"] #cxGate input:focus{border-color:#F3F1FA}html[data-theme=\"dark\"] #cxGate .cx-btn{background:#F3F1FA;color:#15141F}html[data-theme=\"dark\"] #cxGate .cx-link{color:#D8D5EA}"
     ].join("");
     document.head.appendChild(css);
     var g = document.createElement("div");

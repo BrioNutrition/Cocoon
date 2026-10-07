@@ -94,7 +94,7 @@ if("serviceWorker" in navigator&&location.protocol==="https:") addEventListener(
 """
 INTRO_CSS = """<style>
 #cxIntro{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:#F6F5FB;pointer-events:none}
-@media (prefers-color-scheme:dark){#cxIntro{background:#15141F}#cxIntro .cxi-name{color:#F3F1FA}}
+html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxIntro .cxi-name{color:#F3F1FA}
 #cxIntro .cxi-c{display:flex;flex-direction:column;align-items:center;gap:6px}
 #cxIntro .cxi-logo{width:132px;height:132px;border-radius:30px;margin-bottom:14px;filter:drop-shadow(0 16px 30px rgba(232,118,90,.28));animation:cxiPop .9s cubic-bezier(.34,1.45,.64,1) .05s both}
 #cxIntro .cxi-name{font-family:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;font-weight:800;font-size:58px;letter-spacing:-.045em;line-height:.95;color:#1C1B2E;display:flex}
@@ -119,8 +119,7 @@ head = f"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#F6F5FB" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#15141F" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F6F5FB">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Cocoon">
@@ -134,6 +133,7 @@ head = f"""<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
 {INTRO_CSS}
+<script>try{{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}}catch(e){{document.documentElement.dataset.theme="light";}}</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="{SUPABASE_JS}"></script>
 <script src="cocoon-runtime.js"></script>
