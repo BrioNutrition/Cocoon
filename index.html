@@ -1188,6 +1188,12 @@ body .view:not([hidden]){animation:viewFade .14s ease-out}@keyframes viewFade{fr
 .hist-all{display:inline-flex;align-items:center;gap:6px;border:1.5px solid color-mix(in srgb,#E5484D 45%,transparent);background:color-mix(in srgb,#E5484D 10%,var(--surface));color:#C92A2F;border-radius:12px;padding:7px 12px;font-weight:700;font-size:13.5px;cursor:pointer}
 .done-fill{background:color-mix(in srgb,var(--stripe,#3FAE5A) 78%,#1C1B2E)!important}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .hist-all{color:#FF8A8D}}:root[data-theme="dark"] .hist-all{color:#FF8A8D}
+.hist-acts{order:2;display:flex;gap:8px;align-items:center}
+.res-y,.del-x{width:30px;height:30px;border-radius:10px;border:0;display:grid;place-items:center;padding:0;margin:0;cursor:pointer;line-height:0;flex:none}
+.res-y{background:var(--mark);color:var(--mark-ink)}
+.res-y svg,.del-x svg{display:block;width:16px;height:16px;margin:0}
+.res-y:active,.del-x:active{transform:scale(.9)}
+.hist-all{line-height:1}.hist-all span{display:grid;place-items:center;line-height:0}.hist-all svg{display:block;transform:translateY(-1.2px)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -1277,7 +1283,7 @@ body .view:not([hidden]){animation:viewFade .14s ease-out}@keyframes viewFade{fr
     </div>
     <div class="sub" id="mCars"></div>
     <div class="sub cx-account" id="cxAccount" hidden></div>
-    <details class="done-list" id="mDoneWrap"><summary id="mDoneSummary">Faites</summary><div class="list" id="mDoneList"></div></details>
+    <details class="done-list" id="mDoneWrap"><summary id="mDoneSummary">Tâches réalisées</summary><div class="list" id="mDoneList"></div></details>
   </section>
 
   <!-- FOYER -->
@@ -1286,7 +1292,7 @@ body .view:not([hidden]){animation:viewFade .14s ease-out}@keyframes viewFade{fr
     <div class="tiles" id="tiles" aria-label="Filtrer par catégorie"></div>
     <div class="chips" id="whoFilter" aria-label="Filtrer par personne"></div>
     <div class="list fridge" id="openList"></div>
-    <details class="done-list" id="doneWrap"><summary id="doneSummary">Faites</summary><div class="list" id="doneList"></div></details>
+    <details class="done-list" id="doneWrap"><summary id="doneSummary">Tâches réalisées</summary><div class="list" id="doneList"></div></details>
     <div class="sub">
       <div class="sec-title"><h2>Activité du foyer</h2></div>
       <div class="feed" id="feed" style="margin-top:14px"></div>
@@ -1671,7 +1677,11 @@ function taskRow(t,opts={}){
   if(t.fait){ const okDel=canEditTask(t)&&!S.readOnly&&!!meId();
     first=el("button",{class:"del-x",type:"button","aria-label":"Supprimer « "+t.titre+" » de l'historique",title:"Supprimer de l'historique",onclick:()=>softDelete([taskEntry(t)],"« "+esc(t.titre)+" » retirée de l'historique.")});
     first.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg>';
-    if(!okDel) first.style.visibility="hidden"; }
+    if(!okDel) first.style.visibility="hidden";
+    const rs=el("button",{class:"res-y",type:"button","aria-label":"Remettre « "+t.titre+" » à faire",title:"Restaurer",onclick:()=>toggleDone(t)});
+    rs.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>';
+    if(S.readOnly||!meId()) rs.style.visibility="hidden";
+    first=el("span",{class:"hist-acts"},rs,first); }
   const meta=el("div",{class:"meta"});
   if(t.prive) meta.append(lockTag("Perso"));
   meta.append(el("span",{class:"tag"},catDot(t.cat),(CAT[t.cat]||CAT.maison).nom));
@@ -1687,8 +1697,8 @@ function taskRow(t,opts={}){
   const editable=canEditTask(t);
   const more=el("button",{class:"more",type:"button","aria-label":"Modifier « "+t.titre+" »",title:"Modifier",onclick:()=>{ if(S.editing===key){ S.editing=null; S.tdraft=null; } else { S.editing=key; S.tdraft=null; S.confirm=null; } renderTaskViews(); }});
   more.innerHTML='<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M15.6 3.1a2.6 2.6 0 0 1 3.7 0l1.6 1.6a2.6 2.6 0 0 1 0 3.7L19.5 9.8 14.2 4.5zM12.8 5.9l5.3 5.3-9.9 9.9c-.3.3-.7.5-1.1.6l-4.1.9c-.8.2-1.4-.5-1.3-1.3l.9-4.1c.1-.4.3-.8.6-1.1z"/></svg>';
-  if(!editable) more.hidden=true;
-  row.append(more);
+  if(!editable||t.fait) more.hidden=true;
+  if(!t.fait) row.append(more);
   if(editable&&S.editing===key) row.append(taskEditor(t,key));
   return row;
 }
@@ -1706,7 +1716,7 @@ function renderMine(){
   fillList($("assignedList"),assigned,["Rien ne t'a été confié","Les tâches du foyer marquées « pour "+m.nom+" » arrivent ici."],{hideWho:true});
   const done=S.perso.filter(t=>t.fait).concat(S.foyer.filter(t=>t.fait&&(t.pour===me||t.faitPar===me))).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0)).slice(0,30);
   const dl=$("mDoneList"); dl.innerHTML=""; { const h=histHead(done); if(h) dl.append(h); } for(const t of done) dl.append(taskRow(t));
-  $("mDoneWrap").hidden=!done.length; $("mDoneSummary").textContent="Faites ("+done.length+")";
+  $("mDoneWrap").hidden=!done.length; $("mDoneSummary").textContent="Tâches réalisées ("+done.length+")";
   const n=perso.length+assigned.length; $("nMoi").textContent=n; $("nMoi").hidden=!n;
 }
 function renderFoyer(){
@@ -1721,7 +1731,7 @@ function renderFoyer(){
   if(!S.loaded.t){ $("openList").innerHTML=""; $("openList").append(el("div",{class:"empty",text:"Chargement des tâches du foyer…"})); }
   else fillList($("openList"),open,[S.foyer.length?"Rien à faire ici":"Aucune tâche pour le foyer",S.foyer.length?"Change de filtre ou touche + pour en ajouter.":"Ajoute la première : « Acheter filtre VMC », « Vermifuge du chat »…"]);
   const dl=$("doneList"); dl.innerHTML=""; { const h=histHead(done); if(h) dl.append(h); } for(const t of done) dl.append(taskRow(t));
-  $("doneWrap").hidden=!done.length; $("doneSummary").textContent="Faites ("+done.length+")";
+  $("doneWrap").hidden=!done.length; $("doneSummary").textContent="Tâches réalisées ("+done.length+")";
   const n=S.foyer.filter(t=>!t.fait).length; $("nFoyer").textContent=n; $("nFoyer").hidden=!n;
   renderFeed();
 }
@@ -4311,10 +4321,12 @@ async function autoClaimLegacy(){
 })();
 /* ===== Écran de lancement : cache le chargement ===== */
 const BOOT_T0=performance.now();
+S.fontsOk=false; (function(){ try{ if(!document.fonts||!document.fonts.load){ S.fontsOk=true; return; } const smp="Bonjour éàçÉ 0123";
+  Promise.all([document.fonts.load('800 28px "Bricolage Grotesque"',smp),document.fonts.load('600 16px "Bricolage Grotesque"',smp),document.fonts.load('400 15px "Bricolage Grotesque"',smp),document.fonts.load('600 16px "Fredoka"',smp)]).then(()=>document.fonts.ready).then(()=>{ S.fontsOk=true; },()=>{ S.fontsOk=true; }); }catch(_){ S.fontsOk=true; } })();
 function bootCheck(){
   const b=$("boot"); if(!b||b._done) return;
   const t=performance.now()-BOOT_T0, ready=(S.loaded.t&&(S.membresLoaded||!S.db))||t>7000;
-  const fontsOk=!document.fonts||document.fonts.status==="loaded"||t>3500;
+  const fontsOk=S.fontsOk||t>3500;
   if(!ready||!fontsOk||t<1500){ setTimeout(bootCheck,100); return; }
   S.booted=true;
   b._done=true; requestAnimationFrame(()=>requestAnimationFrame(bootOut));
