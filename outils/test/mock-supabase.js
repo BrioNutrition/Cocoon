@@ -44,6 +44,7 @@
       return Promise.resolve({ data: null, error: { message: "rpc inconnue " + n } });
     },
     from: function (t) { return new Q(t); },
+    functions: { invoke: function (n, o) { (window.__mock.invites = window.__mock.invites || []).push([n, o && o.body]); return ok({ ok: true, mode: 'invite' }); } },
     channel: function () { var ch = { h: [], on: function (type, filter, cb) { ch.h.push({ filter: { filter: filter.filter }, cb: cb }); return ch; }, subscribe: function (cb) { setTimeout(function () { cb && cb("SUBSCRIBED"); }, 1); return ch; } }; chans.push(ch); return ch; },
     storage: { from: function () { return {
       upload: function (p, f) { files[p] = f; return ok({ path: p }); },

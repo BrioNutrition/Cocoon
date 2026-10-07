@@ -22,6 +22,7 @@
     try {
       var u = new URL(location.href), j = u.searchParams.get("rejoindre");
       if (j) { LS.set("cocoon.join", j); u.searchParams.delete("rejoindre"); history.replaceState(null, "", u.pathname + (u.search || "") + u.hash); }
+      if (/type=invite/.test(location.hash)) LS.set("cocoon.setpw", "1");
     } catch (_) {}
   })();
 
@@ -149,12 +150,12 @@
           bindGo(); return;
         }
         if (mode === "newpw") {
-          card.innerHTML = head("Nouveau mot de passe", "") +
+          card.innerHTML = head(LS.get("cocoon.setpw") ? "Choisis ton mot de passe" : "Nouveau mot de passe", "") +
             '<form><label>Nouveau mot de passe<input type="password" name="pw" minlength="6" autocomplete="new-password" required></label><div class="cx-msg" hidden></div><button class="cx-btn" type="submit">Enregistrer</button></form>';
-          var f3 = card.querySelector("form");
+          var f3 = card.querySelector("form"); if (extra) msg(extra.t, extra.err);
           f3.addEventListener("submit", async function (e) {
             e.preventDefault(); await SBP; var r = await sb.auth.updateUser({ password: f3.pw.value });
-            if (r.error) msg(frErr(r.error), true); else { G.hide(); afterLogin(r.data.user); }
+            if (r.error) msg(frErr(r.error), true); else { LS.del("cocoon.setpw"); G.hide(); if (!started) afterLogin(r.data.user); }
           });
           return;
         }
@@ -219,6 +220,7 @@
     var top = function () { try { window.scrollTo({ top: 0, left: 0, behavior: "instant" }); } catch (_) { window.scrollTo(0, 0); } };
     top(); requestAnimationFrame(function () { top(); requestAnimationFrame(top); }); setTimeout(top, 400);
     if (!started) { started = true; startRealtime(); liveResolve(); readyResolve(); saveSnapSoon(); }
+    if (LS.get("cocoon.setpw")) gate().show("newpw", { t: "Bienvenue ! Choisis un mot de passe pour te reconnecter plus tard." });
   }
   /* Charge tout le foyer en une seule requête (au lieu d'une par rubrique) */
   async function preload() {
@@ -336,6 +338,7 @@
     return function () { live = false; colSubs[path] && colSubs[path].delete(cb); };
   };
   function DocRef(path, id) { this.path = path; this.id = id; }
+  DocRef.prototype.acquire = async function () { return { acquired: true, release: async function () {} }; };
   DocRef.prototype.collection = function (name) { return new ColRef(this.path + "/" + this.id + "/" + name); };
   DocRef.prototype.get = async function () { await READY; await load(this.path); return docSnap(this.path, this.id); };
   DocRef.prototype.onSnapshot = function (cb, onErr) {
@@ -461,6 +464,17 @@
     logout: logout,
     newCode: async function () { await LIVE; var r = await sb.rpc("cocoon_new_code", { f: FOYER }); if (r.error) throw new Error(frErr(r.error)); INVITE = r.data; return INVITE; },
     ready: READY,
+    /* Invitation par e-mail (fonction Supabase « cocoon-invite ») */
+    inviteEmail: async function (email, nom) {
+      await LIVE;
+      var r = await sb.functions.invoke("cocoon-invite", { body: { email: email, nom: nom || "", foyer: FOYER, site: location.origin + location.pathname } });
+      if (r.error) {
+        var m = r.error.message || ""; try { var ctx = r.error.context && (await r.error.context.json()); if (ctx && ctx.error) m = ctx.error; } catch (_) {}
+        if (/not found|404|Failed to send a request/i.test(m)) m = "l'envoi d'e-mails n'est pas encore activé dans Supabase";
+        throw new Error(m || "envoi impossible");
+      }
+      return r.data || { ok: true };
+    },
     /* Calendrier du téléphone : envoie les rappels (communs + perso) quand ils changent */
     saveCal: async function (x) {
       await LIVE;

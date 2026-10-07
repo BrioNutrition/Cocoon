@@ -27,6 +27,29 @@ qui se met à jour tout seul (tâches, rendez-vous, papiers, poubelles…).
    → coller `supabase/functions/cocoon-agenda/index.ts` → *Deploy*.
 3. Dans la fonction → *Details* (ou *Settings*) → désactiver **Verify JWT** / *Enforce JWT verification* → *Save*.
 
+## Invitations par e-mail (une seule fois)
+
+Dans l'app, on peut saisir l'e-mail d'un membre (questionnaire du foyer et « Ajouter un membre ») :
+il reçoit un e-mail pour installer Cocoon et arrive directement dans le foyer.
+
+1. **Edge Functions** → *Deploy a new function* → *Via Editor* → nom : `cocoon-invite`
+   → coller `supabase/functions/cocoon-invite/index.ts` → *Deploy*.
+   Ici, **laisser « Verify JWT » activé**.
+2. **Authentication** → *Email Templates* → *Invite user* : mettre le texte en français
+   (voir ci-dessous).
+3. Conseillé : **Authentication** → *SMTP Settings* → brancher un service d'e-mails
+   (ex. Resend, Brevo) — l'envoi intégré de Supabase est limité à quelques e-mails par heure.
+
+Modèle d'e-mail « Invite user » :
+
+```
+Sujet : Tu es invité(e) dans le foyer Cocoon 🏡
+<h2>On t'attend dans Cocoon !</h2>
+<p>Tu as été invité(e) à rejoindre un foyer sur Cocoon, le carnet partagé de la maison.</p>
+<p><a href="{{ .ConfirmationURL }}">Rejoindre le foyer</a></p>
+<p>Sur iPhone : ouvre le lien dans Safari, puis Partager → « Sur l'écran d'accueil ».</p>
+```
+
 ## Inviter quelqu'un
 
 Dans l'app : onglet **Moi → Mon compte → Copier le lien**. La personne ouvre le lien,
