@@ -1278,6 +1278,7 @@ html,body{overflow-anchor:none}
 .coc-mo-ok{border:0;border-radius:10px;background:var(--ink);color:var(--surface);font-weight:800;padding:8px 12px;cursor:pointer}
 .coc-panel{overflow-y:auto;overscroll-behavior:contain;max-height:min(80vh,680px)!important}
 .coc-big.tap{transition:opacity .2s ease}.coc-big.tap:active,.coc-big.picking{opacity:.5}
+.npanel::before,.coc-panel::before{display:none!important}.npanel{transform-origin:50% 0!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3476,7 +3477,7 @@ function renderCocPanel(){
 function cocShrink(file){ return new Promise((ok,ko)=>{ const r=new FileReader(); r.onerror=ko; r.onload=()=>{ const im=new Image(); im.onerror=ko; im.onload=()=>{ const S2=240, c=document.createElement("canvas"); c.width=c.height=S2; const g=c.getContext("2d"); const m=Math.min(im.width,im.height); g.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S2,S2); ok(c.toDataURL("image/jpeg",.85)); }; im.src=r.result; }; r.readAsDataURL(file); }); }
 async function cocSetImg(type,img){ if(!S.db||!meId()) return; try{ await S.db.collection("cocon").doc("_image").set({type,img:img||null,par:meId(),le:Date.now()}); S.cocPick=false; S.cocPlus=false; toast("Image du cocon mise à jour."); renderCocPanel(); }catch(e){ writeErr(e); } }
 function openCoc(){ if(typeof closeNotifs==="function") closeNotifs(); renderCocPanel(); const bb=$("cocBtn").getBoundingClientRect(), P=$("cocPanel");
-  const pw=Math.min(380,innerWidth-24), right=Math.max(12,Math.min(Math.round(innerWidth-bb.right-30),innerWidth-pw-12)); P.style.top=Math.round(bb.bottom+12)+"px"; P.style.right=right+"px"; P.style.setProperty("--arrow-r",Math.round(innerWidth-right-(bb.left+bb.width/2)-7)+"px");
+  const pw=Math.min(380,innerWidth-24), right=Math.max(12,Math.min(Math.round(innerWidth-bb.right-30),innerWidth-pw-12)); P.style.top=Math.round(bb.bottom+12)+"px"; P.style.width=pw+"px"; P.style.left=Math.round((innerWidth-pw)/2)+"px"; P.style.right="auto"; void right;
   P.hidden=false; $("cocBg").hidden=false; $("cocBtn").setAttribute("aria-expanded","true"); requestAnimationFrame(()=>P.classList.add("on")); }
 function closeCoc(){ const P=$("cocPanel"); if(!P||P.hidden) return; S.cocPick=false; P.classList.remove("on"); $("cocBg").hidden=true; $("cocBtn").setAttribute("aria-expanded","false"); setTimeout(()=>{ if(!P.classList.contains("on")) P.hidden=true; },180); }
 $("cocBtn").addEventListener("click",()=>{ $("cocPanel").hidden?openCoc():closeCoc(); });
@@ -3536,7 +3537,7 @@ function renderNotifs(){
   p.append(body);
   p.append(el("button",{type:"button",class:"np-all",onclick:()=>{ closeNotifs(); setTab("rappels"); renderHeader(); window.scrollTo({top:0,behavior:"instant"}); }},"Tous les rappels et l'agenda du téléphone",(()=>{ const s=el("span"); s.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>'; return s; })()));
 }
-function openNotifs(){ const sn=npSeen(); S.npNew=new Set(npItems().map(npKey).filter(k=>!sn.has(k))); renderNotifs(); const bb=$("bellBtn").getBoundingClientRect(), P=$("npanel"); P.style.top=Math.max(12,Math.round(bb.bottom+12))+"px"; P.style.right=Math.max(12,Math.round(innerWidth-bb.right-8))+"px"; P.style.maxHeight=Math.max(260,Math.min(620,innerHeight-bb.bottom-110))+"px"; P.hidden=false; $("npBg").hidden=false; $("bellBtn").setAttribute("aria-expanded","true"); requestAnimationFrame(()=>$("npanel").classList.add("on")); npMarkSeen(); }
+function openNotifs(){ const sn=npSeen(); S.npNew=new Set(npItems().map(npKey).filter(k=>!sn.has(k))); renderNotifs(); const bb=$("bellBtn").getBoundingClientRect(), P=$("npanel"); P.style.top=Math.max(12,Math.round(bb.bottom+12))+"px"; { const pw=Math.min(380,innerWidth-24); P.style.width=pw+"px"; P.style.left=Math.round((innerWidth-pw)/2)+"px"; P.style.right="auto"; } P.style.maxHeight=Math.max(260,Math.min(620,innerHeight-bb.bottom-110))+"px"; P.hidden=false; $("npBg").hidden=false; $("bellBtn").setAttribute("aria-expanded","true"); requestAnimationFrame(()=>$("npanel").classList.add("on")); npMarkSeen(); }
 function closeNotifs(){ const p=$("npanel"); if(p.hidden) return; p.classList.remove("on"); $("npBg").hidden=true; $("bellBtn").setAttribute("aria-expanded","false"); setTimeout(()=>{ if(!p.classList.contains("on")) p.hidden=true; },180); }
 $("npBg").addEventListener("click",closeNotifs);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeNotifs(); });
