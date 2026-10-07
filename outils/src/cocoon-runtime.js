@@ -45,7 +45,9 @@
   var SBP = new Promise(function (res) {
     function ok() { if (window.supabase && !sb) { sb = window.supabase.createClient(CFG.url, CFG.key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: "cocoon.auth", storage: authStore } }); res(); } }
     if (window.supabase) return ok();
-    var t = document.getElementById("sbjs"); if (t) t.addEventListener("load", ok);
+    var t = document.getElementById("sbjs"); if (t) { t.addEventListener("load", ok);
+      /* hors connexion au lancement : on retente le chargement quand le réseau revient */
+      t.addEventListener("error", function () { window.addEventListener("online", function re() { if (window.supabase) return; var n = document.createElement("script"); n.src = t.src; n.onload = ok; document.head.appendChild(n); window.removeEventListener("online", re); }); }); }
     var iv = setInterval(function () { if (window.supabase) { clearInterval(iv); ok(); } }, 40);
   });
   function introOut() { try { if (window.cxIntroOut) window.cxIntroOut(); } catch (_) {} }
@@ -192,7 +194,7 @@
     if (/fetch|network/i.test(m)) return "Pas de connexion internet.";
     return m || "Une erreur est survenue.";
   }
-  async function logout() { LS.del("cocoon.snap"); LS.del("cocoon.foyer"); try { await SBP; await sb.auth.signOut(); } catch (_) {} authStore.removeItem("cocoon.auth"); location.reload(); }
+  async function logout() { LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer"); try { await SBP; await sb.auth.signOut(); } catch (_) {} authStore.removeItem("cocoon.auth"); location.reload(); }
 
   /* =================== Session & foyer =================== */
   async function afterLogin(user) {
@@ -219,7 +221,7 @@
     gate().hide();
     var top = function () { try { window.scrollTo({ top: 0, left: 0, behavior: "instant" }); } catch (_) { window.scrollTo(0, 0); } };
     top(); requestAnimationFrame(function () { top(); requestAnimationFrame(top); }); setTimeout(top, 400);
-    if (!started) { started = true; startRealtime(); liveResolve(); readyResolve(); saveSnapSoon(); }
+    if (!started) { started = true; startRealtime(); liveResolve(); readyResolve(); saveSnapSoon(); IS_LIVE = true; run(); }
     if (LS.get("cocoon.setpw")) gate().show("newpw", { t: "Bienvenue ! Choisis un mot de passe pour te reconnecter plus tard." });
   }
   /* Charge tout le foyer en une seule requête (au lieu d'une par rubrique) */
@@ -232,6 +234,7 @@
         r.data.forEach(function (row) { (all[row.path] = all[row.path] || {})[row.id] = row.data; });
         if (r.data.length < step) break; from += step;
       }
+      overlay(all);
       Object.keys(all).forEach(function (p) { cache[p] = all[p]; });
       ALL = true;
     } catch (_) {}
@@ -249,7 +252,8 @@
     });
     var s = await sb.auth.getSession();
     if (FROM_SNAP) {
-      if (s.data && s.data.session && s.data.session.user.id === ME.id) { ME = s.data.session.user; liveResolve(); startRealtime(); refreshAll(); }
+      if (s.data && s.data.session && s.data.session.user.id === ME.id) { goLive(s.data.session.user); }
+      else if ((s.error && isNetErr(s.error)) || !navigator.onLine) { netDown = true; offUI(); waitOnline(); }
       else { LS.del("cocoon.snap"); location.reload(); }
       return;
     }
@@ -283,6 +287,7 @@
         if (r.data.length < step) break; from += step;
       }
     } catch (_) { return; }
+    overlay(fresh);
     var paths = {}; Object.keys(old).forEach(function (p) { paths[p] = 1; }); Object.keys(fresh).forEach(function (p) { paths[p] = 1; });
     Object.keys(paths).forEach(function (p) { var n = fresh[p] || {}; if (JSON.stringify(old[p] || {}) !== JSON.stringify(n)) { cache[p] = n; notify(p, null); } });
     saveSnapSoon();
@@ -312,7 +317,7 @@
         r.data.forEach(function (row) { all[row.id] = row.data; });
         if (r.data.length < step) break; from += step;
       }
-      cache[path] = all; delete loading[path];
+      var o = {}; o[path] = all; overlay(o); cache[path] = o[path]; delete loading[path];
     })();
     return loading[path];
   }
@@ -348,28 +353,120 @@
     return function () { live = false; docSubs[key] && docSubs[key].delete(cb); };
   };
   DocRef.prototype.set = async function (data, opts) {
-    await READY; await LIVE; await load(this.path).catch(function () {});
+    await READY; await load(this.path).catch(function () {});
     var cur = (cache[this.path] || {})[this.id], val = clean(data);
     if (opts && opts.merge && cur) val = Object.assign(clone(cur), val);
     apply(this.path, this.id, val);
-    var r = await sb.from("cocoon_docs").upsert({ foyer: FOYER, path: this.path, id: this.id, data: val, updated_at: new Date().toISOString(), updated_by: ME.id });
-    if (r.error) fail(this.path, r.error);
+    return enqueue({ k: "set", p: this.path, i: this.id, d: val });
   };
   DocRef.prototype.update = async function (patch) {
-    await READY; await LIVE; await load(this.path).catch(function () {});
+    await READY; await load(this.path).catch(function () {});
     var cur = clone((cache[this.path] || {})[this.id]) || {}, flat = {}, dotted = false;
     Object.keys(patch || {}).forEach(function (k) { var v = patch[k] === undefined ? null : patch[k]; if (k.indexOf(".") >= 0) { dotted = true; deepSet(cur, k, v); } else { cur[k] = v; flat[k] = v; } });
     apply(this.path, this.id, clean(cur));
-    var r = dotted
-      ? await sb.from("cocoon_docs").upsert({ foyer: FOYER, path: this.path, id: this.id, data: clean(cur), updated_at: new Date().toISOString(), updated_by: ME.id })
-      : await sb.rpc("cocoon_merge", { f: FOYER, p: this.path, i: this.id, patch: clean(flat) });
-    if (r.error) fail(this.path, r.error);
+    return enqueue(dotted ? { k: "set", p: this.path, i: this.id, d: clean(cur) } : { k: "merge", p: this.path, i: this.id, d: clean(flat) });
   };
   DocRef.prototype.delete = async function () {
-    await READY; await LIVE; apply(this.path, this.id, null);
-    var r = await sb.from("cocoon_docs").delete().eq("foyer", FOYER).eq("path", this.path).eq("id", this.id);
-    if (r.error) fail(this.path, r.error);
+    await READY; apply(this.path, this.id, null);
+    return enqueue({ k: "del", p: this.path, i: this.id });
   };
+
+  /* ---------- Hors connexion : les modifications attendent le retour du réseau ---------- */
+  var OUT = [], IS_LIVE = false, netDown = false, flushing = null, waiters = {}, seq = 0, hadOffline = false, retryT = 0;
+  try { var _o = JSON.parse(LS.get("cocoon.outbox") || "null"); if (_o && Array.isArray(_o.ops)) { OUT = _o.ops; seq = OUT.reduce(function (m, x) { return Math.max(m, x.n || 0); }, 0); OUT._u = _o.u; OUT._f = _o.f; } } catch (_) {}
+  function saveOut() { if (OUT.length) LS.set("cocoon.outbox", JSON.stringify({ u: ME && ME.id, f: FOYER, ops: OUT })); else LS.del("cocoon.outbox"); offUI(); }
+  function isNetErr(e) {
+    if (!e) return false;
+    var m = String((e.message || "") + " " + (e.details || "") + " " + (e.name || ""));
+    return !navigator.onLine || /fetch|network|load failed|timeout|timed out|aborted|offline|retryable|JWT|jwt expired|ERR_/i.test(m) || e.status === 0;
+  }
+  function overlay(target) {
+    OUT.forEach(function (op) {
+      var c = target[op.p]; if (!c) { if (op.k === "del") return; c = target[op.p] = {}; }
+      if (op.k === "del") delete c[op.i];
+      else if (op.k === "set") c[op.i] = clone(op.d);
+      else c[op.i] = Object.assign({}, c[op.i] || {}, clone(op.d));
+    });
+  }
+  function pendingFor(path, id) { for (var i = 0; i < OUT.length; i++) if (OUT[i].p === path && OUT[i].i === id) return true; return false; }
+  function enqueue(op) {
+    op.n = ++seq; OUT.push(op); saveOut();
+    var p = new Promise(function (res, rej) { waiters[op.n] = { res: res, rej: rej }; });
+    if (!IS_LIVE || netDown || !navigator.onLine) { var w = waiters[op.n]; delete waiters[op.n]; w.res(); p = Promise.resolve(); }
+    run();
+    return p;
+  }
+  function send(op) {
+    var now = new Date().toISOString();
+    if (op.k === "set") return sb.from("cocoon_docs").upsert({ foyer: FOYER, path: op.p, id: op.i, data: op.d, updated_at: now, updated_by: ME.id });
+    if (op.k === "merge") return sb.rpc("cocoon_merge", { f: FOYER, p: op.p, i: op.i, patch: op.d });
+    return sb.from("cocoon_docs").delete().eq("foyer", FOYER).eq("path", op.p).eq("id", op.i);
+  }
+  function releaseAll() { Object.keys(waiters).forEach(function (k) { var w = waiters[k]; delete waiters[k]; w.res(); }); }
+  function run() {
+    if (flushing || !IS_LIVE || !OUT.length) return;
+    if ((OUT._u && ME && OUT._u !== ME.id) || (OUT._f && FOYER && OUT._f !== FOYER)) { OUT.length = 0; delete OUT._u; delete OUT._f; saveOut(); return; }
+    flushing = (async function () {
+      while (OUT.length) {
+        if (!navigator.onLine) { netDown = true; releaseAll(); break; }
+        var op = OUT[0], r;
+        try { r = await send(op); } catch (e) { r = { error: e }; }
+        if (r && r.error && isNetErr(r.error)) { netDown = true; hadOffline = true; releaseAll(); clearTimeout(retryT); retryT = setTimeout(function () { netDown = false; run(); }, 8000); break; }
+        OUT.shift(); saveOut(); recent[op.p + "|" + op.i] = Date.now();
+        var w = waiters[op.n]; delete waiters[op.n];
+        if (r && r.error) {
+          load(op.p, true).then(function () { notify(op.p, null); }).catch(function () {});
+          var e = new Error(frErr(r.error)); e.code = r.error.code || "write_failed";
+          if (w) w.rej(e); else offToast("Une modification faite hors connexion n'a pas pu être enregistrée : " + e.message);
+        } else { netDown = false; if (w) w.res(); }
+      }
+    })();
+    flushing.then(function () {
+      flushing = null; offUI();
+      if (!OUT.length && hadOffline && !netDown) { hadOffline = false; refreshAll(); offToast("✓ Tout est synchronisé"); }
+      else if (OUT.length && !netDown) run();
+    });
+  }
+  function goLive(user) { if (IS_LIVE) return; ME = user; IS_LIVE = true; netDown = false; liveResolve(); startRealtime(); refreshAll(); run(); offUI(); }
+  function waitOnline() {
+    var tries = 0;
+    async function again() {
+      if (IS_LIVE || !navigator.onLine) return;
+      try { var s2 = await sb.auth.getSession(); if (s2.data && s2.data.session && s2.data.session.user.id === ME.id) { hadOffline = true; goLive(s2.data.session.user); return; }
+        if (!s2.error || !isNetErr(s2.error)) { if (OUT.length) offToast("Reconnecte-toi pour envoyer tes modifications."); LS.del("cocoon.snap"); setTimeout(function () { location.reload(); }, 1500); return; } } catch (_) {}
+      if (++tries < 40) setTimeout(again, 6000);
+    }
+    window.addEventListener("online", again); setTimeout(again, 6000);
+  }
+  window.addEventListener("online", function () { netDown = false; hadOffline = !!OUT.length; offUI(); run(); });
+  window.addEventListener("offline", function () { netDown = true; hadOffline = true; offUI(); });
+
+  /* Petit bandeau « Hors connexion » */
+  var offEl = null, offTT = 0;
+  function offBox() {
+    if (offEl || !document.body) return offEl;
+    var st = document.createElement("style");
+    st.textContent = '.cx-off{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 10px);transform:translate(-50%,-140%);z-index:9998;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 32px);padding:8px 14px;border-radius:999px;background:var(--ink,#1C1B2E);color:var(--bg,#fff);font:600 13.5px/1.3 inherit;font-family:inherit;box-shadow:0 8px 24px rgba(0,0,0,.18);white-space:nowrap;transition:transform .35s cubic-bezier(.3,.8,.4,1),opacity .35s;opacity:0;pointer-events:none}.cx-off.on{transform:translate(-50%,0);opacity:1}.cx-off svg{width:16px;height:16px;flex:none}.cx-off.ok{background:#2F9E5B;color:#fff}';
+    document.head.appendChild(st);
+    offEl = document.createElement("div"); offEl.className = "cx-off"; offEl.setAttribute("role", "status"); offEl.setAttribute("aria-live", "polite");
+    document.body.appendChild(offEl); return offEl;
+  }
+  function offUI() {
+    var b = offBox(); if (!b) { if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", offUI, { once: true }); return; }
+    var off = netDown || !navigator.onLine;
+    if (off) {
+      clearTimeout(offTT); b.classList.remove("ok");
+      b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 8.8a15 15 0 0 1 4.2-2.6M10.7 5.1A15 15 0 0 1 22 8.8M5 12.5a10 10 0 0 1 3.4-2M13.6 10.2A10 10 0 0 1 19 12.5M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1" fill="currentColor"/><path d="M3 3l18 18"/></svg>';
+      b.append("Hors connexion" + (OUT.length ? " · " + OUT.length + " en attente" : " · tu peux continuer"));
+      b.classList.add("on");
+    } else if (!b.classList.contains("ok")) b.classList.remove("on");
+  }
+  function offToast(t) {
+    var b = offBox(); if (!b) return; clearTimeout(offTT);
+    b.textContent = t; b.classList.toggle("ok", /^✓/.test(t)); b.classList.add("on");
+    offTT = setTimeout(function () { b.classList.remove("on"); setTimeout(function () { b.classList.remove("ok"); offUI(); }, 400); }, 2600);
+  }
+
   function pathOf(p) { var s = String(p).split("/").filter(Boolean); return { col: s.slice(0, -1).join("/"), id: s[s.length - 1] }; }
   var db = {
     collection: function (p) { return new ColRef(String(p).split("/").filter(Boolean).join("/")); },
@@ -385,6 +482,7 @@
         if (!row || (row.foyer && row.foyer !== FOYER) || !row.path) return;
         if (!cache[row.path]) { if (!ALL) return; cache[row.path] = {}; }
         var key = row.path + "|" + row.id;
+        if (pendingFor(row.path, row.id)) return;
         if (pl.eventType !== "DELETE" && row.updated_by === ME.id && recent[key] && Date.now() - recent[key] < 6000) return;
         if (pl.eventType === "DELETE") { if (!(row.id in cache[row.path])) return; delete cache[row.path][row.id]; }
         else cache[row.path][row.id] = row.data;
@@ -392,7 +490,7 @@
       })
       .subscribe(function (status) { if (status === "SUBSCRIBED" && channel._was) resync(); if (status === "SUBSCRIBED") channel._was = true; });
     document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") resync(); });
-    window.addEventListener("online", resync);
+    window.addEventListener("online", function () { if (!OUT.length) resync(); });
   }
 
   /* =================== Utilisateur =================== */
@@ -408,6 +506,7 @@
   var TEN_YEARS = 60 * 60 * 24 * 365 * 10;
   var assets = {
     upload: async function (file, opts) {
+      if (!navigator.onLine || netDown) { var eo = new Error("Pas de connexion : ajoute ce fichier quand tu auras du réseau."); eo.code = "offline"; throw eo; }
       await LIVE;
       if (file.size > 20 * 1024 * 1024) { var e = new Error("Fichier trop lourd"); e.code = "too_large"; throw e; }
       var type = (opts && opts.type) || file.type || "application/octet-stream";
@@ -464,6 +563,8 @@
     logout: logout,
     newCode: async function () { await LIVE; var r = await sb.rpc("cocoon_new_code", { f: FOYER }); if (r.error) throw new Error(frErr(r.error)); INVITE = r.data; return INVITE; },
     ready: READY,
+    pending: function () { return OUT.length; },
+    online: function () { return IS_LIVE && !netDown && navigator.onLine; },
     /* Invitation par e-mail (fonction Supabase « cocoon-invite ») */
     inviteEmail: async function (email, nom) {
       await LIVE;
