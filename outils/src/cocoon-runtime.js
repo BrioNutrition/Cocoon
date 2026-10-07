@@ -35,8 +35,14 @@
 
   /* supabase-js est chargé en asynchrone (la page s'affiche tout de suite) */
   var sb = null;
+  function keep() { return LS.get("cocoon.keep") !== "0"; }
+  var authStore = {
+    getItem: function (k) { try { return (keep() ? localStorage : sessionStorage).getItem(k); } catch (_) { return null; } },
+    setItem: function (k, v) { try { if (keep()) { localStorage.setItem(k, v); sessionStorage.removeItem(k); } else { sessionStorage.setItem(k, v); localStorage.removeItem(k); } } catch (_) {} },
+    removeItem: function (k) { try { localStorage.removeItem(k); sessionStorage.removeItem(k); } catch (_) {} }
+  };
   var SBP = new Promise(function (res) {
-    function ok() { if (window.supabase && !sb) { sb = window.supabase.createClient(CFG.url, CFG.key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: "cocoon.auth" } }); res(); } }
+    function ok() { if (window.supabase && !sb) { sb = window.supabase.createClient(CFG.url, CFG.key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: "cocoon.auth", storage: authStore } }); res(); } }
     if (window.supabase) return ok();
     var t = document.getElementById("sbjs"); if (t) t.addEventListener("load", ok);
     var iv = setInterval(function () { if (window.supabase) { clearInterval(iv); ok(); } }, 40);
@@ -44,9 +50,12 @@
   function introOut() { try { if (window.cxIntroOut) window.cxIntroOut(); } catch (_) {} }
   var ME = null, FOYER = null, ROLE = "membre", INVITE = null;
   var readyResolve, READY = new Promise(function (r) { readyResolve = r; });
+  var liveResolve, LIVE = new Promise(function (r) { liveResolve = r; }); /* connexion Supabase confirmée */
+  var FROM_SNAP = false;
 
   /* =================== Écran de connexion =================== */
   var G = null;
+  var started = false;
   function gate() {
     if (G) return G;
     var css = document.createElement("style");
@@ -65,6 +74,8 @@
       "#cxGate .cx-btn.alt{background:linear-gradient(135deg,#FFD66B,#FFB38A,#FF9CB0);color:#1C1B2E}",
       "#cxGate .cx-btn[disabled]{opacity:.6}",
       "#cxGate .cx-link{font:inherit;border:0;background:none;color:#3D3A5C;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:6px;font-size:14.5px}",
+      "#cxGate .cx-keep{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:inherit;cursor:pointer;margin:2px 0}",
+      "#cxGate .cx-keep input{width:22px;height:22px;accent-color:#1C1B2E;margin:0;padding:0}",
       "#cxGate .cx-msg{font-size:14px;padding:10px 12px;border-radius:12px;background:#FFF1D6;color:#6B4A00;text-align:left}",
       "#cxGate .cx-msg.err{background:#FFE3DD;color:#8A2A16}",
       "#cxGate .cx-msg[hidden]{display:none}",
@@ -98,6 +109,7 @@
           card.innerHTML = head(sign ? "Créer mon compte" : "Bienvenue sur Cocoon", sign ? "Un compte par personne : chacun a son espace perso dans le foyer." : "Le carnet partagé de la maison.") +
             '<form autocomplete="on"><label>E-mail<input type="email" name="email" autocomplete="email" required inputmode="email"></label>' +
             '<label>Mot de passe<input type="password" name="pw" minlength="6" autocomplete="' + (sign ? "new-password" : "current-password") + '" required></label>' +
+            '<label class="cx-keep"><input type="checkbox" name="keep"' + (keep() ? " checked" : "") + '><span>Rester connecté</span></label>' +
             '<div class="cx-msg" hidden></div><button class="cx-btn" type="submit">' + (sign ? "Créer mon compte" : "Se connecter") + "</button></form>" +
             '<button class="cx-link" type="button" data-go="' + (sign ? "login" : "signup") + '">' + (sign ? "J'ai déjà un compte" : "Pas encore de compte ? Créer un compte") + "</button>" +
             (sign ? "" : '<button class="cx-link" type="button" data-go="forgot">Mot de passe oublié</button>');
@@ -105,8 +117,9 @@
           if (extra) msg(extra.t, extra.err);
           f.addEventListener("submit", async function (e) {
             e.preventDefault();
-            var b = f.querySelector("button"), em = f.email.value.trim(), pw = f.pw.value;
-            b.disabled = true; msg("");
+            var b = f.querySelector(".cx-btn"), em = f.email.value.trim(), pw = f.pw.value;
+            LS.set("cocoon.keep", f.keep && !f.keep.checked ? "0" : "1");
+            b.disabled = true; msg(""); await SBP;
             try {
               if (sign) {
                 var r = await sb.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: location.origin + location.pathname } });
@@ -130,7 +143,7 @@
           var f2 = card.querySelector("form");
           f2.addEventListener("submit", async function (e) {
             e.preventDefault(); var b = f2.querySelector("button"); b.disabled = true;
-            var r = await sb.auth.resetPasswordForEmail(f2.email.value.trim(), { redirectTo: location.origin + location.pathname });
+            await SBP; var r = await sb.auth.resetPasswordForEmail(f2.email.value.trim(), { redirectTo: location.origin + location.pathname });
             b.disabled = false; msg(r.error ? frErr(r.error) : "C'est parti : regarde ta boîte mail.", !!r.error);
           });
           bindGo(); return;
@@ -140,7 +153,7 @@
             '<form><label>Nouveau mot de passe<input type="password" name="pw" minlength="6" autocomplete="new-password" required></label><div class="cx-msg" hidden></div><button class="cx-btn" type="submit">Enregistrer</button></form>';
           var f3 = card.querySelector("form");
           f3.addEventListener("submit", async function (e) {
-            e.preventDefault(); var r = await sb.auth.updateUser({ password: f3.pw.value });
+            e.preventDefault(); await SBP; var r = await sb.auth.updateUser({ password: f3.pw.value });
             if (r.error) msg(frErr(r.error), true); else { G.hide(); afterLogin(r.data.user); }
           });
           return;
@@ -152,7 +165,7 @@
           if (extra) msg(extra.t, extra.err);
           card.querySelector('[data-act="create"]').addEventListener("click", async function (e) {
             var btn = e.target; btn.disabled = true; btn.textContent = "Création du foyer…";
-            var r = await sb.rpc("cocoon_create_foyer");
+            await SBP; var r = await sb.rpc("cocoon_create_foyer");
             if (r.error) { btn.disabled = false; btn.textContent = "Créer mon foyer"; msg(frErr(r.error), true); return; }
             LS.set("cocoon.foyer", r.data.id);
             FOYER = r.data.id; INVITE = r.data.code; ROLE = "admin"; ALL = true; /* foyer neuf : rien à charger */
@@ -178,10 +191,9 @@
     if (/fetch|network/i.test(m)) return "Pas de connexion internet.";
     return m || "Une erreur est survenue.";
   }
-  async function logout() { await sb.auth.signOut(); LS.del("cocoon.foyer"); location.reload(); }
+  async function logout() { LS.del("cocoon.snap"); LS.del("cocoon.foyer"); try { await SBP; await sb.auth.signOut(); } catch (_) {} authStore.removeItem("cocoon.auth"); location.reload(); }
 
   /* =================== Session & foyer =================== */
-  var started = false;
   async function afterLogin(user) {
     if (!user) return;
     ME = user;
@@ -204,7 +216,9 @@
   }
   function finish() {
     gate().hide();
-    if (!started) { started = true; startRealtime(); readyResolve(); }
+    var top = function () { try { window.scrollTo({ top: 0, left: 0, behavior: "instant" }); } catch (_) { window.scrollTo(0, 0); } };
+    top(); requestAnimationFrame(function () { top(); requestAnimationFrame(top); }); setTimeout(top, 400);
+    if (!started) { started = true; startRealtime(); liveResolve(); readyResolve(); saveSnapSoon(); }
   }
   /* Charge tout le foyer en une seule requête (au lieu d'une par rubrique) */
   async function preload() {
@@ -221,6 +235,10 @@
     } catch (_) {}
   }
   var DOMP = new Promise(function (r) { if (document.readyState !== "loading") r(); else document.addEventListener("DOMContentLoaded", r); });
+  DOMP.then(function () {
+    var urlAuth = /access_token=|type=recovery|code=/.test(location.hash + location.search);
+    if (!FROM_SNAP && !authStore.getItem("cocoon.auth") && !urlAuth && (!G || !G.mode)) gate().show(LS.get("cocoon.join") ? "signup" : "login");
+  });
   Promise.all([SBP, DOMP]).then(async function () {
     sb.auth.onAuthStateChange(function (ev, session) {
       if (ev === "PASSWORD_RECOVERY") { gate().show("newpw"); return; }
@@ -228,8 +246,13 @@
       if (ev === "SIGNED_OUT" && started) location.reload();
     });
     var s = await sb.auth.getSession();
+    if (FROM_SNAP) {
+      if (s.data && s.data.session && s.data.session.user.id === ME.id) { ME = s.data.session.user; liveResolve(); startRealtime(); refreshAll(); }
+      else { LS.del("cocoon.snap"); location.reload(); }
+      return;
+    }
     if (s.data && s.data.session) { try { if (window.cxIntroOut) window.cxIntroOut(true); } catch (_) {} if (!started) afterLogin(s.data.session.user); }
-    else if (!G || G.mode !== "newpw") gate().show(LS.get("cocoon.join") ? "signup" : "login");
+    else if (!G || (G.mode !== "newpw" && G.mode !== "login" && G.mode !== "signup")) gate().show(LS.get("cocoon.join") ? "signup" : "login");
   });
 
   /* =================== Base de données (API façon Firestore) =================== */
@@ -243,7 +266,26 @@
   function genId() { var a = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", s = ""; var r = new Uint8Array(20); crypto.getRandomValues(r); for (var i = 0; i < 20; i++) s += a[r[i] % 62]; return s; }
   function DocSnap(id, data) { this.id = id; this._d = data; this.exists = data != null; }
   DocSnap.prototype.data = function () { return this._d == null ? undefined : clone(this._d); };
-  function notify(path, id) {
+  var snapT = 0;
+  function saveSnapSoon() { clearTimeout(snapT); snapT = setTimeout(function () {
+    if (!ME || !FOYER || !keep()) return;
+    try { localStorage.setItem("cocoon.snap", JSON.stringify({ v: 1, u: ME.id, email: ME.email || "", f: FOYER, role: ROLE, invite: INVITE, at: Date.now(), cache: cache })); } catch (_) { LS.del("cocoon.snap"); }
+  }, 1200); }
+  async function refreshAll() {
+    var old = cache, fresh = {}, from = 0, step = 1000;
+    try {
+      for (;;) {
+        var r = await sb.from("cocoon_docs").select("path,id,data").eq("foyer", FOYER).range(from, from + step - 1);
+        if (r.error) return;
+        r.data.forEach(function (row) { (fresh[row.path] = fresh[row.path] || {})[row.id] = row.data; });
+        if (r.data.length < step) break; from += step;
+      }
+    } catch (_) { return; }
+    var paths = {}; Object.keys(old).forEach(function (p) { paths[p] = 1; }); Object.keys(fresh).forEach(function (p) { paths[p] = 1; });
+    Object.keys(paths).forEach(function (p) { var n = fresh[p] || {}; if (JSON.stringify(old[p] || {}) !== JSON.stringify(n)) { cache[p] = n; notify(p, null); } });
+    saveSnapSoon();
+  }
+  function notify(path, id) { saveSnapSoon();
     var set = colSubs[path];
     if (set) { var snap = colSnap(path); set.forEach(function (fn) { try { fn(snap); } catch (e) { console.error(e); } }); }
     Object.keys(docSubs).forEach(function (k) {
@@ -303,7 +345,7 @@
     return function () { live = false; docSubs[key] && docSubs[key].delete(cb); };
   };
   DocRef.prototype.set = async function (data, opts) {
-    await READY; await load(this.path).catch(function () {});
+    await READY; await LIVE; await load(this.path).catch(function () {});
     var cur = (cache[this.path] || {})[this.id], val = clean(data);
     if (opts && opts.merge && cur) val = Object.assign(clone(cur), val);
     apply(this.path, this.id, val);
@@ -311,7 +353,7 @@
     if (r.error) fail(this.path, r.error);
   };
   DocRef.prototype.update = async function (patch) {
-    await READY; await load(this.path).catch(function () {});
+    await READY; await LIVE; await load(this.path).catch(function () {});
     var cur = clone((cache[this.path] || {})[this.id]) || {}, flat = {}, dotted = false;
     Object.keys(patch || {}).forEach(function (k) { var v = patch[k] === undefined ? null : patch[k]; if (k.indexOf(".") >= 0) { dotted = true; deepSet(cur, k, v); } else { cur[k] = v; flat[k] = v; } });
     apply(this.path, this.id, clean(cur));
@@ -321,7 +363,7 @@
     if (r.error) fail(this.path, r.error);
   };
   DocRef.prototype.delete = async function () {
-    await READY; apply(this.path, this.id, null);
+    await READY; await LIVE; apply(this.path, this.id, null);
     var r = await sb.from("cocoon_docs").delete().eq("foyer", FOYER).eq("path", this.path).eq("id", this.id);
     if (r.error) fail(this.path, r.error);
   };
@@ -363,7 +405,7 @@
   var TEN_YEARS = 60 * 60 * 24 * 365 * 10;
   var assets = {
     upload: async function (file, opts) {
-      await READY;
+      await LIVE;
       if (file.size > 20 * 1024 * 1024) { var e = new Error("Fichier trop lourd"); e.code = "too_large"; throw e; }
       var type = (opts && opts.type) || file.type || "application/octet-stream";
       if (!/^(image\/(png|jpe?g|webp|gif|heic)|application\/pdf)$/.test(type)) { var e2 = new Error("Format"); e2.code = "unsupported_type"; throw e2; }
@@ -376,7 +418,7 @@
       return { id: s.data.signedUrl, path: path, url: s.data.signedUrl };
     },
     delete: async function (ref) {
-      await READY;
+      await LIVE;
       var m = String(ref || "").match(/\/object\/sign\/[^/]+\/([^?]+)/), path = m ? decodeURIComponent(m[1]) : String(ref || "");
       if (path) await sb.storage.from(BUCKET).remove([path]);
     }
@@ -391,6 +433,16 @@
       return true;
     }
   };
+
+  /* =================== Ouverture instantanée depuis l'instantané local =================== */
+  (function () {
+    var snap = null; try { snap = JSON.parse(localStorage.getItem("cocoon.snap") || "null"); } catch (_) {}
+    if (!snap || snap.v !== 1 || !keep() || !authStore.getItem("cocoon.auth") || LS.get("cocoon.join")) return;
+    ME = { id: snap.u, email: snap.email }; FOYER = snap.f; ROLE = snap.role || "membre"; INVITE = snap.invite || null;
+    Object.keys(snap.cache || {}).forEach(function (p) { cache[p] = snap.cache[p]; }); ALL = true;
+    FROM_SNAP = true; started = true; readyResolve();
+    DOMP.then(function () { try { if (window.cxIntroOut) window.cxIntroOut(true); } catch (_) {} });
+  })();
 
   /* =================== Point d'entrée pour l'app =================== */
   window.claude = {
@@ -407,11 +459,11 @@
     email: function () { return ME && ME.email; },
     isAdmin: function () { return ROLE === "admin"; },
     logout: logout,
-    newCode: async function () { var r = await sb.rpc("cocoon_new_code", { f: FOYER }); if (r.error) throw new Error(frErr(r.error)); INVITE = r.data; return INVITE; },
+    newCode: async function () { await LIVE; var r = await sb.rpc("cocoon_new_code", { f: FOYER }); if (r.error) throw new Error(frErr(r.error)); INVITE = r.data; return INVITE; },
     ready: READY,
     /* Calendrier du téléphone : envoie les rappels (communs + perso) quand ils changent */
     saveCal: async function (x) {
-      await READY;
+      await LIVE;
       var rows = [{ owner: "foyer", events: x.shared || [] }, { owner: ME.id, events: x.perso || [], moi: x.moi || null }];
       for (var i = 0; i < rows.length; i++) {
         var r = rows[i], sig = JSON.stringify([r.events, r.moi || null]);
@@ -421,7 +473,7 @@
       }
     },
     calUrl: async function () {
-      await READY;
+      await LIVE;
       var r = await sb.rpc("cocoon_cal_token", { f: FOYER });
       if (r.error) throw new Error(/function|exist/i.test(r.error.message) ? "le calendrier n'est pas encore activé dans Supabase" : frErr(r.error));
       return CFG.url.replace(/^https?:/, "webcal:").replace(/\/$/, "") + "/functions/v1/cocoon-agenda?t=" + r.data;

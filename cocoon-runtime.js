@@ -216,6 +216,8 @@
   }
   function finish() {
     gate().hide();
+    var top = function () { try { window.scrollTo({ top: 0, left: 0, behavior: "instant" }); } catch (_) { window.scrollTo(0, 0); } };
+    top(); requestAnimationFrame(function () { top(); requestAnimationFrame(top); }); setTimeout(top, 400);
     if (!started) { started = true; startRealtime(); liveResolve(); readyResolve(); saveSnapSoon(); }
   }
   /* Charge tout le foyer en une seule requête (au lieu d'une par rubrique) */
