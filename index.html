@@ -1675,10 +1675,10 @@ function taskRow(t,opts={}){
   if(S.readOnly||!meId()) chk.disabled=true;
   let first=chk;
   if(t.fait){ const okDel=canEditTask(t)&&!S.readOnly&&!!meId();
-    first=el("button",{class:"del-x",type:"button","aria-label":"Supprimer « "+t.titre+" » de l'historique",title:"Supprimer de l'historique",onclick:()=>softDelete([taskEntry(t)],"« "+esc(t.titre)+" » retirée de l'historique.")});
+    first=el("button",{class:"del-x",type:"button","aria-label":"Supprimer « "+t.titre+" » de l'historique",title:"Supprimer de l'historique",onclick:async ev=>{ await rowOut(ev.currentTarget.closest(".item"),"del"); softDelete([taskEntry(t)],"« "+esc(t.titre)+" » retirée de l'historique."); }});
     first.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg>';
     if(!okDel) first.style.visibility="hidden";
-    const rs=el("button",{class:"res-y",type:"button","aria-label":"Remettre « "+t.titre+" » à faire",title:"Restaurer",onclick:()=>toggleDone(t)});
+    const rs=el("button",{class:"res-y",type:"button","aria-label":"Remettre « "+t.titre+" » à faire",title:"Restaurer",onclick:async ev=>{ await rowOut(ev.currentTarget.closest(".item"),"res"); toggleDone(t); }});
     rs.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>';
     if(S.readOnly||!meId()) rs.style.visibility="hidden";
     first=el("span",{class:"hist-acts"},rs,first); }
@@ -3377,7 +3377,20 @@ const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase(
 const COMMITS=new Set();
 function live(list,col){ const P=S.pendingDel; return P&&P.size?list.filter(x=>!P.has(col+":"+x.id)):list; }
 function histHead(done){ const del=done.filter(t=>canEditTask(t)); if(!del.length||S.readOnly||!meId()) return null;
-  return el("div",{class:"hist-head"},el("button",{type:"button",class:"hist-all",onclick:()=>softDelete(del.map(taskEntry),del.length+" tâche"+(del.length>1?"s":"")+" retirée"+(del.length>1?"s":"")+" de l'historique.")},(()=>{ const sp=el("span"); sp.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>'; return sp; })(),"Tout supprimer")); }
+  return el("div",{class:"hist-head"},el("button",{type:"button",class:"hist-all",onclick:async ev=>{ const list=ev.currentTarget.closest(".list"); const rows=list?[...list.querySelectorAll(".item.done")]:[]; await Promise.all(rows.map((r,i)=>new Promise(ok=>setTimeout(()=>rowOut(r,"del").then(ok),i*55)))); softDelete(del.map(taskEntry),del.length+" tâche"+(del.length>1?"s":"")+" retirée"+(del.length>1?"s":"")+" de l'historique."); }},(()=>{ const sp=el("span"); sp.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>'; return sp; })(),"Tout supprimer")); }
+/* Sortie douce d'une ligne : restaurer (remonte en jaune) ou supprimer (glisse en rouge) */
+function rowOut(row,kind){
+  if(!row||(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)) return Promise.resolve();
+  const h=row.offsetHeight, cs=getComputedStyle(row), mb=cs.marginBottom, mt=cs.marginTop, res=kind==="res";
+  const tint=res?"color-mix(in srgb,var(--mark) 38%,var(--surface))":"color-mix(in srgb,#E5484D 22%,var(--surface))";
+  const btn=row.querySelector(res?".res-y":".del-x");
+  if(btn) btn.animate(res?[{transform:"rotate(0)"},{transform:"rotate(-360deg) scale(1.12)"},{transform:"rotate(-360deg) scale(1)"}]:[{transform:"scale(1)"},{transform:"scale(.82)"},{transform:"scale(1.1)"},{transform:"scale(1)"}],{duration:420,easing:"cubic-bezier(.3,.8,.4,1)"});
+  row.style.overflow="hidden"; row.style.pointerEvents="none";
+  const a1=row.animate([{backgroundColor:getComputedStyle(row).backgroundColor},{backgroundColor:tint,offset:.35},{backgroundColor:tint}],{duration:560,fill:"forwards"});
+  const move=res?[{transform:"none",opacity:1},{transform:"none",opacity:1,offset:.3},{transform:"translateY(-14px) scale(.97)",opacity:0}]:[{transform:"none",opacity:1},{transform:"none",opacity:1,offset:.3},{transform:"translateX(56px)",opacity:0}];
+  const a2=row.animate(move,{duration:420,delay:140,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"});
+  return a2.finished.then(()=>row.animate([{height:h+"px",marginTop:mt,marginBottom:mb,paddingTop:cs.paddingTop,paddingBottom:cs.paddingBottom},{height:"0px",marginTop:"0px",marginBottom:"0px",paddingTop:"0px",paddingBottom:"0px"}],{duration:220,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"}).finished).catch(()=>{});
+}
 function taskEntry(t){ return {key:(t.prive?"ptaches:":"taches:")+t.id,arr:t.prive?"perso":"foyer",item:t,run:()=>colFor(t).doc(t.id).delete()}; }
 function toastUndo(html,onUndo,ms){
   const t=$("toast"); t.innerHTML=html;
