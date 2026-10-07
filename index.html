@@ -35,7 +35,7 @@ html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxI
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="07/10 16:57";</script>
+<script>window.COCOON_BUILD="07/10 17:33";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1307,6 +1307,7 @@ html,body{overflow-anchor:none}
 .npanel::before,.coc-panel::before{display:none!important}.npanel{transform-origin:50% 0!important}
 .wrap:not(.on-home) > .topbar{display:none}
 input[type=email]{background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:9px 11px;min-width:0;width:100%;font:inherit;font-size:15px;color:var(--ink)}
+.wz-mates{display:flex;flex-direction:column;gap:8px;margin-top:14px}.wz-mates .label{text-transform:none;letter-spacing:0;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:2px}.mate-row{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) auto;gap:8px;align-items:center}.mate-row:not(:has(.mate-x)){grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}.mate-row input{width:100%;min-width:0}.mate-x{width:36px;height:36px;border-radius:10px;border:0;background:var(--gbg,rgba(0,0,0,.06));color:var(--muted);font-size:20px;line-height:1;cursor:pointer;display:grid;place-items:center}.mate-add{align-self:flex-start}.mate-hint{font-size:12.5px;color:var(--muted)}@media (max-width:480px){.mate-row,.mate-row:not(:has(.mate-x)){grid-template-columns:minmax(0,1fr) auto;padding:10px;border-radius:14px;background:var(--gbg,rgba(0,0,0,.04))}.mate-row input[type=text]{grid-column:1;grid-row:1}.mate-row .mate-x{grid-column:2;grid-row:1}.mate-row input[type=email]{grid-column:1/-1;grid-row:2}}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -2357,6 +2358,7 @@ function buildPlan(mode,a){
   add("maison",1); add("courses",1);
   const kids=a.menage.includes("enfants");
   if(a.menage.includes("couple")&&(a.partenaire||"").trim()) profiles.push({nom:a.partenaire.trim().slice(0,30),type:"adulte",on:true,email:/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(a.partenaireEmail||"")?a.partenaireEmail.trim().toLowerCase():null});
+  if(a.menage.includes("coloc")) for(const c of (a.colocs||[])){ const n=(c.nom||"").trim(); if(n) profiles.push({nom:n.slice(0,30),type:"adulte",on:true,email:MAILOK(c.email)?c.email.trim().toLowerCase():null}); }
   if(kids){ add("ecole",2); add("rdv",1); T("Souscrire l'assurance scolaire","ecole",12,"Prochaine assurance scolaire",nextDate(7,25));
     for(const n of splitNames(a.enfants)) profiles.push({nom:n,type:"enfant",on:true}); }
   const SP={chat:"Chat",chien:"Chien",lapin:"Lapin",autre:"Autre"};
@@ -2430,7 +2432,7 @@ function renderWizard(){
     box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:W.mode==="foyer"?"Catégories conseillées":"Catégories mises en avant pour toi"}),P.cats.length?cg:el("span",{class:"muted",text:"Aucune en particulier : on garde les catégories du foyer."})));
     if(P.profiles.length){ const pl=el("div",{class:"plan-list"});
       for(const p of P.profiles){ const cb=el("input",{type:"checkbox"}); cb.checked=p.on; cb.addEventListener("change",()=>p.on=cb.checked);
-        pl.append(el("label",{class:"plan-row"},cb,el("span",{class:"pr-t",text:p.nom}),el("span",{class:"pr-m",text:p.type==="animal"?p.espece:p.type==="adulte"?"Adulte · invitation prête":"Enfant"}))); }
+        pl.append(el("label",{class:"plan-row"},cb,el("span",{class:"pr-t",text:p.nom}),el("span",{class:"pr-m",text:p.type==="animal"?p.espece:p.type==="adulte"?(p.email?"Invitation par e-mail · "+p.email:"Adulte · invitation prête"):"Enfant"}))); }
       box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:"Profils à créer"}),pl)); }
     if(P.tasks.length){ const tl=el("div",{class:"plan-list"});
       for(const t of P.tasks){ const cb=el("input",{type:"checkbox"}); cb.checked=t.on; cb.addEventListener("change",()=>t.on=cb.checked);
@@ -2450,8 +2452,18 @@ function renderWizard(){
     const live=(inp,set)=>inp.addEventListener("input",()=>{ set(inp.value); W.plan=null; wzRefresh(key,a); });
     if(key==="menage"&&a.menage.includes("couple")){ const i=el("input",{type:"text",id:"wzPart",maxlength:"30",placeholder:"Emma, Thomas…"}); i.value=a.partenaire; live(i,v=>a.partenaire=v);
       box.append(el("label",{class:"field",for:"wzPart"},"Le prénom de ta moitié : on lui prépare son profil et une invitation",i));
-      if((window.cocoonHost&&cocoonHost.inviteEmail)){ const em=el("input",{type:"email",id:"wzPartMail",inputmode:"email",autocomplete:"off",placeholder:"emma@exemple.fr"}); em.value=a.partenaireEmail||""; em.addEventListener("input",()=>{ a.partenaireEmail=em.value.trim(); });
-        box.append(el("label",{class:"field",for:"wzPartMail"},"Son e-mail (facultatif) : on lui envoie l'invitation pour installer Cocoon et rejoindre le foyer",em)); } }
+      const em=mailInput("wzPartMail",a.partenaireEmail,v=>{ a.partenaireEmail=v; W.plan=null; wzRefresh(key,a); });
+      box.append(el("label",{class:"field",for:"wzPartMail"},"Son e-mail pour l'inviter (facultatif) : "+MAIL_HINT(),em)); }
+    if(key==="menage"&&a.menage.includes("coloc")){ a.colocs=a.colocs&&a.colocs.length?a.colocs:[{nom:"",email:""}];
+      const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"Tes colocs : on leur prépare un profil et une invitation"}));
+      a.colocs.forEach((c,k)=>{ const n=el("input",{type:"text",id:"wzMate"+k,maxlength:"30",placeholder:"Son prénom","aria-label":"Prénom du coloc "+(k+1)}); n.value=c.nom; live(n,v=>c.nom=v);
+        const m=mailInput("wzMateMail"+k,c.email,v=>{ c.email=v; W.plan=null; wzRefresh(key,a); }); m.setAttribute("aria-label","E-mail du coloc "+(k+1)+" (facultatif)"); m.placeholder="Son e-mail (facultatif)";
+        const row=el("div",{class:"mate-row"},n,m);
+        if(a.colocs.length>1) row.append(el("button",{type:"button",class:"mate-x","aria-label":"Retirer ce coloc",text:"×",onclick:()=>{ a.colocs.splice(k,1); W.plan=null; rerender(); }}));
+        grp.append(row); });
+      if(a.colocs.length<6) grp.append(el("button",{type:"button",class:"btn ghost mate-add",text:"+ Ajouter un coloc",onclick:()=>{ a.colocs.push({nom:"",email:""}); W.plan=null; rerender(); setTimeout(()=>{ const x=$("wzMate"+(a.colocs.length-1)); if(x) x.focus(); },30); }}));
+      grp.append(el("span",{class:"mate-hint",text:"L'e-mail est facultatif : "+MAIL_HINT()+"."}));
+      box.append(grp); }
     if(key==="menage"&&a.menage.includes("enfants")){ const i=el("input",{type:"text",id:"wzEnf",placeholder:"Léo, Jade"}); i.value=a.enfants; live(i,v=>a.enfants=v);
       box.append(el("label",{class:"field",for:"wzEnf"},"Leurs prénoms, séparés par des virgules : on leur crée un profil",i)); }
     if(key==="animaux") for(const sp of a.animaux.filter(x=>x!=="aucun")){ const i=el("input",{type:"text",id:"wzA"+sp,placeholder:sp==="chat"?"Moka":sp==="chien"?"Rex":"Son nom"}); i.value=a.noms[sp]||""; live(i,v=>a.noms[sp]=v);
@@ -2468,6 +2480,9 @@ function wzNeed(key,a){
   if(key==="nom") return (a.nom||"").trim()?null:"Indique le nom de ta famille";
   if(key==="menage"){ if(!a.menage.length) return "Choisis au moins une réponse";
     if(a.menage.includes("couple")&&!(a.partenaire||"").trim()) return "Indique le prénom de ta moitié";
+    if(a.menage.includes("couple")&&(a.partenaireEmail||"").trim()&&!MAILOK(a.partenaireEmail)) return "Vérifie l'e-mail de ta moitié";
+    if(a.menage.includes("coloc")&&!(a.colocs||[]).some(c=>(c.nom||"").trim())) return "Indique le prénom d'au moins un coloc";
+    if(a.menage.includes("coloc")&&(a.colocs||[]).some(c=>(c.email||"").trim()&&!MAILOK(c.email))) return "Vérifie l'e-mail de tes colocs";
     if(a.menage.includes("enfants")&&!splitNames(a.enfants).length) return "Indique le prénom des enfants"; return null; }
   if(key==="animaux"){ if(!a.animaux.length) return "Choisis au moins une réponse";
     if(a.animaux.some(sp=>sp!=="aucun"&&!splitNames(a.noms[sp]).length)) return "Indique le nom de tes animaux"; return null; }
@@ -2487,7 +2502,7 @@ async function applyPlan(Wx){
         let id=slug(p.nom); const taken=new Set(membres().map(m=>m.id).concat(Object.values(ids))); let i=2; while(taken.has(id)) id=slug(p.nom)+"-"+(i++);
         ids[p.nom]=id;
         await S.db.collection("membres").doc(id).set({nom:p.nom,type:p.type,espece:p.espece||null,email:p.email||null,role:p.type==="adulte"?"membre":null,invite:p.type==="adulte"||null,c:COLORS[(Object.keys(ids).length+3)%COLORS.length],ordre:now+Object.keys(ids).length,creePar:me,creeLe:now});
-        if(p.email&&(window.cocoonHost&&cocoonHost.inviteEmail)) sendInviteMail(p.email,p.nom,id);
+        if(p.email&&canMail()) sendInviteMail(p.email,p.nom,id);
       }
       for(const t of P.tasks.filter(x=>x.on)){
         const conc=t.animal?(ids[t.animal]||(membres().find(m=>(m.nom||"").toLowerCase()===t.animal.toLowerCase())||{}).id||null):null;
@@ -2519,6 +2534,10 @@ function renderSetupCard(){
   c.append(el("div",{},el("b",{text:show.t}),el("span",{text:show.s})),el("button",{type:"button",class:"btn",text:"C'est parti",onclick:()=>openWizard(show.m)}));
 }
 /* ===== Ajouter un membre ===== */
+const MAILOK=x=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((x||"").trim());
+const canMail=()=>!!(window.cocoonHost&&cocoonHost.inviteEmail);
+function mailInput(id,val,set){ const em=el("input",{type:"email",id,inputmode:"email",autocomplete:"off",autocapitalize:"off",spellcheck:"false",placeholder:"prenom@exemple.fr"}); em.value=val||""; em.addEventListener("input",()=>set(em.value.trim())); return em; }
+const MAIL_HINT=()=>canMail()?"on lui envoie un e-mail pour installer Cocoon et rejoindre le foyer":"on le garde sur son profil pour l'inviter";
 function openInvite(){ if(S.tab!=="inviter") S.invPrev=S.tab; S.invite=S.invite||{}; setTab("inviter"); renderInvite(); window.scrollTo({top:0,behavior:"instant"}); }
 async function sendInviteMail(email,nom,id){
   try{ toast("Envoi de l'invitation à "+esc(email)+"…"); const r=await cocoonHost.inviteEmail(email,nom);
@@ -2536,14 +2555,14 @@ function renderInvite(){
   const nm=el("input",{type:"text",id:"invNom",maxlength:"30",placeholder:"Son prénom"}); nm.value=I.nom||""; nm.addEventListener("input",()=>I.nom=nm.value);
   const ty=el("select",{id:"invType"}); ty.append(el("option",{value:"adulte",text:"Adulte"}),el("option",{value:"enfant",text:"Enfant ou ado avec son téléphone"})); ty.value=I.type||"adulte"; ty.addEventListener("change",()=>I.type=ty.value);
   c1.append(el("div",{class:"frow"},el("label",{class:"field",for:"invNom"},"Prénom",nm),el("label",{class:"field",for:"invType"},"Profil",ty)));
-  let im=null; if((window.cocoonHost&&cocoonHost.inviteEmail)){ im=el("input",{type:"email",id:"invMail",inputmode:"email",autocomplete:"off",placeholder:"emma@exemple.fr"}); im.value=I.email||""; im.addEventListener("input",()=>I.email=im.value.trim());
-    c1.append(el("label",{class:"field",for:"invMail"},"Son e-mail (facultatif) : on lui envoie un e-mail pour installer Cocoon et rejoindre le foyer",im)); }
+  const im=mailInput("invMail",I.email,v=>I.email=v);
+  c1.append(el("label",{class:"field",for:"invMail"},"Son e-mail pour l'inviter (facultatif) : "+MAIL_HINT(),im));
   c1.append(el("button",{type:"button",class:"btn",text:"Créer l'invitation",onclick:async()=>{
     const nom=(I.nom||"").trim(); if(!nom){ toast("Indique son prénom."); nm.focus(); return; }
     let id=slug(nom); const taken=new Set(membres().map(m=>m.id)); let i=2; while(taken.has(id)) id=slug(nom)+"-"+(i++);
     const mail=(I.email||"").trim().toLowerCase(); if(mail&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){ toast("Cette adresse e-mail ne semble pas valide."); if(im) im.focus(); return; }
     try{ await S.db.collection("membres").doc(id).set({nom,type:I.type||"adulte",role:"membre",email:mail||null,c:COLORS[membres().length%COLORS.length],invite:true,ordre:Date.now(),creePar:meId(),creeLe:Date.now()});
-      S.invite={focus:id}; if(mail&&(window.cocoonHost&&cocoonHost.inviteEmail)) sendInviteMail(mail,nom,id); else toast("Invitation prête pour "+esc(nom)+"."); renderInvite(); }catch(e){ writeErr(e); } }}));
+      S.invite={focus:id}; if(mail&&canMail()) sendInviteMail(mail,nom,id); else toast("Invitation prête pour "+esc(nom)+"."); renderInvite(); }catch(e){ writeErr(e); } }}));
   b.append(c1);
   // invitations en attente
   const pend=humains().filter(m=>!m.uid&&(m.invite||typeOf(m)==="adulte"));
@@ -2555,7 +2574,7 @@ function renderInvite(){
       if(open){
         const area=el("textarea",{class:"inv-msg",id:"invMsg",readonly:true}); area.value=inviteText(m);
         const rb=el("div",{class:"row-btns",style:"display:flex;gap:8px;flex-wrap:wrap"},el("button",{type:"button",class:"btn",text:"Copier le message",onclick:()=>copyText(area.value,area)}));
-        if(m.email&&(window.cocoonHost&&cocoonHost.inviteEmail)) rb.append(el("button",{type:"button",class:"btn ghost",text:"Renvoyer l'e-mail à "+m.email,onclick:()=>sendInviteMail(m.email,m.nom,m.id)}));
+        if(m.email&&canMail()) rb.append(el("button",{type:"button",class:"btn ghost",text:"Renvoyer l'e-mail à "+m.email,onclick:()=>sendInviteMail(m.email,m.nom,m.id)}));
         c2.append(area,rb);
         const ol=el("ol",{class:"inv-steps"});
         ol.append(el("li",{},el("b",{text:"Envoie-lui ce message"})," par SMS, WhatsApp ou e-mail."));
