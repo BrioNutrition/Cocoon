@@ -1,6 +1,6 @@
 /* Faux Supabase en mémoire, pour tester l'app sans réseau. */
 (function () {
-  var T = { cocoon_foyers: [], cocoon_members: [], cocoon_docs: [], cocoon_cal: [] }, files = {}, users = {}, session = null, authCbs = [], chans = [];
+  var users0=null; var T = (function(){ try{ var x=JSON.parse(localStorage.getItem('mockT')||'null'); if(x) return x; }catch(_){} return { cocoon_foyers: [], cocoon_members: [], cocoon_docs: [], cocoon_cal: [] }; })(), STO=null; setInterval(function(){ try{ localStorage.setItem('mockT',JSON.stringify(T)); }catch(_){} },200), files = {}, users = {}, session = null, authCbs = [], chans = [];
   window.__mock = { T: T, files: files, chans: chans, calls: [] };
   function uuid() { return "xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx".replace(/x/g, function () { return (Math.random() * 16 | 0).toString(16); }); }
   function ok(d) { return Promise.resolve({ data: d, error: null }); }
@@ -25,11 +25,11 @@
   };
   var client = {
     auth: {
-      getSession: function () { return ok({ session: session }); },
+      getSession: function () { if(!session&&STO){ try{ session=JSON.parse(STO.getItem('cocoon.auth')||'null'); }catch(_){} } return ok({ session: session }); },
       onAuthStateChange: function (cb) { authCbs.push(cb); return { data: { subscription: { unsubscribe: function () {} } } }; },
-      signUp: function (o) { if (users[o.email]) return Promise.resolve({ data: {}, error: { message: "User already registered" } }); var u = { id: uuid(), email: o.email }; users[o.email] = { u: u, pw: o.password }; session = { user: u }; setTimeout(function () { emit("SIGNED_IN", session); }, 1); return ok({ session: session, user: u }); },
-      signInWithPassword: function (o) { var x = users[o.email]; if (!x || x.pw !== o.password) return Promise.resolve({ data: {}, error: { message: "Invalid login credentials" } }); session = { user: x.u }; setTimeout(function () { emit("SIGNED_IN", session); }, 1); return ok({ session: session }); },
-      signOut: function () { session = null; emit("SIGNED_OUT", null); return ok(null); },
+      signUp: function (o) { if (users[o.email]) return Promise.resolve({ data: {}, error: { message: "User already registered" } }); var u = { id: uuid(), email: o.email }; users[o.email] = { u: u, pw: o.password }; session = { user: u }; STO&&STO.setItem('cocoon.auth',JSON.stringify(session)); setTimeout(function () { emit("SIGNED_IN", session); }, 1); return ok({ session: session, user: u }); },
+      signInWithPassword: function (o) { var x = users[o.email]; if (!x || x.pw !== o.password) return Promise.resolve({ data: {}, error: { message: "Invalid login credentials" } }); session = { user: x.u }; STO&&STO.setItem('cocoon.auth',JSON.stringify(session)); setTimeout(function () { emit("SIGNED_IN", session); }, 1); return ok({ session: session }); },
+      signOut: function () { session = null; STO&&STO.removeItem('cocoon.auth'); emit("SIGNED_OUT", null); return ok(null); },
       resetPasswordForEmail: function () { return ok({}); },
       updateUser: function () { return ok({ user: session.user }); }
     },
@@ -51,5 +51,5 @@
       remove: function (ps) { ps.forEach(function (p) { delete files[p]; }); window.__mock.removed = ps; return ok(null); }
     }; } }
   };
-  window.supabase = { createClient: function () { return client; } };
+  window.supabase = { createClient: function (u,k,o) { STO=o&&o.auth&&o.auth.storage||null; return client; } };
 })();

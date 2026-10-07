@@ -9,8 +9,10 @@ async def main():
     await ctx.route('**/config.js',lambda r:r.fulfill(body='window.COCOON_CONFIG={url:"https://mock.supabase.co",key:"anon"};',content_type='application/javascript'))
     await ctx.route('**/fonts.g*/**',lambda r:r.abort())
     pg=await ctx.new_page(); errs=[]; pg.on('pageerror',lambda e:errs.append(str(e))); pg.on('console',lambda m: m.type=='error' and errs.append('console:'+m.text))
-    await pg.goto('http://localhost:8765/'); await pg.wait_for_timeout(800)
-    await pg.screenshot(path='../w1.png')
+    await pg.goto('http://localhost:8765/')
+    for k,ms in enumerate([150,600,1300,1900]):
+      await pg.wait_for_timeout(ms-[0,150,600,1300][k]); await pg.screenshot(path=f'../in{k}.png')
+    print('intro présent après 2s:', await pg.locator('#cxIntro').count())
     await pg.click('#cxGate [data-go="signup"]'); await pg.fill('#cxGate input[name=email]','angel@test.fr'); await pg.fill('#cxGate input[name=pw]','secret123'); await pg.click('#cxGate .cx-btn')
     await pg.wait_for_timeout(500); await pg.screenshot(path='../w2.png')
     t0=time.time(); await pg.click('#cxGate [data-act="create"]'); await pg.wait_for_selector('#cxGate', state='hidden'); print('foyer créé en', round(time.time()-t0,2),'s'); await pg.wait_for_timeout(2500)
