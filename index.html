@@ -1154,6 +1154,13 @@ button.acc-card{cursor:pointer}
 :root[data-theme="dark"] .np-ic{color:color-mix(in srgb,var(--bc) 60%,#fff)}:root[data-theme="dark"] .np-g.late{color:#FF9C80}:root[data-theme="dark"] .npanel{box-shadow:0 18px 50px rgba(0,0,0,.55)}
 .bell{padding:0;line-height:0;color:var(--muted)}.bell svg{display:block;width:24px;height:24px;transform-origin:50% 12%}.bell[aria-expanded="true"],.bell[aria-pressed="true"]{background:var(--surface);color:var(--ink)}
 .bell .n{top:-3px;right:-3px;min-width:20px;line-height:20px;font-size:11.5px;font-weight:800;padding:0 6px;background:#FFC94A;color:#1C1B2E;box-shadow:0 0 0 2.5px var(--bg)}
+.mot{background:var(--mot-bg,#FFF1A8);transition:background .2s}
+.mot::before{background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--mot-pin,#F2B705) 55%,#fff) 0 22%,var(--mot-pin,#F2B705) 60%);transition:background .2s}
+.mot-lbl{color:var(--mot-lbl,#946500)}
+.mot-pal{display:flex;gap:10px;flex-wrap:wrap}
+.mot-sw{position:relative;width:38px;height:38px;border-radius:6px 12px 12px 12px;border:0;padding:0;background:var(--mot-bg);box-shadow:0 1px 0 rgba(28,27,46,.08),0 3px 8px rgba(28,27,46,.12);cursor:pointer;transition:transform .15s}
+.mot-sw::after{content:"";position:absolute;top:-4px;left:50%;width:11px;height:11px;margin-left:-5.5px;border-radius:50%;background:var(--mot-pin);box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.mot-sw[aria-checked="true"]{box-shadow:0 0 0 2.5px #fff,0 0 0 4.5px #1C1B2E;transform:scale(1.06)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -2559,26 +2566,31 @@ function creditFormEl(){
 }
 /* ===== Accueil : mot du foyer, rendez-vous, budget du mois, qui fait quoi ===== */
 function agoTxt(ms){ const m=Math.round((Date.now()-ms)/6e4); if(m<1) return "à l'instant"; if(m<60) return "il y a "+m+" min"; const h=Math.round(m/60); if(h<24) return "il y a "+h+" h"; const d=Math.round(h/24); return d===1?"hier":"il y a "+d+" jours"; }
+const MOTC=[{id:"jaune",n:"Jaune",bg:"#FFF1A8",pin:"#F2B705",lbl:"#946500"},{id:"rose",n:"Rose",bg:"#FFD9E3",pin:"#E94F7A",lbl:"#B23256"},{id:"peche",n:"Pêche",bg:"#FFDCC8",pin:"#F07A3E",lbl:"#A8481A"},{id:"vert",n:"Vert",bg:"#D5F3D8",pin:"#3FAE5A",lbl:"#277338"},{id:"bleu",n:"Bleu",bg:"#D8E8FF",pin:"#3D7BD9",lbl:"#2A58A3"},{id:"lilas",n:"Lilas",bg:"#E7DFFF",pin:"#7B5CD6",lbl:"#5639AE"}];
+const motC=id=>MOTC.find(c=>c.id===id)||MOTC[0];
+const motStyle=id=>{ const c=motC(id); return "--mot-bg:"+c.bg+";--mot-pin:"+c.pin+";--mot-lbl:"+c.lbl; };
 function activeMot(){ const now=Date.now(); return (S.mots||[]).filter(x=>x.texte&&(!x.expire||x.expire>now)).sort((a,b)=>(b.le||0)-(a.le||0))[0]||null; }
 function renderMot(){
   const w=$("motCard"); if(!w) return; w.innerHTML=""; const me=meId(), can=!S.readOnly&&!!me, m=activeMot(), F=S.motForm;
   w.className="mot-wrap";
-  if(F){ const f=el("form",{class:"mot mot-edit",autocomplete:"off"});
+  if(F){ const f=el("form",{class:"mot mot-edit",autocomplete:"off",style:motStyle(F.couleur)});
     const ta=el("textarea",{id:"motTxt",maxlength:"200",rows:"3",placeholder:"Plombier jeudi 14h, laissez la clé sous le paillasson…"}); ta.value=F.texte||""; ta.addEventListener("input",()=>F.texte=ta.value);
     const seg=el("div",{class:"seg seg-split",role:"group","aria-label":"Durée"}); for(const [d,l] of [[1,"1 jour"],[3,"3 jours"],[7,"1 semaine"]]) seg.append(el("button",{type:"button","aria-pressed":String((F.jours||3)===d),text:l,onclick:()=>{ F.jours=d; renderMot(); }}));
     const bt=el("div",{class:"mot-btns"},el("button",{type:"submit",class:"btn",text:F.id?"Enregistrer":"Publier"}),el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>{ S.motForm=null; renderMot(); }}));
     if(F.id) bt.append(el("span",{style:"flex:1"}),el("button",{type:"button",class:"btn ghost",style:"color:var(--late)",text:"Retirer",onclick:async()=>{ try{ await S.db.collection("mots").doc(F.id).delete(); S.motForm=null; toast("Mot retiré."); renderMot(); }catch(e){ writeErr(e); } }}));
-    f.append(el("span",{class:"mot-lbl",text:"Mot du foyer"}),ta,el("span",{class:"mot-sub",text:"Visible par tout le foyer pendant"}),seg,bt);
+    const pal=el("div",{class:"mot-pal",role:"radiogroup","aria-label":"Couleur du post-it"});
+    for(const c of MOTC) pal.append(el("button",{type:"button",class:"mot-sw",role:"radio",style:"--mot-bg:"+c.bg+";--mot-pin:"+c.pin,"aria-checked":String((F.couleur||"jaune")===c.id),"aria-label":c.n,title:c.n,onclick:ev=>{ F.couleur=c.id; f.setAttribute("style",motStyle(c.id)); pal.querySelectorAll(".mot-sw").forEach(b=>b.setAttribute("aria-checked",String(b===ev.currentTarget))); }}));
+    f.append(el("span",{class:"mot-lbl",text:"Mot du foyer"}),ta,el("span",{class:"mot-sub",text:"Couleur du post-it"}),pal,el("span",{class:"mot-sub",text:"Visible par tout le foyer pendant"}),seg,bt);
     f.addEventListener("submit",async e=>{ e.preventDefault(); if(!needMe()) return; const t=(F.texte||"").trim(); if(!t){ toast("Écris ton mot."); ta.focus(); return; }
-      const doc={texte:t,par:meId(),le:Date.now(),expire:Date.now()+(F.jours||3)*864e5};
+      const doc={texte:t,couleur:F.couleur||"jaune",par:meId(),le:Date.now(),expire:Date.now()+(F.jours||3)*864e5};
       try{ if(F.id) await S.db.collection("mots").doc(F.id).update(doc); else await S.db.collection("mots").add(doc); S.motForm=null; toast("Mot publié pour tout le foyer."); renderMot(); }catch(err){ writeErr(err); } });
     w.append(f); setTimeout(()=>{ const x=$("motTxt"); if(x&&!F.texte) x.focus(); },40); return; }
   if(m){ const mine=can&&(m.par===me||isAdmin()); const left=Math.max(0,Math.ceil((m.expire-Date.now())/864e5));
-    const card=el("div",{class:"mot"},el("span",{class:"mot-lbl",text:"Mot du foyer"}),el("p",{class:"mot-txt",text:m.texte}),
+    const card=el("div",{class:"mot",style:motStyle(m.couleur)},el("span",{class:"mot-lbl",text:"Mot du foyer"}),el("p",{class:"mot-txt",text:m.texte}),
       el("div",{class:"mot-foot"},avatar(m.par,20),el("span",{text:(m.par===me?"Toi":membre(m.par).nom)+" · "+agoTxt(m.le)+(m.expire?" · encore "+left+" j":"")})));
-    if(mine){ const p=pencilBtn(()=>{ S.motForm={id:m.id,texte:m.texte,jours:Math.max(1,Math.min(7,left||3))}; renderMot(); },"Modifier le mot"); p.classList.add("mot-pen"); card.append(p); }
+    if(mine){ const p=pencilBtn(()=>{ S.motForm={id:m.id,texte:m.texte,couleur:m.couleur||"jaune",jours:Math.max(1,Math.min(7,left||3))}; renderMot(); },"Modifier le mot"); p.classList.add("mot-pen"); card.append(p); }
     w.append(card); return; }
-  if(can) w.append(el("button",{type:"button",class:"mot-add",text:"+ Laisser un mot au foyer",onclick:()=>{ S.motForm={jours:3}; renderMot(); }}));
+  if(can) w.append(el("button",{type:"button",class:"mot-add",text:"+ Laisser un mot au foyer",onclick:()=>{ S.motForm={jours:3,couleur:"jaune"}; renderMot(); }}));
 }
 const RDV_FMT={j:new Intl.DateTimeFormat("fr-FR",{day:"numeric"}),m:new Intl.DateTimeFormat("fr-FR",{month:"short"}),w:new Intl.DateTimeFormat("fr-FR",{weekday:"long"})};
 function rdvList(days){ const lim=days||60, out=[];
@@ -3252,7 +3264,10 @@ $("bellBtn").addEventListener("click",()=>{ $("npanel").hidden?openNotifs():clos
 /* ---- Panneau de notifications (cloche) ---- */
 function npKey(r){ return r.kind+":"+((r.ref&&r.ref.id)||r.titre)+":"+r.date; }
 function npSeen(){ if(!S.npSeen){ let a=[]; try{ a=JSON.parse(localStorage.getItem("cocoon.seen")||"[]"); }catch(_){} S.npSeen=new Set(Array.isArray(a)?a:[]); } return S.npSeen; }
-function npItems(){ return reminders().filter(r=>daysTo(r.date)<=7); }
+function npHidden(){ if(!S.npHide){ let a=(S.prefs&&S.prefs.notifMasquees)||null; if(!a){ try{ a=JSON.parse(localStorage.getItem("cocoon.hide")||"[]"); }catch(_){ a=[]; } } S.npHide=new Set(Array.isArray(a)?a:[]); } return S.npHide; }
+function npDismiss(r){ const h=npHidden(); h.add(npKey(r)); const arr=[...h].slice(-200); try{ localStorage.setItem("cocoon.hide",JSON.stringify(arr)); }catch(_){}
+  if(S.db&&S.uid){ S.prefs=Object.assign({},S.prefs||{},{notifMasquees:arr}); S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); } renderBadges(); }
+function npItems(){ const h=npHidden(); return reminders().filter(r=>daysTo(r.date)<=7&&!h.has(npKey(r))); }
 function npUnseen(){ const s=npSeen(); return npItems().filter(r=>!s.has(npKey(r))).length; }
 function npMarkSeen(){ const s=npSeen(); for(const r of npItems()) s.add(npKey(r)); try{ localStorage.setItem("cocoon.seen",JSON.stringify([...s].slice(-300))); }catch(_){} renderBadges(); }
 function npIcon(r){ const k={Document:"documents",Maison:"entretien","Véhicule":"voiture","Prélèvement":"abonnement",Anniversaire:"loisirs",Poubelles:"poubelle","Rendez-vous":"rdv"}[r.kind]||(r.cat==="voitures"?"voiture":r.cat);
@@ -3279,7 +3294,11 @@ function renderNotifs(){
       const row=el("div",{class:"np-row"+(fresh.has(npKey(r))?" new":"")});
       const main=el("button",{type:"button",class:"np-main",onclick:()=>npGo(r)},npIcon(r),el("span",{class:"np-t"},el("b",{text:r.titre}),el("span",{text:sub.join(" · ")})),el("span",{class:"due"+(n<0?" late":n<=1?" soon":""),text:dueLabel(r.date)}));
       row.append(main);
-      if(task&&!S.readOnly&&me) row.append(el("button",{type:"button",class:"np-ok","aria-label":"Marquer « "+r.titre+" » comme fait",title:"C'est fait",onclick:async ev=>{ ev.stopPropagation(); row.classList.add("gone"); await completeTask(r.ref); setTimeout(()=>{ if(!$("npanel").hidden) renderNotifs(); },260); }},(()=>{ const s=el("span"); s.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'; return s; })()));
+      { const okSvg=()=>{ const sp=el("span"); sp.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'; return sp; };
+        const canDo=task&&!S.readOnly&&me;
+        row.append(el("button",{type:"button",class:"np-ok","aria-label":canDo?"Marquer « "+r.titre+" » comme fait":"Valider et masquer « "+r.titre+" »",title:canDo?"C'est fait":"Vu, masquer",onclick:async ev=>{ ev.stopPropagation(); row.classList.add("gone");
+          if(canDo) await completeTask(r.ref); else npDismiss(r);
+          setTimeout(()=>{ if(!$("npanel").hidden) renderNotifs(); },260); }},okSvg())); }
       body.append(row); } }
   if(!items.length){ const later=reminders().filter(r=>daysTo(r.date)>7)[0];
     body.append(el("div",{class:"np-empty"},(()=>{ const s=el("span",{class:"np-calm"}); s.innerHTML=GI("maison"); return s; })(),el("b",{text:"Rien d'urgent cette semaine"}),el("span",{text:later?"Prochain rappel : "+later.titre+", "+dueLabel(later.date)+".":"Ajoute des échéances à tes tâches et papiers pour être prévenu ici."}))); }
@@ -4180,7 +4199,7 @@ let prefsUnsub=null;
 function subscribePerso(){
   if(persoUnsub||!S.db||!S.uid) return;
   if(prefsUnsub) prefsUnsub(); S.prefs=null; S.prefsLoaded=false;
-  prefsUnsub=S.db.doc("data/users/"+S.uid+"/prefs").onSnapshot(p=>{ S.prefs=p.exists?p.data():null; if(S.prefs&&S.prefs.theme) applyTheme(S.prefs.theme); S.prefsLoaded=true; renderAll(); },()=>{ S.prefsLoaded=true; });
+  prefsUnsub=S.db.doc("data/users/"+S.uid+"/prefs").onSnapshot(p=>{ S.prefs=p.exists?p.data():null; if(S.prefs&&Array.isArray(S.prefs.notifMasquees)) S.npHide=new Set(S.prefs.notifMasquees); if(S.prefs&&S.prefs.theme) applyTheme(S.prefs.theme); S.prefsLoaded=true; renderAll(); },()=>{ S.prefsLoaded=true; });
   vehCol().onSnapshot(s=>{ S.vehic=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"vehicules"); renderAll(); },()=>{});
   persoUnsub=persoCol().onSnapshot(s=>{ S.perso=live(s.docs.map(d=>Object.assign({id:d.id,prive:true},d.data())),"ptaches"); S.loaded.p=true; renderAll(); },()=>{ S.loaded.p=true; renderAll(); });
 }
