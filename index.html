@@ -1200,8 +1200,8 @@ details.done-list .list,#pDone{overflow-x:clip}
 .done-ic{background:rgba(255,255,255,.28)!important;box-shadow:0 2px 10px rgba(0,0,0,.12)}
 .done-ic>svg{filter:drop-shadow(0 1px 1px rgba(0,0,0,.18))}
 .done-anim{will-change:opacity,transform}
-.row-tint.del{background:color-mix(in srgb,#E5484D 24%,var(--surface))}
-.row-tint.res{background:color-mix(in srgb,#FFB347 34%,var(--surface))}
+.row-tint.del{background:rgba(229,72,77,.16)}
+.row-tint.res{background:rgba(255,166,48,.24)}
 .row-tint{background:transparent}
 .done-anim,.done-anim.selected{box-shadow:none!important;outline:none!important;border-color:transparent!important}
 .done-anim::before{opacity:0;transition:opacity .15s}
@@ -1211,6 +1211,7 @@ details.done-list .list,#pDone{overflow-x:clip}
 .done-ic>svg{filter:none!important}
 .done-wk i svg path{fill:#3FAE5A;stroke:#3FAE5A}
 html,body{overflow-anchor:none}
+.wrap.arrive .head,.wrap.arrive .members,.wrap.arrive .view:not([hidden]) > *{will-change:transform,opacity}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3956,6 +3957,32 @@ function sparkle(box,stop){
     setTimeout(tick,150+Math.random()*120); };
   tick();
 }
+/* Vol fluide d'un logo vers le logo du haut : part de la position affichée (flottement inclus),
+   suit la position réelle de la cible à chaque image, et se pose pile dessus. */
+function flyLogo(logo,target,D){
+  const wrap=logo.parentElement, wcs=getComputedStyle(wrap), lcs=getComputedStyle(logo);
+  const pt=v=>{ const m=String(v||"").match(/-?[0-9.]+/g)||[]; return [parseFloat(m[0]||0),parseFloat(m[1]||0)]; };
+  const [wtx,wty]=wcs.translate&&wcs.translate!=="none"?pt(wcs.translate):[0,0];
+  const wrot=wcs.rotate&&wcs.rotate!=="none"?parseFloat(wcs.rotate)||0:0;
+  const M=new DOMMatrix(wcs.transform&&wcs.transform!=="none"?wcs.transform:undefined).multiply(new DOMMatrix(lcs.transform&&lcs.transform!=="none"?lcs.transform:undefined));
+  const s0=Math.hypot(M.a,M.b)||1, r0=wrot+Math.atan2(M.b,M.a)*180/Math.PI, x0=wtx+M.e, y0=wty+M.f;
+  wrap.getAnimations().forEach(a=>a.cancel()); logo.getAnimations().forEach(a=>a.cancel());
+  wrap.style.translate="none"; wrap.style.rotate="none"; wrap.style.transform="none"; wrap.style.animation="none"; logo.style.animation="none";
+  logo.style.opacity="1"; logo.style.transform="none"; const lr=logo.getBoundingClientRect();
+  logo.style.transform="translate3d("+x0+"px,"+y0+"px,0) rotate("+r0+"deg) scale("+s0+")"; logo.style.willChange="transform";
+  const lcx=lr.left+lr.width/2, lcy=lr.top+lr.height/2;
+  if(!target) return Promise.resolve();
+  target.style.visibility="hidden";
+  const bez=(p1x,p1y,p2x,p2y)=>{ const cx=3*p1x,bx=3*(p2x-p1x)-cx,ax=1-cx-bx,cy=3*p1y,by=3*(p2y-p1y)-cy,ay=1-cy-by;
+    const X=t=>((ax*t+bx)*t+cx)*t, Y=t=>((ay*t+by)*t+cy)*t, dX=t=>(3*ax*t+2*bx)*t+cx;
+    return x=>{ let t=x; for(let i=0;i<8;i++){ const d=X(t)-x; if(Math.abs(d)<1e-5) break; const dd=dX(t); if(Math.abs(dd)<1e-6) break; t-=d/dd; } t=Math.min(1,Math.max(0,t)); return Y(t); }; };
+  const ease=bez(.55,0,.15,1), t0=performance.now();
+  return new Promise(done=>{ const step=now=>{ const p=Math.min(1,(now-t0)/D), e=ease(p);
+      const r=target.getBoundingClientRect(), tx=r.left+r.width/2-lcx, ty=r.top+r.height/2-lcy, ts=r.width/lr.width;
+      logo.style.transform="translate3d("+(x0+(tx-x0)*e)+"px,"+(y0+(ty-y0)*e)+"px,0) rotate("+(r0*(1-e))+"deg) scale("+(s0+(ts-s0)*e)+")";
+      if(p<1) requestAnimationFrame(step); else { target.style.visibility=""; done(); } };
+    requestAnimationFrame(step); });
+}
 async function reveal({hello,lines,minMs,work,before}){
   const R=$("reveal"), logo=$("rvLogo"), reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
   const lg=document.querySelector(".brand-logo"); if(lg) logo.src=lg.src;
@@ -3970,19 +3997,16 @@ async function reveal({hello,lines,minMs,work,before}){
   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
   if(reduced){ await R.animate([{opacity:1},{opacity:0}],{duration:400,fill:"forwards"}).finished; }
   else{
-    const wrap=logo.parentElement, wt=getComputedStyle(wrap).transform, it=getComputedStyle(logo).transform;
-    const cur=new DOMMatrix(wt&&wt!=="none"?wt:undefined).multiply(new DOMMatrix(it&&it!=="none"?it:undefined)).toString();
-    wrap.getAnimations().forEach(a=>a.cancel()); logo.getAnimations().forEach(a=>a.cancel());
-    const target=document.querySelector(".brand-logo"), lr=logo.getBoundingClientRect(), tr=target?target.getBoundingClientRect():{left:24,top:24,width:40,height:40};
-    const lcx=lr.left+lr.width/2, lcy=lr.top+lr.height/2, tcx=tr.left+tr.width/2, tcy=tr.top+tr.height/2;
+    const target=document.querySelector(".brand-logo");
     R.classList.add("out"); setTimeout(()=>document.querySelector(".wrap").classList.add("arrive"),260);
-    const fly=logo.animate([{transform:cur},{transform:"translate("+(tcx-lcx)+"px,"+(tcy-lcy)+"px) scale("+(tr.width/lr.width)+") rotate(0deg)"}],{duration:1050,easing:"cubic-bezier(.6,0,.2,1)",fill:"forwards"});
     const bgOut=[{opacity:1},{opacity:1,offset:.25},{opacity:0}], bgOpt={duration:1050,easing:"cubic-bezier(.5,0,.3,1)",fill:"forwards"};
     const wipe=R.querySelector(".rv-bg").animate(bgOut,bgOpt); $("rvSparks").animate(bgOut,bgOpt); R.style.pointerEvents="none";
+    const fly={finished:flyLogo(logo,target,1050)};
+    const tr=target?target.getBoundingClientRect():{left:24,top:24,width:40,height:40}, tcx=tr.left+tr.width/2, tcy=tr.top+tr.height/2;
     await Promise.all([fly.finished,wipe.finished]);
     confetti(tcx,tcy+10); setTimeout(()=>confetti(window.innerWidth/2,window.innerHeight*.45),180);
   }
-  stop.done=true; R.hidden=true; R.style.pointerEvents=""; R.classList.remove("in","out"); R.getAnimations({subtree:true}).forEach(a=>a.cancel()); logo.getAnimations().forEach(a=>a.cancel()); $("rvSparks").innerHTML="";
+  stop.done=true; R.hidden=true; R.style.pointerEvents=""; R.classList.remove("in","out"); R.getAnimations({subtree:true}).forEach(a=>a.cancel()); logo.getAnimations().forEach(a=>a.cancel()); logo.style.transform=""; logo.style.animation=""; logo.parentElement.style.cssText=""; $("rvSparks").innerHTML="";
   const W=document.querySelector(".wrap"); W.classList.add("arrive"); setTimeout(()=>W.classList.remove("arrive"),reduced?1800:1000);
   if(err) throw err; return res;
 }
@@ -4384,10 +4408,7 @@ async function bootOut(){
   const canFly=!reduced&&!splashOn&&!wiz&&tr&&tr.width>0&&!(S.edit);
   if(splashOn&&!reduced) splashIntro(380);
   if(!canFly){ await b.animate([{opacity:1},{opacity:0}],{duration:reduced?250:420,easing:"ease-out",fill:"forwards"}).finished; b.remove(); return; }
-  const wrap=logo.parentElement, wt=getComputedStyle(wrap).transform, it=getComputedStyle(logo).transform;
-  const cur=new DOMMatrix(wt&&wt!=="none"?wt:undefined).multiply(new DOMMatrix(it&&it!=="none"?it:undefined)).toString();
-  wrap.getAnimations().forEach(a=>a.cancel()); logo.getAnimations().forEach(a=>a.cancel());
-  const lr=logo.getBoundingClientRect(), lcx=lr.left+lr.width/2, lcy=lr.top+lr.height/2, tcx=tr.left+tr.width/2, tcy=tr.top+tr.height/2;
+  const wrap=logo.parentElement;
   b.style.pointerEvents="none";
   const fade=[{opacity:1},{opacity:1,offset:.2},{opacity:0}], fo={duration:900,easing:"cubic-bezier(.5,0,.3,1)",fill:"forwards"};
   b.querySelector(".bt-bg").animate(fade,fo);
@@ -4395,7 +4416,7 @@ async function bootOut(){
   b.querySelector(".bt-dots").animate([{opacity:1},{opacity:0}],{duration:250,fill:"forwards"});
   wrap.querySelectorAll("i").forEach(i=>{ i.getAnimations().forEach(a=>a.cancel()); i.style.display="none"; });
   const W=document.querySelector(".wrap"); setTimeout(()=>W.classList.add("arrive"),220);
-  await logo.animate([{transform:cur},{transform:"translate("+(tcx-lcx)+"px,"+(tcy-lcy)+"px) scale("+(tr.width/lr.width)+") rotate(0deg)"}],{duration:950,easing:"cubic-bezier(.6,0,.2,1)",fill:"forwards"}).finished;
+  await flyLogo(logo,target,980);
   b.remove(); setTimeout(()=>W.classList.remove("arrive"),1000);
 }
 bootCheck();
