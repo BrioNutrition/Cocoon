@@ -1168,10 +1168,13 @@ button.acc-card{cursor:pointer}
 .selbar .sel-del.confirm{width:auto;padding:9px 14px;gap:6px}
 .okpop{position:fixed;z-index:80;width:34px;height:34px;border-radius:50%;background:#3FAE5A;display:grid;place-items:center;pointer-events:none;box-shadow:0 6px 16px rgba(63,174,90,.45);transform:translate(-50%,-50%)}
 .okpop svg{width:19px;height:19px}
-.done-anim{animation:doneRow .62s ease forwards}
-.done-anim .check{background:#3FAE5A!important;border-color:#3FAE5A!important;animation:chkPop .32s cubic-bezier(.3,1.7,.5,1)}
-.done-anim .check svg{opacity:1!important;color:#fff;stroke:#fff}
-@keyframes doneRow{0%{background-color:var(--surface)}30%{background-color:color-mix(in srgb,#7FD39A 32%,var(--surface))}72%{opacity:1;transform:none;background-color:color-mix(in srgb,#7FD39A 32%,var(--surface))}100%{opacity:0;transform:translateX(22px);background-color:color-mix(in srgb,#7FD39A 20%,var(--surface))}}
+.done-anim{position:relative;overflow:hidden;animation:doneOut .9s ease forwards}
+.done-fill{position:absolute;inset:0;z-index:3;border-radius:inherit;background:#3FAE5A;display:grid;place-items:center;pointer-events:none;animation:doneFill .28s cubic-bezier(.4,0,.2,1) both}
+.done-ic{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;animation:doneIc .42s cubic-bezier(.3,1.7,.5,1) .2s both}
+.done-ic svg{width:26px;height:26px}
+@keyframes doneFill{from{clip-path:inset(0 100% 0 0 round 16px)}to{clip-path:inset(0 0 0 0 round 16px)}}
+@keyframes doneIc{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes doneOut{0%,78%{opacity:1;transform:none}100%{opacity:0;transform:scale(.97)}}
 @keyframes chkPop{0%{transform:scale(.55)}100%{transform:scale(1)}}
 body .view:not([hidden]){animation:viewFade .14s ease-out}@keyframes viewFade{from{opacity:0}}
 </style>
@@ -2453,9 +2456,10 @@ function okPop(x,y){
 function doneAnim(tasks){
   const reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches; let any=false;
   for(const t of tasks){ const k=(t.prive?"ptaches:":"taches:")+t.id;
-    document.querySelectorAll('[data-key="'+k+'"]').forEach(row=>{ any=true; row.classList.add("done-anim"); const ck=row.querySelector(".check");
-      if(ck){ ck.classList.remove("sel"); const r=ck.getBoundingClientRect(); if(r.width) okPop(r.left+r.width/2,r.top+r.height/2); } }); }
-  return new Promise(res=>setTimeout(res,any&&!reduced?620:0));
+    document.querySelectorAll('[data-key="'+k+'"]').forEach(row=>{ any=true; const ck=row.querySelector(".check"); if(ck) ck.classList.remove("sel");
+      const fill=el("span",{class:"done-fill","aria-hidden":"true"}); const ic=el("span",{class:"done-ic"}); ic.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'; fill.append(ic);
+      row.classList.add("done-anim"); row.append(fill); }); }
+  return new Promise(res=>setTimeout(res,any&&!reduced?900:0));
 }
 /* ===== Budget (V2) ===== */
 const BCATS=[{id:"courses",nom:"Courses",c:"#7FD39A"},{id:"logement",nom:"Logement",c:"#7FCDB9"},{id:"energie",nom:"Énergie",c:"#FFC94A"},{id:"internet",nom:"Internet & mobile",c:"#8FB8FF"},{id:"streaming",nom:"Streaming",c:"#E79ADB"},{id:"assurance",nom:"Assurances",c:"#B9A8F0"},{id:"transport",nom:"Transport",c:"#A9B4C2"},{id:"loisirs",nom:"Loisirs",c:"#FF9C80"},{id:"sante",nom:"Santé",c:"#7CCFE0"},{id:"animaux",nom:"Animaux",c:"#F4A7A7"},{id:"enfants",nom:"Enfants",c:"#A8D672"},{id:"autre",nom:"Autre",c:"#C9C7DD"}];
