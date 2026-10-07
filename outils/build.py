@@ -51,6 +51,12 @@ if m:
     lg = im.resize((400, 400), Image.LANCZOS)
     mk.alpha_composite(lg, (56, 56))
     mk.convert("RGB").save(os.path.join(OUT, "icon-maskable.png"), optimize=True)
+    # Logo carré plein bord (si fourni) : iOS et Android arrondissent eux-mêmes l'icône
+    full = os.path.join(HERE, "src", "logo-full.png")
+    if os.path.exists(full):
+        fl = Image.open(full).convert("RGB")
+        for size, name in [(180, "apple-touch-icon.png"), (192, "icon-192.png"), (512, "icon-512.png"), (512, "icon-maskable.png")]:
+            fl.resize((size, size), Image.LANCZOS).save(os.path.join(OUT, name), optimize=True)
 
 manifest = {
     "name": "Cocoon", "short_name": "Cocoon", "lang": "fr",
