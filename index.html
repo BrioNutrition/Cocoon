@@ -35,7 +35,7 @@ html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxI
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="07/10 22:39";</script>
+<script>window.COCOON_BUILD="07/10 22:53";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3380,7 +3380,7 @@ function renderBadges(){
   if(urgent&&!S.bellRung){ S.bellRung=true; const b=$("bellBtn"); b.classList.add("ring"); setTimeout(()=>b.classList.remove("ring"),2600); }
   setN("nBudget",(S.abos||[]).filter(a=>a.actif!==false&&(()=>{ const n=subNext(a); return n&&daysTo(n)<=7; })()).length);
 }
-function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; renderAllNowInner(); if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
+function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; try{ renderAllNowInner(); }catch(e){ console.error(e); } if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
 function renderAllNowInner(){
   const v=S.tab;
   renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon();
@@ -3730,7 +3730,9 @@ function closeNotifs(){ const p=$("npanel"); if(p.hidden) return; p.classList.re
 $("npBg").addEventListener("click",closeNotifs);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeNotifs(); });
 
-(function(){ const h=(location.hash||"").slice(1); let t=null; try{t=localStorage.getItem("foyer.tab");}catch(_){} setTab(TABS.includes(h)?h:TABS.includes(t)?t:"accueil"); })();
+(function(){ const h=(location.hash||"").slice(1); let t=null; try{t=localStorage.getItem("foyer.tab");}catch(_){} const want=TABS.includes(h)?h:TABS.includes(t)?t:"accueil";
+  /* Courses et Repas sont définis plus bas dans le script : on les ouvre une fois tout chargé */
+  if(want==="courses"||want==="repas"){ setTab("foyer"); setTimeout(()=>{ if(S.tab==="foyer") setTab(want); },0); } else setTab(want); })();
 
 $("today").textContent=new Intl.DateTimeFormat("fr-FR",{weekday:"short",day:"numeric",month:"short"}).format(new Date());
 renderAll();
@@ -4490,7 +4492,7 @@ async function setRayon(i,r){ S.cPick=null; const k=cKey(i.nom).replace(/ /g,"-"
   try{ await S.db.collection("rayons").doc(k).set({r,nom:i.nom,par:meId(),le:Date.now()}); await S.db.collection("courses").doc(i.id).update({rayon:r}); toast("C'est noté : « "+esc(i.nom)+" » ira toujours dans "+RAYON[r].nom+"."); }catch(e){ writeErr(e); } }
 /* Sélection : on coche (le cercle se remplit), puis « Au caddie » dans la barre du bas */
 S.cSel=new Set();
-function cSelMode(){ return S.tab==="courses"&&S.cSel.size>0; }
+function cSelMode(){ return S.tab==="courses"&&!!S.cSel&&S.cSel.size>0; }
 function cRowEl(id){ return document.querySelector('.c-row[data-cid="'+id+'"]'); }
 async function cartAnim(ids){ const reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches; let any=false;
   for(const id of ids){ const row=cRowEl(id), it=row&&row.querySelector(".c-item"); if(!it) continue; any=true; it.classList.remove("sel");
