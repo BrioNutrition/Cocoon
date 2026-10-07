@@ -145,10 +145,12 @@
             '<button class="cx-link" type="button" data-act="out">Se déconnecter</button>';
           if (extra) msg(extra.t, extra.err);
           card.querySelector('[data-act="create"]').addEventListener("click", async function (e) {
-            e.target.disabled = true;
+            var btn = e.target; btn.disabled = true; btn.textContent = "Création du foyer…";
             var r = await sb.rpc("cocoon_create_foyer");
-            if (r.error) { e.target.disabled = false; msg(frErr(r.error), true); return; }
-            LS.set("cocoon.foyer", r.data.id); G.hide(); afterLogin(ME);
+            if (r.error) { btn.disabled = false; btn.textContent = "Créer mon foyer"; msg(frErr(r.error), true); return; }
+            LS.set("cocoon.foyer", r.data.id);
+            FOYER = r.data.id; INVITE = r.data.code; ROLE = "admin"; ALL = true; /* foyer neuf : rien à charger */
+            finish();
           });
           card.querySelector('[data-act="out"]').addEventListener("click", logout);
           return;
@@ -184,15 +186,33 @@
       if (r.error || r.data !== true) { gate().show("foyer", { t: "Ce lien d'invitation n'est plus valable. Demande un nouveau lien.", err: true }); return; }
       LS.set("cocoon.foyer", p[0]);
     }
-    var m = await sb.from("cocoon_members").select("foyer,role").eq("user_id", user.id);
+    var m = await sb.from("cocoon_members").select("foyer,role,cocoon_foyers(owner,code)").eq("user_id", user.id);
     if (m.error) { gate().show("foyer", { t: frErr(m.error), err: true }); return; }
     if (!m.data.length) { gate().show("foyer"); return; }
     var want = LS.get("cocoon.foyer"), row = m.data.find(function (x) { return x.foyer === want; }) || m.data[0];
     FOYER = row.foyer; ROLE = row.role; LS.set("cocoon.foyer", FOYER);
-    var f = await sb.from("cocoon_foyers").select("owner,code").eq("id", FOYER).maybeSingle();
-    if (f.data) { INVITE = f.data.code; if (f.data.owner === user.id) ROLE = "admin"; }
+    var f = row.cocoon_foyers; if (Array.isArray(f)) f = f[0];
+    if (f) { INVITE = f.code; if (f.owner === user.id) ROLE = "admin"; }
+    await preload();
+    finish();
+  }
+  function finish() {
     gate().hide();
     if (!started) { started = true; startRealtime(); readyResolve(); }
+  }
+  /* Charge tout le foyer en une seule requête (au lieu d'une par rubrique) */
+  async function preload() {
+    try {
+      var all = {}, from = 0, step = 1000;
+      for (;;) {
+        var r = await sb.from("cocoon_docs").select("path,id,data").eq("foyer", FOYER).range(from, from + step - 1);
+        if (r.error) return;
+        r.data.forEach(function (row) { (all[row.path] = all[row.path] || {})[row.id] = row.data; });
+        if (r.data.length < step) break; from += step;
+      }
+      Object.keys(all).forEach(function (p) { cache[p] = all[p]; });
+      ALL = true;
+    } catch (_) {}
   }
   sb.auth.onAuthStateChange(function (ev, session) {
     if (ev === "PASSWORD_RECOVERY") { gate().show("newpw"); return; }
@@ -207,6 +227,7 @@
 
   /* =================== Base de données (API façon Firestore) =================== */
   var cache = {};          // path -> { id: data }
+  var ALL = false;         // tout le foyer est déjà en mémoire
   var loading = {};        // path -> Promise
   var colSubs = {};        // path -> Set(fn)
   var docSubs = {};        // path|id -> Set(fn)
@@ -230,6 +251,7 @@
   function docSnap(path, id) { var c = cache[path]; return new DocSnap(id, c && Object.prototype.hasOwnProperty.call(c, id) ? c[id] : null); }
   function load(path, force) {
     if (cache[path] && !force) return Promise.resolve();
+    if (ALL && !force) { cache[path] = {}; return Promise.resolve(); }
     if (loading[path] && !force) return loading[path];
     loading[path] = (async function () {
       var all = {}, from = 0, step = 1000;
@@ -308,7 +330,8 @@
     channel = sb.channel("cocoon-" + FOYER)
       .on("postgres_changes", { event: "*", schema: "public", table: "cocoon_docs", filter: "foyer=eq." + FOYER }, function (pl) {
         var row = pl.eventType === "DELETE" ? pl.old : pl.new;
-        if (!row || (row.foyer && row.foyer !== FOYER) || !row.path || !cache[row.path]) return;
+        if (!row || (row.foyer && row.foyer !== FOYER) || !row.path) return;
+        if (!cache[row.path]) { if (!ALL) return; cache[row.path] = {}; }
         var key = row.path + "|" + row.id;
         if (pl.eventType !== "DELETE" && row.updated_by === ME.id && recent[key] && Date.now() - recent[key] < 6000) return;
         if (pl.eventType === "DELETE") { if (!(row.id in cache[row.path])) return; delete cache[row.path][row.id]; }

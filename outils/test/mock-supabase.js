@@ -18,7 +18,7 @@
     var self = this, rows = T[this.t]; window.__mock.calls.push([this.op, this.t, JSON.stringify(this.f), this.row && this.row.path]);
     var match = function (r) { return self.f.every(function (x) { return r[x[0]] === x[1]; }); };
     var out;
-    if (this.op === "select") { var d = rows.filter(match).map(function (r) { return JSON.parse(JSON.stringify(r)); }); if (this.r) d = d.slice(this.r[0], this.r[1] + 1); out = { data: this.single ? (d[0] || null) : d, error: null }; }
+    if (this.op === "select") { var d = rows.filter(match).map(function (r) { return JSON.parse(JSON.stringify(r)); }); if (this.r) d = d.slice(this.r[0], this.r[1] + 1); if (this.t === "cocoon_members") d.forEach(function (m) { var f = T.cocoon_foyers.find(function (x) { return x.id === m.foyer; }); m.cocoon_foyers = f ? { owner: f.owner, code: f.code } : null; }); out = { data: this.single ? (d[0] || null) : d, error: null }; }
     else if (this.op === "upsert") { var r = JSON.parse(JSON.stringify(this.row)); var i = rows.findIndex(function (x) { return x.foyer === r.foyer && x.path === r.path && x.id === r.id; }); if (i >= 0) rows[i] = r; else rows.push(r); rt(i >= 0 ? "UPDATE" : "INSERT", r); out = { data: null, error: null }; }
     else { var del = rows.filter(match); T[this.t] = rows.filter(function (x) { return !match(x); }); del.forEach(function (x) { rt("DELETE", null, { foyer: x.foyer, path: x.path, id: x.id }); }); out = { data: null, error: null }; }
     return Promise.resolve(out).then(res, rej);
