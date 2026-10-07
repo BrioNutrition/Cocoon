@@ -1168,13 +1168,17 @@ button.acc-card{cursor:pointer}
 .selbar .sel-del.confirm{width:auto;padding:9px 14px;gap:6px}
 .okpop{position:fixed;z-index:80;width:34px;height:34px;border-radius:50%;background:#3FAE5A;display:grid;place-items:center;pointer-events:none;box-shadow:0 6px 16px rgba(63,174,90,.45);transform:translate(-50%,-50%)}
 .okpop svg{width:19px;height:19px}
-.done-anim{position:relative;overflow:hidden;animation:doneOut .9s ease forwards}
-.done-fill{position:absolute;inset:0;z-index:3;border-radius:inherit;background:#3FAE5A;display:grid;place-items:center;pointer-events:none;animation:doneFill .28s cubic-bezier(.4,0,.2,1) both}
-.done-ic{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;animation:doneIc .42s cubic-bezier(.3,1.7,.5,1) .2s both}
+.done-anim{position:relative;overflow:hidden;animation:doneOut 1.05s ease forwards}
+.done-fill{position:absolute;inset:0;z-index:3;border-radius:inherit;background:#3FAE5A;display:grid;place-items:center;pointer-events:none;animation:doneFill .26s ease-out both}
+.done-ic{position:relative;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;animation:doneIc .55s cubic-bezier(.25,1.4,.45,1) .12s both}
 .done-ic svg{width:26px;height:26px}
-@keyframes doneFill{from{clip-path:inset(0 100% 0 0 round 16px)}to{clip-path:inset(0 0 0 0 round 16px)}}
-@keyframes doneIc{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
-@keyframes doneOut{0%,78%{opacity:1;transform:none}100%{opacity:0;transform:scale(.97)}}
+.done-wk{position:absolute;inset:0;pointer-events:none}
+.done-wk i{display:block;position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;opacity:0;transform:rotate(var(--a)) translateY(0) scale(0);animation:doneWk .6s ease-out var(--dl) both}
+.done-wk i svg{width:100%!important;height:100%!important;display:block}
+@keyframes doneFill{from{opacity:0}to{opacity:1}}
+@keyframes doneIc{0%{transform:scale(0) rotate(-120deg);opacity:0}60%{transform:scale(1.12) rotate(10deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+@keyframes doneWk{0%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--d) * -.55)) scale(0)}45%{opacity:1;transform:rotate(var(--a)) translateY(calc(var(--d) * -1)) scale(var(--s))}100%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--d) * -1.2)) scale(0)}}
+@keyframes doneOut{0%,82%{opacity:1;transform:none}100%{opacity:0;transform:scale(.97)}}
 @keyframes chkPop{0%{transform:scale(.55)}100%{transform:scale(1)}}
 body .view:not([hidden]){animation:viewFade .14s ease-out}@keyframes viewFade{from{opacity:0}}
 </style>
@@ -2457,9 +2461,9 @@ function doneAnim(tasks){
   const reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches; let any=false;
   for(const t of tasks){ const k=(t.prive?"ptaches:":"taches:")+t.id;
     document.querySelectorAll('[data-key="'+k+'"]').forEach(row=>{ any=true; const ck=row.querySelector(".check"); if(ck) ck.classList.remove("sel");
-      const fill=el("span",{class:"done-fill","aria-hidden":"true"}); const ic=el("span",{class:"done-ic"}); ic.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'; fill.append(ic);
+      const fill=el("span",{class:"done-fill","aria-hidden":"true"}); const ic=el("span",{class:"done-ic"}); ic.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'; const wk=el("span",{class:"done-wk"}); for(let i=0;i<6;i++){ const a=i*60+(i%2?18:-8), d=Math.round(28+30*Math.abs(Math.sin(a*Math.PI/180))); const w=document.createElement("i"); w.style.cssText="--a:"+a+"deg;--d:"+d+"px;--dl:"+(0.3+i*0.045).toFixed(3)+"s;--s:"+(i%3===0?1.15:0.85); w.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 1.8 14.6 9.4 22.2 12 14.6 14.6 12 22.2 9.4 14.6 1.8 12 9.4 9.4Z" fill="#fff" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>'; wk.append(w); } ic.append(wk); fill.append(ic);
       row.classList.add("done-anim"); row.append(fill); }); }
-  return new Promise(res=>setTimeout(res,any&&!reduced?900:0));
+  return new Promise(res=>setTimeout(res,any&&!reduced?1050:0));
 }
 /* ===== Budget (V2) ===== */
 const BCATS=[{id:"courses",nom:"Courses",c:"#7FD39A"},{id:"logement",nom:"Logement",c:"#7FCDB9"},{id:"energie",nom:"Énergie",c:"#FFC94A"},{id:"internet",nom:"Internet & mobile",c:"#8FB8FF"},{id:"streaming",nom:"Streaming",c:"#E79ADB"},{id:"assurance",nom:"Assurances",c:"#B9A8F0"},{id:"transport",nom:"Transport",c:"#A9B4C2"},{id:"loisirs",nom:"Loisirs",c:"#FF9C80"},{id:"sante",nom:"Santé",c:"#7CCFE0"},{id:"animaux",nom:"Animaux",c:"#F4A7A7"},{id:"enfants",nom:"Enfants",c:"#A8D672"},{id:"autre",nom:"Autre",c:"#C9C7DD"}];
