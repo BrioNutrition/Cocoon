@@ -32,7 +32,7 @@ s = s[:a] + 'ol.append(el("li",{},el("b",{text:"Ce lien ouvre ton foyer : "}),"n
 
 # Carte « Mon compte » en bas de l'onglet Moi
 rep('<details class="done-list" id="mDoneWrap">',
-    '<div class="sub cx-account" id="cxAccount" hidden></div>\n    <details class="done-list" id="mDoneWrap">')
+    '<div class="sub cx-notif" id="cxNotif" hidden></div>\n    <div class="sub cx-account" id="cxAccount" hidden></div>\n    <details class="done-list" id="mDoneWrap">')
 
 # ---- Icônes de l'app (tirées du logo) ------------------------------------
 os.makedirs(OUT, exist_ok=True)
@@ -70,6 +70,51 @@ manifest = {
 json.dump(manifest, open(os.path.join(OUT, "manifest.webmanifest"), "w"), ensure_ascii=False, indent=2)
 
 ACCOUNT_JS = r"""
+<script>
+/* Carte « Notifications » (version hébergée) */
+(function(){
+  if(!window.cocoonHost||!cocoonHost.push) return;
+  cocoonHost.ready.then(function(){
+    var box=document.getElementById("cxNotif"); if(!box) return;
+    var P=cocoonHost.push, D={matin:true,heure:"08:00",courses:true,taches:true,nuit:true}, prefs=Object.assign({},D), on=false, busy=false, msg="", mt=0;
+    function esc(t){ return String(t||"").replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+    function sw(k,label,sub){ return '<label class="cx-sw"><span><b>'+label+'</b><small>'+sub+'</small></span><input type="checkbox" data-k="'+k+'"'+(prefs[k]?' checked':'')+'><i aria-hidden="true"></i></label>'; }
+    function say(t){ msg=t; draw(); clearTimeout(mt); mt=setTimeout(function(){ msg=""; draw(); },3500); }
+    async function load(){ var st=await P.status(); on=st.on; if(on){ try{ prefs=Object.assign({},D,await P.prefs()); }catch(_){} } draw(); }
+    function draw(){
+      var sup=P.support(); box.hidden=(sup==="off"); if(sup==="off") return;
+      var h='<h3>Notifications</h3><div class="cx-acc">';
+      if(sup==="ios-home") h+='<p class="cx-p">Sur iPhone, ajoute d\'abord Cocoon à l\'écran d\'accueil : dans Safari, touche <b>Partager</b> puis <b>Sur l\'écran d\'accueil</b>. Ouvre ensuite Cocoon depuis son icône pour activer les notifications.</p>';
+      else if(sup==="no") h+='<p class="cx-p">Ce navigateur ne gère pas les notifications. Essaie avec Safari sur iPhone ou Chrome sur Android.</p>';
+      else if(!on){
+        h+='<p class="cx-p">Un rappel le matin, seulement s\'il y a quelque chose à faire, et quelques alertes utiles en direct. Jamais la nuit.</p><button type="button" class="btn" data-a="on">Activer les notifications</button>';
+        if(P.permission()==="denied") h+='<p class="cx-p cx-warn">Les notifications sont bloquées pour Cocoon : autorise-les dans les réglages du téléphone (Réglages → Notifications → Cocoon).</p>';
+      } else {
+        h+=sw("matin","Rappel du matin","Ta journée en une seule notification. S\'il n\'y a rien, un petit rappel pour penser à ajouter tes tâches (un jour sur deux au plus).");
+        if(prefs.matin) h+='<label class="cx-row2"><span>Heure du rappel</span><select data-k="heure">'+["07:30","08:00","08:30","09:00","09:30"].map(function(v){ return '<option value="'+v+'"'+(prefs.heure===v?' selected':'')+'>'+v.replace(/^0/,"").replace(":","h")+'</option>'; }).join("")+'</select></label>';
+        h+=sw("courses","Départ aux courses","Quand quelqu\'un part au magasin, pour ajouter ce qui manque (au plus une fois toutes les 3 h).");
+        h+=sw("taches","Tâche qu\'on te confie","Seulement si elle est pour aujourd\'hui ou demain.");
+        h+=sw("nuit","Silence la nuit","Rien entre 21h30 et 7h30.");
+        h+='<div class="cx-btns"><button type="button" class="btn ghost" data-a="test">Envoyer un test</button><button type="button" class="btn ghost" data-a="off">Désactiver sur ce téléphone</button></div>';
+      }
+      if(msg) h+='<p class="cx-p cx-msg2" role="status">'+esc(msg)+'</p>';
+      box.innerHTML=h+'</div>';
+    }
+    box.addEventListener("change",async function(e){ var k=e.target.getAttribute("data-k"); if(!k) return;
+      prefs[k]=e.target.type==="checkbox"?e.target.checked:e.target.value; draw();
+      try{ await P.savePrefs(prefs); say("Réglage enregistré ✓"); }catch(err){ say(err.message||"Réglage non enregistré."); } });
+    box.addEventListener("click",async function(e){ var b=e.target.closest("[data-a]"); if(!b||busy) return; var a=b.getAttribute("data-a"); busy=true; b.disabled=true;
+      try{
+        if(a==="on"){ await P.enable(); await load(); try{ await P.test(); say("C'est activé ✓ Une notification de test arrive."); }catch(err){ say("Activé sur ce téléphone. Mais "+err.message+"."); } }
+        if(a==="off"){ await P.disable(); on=false; say("Notifications désactivées sur ce téléphone."); }
+        if(a==="test"){ var r=await P.test(); say(r&&r.sent?"Test envoyé ✓":"Le test n'est arrivé sur aucun téléphone : désactive puis réactive."); }
+      }catch(err){ say(err.message||"Ça n'a pas marché."); }
+      busy=false; if(b) b.disabled=false; });
+    load();
+    document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="visible") load(); });
+  });
+})();
+</script>
 <script>
 /* Carte « Mon compte » (version hébergée) */
 (function(){
@@ -124,6 +169,17 @@ ACCOUNT_CSS = """<style>
 .cx-acc{display:grid;gap:12px;background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:14px}
 .cx-row{display:grid;gap:4px}.cx-k{font-size:13px;color:var(--muted);font-weight:600}.cx-v{font-size:15.5px;word-break:break-all}
 .cx-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}.cx-out{justify-self:start}.cx-ver{font-size:12px;color:var(--muted)}
+.cx-p{margin:0;font-size:14.5px;line-height:1.45;color:var(--muted)}.cx-p b{color:var(--ink)}.cx-warn{color:#B5482F}.cx-msg2{color:var(--ink);font-weight:600}
+.cx-notif .btn{justify-self:start}
+.cx-sw{display:flex;align-items:center;gap:12px;cursor:pointer}
+.cx-sw span{flex:1;display:grid;gap:2px}.cx-sw b{font-size:15px}.cx-sw small{font-size:12.5px;color:var(--muted);line-height:1.35}
+.cx-sw input{position:absolute;opacity:0;width:1px;height:1px}
+.cx-sw i{flex:none;width:46px;height:28px;border-radius:99px;background:var(--line);position:relative;transition:background .2s}
+.cx-sw i::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s cubic-bezier(.3,.8,.4,1)}
+.cx-sw input:checked+i{background:#2F9E5B}.cx-sw input:checked+i::after{transform:translateX(18px)}
+.cx-sw input:focus-visible+i{outline:2px solid var(--ink);outline-offset:2px}
+.cx-row2{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14.5px;font-weight:600;padding-left:2px}
+.cx-row2 select{font:inherit;font-size:15px;padding:7px 10px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink)}
 </style>"""
 
 INTRO = 1

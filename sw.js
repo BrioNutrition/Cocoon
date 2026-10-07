@@ -3,7 +3,7 @@
      copie locale si pas de réseau ou si le réseau traîne (plus de 4 s).
    - Bibliothèques et polices (versions figées) : copie locale d'abord.
    Résultat : l'app s'ouvre et fonctionne même hors connexion. */
-const CACHE = "cocoon-v4";
+const CACHE = "cocoon-v5";
 const STATIC = /^https:\/\/(cdn\.jsdelivr\.net|fonts\.googleapis\.com|fonts\.gstatic\.com)\//;
 self.addEventListener("install", e => { self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(["./", "./cocoon-runtime.js", "./config.js"]).catch(() => {}))); });
@@ -30,5 +30,21 @@ self.addEventListener("fetch", e => {
       if (r.ok) { const c = r.clone(); caches.open(CACHE).then(k => k.put(key, c)); }
       clearTimeout(t); if (!done) { done = true; resolve(r); }
     }).catch(() => { clearTimeout(t); fallback().then(r => { if (!done) { done = true; resolve(r || Response.error()); } }); });
+  }));
+});
+
+/* Notifications : affichage et ouverture de l'app au bon endroit */
+self.addEventListener("push", e => {
+  let d = {}; try { d = e.data ? e.data.json() : {}; } catch (_) { d = { body: e.data ? e.data.text() : "" }; }
+  e.waitUntil(self.registration.showNotification(d.title || "Cocoon", {
+    body: d.body || "", icon: "icon-192.png", badge: "icon-192.png", tag: d.tag || undefined, data: { url: d.url || "./" }
+  }));
+});
+self.addEventListener("notificationclick", e => {
+  e.notification.close();
+  const url = new URL((e.notification.data && e.notification.data.url) || "./", self.registration.scope).href;
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(cs => {
+    for (const c of cs) { if ("focus" in c) { c.postMessage({ cocoonGo: url }); return c.focus(); } }
+    return self.clients.openWindow(url);
   }));
 });

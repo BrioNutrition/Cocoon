@@ -50,6 +50,17 @@ Sujet : Tu es invité(e) dans le foyer Cocoon 🏡
 <p>Sur iPhone : ouvre le lien dans Safari, puis Partager → « Sur l'écran d'accueil ».</p>
 ```
 
+## Notifications sur le téléphone (une seule fois)
+
+1. **Supabase → SQL Editor** : colle et lance `supabase/notifications.sql` (tables, rappel toutes les 15 min).
+2. **Edge Functions → Secrets** : ajoute `VAPID_PUBLIC_KEY` (la valeur `vapid` de `config.js`) et `VAPID_PRIVATE_KEY` (la clé secrète, à ne jamais mettre dans le site).
+3. **Edge Functions → Deploy a new function** : nom `cocoon-push`, colle `supabase/functions/cocoon-push/index.ts`, puis **désactive « Verify JWT »**.
+4. Sur chaque téléphone : ajouter Cocoon à l'écran d'accueil (iPhone), puis **Moi → Notifications → Activer**.
+
+Ce qui est envoyé (au plus 1 à 2 par jour) : un résumé le matin à l'heure choisie s'il y a quelque chose
+(sinon « pense à ajouter tes tâches », un jour sur deux au plus), le départ aux courses (au plus toutes les 3 h)
+et une tâche confiée pour aujourd'hui ou demain. Rien entre 21h30 et 7h30.
+
 ## Inviter quelqu'un
 
 Dans l'app : onglet **Moi → Mon compte → Copier le lien**. La personne ouvre le lien,

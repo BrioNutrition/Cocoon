@@ -5,5 +5,7 @@
    Ne mets JAMAIS la clé « service_role » / « secret » ici. */
 window.COCOON_CONFIG = {
   url: "https://VOTRE-PROJET.supabase.co",
-  key: "VOTRE_CLE_ANON_PUBLIQUE"
+  key: "VOTRE_CLE_ANON_PUBLIQUE",
+  /* Notifications : clé publique VAPID (facultatif) */
+  vapid: ""
 };

@@ -16,11 +16,11 @@
   Q.prototype.delete = function () { this.op = "delete"; return this; };
   Q.prototype.then = function (res, rej) {
     if (window.__mock.offline) return Promise.resolve({ data: null, error: { message: "TypeError: Failed to fetch", details: "", code: "" } }).then(res, rej);
-    var self = this, rows = T[this.t]; window.__mock.calls.push([this.op, this.t, JSON.stringify(this.f), this.row && this.row.path]);
+    var self = this, rows = T[this.t] || (T[this.t] = []); window.__mock.calls.push([this.op, this.t, JSON.stringify(this.f), this.row && this.row.path]);
     var match = function (r) { return self.f.every(function (x) { return r[x[0]] === x[1]; }); };
     var out;
     if (this.op === "select") { var d = rows.filter(match).map(function (r) { return JSON.parse(JSON.stringify(r)); }); if (this.r) d = d.slice(this.r[0], this.r[1] + 1); if (this.t === "cocoon_members") d.forEach(function (m) { var f = T.cocoon_foyers.find(function (x) { return x.id === m.foyer; }); m.cocoon_foyers = f ? { owner: f.owner, code: f.code } : null; }); out = { data: this.single ? (d[0] || null) : d, error: null }; }
-    else if (this.op === "upsert") { var r = JSON.parse(JSON.stringify(this.row)); var i = rows.findIndex(function (x) { return self.t === "cocoon_cal" ? (x.foyer === r.foyer && x.owner === r.owner) : (x.foyer === r.foyer && x.path === r.path && x.id === r.id); }); if (i >= 0) rows[i] = r; else rows.push(r); rt(i >= 0 ? "UPDATE" : "INSERT", r); out = { data: null, error: null }; }
+    else if (this.op === "upsert") { var r = JSON.parse(JSON.stringify(this.row)); var i = rows.findIndex(function (x) { return self.t === "cocoon_cal" ? (x.foyer === r.foyer && x.owner === r.owner) : self.t === "cocoon_push_prefs" ? x.user_id === r.user_id : self.t === "cocoon_push_subs" ? x.endpoint === r.endpoint : (x.foyer === r.foyer && x.path === r.path && x.id === r.id); }); if (i >= 0) rows[i] = r; else rows.push(r); rt(i >= 0 ? "UPDATE" : "INSERT", r); out = { data: null, error: null }; }
     else { var del = rows.filter(match); T[this.t] = rows.filter(function (x) { return !match(x); }); del.forEach(function (x) { rt("DELETE", null, { foyer: x.foyer, path: x.path, id: x.id }); }); out = { data: null, error: null }; }
     return Promise.resolve(out).then(res, rej);
   };
@@ -41,12 +41,13 @@
       if (n === "cocoon_create_foyer") { var f = { id: uuid(), owner: me, code: "c0de" }; T.cocoon_foyers.push(f); T.cocoon_members.push({ foyer: f.id, user_id: me, role: "admin" }); return ok({ id: f.id, code: f.code }); }
       if (n === "cocoon_join_foyer") { var g = T.cocoon_foyers.find(function (x) { return x.id === a.f && x.code === a.c; }); if (!g) return ok(false); T.cocoon_members.push({ foyer: a.f, user_id: me, role: "membre" }); return ok(true); }
       if (n === "cocoon_merge") { var rows = T.cocoon_docs, i = rows.findIndex(function (x) { return x.foyer === a.f && x.path === a.p && x.id === a.i; }); var r = i >= 0 ? rows[i] : { foyer: a.f, path: a.p, id: a.i, data: {} }; r.data = Object.assign({}, r.data, a.patch); r.updated_by = me; if (i < 0) rows.push(r); rt("UPDATE", JSON.parse(JSON.stringify(r))); return ok(null); }
+      if (n === "cocoon_push_claim") { var L = T.cocoon_push_subs = (T.cocoon_push_subs || []).filter(function (x) { return x.endpoint !== a.e; }); L.push({ endpoint: a.e, user_id: me, foyer: a.f, p256dh: a.k, auth: a.a, tz: a.z }); return ok(null); }
       if (n === "cocoon_cal_token") return ok("ab12cd34ef56ab12cd34ef56ab12cd34");
       if (n === "cocoon_new_code") { var h = T.cocoon_foyers.find(function (x) { return x.id === a.f; }); h.code = "n3w"; return ok("n3w"); }
       return Promise.resolve({ data: null, error: { message: "rpc inconnue " + n } });
     },
     from: function (t) { return new Q(t); },
-    functions: { invoke: function (n, o) { (window.__mock.invites = window.__mock.invites || []).push([n, o && o.body]); return ok({ ok: true, mode: 'invite' }); } },
+    functions: { invoke: function (n, o) { (window.__mock.invites = window.__mock.invites || []).push([n, o && o.body]); return ok(n === "cocoon-push" ? { ok: true, sent: 1 } : { ok: true, mode: 'invite' }); } },
     channel: function () { var ch = { h: [], on: function (type, filter, cb) { ch.h.push({ filter: { filter: filter.filter }, cb: cb }); return ch; }, subscribe: function (cb) { setTimeout(function () { cb && cb("SUBSCRIBED"); }, 1); return ch; } }; chans.push(ch); return ch; },
     storage: { from: function () { return {
       upload: function (p, f) { files[p] = f; return ok({ path: p }); },

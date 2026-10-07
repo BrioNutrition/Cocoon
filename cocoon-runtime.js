@@ -208,7 +208,7 @@
     if (/fetch|network/i.test(m)) return "Pas de connexion internet.";
     return m || "Une erreur est survenue.";
   }
-  async function logout() { LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer"); try { await SBP; await sb.auth.signOut(); } catch (_) {} authStore.removeItem("cocoon.auth"); location.reload(); }
+  async function logout() { try { await Promise.race([PUSH.disable(), new Promise(function (r) { setTimeout(r, 2500); })]); } catch (_) {} LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer"); try { await SBP; await sb.auth.signOut(); } catch (_) {} authStore.removeItem("cocoon.auth"); location.reload(); }
 
   /* =================== Session & foyer =================== */
   async function afterLogin(user) {
@@ -609,4 +609,47 @@
     }
   };
   var calSent = {};
+
+  /* =================== Notifications sur le téléphone =================== */
+  function u8(b64) { var s = String(b64 || "").replace(/-/g, "+").replace(/_/g, "/"); s += "===".slice((s.length + 3) % 4); var bin = atob(s), o = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) o[i] = bin.charCodeAt(i); return o; }
+  function swReg() { return navigator.serviceWorker.getRegistration().then(function (r) { return r || navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }); }).then(function () { return navigator.serviceWorker.ready; }); }
+  var PUSH = {
+    /* "ok" | "ios-home" (iPhone : ajouter à l'écran d'accueil d'abord) | "no" (navigateur trop ancien) | "off" (pas encore activé côté Supabase) */
+    support: function () {
+      if (!CFG.vapid) return "off";
+      var ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      var standalone = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+      if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) return ios && !standalone ? "ios-home" : "no";
+      if (ios && !standalone) return "ios-home";
+      return "ok";
+    },
+    permission: function () { return "Notification" in window ? Notification.permission : "denied"; },
+    status: async function () {
+      if (PUSH.support() !== "ok") return { on: false };
+      try { var reg = await swReg(), sub = await reg.pushManager.getSubscription(); return { on: !!sub && Notification.permission === "granted" }; } catch (_) { return { on: false }; }
+    },
+    enable: async function () {
+      await LIVE;
+      var p = await Notification.requestPermission();
+      if (p !== "granted") { var e = new Error(p === "denied" ? "Les notifications sont bloquées pour Cocoon dans les réglages du téléphone." : "Autorisation non donnée."); e.code = "denied"; throw e; }
+      var reg = await swReg(), sub = await reg.pushManager.getSubscription();
+      if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: u8(CFG.vapid) });
+      var j = sub.toJSON(), tz = "Europe/Paris"; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || tz; } catch (_) {}
+      var r = await sb.rpc("cocoon_push_claim", { e: j.endpoint, k: j.keys.p256dh, a: j.keys.auth, f: FOYER, z: tz, u: navigator.userAgent });
+      if (r.error) throw new Error(/function|exist/i.test(r.error.message) ? "les notifications ne sont pas encore activées dans Supabase" : frErr(r.error));
+      return true;
+    },
+    disable: async function () {
+      if (!("serviceWorker" in navigator)) return;
+      var reg = await navigator.serviceWorker.getRegistration(); if (!reg || !reg.pushManager) return;
+      var sub = await reg.pushManager.getSubscription(); if (!sub) return;
+      try { await sb.from("cocoon_push_subs").delete().eq("endpoint", sub.endpoint); } catch (_) {}
+      try { await sub.unsubscribe(); } catch (_) {}
+    },
+    prefs: async function () { await LIVE; var r = await sb.from("cocoon_push_prefs").select("prefs").eq("user_id", ME.id).maybeSingle(); return (r.data && r.data.prefs) || {}; },
+    savePrefs: async function (p) { await LIVE; var r = await sb.from("cocoon_push_prefs").upsert({ user_id: ME.id, prefs: p, updated_at: new Date().toISOString() }); if (r.error) throw new Error(frErr(r.error)); },
+    event: async function (o) { try { if (!CFG.vapid || !IS_LIVE || !navigator.onLine) return; await sb.functions.invoke("cocoon-push", { body: Object.assign({ mode: "event", foyer: FOYER }, o || {}) }); } catch (_) {} },
+    test: async function () { await LIVE; var r = await sb.functions.invoke("cocoon-push", { body: { mode: "event", type: "test", foyer: FOYER } }); if (r.error) throw new Error("la fonction « cocoon-push » ne répond pas encore (à déployer dans Supabase)"); return r.data; }
+  };
+  window.cocoonHost.push = PUSH;
 })();
