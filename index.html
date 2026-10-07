@@ -1754,11 +1754,11 @@ function renderPetCare(m){
     el("button",{type:"button",text:"+ Autre chose",onclick:()=>go("")}));
 }
 function openProfile(id){
-  if(id===meId()){ setTab("moi"); renderHeader(); window.scrollTo({top:0,behavior:"smooth"}); return; }
+  if(id===meId()){ setTab("moi"); renderHeader(); window.scrollTo({top:0,behavior:"instant"}); return; }
   if(S.tab!=="profil") S.prevTab=S.tab;
   S.profil=id;
   setTab("profil"); renderHeader(); renderProfile();
-  const t=$("tabs"); window.scrollTo({top:0,behavior:"smooth"});
+  const t=$("tabs"); window.scrollTo({top:0,behavior:"instant"});
 }
 function renderProfile(){
   if(!S.profil) return;
@@ -1807,7 +1807,7 @@ function openEditor(id,type){
   if(S.tab!=="fiche") S.editPrev=S.tab;
   S.edit={id:id||null,d,confirmDel:false,busy:false,finish:!!S.editFinish}; S.editFinish=false;
   document.querySelector(".wrap").classList.toggle("finishing",S.edit.finish); $("ficheBack").hidden=S.edit.finish;
-  setTab("fiche"); buildEditor(); window.scrollTo({top:0,behavior:"smooth"});
+  setTab("fiche"); buildEditor(); window.scrollTo({top:0,behavior:"instant"});
 }
 function pencilBtn(onclick,label){ const b=el("button",{type:"button",class:"pencil-btn","aria-label":label||"Personnaliser le profil",title:"Personnaliser",onclick}); b.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.6 3.1a2.6 2.6 0 0 1 3.7 0l1.6 1.6a2.6 2.6 0 0 1 0 3.7L19.5 9.8 14.2 4.5zM12.8 5.9l5.3 5.3-9.9 9.9c-.3.3-.7.5-1.1.6l-4.1.9c-.8.2-1.4-.5-1.3-1.3l.9-4.1c.1-.4.3-.8.6-1.1z"/></svg>'; return b; }
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -2370,7 +2370,7 @@ function renderSetupCard(){
   c.append(el("div",{},el("b",{text:show.t}),el("span",{text:show.s})),el("button",{type:"button",class:"btn",text:"C'est parti",onclick:()=>openWizard(show.m)}));
 }
 /* ===== Ajouter un membre ===== */
-function openInvite(){ if(S.tab!=="inviter") S.invPrev=S.tab; S.invite=S.invite||{}; setTab("inviter"); renderInvite(); window.scrollTo({top:0,behavior:"smooth"}); }
+function openInvite(){ if(S.tab!=="inviter") S.invPrev=S.tab; S.invite=S.invite||{}; setTab("inviter"); renderInvite(); window.scrollTo({top:0,behavior:"instant"}); }
 function inviteText(m){ return "Rejoins notre foyer sur Cocoon"+(S.foyerNom?" ("+S.foyerNom+")":"")+" : "+(window.cocoonHost?cocoonHost.inviteUrl():APP_URL)+"\nCrée ton compte avec ton e-mail, puis choisis « Je suis "+m.nom+" » à l'arrivée."; }
 async function copyText(txt,area){ try{ await navigator.clipboard.writeText(txt); toast("Message copié. Colle-le dans un SMS ou sur WhatsApp."); }catch(_){ if(area){ area.focus(); area.select(); } toast("Sélectionne le message et copie-le."); } }
 function renderInvite(){
@@ -3265,8 +3265,8 @@ $("dTitle").addEventListener("input",e=>{ if($("dCat").value==="__new"||!CAT[$("
 
 /* Onglets */
 const TABS=["accueil","moi","foyer","courses","rappels","documents","budget","maison"];
-function setTab(name){ S.tab=name; { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({documents:"foyer",maison:"foyer",courses:"foyer"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name); if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  renderAll(); }
-$("tabs").addEventListener("click",e=>{ const b=e.target.closest(".tab"); if(b&&b.dataset.tab){ closeSheet(); setTab(b.dataset.tab); renderHeader(); window.scrollTo({top:0,behavior:"smooth"}); } });
+function setTab(name){ const prevTab=S.tab; S.tab=name; if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({documents:"foyer",maison:"foyer",courses:"foyer"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name); if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  renderAll(); }
+$("tabs").addEventListener("click",e=>{ const b=e.target.closest(".tab"); if(b&&b.dataset.tab){ const same=S.tab===b.dataset.tab; closeSheet(); setTab(b.dataset.tab); renderHeader(); if(same) window.scrollTo({top:0,behavior:"smooth"}); } });
 function openSheet(o){ if(!meId()){ needMe(); return; } o=(o&&(o.where||o.text))?o:{}; resetQuick();
   if(o.where){ fillWhere($("qWhere"),o.where); $("qWhere").value=o.where; $("qWhere").dataset.touched="1"; if(o.where!=="perso"&&o.where!=="tous") S.qSel.add(o.where); }
   if(o.text) $("quickTitle").value=o.text;
@@ -3323,7 +3323,7 @@ function renderNotifs(){
   if(!items.length){ const later=reminders().filter(r=>daysTo(r.date)>7)[0];
     body.append(el("div",{class:"np-empty"},(()=>{ const s=el("span",{class:"np-calm"}); s.innerHTML=GI("maison"); return s; })(),el("b",{text:"Rien d'urgent cette semaine"}),el("span",{text:later?"Prochain rappel : "+later.titre+", "+dueLabel(later.date)+".":"Ajoute des échéances à tes tâches et papiers pour être prévenu ici."}))); }
   p.append(body);
-  p.append(el("button",{type:"button",class:"np-all",onclick:()=>{ closeNotifs(); setTab("rappels"); renderHeader(); window.scrollTo({top:0,behavior:"smooth"}); }},"Tous les rappels et l'agenda du téléphone",(()=>{ const s=el("span"); s.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>'; return s; })()));
+  p.append(el("button",{type:"button",class:"np-all",onclick:()=>{ closeNotifs(); setTab("rappels"); renderHeader(); window.scrollTo({top:0,behavior:"instant"}); }},"Tous les rappels et l'agenda du téléphone",(()=>{ const s=el("span"); s.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>'; return s; })()));
 }
 function openNotifs(){ const sn=npSeen(); S.npNew=new Set(npItems().map(npKey).filter(k=>!sn.has(k))); renderNotifs(); const bb=$("bellBtn").getBoundingClientRect(), P=$("npanel"); P.style.top=Math.max(12,Math.round(bb.bottom+12))+"px"; P.style.right=Math.max(12,Math.round(innerWidth-bb.right-8))+"px"; P.style.maxHeight=Math.max(260,Math.min(620,innerHeight-bb.bottom-110))+"px"; P.hidden=false; $("npBg").hidden=false; $("bellBtn").setAttribute("aria-expanded","true"); requestAnimationFrame(()=>$("npanel").classList.add("on")); npMarkSeen(); }
 function closeNotifs(){ const p=$("npanel"); if(p.hidden) return; p.classList.remove("on"); $("npBg").hidden=true; $("bellBtn").setAttribute("aria-expanded","false"); setTimeout(()=>{ if(!p.classList.contains("on")) p.hidden=true; },180); }
