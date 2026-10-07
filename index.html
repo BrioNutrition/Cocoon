@@ -35,7 +35,7 @@ html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxI
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="07/10 23:48";</script>
+<script>window.COCOON_BUILD="07/10 23:54";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -905,11 +905,11 @@ button,a,input,select,textarea,label,summary,[role="button"]{touch-action:manipu
   @keyframes rvRing{0%{opacity:.75;transform:scale(1)}100%{opacity:0;transform:scale(2.6)}}
   @keyframes rvRise{from{opacity:0;transform:translateY(40px) rotate(8deg)}}
   @keyframes rvUp{from{opacity:0;transform:translateY(12px)}}
-  .wrap.arrive .head,.wrap.arrive .members,.wrap.arrive .view:not([hidden]) > *{animation:arriveUp .7s cubic-bezier(.2,1,.3,1) both}
-  .wrap.arrive .head{animation-delay:.05s}.wrap.arrive .members{animation-delay:.12s}
-  .wrap.arrive .view:not([hidden]) > :nth-child(1){animation-delay:.2s}.wrap.arrive .view:not([hidden]) > :nth-child(2){animation-delay:.28s}.wrap.arrive .view:not([hidden]) > :nth-child(3){animation-delay:.36s}.wrap.arrive .view:not([hidden]) > :nth-child(4){animation-delay:.44s}
-  .wrap.arrive .tabs{animation:arriveNav .8s cubic-bezier(.2,1.3,.4,1) .3s both}
-  .wrap.arrive .topbar .wordmark,.wrap.arrive .topbar .head-right{animation:arriveFade .6s ease-out .1s both}
+  .wrap.arrive .head,.wrap.arrive .members,.wrap.arrive .view:not([hidden]) > *{animation:arriveUp .7s cubic-bezier(.2,1,.3,1) .7s both}
+  .wrap.arrive .head{animation-delay:.27s}.wrap.arrive .members{animation-delay:.34s}
+  .wrap.arrive .view:not([hidden]) > :nth-child(1){animation-delay:.42s}.wrap.arrive .view:not([hidden]) > :nth-child(2){animation-delay:.5s}.wrap.arrive .view:not([hidden]) > :nth-child(3){animation-delay:.58s}.wrap.arrive .view:not([hidden]) > :nth-child(4){animation-delay:.66s}
+  .wrap.arrive .tabs{animation:arriveNav .8s cubic-bezier(.2,1.3,.4,1) .52s both}
+  .wrap.arrive .topbar .wordmark,.wrap.arrive .topbar .head-right{animation:arriveFade .6s ease-out .32s both}
   @keyframes arriveUp{from{opacity:0;translate:0 26px}}
   @keyframes arriveNav{from{opacity:0;translate:0 140%}}
   @keyframes arriveFade{from{opacity:0;translate:-8px 0}}
@@ -3384,7 +3384,7 @@ async function saveMForm(e){
 }
 $("mhForm").addEventListener("submit",saveMForm);
 let _raf=0;
-function renderAll(){ if(_raf) return; _raf=requestAnimationFrame(()=>{ _raf=0; renderAllNow(); }); }
+function renderAll(){ if(S.entering){ S.entPending=true; return; } if(_raf) return; _raf=requestAnimationFrame(()=>{ _raf=0; renderAllNow(); }); }
 function renderBadges(){
   const me=meId(); const setN=(id,n)=>{ const e=$(id); if(e){ e.textContent=id==="nRappels"&&n>9?"9+":n; e.hidden=!n; } };
   setN("nFoyer",S.foyer.filter(t=>!t.fait).length);
@@ -4327,7 +4327,8 @@ function sparkle(box,stop){
    suit la position réelle de la cible à chaque image, et se pose pile dessus. */
 /* On retire la classe d'arrivée seulement quand TOUTES ses animations sont finies (sinon un élément saute) */
 function endArrive(W){ const go=()=>{ const an=W.getAnimations({subtree:true}).filter(a=>a.animationName&&/^arrive/.test(a.animationName)&&a.playState!=="finished");
-  if(an.length) Promise.all(an.map(a=>a.finished.catch(()=>{}))).then(()=>setTimeout(go,60)); else W.classList.remove("arrive"); }; setTimeout(go,300); }
+  if(an.length) Promise.all(an.map(a=>a.finished.catch(()=>{}))).then(()=>setTimeout(go,60)); else { W.classList.remove("arrive"); entryDone(); } }; setTimeout(go,300); }
+function entryDone(){ if(!S.entering) return; S.entering=false; clearTimeout(S.entT); if(S.entPending){ S.entPending=false; requestAnimationFrame(()=>renderAll()); } }
 function flyLogo(logo,target,D){
   const wrap=logo.parentElement, wcs=getComputedStyle(wrap), lcs=getComputedStyle(logo);
   const pt=v=>{ const m=String(v||"").match(/-?[0-9.]+/g)||[]; return [parseFloat(m[0]||0),parseFloat(m[1]||0)]; };
@@ -4338,19 +4339,20 @@ function flyLogo(logo,target,D){
   wrap.getAnimations().forEach(a=>a.cancel()); logo.getAnimations().forEach(a=>a.cancel());
   wrap.style.translate="none"; wrap.style.rotate="none"; wrap.style.transform="none"; wrap.style.animation="none"; logo.style.animation="none";
   logo.style.opacity="1"; logo.style.transform="none"; const lr=logo.getBoundingClientRect();
-  logo.style.transform="translate3d("+x0+"px,"+y0+"px,0) rotate("+r0+"deg) scale("+s0+")"; logo.style.willChange="transform";
-  const lcx=lr.left+lr.width/2, lcy=lr.top+lr.height/2;
+  const from="translate3d("+x0+"px,"+y0+"px,0) rotate("+r0+"deg) scale("+s0+")";
+  logo.style.transform=from;
   if(!target) return Promise.resolve();
+  /* Position finale mesurée une fois, avant que le reste de la page commence à bouger */
+  const r=target.getBoundingClientRect(), tx=r.left+r.width/2-(lr.left+lr.width/2), ty=r.top+r.height/2-(lr.top+lr.height/2), ts=r.width/lr.width;
   target.style.visibility="hidden";
-  const bez=(p1x,p1y,p2x,p2y)=>{ const cx=3*p1x,bx=3*(p2x-p1x)-cx,ax=1-cx-bx,cy=3*p1y,by=3*(p2y-p1y)-cy,ay=1-cy-by;
-    const X=t=>((ax*t+bx)*t+cx)*t, Y=t=>((ay*t+by)*t+cy)*t, dX=t=>(3*ax*t+2*bx)*t+cx;
-    return x=>{ let t=x; for(let i=0;i<8;i++){ const d=X(t)-x; if(Math.abs(d)<1e-5) break; const dd=dX(t); if(Math.abs(dd)<1e-6) break; t-=d/dd; } t=Math.min(1,Math.max(0,t)); return Y(t); }; };
-  const ease=bez(.55,0,.15,1), t0=performance.now();
-  return new Promise(done=>{ const step=now=>{ const p=Math.min(1,(now-t0)/D), e=ease(p);
-      const r=target.getBoundingClientRect(), tx=r.left+r.width/2-lcx, ty=r.top+r.height/2-lcy, ts=r.width/lr.width;
-      logo.style.transform="translate3d("+(x0+(tx-x0)*e)+"px,"+(y0+(ty-y0)*e)+"px,0) rotate("+(r0*(1-e))+"deg) scale("+(s0+(ts-s0)*e)+")";
-      if(p<1) requestAnimationFrame(step); else { target.style.visibility=""; done(); } };
-    requestAnimationFrame(step); });
+  /* L'ombre floue coûte cher à redessiner pendant le vol : on la remplace par un halo qui s'efface */
+  const halo=document.createElement("span"); halo.setAttribute("aria-hidden","true");
+  halo.style.cssText="position:absolute;left:12%;right:12%;top:30%;bottom:-8%;border-radius:40%;background:rgba(232,118,90,.30);filter:blur(16px);pointer-events:none;transform:translate3d("+x0+"px,"+y0+"px,0)";
+  wrap.insertBefore(halo,logo); logo.style.filter="none";
+  halo.animate([{opacity:1},{opacity:0}],{duration:260,easing:"ease-out",fill:"forwards"});
+  const a=logo.animate([{transform:from},{transform:"translate3d("+tx+"px,"+ty+"px,0) rotate(0deg) scale("+ts+")"}],{duration:D,easing:"cubic-bezier(.55,0,.15,1)",fill:"forwards"});
+  const end=()=>{ target.style.visibility=""; };
+  return a.finished.then(end,end);
 }
 async function reveal({hello,lines,minMs,work,before}){
   const R=$("reveal"), logo=$("rvLogo"), reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -4964,7 +4966,8 @@ async function bootOut(){
   const target=document.querySelector(".brand-logo"), tr=target?target.getBoundingClientRect():null;
   const canFly=!reduced&&!splashOn&&!wiz&&tr&&tr.width>0&&!(S.edit);
   if(splashOn&&!reduced) splashIntro(380);
-  if(!canFly){ await b.animate([{opacity:1},{opacity:0}],{duration:reduced?250:420,easing:"ease-out",fill:"forwards"}).finished; b.remove(); return; }
+  S.entering=true; S.entT=setTimeout(entryDone,4000);
+  if(!canFly){ await b.animate([{opacity:1},{opacity:0}],{duration:reduced?250:420,easing:"ease-out",fill:"forwards"}).finished; b.remove(); entryDone(); return; }
   const wrap=logo.parentElement;
   b.style.pointerEvents="none";
   const fade=[{opacity:1},{opacity:1,offset:.2},{opacity:0}], fo={duration:900,easing:"cubic-bezier(.5,0,.3,1)",fill:"forwards"};
@@ -4972,8 +4975,9 @@ async function bootOut(){
   b.querySelector(".bt-name").animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(14px) scale(.96)"}],{duration:380,easing:"ease-in",fill:"forwards"});
   b.querySelector(".bt-dots").animate([{opacity:1},{opacity:0}],{duration:250,fill:"forwards"});
   wrap.querySelectorAll("i").forEach(i=>{ i.getAnimations().forEach(a=>a.cancel()); i.style.display="none"; });
-  const W=document.querySelector(".wrap"); setTimeout(()=>W.classList.add("arrive"),220);
-  await flyLogo(logo,target,980);
+  const W=document.querySelector(".wrap");
+  const fly=flyLogo(logo,target,980); W.classList.add("arrive");
+  await fly;
   b.remove(); endArrive(W);
 }
 bootCheck();
