@@ -649,6 +649,7 @@
     prefs: async function () { await LIVE; var r = await sb.from("cocoon_push_prefs").select("prefs").eq("user_id", ME.id).maybeSingle(); return (r.data && r.data.prefs) || {}; },
     savePrefs: async function (p) { await LIVE; var r = await sb.from("cocoon_push_prefs").upsert({ user_id: ME.id, prefs: p, updated_at: new Date().toISOString() }); if (r.error) throw new Error(frErr(r.error)); },
     event: async function (o) { try { if (!CFG.vapid || !IS_LIVE || !navigator.onLine) return; await sb.functions.invoke("cocoon-push", { body: Object.assign({ mode: "event", foyer: FOYER }, o || {}) }); } catch (_) {} },
+    demo: async function () { await LIVE; var r = await sb.functions.invoke("cocoon-push", { body: { mode: "event", type: "demo", foyer: FOYER } }); if (r.error) throw new Error("la fonction « cocoon-push » ne répond pas (redéploie-la dans Supabase)"); return r.data; },
     test: async function () { await LIVE; var r = await sb.functions.invoke("cocoon-push", { body: { mode: "event", type: "test", foyer: FOYER } }); if (r.error) throw new Error("la fonction « cocoon-push » ne répond pas encore (à déployer dans Supabase)"); return r.data; }
   };
   window.cocoonHost.push = PUSH;

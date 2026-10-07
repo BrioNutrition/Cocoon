@@ -207,6 +207,32 @@ async function event(me, body) {
     const n = await deliver(mine, { title: "🔔 Cocoon", body: "C'est tout bon : les notifications marchent sur ce téléphone.", url: "./", tag: "test" });
     return out(200, { ok: true, sent: n });
   }
+  if (body.type === "demo") {
+    // Aperçu de toutes les notifications, envoyé seulement à la personne qui le demande
+    const mine = (subs || []).filter((s) => s.user_id === me.id);
+    if (!mine.length) return out(200, { ok: true, sent: 0 });
+    const L = localNow(mine[0].tz);
+    const { data: cal } = await admin.from("cocoon_cal").select("owner,events,moi").eq("foyer", foyer);
+    const rep = await foyerDocs(foyer, "repas");
+    const sh = (cal || []).find((r) => r.owner === "foyer"), mi = (cal || []).find((r) => r.owner === me.id);
+    const moi = (mi && mi.moi) || M.byUid[me.id] || null;
+    const dg = buildDigest({ shared: sh && sh.events, mine: mi && mi.events, moi, today: L.date, repas: Object.fromEntries(rep.map((r) => [r.id, r.data])), noms: M.noms });
+    const other = Object.keys(M.noms).find((id) => id !== moi && M.noms[id] && (M.rows.find((r) => r.id === id) || {}).data?.uid) || null;
+    const autre = (other && M.noms[other]) || "Emma";
+    const list = [
+      digestPayload(dg, true) || digestPayload({ hasItems: false, lines: [] }, true),
+      dg.hasItems ? digestPayload({ hasItems: false, lines: [] }, true) : null,
+      { title: "🛒 " + autre + " part faire les courses", body: "Ajoute vite ce qui manque : ça apparaît en direct sur son téléphone.", url: "./#courses", tag: "courses" },
+      { title: "📌 " + autre + " t'a confié une tâche", body: "Sortir les poubelles · aujourd'hui", url: "./", tag: "tache" }
+    ].filter(Boolean);
+    let n = 0;
+    for (let i = 0; i < list.length; i++) {
+      list[i].tag = "demo-" + i;
+      n += await deliver(mine, list[i]);
+      if (i < list.length - 1) await new Promise((r) => setTimeout(r, 1200));
+    }
+    return out(200, { ok: true, sent: n });
+  }
   if (body.type === "courses") {
     // Une seule fois toutes les 3 heures par foyer
     const { data: last } = await admin.from("cocoon_push_log").select("sent_at").eq("user_id", foyer).eq("kind", "courses").eq("key", "foyer").maybeSingle();
