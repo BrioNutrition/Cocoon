@@ -1173,6 +1173,7 @@ button.acc-card{cursor:pointer}
 .done-anim .check svg{opacity:1!important;color:#fff;stroke:#fff}
 @keyframes doneRow{0%{background-color:var(--surface)}30%{background-color:color-mix(in srgb,#7FD39A 32%,var(--surface))}72%{opacity:1;transform:none;background-color:color-mix(in srgb,#7FD39A 32%,var(--surface))}100%{opacity:0;transform:translateX(22px);background-color:color-mix(in srgb,#7FD39A 20%,var(--surface))}}
 @keyframes chkPop{0%{transform:scale(.55)}100%{transform:scale(1)}}
+body .view:not([hidden]){animation:viewFade .14s ease-out}@keyframes viewFade{from{opacity:0}}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3265,7 +3266,7 @@ $("dTitle").addEventListener("input",e=>{ if($("dCat").value==="__new"||!CAT[$("
 
 /* Onglets */
 const TABS=["accueil","moi","foyer","courses","rappels","documents","budget","maison"];
-function setTab(name){ const prevTab=S.tab; S.tab=name; if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({documents:"foyer",maison:"foyer",courses:"foyer"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name); if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  renderAll(); }
+function setTab(name){ const prevTab=S.tab; S.tab=name; if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({documents:"foyer",maison:"foyer",courses:"foyer"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name); if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  if(prevTab&&prevTab!==name) renderAllNow(); else renderAll(); }
 $("tabs").addEventListener("click",e=>{ const b=e.target.closest(".tab"); if(b&&b.dataset.tab){ const same=S.tab===b.dataset.tab; closeSheet(); setTab(b.dataset.tab); renderHeader(); if(same) window.scrollTo({top:0,behavior:"smooth"}); } });
 function openSheet(o){ if(!meId()){ needMe(); return; } o=(o&&(o.where||o.text))?o:{}; resetQuick();
   if(o.where){ fillWhere($("qWhere"),o.where); $("qWhere").value=o.where; $("qWhere").dataset.touched="1"; if(o.where!=="perso"&&o.where!=="tous") S.qSel.add(o.where); }
@@ -4290,7 +4291,9 @@ const BOOT_T0=performance.now();
 function bootCheck(){
   const b=$("boot"); if(!b||b._done) return;
   const t=performance.now()-BOOT_T0, ready=(S.loaded.t&&(S.membresLoaded||!S.db))||t>7000;
-  if(!ready||t<1500){ setTimeout(bootCheck,100); return; }
+  const fontsOk=!document.fonts||document.fonts.status==="loaded"||t>3500;
+  if(!ready||!fontsOk||t<1500){ setTimeout(bootCheck,100); return; }
+  S.booted=true;
   b._done=true; requestAnimationFrame(()=>requestAnimationFrame(bootOut));
 }
 async function bootOut(){
