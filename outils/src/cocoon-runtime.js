@@ -401,6 +401,24 @@
     isAdmin: function () { return ROLE === "admin"; },
     logout: logout,
     newCode: async function () { var r = await sb.rpc("cocoon_new_code", { f: FOYER }); if (r.error) throw new Error(frErr(r.error)); INVITE = r.data; return INVITE; },
-    ready: READY
+    ready: READY,
+    /* Calendrier du téléphone : envoie les rappels (communs + perso) quand ils changent */
+    saveCal: async function (x) {
+      await READY;
+      var rows = [{ owner: "foyer", events: x.shared || [] }, { owner: ME.id, events: x.perso || [], moi: x.moi || null }];
+      for (var i = 0; i < rows.length; i++) {
+        var r = rows[i], sig = JSON.stringify([r.events, r.moi || null]);
+        if (calSent[r.owner] === sig) continue;
+        var res = await sb.from("cocoon_cal").upsert({ foyer: FOYER, owner: r.owner, events: r.events, moi: r.moi || null, updated_at: new Date().toISOString() });
+        if (!res.error) calSent[r.owner] = sig;
+      }
+    },
+    calUrl: async function () {
+      await READY;
+      var r = await sb.rpc("cocoon_cal_token", { f: FOYER });
+      if (r.error) throw new Error(/function|exist/i.test(r.error.message) ? "le calendrier n'est pas encore activé dans Supabase" : frErr(r.error));
+      return CFG.url.replace(/^https?:/, "webcal:").replace(/\/$/, "") + "/functions/v1/cocoon-agenda?t=" + r.data;
+    }
   };
+  var calSent = {};
 })();

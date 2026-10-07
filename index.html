@@ -1161,6 +1161,7 @@ button.acc-card{cursor:pointer}
 .mot-sw{position:relative;width:38px;height:38px;border-radius:6px 12px 12px 12px;border:0;padding:0;background:var(--mot-bg);box-shadow:0 1px 0 rgba(28,27,46,.08),0 3px 8px rgba(28,27,46,.12);cursor:pointer;transition:transform .15s}
 .mot-sw::after{content:"";position:absolute;top:-4px;left:50%;width:11px;height:11px;margin-left:-5.5px;border-radius:50%;background:var(--mot-pin);box-shadow:0 1px 2px rgba(0,0,0,.25)}
 .mot-sw[aria-checked="true"]{box-shadow:0 0 0 2.5px #fff,0 0 0 4.5px #1C1B2E;transform:scale(1.06)}
+.cal-ok{margin:0;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,#7FD39A 22%,var(--surface));font-size:14px;font-weight:600}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3068,7 +3069,7 @@ function renderBadges(){
 }
 function renderAllNow(){
   const v=S.tab;
-  renderSelBar(); renderHeader(); renderOnboard(); renderBadges();
+  renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync();
   if(S.pendingWizard&&meM()&&S.configLoaded){ S.pendingWizard=false; openWizard(isAdmin()&&!(S.config&&S.config.qFait)?"foyer":"perso"); }
   if(v==="accueil"){ renderMot(); renderRecap(); renderSetupCard(); renderSecretary(); renderRdv(); renderWeek(); renderFridge(); renderAccBudget(); renderAccWho(); }
   else if(v==="moi"){ renderMine(); renderCars(); renderSettings(); }
@@ -4073,6 +4074,28 @@ function calEvents(){
     ev.push({uid:"bin-"+b.id,titre:"Sortir la poubelle : "+b.nom+(w.tour?" (chacun son tour)":""),date:iso(nx.sortie),time:b.veille?"193000":"073000",timed:true,rrule:"FREQ=WEEKLY;INTERVAL="+(b.freq||1)+";BYDAY="+(b.jours||[]).map(j=>BY[b.veille?(j+6)%7:j]).join(","),alarm:true}); }
   return ev.sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
 }
+/* Version hébergée : abonnement au calendrier (webcal) qui se met à jour tout seul.
+   Le foyer partage une liste d'événements communs (avec « pour qui ») + chacun sa liste perso. */
+function calEventsAll(){
+  const shared=[], perso=[];
+  for(const t of allTasks()) if(!t.fait&&t.echeance&&daysTo(t.echeance)>=-1){ const e={uid:"t-"+t.id,titre:t.titre,date:t.echeance,desc:(t.prive?"Perso":"Foyer")+" · "+(CAT[t.cat]||CAT.maison).nom,alarm:true};
+    if(t.prive) perso.push(e); else { if(t.pour&&t.pour!=="tous") e.pour=[t.pour]; shared.push(e); } }
+  for(const r of (S.rdvs||[])) if(r.date&&daysTo(r.date)>=0) shared.push({uid:"r-"+r.id,titre:(r.heure?heureTxt(r.heure)+" · ":"")+r.titre,date:r.date,desc:"Rendez-vous"+(r.lieu?" · "+r.lieu:""),alarm:true});
+  for(const d of S.docs) if(d.expire&&daysTo(d.expire)>=0) shared.push({uid:"d-"+d.id,titre:d.titre+" expire",date:d.expire,desc:"Papier à renouveler",alarm:true});
+  for(const x of S.equip){ const n=eqNext(x); if(n&&daysTo(n)>=0) shared.push({uid:"e-"+x.id,titre:"Entretien : "+(x.nom||"équipement"),date:n,alarm:true}); }
+  for(const v of S.vehic){ if(v.ctProchain&&daysTo(v.ctProchain)>=0) perso.push({uid:"ct-"+v.id,titre:"Contrôle technique : "+(v.nom||"véhicule"),date:v.ctProchain,alarm:true});
+    if(v.assuranceEcheance&&daysTo(v.assuranceEcheance)>=0) perso.push({uid:"as-"+v.id,titre:"Échéance assurance : "+(v.nom||"véhicule"),date:v.assuranceEcheance,alarm:true});
+    const rn=revNext(v); if(rn&&daysTo(rn.date)>=0) perso.push({uid:"rv-"+v.id,titre:"Révision : "+(v.nom||"véhicule"),date:rn.date,alarm:true}); }
+  for(const a of S.abos) if(a.actif!==false){ const n=subNext(a); if(n){ const F=FREQ[a.freq]||FREQ.mensuel; shared.push({uid:"ab-"+a.id,titre:"Prélèvement "+a.nom+" · "+money(a.montant),date:n,rrule:F.weeks?"FREQ=WEEKLY":"FREQ=MONTHLY;INTERVAL="+F.months}); } }
+  for(const m of membres()){ const nb=nextBirthday(m); if(nb) shared.push({uid:"bd-"+m.id,titre:"Anniversaire de "+m.nom,date:nb.date,rrule:"FREQ=YEARLY",alarm:true}); }
+  const BY=["SU","MO","TU","WE","TH","FR","SA"];
+  for(const b of (S.bins||[])){ const w=binWho(b), nx=binNext(b); if(!nx) continue;
+    const e={uid:"bin-"+b.id,titre:"Sortir la poubelle : "+b.nom+(w.tour?" (chacun son tour)":""),date:iso(nx.sortie),time:b.veille?"193000":"073000",timed:true,rrule:"FREQ=WEEKLY;INTERVAL="+(b.freq||1)+";BYDAY="+(b.jours||[]).map(j=>BY[b.veille?(j+6)%7:j]).join(","),alarm:true};
+    if(w.ids.length&&!w.tour) e.pour=w.ids.slice(); shared.push(e); }
+  return {shared,perso,moi:meId()};
+}
+function calSync(now){ if(!(window.cocoonHost&&cocoonHost.saveCal)||!meId()||!S.loaded.t||!S.membresLoaded) return; clearTimeout(S.calT);
+  S.calT=setTimeout(()=>{ try{ cocoonHost.saveCal(calEventsAll()); }catch(_){} },now?0:2500); }
 function icsText(evs){
   const e2=s=>String(s).replace(/\\/g,"\\\\").replace(/[,;]/g,m=>"\\"+m).replace(/\n/g,"\\n"), d8=s=>s.replace(/-/g,""), stamp=new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+Z$/,"Z");
   const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Cocoon//Foyer//FR","CALSCALE:GREGORIAN","METHOD:PUBLISH","X-WR-CALNAME:Cocoon"];
@@ -4096,6 +4119,8 @@ function calPage(evs,ics){
   return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cocoon · Agenda</title><style>body{font-family:system-ui,-apple-system,sans-serif;margin:0;padding:28px 20px;background:#F6F5FB;color:#1C1B2E;line-height:1.45}h1{font-size:28px;margin:0 0 6px}p{color:#5A5876}a.b{display:block;text-align:center;background:linear-gradient(135deg,#FFD66B,#FFB38A,#FF9CB0);color:#1C1B2E;padding:16px;border-radius:18px;font-weight:800;text-decoration:none;font-size:18px;margin:18px 0}ul{padding-left:18px}small{color:#8C8AA6}</style></head><body><h1>Ton agenda Cocoon</h1><p>'+evs.length+' rappels prêts. Touche le bouton : ton téléphone te propose de les ajouter à ton calendrier, avec une alerte la veille.</p><a class="b" href="data:text/calendar;charset=utf-8,'+encodeURIComponent(ics)+'" download="cocoon.ics">Ajouter à mon calendrier</a><ul>'+li+'</ul></body></html>';
 }
 async function exportCal(){
+  if(window.cocoonHost&&cocoonHost.calUrl){ try{ calSync(true); const u=await cocoonHost.calUrl(); S.prefs=Object.assign({},S.prefs||{},{calAbonne:true}); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{});
+      toast("Touche « S'abonner » : ton calendrier se mettra à jour tout seul."); setTimeout(()=>{ location.href=u; },350); renderCalCard(); }catch(e){ toast("Impossible de préparer le calendrier : "+((e&&e.message)||"réessaie.")); } return; }
   const evs=calEvents(); if(!evs.length){ toast("Rien à mettre dans l'agenda pour l'instant."); return; }
   const ics=icsText(evs);
   if(S.downloads&&S.downloads.save){
@@ -4111,7 +4136,10 @@ function renderCalCard(){
   const card=el("div",{class:"cal-card"},el("div",{class:"cal-top"},el("span",{class:"cal-ic"},(()=>{ const s=el("span"); s.innerHTML=FI.rdv?'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'+FI.rdv+'</svg>':""; return s; })()),
     el("div",{},el("b",{text:"Dans l'agenda de ton téléphone"}),el("span",{class:"muted",text:evs.length?evs.length+" rappels : échéances, papiers, CT, prélèvements, anniversaires, poubelles. Avec une alerte la veille.":"Rien à exporter pour l'instant."}))));
   if(evs.length){
-    card.append(el("button",{type:"button",class:"btn",text:"Ajouter à mon calendrier",onclick:exportCal}));
+    const host=!!(window.cocoonHost&&cocoonHost.calUrl), sub=host&&S.prefs&&S.prefs.calAbonne;
+    if(sub) card.append(el("p",{class:"cal-ok",text:"✓ Abonné : tes rappels Cocoon arrivent tout seuls dans le calendrier de ton téléphone, et se mettent à jour quand le foyer change quelque chose."}));
+    card.append(el("button",{type:"button",class:sub?"btn ghost":"btn",text:sub?"Réabonner ce téléphone":"Ajouter à mon calendrier",onclick:exportCal}));
+    if(host&&!sub) card.append(el("p",{class:"muted",style:"font-size:13px;margin:0",text:"Un seul appui : ton téléphone propose « S'abonner », et tout se synchronise ensuite automatiquement."}));
     const det=el("details",{class:"cal-more"},el("summary",{text:"Ou un par un dans Google Agenda"}));
     const ul=el("div",{class:"cal-list"}); for(const e of evs.slice(0,25)) ul.append(el("a",{href:gcalLink(e),target:"_blank",rel:"noopener",class:"cal-link"},el("span",{text:fmtDue(e.date)}),el("b",{text:e.titre}),el("span",{class:"cal-plus",text:"+"})));
     det.append(ul); card.append(det); }

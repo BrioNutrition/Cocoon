@@ -16,6 +16,17 @@ Application web installable sur iPhone et Android (« Ajouter à l'écran d'accu
    Ne jamais y mettre la clé `service_role`.
 4. **GitHub** → *Settings* → *Pages* → *Deploy from a branch* → `main` / `(root)`.
 
+## Calendrier du téléphone (une seule fois)
+
+Le bouton « Ajouter à mon calendrier » abonne le téléphone à un calendrier Cocoon
+qui se met à jour tout seul (tâches, rendez-vous, papiers, poubelles…).
+
+1. **SQL Editor** → coller `supabase/calendrier.sql` → *Run*
+   (inutile si `schema.sql` a été lancé après le 7 octobre 2026).
+2. **Edge Functions** → *Deploy a new function* → *Via Editor* → nom : `cocoon-agenda`
+   → coller `supabase/functions/cocoon-agenda/index.ts` → *Deploy*.
+3. Dans la fonction → *Details* (ou *Settings*) → désactiver **Verify JWT** / *Enforce JWT verification* → *Save*.
+
 ## Inviter quelqu'un
 
 Dans l'app : onglet **Moi → Mon compte → Copier le lien**. La personne ouvre le lien,

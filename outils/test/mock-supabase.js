@@ -1,6 +1,6 @@
 /* Faux Supabase en mémoire, pour tester l'app sans réseau. */
 (function () {
-  var T = { cocoon_foyers: [], cocoon_members: [], cocoon_docs: [] }, files = {}, users = {}, session = null, authCbs = [], chans = [];
+  var T = { cocoon_foyers: [], cocoon_members: [], cocoon_docs: [], cocoon_cal: [] }, files = {}, users = {}, session = null, authCbs = [], chans = [];
   window.__mock = { T: T, files: files, chans: chans, calls: [] };
   function uuid() { return "xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx".replace(/x/g, function () { return (Math.random() * 16 | 0).toString(16); }); }
   function ok(d) { return Promise.resolve({ data: d, error: null }); }
@@ -19,7 +19,7 @@
     var match = function (r) { return self.f.every(function (x) { return r[x[0]] === x[1]; }); };
     var out;
     if (this.op === "select") { var d = rows.filter(match).map(function (r) { return JSON.parse(JSON.stringify(r)); }); if (this.r) d = d.slice(this.r[0], this.r[1] + 1); if (this.t === "cocoon_members") d.forEach(function (m) { var f = T.cocoon_foyers.find(function (x) { return x.id === m.foyer; }); m.cocoon_foyers = f ? { owner: f.owner, code: f.code } : null; }); out = { data: this.single ? (d[0] || null) : d, error: null }; }
-    else if (this.op === "upsert") { var r = JSON.parse(JSON.stringify(this.row)); var i = rows.findIndex(function (x) { return x.foyer === r.foyer && x.path === r.path && x.id === r.id; }); if (i >= 0) rows[i] = r; else rows.push(r); rt(i >= 0 ? "UPDATE" : "INSERT", r); out = { data: null, error: null }; }
+    else if (this.op === "upsert") { var r = JSON.parse(JSON.stringify(this.row)); var i = rows.findIndex(function (x) { return self.t === "cocoon_cal" ? (x.foyer === r.foyer && x.owner === r.owner) : (x.foyer === r.foyer && x.path === r.path && x.id === r.id); }); if (i >= 0) rows[i] = r; else rows.push(r); rt(i >= 0 ? "UPDATE" : "INSERT", r); out = { data: null, error: null }; }
     else { var del = rows.filter(match); T[this.t] = rows.filter(function (x) { return !match(x); }); del.forEach(function (x) { rt("DELETE", null, { foyer: x.foyer, path: x.path, id: x.id }); }); out = { data: null, error: null }; }
     return Promise.resolve(out).then(res, rej);
   };
@@ -39,6 +39,7 @@
       if (n === "cocoon_create_foyer") { var f = { id: uuid(), owner: me, code: "c0de" }; T.cocoon_foyers.push(f); T.cocoon_members.push({ foyer: f.id, user_id: me, role: "admin" }); return ok({ id: f.id, code: f.code }); }
       if (n === "cocoon_join_foyer") { var g = T.cocoon_foyers.find(function (x) { return x.id === a.f && x.code === a.c; }); if (!g) return ok(false); T.cocoon_members.push({ foyer: a.f, user_id: me, role: "membre" }); return ok(true); }
       if (n === "cocoon_merge") { var rows = T.cocoon_docs, i = rows.findIndex(function (x) { return x.foyer === a.f && x.path === a.p && x.id === a.i; }); var r = i >= 0 ? rows[i] : { foyer: a.f, path: a.p, id: a.i, data: {} }; r.data = Object.assign({}, r.data, a.patch); r.updated_by = me; if (i < 0) rows.push(r); rt("UPDATE", JSON.parse(JSON.stringify(r))); return ok(null); }
+      if (n === "cocoon_cal_token") return ok("ab12cd34ef56ab12cd34ef56ab12cd34");
       if (n === "cocoon_new_code") { var h = T.cocoon_foyers.find(function (x) { return x.id === a.f; }); h.code = "n3w"; return ok("n3w"); }
       return Promise.resolve({ data: null, error: { message: "rpc inconnue " + n } });
     },
