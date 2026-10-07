@@ -1200,6 +1200,17 @@ details.done-list .list,#pDone{overflow-x:clip}
 .done-ic{background:rgba(255,255,255,.28)!important;box-shadow:0 2px 10px rgba(0,0,0,.12)}
 .done-ic>svg{filter:drop-shadow(0 1px 1px rgba(0,0,0,.18))}
 .done-anim{will-change:opacity,transform}
+.row-tint.del{background:color-mix(in srgb,#E5484D 24%,var(--surface))}
+.row-tint.res{background:color-mix(in srgb,#FFB347 34%,var(--surface))}
+.row-tint{background:transparent}
+.done-anim,.done-anim.selected{box-shadow:none!important;outline:none!important;border-color:transparent!important}
+.done-anim::before{opacity:0;transition:opacity .15s}
+.done-fill{background:#D2F0DC!important;inset:-1px!important;border-radius:inherit}
+.done-ic{background:#fff!important;box-shadow:0 3px 10px rgba(63,174,90,.25)!important}
+.done-ic>svg path{stroke:#3FAE5A}
+.done-ic>svg{filter:none!important}
+.done-wk i svg path{fill:#3FAE5A;stroke:#3FAE5A}
+html,body{overflow-anchor:none}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3123,7 +3134,8 @@ function renderBadges(){
   if(urgent&&!S.bellRung){ S.bellRung=true; const b=$("bellBtn"); b.classList.add("ring"); setTimeout(()=>b.classList.remove("ring"),2600); }
   setN("nBudget",(S.abos||[]).filter(a=>a.actif!==false&&(()=>{ const n=subNext(a); return n&&daysTo(n)<=7; })()).length);
 }
-function renderAllNow(){
+function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; renderAllNowInner(); if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
+function renderAllNowInner(){
   const v=S.tab;
   renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync();
   if(S.pendingWizard&&meM()&&S.configLoaded){ S.pendingWizard=false; openWizard(isAdmin()&&!(S.config&&S.config.qFait)?"foyer":"perso"); }
@@ -3388,7 +3400,7 @@ function histHead(done){ const del=done.filter(t=>canEditTask(t)); if(!del.lengt
    puis les lignes suivantes remontent en douceur (FLIP). Teinte = couleur exacte de la catégorie. */
 function rowsOutAll(rows){
   if(!rows.length||(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)) return Promise.resolve();
-  return Promise.all(rows.map((r,i)=>{ r.style.pointerEvents="none"; const t=document.createElement("span"); t.className="row-tint"; r.appendChild(t); t.animate([{opacity:0},{opacity:.28}],{duration:160,delay:i*60,fill:"forwards"});
+  return Promise.all(rows.map((r,i)=>{ r.style.pointerEvents="none"; const t=document.createElement("span"); t.className="row-tint del"; r.appendChild(t); t.animate([{opacity:0},{opacity:1}],{duration:160,delay:i*60,fill:"forwards"});
     return r.animate([{transform:"translate3d(0,0,0)",opacity:1},{transform:"translate3d("+Math.round(r.getBoundingClientRect().width*1.15)+"px,0,0)",opacity:0}],{duration:460,delay:80+i*60,easing:"cubic-bezier(.55,0,.3,1)",fill:"forwards"}).finished.catch(()=>{}); }));
 }
 function rowOut(row,kind){
@@ -3396,8 +3408,8 @@ function rowOut(row,kind){
   const res=kind==="res", btn=row.querySelector(res?".res-y":".del-x");
   if(btn) btn.animate(res?[{transform:"rotate(0)"},{transform:"rotate(-360deg)"}]:[{transform:"scale(1)"},{transform:"scale(.85)"},{transform:"scale(1)"}],{duration:res?460:300,easing:"cubic-bezier(.4,0,.2,1)"});
   row.style.pointerEvents="none"; row.style.willChange="transform,opacity";
-  const tint=document.createElement("span"); tint.className="row-tint"; row.appendChild(tint);
-  tint.animate([{opacity:0},{opacity:.28}],{duration:180,easing:"ease-out",fill:"forwards"});
+  const tint=document.createElement("span"); tint.className="row-tint "+(res?"res":"del"); row.appendChild(tint);
+  tint.animate([{opacity:0},{opacity:1}],{duration:180,easing:"ease-out",fill:"forwards"});
   const w=row.getBoundingClientRect().width;
   const out=res?[{transform:"translate3d(0,0,0)",opacity:1},{transform:"translate3d(0,-22px,0) scale(.96)",opacity:0}]
                :[{transform:"translate3d(0,0,0)",opacity:1},{transform:"translate3d("+Math.round(w*1.15)+"px,0,0)",opacity:0}];
