@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 15:55";</script>
+<script>window.COCOON_BUILD="08/10 16:04";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3154,6 +3154,7 @@ function rdvFormEl(){
   f.append(el("h3",{text:F.id?"Modifier le rendez-vous":"Nouveau rendez-vous"}),fld("Quoi",ti),el("div",{class:"frow"},fld("Date",da),fld("Heure",he)),fld("Où",li),el("div",{class:"field"},"Pour qui",who),bt);
   f.addEventListener("submit",async e=>{ e.preventDefault(); if(!needMe()) return;
     if(!(F.titre||"").trim()){ toast("Indique le rendez-vous."); ti.focus(); return; } if(!F.date){ toast("Choisis la date."); da.focus(); return; }
+    { const when=new Date(F.date+"T"+(F.heure||"23:59")); if(when.getTime()<Date.now()){ toast(F.heure&&F.date===iso(today())?"Cette heure est déjà passée : choisis une heure ou une date à venir.":"Cette date est déjà passée : choisis une date à venir."); (F.heure&&F.date===iso(today())?he:da).focus(); return; } }
     const doc={titre:F.titre.trim(),date:F.date,heure:F.heure||null,lieu:(F.lieu||"").trim()||null,pour:(F.pour||[]).slice()};
     try{ if(F.id) await S.db.collection("rdv").doc(F.id).update(doc); else await S.db.collection("rdv").add(Object.assign(doc,{par:meId(),le:Date.now()}));
       S.rdvForm=null; toast(F.id?"Rendez-vous modifié.":"Rendez-vous ajouté : rappel la veille."); renderRdv(); }catch(err){ writeErr(err); } });
@@ -3318,7 +3319,7 @@ function openBForm(kind,item){
   const me=meId(); if(!me){ needMe(); return; }
   if(item&&!(isAdmin()||item.creePar===me||item.payePar===me)){ toast("Seuls les admins et la personne qui l'a ajouté peuvent le modifier."); return; }
   const ad=adults().map(m=>m.id);
-  S.bForm={kind,id:item?item.id:null,confirm:false,d:item?Object.assign(JSON.parse(JSON.stringify(item)),{splitMode:item.parts?"perso":"egal"}):(kind==="dep"?{titre:"",montant:null,cat:"courses",payePar:me,date:iso(today()),partage:[me],freq:"once"}:{nom:"",montant:null,cat:"streaming",freq:"mensuel",debut:iso(today()),payePar:me,partage:[me],rappel:true,actif:true,auto:true})};
+  S.bForm={kind,id:item?item.id:null,confirm:false,d:item?(x=>{ if(Array.isArray(x.partage)&&x.partage.length===1&&x.partage[0]===x.payePar) x.partage=[]; return x; })(Object.assign(JSON.parse(JSON.stringify(item)),{splitMode:item.parts?"perso":"egal"})):(kind==="dep"?{titre:"",montant:null,cat:"courses",payePar:me,date:iso(today()),partage:[],freq:"once"}:{nom:"",montant:null,cat:"streaming",freq:"mensuel",debut:iso(today()),payePar:me,partage:[],rappel:true,actif:true,auto:true})};
   if(S.tab!=="budget") setTab("budget");
   if(!item) bfHome(); renderBudget(); renderBForm(); setTimeout(()=>{ if(BF.isConnected) (item?(()=>{ const r=BF.getBoundingClientRect(); if(r.top<70) window.scrollBy({top:r.top-80,behavior:"smooth"}); })():BF.scrollIntoView({behavior:"smooth",block:"start"})); const i=$("bfName"); if(i&&!item) i.focus(); },60);
 }
@@ -3345,12 +3346,12 @@ function renderBForm(){
   f.append(row);
   const ad=adults();
   if(ad.length>1){
-    const pp=el("div",{class:"pchips"}); for(const m of ad) pp.append(el("button",{type:"button",class:"pchip","aria-pressed":String(d.payePar===m.id),onclick:()=>{ if(Array.isArray(d.partage)&&d.partage.length<=1) d.partage=[m.id]; d.payePar=m.id; renderBForm(); }},avatar(m.id),m.id===me?"Moi":m.nom));
+    const pp=el("div",{class:"pchips"}); for(const m of ad) pp.append(el("button",{type:"button",class:"pchip","aria-pressed":String(d.payePar===m.id),onclick:()=>{ d.payePar=m.id; renderBForm(); }},avatar(m.id),m.id===me?"Moi":m.nom));
     if((d.partage||[]).length>1) pp.append(el("button",{type:"button",class:"pchip","aria-pressed":String(d.payePar==="chacun"),onclick:()=>{ d.payePar="chacun"; renderBForm(); }},"Chacun paie sa part"));
     f.append(el("div",{class:"field"},"Payé par",pp));
     { const sp=el("div",{class:"pchips"}); d.partage=Array.isArray(d.partage)?d.partage:[];
       for(const m of ad) sp.append(el("button",{type:"button",class:"pchip","aria-pressed":String(d.partage.includes(m.id)),onclick:()=>{ d.partage=d.partage.includes(m.id)?d.partage.filter(x=>x!==m.id):d.partage.concat(m.id); if(d.parts) for(const k of Object.keys(d.parts)) if(!d.partage.includes(k)) delete d.parts[k]; if(d.partage.length<2&&d.payePar==="chacun") d.payePar=me; renderBForm(); }},avatar(m.id),m.id===me?"Moi":m.nom));
-      const n=d.partage.length; f.append(el("div",{class:"field"},"Partagé entre"+(n&&d.montant?" · "+money(Math.round(d.montant/n))+" chacun"+(dep&&d.freq==="once"?"":" à chaque échéance"):""),sp));
+      const n=d.partage.length; f.append(el("div",{class:"field"},n?"Partagé entre"+(d.montant?" · "+money(Math.round(d.montant/n))+" chacun"+(dep&&d.freq==="once"?"":" à chaque échéance"):""):"Partagé avec (facultatif)",sp));
       if(d.partage.length>1){
         const mode=d.splitMode||"egal";
         const sg=el("div",{class:"seg seg-split",role:"group","aria-label":"Répartition"});
@@ -3382,12 +3383,11 @@ async function saveBForm(e){
   e.preventDefault(); const B=S.bForm; if(!B) return; const d=B.d, dep=B.kind==="dep", me=meId();
   const label=(dep?d.titre:d.nom||"").trim(); if(!label){ toast(dep?"Dis-nous ce que c'était.":"Donne un nom à l'abonnement."); $("bfName").focus(); return; }
   if(!d.montant){ toast("Indique un montant, par exemple 12,50."); $("bfAmt").focus(); return; }
-  if(adults().length>1&&!(d.partage||[]).length){ toast("Choisis avec qui c'est partagé."); return; }
   if(adults().length<=1){ d.payePar=me; d.partage=[me]; }
   const recur=dep&&!B.id&&d.freq&&d.freq!=="once";
   const asSub=!dep||recur;
   const col=S.db.collection(asSub?"abonnements":"depenses");
-  const parts=d.partage&&d.partage.length?d.partage:[me];
+  const parts=d.partage&&d.partage.length?d.partage:[d.payePar&&d.payePar!=="chacun"?d.payePar:me];
   const doc=!asSub?{titre:label,montant:d.montant,cat:d.cat||"autre",payePar:d.payePar||me,partage:parts,date:d.date||iso(today())}
                :{nom:label,montant:d.montant,cat:d.cat||"autre",freq:dep?d.freq:(d.freq||"mensuel"),debut:dep?(d.date||iso(today())):(d.debut||iso(today())),payePar:d.payePar||me,partage:parts,rappel:dep?true:d.rappel!==false,actif:true,auto:dep?true:d.auto!==false,recurrente:dep||!!d.recurrente};
   try{
