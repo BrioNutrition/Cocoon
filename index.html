@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 23:21";</script>
+<script>window.COCOON_BUILD="08/10 23:27";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2646,7 +2646,7 @@ function renderSecretary(){
   const minePerso=S.perso.filter(t=>!t.fait).length, mineFoyer=S.foyer.filter(t=>!t.fait&&t.pour===me).length;
   const nom=m?m.nom+", ":"";
   let title;
-  if(late.length) title=nom+late.length+(late.length>1?" choses ont":" chose a")+" dépassé leur date.";
+  if(late.length) title=nom+(late.length>1?late.length+" choses ont dépassé leur date.":"une chose a dépassé sa date.");
   else if(week.length) title=nom+"cette semaine, "+week.length+(week.length>1?" choses":" chose")+" à ne pas oublier.";
   else if(allTasks().some(t=>!t.fait)) title=(m?"Bonjour "+m.nom+". ":"")+"Rien d'urgent, la maison tourne.";
   else title="Tout est à jour. Ajoute ce qui te passe par la tête.";
@@ -4425,7 +4425,17 @@ function secLocal(raw){
       {l:"Modifier",ghost:true,run:()=>{ openSheet({text:mA[1],where:p.where||undefined}); }}]);
   }
   // Qui doit quoi
-  if(has("qui doit","doit a ","dois a ","on me doit"," dette","rembours","equilibr","les comptes")){
+  // Repas
+  if(has("repas","manger","mange ","diner","dejeuner","petit dej","vaisselle","menu","cuisine ","qui cuisine","au menu")){
+    const t0=iso(today()), up=(S.repas||[]).filter(r=>r.plat&&r.date>=t0).sort((a,b)=>(a.date+a.slot)<(b.date+b.slot)?-1:1).slice(0,5);
+    if(!up.length) return secA("Aucun repas prévu pour l'instant.",[],[{l:"Ouvrir les repas",ghost:true,run:()=>{ setTab("repas"); window.scrollTo({top:0}); }}]);
+    const sl={matin:"petit-déjeuner",midi:"midi",soir:"soir"};
+    return secA(up.length>1?"Les prochains repas :":"Le prochain repas :",up.map(r=>({t:(r.date===t0?"Aujourd'hui":dueLabel(r.date).replace(/^./,c=>c.toUpperCase()))+" ("+sl[r.slot]+") : "+r.plat+(r.cuisine?", "+(r.cuisine===me?"tu cuisines":membre(r.cuisine).nom+" cuisine"):"")+(r.vaisselle?", "+(r.vaisselle===me?"tu fais la vaisselle":membre(r.vaisselle).nom+" fait la vaisselle"):"")})),[{l:"Ouvrir les repas",ghost:true,run:()=>{ setTab("repas"); window.scrollTo({top:0}); }}]); }
+  // Poubelles (avant « qui doit » : « qui doit sortir les poubelles ? »)
+  if(has("poubelle","ordures","recyclage")){ const bs=(S.bins||[]).map(b=>({b,nx:binNext(b),w:binWho(b)})).filter(x=>x.nx).sort((a,b)=>a.nx.sortie-b.nx.sortie);
+    if(!bs.length) return secA("Aucune poubelle n'est configurée.",[],[{l:"Configurer",run:()=>{ setTab("maison"); window.scrollTo({top:0}); }}]);
+    return secA(bs.length>1?"Les prochaines sorties :":"La prochaine sortie :",bs.slice(0,5).map(x=>({t:x.b.nom+" : "+binWhen(x.b,x.nx.sortie)+" · "+x.w.label}))); }
+  if(has("qui doit quoi","doit a ","dois a ","doit de l argent","on me doit"," dette","rembours","equilibr","les comptes","combien je dois","combien il me doit","combien elle me doit")||(has("qui doit")&&has("argent","euro","combien","paye"))){
     if(adults().length<2) return secA("Tu gères le budget seul·e : personne ne doit rien à personne.");
     const tr=balances();
     if(!tr.length) return secA("Les comptes sont bons : personne ne doit rien.",[],[toBudget]);
@@ -4495,13 +4505,13 @@ function secLocal(raw){
     const d0=has("aujourd"), d1=!d0&&has("demain");
     const rs=reminders().filter(r=>{ const n=daysTo(r.date); return d0?n<=0:d1?n===1:n<=7; });
     const free=allTasks().filter(t=>!t.fait&&!t.echeance).length;
-    if(!rs.length) return secA((d0?"Rien de prévu aujourd'hui.":d1?"Rien de prévu demain.":"Rien d'urgent cette semaine.")+(free?" "+free+" tâche"+(free>1?"s":"")+" sans date dans Foyer.":""));
+    if(!rs.length) return secA((d0?"Rien de prévu aujourd'hui.":d1?"Rien de prévu demain.":"Rien d'urgent cette semaine.")+(free?" "+free+" tâche"+(free>1?"s":"")+" sans date dans le foyer.":""));
     return secA((d0?"Aujourd'hui":d1?"Demain":"Cette semaine")+", "+rs.length+(rs.length>1?" choses":" chose")+" :",rs.slice(0,8).map(r=>({t:r.titre+" — "+dueLabel(r.date)+(r.who?" ("+who(r.who)+")":""),go:(r.kind==="Perso"||r.kind==="Foyer")?()=>goTask(r.ref):r.kind==="Document"?()=>goDoc(r.ref):null})));
   }
   // Sinon : recherche partout
   const hits=searchAll(raw,true).slice(0,5);
   if(hits.length) return secA(hits.length>1?"Voici ce que j'ai trouvé :":"J'ai trouvé ça :",hits.map(h=>({t:h.titre+(h.sub?" — "+h.sub:""),go:h.go})));
-  return secA("Je ne sais pas encore répondre à ça. Essaie « ma semaine », « qui doit quoi ? » ou « ajoute … ».",[],[],null);
+  return secA("Désolé, je n'ai pas compris ta demande. Essaie par exemple « Qu'est-ce qui est prévu cette semaine ? », « Qui doit quoi ? » ou « Ajoute… ».",[],[],null);
 }
 function secChips(){
   const c=[["Ma semaine","Qu'est-ce qui est prévu cette semaine ?"],["Budget du mois","Combien on a dépensé ce mois-ci ?"]];
@@ -4667,8 +4677,20 @@ async function secClaude(q){
     const r=secLocal(q); r.note="Claude n'a pas répondu, voici ce que je sais en mode simple."; return r;
   }finally{ if(S.secCtl===ctl) S.secCtl=null; }
 }
+const SEC_OFF=/\b(meteo|quel temps|capitale|president|election|politique|poeme|poesie|blague|chanson|paroles|traduis|tradui|traduction|python|javascript|recette|film|football|bourse|crypto|bitcoin|actualite|news|horoscope|qui es tu|t es qui|qui t a cree|es tu une ia|chatgpt|histoire de france|mathemat|equation|dissertation)\b/;
+const SEC_DOM=/(tache|a faire|rappel|semaine|demain|aujourd|ce soir|ce matin|retard|prevu|planning|agenda|urgent|papier|document|expire|passeport|carte|contrat|assurance|permis|bail|facture|attestation|budget|depens|combien|argent|euro|cout|paye|payer|abonnement|prelev|doit|dette|rembours|compte|course|liste|caddie|acheter|poubelle|ordure|recycl|voiture|vehicule|controle|revision|vidange|pneu|moto|chaudiere|entretien|maison|logement|appart|equipement|vmc|compteur|releve|garantie|anniv|naissance|repas|manger|diner|dejeuner|menu|cuisine|vaisselle|plat|rendez|rdv|medecin|dentiste|veto|docteur|ecole|enfant|chat|chien|animal|vermifuge|vaccin|foyer|famille|cocoon|lettre|courrier|mail|resili|proprietaire|loyer|credit|pret|objectif|econom|ajoute|rajoute|note|cree|confie|organise|fais le point|resume|recap|rappelle|n oublie|pense a|menage|lessive|linge|aspirateur|jardin|plante|colis|livraison|demenag|travaux|reparer|plombier|electricien)/;
+function secOffTopic(raw){ const q=" "+norm(String(raw||"")).replace(/['’]/g," ").replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ")+" ";
+  if(SEC_OFF.test(q)) return true; if(SEC_DOM.test(q)) return false;
+  const words=[]; for(const m of membres()) words.push(norm(m.nom)); for(const d of S.docs||[]) words.push(...norm(d.titre||"").split(/\s+/)); for(const a of S.abos||[]) words.push(...norm(a.nom||"").split(/\s+/)); for(const t of allTasks()) words.push(...norm(t.titre||"").split(/\s+/));
+  if(words.some(w=>w&&w.length>=4&&q.includes(" "+w))) return false;
+  return true; }
+const SEC_NO="Désolé, je ne peux pas traiter cette demande. Je m'occupe uniquement de ton foyer : tâches, rendez-vous, papiers, budget, courses, repas et maison.";
 async function askSecretary(q){
   q=String(q||"").trim(); if(!q) return;
+  if(secOffTopic(q)){ if(S.secCtl){ S.secCtl.abort(); S.secCtl=null; }
+    if(S.secAns&&S.secAns.r&&!S.secAns.busy){ S.secHist=(S.secHist||[]).concat([{q:S.secAns.q,r:S.secAns.r}]).slice(-6); }
+    S.secAns={q,r:secA(""),busy:true,fresh:true}; renderSecAns(); secReadFx(); await sleep(950); S.secAns={q,r:secA(""),busy:true}; renderSecAns(); await sleep(600);
+    S.secAns={q,r:secA(SEC_NO)}; renderSecAns(); return; }
   if(S.secCtl){ S.secCtl.abort(); S.secCtl=null; }
   if(S.secAns&&S.secAns.r&&!S.secAns.busy){ S.secHist=(S.secHist||[]).concat([{q:S.secAns.q,r:S.secAns.r}]).slice(-6); }
   S.secAns={q,r:secA(""),busy:true,fresh:true}; renderSecAns(); secReadFx();
