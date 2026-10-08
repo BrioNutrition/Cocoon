@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 12:02";</script>
+<script>window.COCOON_BUILD="08/10 12:07";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1533,6 +1533,9 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 /* mode sombre cohérent */
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){color-scheme:dark}:root:not([data-theme="light"]) .chip[aria-pressed="true"],:root:not([data-theme="light"]) .member.is-open,:root:not([data-theme="light"]) .s-filters button[aria-pressed="true"],:root:not([data-theme="light"]) .c-pick button[aria-pressed="true"],:root:not([data-theme="light"]) .coc-opt.plus.open,:root:not([data-theme="light"]) .coc-mo-ok{background:#FFC94A;color:#1C1B2E;border-color:#FFC94A}:root:not([data-theme="light"]) .r-chip.r-c-matin[aria-pressed="true"]{background:#43302C;color:#FFD3C2}:root:not([data-theme="light"]) .r-chip.r-c-midi[aria-pressed="true"]{background:#273349;color:#CFE0FF}:root:not([data-theme="light"]) .r-chip.r-c-soir[aria-pressed="true"]{background:#433A22;color:#FFE3A0}:root:not([data-theme="light"]) input[type=file]::file-selector-button{background:var(--sunk);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:6px 10px;margin-right:10px;font:inherit;font-weight:600}}
 :root[data-theme="dark"]{color-scheme:dark}:root[data-theme="dark"] .chip[aria-pressed="true"],:root[data-theme="dark"] .member.is-open,:root[data-theme="dark"] .s-filters button[aria-pressed="true"],:root[data-theme="dark"] .c-pick button[aria-pressed="true"],:root[data-theme="dark"] .coc-opt.plus.open,:root[data-theme="dark"] .coc-mo-ok{background:#FFC94A;color:#1C1B2E;border-color:#FFC94A}:root[data-theme="dark"] .r-chip.r-c-matin[aria-pressed="true"]{background:#43302C;color:#FFD3C2}:root[data-theme="dark"] .r-chip.r-c-midi[aria-pressed="true"]{background:#273349;color:#CFE0FF}:root[data-theme="dark"] .r-chip.r-c-soir[aria-pressed="true"]{background:#433A22;color:#FFE3A0}:root[data-theme="dark"] input[type=file]::file-selector-button{background:var(--sunk);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:6px 10px;margin-right:10px;font:inherit;font-weight:600}
+
+/* niveau : même jaune qu'en clair */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .coc-pill,:root:not([data-theme="light"]) .coc-streak,:root:not([data-theme="light"]) .coc-big,:root:not([data-theme="light"]) .coc-opt{--coc-y:color-mix(in srgb,#FFC94A 45%,#FFFFFF)!important;--ink:#1C1B2E;--muted:#6A6886;--surface:#FFFFFF;color:#1C1B2E}}:root[data-theme="dark"] .coc-pill,:root[data-theme="dark"] .coc-streak,:root[data-theme="dark"] .coc-big,:root[data-theme="dark"] .coc-opt{--coc-y:color-mix(in srgb,#FFC94A 45%,#FFFFFF)!important;--ink:#1C1B2E;--muted:#6A6886;--surface:#FFFFFF;color:#1C1B2E}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
