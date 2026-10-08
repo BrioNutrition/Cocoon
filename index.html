@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 14:28";</script>
+<script>window.COCOON_BUILD="08/10 14:38";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1765,10 +1765,10 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
           <button type="button" class="b-add" id="bAddCr"><span style="--stripe:#B9A8F0"><svg class="gly" viewBox="0 0 24 24" aria-hidden="true"><path class="gb" d="M12 2.6 2.4 7.4v2.2h19.2V7.4z"/><rect class="gb" x="4" y="10.8" width="3" height="7" rx=".8"/><rect class="gb" x="10.5" y="10.8" width="3" height="7" rx=".8"/><rect class="gb" x="17" y="10.8" width="3" height="7" rx=".8"/><rect class="gb" x="2.4" y="19" width="19.2" height="2.6" rx="1.2"/></svg></span><b>Crédit</b><small>Prêt en cours</small></button>
     </div>
     <form class="b-form" id="bForm" hidden autocomplete="off"></form>
-    <div class="sub" id="bCatsWrap"></div>
     <div class="sub"><div class="sec-title"><h2 id="bDepTitle">Dépenses récentes</h2><span class="muted" style="font-size:13px" id="bDepCount"></span></div><div class="list b-list" id="bDeps"></div></div>
     <div class="sub"><div class="sec-title"><h2>Récurrent &amp; abonnements</h2><span class="muted" style="font-size:13px" id="bSubsTotal"></span></div><div class="list b-list" id="bSubs"></div></div>
     <div class="sub" id="bCreditsWrap"></div>
+    <div class="sub" id="bCatsWrap"></div>
     <div class="sub" id="bBalanceWrap"></div>
     <div class="sub" id="bPeopleWrap"></div>
   </section>
@@ -3222,7 +3222,7 @@ function renderBudget(){
     if(a.auto!==false) meta.append(el("span",{class:"rec",text:"↻ auto"}));
     if(n) meta.append(el("span",{class:"due"+(dd<=3?" soon":""),text:dd===0?"prélevé aujourd'hui":dd===1?"prélevé demain":dd<7?"prélevé dans "+dd+" j":fmtDue(n)}));
     if(S.bForm&&S.bForm.id===a.id&&S.bForm.kind==="sub"){ sl.append(BF); continue; }
-    sl.append(el("div",{class:"item b-row",role:"button",tabindex:"0","aria-label":"Modifier "+a.nom,onclick:()=>openBForm("sub",a)},bIcon(a.cat,a.nom),el("div",{class:"t-body"},el("div",{class:"t-title",text:a.nom}),meta),el("div",{class:"b-amt"},money(a.montant),el("small",{text:(FREQ[a.freq]||FREQ.mensuel).l})))); }
+    sl.append(el("div",{class:"item b-row","data-bid":"sub:"+a.id,role:"button",tabindex:"0","aria-label":"Modifier "+a.nom,onclick:()=>openBForm("sub",a)},bIcon(a.cat,a.nom),el("div",{class:"t-body"},el("div",{class:"t-title",text:a.nom}),meta),el("div",{class:"b-amt"},money(a.montant),el("small",{text:(FREQ[a.freq]||FREQ.mensuel).l})))); }
   // dépenses
   const dl=$("bDeps"); dl.innerHTML="";
   const recent=(cur?S.depenses:S.depenses.filter(inM)).slice().sort((x,y)=>(y.date||"")<(x.date||"")?-1:(y.date||"")>(x.date||"")?1:(y.creeLe||0)-(x.creeLe||0)).slice(0,cur?25:300);
@@ -3236,7 +3236,7 @@ function renderBudget(){
     if(!rb){ const pt=partsText(d); if(pt) meta.append(el("span",{text:pt})); }
     if(d.auto) meta.append(el("span",{class:"rec",text:"↻ auto"}));
     if(S.bForm&&S.bForm.id===d.id&&S.bForm.kind==="dep"){ dl.append(BF); continue; }
-    dl.append(el("div",{class:"item b-row",role:"button",tabindex:"0","aria-label":"Modifier "+d.titre,onclick:()=>openBForm("dep",d)},bIcon(rb?"autre":d.cat,rb?"↔":d.titre),el("div",{class:"t-body"},el("div",{class:"t-title",text:d.titre}),meta),el("div",{class:"b-amt",text:money(d.montant)}))); }
+    dl.append(el("div",{class:"item b-row","data-bid":"dep:"+d.id,role:"button",tabindex:"0","aria-label":"Modifier "+d.titre,onclick:()=>openBForm("dep",d)},bIcon(rb?"autre":d.cat,rb?"↔":d.titre),el("div",{class:"t-body"},el("div",{class:"t-title",text:d.titre}),meta),el("div",{class:"b-amt",text:money(d.montant)}))); }
 }
 function subDue(a){
   if(!a.debut||a.actif===false||a.auto===false) return [];
@@ -3269,13 +3269,14 @@ function openBForm(kind,item){
   const me=meId(); if(!me){ needMe(); return; }
   if(item&&!(isAdmin()||item.creePar===me||item.payePar===me)){ toast("Seuls les admins et la personne qui l'a ajouté peuvent le modifier."); return; }
   const ad=adults().map(m=>m.id);
-  S.bForm={kind,id:item?item.id:null,confirm:false,d:item?Object.assign(JSON.parse(JSON.stringify(item)),{splitMode:item.parts?"perso":"egal"}):(kind==="dep"?{titre:"",montant:null,cat:"courses",payePar:me,date:iso(today()),partage:ad.length?ad:[me],freq:"once"}:{nom:"",montant:null,cat:"streaming",freq:"mensuel",debut:iso(today()),payePar:me,partage:ad.length?ad:[me],rappel:true,actif:true,auto:true})};
+  S.bForm={kind,id:item?item.id:null,confirm:false,d:item?Object.assign(JSON.parse(JSON.stringify(item)),{splitMode:item.parts?"perso":"egal"}):(kind==="dep"?{titre:"",montant:null,cat:"courses",payePar:me,date:iso(today()),partage:[me],freq:"once"}:{nom:"",montant:null,cat:"streaming",freq:"mensuel",debut:iso(today()),payePar:me,partage:[me],rappel:true,actif:true,auto:true})};
   if(S.tab!=="budget") setTab("budget");
-  if(!item) bfHome(); renderBudget(); renderBForm(); setTimeout(()=>{ if(BF.isConnected) BF.scrollIntoView({behavior:"smooth",block:item?"center":"start"}); const i=$("bfName"); if(i&&!item) i.focus(); },60);
+  if(!item) bfHome(); renderBudget(); renderBForm(); setTimeout(()=>{ if(BF.isConnected) (item?(()=>{ const r=BF.getBoundingClientRect(); if(r.top<70) window.scrollBy({top:r.top-80,behavior:"smooth"}); })():BF.scrollIntoView({behavior:"smooth",block:"start"})); const i=$("bfName"); if(i&&!item) i.focus(); },60);
 }
 const BF=document.getElementById("bForm"), BF_HOME=BF.nextElementSibling;
 function bfHome(){ if(BF_HOME&&BF_HOME.parentNode&&BF.nextElementSibling!==BF_HOME) BF_HOME.parentNode.insertBefore(BF,BF_HOME); }
-function closeBForm(){ S.bForm=null; BF.hidden=true; BF.innerHTML=""; bfHome(); }
+function closeBForm(){ const B=S.bForm, y=B&&B.id&&BF.isConnected&&!BF.hidden?BF.getBoundingClientRect().top:null; S.bForm=null; BF.hidden=true; BF.innerHTML=""; bfHome();
+  if(B&&B.id){ renderBudget(); const r=document.querySelector('[data-bid="'+B.kind+":"+B.id+'"]'); if(r&&y!=null){ const dy=r.getBoundingClientRect().top-Math.min(Math.max(y,90),innerHeight-200); if(Math.abs(dy)>1) window.scrollBy(0,dy); } } }
 function renderBForm(){
   const B=S.bForm, f=$("bForm"); if(!B){ f.hidden=true; return; } f.hidden=false; f.innerHTML="";
   const d=B.d, dep=B.kind==="dep", me=meId();
@@ -3295,7 +3296,7 @@ function renderBForm(){
   f.append(row);
   const ad=adults();
   if(ad.length>1){
-    const pp=el("div",{class:"pchips"}); for(const m of ad) pp.append(el("button",{type:"button",class:"pchip","aria-pressed":String(d.payePar===m.id),onclick:()=>{ d.payePar=m.id; renderBForm(); }},avatar(m.id),m.id===me?"Moi":m.nom));
+    const pp=el("div",{class:"pchips"}); for(const m of ad) pp.append(el("button",{type:"button",class:"pchip","aria-pressed":String(d.payePar===m.id),onclick:()=>{ if(Array.isArray(d.partage)&&d.partage.length<=1) d.partage=[m.id]; d.payePar=m.id; renderBForm(); }},avatar(m.id),m.id===me?"Moi":m.nom));
     if((d.partage||[]).length>1) pp.append(el("button",{type:"button",class:"pchip","aria-pressed":String(d.payePar==="chacun"),onclick:()=>{ d.payePar="chacun"; renderBForm(); }},"Chacun paie sa part"));
     f.append(el("div",{class:"field"},"Payé par",pp));
     { const sp=el("div",{class:"pchips"}); d.partage=Array.isArray(d.partage)?d.partage:[];
