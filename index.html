@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 16:48";</script>
+<script>window.COCOON_BUILD="08/10 16:52";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1611,7 +1611,8 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 /* Ajouter un rendez-vous : un simple + dans un cercle, aux couleurs du bouton + du menu */
 .rdv-add{width:38px;height:38px;flex:none;border:0;border-radius:50%;display:grid;place-items:center;padding:0;cursor:pointer;color:#1C1B2E;background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB);box-shadow:0 6px 14px rgba(255,156,128,.38),inset 0 1px 0 rgba(255,255,255,.45);transition:transform .2s cubic-bezier(.3,1.6,.5,1)}
 .rdv-add:active{transform:scale(.88) rotate(90deg)}
-.rdv-add svg{display:block}
+.rdv-add{position:relative;-webkit-appearance:none;appearance:none;font-size:0;line-height:0;min-width:38px;min-height:38px;max-width:38px;max-height:38px;aspect-ratio:1/1;overflow:visible}
+.rdv-add svg{display:block;position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
