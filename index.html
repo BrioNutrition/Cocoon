@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 14:18";</script>
+<script>window.COCOON_BUILD="08/10 14:23";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1548,6 +1548,15 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 /* punaise du mot du foyer : même style que les post-it de l'écran d'arrivée */
 .mot::before{top:-7px;left:22px;width:16px;height:16px;margin-left:0;border-radius:50%;transform:none;background:var(--mot-pin,#F2B705)!important;box-shadow:inset 0 -2px 0 rgba(0,0,0,.15),0 2px 3px rgba(0,0,0,.2)!important}
 .mot-sw::after{background:var(--mot-pin);box-shadow:inset 0 -1.5px 0 rgba(0,0,0,.15),0 1px 2px rgba(0,0,0,.2)}
+
+/* Budget : une seule rangée d'actions, claire */
+.b-actions{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px}
+.b-add{flex-direction:column;align-items:flex-start;gap:8px;padding:12px 12px 13px;min-width:0}
+.b-add b{font-size:15px;font-weight:800;line-height:1.15}
+.b-add small{font-size:12px;font-weight:500;color:var(--muted);line-height:1.25;margin-top:-5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.b-add span{width:38px;height:38px}
+.b-link{border:0;background:none;padding:4px 0;font:inherit;font-size:13.5px;font-weight:700;color:var(--ink);cursor:pointer;white-space:nowrap}
+#bCreditsWrap[hidden]{display:none}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -1748,16 +1757,17 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
   <section class="view" data-view="budget" hidden>
     <div class="b-hero" id="bHero"></div>
     <div class="b-actions">
-      <button type="button" class="b-add" id="bAddDep"><span style="--stripe:#FF9C80"><svg class="gly" viewBox="0 0 24 24" aria-hidden="true"><circle class="gb" cx="12" cy="12" r="10"/><path class="gl" d="M15.6 8.4a4.6 4.6 0 1 0 0 7.2M7.2 10.8h6M7.2 13.2h6"/></svg></span>Une dépense</button>
-      <button type="button" class="b-add" id="bAddSub"><span style="--stripe:#8FB8FF"><svg class="gly" viewBox="0 0 24 24" aria-hidden="true"><path class="gb" d="M4.01 9.09A8.5 8.5 0 0 1 18.96 7.12L16.83 8.62A5.9 5.9 0 0 0 6.46 9.98zM19.70 6.61L20.19 11.15L16.10 9.13zM19.99 14.91A8.5 8.5 0 0 1 5.04 16.88L7.17 15.38A5.9 5.9 0 0 0 17.54 14.02zM4.30 17.39L3.81 12.85L7.90 14.87z"/></svg></span>Un abonnement</button>
+      <button type="button" class="b-add" id="bAddDep"><span style="--stripe:#FF9C80"><svg class="gly" viewBox="0 0 24 24" aria-hidden="true"><circle class="gb" cx="12" cy="12" r="10"/><path class="gl" d="M15.6 8.4a4.6 4.6 0 1 0 0 7.2M7.2 10.8h6M7.2 13.2h6"/></svg></span><b>Dépense</b><small>Achat ponctuel</small></button>
+      <button type="button" class="b-add" id="bAddSub"><span style="--stripe:#8FB8FF"><svg class="gly" viewBox="0 0 24 24" aria-hidden="true"><path class="gb" d="M4.01 9.09A8.5 8.5 0 0 1 18.96 7.12L16.83 8.62A5.9 5.9 0 0 0 6.46 9.98zM19.70 6.61L20.19 11.15L16.10 9.13zM19.99 14.91A8.5 8.5 0 0 1 5.04 16.88L7.17 15.38A5.9 5.9 0 0 0 17.54 14.02zM4.30 17.39L3.81 12.85L7.90 14.87z"/></svg></span><b>Récurrent</b><small>Chaque mois</small></button>
+          <button type="button" class="b-add" id="bAddCr"><span style="--stripe:#B9A8F0"><svg class="gly" viewBox="0 0 24 24" aria-hidden="true"><path class="gb" d="M12 2.6 2.4 7.4v2.2h19.2V7.4z"/><rect class="gb" x="4" y="10.8" width="3" height="7" rx=".8"/><rect class="gb" x="10.5" y="10.8" width="3" height="7" rx=".8"/><rect class="gb" x="17" y="10.8" width="3" height="7" rx=".8"/><rect class="gb" x="2.4" y="19" width="19.2" height="2.6" rx="1.2"/></svg></span><b>Crédit</b><small>Prêt en cours</small></button>
     </div>
     <form class="b-form" id="bForm" hidden autocomplete="off"></form>
-    <div class="sub" id="bPeopleWrap"></div>
+    <div class="sub" id="bCatsWrap"></div>
+    <div class="sub"><div class="sec-title"><h2 id="bDepTitle">Dépenses récentes</h2><span class="muted" style="font-size:13px" id="bDepCount"></span></div><div class="list b-list" id="bDeps"></div></div>
+    <div class="sub"><div class="sec-title"><h2>Récurrent &amp; abonnements</h2><span class="muted" style="font-size:13px" id="bSubsTotal"></span></div><div class="list b-list" id="bSubs"></div></div>
     <div class="sub" id="bCreditsWrap"></div>
     <div class="sub" id="bBalanceWrap"></div>
-    <div class="sub" id="bCatsWrap"></div>
-    <div class="sub"><div class="sec-title"><h2>Récurrent &amp; abonnements</h2><span class="muted" style="font-size:13px" id="bSubsTotal"></span></div><div class="list b-list" id="bSubs"></div></div>
-    <div class="sub"><div class="sec-title"><h2 id="bDepTitle">Dépenses récentes</h2><span class="muted" style="font-size:13px" id="bDepCount"></span></div><div class="list b-list" id="bDeps"></div></div>
+    <div class="sub" id="bPeopleWrap"></div>
   </section>
 
 </div>
@@ -2957,11 +2967,11 @@ const MOISA=new Intl.DateTimeFormat("fr-FR",{month:"long",year:"numeric"});
 function renderCredits(){
   const w=$("bCreditsWrap"); if(!w) return; w.innerHTML="";
   const me=meId(), can=!S.readOnly&&!!me, list=(S.credits||[]), F=S.crForm;
-  w.append(el("div",{class:"sec-title"},el("h2",{text:"Crédits par personne"}),can&&!(F&&!F._id)?el("button",{type:"button",class:"btn ghost",style:"padding:6px 12px;font-size:13px",text:"+ Un crédit",onclick:()=>{ S.crForm={titulaires:[me],type:"autre"}; renderBudget(); setTimeout(()=>{ const i=$("crNom"); if(i) i.focus(); },60); }}):""));
+  w.append(el("div",{class:"sec-title"},el("h2",{text:"Crédits"}),el("span",{class:"muted",style:"font-size:13px",text:"Qui rembourse quoi"})));
   const ppl=adults().filter(m=>list.some(c=>crShare(c,m.id)>0));
   const row=el("div",{class:"people"});
   if(F&&!F._id){ const nc=el("div",{class:"pcard-b cr-card editing"},creditFormEl()); row.append(nc); }
-  if(!list.length&&!(F&&!F._id)){ w.append(el("div",{class:"b-empty"},el("strong",{text:"Aucun crédit"}),"Prêt immobilier, crédit auto, conso : ajoute-les pour voir qui rembourse combien chaque mois, et jusqu'à quand.")); return; }
+  if(!list.length&&!(F&&!F._id)){ w.innerHTML=""; w.hidden=true; return; } w.hidden=false;
   for(const m of ppl){
     const mine=list.filter(c=>crShare(c,m.id)>0).sort((a,b)=>(a.fin||"9")<(b.fin||"9")?-1:1), act=mine.filter(crActive);
     const mois=act.reduce((a,c)=>a+crShare(c,m.id),0);
@@ -3342,6 +3352,7 @@ function delBItem(){ const B=S.bForm; if(!B||!B.id) return; const dep=B.kind==="
 $("bForm").addEventListener("submit",saveBForm);
 $("bAddDep").addEventListener("click",()=>openBForm("dep"));
 $("bAddSub").addEventListener("click",()=>openBForm("sub"));
+$("bAddCr").addEventListener("click",()=>{ const me=meId(); if(!me){ needMe(); return; } if(S.readOnly) return; closeBForm(); S.crForm={titulaires:[me],type:"autre"}; renderBudget(); setTimeout(()=>{ const w=$("bCreditsWrap"); if(w) w.scrollIntoView({behavior:"smooth",block:"start"}); const i=$("crNom"); if(i) i.focus({preventScroll:true}); },60); });
 $("sgDep").addEventListener("click",()=>{ closeSheet(); openBForm("dep"); });
 $("sgRdv").addEventListener("click",()=>{ closeSheet(); if(!needMe()) return; setTab("accueil"); S.rdvForm={pour:[meId()]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({behavior:"smooth",block:"start"}); },60); });
 $("sgSub").addEventListener("click",()=>{ closeSheet(); openBForm("sub"); });
@@ -5140,7 +5151,7 @@ function renderBudgetCats(month,tot,mois){
   const cats=new Set(Object.keys(by).concat(Object.keys(obj).filter(k=>obj[k]>0)));
   const rows=[...cats].map(c=>[c,by[c]||0,obj[c]||0]).sort((a,b)=>{ const pa=a[2]?a[1]/a[2]:-1, pb=b[2]?b[1]/b[2]:-1; return pb-pa||b[1]-a[1]; });
   const hasObj=Object.keys(obj).some(k=>obj[k]>0);
-  const editBtn=isAdmin()&&!S.readOnly?el("button",{type:"button",class:"btn ghost",style:"padding:6px 12px;font-size:13px",text:hasObj?"Objectifs":"+ Objectifs",onclick:()=>{ S.objForm=S.objForm?null:Object.assign({},obj); renderBudget(); }}):null;
+  const editBtn=isAdmin()&&!S.readOnly?el("button",{type:"button",class:"b-link",text:hasObj?"Objectifs ›":"Fixer des objectifs ›",onclick:()=>{ S.objForm=S.objForm?null:Object.assign({},obj); renderBudget(); }}):null;
   cw.append(el("div",{class:"sec-title"},el("h2",{text:"Où part l'argent"}),editBtn||el("span",{class:"muted",style:"font-size:13px",text:"en "+mois})));
   if(S.objForm) cw.append(objFormEl());
   if(!rows.length){ cw.append(el("div",{class:"b-empty"},el("strong",{text:"Rien en "+mois}),isAdmin()?"Fixe des objectifs par catégorie : Cocoon te prévient à 80 %.":"Les dépenses du mois apparaîtront ici, catégorie par catégorie.")); return; }
