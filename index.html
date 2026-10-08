@@ -35,7 +35,7 @@ html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxI
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 10:58";</script>
+<script>window.COCOON_BUILD="08/10 11:03";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1496,6 +1496,13 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .pm-ft{padding:0 16px;display:grid;gap:8px}
 .pm-car .pm-btn{justify-self:stretch!important}
 .pm-car .pm-price{text-align:center}
+html.sheet-open,html.sheet-open body{overflow:hidden;overscroll-behavior:none}
+.sheet{overscroll-behavior:contain}
+.nav-add[aria-expanded="true"]{transform:none!important}
+.nav-add svg{transition:transform .5s cubic-bezier(.3,1.5,.5,1)}
+.nav-add[aria-expanded="true"] svg{transform:rotate(135deg)}
+@media (prefers-reduced-motion:no-preference){.sheet-bg:not([hidden]){animation:sheetBgIn .3s ease-out}}
+@keyframes sheetBgIn{from{opacity:0}}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3677,8 +3684,26 @@ function openSheet(o){ if(!meId()){ needMe(); return; } o=(o&&(o.where||o.text))
   if(o.where){ fillWhere($("qWhere"),o.where); $("qWhere").value=o.where; $("qWhere").dataset.touched="1"; if(o.where!=="perso"&&o.where!=="tous") S.qSel.add(o.where); }
   if(o.text) $("quickTitle").value=o.text;
   syncQuick(); renderHeader();
-  $("sheet").hidden=false; $("sheetBg").hidden=false; $("navAdd").setAttribute("aria-expanded","true"); setTimeout(()=>{ try{ $("quickTitle").focus(); }catch(_){} },120); }
-function closeSheet(){ const sh=$("sheet"); sh.hidden=true; sh.style.transform=""; sh.style.transition=""; $("sheetBg").hidden=true; $("sheetBg").style.opacity=""; $("navAdd").setAttribute("aria-expanded","false"); }
+  if(S.sheetClosing){ S.sheetClosing=false; $("sheet").getAnimations().forEach(x=>x.cancel()); $("sheetBg").getAnimations().forEach(x=>x.cancel()); }
+  $("sheet").style.transform=""; $("sheetBg").style.opacity="";
+  document.documentElement.classList.add("sheet-open");
+  $("sheet").hidden=false; $("sheetBg").hidden=false; if($("navAdd").getAttribute("aria-expanded")!=="true"){ $("navAdd").setAttribute("aria-expanded","true"); navPop(); } setTimeout(()=>{ try{ $("quickTitle").focus(); }catch(_){} },120); }
+function navPop(){ const b=$("navAdd"); if(!b||(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+  b.getAnimations().forEach(a=>{ if(a.id==="pop") a.cancel(); });
+  const a=b.animate([{scale:"1"},{scale:".84",offset:.28},{scale:"1.1",offset:.62},{scale:"1"}],{duration:460,easing:"cubic-bezier(.3,.7,.4,1)"}); a.id="pop"; }
+function sheetDone(){ const sh=$("sheet"), bg=$("sheetBg"); sh.hidden=true; sh.style.transform=""; sh.style.transition=""; bg.hidden=true; bg.style.opacity=""; bg.style.transition=""; document.documentElement.classList.remove("sheet-open"); S.sheetClosing=false; }
+function closeSheet(o){ const sh=$("sheet"), bg=$("sheetBg"), nb=$("navAdd");
+  if(nb.getAttribute("aria-expanded")==="true"){ nb.setAttribute("aria-expanded","false"); navPop(); }
+  if(sh.hidden){ sheetDone(); return; }
+  const reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if((o&&o.instant)||reduced){ sheetDone(); return; }
+  if(S.sheetClosing) return; S.sheetClosing=true;
+  const a=document.activeElement; if(a&&a.blur&&sh.contains(a)) a.blur();
+  const cur=getComputedStyle(sh).transform, h=sh.offsetHeight||400;
+  sh.getAnimations().forEach(x=>x.cancel());
+  sh.animate([{transform:cur&&cur!=="none"?cur:"translateX(-50%)"},{transform:"translateX(-50%) translate3d(0,"+(h+30)+"px,0)"}],{duration:380,easing:"cubic-bezier(.45,0,.25,1)",fill:"forwards"})
+    .finished.then(()=>{ if(S.sheetClosing){ sh.getAnimations().forEach(x=>x.cancel()); sheetDone(); } },()=>{});
+  bg.animate([{opacity:getComputedStyle(bg).opacity},{opacity:0}],{duration:360,easing:"ease-out",fill:"forwards"}).finished.then(()=>bg.getAnimations().forEach(x=>x.cancel()),()=>{}); }
 /* Glisser la feuille « Ajouter » vers le bas pour la fermer */
 (function(){ const sh=$("sheet"), bg=$("sheetBg"); let y0=0, x0=0, dy=0, t0=0, drag=false, armed=false;
   const base="translateX(-50%)";
@@ -3687,6 +3712,7 @@ function closeSheet(){ const sh=$("sheet"); sh.hidden=true; sh.style.transform="
     armed=sh.scrollTop<=0&&!(tg.closest&&tg.closest(".seg"));
     y0=e.touches[0].clientY; x0=e.touches[0].clientX; dy=0; t0=performance.now(); drag=false; },{passive:true});
   sh.addEventListener("touchmove",e=>{ if(!armed) return; const y=e.touches[0].clientY, x=e.touches[0].clientX, d=y-y0;
+    if(d>0&&Math.abs(d)>=Math.abs(x-x0)) e.preventDefault(); /* pas de défilement de la page derrière */
     if(!drag){ if(d>8&&Math.abs(d)>Math.abs(x-x0)*1.2){ drag=true; y0=y; sh.style.transition="none"; const a=document.activeElement; if(a&&a.blur&&sh.contains(a)) a.blur(); } else { if(d<-4) armed=false; return; } }
     dy=Math.max(0,y-y0); e.preventDefault();
     sh.style.transform=base+" translate3d(0,"+dy+"px,0)"; bg.style.opacity=String(Math.max(0,1-dy/(sh.offsetHeight||400)*1.2)); },{passive:false});
@@ -3694,10 +3720,11 @@ function closeSheet(){ const sh=$("sheet"); sh.hidden=true; sh.style.transform="
     const v=dy/Math.max(1,performance.now()-t0), h=sh.offsetHeight||400;
     if(dy>Math.min(140,h*0.28)||(v>0.55&&dy>40)){
       sh.style.transition="transform .26s cubic-bezier(.3,.7,.4,1)"; bg.style.transition="opacity .26s ease"; sh.style.transform=base+" translate3d(0,"+(h+40)+"px,0)"; bg.style.opacity="0";
-      setTimeout(()=>{ bg.style.transition=""; closeSheet(); },260);
+      setTimeout(()=>{ bg.style.transition=""; closeSheet({instant:true}); },260);
     } else { sh.style.transition="transform .32s cubic-bezier(.2,1.2,.4,1)"; bg.style.transition="opacity .3s ease"; sh.style.transform=base; bg.style.opacity="";
       setTimeout(()=>{ sh.style.transition=""; bg.style.transition=""; },340); } };
   sh.addEventListener("touchend",end); sh.addEventListener("touchcancel",end);
+  bg.addEventListener("touchmove",e=>e.preventDefault(),{passive:false});
 })();
 $("navAdd").addEventListener("click",()=>{ $("sheet").hidden?openSheet():closeSheet(); });
 $("sheetBg").addEventListener("click",closeSheet);
