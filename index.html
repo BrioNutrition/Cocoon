@@ -35,7 +35,7 @@ html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxI
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="07/10 23:54";</script>
+<script>window.COCOON_BUILD="08/10 09:25";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -53,6 +53,21 @@ html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxI
 .cx-sw input:checked+i{background:#2F9E5B}.cx-sw input:checked+i::after{transform:translateX(18px)}
 .cx-sw input:focus-visible+i{outline:2px solid var(--ink);outline-offset:2px}
 .cx-row2{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14.5px;font-weight:600;padding-left:2px}
+.cx-ask-bg{position:fixed;inset:0;z-index:2147483000;background:rgba(28,27,46,.38);opacity:0;transition:opacity .35s ease}
+.cx-ask-bg.on{opacity:1}
+.cx-ask{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));width:min(440px,calc(100% - 24px));z-index:2147483001;background:var(--surface);color:var(--ink);border-radius:26px;padding:22px 20px 14px;box-shadow:0 20px 60px rgba(0,0,0,.25);display:grid;gap:10px;text-align:center;transform:translate(-50%,calc(100% + 40px));transition:transform .42s cubic-bezier(.2,.9,.3,1)}
+.cx-ask.on{transform:translate(-50%,0)}
+.cx-ask-ic{width:58px;height:58px;margin:0 auto 2px;border-radius:18px;background:#FFE7A6;color:#1C1B2E;display:grid;place-items:center}
+.cx-ask h2{margin:0;font-size:22px;font-weight:800;letter-spacing:-.02em}
+.cx-ask ul{margin:2px 0 0;padding:0;list-style:none;display:grid;gap:7px;text-align:left}
+.cx-ask li{font-size:14.5px;line-height:1.4;color:var(--muted);padding-left:24px;position:relative}
+.cx-ask li b{color:var(--ink)}
+.cx-ask li::before{content:"";position:absolute;left:4px;top:.45em;width:9px;height:9px;border-radius:50%;background:#FFC94A}
+.cx-ask-s{margin:2px 0 4px;font-size:13px;color:var(--muted)}
+.cx-ask-m{margin:0;font-size:13.5px;color:#B5482F}
+.cx-ask .cx-ask-ok{width:100%;padding:14px;font-size:16px}
+.cx-ask-no{border:0;background:none;font:inherit;font-weight:600;font-size:14.5px;color:var(--muted);padding:10px;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.cx-ask,.cx-ask-bg{transition:none}}
 .cx-row2 select{font:inherit;font-size:15px;padding:7px 10px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink)}
 </style>
 </head>
@@ -4985,6 +5000,47 @@ bootCheck();
 </script>
 
 <script>
+/* Après la première connexion : on propose les notifications (une seule fois par téléphone) */
+(function(){
+  if(!window.cocoonHost||!cocoonHost.push) return;
+  var KEY="cocoon.pushAsk";
+  function asked(){ try{ return !!localStorage.getItem(KEY); }catch(_){ return true; } }
+  function mark(v){ try{ localStorage.setItem(KEY,v); }catch(_){} }
+  function hid(id){ var e=document.getElementById(id); return !e||e.hidden; }
+  function calm(){ return !document.getElementById("boot")&&!document.getElementById("cxIntro")&&hid("cxGate")&&hid("wizard")&&hid("splash")&&hid("reveal")&&hid("sheet")
+    &&!document.querySelector(".wrap.arrive")&&!!document.querySelector('.view[data-view="accueil"]:not([hidden])')&&document.visibilityState==="visible"; }
+  cocoonHost.ready.then(async function(){
+    var P=cocoonHost.push; if(asked()||P.support()!=="ok") return;
+    if(P.permission()==="denied"){ mark("bloque"); return; }
+    try{ var st=await P.status(); if(st.on){ mark("deja"); return; } }catch(_){}
+    var tries=0;
+    (function wait(){ if(asked()) return; if(!calm()){ if(++tries<400) setTimeout(wait,1500); return; } setTimeout(function(){ if(calm()&&!asked()) show(); else setTimeout(wait,1500); },1400); })();
+    function show(){
+      mark("vu");
+      var bg=document.createElement("div"); bg.className="cx-ask-bg";
+      var box=document.createElement("div"); box.className="cx-ask"; box.setAttribute("role","dialog"); box.setAttribute("aria-modal","true"); box.setAttribute("aria-labelledby","cxAskT");
+      box.innerHTML='<div class="cx-ask-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M12 2.5a6.5 6.5 0 0 0-6.5 6.5v3.3c0 .9-.3 1.8-.9 2.5l-1 1.3c-.7.9-.1 2.2 1.1 2.2h14.6c1.2 0 1.8-1.3 1.1-2.2l-1-1.3c-.6-.7-.9-1.6-.9-2.5V9A6.5 6.5 0 0 0 12 2.5z"/><path d="M9.3 19.6a2.8 2.8 0 0 0 5.4 0z"/></svg></div>'+
+        '<h2 id="cxAskT">On te prévient au bon moment ?</h2>'+
+        '<ul><li><b>Le matin</b>, ta journée en une notification, seulement s\'il y a quelque chose</li><li><b>Les courses</b>, quand quelqu\'un part au magasin</li><li><b>Une tâche</b> qu\'on te confie pour aujourd\'hui ou demain</li></ul>'+
+        '<p class="cx-ask-s">Jamais la nuit. Tu règles tout dans Moi → Notifications.</p>'+
+        '<p class="cx-ask-m" role="status" hidden></p>'+
+        '<button type="button" class="btn cx-ask-ok">Activer les notifications</button><button type="button" class="cx-ask-no">Plus tard</button>';
+      document.body.appendChild(bg); document.body.appendChild(box);
+      requestAnimationFrame(function(){ bg.classList.add("on"); box.classList.add("on"); });
+      function close(){ bg.classList.remove("on"); box.classList.remove("on"); setTimeout(function(){ bg.remove(); box.remove(); },380); document.dispatchEvent(new Event("cocoon-push")); }
+      var ok=box.querySelector(".cx-ask-ok"), m=box.querySelector(".cx-ask-m");
+      box.querySelector(".cx-ask-no").addEventListener("click",function(){ mark("plus-tard"); close(); });
+      bg.addEventListener("click",function(){ mark("plus-tard"); close(); });
+      ok.addEventListener("click",async function(){ ok.disabled=true; ok.textContent="Un instant…";
+        try{ await P.enable(); mark("oui"); ok.textContent="C'est activé ✓"; setTimeout(close,900); }
+        catch(err){ m.hidden=false; m.textContent=err.message||"Ça n'a pas marché."; ok.disabled=false; ok.textContent="Réessayer"; mark("refus"); } });
+      setTimeout(function(){ try{ ok.focus({preventScroll:true}); }catch(_){} },400);
+    }
+  });
+})();
+</script>
+
+<script>
 /* Carte « Notifications » (version hébergée) */
 (function(){
   if(!window.cocoonHost||!cocoonHost.push) return;
@@ -5027,6 +5083,7 @@ bootCheck();
       busy=false; if(b) b.disabled=false; });
     load();
     document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="visible") load(); });
+    document.addEventListener("cocoon-push",function(){ load(); });
   });
 })();
 </script>
