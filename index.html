@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 16:04";</script>
+<script>window.COCOON_BUILD="08/10 16:10";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3151,10 +3151,11 @@ function rdvFormEl(){
   for(const m of membres()){ const on=(F.pour||[]).includes(m.id); who.append(el("button",{type:"button",class:"pchip","aria-pressed":String(on),onclick:()=>{ F.pour=on?F.pour.filter(x=>x!==m.id):(F.pour||[]).concat(m.id); renderRdv(); }},avatar(m.id,20),m.id===meId()?"Moi":m.nom)); }
   const bt=el("div",{class:"mot-btns"},el("button",{type:"submit",class:"btn",text:F.id?"Enregistrer":"Ajouter"}),el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>{ S.rdvForm=null; renderRdv(); }}));
   if(F.id){ const item=(S.rdvs||[]).find(x=>x.id===F.id); if(item) bt.append(el("span",{style:"flex:1"}),el("button",{type:"button",class:"btn ghost",style:"color:var(--late)",text:"Supprimer",onclick:()=>{ S.rdvForm=null; softDelete([{key:"rdv:"+item.id,arr:"rdvs",item,run:()=>S.db.collection("rdv").doc(item.id).delete()}],"Rendez-vous « "+esc(item.titre||"")+" » supprimé."); }})); }
-  f.append(el("h3",{text:F.id?"Modifier le rendez-vous":"Nouveau rendez-vous"}),fld("Quoi",ti),el("div",{class:"frow"},fld("Date",da),fld("Heure",he)),fld("Où",li),el("div",{class:"field"},"Pour qui",who),bt);
+  f.append(el("h3",{text:F.id?"Modifier le rendez-vous":"Nouveau rendez-vous"}),fld("Quoi",ti),el("div",{class:"frow"},fld("Date",da),fld("Heure *",he)),fld("Où",li),el("div",{class:"field"},"Pour qui",who),bt);
   f.addEventListener("submit",async e=>{ e.preventDefault(); if(!needMe()) return;
     if(!(F.titre||"").trim()){ toast("Indique le rendez-vous."); ti.focus(); return; } if(!F.date){ toast("Choisis la date."); da.focus(); return; }
-    { const when=new Date(F.date+"T"+(F.heure||"23:59")); if(when.getTime()<Date.now()){ toast(F.heure&&F.date===iso(today())?"Cette heure est déjà passée : choisis une heure ou une date à venir.":"Cette date est déjà passée : choisis une date à venir."); (F.heure&&F.date===iso(today())?he:da).focus(); return; } }
+    if(!F.heure){ toast("Indique l'heure du rendez-vous."); he.focus(); return; }
+    { const when=new Date(F.date+"T"+F.heure); if(when.getTime()<Date.now()){ toast(F.heure&&F.date===iso(today())?"Cette heure est déjà passée : choisis une heure ou une date à venir.":"Cette date est déjà passée : choisis une date à venir."); (F.heure&&F.date===iso(today())?he:da).focus(); return; } }
     const doc={titre:F.titre.trim(),date:F.date,heure:F.heure||null,lieu:(F.lieu||"").trim()||null,pour:(F.pour||[]).slice()};
     try{ if(F.id) await S.db.collection("rdv").doc(F.id).update(doc); else await S.db.collection("rdv").add(Object.assign(doc,{par:meId(),le:Date.now()}));
       S.rdvForm=null; toast(F.id?"Rendez-vous modifié.":"Rendez-vous ajouté : rappel la veille."); renderRdv(); }catch(err){ writeErr(err); } });
