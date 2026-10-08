@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 23:46";</script>
+<script>window.COCOON_BUILD="09/10 00:03";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1664,6 +1664,19 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 
 .sec-day{display:flex;align-items:center;gap:10px;margin:8px 0 6px;color:var(--muted);font-size:12px;font-weight:700;white-space:nowrap}
 .sec-day::before,.sec-day::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* Secrétaire : case pastel dégradée, bulles blanches */
+.secretary.sec-chat{padding:14px 14px 16px!important;border-radius:26px!important;background:radial-gradient(80% 60% at 100% 0%,rgba(248,201,230,.55),transparent 70%),radial-gradient(70% 60% at 0% 100%,rgba(255,231,166,.6),transparent 70%),#FFF9F3!important;box-shadow:inset 0 0 0 1px rgba(255,156,128,.18)!important}
+.sec-chat .sec-who{margin-left:46px}
+.sec-row.bot .sec-bub{background:#FFFFFF!important;box-shadow:0 2px 8px rgba(28,27,46,.06)!important}
+.sec-chat .sec-ask{margin:4px 0 0 0!important}
+.sec-chat .sec-ask input[type=text]{background:#FFFFFF!important;border:0!important;box-shadow:0 1px 4px rgba(28,27,46,.06)}
+.sec-chat .sec-chips{margin-left:0!important}
+.sec-chat .sec-chips button{background:rgba(255,255,255,.75)!important;border:0!important;color:#1C1B2E!important}
+.sec-chat .sec-new{color:#6A6886}
+.sec-chat .sec-seen{color:#6A6886}
+.sec-day{margin:4px 0 12px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .secretary.sec-chat{background:radial-gradient(80% 60% at 100% 0%,rgba(232,121,170,.20),transparent 70%),radial-gradient(70% 60% at 0% 100%,rgba(255,201,74,.14),transparent 70%),#221F2E!important;box-shadow:inset 0 0 0 1px rgba(255,156,128,.16)!important}:root:not([data-theme="light"]) .sec-row.bot .sec-bub{background:#2F2C42!important;box-shadow:0 2px 8px rgba(0,0,0,.25)!important}:root:not([data-theme="light"]) .sec-row.bot .sec-bub,:root:not([data-theme="light"]) .sec-row.bot .sec-bub *{color:#EDEBF7!important}:root:not([data-theme="light"]) .sec-chat .sec-bub.typing .dots i{background:#EDEBF7!important}:root:not([data-theme="light"]) .sec-chat .sec-bub .btn{background:#FFC94A!important;color:#1C1B2E!important}:root:not([data-theme="light"]) .sec-chat .sec-bub .btn.ghost{background:transparent!important;color:#EDEBF7!important;border-color:rgba(255,255,255,.3)!important}:root:not([data-theme="light"]) .sec-chat .sec-link{text-decoration-color:rgba(255,255,255,.4)!important}:root:not([data-theme="light"]) .sec-chat .sec-ask input[type=text]{background:#2F2C42!important;color:#EDEBF7!important;box-shadow:none}:root:not([data-theme="light"]) .sec-chat .sec-chips button{background:#2F2C42!important;color:#EDEBF7!important}:root:not([data-theme="light"]) .sec-chat .sec-new,:root:not([data-theme="light"]) .sec-chat .sec-seen{color:#A3A0BE}}:root[data-theme="dark"] .secretary.sec-chat{background:radial-gradient(80% 60% at 100% 0%,rgba(232,121,170,.20),transparent 70%),radial-gradient(70% 60% at 0% 100%,rgba(255,201,74,.14),transparent 70%),#221F2E!important;box-shadow:inset 0 0 0 1px rgba(255,156,128,.16)!important}:root[data-theme="dark"] .sec-row.bot .sec-bub{background:#2F2C42!important;box-shadow:0 2px 8px rgba(0,0,0,.25)!important}:root[data-theme="dark"] .sec-row.bot .sec-bub,:root[data-theme="dark"] .sec-row.bot .sec-bub *{color:#EDEBF7!important}:root[data-theme="dark"] .sec-chat .sec-bub.typing .dots i{background:#EDEBF7!important}:root[data-theme="dark"] .sec-chat .sec-bub .btn{background:#FFC94A!important;color:#1C1B2E!important}:root[data-theme="dark"] .sec-chat .sec-bub .btn.ghost{background:transparent!important;color:#EDEBF7!important;border-color:rgba(255,255,255,.3)!important}:root[data-theme="dark"] .sec-chat .sec-link{text-decoration-color:rgba(255,255,255,.4)!important}:root[data-theme="dark"] .sec-chat .sec-ask input[type=text]{background:#2F2C42!important;color:#EDEBF7!important;box-shadow:none}:root[data-theme="dark"] .sec-chat .sec-chips button{background:#2F2C42!important;color:#EDEBF7!important}:root[data-theme="dark"] .sec-chat .sec-new,:root[data-theme="dark"] .sec-chat .sec-seen{color:#A3A0BE}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -1719,8 +1732,8 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
     <div id="motCard"></div>
     <div id="recapCard" class="recap" hidden></div>
     <div id="setupCard" hidden></div>
+    <div class="sec-day" id="secDay" aria-hidden="true"></div>
     <div class="secretary sec-chat">
-      <div class="sec-day" id="secDay" aria-hidden="true"></div>
       <span class="label sec-who">Le secrétaire du foyer</span>
       <div class="sec-thread" id="secThread">
         <div class="sec-row bot" id="secFirst"><img class="sec-av" alt="" aria-hidden="true"><div class="sec-bub"><h2 id="secTitle">Chargement du foyer…</h2><ul id="secList"></ul></div></div>
