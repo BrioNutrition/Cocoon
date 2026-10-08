@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 14:13";</script>
+<script>window.COCOON_BUILD="08/10 14:18";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1545,11 +1545,9 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 
 .coc-big{box-shadow:0 0 0 2px var(--coc-y)}
 
-/* le mot du foyer tient avec un aimant de frigo */
-.mot::before{top:-9px;left:50%;width:38px;height:18px;margin-left:-19px;border-radius:7px;transform:rotate(2deg);
-  background:linear-gradient(180deg,rgba(255,255,255,.55) 0 18%,rgba(255,255,255,0) 52%),linear-gradient(180deg,color-mix(in srgb,var(--mot-pin,#F2B705) 88%,#fff),color-mix(in srgb,var(--mot-pin,#F2B705) 82%,#000))!important;
-  box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.5),0 3px 5px rgba(28,27,46,.25),0 1px 1px rgba(28,27,46,.2)!important}
-.mot-sw::after{top:-5px;width:20px;height:9px;margin-left:-10px;border-radius:4px;background:linear-gradient(180deg,rgba(255,255,255,.5) 0 20%,rgba(255,255,255,0) 55%),var(--mot-pin);box-shadow:inset 0 -1px 0 rgba(0,0,0,.18),0 1px 2px rgba(0,0,0,.25)}
+/* punaise du mot du foyer : même style que les post-it de l'écran d'arrivée */
+.mot::before{top:-7px;left:22px;width:16px;height:16px;margin-left:0;border-radius:50%;transform:none;background:var(--mot-pin,#F2B705)!important;box-shadow:inset 0 -2px 0 rgba(0,0,0,.15),0 2px 3px rgba(0,0,0,.2)!important}
+.mot-sw::after{background:var(--mot-pin);box-shadow:inset 0 -1.5px 0 rgba(0,0,0,.15),0 1px 2px rgba(0,0,0,.2)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
