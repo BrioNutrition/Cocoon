@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 00:03";</script>
+<script>window.COCOON_BUILD="09/10 00:04";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4682,7 +4682,7 @@ async function secClaude(q){
     const res=await S.sample(turns,{cache:false,modelTier:"default",signal:ctl.signal,onText:({text})=>{ if(S.secCtl!==ctl) return; S.secAns={q,r:secA(secSplit(text).body),busy:true,streaming:true}; renderSecAns(); }});
     const {body,acts}=secSplit(res.text);
     S.secTurns.push({role:"user",content:q},{role:"assistant",content:res.text}); if(S.secTurns.length>12) S.secTurns=S.secTurns.slice(-12);
-    const r=secA(body,[],acts.map(secAction).filter(Boolean)); r.claude=true; r.letter=body.length>420;
+    const r=secA(body,[],acts.map(secAction).filter(Boolean)); r.claude=true; r.letter=/(lettre|courrier|e-?mail|\bmail\b|r[ée]sili|attestation|r[ée]clamation|r[ée]dige|[ée]cris)/i.test(q)||/(Objet\s*:|Madame, Monsieur|Cordialement|Bien à vous)/.test(body);
     if(res.truncated) r.note="Réponse coupée : demande-moi moins à la fois.";
     return r;
   }catch(e){
