@@ -35,7 +35,7 @@ html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxI
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 10:46";</script>
+<script>window.COCOON_BUILD="08/10 10:58";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3678,7 +3678,27 @@ function openSheet(o){ if(!meId()){ needMe(); return; } o=(o&&(o.where||o.text))
   if(o.text) $("quickTitle").value=o.text;
   syncQuick(); renderHeader();
   $("sheet").hidden=false; $("sheetBg").hidden=false; $("navAdd").setAttribute("aria-expanded","true"); setTimeout(()=>{ try{ $("quickTitle").focus(); }catch(_){} },120); }
-function closeSheet(){ $("sheet").hidden=true; $("sheetBg").hidden=true; $("navAdd").setAttribute("aria-expanded","false"); }
+function closeSheet(){ const sh=$("sheet"); sh.hidden=true; sh.style.transform=""; sh.style.transition=""; $("sheetBg").hidden=true; $("sheetBg").style.opacity=""; $("navAdd").setAttribute("aria-expanded","false"); }
+/* Glisser la feuille « Ajouter » vers le bas pour la fermer */
+(function(){ const sh=$("sheet"), bg=$("sheetBg"); let y0=0, x0=0, dy=0, t0=0, drag=false, armed=false;
+  const base="translateX(-50%)";
+  sh.addEventListener("touchstart",e=>{ if(e.touches.length!==1) return; const tg=e.target;
+    /* on peut attraper la feuille partout, sauf en défilant un contenu déjà descendu */
+    armed=sh.scrollTop<=0&&!(tg.closest&&tg.closest(".seg"));
+    y0=e.touches[0].clientY; x0=e.touches[0].clientX; dy=0; t0=performance.now(); drag=false; },{passive:true});
+  sh.addEventListener("touchmove",e=>{ if(!armed) return; const y=e.touches[0].clientY, x=e.touches[0].clientX, d=y-y0;
+    if(!drag){ if(d>8&&Math.abs(d)>Math.abs(x-x0)*1.2){ drag=true; y0=y; sh.style.transition="none"; const a=document.activeElement; if(a&&a.blur&&sh.contains(a)) a.blur(); } else { if(d<-4) armed=false; return; } }
+    dy=Math.max(0,y-y0); e.preventDefault();
+    sh.style.transform=base+" translate3d(0,"+dy+"px,0)"; bg.style.opacity=String(Math.max(0,1-dy/(sh.offsetHeight||400)*1.2)); },{passive:false});
+  const end=()=>{ if(!drag){ armed=false; return; } drag=false; armed=false;
+    const v=dy/Math.max(1,performance.now()-t0), h=sh.offsetHeight||400;
+    if(dy>Math.min(140,h*0.28)||(v>0.55&&dy>40)){
+      sh.style.transition="transform .26s cubic-bezier(.3,.7,.4,1)"; bg.style.transition="opacity .26s ease"; sh.style.transform=base+" translate3d(0,"+(h+40)+"px,0)"; bg.style.opacity="0";
+      setTimeout(()=>{ bg.style.transition=""; closeSheet(); },260);
+    } else { sh.style.transition="transform .32s cubic-bezier(.2,1.2,.4,1)"; bg.style.transition="opacity .3s ease"; sh.style.transform=base; bg.style.opacity="";
+      setTimeout(()=>{ sh.style.transition=""; bg.style.transition=""; },340); } };
+  sh.addEventListener("touchend",end); sh.addEventListener("touchcancel",end);
+})();
 $("navAdd").addEventListener("click",()=>{ $("sheet").hidden?openSheet():closeSheet(); });
 $("sheetBg").addEventListener("click",closeSheet);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("sheet").hidden) closeSheet(); });
