@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 17:04";</script>
+<script>window.COCOON_BUILD="08/10 17:10";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2652,7 +2652,8 @@ function renderFridge(){
   const list=dated, late=dated.filter(t=>daysTo(t.echeance)<0).length;
   $("fridgeCount").textContent=!S.loaded.t?"":late?late+" en retard":"Les 7 prochains jours";
   const free=open.filter(t=>!t.echeance).length;
-  fillList($("fridge"),list,S.loaded.t?["Rien de prévu cette semaine",free?free+" tâche"+(free>1?"s":"")+" sans date "+(free>1?"t'attendent":"t'attend")+" dans Foyer et Moi.":"Donne une échéance à une tâche avec + : elle apparaîtra ici."]:["Chargement…",""]);
+  fillList($("fridge"),list,S.loaded.t?["Rien de prévu cette semaine",free?free+" tâche"+(free>1?"s":"")+" sans date dans le foyer.":"Donne une échéance à une tâche avec + : elle apparaîtra ici."]:["Chargement…",""]);
+  if(S.loaded.t&&!list.length&&free){ const e=$("fridge").querySelector(".empty"); if(e) e.append(el("div",{style:"margin-top:10px"},el("button",{type:"button",class:"btn ghost",style:"padding:7px 16px;font-size:13.5px",text:"Voir",onclick:()=>{ openSearch(); S.sShort="sansdate"; renderSearch(); try{ $("sQ").blur(); }catch(_){} }}))); }
 }
 /* ===== Questionnaire d'accueil ===== */
 const APP_URL=location.origin+location.pathname;
@@ -4242,6 +4243,7 @@ function searchShortcuts(){ const me=meId(), t0=iso(today()), in7=iso(new Date(t
     {k:"semaine",ico:"📆",l:"Cette semaine",run:()=>open.filter(t=>t.echeance&&t.echeance>=t0&&t.echeance<=in7).sort(sortOpen).map(taskHit).concat((S.rdvs||[]).filter(r=>!r.fait&&r.date>=t0&&r.date<=in7).sort((a,b)=>a.date<b.date?-1:1).map(r=>rdvHit(r)))},
     {k:"papiers",ico:"📄",l:"Papiers qui expirent",run:()=>S.docs.filter(d=>d.expire&&daysTo(d.expire)<=60).sort((a,b)=>a.expire<b.expire?-1:1).map(docHit)},
     {k:"repas",ico:"🍽",l:"Repas de la semaine",run:()=>(S.repas||[]).filter(r=>r.plat&&r.date>=ws0&&r.date<=we).sort((a,b)=>(a.date+a.slot)<(b.date+b.slot)?-1:1).map(r=>repasHit(r))},
+    {k:"sansdate",ico:"🗂",l:"Tâches sans date",run:()=>open.filter(t=>!t.echeance).sort(sortOpen).map(taskHit)},
     {k:"courses",ico:"🛒",l:"Liste de courses",run:()=>(S.courses||[]).filter(i=>!i.fait).map(i=>courseHit(i))},
     {k:"prelev",ico:"💳",l:"Prélèvements à venir",run:()=>S.abos.filter(a=>a.actif!==false).map(a=>({a,nx:subNext(a)})).filter(x=>x.nx&&daysTo(x.nx)<=31).sort((x,y)=>x.nx<y.nx?-1:1).map(({a,nx})=>({s:1,g:"Abonnements",titre:a.nom,sub:"prochain "+dueLabel(nx),right:money(a.montant),c:(BCAT[a.cat]||BCAT.autre).c,go:()=>openBForm("sub",a)}))}];
   if(me) L.splice(2,0,{k:"moi",ico:"🙋",l:"Mes tâches",run:()=>open.filter(t=>t.prive||t.pour===me).sort(sortOpen).map(taskHit)});
