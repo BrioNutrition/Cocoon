@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 16:24";</script>
+<script>window.COCOON_BUILD="08/10 16:28";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1597,6 +1597,9 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .rdv.fini .rdv-b span{color:var(--muted)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .rdv-st.fini{background:#1F3A2A;color:#BFE8CD}}
 :root[data-theme="dark"] .rdv-st.fini{background:#1F3A2A;color:#BFE8CD}
+
+.rdv-b span{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+.rdv-ppl{flex:none}.rdv-ppl .av{width:34px!important;height:34px!important;font-size:14px!important;margin-left:-10px}.rdv-ppl .av:first-child{margin-left:0}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3140,8 +3143,8 @@ function renderRdv(){
     if(F&&F.id&&x.r&&x.r.id===F.id){ box.append(rdvFormEl()); continue; }
     const d=parse(x.date), n=daysTo(x.date);
     const stt=x.r?rdvState(x.r):"", when=n===0?"Aujourd'hui":n===1?"Demain":n<0?RDV_FMT.w.format(d).replace(/^./,c=>c.toUpperCase()):RDV_FMT.w.format(d).replace(/^./,c=>c.toUpperCase());
-    const hTxt=x.heure?heureTxt(x.heure)+(x.r&&x.r.heureFin?"–"+heureTxt(x.r.heureFin):""):"";
-    const ppl=el("span",{class:"rdv-ppl"},...x.pour.slice(0,3).map(id=>avatar(id,20)));
+    const hTxt=x.heure?heureTxt(x.heure)+(x.r&&x.r.heureFin?"\u2060–\u2060"+heureTxt(x.r.heureFin):""):"";
+    const ppl=el("span",{class:"rdv-ppl"},...x.pour.slice(0,3).map(id=>avatar(id,34)));
     const row=el("div",{class:"rdv"+(stt==="fini"?" fini":stt==="encours"?" encours":n<=1?" soon":"")+(x.r&&rdvSel().has(x.r.id)?" sel":"")},el("div",{class:"rdv-date"},el("b",{text:RDV_FMT.j.format(d)}),el("span",{text:RDV_FMT.m.format(d).replace(".","")})),
       el("div",{class:"rdv-b"},el("b",{},x.titre,stt?el("em",{class:"rdv-st "+stt,text:stt==="fini"?"Terminé":"En cours"}):null),el("span",{text:[(stt?(n===0?"Aujourd'hui":when):when)+(hTxt?" · "+hTxt:""),x.lieu].filter(Boolean).join(" · ")})),ppl);
     if(x.r&&can&&(isAdmin()||x.r.par===me||(x.r.pour||[]).includes(me))){ const p=pencilBtn(()=>{ S.rdvForm=Object.assign({},x.r); renderRdv(); },"Modifier "+x.titre); p.classList.add("rdv-pen"); row.append(p);
