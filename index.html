@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 12:07";</script>
+<script>window.COCOON_BUILD="08/10 12:15";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1536,6 +1536,10 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 
 /* niveau : même jaune qu'en clair */
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .coc-pill,:root:not([data-theme="light"]) .coc-streak,:root:not([data-theme="light"]) .coc-big,:root:not([data-theme="light"]) .coc-opt{--coc-y:color-mix(in srgb,#FFC94A 45%,#FFFFFF)!important;--ink:#1C1B2E;--muted:#6A6886;--surface:#FFFFFF;color:#1C1B2E}}:root[data-theme="dark"] .coc-pill,:root[data-theme="dark"] .coc-streak,:root[data-theme="dark"] .coc-big,:root[data-theme="dark"] .coc-opt{--coc-y:color-mix(in srgb,#FFC94A 45%,#FFFFFF)!important;--ink:#1C1B2E;--muted:#6A6886;--surface:#FFFFFF;color:#1C1B2E}
+
+.r-meal.r-ro{cursor:default;padding-right:44px;overflow:hidden}
+.r-delp{position:absolute;top:calc(50% - 15px);right:8px;width:30px;height:30px;border:0;border-radius:50%;background:color-mix(in srgb,var(--ink) 8%,transparent);color:inherit;font:inherit;font-size:18px;line-height:1;display:grid;place-items:center;cursor:pointer;padding:0}
+.r-ideas[hidden]{display:none}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -4874,8 +4878,11 @@ function renderRepas(){
       if(m){ const meta=[];
         if(m.cuisine&&humains().some(h=>h.id===m.cuisine)) meta.push(el("span",{class:"r-cook",title:"Cuisine"},el("span",{class:"r-emo","aria-hidden":"true",text:"👩‍🍳"}),avatar(m.cuisine,18),m.cuisine===me?"Toi":membre(m.cuisine).nom));
         if(m.vaisselle&&humains().some(h=>h.id===m.vaisselle)) meta.push(el("span",{class:"r-cook",title:"Vaisselle"},el("span",{class:"r-emo","aria-hidden":"true",text:"🧽"}),avatar(m.vaisselle,18),m.vaisselle===me?"Toi":membre(m.vaisselle).nom));
-        card.append(el("button",{type:"button",class:"r-meal r-"+sl,onclick:()=>{ if(!needMe()) return; S.rEdit=key; renderRepas(); }},
-          slots.length>1?el("span",{class:"r-sl",text:sn}):null,el("span",{class:"r-p",text:m.plat}),meta.length?el("span",{class:"r-meta"},...meta):null)); }
+        const inner=[slots.length>1?el("span",{class:"r-sl",text:sn}):null,el("span",{class:"r-p",text:m.plat}),meta.length?el("span",{class:"r-meta"},...meta):null];
+        if(past){ const row=el("div",{class:"r-meal r-ro r-"+sl},...inner);
+          row.append(el("button",{type:"button",class:"r-delp","aria-label":"Retirer "+m.plat,text:"×",onclick:async()=>{ if(!S.db||!needMe()) return; await rowOut(row,"del"); try{ await S.db.collection("repas").doc(m.id).delete(); toast("Plat retiré."); }catch(e){ writeErr(e); } renderRepas(); }}));
+          card.append(row); }
+        else card.append(el("button",{type:"button",class:"r-meal r-"+sl,onclick:()=>{ if(!needMe()) return; S.rEdit=key; renderRepas(); }},...inner)); }
       else if(!past) card.append(el("button",{type:"button",class:"r-empty r-e-"+sl,onclick:()=>{ if(!needMe()) return; S.rEdit=key; renderRepas(); setTimeout(()=>{ const i=$("rPlat"); if(i) i.focus(); },40); }},"+ "+(slots.length>1?sn:"Ajouter un plat")));
       else card.append(el("span",{class:"r-none",text:"—"})); }
     grid.append(card); }
@@ -4885,13 +4892,15 @@ function renderRepas(){
 const MOIS_C=d=>["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."][d.getMonth()];
 function repasEditor(ds,sl,sn,m){ const me=meId(), f=el("form",{class:"r-ed",autocomplete:"off"});
   const st={cuisine:m?m.cuisine||null:null,vaisselle:m?m.vaisselle||null:null};
-  const dl=el("datalist",{id:"rPlatsList"}); for(const p of platsConnus()) dl.append(el("option",{value:p.nom}));
-  const pi=el("input",{type:"text",id:"rPlat",maxlength:"60",list:"rPlatsList",placeholder:sl==="matin"?"Tartines, porridge, pancakes…":"Lasagnes, curry, pizza…","aria-label":"Plat du "+sn.toLowerCase()}); pi.value=m?m.plat:"";
-  const ideas=el("div",{class:"r-ideas"}); if(!m) for(const p of platsConnus(sl).slice(0,8)) ideas.append(el("button",{type:"button",onclick:()=>{ pi.value=p.nom; pi.focus(); }},p.nom));
+  const pi=el("input",{type:"text",id:"rPlat",maxlength:"60",autocomplete:"off",placeholder:sl==="matin"?"Tartines, porridge, pancakes…":"Lasagnes, curry, pizza…","aria-label":"Plat du "+sn.toLowerCase()}); pi.value=m?m.plat:"";
+  const ideas=el("div",{class:"r-ideas"});
+  const drawIdeas=()=>{ const q=norm(pi.value.trim()); ideas.innerHTML=""; const all=q?platsConnus().filter(p=>norm(p.nom).includes(q)&&norm(p.nom)!==q):m?[]:platsConnus(sl);
+    for(const p of all.slice(0,8)) ideas.append(el("button",{type:"button",onclick:()=>{ pi.value=p.nom; drawIdeas(); pi.focus(); }},p.nom)); ideas.hidden=!ideas.childNodes.length; };
+  drawIdeas(); pi.addEventListener("input",drawIdeas);
   const who=(k,label)=>{ const g=el("div",{class:"seg r-cooks",role:"group","aria-label":label});
     const draw=()=>{ g.innerHTML=""; for(const [v,l] of [[null,"Personne"]].concat(humains().map(h=>[h.id,h.id===me?"Moi":h.nom]))) g.append(el("button",{type:"button","aria-pressed":String(st[k]===v),onclick:()=>{ st[k]=v; draw(); }},v?avatar(v,18):null,l)); }; draw(); return g; };
   const close=()=>{ S.rEdit=null; renderRepas(); };
-  f.append(el("div",{class:"r-edh"},el("b",{text:sn+(m?" · modifier":" · ajouter un plat")}),el("button",{type:"button",class:"r-x","aria-label":"Fermer",text:"×",onclick:close})),dl,pi,ideas.childNodes.length?ideas:null,
+  f.append(el("div",{class:"r-edh"},el("b",{text:sn+(m?" · modifier":" · ajouter un plat")}),el("button",{type:"button",class:"r-x","aria-label":"Fermer",text:"×",onclick:close})),pi,ideas,
     el("span",{class:"r-lab",text:"👩‍🍳 Qui cuisine ?"}),who("cuisine","Qui cuisine ?"),
     el("span",{class:"r-lab",text:"🧽 Qui fait la vaisselle ?"}),who("vaisselle","Qui fait la vaisselle ?"));
   const btns=el("div",{class:"r-btns"},el("button",{type:"submit",class:"btn",text:"Enregistrer"}));
