@@ -35,7 +35,7 @@ html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxI
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 10:37";</script>
+<script>window.COCOON_BUILD="08/10 10:41";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1468,10 +1468,19 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .pm-price b{font-size:18px;font-weight:800;color:#1C1B2E}
 .pm-btn{justify-self:start;background:#1C1B2E!important;color:#fff!important}
 .pm-btn.done{opacity:1;background:rgba(28,27,46,.08)!important;color:#1C1B2E!important}
-.pm-car{padding:18px 0 16px!important;gap:12px!important;background:radial-gradient(60% 70% at 0% 0%,rgba(255,236,170,.35),transparent 60%),linear-gradient(135deg,#EFA935 0%,#E47A5C 50%,#C9557F 100%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),0 12px 28px rgba(212,94,134,.32),0 2px 0 rgba(28,27,46,.06)!important}
-.pm-car .pm-s{color:rgba(28,27,46,.78)!important}
-.pm-car .pm-price{color:rgba(28,27,46,.8)!important}
-.pm-car .pm-dots i{background:rgba(28,27,46,.28)}
+.pm-car{padding:18px 0 16px!important;gap:12px!important;color:#fff!important;background:radial-gradient(85% 70% at 100% 0%,rgba(255,138,60,.42),transparent 62%),radial-gradient(70% 60% at 0% 100%,rgba(255,170,70,.22),transparent 65%),#1C1B2E!important;box-shadow:inset 0 0 0 1px rgba(255,170,90,.28),0 14px 30px rgba(28,27,46,.28),0 0 26px rgba(255,138,60,.18)!important}
+.pm-car .pm-t{color:#fff}
+.pm-car .pm-s{color:rgba(255,255,255,.7)!important}
+.pm-car .pm-price{color:rgba(255,255,255,.72)!important}
+.pm-car .pm-price b{color:#fff!important}
+.pm-car .pm-dots i{background:rgba(255,255,255,.28)}
+.pm-car .pm-dots i.on{background:#FFB15C}
+.pm-car .pm-fc{background:#2A2940;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 6px 16px rgba(0,0,0,.25)}
+.pm-car .pm-fc b{color:#fff}
+.pm-car .pm-fc span{color:rgba(255,255,255,.66)}
+.pm-car .pm-fc i{background:rgba(255,166,77,.16)!important}
+.pm-car .pm-btn{background:linear-gradient(135deg,#FFC94A,#FF9A55)!important;color:#1C1B2E!important}
+.pm-car .pm-btn.done{background:rgba(255,255,255,.12)!important;color:#fff!important}
 .pm-car>*{position:relative}
 .pm-hd{padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .pm-logo{flex:none;width:44px;height:44px;display:grid;place-items:center;filter:drop-shadow(0 0 6px rgba(255,240,190,.95)) drop-shadow(0 0 16px rgba(255,214,120,.65))}
