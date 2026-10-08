@@ -61,6 +61,13 @@ Ce qui est envoyé (au plus 1 à 2 par jour) : un résumé le matin à l'heure c
 (sinon « pense à ajouter tes tâches », un jour sur deux au plus), le départ aux courses (au plus toutes les 3 h)
 et une tâche confiée pour aujourd'hui ou demain. Rien entre 21h30 et 7h30.
 
+## Protection du serveur (une seule fois)
+
+**Supabase → SQL Editor** : colle et lance `supabase/securite.sql`. Même en contournant l'app, la base refuse alors
+de modifier le profil d'un autre membre qui a son compte, de se nommer admin, de réclamer une invitation destinée
+à une autre adresse e-mail ou de supprimer un profil sans en avoir le droit. Le créateur du foyer peut retirer
+n'importe quel membre (son accès est coupé).
+
 ## Inviter quelqu'un
 
 Dans l'app : onglet **Moi → Mon compte → Copier le lien**. La personne ouvre le lien,

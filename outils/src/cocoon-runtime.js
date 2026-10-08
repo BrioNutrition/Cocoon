@@ -441,7 +441,11 @@
       else if (OUT.length && !netDown) run();
     });
   }
-  function goLive(user) { if (IS_LIVE) return; ME = user; IS_LIVE = true; netDown = false; liveResolve(); startRealtime(); refreshAll(); run(); offUI(); }
+  function goLive(user) { if (IS_LIVE) return; ME = user; IS_LIVE = true; netDown = false; liveResolve(); startRealtime(); refreshAll(); run(); offUI(); stillMember(); }
+  async function stillMember() {
+    try { var r = await sb.from("cocoon_members").select("foyer").eq("foyer", FOYER).eq("user_id", ME.id).maybeSingle();
+      if (!r.error && !r.data) { LS.del("cocoon.snap"); LS.del("cocoon.foyer"); LS.del("cocoon.outbox"); location.reload(); } } catch (_) {}
+  }
   function waitOnline() {
     var tries = 0;
     async function again() {
@@ -575,6 +579,8 @@
     email: function () { return ME && ME.email; },
     isAdmin: function () { return ROLE === "admin"; },
     logout: logout,
+    /* Le créateur retire un membre du foyer (accès coupé côté serveur) */
+    removeMember: async function (uid) { await LIVE; var r = await sb.rpc("cocoon_remove_member", { f: FOYER, u: uid }); if (r.error) throw new Error(/function|exist/i.test(r.error.message) ? "la protection du serveur n'est pas encore installée dans Supabase (securite.sql)" : frErr(r.error)); },
     newCode: async function () { await LIVE; var r = await sb.rpc("cocoon_new_code", { f: FOYER }); if (r.error) throw new Error(frErr(r.error)); INVITE = r.data; return INVITE; },
     ready: READY,
     pending: function () { return OUT.length; },

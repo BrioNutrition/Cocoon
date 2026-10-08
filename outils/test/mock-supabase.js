@@ -42,6 +42,7 @@
       if (n === "cocoon_join_foyer") { var g = T.cocoon_foyers.find(function (x) { return x.id === a.f && x.code === a.c; }); if (!g) return ok(false); T.cocoon_members.push({ foyer: a.f, user_id: me, role: "membre" }); return ok(true); }
       if (n === "cocoon_merge") { var rows = T.cocoon_docs, i = rows.findIndex(function (x) { return x.foyer === a.f && x.path === a.p && x.id === a.i; }); var r = i >= 0 ? rows[i] : { foyer: a.f, path: a.p, id: a.i, data: {} }; r.data = Object.assign({}, r.data, a.patch); r.updated_by = me; if (i < 0) rows.push(r); rt("UPDATE", JSON.parse(JSON.stringify(r))); return ok(null); }
       if (n === "cocoon_push_claim") { var L = T.cocoon_push_subs = (T.cocoon_push_subs || []).filter(function (x) { return x.endpoint !== a.e; }); L.push({ endpoint: a.e, user_id: me, foyer: a.f, p256dh: a.k, auth: a.a, tz: a.z }); return ok(null); }
+      if (n === "cocoon_remove_member") { window.__mock.removed_member = a.u; T.cocoon_members = T.cocoon_members.filter(function (x) { return !(x.foyer === a.f && x.user_id === a.u); }); return ok(null); }
       if (n === "cocoon_cal_token") return ok("ab12cd34ef56ab12cd34ef56ab12cd34");
       if (n === "cocoon_new_code") { var h = T.cocoon_foyers.find(function (x) { return x.id === a.f; }); h.code = "n3w"; return ok("n3w"); }
       return Promise.resolve({ data: null, error: { message: "rpc inconnue " + n } });

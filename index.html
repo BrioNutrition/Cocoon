@@ -35,7 +35,7 @@ html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxI
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 09:25";</script>
+<script>window.COCOON_BUILD="08/10 09:33";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1443,6 +1443,10 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .c-live.on,:root:not([data-theme="light"]) .r-all:disabled{background:#1F3A2A;color:#BFE8CD}:root:not([data-theme="light"]) .c-live.on .cl-t span,:root:not([data-theme="light"]) .cl-prog{color:#BFE8CD}:root:not([data-theme="light"]) .r-meal{background:#3A3322}:root:not([data-theme="light"]) .r-meal.r-midi{background:#23304A}:root:not([data-theme="light"]) .r-meal.r-matin{background:#3E2B26}}
 :root[data-theme="dark"] .c-live.on,:root[data-theme="dark"] .r-all:disabled{background:#1F3A2A;color:#BFE8CD}:root[data-theme="dark"] .c-live.on .cl-t span,:root[data-theme="dark"] .cl-prog{color:#BFE8CD}:root[data-theme="dark"] .r-meal{background:#3A3322}:root[data-theme="dark"] .r-meal.r-midi{background:#23304A}:root[data-theme="dark"] .r-meal.r-matin{background:#3E2B26}
 @media (prefers-reduced-motion: reduce){.c-item.flash{animation:none}.c-live.on .cl-t b::before{animation:none}}
+.p-remove{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:8px;padding-top:16px;border-top:2px dashed var(--line)}
+.p-remove[hidden]{display:none}
+.p-remove .p-rm-btn{color:#B5482F!important;border-color:rgba(181,72,47,.35)!important}
+.p-rm-s{font-size:12.5px;color:var(--muted);line-height:1.4}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -2083,6 +2087,22 @@ function renderProfile(){
   for(const d of docs){ const meta=el("div",{class:"meta"},el("span",{class:"tag"},catDot(d.cat),(CAT[d.cat]||CAT.maison).nom),el("span",{text:"rangé "+ago(d.ajouteLe)}));
     if(d.expire){ const n=daysTo(d.expire); meta.append(el("span",{class:"due"+(n<0?" late":n<=30?" soon":""),text:(n<0?"Expiré · ":"Expire ")+fmtDue(d.expire)})); }
     dl.append(el("div",{class:"item",style:"grid-template-columns:1fr"},el("div",{class:"t-body"},el("div",{class:"t-title",text:d.titre}),meta))); }
+  /* Le créateur du foyer peut retirer n'importe quel profil (sans pouvoir le modifier) */
+  { let rm=$("pRemove"); if(!rm){ rm=el("div",{id:"pRemove",class:"p-remove"}); $("pDocsWrap").parentElement.append(rm); } rm.innerHTML="";
+    rm.hidden=!(S.isOwner&&id!==me&&!S.readOnly);
+    if(!rm.hidden) rm.append(el("button",{type:"button",class:"btn ghost p-rm-btn",onclick:()=>removeFromFoyer(m)},pet?"Retirer "+m.nom+" du foyer":"Retirer "+m.nom+" du foyer"),
+      el("span",{class:"p-rm-s",text:m.uid?"Son accès au foyer sera coupé et son espace perso supprimé. Ses tâches du foyer passent à tout le monde.":"Son profil sera supprimé. Ses tâches du foyer passent à tout le monde."})); }
+}
+async function removeFromFoyer(m){
+  if(!S.db||!S.isOwner) return;
+  if(!confirm("Retirer "+m.nom+" du foyer ?"+(m.uid?"\n\n"+m.nom+" n'aura plus accès à Cocoon pour ce foyer.":""))) return;
+  try{
+    if(m.uid&&window.cocoonHost&&cocoonHost.removeMember) await cocoonHost.removeMember(m.uid);
+    for(const t of S.foyer.filter(t=>!t.fait&&(t.pour===m.id||t.concerne===m.id))) S.db.collection("taches").doc(t.id).update(t.concerne===m.id?{concerne:null}:{pour:"tous"}).catch(()=>{});
+    if((S.membresRaw||[]).some(x=>x.id===m.id)) await S.db.collection("membres").doc(m.id).delete();
+    if(m.uid&&(S.profils||[]).some(p=>p.id===m.uid)) await S.db.collection("profils").doc(m.uid).delete().catch(()=>{});
+    toast(esc(m.nom)+" ne fait plus partie du foyer."); S.profil=null; setTab("foyer"); renderHeader(); renderAll();
+  }catch(e){ toast(esc((e&&e.message)||"Impossible de retirer ce membre.")); }
 }
 $("pBack").addEventListener("click",()=>{ setTab(S.prevTab&&S.prevTab!=="profil"?S.prevTab:"foyer"); renderHeader(); });
 $("pGive").addEventListener("click",()=>{ if(!S.profil) return; const m=membre(S.profil); openSheet({where:m.type==="animal"?"concerne:"+m.id:m.id}); });
