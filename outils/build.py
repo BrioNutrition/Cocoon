@@ -262,7 +262,7 @@ head = f"""<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
 {INTRO_CSS}
-<script>try{{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}}catch(e){{document.documentElement.dataset.theme="light";}}</script>
+<script>try{{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}}catch(e){{}}</script>
 <script>window.COCOON_BUILD="{BUILD}";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="{SUPABASE_JS}"></script>
