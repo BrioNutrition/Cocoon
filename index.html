@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 00:09";</script>
+<script>window.COCOON_BUILD="09/10 00:12";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2478,8 +2478,8 @@ function buildEditor(){
   f.append(el("div",{class:"fgroup"},el("h3",{text:"Infos pratiques"}),el("span",{class:"muted",style:"font-size:13px",text:"Tout ce qu'on cherche au mauvais moment : pointure, n° de puce, école, vétérinaire…"}),kvBox));
 
   // Apparence (sa propre fiche)
-  if(self){ const cur=curTheme(), sg=el("div",{class:"seg",role:"group","aria-label":"Apparence"});
-    for(const [v,l] of [["auto","Automatique"],["light","Clair"],["dark","Sombre"]]) sg.append(el("button",{type:"button","aria-pressed":String(cur===v),text:l,onclick:()=>{ setTheme(v); buildEditor(); }}));
+  if(self){ const cur=E.theme||curTheme(), sg=el("div",{class:"seg",role:"group","aria-label":"Apparence"});
+    for(const [v,l] of [["auto","Automatique"],["light","Clair"],["dark","Sombre"]]) sg.append(el("button",{type:"button","aria-pressed":String(cur===v),text:l,onclick:()=>{ E.theme=v; buildEditor(); }}));
     f.append(el("div",{class:"fgroup"},el("h3",{text:"Apparence"}),el("span",{class:"muted",style:"font-size:13px",text:"Automatique suit le réglage de ton téléphone. Le mode sombre tamise les couleurs le soir."}),sg)); }
   // Rôle
   if(admin&&t==="adulte"){
@@ -2510,6 +2510,7 @@ async function saveProfile(){
   if((E.self||(E.id&&E.id===meId()))&&(d.type||"adulte")!=="animal"&&!d.naissance){ toast("Indique ta date de naissance."); const n=$("fiNaissance"); if(n){ n.focus(); n.scrollIntoView({block:"center",behavior:"smooth"}); } return; }
   d.infos=(d.infos||[]).filter(x=>(x.l||"").trim()||(x.v||"").trim()).map(x=>({l:(x.l||"").trim(),v:(x.v||"").trim()}));
   for(const k of Object.keys(d)) if(d[k]===undefined) delete d[k];
+  if(E.theme&&E.theme!==curTheme()){ const tv=E.theme; setTimeout(()=>setTheme(tv),0); }
   if(E.self){ await saveSelf(E); return; }
   if(S.canEdit===false&&E.id===meId()){ E.busy=true; try{ const cur=(S.profils||[]).find(p=>p.id===S.uid); await saveOwnProfil(d,cur?cur.membre:(String(E.id).startsWith("u-")?null:E.id)); toast("Profil enregistré."); S.edit=null; setTab("moi"); renderAll(); }catch(e){ E.busy=false; writeErr(e); } return; }
   if(!isAdmin()){ const cur=membre(E.id); d.role=cur.role||null; d.type=cur.type; }
