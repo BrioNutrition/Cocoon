@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 22:57";</script>
+<script>window.COCOON_BUILD="08/10 23:21";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1620,6 +1620,47 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 
 /* cases de date : mêmes couleurs claires en sombre */
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .rdv-date{--surface:#FFFFFF;--tile-pct:45%;color:#1C1B2E}}:root[data-theme="dark"] .rdv-date{--surface:#FFFFFF;--tile-pct:45%;color:#1C1B2E}
+
+/* ===== Secrétaire : bulle de discussion façon messagerie ===== */
+.secretary.sec-chat{background:none!important;box-shadow:none!important;padding:0!important;border-radius:0!important;overflow:visible!important;color:var(--ink)!important;gap:10px}
+.secretary.sec-chat::after,.secretary.sec-chat::before{display:none!important}
+.sec-chat .sec-who{margin-left:46px;font-size:11.5px!important;font-weight:800!important;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)!important;opacity:1!important}
+.sec-thread{display:flex;flex-direction:column;gap:8px}
+.sec-row{display:flex;align-items:flex-end;gap:10px}
+.sec-row.me{justify-content:flex-end;padding-left:58px}
+.sec-av{width:36px;height:36px;border-radius:11px;flex:none;object-fit:cover;box-shadow:0 3px 8px rgba(28,27,46,.18)}
+.sec-row.bot .sec-bub{flex:1;min-width:0;background:linear-gradient(135deg,#FFE7A6,#FFD0C2 60%,#F8C9E6);border-radius:22px 22px 22px 6px;padding:13px 16px;box-shadow:0 2px 0 rgba(28,27,46,.05)}
+.sec-row.bot .sec-bub,.sec-row.bot .sec-bub *{color:#1C1B2E!important}
+.sec-chat .sec-bub h2{font-size:17.5px!important;line-height:1.25!important;font-weight:800!important;padding:0!important;margin:0}
+.sec-chat .sec-bub ul{margin:8px 0 0!important;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;font-size:14.5px}
+.sec-chat .sec-bub li{display:flex;gap:8px;align-items:baseline}
+.sec-chat .sec-bub li::before{content:"";width:7px;height:7px;border-radius:50%;background:#E0567A!important;flex:none;transform:translateY(-1px)}
+.sec-row.me .sec-bub{max-width:100%;background:var(--ink);color:var(--bg);border-radius:22px 22px 6px 22px;padding:10px 15px;font-size:14.5px;font-weight:600;line-height:1.35;overflow-wrap:anywhere}
+.sec-seen{align-self:flex-end;font-size:11.5px;font-weight:700;color:var(--muted);margin:-4px 4px 0 0;opacity:0;transform:translateY(-3px);transition:opacity .25s,transform .25s}
+.sec-seen.on{opacity:1;transform:none}
+.sec-row.pop{animation:secPop .38s cubic-bezier(.3,1.5,.5,1) both}
+.sec-row.me.pop{transform-origin:100% 100%}.sec-row.bot.pop{transform-origin:0 100%}
+@keyframes secPop{from{opacity:0;transform:translateY(10px) scale(.85)}}
+.sec-bub.typing{flex:0 0 auto!important;padding:14px 18px!important}
+.sec-bub.typing .dots{display:inline-flex;gap:5px}
+.sec-bub.typing .dots i{width:8px;height:8px;border-radius:50%;background:#1C1B2E!important;opacity:.35;animation:secDot 1.1s ease-in-out infinite}
+.sec-bub.typing .dots i:nth-child(2){animation-delay:.15s}.sec-bub.typing .dots i:nth-child(3){animation-delay:.3s}
+@keyframes secDot{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:.9;transform:translateY(-4px)}}
+.sec-chat .sec-ans{background:none!important;padding:0!important;border-radius:0!important;display:flex;flex-direction:column;gap:8px}
+.sec-chat .sec-text{margin:0;white-space:pre-wrap;font-weight:500;line-height:1.45;font-size:14.5px}
+.sec-chat .sec-bub .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.sec-chat .sec-bub .btn{background:#1C1B2E!important;color:#fff!important;padding:7px 14px;font-size:13.5px;border:0}
+.sec-chat .sec-bub .btn.ghost{background:transparent!important;color:#1C1B2E!important;border:1.5px solid rgba(28,27,46,.25)!important}
+.sec-chat .sec-bub .v4{display:block;font-size:12px;opacity:.7;margin-top:6px}
+.sec-chat .sec-link{text-decoration-color:rgba(28,27,46,.4)!important}
+.sec-new{align-self:center;border:0;background:none;color:var(--muted);font:inherit;font-size:12.5px;font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:2px 6px}
+.sec-chat .sec-ask{margin:2px 0 0 46px!important}
+.sec-chat .sec-ask input[type=text]{background:var(--surface)!important;border:1.5px solid var(--line)!important;color:var(--ink)!important}
+.sec-chat .sec-ask input::placeholder{color:var(--muted)!important}
+.sec-chat .sec-ask input:focus{outline:2px solid #FF9C80!important}
+.sec-chat .sec-ask button{background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB)!important;color:#1C1B2E!important}
+.sec-chat .sec-chips{margin-left:44px!important}
+.sec-chat .sec-chips button{background:var(--surface)!important;border:1.5px solid var(--line)!important;color:var(--ink)!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -1675,16 +1716,17 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
     <div id="motCard"></div>
     <div id="recapCard" class="recap" hidden></div>
     <div id="setupCard" hidden></div>
-    <div class="secretary">
-      <span class="label">Le secrétaire du foyer</span>
-      <h2 id="secTitle">Chargement du foyer…</h2>
-      <ul id="secList"></ul>
+    <div class="secretary sec-chat">
+      <span class="label sec-who">Le secrétaire du foyer</span>
+      <div class="sec-thread" id="secThread">
+        <div class="sec-row bot" id="secFirst"><img class="sec-av" alt="" aria-hidden="true"><div class="sec-bub"><h2 id="secTitle">Chargement du foyer…</h2><ul id="secList"></ul></div></div>
+        <div class="sec-ans" id="secAns" hidden aria-live="polite"></div>
+      </div>
       <form class="sec-ask" id="secAsk" autocomplete="off">
         <input type="text" id="secQ" maxlength="200" enterkeyhint="send" placeholder="Pose-moi une question…" aria-label="Poser une question au secrétaire">
         <button type="submit" aria-label="Demander"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
       </form>
       <div class="sec-chips" id="secChips"></div>
-      <div class="sec-ans" id="secAns" hidden aria-live="polite"></div>
     </div>
     <div class="sub" id="fridgeWrap">
       <div class="sec-title"><h2>À faire bientôt</h2><span class="muted" style="font-size:13px" id="fridgeCount"></span></div>
@@ -4628,25 +4670,40 @@ async function secClaude(q){
 async function askSecretary(q){
   q=String(q||"").trim(); if(!q) return;
   if(S.secCtl){ S.secCtl.abort(); S.secCtl=null; }
+  if(S.secAns&&S.secAns.r&&!S.secAns.busy){ S.secHist=(S.secHist||[]).concat([{q:S.secAns.q,r:S.secAns.r}]).slice(-6); }
+  S.secAns={q,r:secA(""),busy:true,fresh:true}; renderSecAns(); secReadFx();
+  await sleep(950); S.secAns.fresh=false;
   let r;
   if(secOn()) r=await secClaude(q);
-  else { S.secAns={q,r:secA("…")}; renderSecAns(); try{ r=await Secretary.ask(q); }catch(_){ r=secA("Oups, je n'ai pas réussi à répondre."); } }
+  else { S.secAns={q,r:secA(""),busy:true}; renderSecAns(); try{ r=await Secretary.ask(q); }catch(_){ r=secA("Oups, je n'ai pas réussi à répondre."); } await sleep(600); }
   S.secAns={q,r}; renderSecAns();
 }
-function renderSecAns(){
-  const b=$("secAns"); if(!b) return; const X=S.secAns; b.innerHTML=""; b.hidden=!X; if(!X) return;
-  b.append(el("div",{class:"sec-q"},el("span",{text:"« "+X.q+" »"}),el("button",{type:"button",class:"sec-x","aria-label":"Fermer la conversation",title:"Nouvelle conversation",text:"×",onclick:()=>{ if(S.secCtl) S.secCtl.abort(); S.secAns=null; S.secTurns=[]; renderSecAns(); }})));
-  if(X.busy&&!X.r.text){ b.append(el("p",{class:"sec-think"},el("span",{class:"dots"},el("i"),el("i"),el("i")),"Le secrétaire réfléchit…"),el("div",{class:"acts"},el("button",{type:"button",class:"btn ghost",text:"Arrêter",onclick:()=>{ if(S.secCtl) S.secCtl.abort(); }}))); return; }
-  b.append(el("p",{class:"sec-text",text:X.r.text}));
-  if(X.busy){ b.append(el("div",{class:"acts"},el("button",{type:"button",class:"btn ghost",text:"Arrêter",onclick:()=>{ if(S.secCtl) S.secCtl.abort(); }}))); return; }
-  if(X.r.items&&X.r.items.length){ const ul=el("ul"); for(const it of X.r.items) ul.append(el("li",{},it.go?el("button",{type:"button",class:"sec-link",text:it.t,onclick:it.go}):it.t)); b.append(ul); }
+function secAv(){ const im=el("img",{class:"sec-av",alt:"","aria-hidden":"true"}); const lg=document.querySelector(".brand-logo"); if(lg) im.src=lg.src; return im; }
+function secReadFx(){ const reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches; if(reduced) return;
+  const bots=document.querySelectorAll("#secThread .sec-row.bot .sec-bub"), last=bots[bots.length-1]; const av=document.querySelectorAll("#secThread .sec-row.bot .sec-av"), la=av[av.length-1];
+  setTimeout(()=>{ if(last) last.animate([{transform:"translate(0,0) rotate(0)"},{transform:"translate(3px,-6px) rotate(-1.2deg)",offset:.35},{transform:"translate(-1px,1px) rotate(.4deg)",offset:.7},{transform:"translate(0,0) rotate(0)"}],{duration:520,easing:"cubic-bezier(.3,1.4,.5,1)"});
+    if(la) la.animate([{transform:"scale(1)"},{transform:"scale(1.12) rotate(-6deg)",offset:.4},{transform:"scale(1)"}],{duration:520,easing:"ease-out"}); },380);
+  setTimeout(()=>{ const s2=document.querySelector("#secThread .sec-seen:last-of-type"); const all=document.querySelectorAll("#secThread .sec-seen"); const z=all[all.length-1]; if(z) z.classList.add("on"); },560); }
+function secBotRow(X){ const bub=el("div",{class:"sec-bub"});
+  if(X.busy&&!(X.r&&X.r.text)){ bub.classList.add("typing"); bub.append(el("span",{class:"dots","aria-label":"Le secrétaire écrit…"},el("i"),el("i"),el("i"))); return el("div",{class:"sec-row bot pop"},secAv(),bub); }
+  bub.append(el("p",{class:"sec-text",text:X.r.text}));
+  if(X.busy){ bub.append(el("div",{class:"acts"},el("button",{type:"button",class:"btn ghost",text:"Arrêter",onclick:()=>{ if(S.secCtl) S.secCtl.abort(); }}))); return el("div",{class:"sec-row bot"},secAv(),bub); }
+  if(X.r.items&&X.r.items.length){ const ul=el("ul"); for(const it of X.r.items) ul.append(el("li",{},it.go?el("button",{type:"button",class:"sec-link",text:it.t,onclick:it.go}):it.t)); bub.append(ul); }
   const acts=(X.r.actions||[]).slice();
   if(X.r.letter) acts.push({l:"Copier le texte",ghost:true,run:async()=>{ try{ await navigator.clipboard.writeText(X.r.text); toast("Copié."); }catch(_){ toast("Sélectionne le texte et copie-le."); } }});
-  if(acts.length){ const a=el("div",{class:"acts"});
+  if(acts.length&&X===S.secAns){ const a=el("div",{class:"acts"});
     for(const x of acts){ const btn=el("button",{type:"button",class:"btn"+(x.ghost||x.done?" ghost":""),text:x.done?"✓ "+x.l.replace(/^\+ /,""):x.l,disabled:x.done||null,onclick:async()=>{ btn.disabled=true; const res=await x.run(); if(res==="done"){ x.done=true; btn.textContent="✓ "+x.l.replace(/^\+ /,""); btn.classList.add("ghost"); } else if(typeof res==="string"){ S.secAns={q:X.q,r:secA(res)}; renderSecAns(); } else btn.disabled=false; }}); a.append(btn); }
-    b.append(a); }
-  if(X.r.claude) b.append(el("span",{class:"v4",text:"Pose une autre question pour continuer la conversation."}));
-  if(X.r.note) b.append(el("span",{class:"v4",text:X.r.note}));
+    bub.append(a); }
+  if(X.r.note) bub.append(el("span",{class:"v4",text:X.r.note}));
+  return el("div",{class:"sec-row bot"+(X.popped?"":" pop")},secAv(),bub); }
+function renderSecAns(){
+  const b=$("secAns"); if(!b) return; const X=S.secAns, H=S.secHist||[]; b.innerHTML=""; b.hidden=!X&&!H.length;
+  { const f=document.querySelector("#secFirst .sec-av"); if(f&&!f.src){ const lg=document.querySelector(".brand-logo"); if(lg) f.src=lg.src; } }
+  if(!X&&!H.length) return;
+  for(const h of H){ b.append(el("div",{class:"sec-row me"},el("div",{class:"sec-bub"},h.q))); h.popped=true; b.append(secBotRow(Object.assign({},h,{popped:true}))); }
+  if(X){ b.append(el("div",{class:"sec-row me"+(X.fresh?" pop":"")},el("div",{class:"sec-bub"},X.q)),el("span",{class:"sec-seen"+(X.fresh?"":" on"),text:"Lu"}));
+    if(!X.fresh) b.append(secBotRow(X)); if(!X.busy) X.popped=true; }
+  b.append(el("button",{type:"button",class:"sec-new",text:"Nouvelle discussion",onclick:()=>{ if(S.secCtl) S.secCtl.abort(); S.secAns=null; S.secHist=[]; S.secTurns=[]; renderSecAns(); }}));
 }
 
 /* ---------- Lire un papier en photo ---------- */
