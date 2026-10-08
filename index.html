@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 14:23";</script>
+<script>window.COCOON_BUILD="08/10 14:28";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1557,6 +1557,9 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .b-add span{width:38px;height:38px}
 .b-link{border:0;background:none;padding:4px 0;font:inherit;font-size:13.5px;font-weight:700;color:var(--ink);cursor:pointer;white-space:nowrap}
 #bCreditsWrap[hidden]{display:none}
+
+.pb-chev{font-size:20px;font-weight:700;line-height:1;color:var(--muted);margin-left:2px;transition:transform .2s ease;display:inline-block}
+.pcard-b[aria-expanded="true"] .pb-chev{transform:rotate(90deg)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -2967,7 +2970,7 @@ const MOISA=new Intl.DateTimeFormat("fr-FR",{month:"long",year:"numeric"});
 function renderCredits(){
   const w=$("bCreditsWrap"); if(!w) return; w.innerHTML="";
   const me=meId(), can=!S.readOnly&&!!me, list=(S.credits||[]), F=S.crForm;
-  w.append(el("div",{class:"sec-title"},el("h2",{text:"Crédits"}),el("span",{class:"muted",style:"font-size:13px",text:"Qui rembourse quoi"})));
+  w.append(el("div",{class:"sec-title"},el("h2",{text:"Crédits"})));
   const ppl=adults().filter(m=>list.some(c=>crShare(c,m.id)>0));
   const row=el("div",{class:"people"});
   if(F&&!F._id){ const nc=el("div",{class:"pcard-b cr-card editing"},creditFormEl()); row.append(nc); }
@@ -3171,7 +3174,7 @@ function renderBudget(){
         const top=Object.entries(by).sort((a,b)=>b[1]-a[1]).slice(0,3);
         const open=S.bPerson===m.id;
         const c=el("button",{type:"button",class:"pcard-b","aria-expanded":String(open),onclick:()=>{ S.bPerson=open?null:m.id; renderBudget(); }},
-          el("div",{class:"pb-top"},avatar(m.id),el("b",{text:m.id===me?"Toi":m.nom})),
+          el("div",{class:"pb-top"},avatar(m.id),el("b",{text:m.id===me?"Toi":m.nom}),el("span",{class:"pb-chev","aria-hidden":"true",text:"›"})),
           el("div",{},el("div",{class:"pb-big",text:money(tot)}),el("div",{class:"pb-lbl",text:"sa part des dépenses en "+mois})));
         if(top.length){ const mx=top[0][1]; const bars=el("div",{class:"cbars",style:"box-shadow:none;padding:0;background:none;gap:6px"});
           for(const [cat,v] of top){ const fl=el("div",{class:"fillb",style:"width:"+Math.max(4,Math.round(v/mx*100))+"%"}); bars.append(el("div",{class:"cbar",title:(BCAT[cat]||BCAT.autre).nom+" : "+money(v)},el("span",{class:"cn",text:(BCAT[cat]||BCAT.autre).nom}),el("div",{class:"track"},fl),el("span",{class:"cv",text:money(v)}))); }
@@ -3181,7 +3184,7 @@ function renderBudget(){
         c.append(el("span",{class:"pb-bal "+(Math.abs(n)<50?"zero":n>0?"plus":"minus"),text:Math.abs(n)<50?"Rien à régler":n>0?(m.id===me?"On te doit ":"On lui doit ")+money(n):(m.id===me?"Tu dois ":"Doit ")+money(-n)}));
         row.append(c);
       }
-      pw.append(el("div",{class:"sec-title"},el("h2",{text:"Budget par personne"}),el("span",{class:"muted",style:"font-size:13px",text:"Touche une carte pour le détail"})),row);
+      pw.append(el("div",{class:"sec-title"},el("h2",{text:"Budget par personne"})),row);
       if(S.bPerson&&ppl.some(m=>m.id===S.bPerson)){
         const id=S.bPerson, det=el("div",{class:"pdetail"});
         const lines=month.map(d=>({t:d.titre,v:shareOf(d,id),w:d.date})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
@@ -3203,7 +3206,7 @@ function renderBudget(){
       if(me&&(t.de===me||t.a===me||isAdmin())) row.append(el("button",{type:"button",class:"btn ghost",style:"padding:6px 12px;font-size:13px",text:"C'est réglé",onclick:async(e)=>{ try{ await S.db.collection("depenses").add({type:"rembt",titre:"Remboursement",montant:t.montant,payePar:t.de,partage:[t.a],date:iso(today()),cat:"autre",creePar:me,creeLe:Date.now()}); const r=e.target.getBoundingClientRect(); confetti(r.left+r.width/2,r.top); toast("Comptes réglés entre "+esc(membre(t.de).nom)+" et "+esc(membre(t.a).nom)+"."); }catch(err){ writeErr(err); } }}));
       box.append(row);
     }
-    bw.append(el("div",{class:"sec-title"},el("h2",{text:"Qui doit quoi"}),el("span",{class:"muted",style:"font-size:13px",text:"Dépenses partagées"})),box);
+    bw.append(el("div",{class:"sec-title"},el("h2",{text:"Qui doit quoi"})),box);
   }
   // répartition du mois (une seule série : barres classées, valeurs en clair)
   renderBudgetCats(month,tot,mois);
