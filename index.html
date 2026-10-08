@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 14:51";</script>
+<script>window.COCOON_BUILD="08/10 15:46";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1560,6 +1560,22 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 
 .pb-chev{font-size:20px;font-weight:700;line-height:1;color:var(--muted);margin-left:2px;transition:transform .2s ease;display:inline-block}
 .pcard-b[aria-expanded="true"] .pb-chev{transform:rotate(90deg)}
+
+/* Cases de validation des notifications : comme les tâches (on coche, puis on valide) */
+.np-ok{width:30px!important;height:30px!important;border-radius:10px!important;border:2px solid var(--check,#CFCBE3)!important;background:transparent!important;color:transparent!important;margin-right:8px!important;padding:0;display:grid;place-items:center;cursor:pointer;transition:background-color .15s,border-color .15s,transform .12s}
+.np-ok svg{opacity:0;transition:opacity .12s}
+.np-ok:active{transform:scale(.9)}
+.np-ok.sel{background:var(--mark)!important;border-color:var(--mark)!important;color:var(--mark-ink)!important;animation:pop .28s cubic-bezier(.3,1.8,.5,1)}
+.np-ok.sel svg{opacity:1}
+.np-ok.done{background:var(--ok,#3FAE5A)!important;border-color:var(--ok,#3FAE5A)!important;color:#fff!important}
+.np-ok.done svg{opacity:1}
+.np-selbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 10px 10px;padding:10px 12px;border-radius:18px;background:var(--hero);color:var(--hero-ink);animation:npSelIn .2s ease-out}
+.np-selbar span{flex:1 1 100%;font-size:13px;opacity:.8;padding-left:4px;font-weight:600}
+.np-selbar .btn{flex:1 1 0;justify-content:center;padding:10px 12px}
+.np-selbar .np-sel-ok{flex:1.35 1 0;background:var(--mark);color:var(--mark-ink)}
+.np-selbar .np-sel-no{background:transparent;color:var(--hero-ink);border-color:rgba(255,255,255,.25)}
+.npanel.selecting .np-all{display:none}
+@keyframes npSelIn{from{transform:translateY(10px);opacity:0}}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3910,6 +3926,12 @@ function npGo(r){ closeNotifs(); const x=r.ref; if(r.live){ setTab("courses"); r
   if(r.kind==="Rendez-vous"){ setTab("accueil"); setTimeout(()=>{ const e=$("rdvWrap"); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); },80); return; }
   setTab("maison"); window.scrollTo({top:0}); if(r.kind==="Poubelles") setTimeout(()=>{ const e=$("mBins"); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); },80);
 }
+function npSel(){ if(!S.npSelSet) S.npSelSet=new Set(); return S.npSelSet; }
+async function npValidate(list){ const me=meId(), rows=list.map(r=>document.querySelector('#npanel .np-row[data-k="'+CSS.escape(npKey(r))+'"]')).filter(Boolean);
+  rows.forEach((row,i)=>{ const b=row.querySelector(".np-ok"); if(b){ b.classList.add("done"); } setTimeout(()=>row.classList.add("gone"),160+i*60); });
+  S.npSelSet=new Set(); const bar=document.querySelector("#npanel .np-selbar"); if(bar) bar.remove();
+  for(const r of list){ const task=(r.kind==="Perso"||r.kind==="Foyer"); try{ if(task&&!S.readOnly&&me) await completeTask(r.ref); else npDismiss(r); }catch(_){} }
+  setTimeout(()=>{ if(!$("npanel").hidden) renderNotifs(); },420+rows.length*60); }
 function renderNotifs(){
   const p=$("npanel"); p.innerHTML=""; const items=npItems(), fresh=S.npNew||new Set(), me=meId();
   const head=el("div",{class:"np-head"},el("b",{text:"Notifications"}),items.length?el("span",{class:"np-n",text:String(items.length)}):"",el("button",{type:"button",class:"np-x","aria-label":"Fermer",text:"×",onclick:closeNotifs}));
@@ -3923,19 +3945,24 @@ function renderNotifs(){
       const row=el("div",{class:"np-row"+(fresh.has(npKey(r))?" new":"")+(r.merci?" mer":"")});
       const main=el("button",{type:"button",class:"np-main",onclick:()=>npGo(r)},npIcon(r),el("span",{class:"np-t"},el("b",{text:r.titre}),el("span",{text:sub.join(" · ")})),el("span",{class:"due"+(r.live?" live":n<0?" late":n<=1?" soon":""),text:r.live?"En direct":dueLabel(r.date)}));
       row.append(main);
-      { const okSvg=()=>{ const sp=el("span"); sp.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'; return sp; };
-        const canDo=task&&!S.readOnly&&me;
-        row.append(el("button",{type:"button",class:"np-ok","aria-label":canDo?"Marquer « "+r.titre+" » comme fait":"Valider et masquer « "+r.titre+" »",title:canDo?"C'est fait":"Vu, masquer",onclick:async ev=>{ ev.stopPropagation(); row.classList.add("gone");
-          if(canDo) await completeTask(r.ref); else npDismiss(r);
-          setTimeout(()=>{ if(!$("npanel").hidden) renderNotifs(); },260); }},okSvg())); }
+      { const k=npKey(r), sel=npSel().has(k), canDo=task&&!S.readOnly&&me;
+        const box=el("button",{type:"button",class:"np-ok"+(sel?" sel":""),"aria-pressed":String(sel),"aria-label":(sel?"Désélectionner « ":"Sélectionner « ")+r.titre+" »",title:canDo?"C'est fait":"Vu, masquer",onclick:ev=>{ ev.stopPropagation(); const S2=npSel(); if(S2.has(k)) S2.delete(k); else S2.add(k); renderNotifs(); }});
+        box.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+        row.dataset.k=k; row.append(box); }
       body.append(row); } }
   if(!items.length){ const later=reminders().filter(r=>daysTo(r.date)>7)[0];
     body.append(el("div",{class:"np-empty"},(()=>{ const s=el("span",{class:"np-calm"}); s.innerHTML=GI("maison"); return s; })(),el("b",{text:"Rien d'urgent cette semaine"}),el("span",{text:later?"Prochain rappel : "+later.titre+", "+dueLabel(later.date)+".":"Ajoute des échéances à tes tâches et papiers pour être prévenu ici."}))); }
   p.append(body);
+  { const keys=[...npSel()].filter(k=>items.some(r=>npKey(r)===k)); S.npSelSet=new Set(keys);
+    if(keys.length){ const n=keys.length;
+      p.append(el("div",{class:"np-selbar"},el("span",{text:n+" sélectionnée"+(n>1?"s":"")}),
+        el("button",{type:"button",class:"btn np-sel-ok",text:"Valider ("+n+")",onclick:()=>npValidate(items.filter(r=>keys.includes(npKey(r))))}),
+        el("button",{type:"button",class:"btn ghost np-sel-no",text:"Annuler",onclick:()=>{ S.npSelSet=new Set(); renderNotifs(); }})));
+      p.classList.add("selecting"); } else p.classList.remove("selecting"); }
   p.append(el("button",{type:"button",class:"np-all",onclick:()=>{ closeNotifs(); setTab("rappels"); renderHeader(); window.scrollTo({top:0,behavior:"instant"}); }},"Tous les rappels et l'agenda du téléphone",(()=>{ const s=el("span"); s.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>'; return s; })()));
 }
 function openNotifs(){ const sn=npSeen(); S.npNew=new Set(npItems().map(npKey).filter(k=>!sn.has(k))); renderNotifs(); const bb=$("bellBtn").getBoundingClientRect(), P=$("npanel"); P.style.top=Math.max(12,Math.round(bb.bottom+12))+"px"; { const pw=Math.min(380,innerWidth-24); P.style.width=pw+"px"; P.style.left=Math.round((innerWidth-pw)/2)+"px"; P.style.right="auto"; } P.style.maxHeight=Math.max(260,Math.min(620,innerHeight-bb.bottom-110))+"px"; P.hidden=false; $("npBg").hidden=false; $("bellBtn").setAttribute("aria-expanded","true"); requestAnimationFrame(()=>$("npanel").classList.add("on")); npMarkSeen(); }
-function closeNotifs(){ const p=$("npanel"); if(p.hidden) return; p.classList.remove("on"); $("npBg").hidden=true; $("bellBtn").setAttribute("aria-expanded","false"); setTimeout(()=>{ if(!p.classList.contains("on")) p.hidden=true; },180); }
+function closeNotifs(){ const p=$("npanel"); if(p.hidden) return; S.npSelSet=new Set(); p.classList.remove("on"); $("npBg").hidden=true; $("bellBtn").setAttribute("aria-expanded","false"); setTimeout(()=>{ if(!p.classList.contains("on")) p.hidden=true; },180); }
 $("npBg").addEventListener("click",closeNotifs);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeNotifs(); });
 
