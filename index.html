@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 00:51";</script>
+<script>window.COCOON_BUILD="09/10 01:01";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1690,6 +1690,22 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 /* Discussion de hauteur fixe : on fait défiler pour remonter */
 .sec-chat .sec-thread{max-height:340px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:2px 2px 4px;margin:0 -2px;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 18px,#000 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 18px,#000 100%)}
 .sec-chat .sec-thread::-webkit-scrollbar{display:none}
+
+.sec-head{position:relative}
+.pal-btn{margin-left:auto;align-self:flex-start;flex:none;width:40px;height:40px;border-radius:14px;border:0;display:grid;place-items:center;cursor:pointer;color:#3A2F45;background:rgba(255,255,255,.75);box-shadow:0 2px 6px rgba(28,27,46,.08)}
+.pal-btn svg{display:block}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pal-btn{background:#2F2C42;color:#EDEBF7}}:root[data-theme="dark"] .pal-btn{background:#2F2C42;color:#EDEBF7}
+.pal-panel{position:fixed;z-index:46;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:min(420px,calc(100vw - 24px));transform:translate(-50%,24px);opacity:0;transition:transform .22s cubic-bezier(.2,1,.3,1),opacity .18s;background:var(--surface);color:var(--ink);border-radius:24px;padding:16px 16px 14px;box-shadow:0 18px 50px rgba(28,27,46,.25);display:flex;flex-direction:column;gap:8px}
+.pal-panel.on{transform:translate(-50%,0);opacity:1}
+.pal-panel[hidden]{display:none}
+.pal-h{display:flex;align-items:center;justify-content:space-between}.pal-h b{font-family:var(--f-display);font-size:19px;font-weight:800}
+.pal-l{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.pal-seg{width:100%}.pal-seg button{flex:1}
+.pal-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.pal-sw{display:flex;flex-direction:column;align-items:center;gap:5px;border:0;background:none;padding:4px 0;font:inherit;font-size:12px;font-weight:700;color:var(--ink);cursor:pointer}
+.pal-dot{width:44px;height:44px;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.6)}
+.pal-sw.on .pal-dot{box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--ink)}
+.pal-btns{display:flex;gap:8px;margin-top:8px}.pal-btns .btn{flex:1;justify-content:center}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -1747,7 +1763,7 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
     <div id="setupCard" hidden></div>
     <div class="sec-day" id="secDay" aria-hidden="true"></div>
     <div class="secretary sec-chat">
-      <div class="sec-head"><span class="sec-ring"><img class="sec-big" id="secBig" alt="" aria-hidden="true"></span><div><b class="sec-name">Cocoony</b><span class="sec-sub">Ton secrétaire du foyer</span></div></div>
+      <div class="sec-head"><span class="sec-ring"><img class="sec-big" id="secBig" alt="" aria-hidden="true"></span><div><b class="sec-name">Cocoony</b><span class="sec-sub">Ton secrétaire du foyer</span></div><button type="button" class="pal-btn" id="palBtn" aria-label="Couleurs et thème de Cocoon" title="Couleurs et thème"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.5C6.7 2.5 2.5 6.5 2.5 11.6c0 4.6 3.6 8.9 8.3 8.9 1.4 0 2.1-.8 2.1-1.8 0-.5-.2-.9-.4-1.3-.3-.4-.4-.8-.4-1.2 0-1 .8-1.7 1.8-1.7h2.2c3.2 0 5.4-2.3 5.4-5.3 0-3.9-4.2-6.7-9.5-6.7z"/><circle cx="7.4" cy="11.2" r="1.55" fill="#FF6B8B"/><circle cx="9.7" cy="7" r="1.55" fill="#FFC94A"/><circle cx="14.4" cy="6.6" r="1.55" fill="#5FD3A0"/><circle cx="17.6" cy="10" r="1.55" fill="#6F8CFF"/></svg></button></div>
       <div class="sec-thread" id="secThread">
         <div class="sec-row bot" id="secFirst"><img class="sec-av" alt="" aria-hidden="true"><div class="sec-bub"><h2 id="secTitle">Chargement du foyer…</h2><ul id="secList"></ul></div></div>
         <div class="sec-ans" id="secAns" hidden aria-live="polite"></div>
@@ -4563,6 +4579,8 @@ function renderSecChips(){
   const b=$("secChips"); if(!b) return; const c=secChips(), sig=c.map(x=>x[0]).join("|"); if(b.dataset.sig===sig) return; b.dataset.sig=sig; b.innerHTML="";
   for(const [l,q] of c) b.append(el("button",{type:"button",text:l,onclick:()=>{ if(!q||q[0]==="@"){ const i=$("secQ"); i.value=q?q.slice(1):"Ajoute "; i.focus(); return; } askSecretary(q); }}));
 }
+$("palBtn").addEventListener("click",()=>openPalette());
+setTimeout(()=>{ try{ applyPalette(); }catch(_){} },0);
 $("secAsk").addEventListener("submit",e=>{ e.preventDefault(); const i=$("secQ"), v=i.value; i.value=""; i.blur(); askSecretary(v); });
 
 /* ---------- Réglages ---------- */
@@ -4848,6 +4866,52 @@ function secCreatePlan(raw){
       return secA("C'est noté : « "+titre+" » "+bits.join(", ")+".",[],[{l:"Voir",ghost:true,run:cocoGo(where==="perso"?"moi":"foyer")},cocoUndo("",async()=>{ const t=find(); if(!t) throw new Error("introuvable"); await (t.prive?persoCol():S.db.collection("taches")).doc(t.id).delete(); },"Tâche annulée.")]); }}; }
   return null;
 }
+
+/* ===== Palette : couleurs générales de Cocoon ===== */
+const PALS=[
+  {id:"soleil",n:"Soleil",g:["#FFC94A","#FF9C80","#E79ADB"],mark:"#FFC94A",t:["rgba(248,201,230,.55)","rgba(255,231,166,.6)","#FFF9F3"],d:["rgba(232,121,170,.20)","rgba(255,201,74,.14)","#221F2E"]},
+  {id:"ocean",n:"Océan",g:["#8BE3F5","#5AA8FF","#8C7CFF"],mark:"#8FD3FF",t:["rgba(160,190,255,.55)","rgba(150,230,245,.55)","#F3F8FF"],d:["rgba(110,140,255,.22)","rgba(90,200,240,.14)","#1D2130"]},
+  {id:"menthe",n:"Menthe",g:["#C6F08A","#5FD3A0","#3FB6C9"],mark:"#9BE6B4",t:["rgba(150,225,200,.55)","rgba(210,245,170,.55)","#F4FBF4"],d:["rgba(70,190,160,.22)","rgba(170,230,110,.12)","#1B2422"]},
+  {id:"lavande",n:"Lavande",g:["#F0C6FF","#B79CFF","#7C83FF"],mark:"#C9B5FF",t:["rgba(190,170,255,.55)","rgba(245,200,255,.55)","#F8F5FF"],d:["rgba(140,120,255,.24)","rgba(230,160,255,.12)","#201E30"]},
+  {id:"peche",n:"Pêche",g:["#FFD3A8","#FF9CB5","#F27AA8"],mark:"#FFB7A6",t:["rgba(255,180,200,.55)","rgba(255,215,170,.6)","#FFF6F3"],d:["rgba(240,110,160,.22)","rgba(255,170,120,.14)","#251E26"]}];
+const BULLES=[["encre","Foncées"],["theme","Couleur du thème"],["douce","Pastel"]];
+function palGet(){ const p=(S.prefs&&S.prefs.palette)||S.palLocal||(()=>{ try{ return JSON.parse(localStorage.getItem("cocoon.palette")||"null"); }catch(_){ return null; } })()||{}; return {id:PALS.some(x=>x.id===p.id)?p.id:"soleil",bulle:BULLES.some(b=>b[0]===p.bulle)?p.bulle:"encre"}; }
+function applyPalette(p){ p=p||palGet(); const P=PALS.find(x=>x.id===p.id)||PALS[0], G="linear-gradient(135deg,"+P.g[0]+","+P.g[1]+" 55%,"+P.g[2]+")";
+  let st=document.getElementById("palStyle"); if(!st){ st=document.createElement("style"); st.id="palStyle"; document.body.appendChild(st); }
+  const dk=sel=>'@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) '+sel+'}:root[data-theme="dark"] '+sel;
+  let css="";
+  if(P.id!=="soleil"){
+    css+=":root,:root[data-theme]{--mark:"+P.mark+"!important;--fam-bg:"+P.mark+"!important}";
+    css+=".coc-pill,.coc-streak,.coc-big,.coc-opt{--coc-y:color-mix(in srgb,"+P.mark+" 45%,#FFFFFF)!important}";
+    { const sel=p=>[".coc-pill",".coc-streak",".coc-big",".coc-opt"].map(x=>p+" "+x).join(","), b="{--coc-y:color-mix(in srgb,"+P.mark+" 45%,#FFFFFF)!important}"; css+='@media (prefers-color-scheme: dark){'+sel(':root:not([data-theme="light"])')+b+'}'+sel(':root[data-theme="dark"]')+b; }
+    css+=".nav-add,.rdv-add2 i,.sec-chat .sec-ask button,.sec-ring{background:"+G+"!important}";
+    css+=".nav-add{box-shadow:0 10px 24px "+P.g[1]+"66!important}";
+    css+=".sec-name{background:linear-gradient(135deg,"+P.g[0]+","+P.g[1]+" 60%,"+P.g[2]+")!important;-webkit-background-clip:text!important;background-clip:text!important}";
+    css+=".secretary.sec-chat{background:radial-gradient(80% 60% at 100% 0%,"+P.t[0]+",transparent 70%),radial-gradient(70% 60% at 0% 100%,"+P.t[1]+",transparent 70%),"+P.t[2]+"!important;box-shadow:inset 0 0 0 1px "+P.g[1]+"33!important}";
+    css+=dk(".secretary.sec-chat{background:radial-gradient(80% 60% at 100% 0%,"+P.d[0]+",transparent 70%),radial-gradient(70% 60% at 0% 100%,"+P.d[1]+",transparent 70%),"+P.d[2]+"!important}");
+    css+=".sec-head{border-bottom-color:"+P.g[1]+"44!important}";
+  }
+  if(p.bulle==="theme") css+=".sec-row.me .sec-bub{background:"+G+"!important;color:#1C1B2E!important}";
+  if(p.bulle==="douce") css+=".sec-row.me .sec-bub{background:"+P.mark+"!important;color:#1C1B2E!important}";
+  st.textContent=css;
+  const tc=document.getElementById("cxTc"); }
+function savePalette(p){ S.palLocal=p; try{ localStorage.setItem("cocoon.palette",JSON.stringify(p)); }catch(_){}
+  if(S.db&&S.uid){ S.prefs=Object.assign({},S.prefs||{},{palette:p}); S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); } }
+function openPalette(){ const was={pal:palGet(),theme:curTheme()}, cur={pal:Object.assign({},was.pal),theme:was.theme};
+  let bg=$("palBg"), pn=$("palPanel"); if(!bg){ bg=el("div",{class:"np-bg",id:"palBg"}); pn=el("div",{class:"pal-panel",id:"palPanel",role:"dialog","aria-label":"Couleurs et thème"}); document.body.append(bg,pn); }
+  const close=keep=>{ if(!keep){ applyPalette(was.pal); applyTheme(was.theme); } pn.classList.remove("on"); bg.hidden=true; setTimeout(()=>{ pn.hidden=true; },180); };
+  bg.onclick=()=>close(false);
+  const draw=()=>{ pn.innerHTML="";
+    pn.append(el("div",{class:"pal-h"},el("b",{text:"Couleurs de Cocoon"}),el("button",{type:"button",class:"np-x","aria-label":"Fermer",text:"×",onclick:()=>close(false)})));
+    const th=el("div",{class:"seg pal-seg"}); for(const [v,l] of [["auto","Automatique"],["light","Clair"],["dark","Sombre"]]) th.append(el("button",{type:"button","aria-pressed":String(cur.theme===v),text:l,onclick:()=>{ cur.theme=v; applyTheme(v); draw(); }}));
+    pn.append(el("span",{class:"pal-l",text:"Thème"}),th);
+    const g=el("div",{class:"pal-grid"}); for(const P of PALS){ const on=cur.pal.id===P.id; g.append(el("button",{type:"button",class:"pal-sw"+(on?" on":""),"aria-pressed":String(on),onclick:()=>{ cur.pal.id=P.id; applyPalette(cur.pal); draw(); }},el("span",{class:"pal-dot",style:"background:linear-gradient(135deg,"+P.g[0]+","+P.g[1]+" 55%,"+P.g[2]+")"}),el("span",{text:P.n}))); }
+    pn.append(el("span",{class:"pal-l",text:"Couleurs"}),g);
+    const bl=el("div",{class:"seg pal-seg"}); for(const [v,l] of BULLES) bl.append(el("button",{type:"button","aria-pressed":String(cur.pal.bulle===v),text:l,onclick:()=>{ cur.pal.bulle=v; applyPalette(cur.pal); draw(); }}));
+    pn.append(el("span",{class:"pal-l",text:"Tes bulles dans la discussion"}),bl);
+    pn.append(el("div",{class:"pal-btns"},el("button",{type:"button",class:"btn",text:"Enregistrer",onclick:()=>{ savePalette(cur.pal); if(cur.theme!==was.theme) setTheme(cur.theme); toast("Couleurs enregistrées."); close(true); }}),el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>close(false)})));
+  };
+  draw(); pn.hidden=false; bg.hidden=false; requestAnimationFrame(()=>pn.classList.add("on")); }
 function secAv(){ const im=el("img",{class:"sec-av",alt:"","aria-hidden":"true"}); const lg=document.querySelector(".brand-logo"); if(lg) im.src=lg.src; return im; }
 function secReadFx(){ const reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches; if(reduced) return;
   const bots=document.querySelectorAll("#secThread .sec-row.bot .sec-bub"), last=bots[bots.length-1]; const av=document.querySelectorAll("#secThread .sec-row.bot .sec-av"), la=av[av.length-1];
@@ -5527,7 +5591,7 @@ let prefsUnsub=null;
 function subscribePerso(){
   if(persoUnsub||!S.db||!S.uid) return;
   if(prefsUnsub) prefsUnsub(); S.prefs=null; S.prefsLoaded=false;
-  prefsUnsub=S.db.doc("data/users/"+S.uid+"/prefs").onSnapshot(p=>{ S.prefs=p.exists?p.data():null; if(S.prefs&&Array.isArray(S.prefs.notifMasquees)) S.npHide=new Set(S.prefs.notifMasquees); if(S.prefs&&S.prefs.theme) applyTheme(S.prefs.theme); S.prefsLoaded=true; renderAll(); },()=>{ S.prefsLoaded=true; });
+  prefsUnsub=S.db.doc("data/users/"+S.uid+"/prefs").onSnapshot(p=>{ S.prefs=p.exists?p.data():null; if(S.prefs&&Array.isArray(S.prefs.notifMasquees)) S.npHide=new Set(S.prefs.notifMasquees); if(S.prefs&&S.prefs.theme) applyTheme(S.prefs.theme); try{ applyPalette(); }catch(_){} S.prefsLoaded=true; renderAll(); },()=>{ S.prefsLoaded=true; });
   vehCol().onSnapshot(s=>{ S.vehic=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"vehicules"); renderAll(); },()=>{});
   persoUnsub=persoCol().onSnapshot(s=>{ S.perso=live(s.docs.map(d=>Object.assign({id:d.id,prive:true},d.data())),"ptaches"); S.loaded.p=true; renderAll(); },()=>{ S.loaded.p=true; renderAll(); });
 }
