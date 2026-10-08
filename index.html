@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 14:38";</script>
+<script>window.COCOON_BUILD="08/10 14:47";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2293,8 +2293,8 @@ function buildEditor(){
   // Identité
   const nom=bind(el("input",{type:"text",id:"fiNom",maxlength:"30",required:true,placeholder:t==="animal"?"Moka, Rex…":t==="enfant"?"Léo, Jade…":"Prénom"}),"nom"); nom.value=d.nom||"";
   const sur=bind(el("input",{type:"text",id:"fiSurnom",maxlength:"30",placeholder:"Facultatif"}),"surnom"); sur.value=d.surnom||"";
-  const nais=el("input",{type:"date",id:"fiNaissance"}); nais.value=d.naissance||""; nais.addEventListener("input",()=>{ d.naissance=nais.value||null; refreshPreview(); });
-  const row=el("div",{class:"frow"},field(t==="animal"?"Nom":"Prénom",nom),field("Surnom",sur),field(t==="animal"?"Date de naissance (ou d'adoption)":"Date de naissance",nais));
+  const needBirth=!!(E.self||(E.id&&E.id===meId()))&&t!=="animal"; const nais=el("input",{type:"date",id:"fiNaissance"}); nais.value=d.naissance||""; nais.addEventListener("input",()=>{ d.naissance=nais.value||null; refreshPreview(); });
+  const row=el("div",{class:"frow"},field(t==="animal"?"Nom":"Prénom",nom),field("Surnom",sur),field(t==="animal"?"Date de naissance (ou d'adoption)":needBirth?"Date de naissance *":"Date de naissance",nais));
   if(t==="animal"){
     const esp=el("select",{id:"fiEspece"}); for(const e of ESPECES) esp.append(el("option",{value:e,text:e})); esp.value=d.espece||"Chat";
     esp.addEventListener("change",()=>{ d.espece=esp.value; refreshPreview(); });
@@ -2378,6 +2378,7 @@ function closeEditor(){ if(S.edit&&S.edit.finish){ finishFlow(); return; } const
 async function saveProfile(){
   const E=S.edit; if(!E||E.busy) return; const d=E.d;
   d.nom=(d.nom||"").trim(); if(!d.nom){ toast("Donne un prénom ou un nom au profil."); $("fiNom").focus(); return; }
+  if((E.self||(E.id&&E.id===meId()))&&(d.type||"adulte")!=="animal"&&!d.naissance){ toast("Indique ta date de naissance."); const n=$("fiNaissance"); if(n){ n.focus(); n.scrollIntoView({block:"center",behavior:"smooth"}); } return; }
   d.infos=(d.infos||[]).filter(x=>(x.l||"").trim()||(x.v||"").trim()).map(x=>({l:(x.l||"").trim(),v:(x.v||"").trim()}));
   for(const k of Object.keys(d)) if(d[k]===undefined) delete d[k];
   if(E.self){ await saveSelf(E); return; }
@@ -2751,7 +2752,7 @@ function renderWizard(){
   const nav=el("div",{class:"wz-nav"});
   nav.append(W.step>0?el("button",{type:"button",class:"btn ghost",text:"Retour",onclick:()=>{W.step--;rerender();}}):el("span"));
   const needMsg=wzNeed(key,a), need=!!needMsg;
-  nav.append(el("span",{class:"wz-need",text:needMsg||"",hidden:!need||null}));
+  const showNeed=need&&/^Vérifie/.test(needMsg); nav.append(el("span",{class:"wz-need",text:showNeed?needMsg:"",hidden:!showNeed||null}));
   nav.append(el("button",{type:"button",class:"btn"+(last?" big":""),id:"wzNext",disabled:need||null,text:last?(W.pre?"Continuer":"Tout mettre en place"):"Continuer",onclick:()=>{ if(last){ if(W.pre){ S.pendingW=W; warmup(WARM_LINES,3300).then(goProfileStage); } else warmup(WARM_LINES,2600,()=>applyPlan()).catch(()=>{}); } else { W.step++; if(W.steps[W.step]==="plan") W.plan=null; rerender(); window.scrollTo({top:0}); } }}));
   box.append(nav);
 }
@@ -2769,7 +2770,7 @@ function wzNeed(key,a){
   if(key==="vehicules"||key==="prio") return a[key].length?null:"Choisis au moins une réponse";
   return null;
 }
-function wzRefresh(key,a){ const m=wzNeed(key,a), nx=$("wzNext"), nd=document.querySelector("#wizard .wz-need"); if(nx) nx.disabled=!!m; if(nd){ nd.textContent=m||""; nd.hidden=!m; } }
+function wzRefresh(key,a){ const m=wzNeed(key,a), nx=$("wzNext"), nd=document.querySelector("#wizard .wz-need"); if(nx) nx.disabled=!!m; if(nd){ const sh=!!m&&/^Vérifie/.test(m); nd.textContent=sh?m:""; nd.hidden=!sh; } }
 async function savePrefsOnly(){ if(!S.db||!S.uid) return; try{ await S.db.doc("data/users/"+S.uid+"/prefs").set(Object.assign({},S.prefs||{},{qVu:true})); }catch(_){} }
 async function applyPlan(Wx){
   const W=Wx||S.wiz; if(!W||W.busy) return; W.busy=true; const btn=Wx?null:$("wzNext"); if(btn){ btn.disabled=true; btn.textContent="Mise en place…"; }
@@ -4626,7 +4627,6 @@ async function reveal({hello,lines,minMs,work,before}){
     const fly={finished:flyLogo(logo,target,1050)};
     const tr=target?target.getBoundingClientRect():{left:24,top:24,width:40,height:40}, tcx=tr.left+tr.width/2, tcy=tr.top+tr.height/2;
     await Promise.all([fly.finished,wipe.finished]);
-    confetti(tcx,tcy+10); setTimeout(()=>confetti(window.innerWidth/2,window.innerHeight*.45),180);
   }
   stop.done=true; R.hidden=true; R.style.pointerEvents=""; R.classList.remove("in","out"); R.getAnimations({subtree:true}).forEach(a=>a.cancel()); logo.getAnimations().forEach(a=>a.cancel()); logo.style.transform=""; logo.style.animation=""; logo.parentElement.style.cssText=""; $("rvSparks").innerHTML="";
   const W=document.querySelector(".wrap"); W.classList.add("arrive"); endArrive(W);

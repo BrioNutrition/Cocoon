@@ -21,7 +21,7 @@ async def main():
     await pg.click('.opt:has-text("Appartement")'); await pg.click('.opt:has-text("Locataire")'); await pg.click('#wzNext')
     await pg.click('.opt:has-text("Aucun")'); await pg.click('#wzNext'); await pg.click('.opt:has-text("Suivre les colis")'); await pg.click('#wzNext')
     await pg.click('#wzNext'); await pg.wait_for_timeout(4200)
-    await pg.fill('#fiNom','Angel'); await pg.click('#fiSave'); await pg.wait_for_timeout(2600)
+    await pg.fill('#fiNom','Angel'); await pg.fill('#fiNaissance','1990-05-04'); await pg.click('#fiSave'); await pg.wait_for_timeout(2600)
     await pg.click('#navAdd'); await pg.fill('#quickTitle','Arroser les plantes'); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(2000)
     await pg.wait_for_timeout(1500)
     inbase=lambda t: pg.evaluate("t=>__mock.T.cocoon_docs.some(r=>r.data&&r.data.titre===t)", t)
