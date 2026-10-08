@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 17:10";</script>
+<script>window.COCOON_BUILD="08/10 22:53";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1613,6 +1613,10 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .rdv-add:active{transform:none}
 .rdv-add{position:relative;-webkit-appearance:none;appearance:none;font-size:0;line-height:0;min-width:38px;min-height:38px;max-width:38px;max-height:38px;aspect-ratio:1/1;overflow:visible}
 .rdv-add svg{display:block;position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px}
+
+.rdv-add2{width:100%;display:flex;align-items:center;gap:10px;border:1.5px dashed var(--line);background:transparent;color:var(--muted);border-radius:16px;padding:11px 12px;font:inherit;font-weight:600;font-size:14px;text-align:left;cursor:pointer}
+.rdv-add2 i{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#1C1B2E;background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB)}
+.rdv-add2 i svg{display:block}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3151,7 +3155,7 @@ function rdvTimer(){ clearTimeout(S.rdvT); const list=(S.rdvs||[]).filter(r=>!r.
   if(nx<Infinity) S.rdvT=setTimeout(()=>{ renderRdv(); },Math.min(nx-now+500,6*36e5)); }
 function renderRdv(){
   const w=$("rdvWrap"); if(!w) return; w.innerHTML=""; const me=meId(), can=!S.readOnly&&!!me, F=S.rdvForm, list=rdvList(60);
-  w.append(el("div",{class:"sec-title"},el("h2",{text:"Rendez-vous"}),can&&!(F&&!F.id)?(()=>{ const btn=el("button",{type:"button",class:"rdv-add","aria-label":"Ajouter un rendez-vous",title:"Ajouter un rendez-vous",onclick:()=>{ S.rdvForm={pour:[me]}; renderRdv(); }}); btn.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg>'; return btn; })():el("span",{class:"muted",style:"font-size:13px",text:"Les 2 prochains mois"})));
+  w.append(el("div",{class:"sec-title"},el("h2",{text:"Rendez-vous"})));
   const box=el("div",{class:"rdv-list"});
   if(F&&!F.id) box.append(rdvFormEl());
   for(const x of list){
@@ -3177,6 +3181,8 @@ function renderRdv(){
     const sec=document.querySelector('[data-view="accueil"] .secretary'), fw=$("fridgeWrap");
     if(urgent&&sec&&sec.nextElementSibling!==w) sec.after(w); else if(!urgent&&fw&&fw.nextElementSibling!==w) fw.after(w); }
   if(!list.length&&!F) box.append(el("div",{class:"rdv-empty",text:"Aucun rendez-vous prévu. Médecin, véto, garage, réunion d'école : note-les ici, tout le foyer les voit."}));
+  if(can&&!(F&&!F.id)){ const add=el("button",{type:"button",class:"rdv-add2",onclick:()=>{ S.rdvForm={pour:[me]}; renderRdv(); }}), ic=el("i",{"aria-hidden":"true"});
+    ic.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'; add.append(ic,"Ajouter un rendez-vous"); box.append(add); }
   w.append(box);
 }
 function rdvFormEl(){
