@@ -190,7 +190,7 @@ if("serviceWorker" in navigator&&location.protocol==="https:"){ var _had=!!navig
 """
 INTRO_CSS = """<style>
 #cxIntro{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:#F6F5FB;pointer-events:none}
-html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxIntro .cxi-name{color:#F3F1FA}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #cxIntro{background:#13121C}:root:not([data-theme="light"]) #cxIntro .cxi-name{color:#EDEBF7}:root:not([data-theme="light"]) .cx-warn,:root:not([data-theme="light"]) .cx-ask-m{color:#FFB3A6}:root:not([data-theme="light"]) .cx-ask-ic{background:#433A22;color:#FFE3A0}}:root[data-theme="dark"] #cxIntro{background:#13121C}:root[data-theme="dark"] #cxIntro .cxi-name{color:#EDEBF7}:root[data-theme="dark"] .cx-warn,:root[data-theme="dark"] .cx-ask-m{color:#FFB3A6}:root[data-theme="dark"] .cx-ask-ic{background:#433A22;color:#FFE3A0}
 #cxIntro .cxi-c{display:flex;flex-direction:column;align-items:center;gap:6px}
 #cxIntro .cxi-w{position:relative;width:132px;height:132px;margin-bottom:14px;animation:cxiFloat 5s linear .9s infinite}
 #cxIntro .cxi-w i{position:absolute;inset:0;border-radius:30px;border:2px solid rgba(255,201,74,.6);opacity:0;animation:cxiRing 2.4s cubic-bezier(.2,.6,.4,1) .7s infinite}
@@ -248,7 +248,7 @@ head = f"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#F6F5FB">
+<meta name="theme-color" content="#F6F5FB" id="cxTc"><script>(function(){{var r=document.documentElement,m=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)");function u(){{var t=document.getElementById("cxTc");if(!t)return;var d=r.dataset.theme==="dark"||(r.dataset.theme!=="light"&&m&&m.matches);t.content=d?"#13121C":"#F6F5FB";}}try{{new MutationObserver(u).observe(r,{{attributes:true,attributeFilter:["data-theme"]}});m&&m.addEventListener&&m.addEventListener("change",u);document.addEventListener("DOMContentLoaded",u);}}catch(e){{}}u();}})()</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Cocoon">
