@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 16:10";</script>
+<script>window.COCOON_BUILD="08/10 16:17";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1587,6 +1587,16 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .rdv.past .rdv-date{opacity:.7}
 .rdv-selbar{margin:4px 0 0}
 .rdv-selbar .rdv-sel-del{flex:0 0 auto;width:54px;padding:9px 0;justify-content:center;background:transparent;color:var(--hero-ink);border-color:rgba(255,255,255,.25)}
+
+.rdv-b b{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rdv-st{font-style:normal;font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:99px;background:#DDF3E4;color:#1E7A45;letter-spacing:.01em}
+.rdv-st.encours{background:#2F9E5B;color:#fff;box-shadow:0 0 0 0 rgba(47,158,91,.45);animation:clPulse 1.8s ease-out infinite}
+.rdv.encours{box-shadow:0 0 0 2px #2F9E5B,0 2px 0 var(--shadow)}
+.rdv.encours .rdv-date,.rdv.fini .rdv-date{background:color-mix(in srgb,#7FD39A var(--tile-pct),var(--surface))}
+.rdv.encours .rdv-b span{color:#2F9E5B;font-weight:600}
+.rdv.fini .rdv-b span{color:var(--muted)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .rdv-st.fini{background:#1F3A2A;color:#BFE8CD}}
+:root[data-theme="dark"] .rdv-st.fini{background:#1F3A2A;color:#BFE8CD}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3116,6 +3126,11 @@ async function rdvAct(ids,kind){ const me=meId(); if(!S.db||!me) return; const i
     try{ for(const it of items) await S.db.collection("rdv").doc(it.id).update({fait:true,faitPar:me,faitLe:Date.now()}); toast(items.length>1?items.length+" rendez-vous validés.":"Rendez-vous « "+esc(items[0].titre||"")+" » effectué."); }catch(e){ writeErr(e); } renderRdv(); return; }
   await Promise.all(rows.map((r,i)=>new Promise(ok=>setTimeout(()=>rowOut(r,"del").then(ok,ok),i*60))));
   softDelete(items.map(item=>({key:"rdv:"+item.id,arr:"rdvs",item,run:()=>S.db.collection("rdv").doc(item.id).delete()})),items.length>1?items.length+" rendez-vous supprimés.":"Rendez-vous « "+esc(items[0].titre||"")+" » supprimé."); }
+function rdvEnd(r){ if(r.heureFin) return new Date(r.date+"T"+r.heureFin); if(r.heure){ const d=new Date(r.date+"T"+r.heure); d.setHours(d.getHours()+1); return d; } return new Date(r.date+"T23:59"); }
+function rdvState(r){ if(!r||!r.date) return ""; const now=Date.now(), st=new Date(r.date+"T"+(r.heure||"00:00")).getTime(), en=rdvEnd(r).getTime(); return now>=en?"fini":now>=st?"encours":""; }
+function rdvTimer(){ clearTimeout(S.rdvT); const list=(S.rdvs||[]).filter(r=>!r.fait&&r.date===iso(today())); if(!list.length) return;
+  const now=Date.now(); let nx=Infinity; for(const r of list){ for(const t of [new Date(r.date+"T"+(r.heure||"00:00")).getTime(),rdvEnd(r).getTime()]) if(t>now&&t<nx) nx=t; }
+  if(nx<Infinity) S.rdvT=setTimeout(()=>{ renderRdv(); },Math.min(nx-now+500,6*36e5)); }
 function renderRdv(){
   const w=$("rdvWrap"); if(!w) return; w.innerHTML=""; const me=meId(), can=!S.readOnly&&!!me, F=S.rdvForm, list=rdvList(60);
   w.append(el("div",{class:"sec-title"},el("h2",{text:"Rendez-vous"}),can&&!(F&&!F.id)?el("button",{type:"button",class:"btn ghost",style:"padding:6px 12px;font-size:13px",text:"+ Rendez-vous",onclick:()=>{ S.rdvForm={pour:[me]}; renderRdv(); }}):el("span",{class:"muted",style:"font-size:13px",text:"Les 2 prochains mois"})));
@@ -3124,10 +3139,11 @@ function renderRdv(){
   for(const x of list){
     if(F&&F.id&&x.r&&x.r.id===F.id){ box.append(rdvFormEl()); continue; }
     const d=parse(x.date), n=daysTo(x.date);
-    const when=n<0?"Passé, à valider":n===0?"Aujourd'hui":n===1?"Demain":RDV_FMT.w.format(d).replace(/^./,c=>c.toUpperCase());
+    const stt=x.r?rdvState(x.r):"", when=n===0?"Aujourd'hui":n===1?"Demain":n<0?RDV_FMT.w.format(d).replace(/^./,c=>c.toUpperCase()):RDV_FMT.w.format(d).replace(/^./,c=>c.toUpperCase());
+    const hTxt=x.heure?heureTxt(x.heure)+(x.r&&x.r.heureFin?"–"+heureTxt(x.r.heureFin):""):"";
     const ppl=el("span",{class:"rdv-ppl"},...x.pour.slice(0,3).map(id=>avatar(id,20)));
-    const row=el("div",{class:"rdv"+(n<0?" past":n<=1?" soon":"")+(x.r&&rdvSel().has(x.r.id)?" sel":"")},el("div",{class:"rdv-date"},el("b",{text:RDV_FMT.j.format(d)}),el("span",{text:RDV_FMT.m.format(d).replace(".","")})),
-      el("div",{class:"rdv-b"},el("b",{text:x.titre}),el("span",{text:[when+(x.heure?" · "+heureTxt(x.heure):""),x.lieu].filter(Boolean).join(" · ")})),ppl);
+    const row=el("div",{class:"rdv"+(stt==="fini"?" fini":stt==="encours"?" encours":n<=1?" soon":"")+(x.r&&rdvSel().has(x.r.id)?" sel":"")},el("div",{class:"rdv-date"},el("b",{text:RDV_FMT.j.format(d)}),el("span",{text:RDV_FMT.m.format(d).replace(".","")})),
+      el("div",{class:"rdv-b"},el("b",{},x.titre,stt?el("em",{class:"rdv-st "+stt,text:stt==="fini"?"Terminé":"En cours"}):null),el("span",{text:[(stt?(n===0?"Aujourd'hui":when):when)+(hTxt?" · "+hTxt:""),x.lieu].filter(Boolean).join(" · ")})),ppl);
     if(x.r&&can&&(isAdmin()||x.r.par===me||(x.r.pour||[]).includes(me))){ const p=pencilBtn(()=>{ S.rdvForm=Object.assign({},x.r); renderRdv(); },"Modifier "+x.titre); p.classList.add("rdv-pen"); row.append(p);
       const on=rdvSel().has(x.r.id), ck=el("button",{type:"button",class:"rdv-ck"+(on?" sel":""),"aria-pressed":String(on),"aria-label":(on?"Désélectionner ":"Sélectionner ")+x.titre,onclick:()=>{ const z=rdvSel(); if(z.has(x.r.id)) z.delete(x.r.id); else z.add(x.r.id); renderRdv(); }});
       ck.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
@@ -3138,6 +3154,7 @@ function renderRdv(){
       box.append(el("div",{class:"np-selbar rdv-selbar"},el("span",{text:n+" rendez-vous sélectionné"+(n>1?"s":"")}),
         el("button",{type:"button",class:"btn np-sel-ok",text:"C'est fait ("+n+")",onclick:()=>rdvAct(ids,"fait")}),
         el("button",{type:"button",class:"btn ghost np-sel-no",text:"Annuler",onclick:()=>{ S.rdvSelSet=new Set(); renderRdv(); }}),del)); } }
+  rdvTimer();
   if(!list.length&&!F) box.append(el("div",{class:"rdv-empty",text:"Aucun rendez-vous prévu. Médecin, véto, garage, réunion d'école : note-les ici, tout le foyer les voit."}));
   w.append(box);
 }
@@ -3145,18 +3162,22 @@ function rdvFormEl(){
   const F=S.rdvForm, f=el("form",{class:"rdv-form",autocomplete:"off"}), fld=(l,i)=>el("label",{class:"field"},l,i);
   const ti=el("input",{type:"text",id:"rdvTitre",maxlength:"80",placeholder:"Dentiste, véto pour Moka, garage…"}); ti.value=F.titre||""; ti.addEventListener("input",()=>F.titre=ti.value);
   const da=el("input",{type:"date",id:"rdvDate",required:true}); da.value=F.date||""; da.addEventListener("input",()=>F.date=da.value);
-  const he=el("input",{type:"time",id:"rdvHeure"}); he.value=F.heure||""; he.addEventListener("input",()=>F.heure=he.value);
+  const he=el("input",{type:"time",id:"rdvHeure"}); he.value=F.heure||""; const hf=el("input",{type:"time",id:"rdvFin"}); hf.value=F.heureFin||"";
+  he.addEventListener("input",()=>{ const old=F.heure; F.heure=he.value; if(F.heure&&(!F.heureFin||(old&&F.heureFin<=F.heure))){ const [H,M]=F.heure.split(":").map(Number), t=Math.min(23*60+59,H*60+M+60); F.heureFin=String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0"); hf.value=F.heureFin; } });
+  hf.addEventListener("input",()=>F.heureFin=hf.value);
   const li=el("input",{type:"text",id:"rdvLieu",maxlength:"80",placeholder:"Adresse, cabinet… (facultatif)"}); li.value=F.lieu||""; li.addEventListener("input",()=>F.lieu=li.value);
   const who=el("div",{class:"pchips"});
   for(const m of membres()){ const on=(F.pour||[]).includes(m.id); who.append(el("button",{type:"button",class:"pchip","aria-pressed":String(on),onclick:()=>{ F.pour=on?F.pour.filter(x=>x!==m.id):(F.pour||[]).concat(m.id); renderRdv(); }},avatar(m.id,20),m.id===meId()?"Moi":m.nom)); }
   const bt=el("div",{class:"mot-btns"},el("button",{type:"submit",class:"btn",text:F.id?"Enregistrer":"Ajouter"}),el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>{ S.rdvForm=null; renderRdv(); }}));
   if(F.id){ const item=(S.rdvs||[]).find(x=>x.id===F.id); if(item) bt.append(el("span",{style:"flex:1"}),el("button",{type:"button",class:"btn ghost",style:"color:var(--late)",text:"Supprimer",onclick:()=>{ S.rdvForm=null; softDelete([{key:"rdv:"+item.id,arr:"rdvs",item,run:()=>S.db.collection("rdv").doc(item.id).delete()}],"Rendez-vous « "+esc(item.titre||"")+" » supprimé."); }})); }
-  f.append(el("h3",{text:F.id?"Modifier le rendez-vous":"Nouveau rendez-vous"}),fld("Quoi",ti),el("div",{class:"frow"},fld("Date",da),fld("Heure *",he)),fld("Où",li),el("div",{class:"field"},"Pour qui",who),bt);
+  f.append(el("h3",{text:F.id?"Modifier le rendez-vous":"Nouveau rendez-vous"}),fld("Quoi",ti),el("div",{class:"frow"},fld("Date",da),fld("Début *",he),fld("Fin *",hf)),fld("Où",li),el("div",{class:"field"},"Pour qui",who),bt);
   f.addEventListener("submit",async e=>{ e.preventDefault(); if(!needMe()) return;
     if(!(F.titre||"").trim()){ toast("Indique le rendez-vous."); ti.focus(); return; } if(!F.date){ toast("Choisis la date."); da.focus(); return; }
     if(!F.heure){ toast("Indique l'heure du rendez-vous."); he.focus(); return; }
+    if(!F.heureFin){ toast("Indique l'heure de fin du rendez-vous."); hf.focus(); return; }
+    if(F.heureFin<=F.heure){ toast("L'heure de fin doit être après l'heure de début."); hf.focus(); return; }
     { const when=new Date(F.date+"T"+F.heure); if(when.getTime()<Date.now()){ toast(F.heure&&F.date===iso(today())?"Cette heure est déjà passée : choisis une heure ou une date à venir.":"Cette date est déjà passée : choisis une date à venir."); (F.heure&&F.date===iso(today())?he:da).focus(); return; } }
-    const doc={titre:F.titre.trim(),date:F.date,heure:F.heure||null,lieu:(F.lieu||"").trim()||null,pour:(F.pour||[]).slice()};
+    const doc={titre:F.titre.trim(),date:F.date,heure:F.heure||null,heureFin:F.heureFin||null,lieu:(F.lieu||"").trim()||null,pour:(F.pour||[]).slice()};
     try{ if(F.id) await S.db.collection("rdv").doc(F.id).update(doc); else await S.db.collection("rdv").add(Object.assign(doc,{par:meId(),le:Date.now()}));
       S.rdvForm=null; toast(F.id?"Rendez-vous modifié.":"Rendez-vous ajouté : rappel la veille."); renderRdv(); }catch(err){ writeErr(err); } });
   setTimeout(()=>{ const x=$("rdvTitre"); if(x&&!F.id&&!F.titre) x.focus(); },40);
