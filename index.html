@@ -35,7 +35,7 @@ html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxI
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 10:44";</script>
+<script>window.COCOON_BUILD="08/10 10:46";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4532,8 +4532,8 @@ function renderPremium(){
   const rail=el("div",{class:"pm-rail",role:"list","aria-label":"Ce que Premium ajoute"}), dots=el("div",{class:"pm-dots","aria-hidden":"true"});
   PM_FEATS.forEach(([ic,bg,t,d],i)=>{ const icon=el("i",{text:ic}); icon.style.background=bg;
     rail.append(el("div",{class:"pm-fc",role:"listitem"},icon,el("b",{text:t}),el("span",{text:d}))); dots.append(el("i",{class:i===0?"on":null})); });
-  let raf=0; rail.addEventListener("scroll",()=>{ if(raf) return; raf=requestAnimationFrame(()=>{ raf=0; const c=rail.children[0]; if(!c) return; const step=c.getBoundingClientRect().width+10;
-    const k=Math.min(PM_FEATS.length-1,Math.round(rail.scrollLeft/step)); [...dots.children].forEach((d,j)=>d.classList.toggle("on",j===k)); }); },{passive:true});
+  let raf=0; rail.addEventListener("scroll",()=>{ if(raf) return; raf=requestAnimationFrame(()=>{ raf=0; const max=rail.scrollWidth-rail.clientWidth, p=max>0?Math.min(1,Math.max(0,rail.scrollLeft/max)):0;
+    const k=Math.round(p*(PM_FEATS.length-1)); /* le dernier point s'allume bien quand on est tout au bout */ [...dots.children].forEach((d,j)=>d.classList.toggle("on",j===k)); }); },{passive:true});
   const card=el("div",{class:"pm-card pm-car"},
     el("div",{class:"pm-hd"},el("div",{},el("b",{class:"pm-t",text:"Cocoon Premium"}),el("span",{class:"pm-s",text:"Fais défiler pour tout découvrir →"})),(()=>{ const t=el("span",{class:"pm-logo","aria-hidden":"true"}); t.innerHTML='<svg viewBox="0 0 64 64" width="40" height="40"><defs><linearGradient id="pmStar" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFBEA"/><stop offset=".55" stop-color="#FFE7A0"/><stop offset="1" stop-color="#FFC94A"/></linearGradient></defs><path d="M32 4c2.6 15 9 21.4 24 24-15 2.6-21.4 9-24 24-2.6-15-9-21.4-24-24 15-2.6 21.4-9 24-24z" fill="url(#pmStar)"/></svg>'; return t; })()),
     rail,dots,
