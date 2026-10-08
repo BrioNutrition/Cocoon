@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 22:53";</script>
+<script>window.COCOON_BUILD="08/10 22:57";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1614,9 +1614,12 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .rdv-add{position:relative;-webkit-appearance:none;appearance:none;font-size:0;line-height:0;min-width:38px;min-height:38px;max-width:38px;max-height:38px;aspect-ratio:1/1;overflow:visible}
 .rdv-add svg{display:block;position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px}
 
-.rdv-add2{width:100%;display:flex;align-items:center;gap:10px;border:1.5px dashed var(--line);background:transparent;color:var(--muted);border-radius:16px;padding:11px 12px;font:inherit;font-weight:600;font-size:14px;text-align:left;cursor:pointer}
+.rdv-add2{width:100%;display:flex;align-items:center;gap:10px;border:1.5px dashed color-mix(in srgb,var(--ink) 28%,transparent);background:transparent;color:var(--muted);border-radius:16px;padding:11px 12px;font:inherit;font-weight:600;font-size:14px;text-align:left;cursor:pointer}
 .rdv-add2 i{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#1C1B2E;background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB)}
 .rdv-add2 i svg{display:block}
+
+/* cases de date : mêmes couleurs claires en sombre */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .rdv-date{--surface:#FFFFFF;--tile-pct:45%;color:#1C1B2E}}:root[data-theme="dark"] .rdv-date{--surface:#FFFFFF;--tile-pct:45%;color:#1C1B2E}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
