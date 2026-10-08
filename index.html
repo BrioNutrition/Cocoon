@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 16:36";</script>
+<script>window.COCOON_BUILD="08/10 16:48";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1607,6 +1607,11 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .selbar .sel-del:not(.confirm){gap:0!important;padding-left:0!important;padding-right:0!important}
 .rdv-sel-del{padding:9px 0!important}
 .sel-del svg,.rdv-sel-del svg{display:block;margin:0}
+
+/* Ajouter un rendez-vous : un simple + dans un cercle, aux couleurs du bouton + du menu */
+.rdv-add{width:38px;height:38px;flex:none;border:0;border-radius:50%;display:grid;place-items:center;padding:0;cursor:pointer;color:#1C1B2E;background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB);box-shadow:0 6px 14px rgba(255,156,128,.38),inset 0 1px 0 rgba(255,255,255,.45);transition:transform .2s cubic-bezier(.3,1.6,.5,1)}
+.rdv-add:active{transform:scale(.88) rotate(90deg)}
+.rdv-add svg{display:block}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -1941,6 +1946,7 @@ function ago(ms){ const m=Math.round((Date.now()-ms)/6e4); if(m<1) return "à l'
 const S={canEdit:true,docPour:"foyer",docWho:null,mots:[],motForm:null,rdvs:[],rdvForm:null,crPick:null,credits:[],crForm:null,crPerson:null,courses:[],bins:[],profils:[],membresRaw:[],cPour:"tous",binForm:null,objForm:null,recapHide:false,qSel:new Set(),pendingDel:new Map(),bMonth:0,secAns:null,setConfirm:null,exportTxt:null,qWhereAuto:null,equip:[],releves:[],vehic:[],mForm:null,sel:new Set(),depenses:[],abos:[],bForm:null, membres:[], membresLoaded:false, foyerNom:"", foyer:[], perso:[], docs:[], uid:null, db:null, assets:null, readOnly:false,
   loaded:{t:false,p:false,d:false}, tab:"accueil", catF:null, whoF:null, docF:null, confirm:null, quickWhere:"tous", newColor:COLORS[3], editColor:null, legacyMe:null, claiming:false };
 const $=id=>document.getElementById(id);
+function de(w){ w=String(w==null?"":w); return (/^[aeiouyhàâäéèêëîïôöûüœ]/i.test(w)?"d'":"de ")+w; }
 const el=(tag,attrs={},...kids)=>{ const e=document.createElement(tag); for(const [k,v] of Object.entries(attrs)){ if(v==null||v===false) continue; if(k==="class") e.className=v; else if(k==="text") e.textContent=v; else if(k.startsWith("on")) e.addEventListener(k.slice(2),v); else e.setAttribute(k,v===true?"":v); } for(const k of kids){ if(k!=null) e.append(k); } return e; };
 const membres=()=>S.membres.length?S.membres:(S.membresLoaded?[]:DEFAULT_MEMBRES);
 const membre=id=>membres().find(m=>m.id===id)||{id,nom:id||"Quelqu'un",c:"#888",type:"humain"};
@@ -2058,7 +2064,7 @@ function renderHeader(){
   for(const m of membres()){ if(m.id===me) continue; const open=S.foyer.filter(t=>!t.fait&&(t.pour===m.id||t.concerne===m.id)).length;
     const pending=m.type!=="animal"&&!m.uid&&S.membresLoaded&&(m.invite||typeOf(m)==="adulte");
     const isOpen=S.tab==="profil"&&S.profil===m.id;
-    const st=el("button",{type:"button",class:"story"+(isOpen?" open":""),"aria-label":m.id===me?"Ouvrir mon espace":"Voir le profil de "+m.nom,onclick:()=>openProfile(m.id)},
+    const st=el("button",{type:"button",class:"story"+(isOpen?" open":""),"aria-label":m.id===me?"Ouvrir mon espace":"Voir le profil "+de(m.nom),onclick:()=>openProfile(m.id)},
       el("span",{class:"ring"+(open?" has":"")},avatar(m.id)),nameEl(m,m.id===me?"Toi":m.nom,"span"));
     st.lastChild.classList.add("sn");
     if(pending) st.append(el("span",{class:"ss",text:"invité·e"})); else if(open) st.append(el("span",{class:"ss",text:open+" à faire"}));
@@ -2161,9 +2167,9 @@ function renderFoyer(){
 }
 /* ---------- Page d'un animal : carnet de soins ---------- */
 const CARE=[
-  {k:"puces",l:"Anti-puces",ic:"assurance",re:/puce|pipette|antiparasit/i,m:1,t:n=>"Pipette anti-puces de "+n},
-  {k:"vermifuge",l:"Vermifuge",ic:"pilule",re:/vermifug/i,m:3,t:n=>"Vermifuge de "+n},
-  {k:"vaccin",l:"Vaccins",ic:"seringue",re:/vaccin/i,m:12,t:n=>"Rappel de vaccin de "+n},
+  {k:"puces",l:"Anti-puces",ic:"assurance",re:/puce|pipette|antiparasit/i,m:1,t:n=>"Pipette anti-puces "+de(n)},
+  {k:"vermifuge",l:"Vermifuge",ic:"pilule",re:/vermifug/i,m:3,t:n=>"Vermifuge "+de(n)},
+  {k:"vaccin",l:"Vaccins",ic:"seringue",re:/vaccin/i,m:12,t:n=>"Rappel de vaccin "+de(n)},
   {k:"veto",l:"Visite chez le véto",ic:"sante",re:/v[ée]t[ée]rinaire|v[ée]to\b|visite annuelle/i,m:12,t:n=>"Visite annuelle chez le vétérinaire pour "+n}];
 function careKinds(m){ const e=(m.espece||"").toLowerCase(); if(e==="chat"||e==="chien") return CARE.filter(c=>c.k!=="veto"); if(e==="lapin") return CARE.filter(c=>c.k==="vaccin"||c.k==="veto"); return CARE.filter(c=>c.k==="veto"); }
 function isCare(t){ return CARE.some(c=>c.re.test(t.titre||"")); }
@@ -2203,7 +2209,7 @@ function renderPetCare(m){
   const go=txt=>openSheet({where:"concerne:"+m.id,text:txt});
   const croq=((m.infos||[]).find(x=>x&&/croquette/i.test(x.l||"")&&x.v)||{}).v;
   q.append(el("button",{type:"button",text:"+ RDV chez le véto",onclick:()=>go("RDV chez le véto pour "+m.nom)}),
-    el("button",{type:"button",text:"+ Toilettage",onclick:()=>go("Toilettage de "+m.nom)}),
+    el("button",{type:"button",text:"+ Toilettage",onclick:()=>go("Toilettage "+de(m.nom))}),
     el("button",{type:"button",text:"+ Croquettes aux courses",onclick:async()=>{ if(!needMe()) return; try{ await S.db.collection("courses").add({nom:croq?"Croquettes "+croq:"Croquettes pour "+m.nom,qte:null,pour:"tous",fait:false,ajoutePar:meId(),ajouteLe:Date.now()}); toast("Ajouté à la liste de courses."); }catch(e){ writeErr(e); } }}),
     el("button",{type:"button",text:"+ Autre chose",onclick:()=>go("")}));
 }
@@ -2223,7 +2229,7 @@ function renderProfile(){
   else if(m.uid) sub="Membre du foyer"+(m.inscritLe?" · espace créé le "+JOURY.format(new Date(m.inscritLe)):"")+".";
   else sub="Pas encore inscrit·e. Son espace sera créé à sa première visite ; tu peux déjà lui confier des tâches.";
   h.style.display="block"; void sub;
-  h.append(profileCard(m,canEditProfile(id)?[pencilBtn(()=>openEditor(id),"Personnaliser le profil de "+m.nom)]:[]));
+  h.append(profileCard(m,canEditProfile(id)?[pencilBtn(()=>openEditor(id),"Personnaliser le profil "+de(m.nom))]:[]));
   const open=S.foyer.filter(t=>!t.fait&&(pet?t.concerne===id:t.pour===id)).sort(sortOpen);
   const done=S.foyer.filter(t=>t.fait&&(pet?t.concerne===id:t.faitPar===id)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0));
   const month=done.filter(t=>t.faitLe>Date.now()-30*864e5).length;
@@ -2327,7 +2333,7 @@ function buildEditor(){
       for(const m of free) cl.append(el("button",{type:"button",class:"claim","aria-pressed":String(E.claimId===m.id),style:E.claimId===m.id?"border-color:var(--ink)":"",onclick:()=>{ if(E.claimId===m.id){ E.claimId=null; E.d={type:"adulte",c:COLORS[membres().length%COLORS.length],infos:[]}; } else { E.claimId=m.id; const c=JSON.parse(JSON.stringify(m)); delete c.id; c.infos=Array.isArray(c.infos)?c.infos:[]; E.d=c; } buildEditor(); }},avatar(m.id),"Je suis "+m.nom));
       f.append(el("div",{class:"fgroup"},el("span",{class:"label",text:"Ton profil a été préparé ? Choisis-le"}),cl,el("span",{class:"muted",style:"font-size:13px",text:E.claimId?"Tu reprends ce profil : complète-le ou garde-le tel quel.":"Sinon, remplis simplement le formulaire ci-dessous."}))); }
   }
-  else f.append(el("div",{class:"fgroup"},el("span",{class:"label",text:E.id?(self?"Ma fiche":"Fiche de "+(membre(E.id).nom||"")):"Nouveau profil"}),
+  else f.append(el("div",{class:"fgroup"},el("span",{class:"label",text:E.id?(self?"Ma fiche":"Fiche "+de((membre(E.id).nom||""))):"Nouveau profil"}),
     el("h3",{text:E.id?"Personnaliser le profil":"Créer un profil pour le foyer"})));
 
   // Type (admin, profil sans compte)
@@ -2481,7 +2487,7 @@ function reminders(){
     if(v.assuranceEcheance&&daysTo(v.assuranceEcheance)<=45) out.push({kind:"Véhicule",date:v.assuranceEcheance,titre:"Échéance assurance : "+(v.nom||"véhicule"),cat:"voitures",who:null,ref:v});
     const rn=revNext(v); if(rn&&daysTo(rn.date)<=45) out.push({kind:"Véhicule",date:rn.date,titre:"Révision : "+(v.nom||"véhicule"),cat:"voitures",who:null,ref:v}); }
   for(const a of (S.abos||[])) if(a.actif!==false&&a.rappel!==false){ const n=subNext(a); if(n&&daysTo(n)<=14) out.push({kind:"Prélèvement",date:n,titre:a.nom+" · "+money(a.montant),cat:"factures",who:a.payePar||null,ref:a}); }
-  for(const m of membres()){ const nb=nextBirthday(m); if(nb&&daysTo(nb.date)<=60) out.push({kind:"Anniversaire",date:nb.date,titre:"Anniversaire de "+m.nom+" ("+nb.age+(typeOf(m)==="animal"&&nb.age<2?" an":" ans")+")",cat:typeOf(m)==="animal"?"animaux":"maison",who:null,ref:m}); }
+  for(const m of membres()){ const nb=nextBirthday(m); if(nb&&daysTo(nb.date)<=60) out.push({kind:"Anniversaire",date:nb.date,titre:"Anniversaire "+de(m.nom)+" ("+nb.age+(typeOf(m)==="animal"&&nb.age<2?" an":" ans")+")",cat:typeOf(m)==="animal"?"animaux":"maison",who:null,ref:m}); }
   for(const b of (S.bins||[])){ const nx=binNext(b); if(nx&&daysTo(iso(nx.sortie))<=1){ const w=binWho(b); out.push({kind:"Poubelles",date:iso(nx.sortie),titre:"Sortir : "+b.nom+(b.veille?" (le soir)":""),cat:"maison",who:w.ids.length===1?w.ids[0]:null,ref:b}); } }
   for(const r of (S.rdvs||[])) if(r.date&&!r.fait&&daysTo(r.date)>=0&&daysTo(r.date)<=31) out.push({kind:"Rendez-vous",date:r.date,titre:r.titre+(r.heure?" · "+heureTxt(r.heure):"")+(r.lieu?" · "+r.lieu:""),cat:"rdv",who:(r.pour||[]).length===1?r.pour[0]:null,ref:r});
   return out.sort((a,b)=>a.date<b.date?-1:1);
@@ -2525,7 +2531,7 @@ function renderDocs(){
   for(const own of owners){ if(S.docWho&&S.docWho!==own) continue;
   const mine=S.docs.filter(d=>(d.pour||"foyer")===own);
   if(owners.length>1){ const ic=own==="foyer"?(()=>{ const x=el("span",{class:"bd-own-ic"}); x.innerHTML=GI("maison"); return x; })():avatar(own,34);
-    G0.append(el("div",{class:"bd-owner"},ic,el("b",{text:own==="foyer"?"Papiers du foyer":own===me?"Mes papiers":"Papiers de "+membre(own).nom}),el("span",{text:mine.length+" papier"+(mine.length>1?"s":"")}))); }
+    G0.append(el("div",{class:"bd-owner"},ic,el("b",{text:own==="foyer"?"Papiers du foyer":own===me?"Mes papiers":"Papiers "+de(membre(own).nom)}),el("span",{text:mine.length+" papier"+(mine.length>1?"s":"")}))); }
   const g=G0;
   const groups={}, CU=docCustom(); for(const d of mine){ const c=(CAT[d.cat]||CU[d.cat])?d.cat:"documents"; (groups[c]=groups[c]||[]).push(d); }
   const soonOf=ds=>ds.filter(d=>d.expire&&daysTo(d.expire)<=30).length;
@@ -2692,7 +2698,7 @@ function buildPlan(mode,a){
   for(const sp of a.animaux.filter(x=>x!=="aucun")){ add("animaux",2);
     const names=splitNames(a.noms[sp]); const list=names.length?names:[sp==="chat"?"Le chat":sp==="chien"?"Le chien":sp==="lapin"?"Le lapin":"Notre animal"];
     for(const n of list){ profiles.push({nom:n,type:"animal",espece:SP[sp],on:true});
-      if(sp==="chat"||sp==="chien"){ T("Vermifuge de "+n,"animaux",3,"Prochain vermifuge recommandé",14,{animal:n}); T("Pipette anti-puces de "+n,"animaux",1,"Prochaine pipette recommandée",7,{animal:n}); T("Rappel de vaccin de "+n,"animaux",12,"Prochain rappel de vaccin",90,{animal:n}); }
+      if(sp==="chat"||sp==="chien"){ T("Vermifuge "+de(n),"animaux",3,"Prochain vermifuge recommandé",14,{animal:n}); T("Pipette anti-puces "+de(n),"animaux",1,"Prochaine pipette recommandée",7,{animal:n}); T("Rappel de vaccin "+de(n),"animaux",12,"Prochain rappel de vaccin",90,{animal:n}); }
       else T("Visite annuelle chez le vétérinaire pour "+n,"animaux",12,"Prochaine visite recommandée",90,{animal:n}); } }
   T("Tester le détecteur de fumée","maison",12,"Prochain test recommandé",30);
   const E=a.equip;
@@ -3143,7 +3149,7 @@ function rdvTimer(){ clearTimeout(S.rdvT); const list=(S.rdvs||[]).filter(r=>!r.
   if(nx<Infinity) S.rdvT=setTimeout(()=>{ renderRdv(); },Math.min(nx-now+500,6*36e5)); }
 function renderRdv(){
   const w=$("rdvWrap"); if(!w) return; w.innerHTML=""; const me=meId(), can=!S.readOnly&&!!me, F=S.rdvForm, list=rdvList(60);
-  w.append(el("div",{class:"sec-title"},el("h2",{text:"Rendez-vous"}),can&&!(F&&!F.id)?el("button",{type:"button",class:"btn ghost",style:"padding:6px 12px;font-size:13px",text:"+ Rendez-vous",onclick:()=>{ S.rdvForm={pour:[me]}; renderRdv(); }}):el("span",{class:"muted",style:"font-size:13px",text:"Les 2 prochains mois"})));
+  w.append(el("div",{class:"sec-title"},el("h2",{text:"Rendez-vous"}),can&&!(F&&!F.id)?(()=>{ const btn=el("button",{type:"button",class:"rdv-add","aria-label":"Ajouter un rendez-vous",title:"Ajouter un rendez-vous",onclick:()=>{ S.rdvForm={pour:[me]}; renderRdv(); }}); btn.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg>'; return btn; })():el("span",{class:"muted",style:"font-size:13px",text:"Les 2 prochains mois"})));
   const box=el("div",{class:"rdv-list"});
   if(F&&!F.id) box.append(rdvFormEl());
   for(const x of list){
@@ -3202,7 +3208,7 @@ function renderAccBudget(){
   const nm=new Intl.DateTimeFormat("fr-FR",{month:"long"}).format(t);
   const dayPct=Math.round(t.getDate()/dim*100), pct=goal?Math.min(100,Math.round(tot/goal*100)):dayPct;
   const card=el("button",{type:"button",class:"acc-card acc-budget",onclick:()=>{ setTab("budget"); window.scrollTo({top:0}); }},
-    el("div",{class:"acc-h"},el("span",{class:"acc-lbl",text:"Budget de "+nm}),el("span",{class:"acc-go",text:"Voir →"})),
+    el("div",{class:"acc-h"},el("span",{class:"acc-lbl",text:"Budget "+de(nm)}),el("span",{class:"acc-go",text:"Voir →"})),
     el("div",{class:"acc-big"},el("b",{text:money(tot)}),el("span",{text:goal?" sur "+money(goal)+" d'objectifs":" dépensés ce mois-ci"})));
   const bar=el("div",{class:"acc-bar"+(goal&&tot>goal?" over":goal&&tot>=goal*.8?" near":"")},el("i",{style:"width:"+Math.max(2,pct)+"%"}));
   if(goal) bar.append(el("em",{style:"left:"+dayPct+"%",title:"Aujourd'hui"}));
@@ -3308,7 +3314,7 @@ function renderBudget(){
   // dépenses
   const dl=$("bDeps"); dl.innerHTML="";
   const recent=(cur?S.depenses:S.depenses.filter(inM)).slice().sort((x,y)=>(y.date||"")<(x.date||"")?-1:(y.date||"")>(x.date||"")?1:(y.creeLe||0)-(x.creeLe||0)).slice(0,cur?25:300);
-  $("bDepTitle").textContent=cur?"Dépenses récentes":"Dépenses de "+mois;
+  $("bDepTitle").textContent=cur?"Dépenses récentes":"Dépenses "+de(mois);
   $("bDepCount").textContent=cur?(deps.length?deps.length+" au total":""):(month.length?month.length+" ce mois-là":"");
   if(!recent.length) dl.append(el("div",{class:"b-empty"},el("strong",{text:cur?"Aucune dépense":"Aucune dépense en "+mois}),"Note les courses, le plein, le véto… Cocoon calcule qui doit quoi à qui."));
   for(const d of recent){ const rb=d.type==="rembt";
@@ -3394,7 +3400,7 @@ function renderBForm(){
           const upd=()=>{ const tot=d.partage.reduce((a,id)=>a+((d.parts||{})[id]||0),0), diff=(d.montant||0)-tot;
             sum.textContent=d.montant?(Math.abs(diff)<=1?"Réparti : "+money(tot)+" sur "+money(d.montant)+", c'est juste.":diff>0?"Reste à répartir : "+money(diff):"Trop réparti de "+money(-diff)):"Indique d'abord le montant total.";
             sum.className="split-sum "+(d.montant&&Math.abs(diff)<=1?"ok":"bad"); };
-          for(const id of d.partage){ const inp=el("input",{type:"text",inputmode:"decimal",id:"bfPart"+id,"aria-label":"Part de "+membre(id).nom,placeholder:"0,00"});
+          for(const id of d.partage){ const inp=el("input",{type:"text",inputmode:"decimal",id:"bfPart"+id,"aria-label":"Part "+de(membre(id).nom),placeholder:"0,00"});
             const v=(d.parts||{})[id]; inp.value=v?String((v/100).toFixed(2)).replace(".",","):"";
             inp.addEventListener("input",()=>{ d.parts=d.parts||{}; d.parts[id]=parseMoney(inp.value)||0; upd(); });
             box.append(el("label",{class:"split-row",for:"bfPart"+id},avatar(id),el("span",{text:id===me?"Moi":membre(id).nom}),inp)); }
@@ -4235,7 +4241,7 @@ function searchShortcuts(){ const me=meId(), t0=iso(today()), in7=iso(new Date(t
     {k:"courses",ico:"🛒",l:"Liste de courses",run:()=>(S.courses||[]).filter(i=>!i.fait).map(i=>courseHit(i))},
     {k:"prelev",ico:"💳",l:"Prélèvements à venir",run:()=>S.abos.filter(a=>a.actif!==false).map(a=>({a,nx:subNext(a)})).filter(x=>x.nx&&daysTo(x.nx)<=31).sort((x,y)=>x.nx<y.nx?-1:1).map(({a,nx})=>({s:1,g:"Abonnements",titre:a.nom,sub:"prochain "+dueLabel(nx),right:money(a.montant),c:(BCAT[a.cat]||BCAT.autre).c,go:()=>openBForm("sub",a)}))}];
   if(me) L.splice(2,0,{k:"moi",ico:"🙋",l:"Mes tâches",run:()=>open.filter(t=>t.prive||t.pour===me).sort(sortOpen).map(taskHit)});
-  for(const m of humains().filter(m=>m.id!==me)) L.push({k:"m:"+m.id,av:m,l:"Tâches de "+m.nom,run:()=>open.filter(t=>!t.prive&&t.pour===m.id).sort(sortOpen).map(taskHit)});
+  for(const m of humains().filter(m=>m.id!==me)) L.push({k:"m:"+m.id,av:m,l:"Tâches "+de(m.nom),run:()=>open.filter(t=>!t.prive&&t.pour===m.id).sort(sortOpen).map(taskHit)});
   return L; }
 function searchRecent(){ if(S.sRecent) return S.sRecent; let r=[]; try{ r=JSON.parse(localStorage.getItem("cocoon.searchRecent")||"[]"); }catch(_){} S.sRecent=Array.isArray(r)?r:[]; return S.sRecent; }
 function searchRemember(q){ q=String(q||"").trim(); if(q.length<2) return; const r=searchRecent().filter(x=>norm(x)!==norm(q)); r.unshift(q); S.sRecent=r.slice(0,6); try{ localStorage.setItem("cocoon.searchRecent",JSON.stringify(S.sRecent)); }catch(_){} }
@@ -4861,17 +4867,17 @@ function courseRow(i,o){ o=o||{}; const me=meId();
   const b=el("button",{type:"button",class:"c-item"+(i.fait?" on":"")+(isSel?" sel":"")+(flash?" flash":""),"aria-pressed":String(!!i.fait||isSel),onclick:()=>toggleCourse(i)},el("span",{class:"c-box","aria-hidden":"true"}),
     el("span",{class:"c-tx"},el("span",{class:"c-n",text:i.nom}),meta.length?el("span",{class:"c-meta"},...meta):null),
     i.qte?el("span",{class:"c-q",text:i.qte}):null,
-    i.fait&&i.faitPar&&i.faitPar!==me?el("span",{class:"c-by",title:"Dans le caddie de "+membre(i.faitPar).nom},avatar(i.faitPar,20)):null);
+    i.fait&&i.faitPar&&i.faitPar!==me?el("span",{class:"c-by",title:"Dans le caddie "+de(membre(i.faitPar).nom)},avatar(i.faitPar,20)):null);
   b.addEventListener("contextmenu",ev=>{ ev.preventDefault(); if(i.fait) return; S.cPick=S.cPick===i.id?null:i.id; renderCourses(); });
   { let lt=0, sx=0, sy=0; const stop=()=>clearTimeout(lt);
     b.addEventListener("pointerdown",ev=>{ if(i.fait||iShop()) return; sx=ev.clientX; sy=ev.clientY; stop(); lt=setTimeout(()=>{ b.dataset.lp="1"; try{ navigator.vibrate&&navigator.vibrate(15); }catch(_){} S.cPick=i.id; renderCourses(); },550); });
     b.addEventListener("pointermove",ev=>{ if(Math.abs(ev.clientX-sx)+Math.abs(ev.clientY-sy)>10) stop(); }); b.addEventListener("pointerup",stop); b.addEventListener("pointercancel",stop); b.addEventListener("pointerleave",stop);
     b.addEventListener("click",ev=>{ if(b.dataset.lp){ ev.stopImmediatePropagation(); ev.preventDefault(); delete b.dataset.lp; } },true); }
   const row=el("div",{class:"c-row","data-cid":i.id},b);
-  if(o.rayon&&!i.fait&&(rayonOf(i)==="autre"||S.cPick===i.id)) row.append(el("button",{type:"button",class:"c-mv","aria-label":"Changer le rayon de "+i.nom,"aria-expanded":String(S.cPick===i.id),title:"Changer de rayon",onclick:()=>{ S.cPick=S.cPick===i.id?null:i.id; renderCourses(); }},(()=>{ const s=el("span",{"aria-hidden":"true"}); s.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3"/></svg>'; return s; })()));
+  if(o.rayon&&!i.fait&&(rayonOf(i)==="autre"||S.cPick===i.id)) row.append(el("button",{type:"button",class:"c-mv","aria-label":"Changer le rayon "+de(i.nom),"aria-expanded":String(S.cPick===i.id),title:"Changer de rayon",onclick:()=>{ S.cPick=S.cPick===i.id?null:i.id; renderCourses(); }},(()=>{ const s=el("span",{"aria-hidden":"true"}); s.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3"/></svg>'; return s; })()));
   row.append(el("button",{type:"button",class:"more c-del","aria-label":"Retirer "+i.nom,text:"×",onclick:()=>cDelOne(i)}));
   if(S.cPick!==i.id) return row;
-  const cur=rayonOf(i), pk=el("div",{class:"c-pick",role:"group","aria-label":"Rayon de "+i.nom});
+  const cur=rayonOf(i), pk=el("div",{class:"c-pick",role:"group","aria-label":"Rayon "+de(i.nom)});
   for(const r of RAYONS) pk.append(el("button",{type:"button","aria-pressed":String(r[0]===cur),onclick:()=>setRayon(i,r[0])},r[2]+" "+r[1]));
   return el("div",{class:"c-rowwrap"},row,pk);
 }
@@ -5119,7 +5125,7 @@ function calEvents(){
     if(v.assuranceEcheance&&daysTo(v.assuranceEcheance)>=0) ev.push({uid:"as-"+v.id,titre:"Échéance assurance : "+(v.nom||"véhicule"),date:v.assuranceEcheance,alarm:true});
     const rn=revNext(v); if(rn&&daysTo(rn.date)>=0) ev.push({uid:"rv-"+v.id,titre:"Révision : "+(v.nom||"véhicule"),date:rn.date,alarm:true}); }
   for(const a of S.abos) if(a.actif!==false){ const n=subNext(a); if(n){ const F=FREQ[a.freq]||FREQ.mensuel; ev.push({uid:"ab-"+a.id,titre:"Prélèvement "+a.nom+" · "+money(a.montant),date:n,rrule:F.weeks?"FREQ=WEEKLY":"FREQ=MONTHLY;INTERVAL="+F.months}); } }
-  for(const m of membres()){ const nb=nextBirthday(m); if(nb) ev.push({uid:"bd-"+m.id,titre:"Anniversaire de "+m.nom,date:nb.date,rrule:"FREQ=YEARLY",alarm:true}); }
+  for(const m of membres()){ const nb=nextBirthday(m); if(nb) ev.push({uid:"bd-"+m.id,titre:"Anniversaire "+de(m.nom),date:nb.date,rrule:"FREQ=YEARLY",alarm:true}); }
   for(const b of (S.bins||[])){ const w=binWho(b); if(w.ids.length&&!w.tour&&!w.ids.includes(me)) continue; const nx=binNext(b); if(!nx) continue;
     ev.push({uid:"bin-"+b.id,titre:"Sortir la poubelle : "+b.nom+(w.tour?" (chacun son tour)":""),date:iso(nx.sortie),time:b.veille?"193000":"073000",timed:true,rrule:"FREQ=WEEKLY;INTERVAL="+(b.freq||1)+";BYDAY="+(b.jours||[]).map(j=>BY[b.veille?(j+6)%7:j]).join(","),alarm:true}); }
   return ev.sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
@@ -5137,7 +5143,7 @@ function calEventsAll(){
     if(v.assuranceEcheance&&daysTo(v.assuranceEcheance)>=0) perso.push({uid:"as-"+v.id,titre:"Échéance assurance : "+(v.nom||"véhicule"),date:v.assuranceEcheance,alarm:true});
     const rn=revNext(v); if(rn&&daysTo(rn.date)>=0) perso.push({uid:"rv-"+v.id,titre:"Révision : "+(v.nom||"véhicule"),date:rn.date,alarm:true}); }
   for(const a of S.abos) if(a.actif!==false){ const n=subNext(a); if(n){ const F=FREQ[a.freq]||FREQ.mensuel; shared.push({uid:"ab-"+a.id,titre:"Prélèvement "+a.nom+" · "+money(a.montant),date:n,rrule:F.weeks?"FREQ=WEEKLY":"FREQ=MONTHLY;INTERVAL="+F.months}); } }
-  for(const m of membres()){ const nb=nextBirthday(m); if(nb) shared.push({uid:"bd-"+m.id,titre:"Anniversaire de "+m.nom,date:nb.date,rrule:"FREQ=YEARLY",alarm:true}); }
+  for(const m of membres()){ const nb=nextBirthday(m); if(nb) shared.push({uid:"bd-"+m.id,titre:"Anniversaire "+de(m.nom),date:nb.date,rrule:"FREQ=YEARLY",alarm:true}); }
   const BY=["SU","MO","TU","WE","TH","FR","SA"];
   for(const b of (S.bins||[])){ const w=binWho(b), nx=binNext(b); if(!nx) continue;
     const e={uid:"bin-"+b.id,titre:"Sortir la poubelle : "+b.nom+(w.tour?" (chacun son tour)":""),date:iso(nx.sortie),time:b.veille?"193000":"073000",timed:true,rrule:"FREQ=WEEKLY;INTERVAL="+(b.freq||1)+";BYDAY="+(b.jours||[]).map(j=>BY[b.veille?(j+6)%7:j]).join(","),alarm:true};
@@ -5228,7 +5234,7 @@ function renderRecap(){
   const subs=S.abos.filter(a=>a.actif!==false).map(a=>({a,n:subNext(a)})).filter(x=>x.n&&parse(x.n).getTime()<we);
   if(subs.length) row("#E8765A",FI.factures,"Prélèvements",subs.length+" cette semaine, "+money(subs.reduce((s,x)=>s+x.a.montant,0))+" au total.",subs.slice(0,4).map(x=>x.a.nom+" · "+money(x.a.montant)+" · "+WDAYS[parse(x.n).getDay()]));
   // à ne pas oublier
-  const extra=[]; for(const mm of membres()){ const nb=nextBirthday(mm); if(nb&&parse(nb.date).getTime()<we) extra.push("Anniversaire de "+mm.nom+" "+WDAYS[parse(nb.date).getDay()]); }
+  const extra=[]; for(const mm of membres()){ const nb=nextBirthday(mm); if(nb&&parse(nb.date).getTime()<we) extra.push("Anniversaire "+de(mm.nom)+" "+WDAYS[parse(nb.date).getDay()]); }
   for(const d of S.docs) if(d.expire&&daysTo(d.expire)>=0&&daysTo(d.expire)<=30) extra.push(d.titre+" expire le "+fmtDue(d.expire));
   if(extra.length) row("#E0567A",FI.couple,"À ne pas oublier",extra.length===1?"Une chose à garder en tête.":extra.length+" choses à garder en tête.",extra.slice(0,4));
   // budget
