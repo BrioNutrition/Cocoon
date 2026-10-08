@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 00:20";</script>
+<script>window.COCOON_BUILD="09/10 00:42";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1686,6 +1686,10 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .sec-sub{display:block;font-size:12.5px;font-weight:600;color:#6A6886;margin-top:1px}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sec-big{border-color:#221F2E}:root:not([data-theme="light"]) .sec-sub{color:#A3A0BE}:root:not([data-theme="light"]) .sec-name{background:linear-gradient(135deg,#FFC94A,#FF8FA3 60%,#D7A2F0);-webkit-background-clip:text;background-clip:text}}
 :root[data-theme="dark"] .sec-big{border-color:#221F2E}:root[data-theme="dark"] .sec-sub{color:#A3A0BE}:root[data-theme="dark"] .sec-name{background:linear-gradient(135deg,#FFC94A,#FF8FA3 60%,#D7A2F0);-webkit-background-clip:text;background-clip:text}
+
+/* Discussion de hauteur fixe : on fait défiler pour remonter */
+.sec-chat .sec-thread{max-height:340px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:2px 2px 4px;margin:0 -2px;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 18px,#000 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 18px,#000 100%)}
+.sec-chat .sec-thread::-webkit-scrollbar{display:none}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -4754,6 +4758,7 @@ function renderSecAns(){
   for(const h of H){ b.append(el("div",{class:"sec-row me"},el("div",{class:"sec-bub"},h.q))); h.popped=true; b.append(secBotRow(Object.assign({},h,{popped:true}))); }
   if(X){ b.append(el("div",{class:"sec-row me"+(X.fresh?" pop":"")},el("div",{class:"sec-bub"},X.q)),el("span",{class:"sec-seen"+(X.fresh?"":" on"),text:"Lu"}));
     if(!X.fresh) b.append(secBotRow(X)); if(!X.busy) X.popped=true; }
+  requestAnimationFrame(()=>{ const t=$("secThread"); if(t) t.scrollTo({top:t.scrollHeight,behavior:X&&X.fresh?"smooth":"auto"}); });
   b.append(el("button",{type:"button",class:"sec-new",text:"Nouvelle discussion",onclick:()=>{ if(S.secCtl) S.secCtl.abort(); S.secAns=null; S.secHist=[]; S.secTurns=[]; renderSecAns(); }}));
 }
 
