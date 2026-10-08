@@ -35,7 +35,7 @@ html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxI
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 09:40";</script>
+<script>window.COCOON_BUILD="08/10 09:50";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1450,6 +1450,19 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .coc-pill{height:36px!important;padding:0 8px!important;gap:0!important;border-radius:13px!important}
 .coc-niv{font-size:13.5px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;font-variant-numeric:tabular-nums}
 .coc-niv b{font-weight:800}
+.pm-card{position:relative;overflow:hidden;border-radius:22px;padding:18px 16px 16px;display:grid;gap:12px;color:#1C1B2E;background:radial-gradient(120% 90% at 100% 0%,#FFD0DE 0%,transparent 55%),linear-gradient(135deg,#FFF1C9 0%,#FFE0C2 55%,#FFD6E0 100%);box-shadow:0 2px 0 rgba(28,27,46,.06),0 10px 24px rgba(232,118,90,.14)}
+.pm-top{display:flex;align-items:center;gap:12px}
+.pm-ic{flex:none;width:42px;height:42px;border-radius:14px;background:#1C1B2E;color:#FFC94A;display:grid;place-items:center}
+.pm-t{display:block;font-family:var(--f-display);font-size:20px;font-weight:800;letter-spacing:-.02em}
+.pm-s{display:block;font-size:13.5px;color:rgba(28,27,46,.7)}
+.pm-list{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+.pm-list li{position:relative;padding-left:22px;font-size:14px;line-height:1.4;color:rgba(28,27,46,.78)}
+.pm-list li b{color:#1C1B2E}
+.pm-list li::before{content:"";position:absolute;left:3px;top:.42em;width:10px;height:10px;border-radius:50%;background:#1C1B2E;box-shadow:inset 0 0 0 3px #FFC94A}
+.pm-price{font-size:13px;color:rgba(28,27,46,.72)}
+.pm-price b{font-size:18px;font-weight:800;color:#1C1B2E}
+.pm-btn{justify-self:start;background:#1C1B2E!important;color:#fff!important}
+.pm-btn.done{opacity:1;background:rgba(28,27,46,.08)!important;color:#1C1B2E!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -1538,6 +1551,7 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
       <div class="list fridge" id="assignedList"></div>
     </div>
     <div class="sub" id="mCars"></div>
+    <div class="sub" id="mPremium"></div>
     <div class="sub cx-notif" id="cxNotif" hidden></div>
     <div class="sub cx-account" id="cxAccount" hidden></div>
     <details class="done-list" id="mDoneWrap"><summary id="mDoneSummary">Tâches réalisées</summary><div class="list" id="mDoneList"></div></details>
@@ -3437,7 +3451,7 @@ function renderAllNowInner(){
   renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon();
   if(S.pendingWizard&&meM()&&S.configLoaded){ S.pendingWizard=false; openWizard(isAdmin()&&!(S.config&&S.config.qFait)?"foyer":"perso"); }
   if(v==="accueil"){ renderMot(); renderRecap(); renderSetupCard(); renderSecretary(); renderRdv(); renderWeek(); renderFridge(); renderAccBudget(); renderAccWho(); }
-  else if(v==="moi"){ renderMine(); renderCars(); renderSettings(); }
+  else if(v==="moi"){ renderMine(); renderCars(); renderPremium(); renderSettings(); }
   else if(v==="recherche") renderSearch();
   else if(v==="foyer") renderFoyer();
   else if(v==="profil") renderProfile();
@@ -4470,6 +4484,22 @@ function applyTheme(v){ const r=document.documentElement; if(v==="light"||v==="d
 function curTheme(){ return (S.prefs&&S.prefs.theme)||(()=>{ try{ return localStorage.getItem("cocoon.theme"); }catch(_){ return null; } })()||"light"; }
 function setTheme(v){ applyTheme(v); S.prefs=Object.assign({},S.prefs||{},{theme:v}); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); }
 try{ const t=localStorage.getItem("cocoon.theme"); if(t) applyTheme(t); else document.documentElement.dataset.theme="light"; }catch(_){ document.documentElement.dataset.theme="light"; }
+
+/* ---------- Cocoon Premium (aperçu, paiement pas encore branché) ---------- */
+function renderPremium(){
+  const w=$("mPremium"); if(!w) return; w.innerHTML=""; if(!meId()){ w.hidden=true; return; } w.hidden=false;
+  const asked=!!(S.prefs&&S.prefs.premiumInteret);
+  const ic=el("span",{class:"pm-ic","aria-hidden":"true"}); ic.innerHTML='<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M3.2 8.3 7.6 11l3.6-6.1a.9.9 0 0 1 1.6 0L16.4 11l4.4-2.7c.7-.4 1.5.2 1.3 1l-2 8.5a1.2 1.2 0 0 1-1.2.9H5.1a1.2 1.2 0 0 1-1.2-.9l-2-8.5c-.2-.8.6-1.4 1.3-1z"/></svg>';
+  const card=el("div",{class:"pm-card"},
+    el("div",{class:"pm-top"},ic,el("div",{},el("b",{class:"pm-t",text:"Cocoon Premium"}),el("span",{class:"pm-s",text:"Cocoon fait le rangement à ta place."}))),
+    el("ul",{class:"pm-list"},el("li",{},el("b",{text:"Papiers en photo"})," : la date et le montant sont lus et rangés tout seuls"),el("li",{},el("b",{text:"Un secrétaire qui répond"})," : « quand expire mon passeport ? »"),el("li",{},el("b",{text:"Papiers illimités"})," et sauvegarde complète du foyer")),
+    el("div",{class:"pm-price"},el("b",{text:"2,99 €"}),"/mois pour tout le foyer · 1 mois offert"),
+    el("button",{type:"button",class:"btn pm-btn"+(asked?" done":""),disabled:asked||null,onclick:async ev=>{ const b=ev.currentTarget; b.disabled=true;
+      S.prefs=Object.assign({},S.prefs||{},{premiumInteret:Date.now()});
+      try{ if(S.db&&S.uid) await S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs); toast("C'est noté : on te prévient dès que Premium est disponible."); }catch(e){ writeErr(e); }
+      renderPremium(); }},asked?"✓ On te prévient au lancement":"Me prévenir du lancement"));
+  w.append(card);
+}
 
 /* ---------- Liste de courses ---------- */
 const CART='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M1.6 3.3a1 1 0 0 1 1-.8h2.1a1 1 0 0 1 1 .8l.4 1.7h14.3a1 1 0 0 1 1 1.2l-1.8 8a1 1 0 0 1-1 .8H7.7l.4 1.5H19a1 1 0 0 1 0 2H7.3a1 1 0 0 1-1-.8L4 4.5H2.6a1 1 0 0 1-1-1.2z"/><circle cx="8.6" cy="20.4" r="1.8"/><circle cx="17.4" cy="20.4" r="1.8"/></svg>';
