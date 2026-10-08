@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 16:29";</script>
+<script>window.COCOON_BUILD="08/10 16:36";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1600,6 +1600,13 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 
 .rdv-b span{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
 .rdv-ppl{flex:none}.rdv-ppl .av{width:34px!important;height:34px!important;font-size:14px!important;margin-left:-10px}.rdv-ppl .av:first-child{margin-left:0}
+
+/* corbeilles : icône pleine, bien centrée */
+.sel-del,.rdv-sel-del,.c-sel-del{display:inline-flex!important;align-items:center!important;justify-content:center!important}
+.sel-del span:empty{display:none}
+.selbar .sel-del:not(.confirm){gap:0!important;padding-left:0!important;padding-right:0!important}
+.rdv-sel-del{padding:9px 0!important}
+.sel-del svg,.rdv-sel-del svg{display:block;margin:0}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -1853,7 +1860,7 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
   <span id="selCount"></span>
   <button class="btn" type="button" id="selOk">Valider</button>
   <button class="btn ghost" type="button" id="selCancel">Annuler</button>
-  <button class="btn ghost sel-del" type="button" id="selDel" aria-label="Supprimer la sélection"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg><span id="selDelTxt"></span></button>
+  <button class="btn ghost sel-del" type="button" id="selDel" aria-label="Supprimer la sélection"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g fill="currentColor" stroke="none"><rect x="3.5" y="5" width="17" height="2.7" rx="1.35"/><path d="M9 5.2V4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4v1.2h-2V4.4h-2v.8z"/><path fill-rule="evenodd" d="M5.5 9.2h13l-1.1 10.9a2.1 2.1 0 0 1-2.1 1.9H8.7a2.1 2.1 0 0 1-2.1-1.9zM9.9 11.6a.8.8 0 0 0-.8.8v5.6a.8.8 0 0 0 1.6 0v-5.6a.8.8 0 0 0-.8-.8zm4.2 0a.8.8 0 0 0-.8.8v5.6a.8.8 0 0 0 1.6 0v-5.6a.8.8 0 0 0-.8-.8z"/></g></svg><span id="selDelTxt"></span></button>
 </div>
 <div class="warmup" id="warmup" hidden aria-live="polite">
   <div class="cocoon" aria-hidden="true">
@@ -3153,7 +3160,7 @@ function renderRdv(){
       row.dataset.rid=x.r.id; row.append(ck); }
     box.append(row); }
   { const ids=[...rdvSel()].filter(id=>list.some(x=>x.r&&x.r.id===id)); S.rdvSelSet=new Set(ids);
-    if(ids.length&&can){ const n=ids.length, del=el("button",{type:"button",class:"btn ghost rdv-sel-del","aria-label":"Supprimer la sélection",onclick:()=>rdvAct(ids,"del")}); del.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>';
+    if(ids.length&&can){ const n=ids.length, del=el("button",{type:"button",class:"btn ghost rdv-sel-del","aria-label":"Supprimer la sélection",onclick:()=>rdvAct(ids,"del")}); del.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g fill="currentColor" stroke="none"><rect x="3.5" y="5" width="17" height="2.7" rx="1.35"/><path d="M9 5.2V4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4v1.2h-2V4.4h-2v.8z"/><path fill-rule="evenodd" d="M5.5 9.2h13l-1.1 10.9a2.1 2.1 0 0 1-2.1 1.9H8.7a2.1 2.1 0 0 1-2.1-1.9zM9.9 11.6a.8.8 0 0 0-.8.8v5.6a.8.8 0 0 0 1.6 0v-5.6a.8.8 0 0 0-.8-.8zm4.2 0a.8.8 0 0 0-.8.8v5.6a.8.8 0 0 0 1.6 0v-5.6a.8.8 0 0 0-.8-.8z"/></g></svg>';
       box.append(el("div",{class:"np-selbar rdv-selbar"},el("span",{text:n+" rendez-vous sélectionné"+(n>1?"s":"")}),
         el("button",{type:"button",class:"btn np-sel-ok",text:"C'est fait ("+n+")",onclick:()=>rdvAct(ids,"fait")}),
         el("button",{type:"button",class:"btn ghost np-sel-no",text:"Annuler",onclick:()=>{ S.rdvSelSet=new Set(); renderRdv(); }}),del)); } }
@@ -4041,7 +4048,7 @@ const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase(
 const COMMITS=new Set();
 function live(list,col){ const P=S.pendingDel; return P&&P.size?list.filter(x=>!P.has(col+":"+x.id)):list; }
 function histHead(done){ const del=done.filter(t=>canEditTask(t)); if(!del.length||S.readOnly||!meId()) return null;
-  return el("div",{class:"hist-head"},el("button",{type:"button",class:"hist-all",onclick:async ev=>{ const list=ev.currentTarget.closest(".list"); const rows=list?[...list.querySelectorAll(".item.done")]:[]; await rowsOutAll(rows); softDelete(del.map(taskEntry),del.length+" tâche"+(del.length>1?"s":"")+" retirée"+(del.length>1?"s":"")+" de l'historique."); }},(()=>{ const sp=el("span"); sp.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>'; return sp; })(),"Tout supprimer")); }
+  return el("div",{class:"hist-head"},el("button",{type:"button",class:"hist-all",onclick:async ev=>{ const list=ev.currentTarget.closest(".list"); const rows=list?[...list.querySelectorAll(".item.done")]:[]; await rowsOutAll(rows); softDelete(del.map(taskEntry),del.length+" tâche"+(del.length>1?"s":"")+" retirée"+(del.length>1?"s":"")+" de l'historique."); }},(()=>{ const sp=el("span"); sp.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><g fill="currentColor" stroke="none"><rect x="3.5" y="5" width="17" height="2.7" rx="1.35"/><path d="M9 5.2V4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4v1.2h-2V4.4h-2v.8z"/><path fill-rule="evenodd" d="M5.5 9.2h13l-1.1 10.9a2.1 2.1 0 0 1-2.1 1.9H8.7a2.1 2.1 0 0 1-2.1-1.9zM9.9 11.6a.8.8 0 0 0-.8.8v5.6a.8.8 0 0 0 1.6 0v-5.6a.8.8 0 0 0-.8-.8zm4.2 0a.8.8 0 0 0-.8.8v5.6a.8.8 0 0 0 1.6 0v-5.6a.8.8 0 0 0-.8-.8z"/></g></svg>'; return sp; })(),"Tout supprimer")); }
 /* Sortie douce d'une ligne (transform + opacité uniquement : fluide sur téléphone),
    puis les lignes suivantes remontent en douceur (FLIP). Teinte = couleur exacte de la catégorie. */
 function rowsOutAll(rows){
@@ -4458,7 +4465,7 @@ const SET_IC={
   quiz:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.3c-.7.4-1.1.9-1.1 1.7"/><circle cx="12" cy="17" r=".6" fill="currentColor"/>',
   home:'<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/>',
   dl:'<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/>',
-  wipe:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  wipe:'<g fill="currentColor" stroke="none"><rect x="3.5" y="5" width="17" height="2.7" rx="1.35"/><path d="M9 5.2V4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4v1.2h-2V4.4h-2v.8z"/><path fill-rule="evenodd" d="M5.5 9.2h13l-1.1 10.9a2.1 2.1 0 0 1-2.1 1.9H8.7a2.1 2.1 0 0 1-2.1-1.9zM9.9 11.6a.8.8 0 0 0-.8.8v5.6a.8.8 0 0 0 1.6 0v-5.6a.8.8 0 0 0-.8-.8zm4.2 0a.8.8 0 0 0-.8.8v5.6a.8.8 0 0 0 1.6 0v-5.6a.8.8 0 0 0-.8-.8z"/></g>',
   quit:'<path d="M14 4h5v16h-5"/><path d="M10 12H3M6 9l-3 3 3 3"/>'
 };
 function renderSettings(){
