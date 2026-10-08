@@ -35,7 +35,7 @@ html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxI
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 11:10";</script>
+<script>window.COCOON_BUILD="08/10 11:15";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1498,8 +1498,8 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .pm-car .pm-price{text-align:center}
 .sheet{overscroll-behavior:contain}
 .nav-add[aria-expanded="true"]{transform:none!important}
-.nav-add svg{transition:transform .5s cubic-bezier(.3,1.5,.5,1)}
-.nav-add[aria-expanded="true"] svg{transform:rotate(135deg)}
+.nav-add[aria-expanded="true"] svg{transform:none!important}
+.nav-add:active{transform:none!important}
 .sheet-bg{will-change:opacity}
 </style>
 
@@ -3688,7 +3688,7 @@ function openSheet(o){ if(!meId()){ needMe(); return; } o=(o&&(o.where||o.text))
   $("sheet").hidden=false; $("sheetBg").hidden=false;
   if(!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)) $("sheetBg").animate([{opacity:0},{opacity:1}],{duration:320,easing:"cubic-bezier(.2,.7,.3,1)"});
   if($("navAdd").getAttribute("aria-expanded")!=="true"){ $("navAdd").setAttribute("aria-expanded","true"); navPop(); } setTimeout(()=>{ try{ $("quickTitle").focus(); }catch(_){} },120); }
-function navPop(){ const b=$("navAdd"); if(!b||(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+function navPop(){ return; /* le bouton + reste fixe */ const b=$("navAdd"); if(!b||(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
   b.getAnimations().forEach(a=>{ if(a.id==="pop") a.cancel(); });
   const a=b.animate([{scale:"1"},{scale:".84",offset:.28},{scale:"1.1",offset:.62},{scale:"1"}],{duration:460,easing:"cubic-bezier(.3,.7,.4,1)"}); a.id="pop"; }
 function sheetDone(){ const sh=$("sheet"), bg=$("sheetBg"); sh.hidden=true; bg.hidden=true; sh.getAnimations().forEach(x=>x.cancel()); bg.getAnimations().forEach(x=>x.cancel()); sh.style.transform=""; sh.style.transition=""; bg.hidden=true; bg.style.opacity=""; bg.style.transition=""; document.documentElement.classList.remove("sheet-open"); S.sheetClosing=false; }
