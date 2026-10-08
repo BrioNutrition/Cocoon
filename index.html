@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 16:28";</script>
+<script>window.COCOON_BUILD="08/10 16:29";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3147,7 +3147,7 @@ function renderRdv(){
     const ppl=el("span",{class:"rdv-ppl"},...x.pour.slice(0,3).map(id=>avatar(id,34)));
     const row=el("div",{class:"rdv"+(stt==="fini"?" fini":stt==="encours"?" encours":n<=1?" soon":"")+(x.r&&rdvSel().has(x.r.id)?" sel":"")},el("div",{class:"rdv-date"},el("b",{text:RDV_FMT.j.format(d)}),el("span",{text:RDV_FMT.m.format(d).replace(".","")})),
       el("div",{class:"rdv-b"},el("b",{},x.titre,stt?el("em",{class:"rdv-st "+stt,text:stt==="fini"?"Terminé":"En cours"}):null),el("span",{text:[(stt?(n===0?"Aujourd'hui":when):when)+(hTxt?" · "+hTxt:""),x.lieu].filter(Boolean).join(" · ")})),ppl);
-    if(x.r&&can&&(isAdmin()||x.r.par===me||(x.r.pour||[]).includes(me))){ const p=pencilBtn(()=>{ S.rdvForm=Object.assign({},x.r); renderRdv(); },"Modifier "+x.titre); p.classList.add("rdv-pen"); row.append(p);
+    if(x.r&&can&&(isAdmin()||x.r.par===me||(x.r.pour||[]).includes(me))){ if(stt!=="fini"){ const p=pencilBtn(()=>{ S.rdvForm=Object.assign({},x.r); renderRdv(); },"Modifier "+x.titre); p.classList.add("rdv-pen"); row.append(p); }
       const on=rdvSel().has(x.r.id), ck=el("button",{type:"button",class:"rdv-ck"+(on?" sel":""),"aria-pressed":String(on),"aria-label":(on?"Désélectionner ":"Sélectionner ")+x.titre,onclick:()=>{ const z=rdvSel(); if(z.has(x.r.id)) z.delete(x.r.id); else z.add(x.r.id); renderRdv(); }});
       ck.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
       row.dataset.rid=x.r.id; row.append(ck); }
