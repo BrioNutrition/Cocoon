@@ -35,7 +35,7 @@ html[data-theme="dark"] #cxIntro{background:#15141F}html[data-theme="dark"] #cxI
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t!=="auto")document.documentElement.dataset.theme=_t==="dark"?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
-<script>window.COCOON_BUILD="08/10 09:38";</script>
+<script>window.COCOON_BUILD="08/10 09:40";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1447,7 +1447,7 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .p-remove[hidden]{display:none}
 .p-remove .p-rm-btn{color:#B5482F!important;border-color:rgba(181,72,47,.35)!important}
 .p-rm-s{font-size:12.5px;color:var(--muted);line-height:1.4}
-.coc-pill{height:32px!important;padding:0 13px!important;gap:0!important;border-radius:12px!important}
+.coc-pill{height:36px!important;padding:0 8px!important;gap:0!important;border-radius:13px!important}
 .coc-niv{font-size:13.5px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;font-variant-numeric:tabular-nums}
 .coc-niv b{font-weight:800}
 </style>
@@ -3667,7 +3667,8 @@ function renderCocon(){
   const b=$("cocBtn"); if(!b) return; if(!meId()){ b.hidden=true; return; } b.hidden=false;
   const st=cocStats();
   b.innerHTML=""; b.setAttribute("aria-label","Niveau du foyer : "+(st.lv+1)+", "+st.name);
-  b.append(el("span",{class:"coc-niv"},"Niv. ",el("b",{text:String(st.lv+1)})));
+  const lvl=el("span",{class:"coc-lv"}); lvl.innerHTML=cocRing(st,26); lvl.append(el("b",{text:String(st.lv+1)}));
+  b.append(lvl);
   let prev=null; try{ prev=localStorage.getItem("cocoon.lvl"); }catch(_){}
   if(prev!==null&&st.lv>+prev&&S.loaded.t){ b.classList.remove("up"); void b.offsetWidth; b.classList.add("up"); toast("✨ Votre cocon passe au niveau "+(st.lv+1)+" : <b>"+esc(st.name)+"</b>"); }
   try{ localStorage.setItem("cocoon.lvl",String(st.lv)); }catch(_){}
