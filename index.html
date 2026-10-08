@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="08/10 15:52";</script>
+<script>window.COCOON_BUILD="08/10 15:55";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3107,7 +3107,12 @@ function rdvSel(){ if(!S.rdvSelSet) S.rdvSelSet=new Set(); return S.rdvSelSet; }
 async function rdvAct(ids,kind){ const me=meId(); if(!S.db||!me) return; const items=ids.map(id=>(S.rdvs||[]).find(r=>r.id===id)).filter(Boolean);
   const rows=ids.map(id=>document.querySelector('#rdvWrap .rdv[data-rid="'+CSS.escape(id)+'"]')).filter(Boolean);
   S.rdvSelSet=new Set(); const bar=document.querySelector("#rdvWrap .rdv-selbar"); if(bar) bar.remove();
-  if(kind==="fait"){ rows.forEach(r=>{ const c=r.querySelector(".rdv-ck"); if(c) c.classList.add("done"); }); await Promise.all(rows.map((r,i)=>new Promise(ok=>setTimeout(()=>rowOut(r,"res").then(ok,ok),120+i*60))));
+  if(kind==="fait"){ const reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+    rows.forEach(row=>{ const c=row.querySelector(".rdv-ck"); if(c) c.classList.remove("sel");
+      const fill=el("span",{class:"done-fill","aria-hidden":"true"}), ic=el("span",{class:"done-ic"}); ic.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+      const wk=el("span",{class:"done-wk"}); for(let k=0;k<6;k++){ const a=k*60+(k%2?18:-8), d=Math.round(28+30*Math.abs(Math.sin(a*Math.PI/180))); const w=document.createElement("i"); w.style.cssText="--a:"+a+"deg;--d:"+d+"px;--dl:"+(0.3+k*0.045).toFixed(3)+"s;--s:"+(k%3===0?1.15:0.85); w.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 1.8 14.6 9.4 22.2 12 14.6 14.6 12 22.2 9.4 14.6 1.8 12 9.4 9.4Z" fill="#fff" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>'; wk.append(w); }
+      ic.append(wk); fill.append(ic); row.classList.add("done-anim"); row.append(fill); row.style.pointerEvents="none"; });
+    if(rows.length&&!reduced) await sleep(1050);
     try{ for(const it of items) await S.db.collection("rdv").doc(it.id).update({fait:true,faitPar:me,faitLe:Date.now()}); toast(items.length>1?items.length+" rendez-vous validés.":"Rendez-vous « "+esc(items[0].titre||"")+" » effectué."); }catch(e){ writeErr(e); } renderRdv(); return; }
   await Promise.all(rows.map((r,i)=>new Promise(ok=>setTimeout(()=>rowOut(r,"del").then(ok,ok),i*60))));
   softDelete(items.map(item=>({key:"rdv:"+item.id,arr:"rdvs",item,run:()=>S.db.collection("rdv").doc(item.id).delete()})),items.length>1?items.length+" rendez-vous supprimés.":"Rendez-vous « "+esc(items[0].titre||"")+" » supprimé."); }
