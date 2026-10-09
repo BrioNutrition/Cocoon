@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 15:00";</script>
+<script>window.COCOON_BUILD="09/10 15:08";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2931,7 +2931,7 @@ function openWizard(mode){
 }
 /* ===== Questionnaire complet : helpers ===== */
 const PAPIERS=[["cni","Carte d'identité","moi"],["passeport","Passeport","moi"],["permis","Permis de conduire","moi"],["bail","Fin du bail","foyer"],["assurhab","Assurance habitation","foyer"],["assurauto","Assurance auto","foyer"]];
-const wzAbos=()=>PRESETS.filter(p=>!["Netflix","Spotify","Disney+","Salle de sport"].includes(p[0])).concat([["Streaming (Netflix, Spotify…)","streaming","mensuel"]]);
+const wzAbos=()=>PRESETS.filter(p=>!["Netflix","Spotify","Disney+","Salle de sport"].includes(p[0])).map(p=>[p[0],p[1],"mensuel"]).concat([["Streaming (Netflix, Spotify…)","streaming","mensuel"]]);
 function wzAdults(a){ const n=[]; if((a.menage||[]).includes("couple")&&(a.partenaire||"").trim()) n.push(a.partenaire.trim().slice(0,30)); if((a.menage||[]).includes("coloc")) for(const c of (a.colocs||[])){ const x=(c.nom||"").trim(); if(x) n.push(x.slice(0,30)); } return n; }
 function wzSteps(W){ if(W.mode!=="foyer") return ["prio","plan"]; const a=W.a;
   return ["nom","menage","animaux","logement","poubelles","vehicules","abonnements"].concat(wzAdults(a).length?["partage"]:[],["papiers","prio","plan"]); }
@@ -3017,7 +3017,7 @@ function buildPlan(mode,a){
   const bins=[], abos=[], docs=[];
   for(const [n,c] of BIN_PRESETS){ const B=(a.bins||{})[n]; if(B&&B.jours&&B.jours.length) bins.push({nom:n,c,jours:B.jours.slice().sort(),freq:B.freq||1,ref:(B.freq||1)>1?wzBinRef(B.jours,B.week):null,on:true}); }
   for(const [n,c,fq] of wzAbos()){ const A=(a.abos||{})[n]; const m=A&&A.on?parseMoney(A.montant):null; if(m) abos.push({nom:n==="Streaming (Netflix, Spotify…)"?"Streaming":n,cat:c,freq:fq,montant:m,debut:wzDayOfMonth(A.jour),on:true}); }
-  if(a.statut==="proprio"){ const m=parseMoney(a.foncier); if(m) abos.push({nom:"Taxe foncière",cat:"logement",freq:"annuel",montant:m,debut:iso(wzAddDays(nextDate(9,15))),on:true}); }
+  if(a.statut==="proprio"){ const m=parseMoney(a.foncier); if(m) abos.push({nom:"Taxe foncière",cat:"logement",freq:"mensuel",montant:m,debut:wzDayOfMonth(15),on:true}); }
   if(abos.length) add("factures",1);
   for(const [k,l,who] of PAPIERS){ const P=(a.papiers||{})[k]; if(!(P&&P.on&&P.date)) continue;
     docs.push({titre:k==="bail"?"Bail du logement":l,expire:P.date,pour:who,on:true});
@@ -3059,7 +3059,7 @@ function renderWizard(){
     if(a.statut){ const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"Pour aller plus loin (facultatif)"}));
       const row=el("div",{class:"wz-soin"});
       row.append(wzField(a.statut==="locataire"?"Date d'entrée dans le logement (début du bail)":"Date d'achat ou d'emménagement",wzDate("wzEntree",a.entree,v=>{ a.entree=v; W.plan=null; }),"wzEntree"));
-      if(a.statut==="proprio"){ const f=el("input",{type:"text",inputmode:"decimal",id:"wzFoncier",placeholder:"0,00 €"}); f.value=a.foncier||""; f.addEventListener("input",()=>{ a.foncier=f.value; W.plan=null; }); row.append(wzField("Montant de la taxe foncière",f,"wzFoncier")); }
+      if(a.statut==="proprio"){ const f=el("input",{type:"text",inputmode:"decimal",id:"wzFoncier",placeholder:"0,00 €"}); f.value=a.foncier||""; f.addEventListener("input",()=>{ a.foncier=f.value; W.plan=null; }); row.append(wzField("Taxe foncière, par mois",f,"wzFoncier")); }
       grp.append(row); box.append(grp); }
     box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:"Équipements"}),g3));
   } else if(key==="poubelles"){
@@ -3369,7 +3369,7 @@ function doneAnim(tasks){
 const BCATS=[{id:"courses",nom:"Courses",c:"#7FD39A"},{id:"logement",nom:"Logement",c:"#7FCDB9"},{id:"energie",nom:"Énergie",c:"#FFC94A"},{id:"internet",nom:"Internet & mobile",c:"#8FB8FF"},{id:"streaming",nom:"Streaming",c:"#E79ADB"},{id:"assurance",nom:"Assurances",c:"#B9A8F0"},{id:"transport",nom:"Transport",c:"#A9B4C2"},{id:"loisirs",nom:"Loisirs",c:"#FF9C80"},{id:"sante",nom:"Santé",c:"#7CCFE0"},{id:"animaux",nom:"Animaux",c:"#F4A7A7"},{id:"enfants",nom:"Enfants",c:"#A8D672"},{id:"autre",nom:"Autre",c:"#C9C7DD"}];
 const BCAT=Object.fromEntries(BCATS.map(c=>[c.id,c]));
 const FREQ={mensuel:{l:"par mois",short:"/mois",perMonth:1,months:1},trimestriel:{l:"par trimestre",short:"/trim.",perMonth:1/3,months:3},annuel:{l:"par an",short:"/an",perMonth:1/12,months:12},hebdo:{l:"par semaine",short:"/sem.",perMonth:52/12,weeks:1}};
-const PRESETS=[["Loyer","logement","mensuel"],["Électricité","energie","mensuel"],["Gaz","energie","mensuel"],["Eau","energie","trimestriel"],["Box internet","internet","mensuel"],["Forfait mobile","internet","mensuel"],["Netflix","streaming","mensuel"],["Spotify","streaming","mensuel"],["Disney+","streaming","mensuel"],["Assurance habitation","assurance","annuel"],["Assurance auto","assurance","annuel"],["Mutuelle","sante","mensuel"],["Salle de sport","loisirs","mensuel"]];
+const PRESETS=[["Loyer","logement","mensuel"],["Électricité","energie","mensuel"],["Gaz","energie","mensuel"],["Eau","energie","mensuel"],["Box internet","internet","mensuel"],["Forfait mobile","internet","mensuel"],["Netflix","streaming","mensuel"],["Spotify","streaming","mensuel"],["Disney+","streaming","mensuel"],["Assurance habitation","assurance","mensuel"],["Assurance auto","assurance","mensuel"],["Mutuelle","sante","mensuel"],["Salle de sport","loisirs","mensuel"]];
 const EUR=new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR"});
 const money=c=>EUR.format((c||0)/100);
 function parseMoney(v){ const n=parseFloat(String(v||"").replace(/\s|€/g,"").replace(",",".")); return isFinite(n)&&n>0?Math.round(n*100):null; }
@@ -5774,7 +5774,7 @@ function startTour(force){
   S.tourOn=true; let i=0;
   const bg=el("div",{class:"tour-bg"}), hole=el("div",{class:"tour-hole"}), card=el("div",{class:"tour-card",role:"dialog","aria-live":"polite"});
   document.body.append(bg,hole,card);
-  const end=()=>{ bg.remove(); hole.remove(); card.remove(); S.tourOn=false; window.removeEventListener("resize",place); S.prefs=Object.assign({},S.prefs||{},{tourVu:true}); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); };
+  const end=()=>{ bg.remove(); hole.remove(); card.remove(); S.tourOn=false; try{ window.scrollTo({top:0,behavior:"smooth"}); }catch(_){ window.scrollTo(0,0); } window.removeEventListener("resize",place); S.prefs=Object.assign({},S.prefs||{},{tourVu:true}); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); };
   const target=st=>{ let e=document.querySelector(st.sel); if(!e||!e.offsetParent&&getComputedStyle(e).position!=="fixed") e=st.alt?document.querySelector(st.alt):null; return e&&(e.offsetParent||getComputedStyle(e).position==="fixed")?e:null; };
   function place(){ const st=TOUR[i], e=target(st); if(!e){ hole.style.opacity="0"; card.style.top="50%"; card.style.transform="translate(-50%,-50%)"; return; }
     const r=e.getBoundingClientRect(), pad=8; hole.style.opacity="1";
