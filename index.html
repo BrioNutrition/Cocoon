@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 10:58";</script>
+<script>window.COCOON_BUILD="09/10 11:02";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -5743,7 +5743,12 @@ async function flySplash(b,logo){
   const fly=flyLogo(logo,tl,980);
   setTimeout(()=>{ sp.classList.remove("sp-wait"); sp.classList.add("sp-show"); },700);
   await fly;
-  tn.style.visibility=""; tn.animate([{opacity:0,transform:"translateX(-10px)"},{opacity:1,transform:"none"}],{duration:420,easing:"cubic-bezier(.2,.8,.2,1)",fill:"backwards"});
+  const sh=getComputedStyle(tl).filter;
+  if(sh&&sh!=="none") tl.animate([{filter:"drop-shadow(0 0 0 rgba(0,0,0,0))"},{filter:sh}],{duration:650,easing:"cubic-bezier(.2,.8,.2,1)"});
+  const letters=[...tn.querySelectorAll("span")];
+  tn.style.visibility="";
+  if(letters.length) letters.forEach((l,i)=>l.animate([{opacity:0,transform:"translateY(26px) rotate(8deg)"},{opacity:1,transform:"none"}],{duration:700,delay:i*60,easing:"cubic-bezier(.2,1.4,.4,1)",fill:"backwards"}));
+  else tn.animate([{opacity:0},{opacity:1}],{duration:420,fill:"backwards"});
 }
 async function bootOut(){
   const b=$("boot"), logo=$("bootLogo"), reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
