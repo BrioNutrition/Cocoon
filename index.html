@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 12:31";</script>
+<script>window.COCOON_BUILD="09/10 14:07";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1835,6 +1835,7 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .wz-abo-in{grid-template-columns:1.3fr 1fr}
 .wizard .mate-row.kid{grid-template-columns:minmax(0,1fr) auto}.wizard .mate-row.kid:not(:has(.mate-x)){grid-template-columns:minmax(0,1fr)}.wizard .mate-row.kid input[type=text]{grid-column:1;grid-row:1}.wizard .mate-row.kid .mate-x{grid-column:2;grid-row:1}.wizard .mate-row.kid input[type=date]{grid-column:1/-1;grid-row:2}
 .wz-soin input,.wz-abo-in input,.wz-mates input{width:100%;box-sizing:border-box}
+@media (max-width:480px){.wz-soin{grid-template-columns:minmax(0,1fr)!important;gap:12px}.wz-soin input[type=date]{width:100%;min-width:0;max-width:100%;box-sizing:border-box}}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3012,7 +3013,7 @@ function renderWizard(){
   const key=W.steps[W.step], a=W.a, last=W.step===W.steps.length-1;
   const dots=el("div",{class:"wz-dots"}); W.steps.forEach((_,i)=>{ const d=el("span",{class:i<=W.step?"on":""}); dots.append(d); }); dots.style.setProperty("--p",((W.step+1)/W.steps.length).toFixed(3));
   if(W.pre) box.append(el("span",{class:"step-tag",style:"align-self:flex-start",text:"Étape 1 sur 2 · Tes besoins"}));
-  box.append(el("div",{class:"wz-top"},W.step>0?(()=>{ const bk=el("button",{type:"button",class:"wz-back","aria-label":"Question précédente",onclick:()=>{W.step--;rerender();}}); bk.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>'; return bk; })():null,dots,el("span",{class:"wz-count",text:(W.step+1)+"/"+W.steps.length}),(key!=="nom"&&key!=="plan")?el("button",{type:"button",class:"wz-pass",text:"Passer",onclick:()=>{ wzSkip(key,a); W.plan=null; W.step++; W.steps=wzSteps(W); rerender(); window.scrollTo({top:0}); }}):null,W.pre?el("span"):el("button",{type:"button",class:"wz-skip",text:"Annuler",onclick:()=>{ closeWizard(); }})));
+  box.append(el("div",{class:"wz-top"},W.step>0?(()=>{ const bk=el("button",{type:"button",class:"wz-back","aria-label":"Question précédente",onclick:()=>{W.step--;rerender();}}); bk.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>'; return bk; })():null,dots,el("span",{class:"wz-count",text:(W.step+1)+"/"+W.steps.length}),W.pre?el("span"):el("button",{type:"button",class:"wz-skip",text:"Annuler",onclick:()=>{ closeWizard(); }})));
   const rerender=()=>renderWizard();
   if(key==="nom"){
     box.append(el("h1",{text:"Bienvenue chez toi."}),el("p",{class:"help",text:"Quelques questions pour préparer ton cocon, une minute. Tu pourras tout changer ensuite."}));
@@ -3169,7 +3170,7 @@ function wzNeed(key,a){
     if(a.menage.includes("coloc")&&(a.colocs||[]).some(c=>(c.email||"").trim()&&!MAILOK(c.email))) return "Vérifie l'e-mail de tes colocs";
     if(a.menage.includes("enfants")&&!splitNames(a.enfants).length) return "Indique le prénom des enfants"; return null; }
   if(key==="abonnements"){ for(const [n,A] of Object.entries(a.abos||{})) if(A.on&&!parseMoney(A.montant)) return "Indique le montant : "+n; return null; }
-  if(key==="partage"){ if(!a.partageMode) return "Choisis une réponse"; if(a.partageMode==="prorata"){ const t=Object.entries(a.pct||{}).filter(([p])=>p==="__moi"||wzAdults(a).includes(p)).reduce((s,[,v])=>s+(parseInt(v,10)||0),0); if(t!==100) return "Le total doit faire 100 %"; } return null; }
+  if(key==="partage"){ if(a.partageMode==="prorata"){ const t=Object.entries(a.pct||{}).filter(([p])=>p==="__moi"||wzAdults(a).includes(p)).reduce((s,[,v])=>s+(parseInt(v,10)||0),0); if(t!==100) return "Le total doit faire 100 %"; } return null; }
   if(key==="papiers"){ for(const [k,P] of Object.entries(a.papiers||{})) if(P.on&&!P.date) return "Indique la date d'expiration"; return null; }
   if(key==="animaux"){ if(!a.animaux.length) return "Choisis au moins une réponse";
     if(a.animaux.some(sp=>sp!=="aucun"&&!splitNames(a.noms[sp]).length)) return "Indique le nom de tes animaux"; return null; }
