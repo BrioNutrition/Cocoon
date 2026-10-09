@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 23:58";</script>
+<script>window.COCOON_BUILD="10/10 00:01";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1882,6 +1882,12 @@ html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior
 .acc-leg .ln{display:inline-block;width:16px;height:3px;border-radius:2px;background:linear-gradient(90deg,#FFC94A,#E79ADB);margin-right:6px;vertical-align:middle}
 .acc-leg .ln.d{background:none;border-top:2.5px dashed var(--muted);opacity:.6;height:0}
 .acc-estl{margin-left:auto;font-weight:600}
+.b-curve{display:flex;flex-direction:column;gap:6px;margin-top:-4px}
+.b-hero .acc-cmp{color:var(--hero-ink);opacity:.85}.b-hero .acc-cmp.up{color:#FFB39A;opacity:1}.b-hero .acc-cmp.down{color:#9BE3B2;opacity:1}
+.b-hero .acc-prev,.b-hero .acc-goal{stroke:var(--hero-ink)}
+.b-hero .acc-leg{color:var(--hero-ink);opacity:.8}
+.b-hero .acc-leg .ln.d{border-top-color:var(--hero-ink)}
+.b-hero .acc-dot{box-shadow:0 0 0 3px rgba(255,156,128,.3)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3618,42 +3624,36 @@ function rdvFormEl(){
   setTimeout(()=>{ const x=$("rdvTitre"); if(x&&!F.id&&!F.titre) x.focus(); },40);
   return f;
 }
-function renderAccBudget(){
-  const w=$("accBudget"); if(!w) return; w.innerHTML="";
-  const t=today(), Y=t.getFullYear(), M=t.getMonth(), day=t.getDate(), dim=new Date(Y,M+1,0).getDate(), pdim=new Date(Y,M,0).getDate();
-  const ms=new Date(Y,M,1).getTime(), pms=new Date(Y,M-1,1).getTime();
-  const spend=S.depenses.filter(d=>d.type!=="rembt"&&d.date);
+function budgetCurve(off){
+  const t=today(), M0=new Date(t.getFullYear(),t.getMonth()+off,1), Y=M0.getFullYear(), M=M0.getMonth(), isCur=off===0;
+  const dim=new Date(Y,M+1,0).getDate(), pdim=new Date(Y,M,0).getDate(), day=isCur?t.getDate():dim;
+  const ms=M0.getTime(), me_=new Date(Y,M+1,1).getTime(), pms=new Date(Y,M-1,1).getTime();
   const cur=new Array(dim+1).fill(0), prev=new Array(pdim+1).fill(0);
-  for(const d of spend){ const x=parse(d.date), tt=x.getTime(); if(tt>=ms&&x.getMonth()===M&&x.getFullYear()===Y) cur[x.getDate()]+=d.montant; else if(tt>=pms&&tt<ms) prev[x.getDate()]+=d.montant; }
+  for(const d of S.depenses){ if(d.type==="rembt"||!d.date) continue; const x=parse(d.date), tt=x.getTime(); if(tt>=ms&&tt<me_) cur[x.getDate()]+=d.montant; else if(tt>=pms&&tt<ms) prev[x.getDate()]+=d.montant; }
   for(let i=1;i<=dim;i++) cur[i]+=cur[i-1]; for(let i=1;i<=pdim;i++) prev[i]+=prev[i-1];
   const tot=cur[day], prevTot=prev[pdim], prevAt=prev[Math.min(day,pdim)], hasPrev=prevTot>0;
-  const nm=new Intl.DateTimeFormat("fr-FR",{month:"long"}).format(t), pnm=new Intl.DateTimeFormat("fr-FR",{month:"long"}).format(new Date(Y,M-1,1));
-  const est=tot?(hasPrev?tot+Math.max(0,prevTot-prevAt):(day>=5?Math.round(tot/day*dim):null)):null;
+  const fm=x=>new Intl.DateTimeFormat("fr-FR",{month:"long"}).format(x), nm=fm(M0), pnm=fm(new Date(Y,M-1,1));
+  const est=isCur&&tot?(hasPrev?tot+Math.max(0,prevTot-prevAt):(day>=5?Math.round(tot/day*dim):null)):null;
   const obj=(S.config&&S.config.objectifs)||{}, goal=Object.values(obj).reduce((a,v)=>a+(v||0),0);
   let cmp=null, cls="";
-  if(hasPrev&&prevAt>0&&tot>0){ const p=Math.round((tot-prevAt)/prevAt*100); cmp=Math.abs(p)<3?"comme en "+pnm:(p>0?"+":"−")+Math.abs(p)+" % vs "+pnm; cls=Math.abs(p)<3?"":p>0?" up":" down"; }
-  else if(!hasPrev) cmp=tot?"premier mois suivi":null;
-  const card=el("button",{type:"button",class:"acc-card acc-budget acc-curve",onclick:()=>{ setTab("budget"); window.scrollTo({top:0}); }},
-    el("div",{class:"acc-h"},el("span",{class:"acc-lbl",text:"Budget "+de(nm)}),el("span",{class:"acc-go",text:"Voir →"})),
-    el("div",{class:"acc-big col"},el("b",{text:money(tot)}),el("span",{class:"acc-cmp"+cls,text:cmp||(goal?"sur "+money(goal)+" d'objectifs":"dépensés ce mois-ci")})));
-  // courbe
+  if(hasPrev&&prevAt>0&&tot>0){ const p=Math.round((tot-prevAt)/prevAt*100); cmp=Math.abs(p)<3?"comme en "+pnm+(isCur?" à la même date":""):(p>0?"+":"−")+Math.abs(p)+" % vs "+pnm+(isCur?" à la même date":""); cls=Math.abs(p)<3?"":p>0?" up":" down"; }
+  else if(!hasPrev&&tot) cmp="premier mois suivi";
   const W=300,H=96,X0=6,X1=W-8,YT=8,YB=H-6, nx=Math.max(dim,pdim);
   const ymax=Math.max(1,prevTot,est||0,tot,goal||0)*1.08, sx=d=>X0+d*(X1-X0)/nx, sy=v=>YB-v*(YB-YT)/ymax;
   const pth=(arr,n)=>{ let s="M"+sx(0).toFixed(1)+" "+sy(0).toFixed(1); for(let i=1;i<=n;i++) s+=" L"+sx(i).toFixed(1)+" "+sy(arr[i]).toFixed(1); return s; };
-  let svg='<svg viewBox="0 0 '+W+' '+H+'" class="acc-spark" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="accG" x1="0" x2="1"><stop offset="0" stop-color="#FFC94A"/><stop offset=".6" stop-color="#FF9C80"/><stop offset="1" stop-color="#E79ADB"/></linearGradient><linearGradient id="accA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9C80" stop-opacity=".28"/><stop offset="1" stop-color="#FF9C80" stop-opacity="0"/></linearGradient></defs>';
+  let svg='<svg viewBox="0 0 '+W+' '+H+'" class="acc-spark" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="accG" x1="0" x2="1"><stop offset="0" stop-color="#FFC94A"/><stop offset=".6" stop-color="#FF9C80"/><stop offset="1" stop-color="#E79ADB"/></linearGradient><linearGradient id="accA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9C80" stop-opacity=".3"/><stop offset="1" stop-color="#FF9C80" stop-opacity="0"/></linearGradient></defs>';
   if(goal) svg+='<line x1="'+X0+'" x2="'+X1+'" y1="'+sy(goal).toFixed(1)+'" y2="'+sy(goal).toFixed(1)+'" class="acc-goal"/>';
   if(hasPrev) svg+='<path d="'+pth(prev,pdim)+'" class="acc-prev" fill="none"/>';
   if(est&&est>tot) svg+='<path d="M'+sx(day).toFixed(1)+' '+sy(tot).toFixed(1)+' L'+sx(dim).toFixed(1)+' '+sy(est).toFixed(1)+'" class="acc-est" fill="none"/>';
   const cp=pth(cur,day); svg+='<path d="'+cp+' L'+sx(day).toFixed(1)+' '+YB+' L'+sx(0).toFixed(1)+' '+YB+' Z" fill="url(#accA)"/><path d="'+cp+'" fill="none" stroke="url(#accG)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>';
   svg+='</svg><span class="acc-dot" style="left:'+(sx(day)/W*100).toFixed(2)+'%;top:'+(sy(tot)/H*100).toFixed(2)+'%"></span>';
-  const box=el("div",{class:"acc-chart"}); box.innerHTML=svg; card.append(box);
+  const box=el("div",{class:"acc-chart"}); box.innerHTML=svg;
   const leg=el("div",{class:"acc-leg"},el("span",{},el("i",{class:"ln"}),nm));
   if(hasPrev) leg.append(el("span",{},el("i",{class:"ln d"}),pnm));
   if(est) leg.append(el("span",{class:"acc-estl",text:"Fin de mois estimée ≈ "+money(Math.round(est/100)*100).replace(/,00\s?€/," €")}));
-  card.append(leg);
-  const al=objAlerts(); if(al.length) card.append(el("div",{class:"acc-alert",text:al.slice(0,2).map(a=>(BCAT[a.c]||BCAT.autre).nom+(a.v>=a.g?" : objectif dépassé":" : "+Math.round(a.v/a.g*100)+" %")).join(" · ")}));
-  w.append(card);
+  const wrap=el("div",{class:"b-curve"}); if(cmp) wrap.append(el("span",{class:"acc-cmp"+cls,text:cmp})); wrap.append(box,leg); return wrap;
 }
+function renderAccBudget(){ const w=$("accBudget"); if(w) w.innerHTML=""; }
 function renderAccWho(){
   const w=$("accWho"); if(!w) return; w.innerHTML=""; const ppl=humains(); if(!ppl.length||!S.loaded.t){ return; }
   const ws=weekStart(), me=meId();
@@ -3682,7 +3682,8 @@ function renderBudget(){
   const P0=new Date(M0.getFullYear(),M0.getMonth()-1,1).getTime(), prevTot=deps.filter(d=>{ const t=parse(d.date).getTime(); return t>=P0&&t<ms; }).reduce((a,d)=>a+d.montant,0);
   const cmp=!cur&&prevTot&&tot?" · "+(tot>=prevTot?"+":"−")+Math.abs(Math.round((tot-prevTot)/prevTot*100))+" % sur le mois d'avant":"";
   h.append(el("div",{class:"b-mnav"},el("button",{type:"button","aria-label":"Mois précédent",text:"‹",disabled:off<=-36||null,onclick:()=>{ S.bMonth=off-1; S.bPerson=null; renderBudget(); }}),el("span",{class:"label",text:"Budget du foyer · "+mois}),el("button",{type:"button","aria-label":"Mois suivant",text:"›",disabled:cur||null,onclick:()=>{ S.bMonth=Math.min(0,off+1); S.bPerson=null; renderBudget(); }})),
-    el("div",{},el("div",{class:"b-big",text:money(tot)}),el("div",{class:"b-sub",text:(month.length?month.length+" dépense"+(month.length>1?"s":"")+" "+quand:(cur?"Aucune dépense ce mois-ci pour l'instant":"Aucune dépense "+quand))+cmp})));
+    el("div",{},el("div",{class:"b-big",text:money(tot)}),el("div",{class:"b-sub",text:(month.length?month.length+" dépense"+(month.length>1?"s":"")+" "+quand:(cur?"Aucune dépense ce mois-ci pour l'instant":"Aucune dépense "+quand))})));
+  if(month.length||deps.length) h.append(budgetCurve(off));
   h.append(el("div",{class:"b-kpis"},el("div",{class:"b-kpi"},el("b",{text:money(subTot)}),el("span",{text:subs.length+" abonnement"+(subs.length>1?"s":"")+", par mois"})),el("div",{class:"b-kpi"},el("b",{text:soon.length?String(soon.length):"0"}),el("span",{text:"prélèvement"+(soon.length>1?"s":"")+" dans les 7 jours"}))));
   $("nBudget").textContent=soon.length; $("nBudget").hidden=!soon.length;
   setTimeout(bookRecurring,0);
