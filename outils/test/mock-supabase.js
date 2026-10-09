@@ -37,6 +37,7 @@
     rpc: function (n, a) {
       window.__mock.calls.push(["rpc", n, JSON.stringify(a)]);
       if (window.__mock.offline) return Promise.resolve({ data: null, error: { message: "TypeError: Failed to fetch", details: "", code: "" } });
+      if (n === "cocoon_email_exists") return Promise.resolve({ data: !!users[String(a.e||"").trim().toLowerCase()] || !!users[a.e], error: null });
       var me = session.user.id;
       if (n === "cocoon_create_foyer") { var f = { id: uuid(), owner: me, code: "c0de" }; T.cocoon_foyers.push(f); T.cocoon_members.push({ foyer: f.id, user_id: me, role: "admin" }); return ok({ id: f.id, code: f.code }); }
       if (n === "cocoon_join_foyer") { var g = T.cocoon_foyers.find(function (x) { return x.id === a.f && x.code === a.c; }); if (!g) return ok(false); T.cocoon_members.push({ foyer: a.f, user_id: me, role: "membre" }); return ok(true); }

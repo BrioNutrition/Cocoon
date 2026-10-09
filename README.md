@@ -68,6 +68,12 @@ de modifier le profil d'un autre membre qui a son compte, de se nommer admin, de
 à une autre adresse e-mail ou de supprimer un profil sans en avoir le droit. Le créateur du foyer peut retirer
 n'importe quel membre (son accès est coupé).
 
+## Message « aucun compte à cette adresse » (une seule fois)
+
+**Supabase → SQL Editor** : colle et lance `supabase/connexion.sql`. L'écran de connexion distingue alors
+« aucun compte avec cet e-mail » de « mot de passe incorrect ». Sans ce script, il affiche le message commun
+« E-mail ou mot de passe incorrect ».
+
 ## Inviter quelqu'un
 
 Dans l'app : onglet **Moi → Mon compte → Copier le lien**. La personne ouvre le lien,
