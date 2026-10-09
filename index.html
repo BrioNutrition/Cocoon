@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 11:15";</script>
+<script>window.COCOON_BUILD="09/10 11:19";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2258,7 +2258,7 @@ function renderHeader(){
 }
 if(!document.querySelector(".aurora")){ const au=document.createElement("div"); au.className="aurora"; au.setAttribute("aria-hidden","true"); au.innerHTML="<i></i><i></i><i></i>"; document.body.prepend(au); }
 function renderOnboard(){
-  const gate=!!(S.db&&S.uid&&S.membresLoaded&&!meM()&&!S.forceMe&&!S.readOnly);
+  const gate=!!(S.db&&S.uid&&S.membresLoaded&&S.profilsLoaded&&!meM()&&!S.forceMe&&!S.readOnly);
   const splash=gate&&!S.splashDone;
   if(gate&&S.splashDone&&!S.wiz&&!S.edit) setTimeout(openSelfEditor,0);
   const wasHidden=$("splash").hidden; $("splash").hidden=!splash; document.querySelector(".wrap").classList.toggle("gated",splash);
@@ -5702,7 +5702,7 @@ async function autoClaimLegacy(){
     S.membresLoaded=true; renderAll(); autoClaimLegacy(); autoClaimEmail();
   },()=>{ S.membresLoaded=true; renderAll(); });
   db.collection("taches").onSnapshot(s=>{ S.foyer=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"taches"); S.loaded.t=true; renderAll(); },()=>{ S.loaded.t=true; banner("Les tâches ne se chargent plus. Recharge la page."); renderAll(); });
-  db.collection("profils").onSnapshot(s=>{ S.profils=s.docs.map(d=>Object.assign({id:d.id},d.data())); mergeMembres(); renderAll(); },()=>{});
+  db.collection("profils").onSnapshot(s=>{ S.profils=s.docs.map(d=>Object.assign({id:d.id},d.data())); mergeMembres(); S.profilsLoaded=true; renderAll(); },()=>{ S.profilsLoaded=true; renderAll(); });
   db.collection("courses").onSnapshot(s=>{ S.courses=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"courses"); cDiff(); renderAll(); },()=>{});
   db.collection("coursesLive").onSnapshot(s=>{ const d=s.docs.find(x=>x.id==="session"); const was=cSession(); S.cLive=d?d.data():null; cLiveChanged(was); renderAll(); },()=>{});
   db.collection("rayons").onSnapshot(s=>{ const m={}; s.docs.forEach(d=>{ const x=d.data(); if(x&&x.r) m[d.id]=x.r; }); S.rayonsPerso=m; renderAll(); },()=>{});
@@ -5726,9 +5726,9 @@ S.fontsOk=false; (function(){ try{ if(!document.fonts||!document.fonts.load){ S.
   Promise.all([document.fonts.load('800 28px "Bricolage Grotesque"',smp),document.fonts.load('600 16px "Bricolage Grotesque"',smp),document.fonts.load('400 15px "Bricolage Grotesque"',smp),document.fonts.load('600 16px "Fredoka"',smp)]).then(()=>document.fonts.ready).then(()=>{ S.fontsOk=true; },()=>{ S.fontsOk=true; }); }catch(_){ S.fontsOk=true; } })();
 function bootCheck(){
   const b=$("boot"); if(!b||b._done) return;
-  const t=performance.now()-BOOT_T0, ready=(S.loaded.t&&(S.membresLoaded||!S.db))||t>7000;
-  const fontsOk=S.fontsOk||t>3500;
-  if(!ready||!fontsOk||t<1100){ setTimeout(bootCheck,60); return; }
+  const t=performance.now()-BOOT_T0, ready=(S.loaded.t&&((S.membresLoaded&&S.profilsLoaded)||!S.db))||t>5000;
+  const fontsOk=S.fontsOk||t>1800;
+  if(!ready||!fontsOk||t<800){ setTimeout(bootCheck,60); return; }
   S.booted=true;
   b._done=true; requestAnimationFrame(()=>requestAnimationFrame(bootOut));
 }
