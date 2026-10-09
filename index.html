@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 15:16";</script>
+<script>window.COCOON_BUILD="09/10 15:20";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -397,7 +397,7 @@ h1,h2,h3,.brand h1,.pc-head h2{font-weight:800}
 /* Titre d'accueil */
 .fam{color:var(--fam-ink);background:var(--fam-bg);border-radius:10px;padding:0 .1em;margin-left:-.06em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 /* Transition « on réchauffe le foyer » */
-.warmup{position:fixed;inset:0;z-index:60;background:radial-gradient(70% 55% at 50% 45%,#3A2F4F 0%,var(--hero) 70%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;text-align:center;opacity:0;transition:opacity .45s ease}
+.warmup{position:fixed;inset:0;z-index:60;transition:opacity .6s ease!important;background:radial-gradient(70% 55% at 50% 45%,#3A2F4F 0%,var(--hero) 70%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;text-align:center;opacity:0;transition:opacity .45s ease}
 .warmup.on{opacity:1}
 .warmup svg{width:150px;height:150px;overflow:visible}
 .warmup p{margin:0;font-family:var(--f-display);font-weight:700;font-size:22px;min-height:1.4em;transition:opacity .35s ease}
@@ -1866,6 +1866,7 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 :root[data-theme="light"] .wizard .opt .ok,:root[data-theme="light"] .wz-abo-h .ok{border-color:rgba(28,27,46,.3)!important}
 .wizard input[type=date]{position:relative;padding-right:46px!important}
 .wizard input[type=date]::-webkit-calendar-picker-indicator{position:absolute;right:14px;top:50%;transform:translateY(-50%);margin:0}
+html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior:none}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -2544,13 +2545,13 @@ function openEditor(id,type){
 }
 function pencilBtn(onclick,label){ const b=el("button",{type:"button",class:"pencil-btn","aria-label":label||"Personnaliser le profil",title:"Personnaliser",onclick}); b.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.6 3.1a2.6 2.6 0 0 1 3.7 0l1.6 1.6a2.6 2.6 0 0 1 0 3.7L19.5 9.8 14.2 4.5zM12.8 5.9l5.3 5.3-9.9 9.9c-.3.3-.7.5-1.1.6l-4.1.9c-.8.2-1.4-.5-1.3-1.3l.9-4.1c.1-.4.3-.8.6-1.1z"/></svg>'; return b; }
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-async function warmup(lines,minMs,work,sub){
+async function warmup(lines,minMs,work,sub,swap){
   const w=$("warmup"), tx=$("warmText"); $("warmSub").textContent=sub||"Cocoon prépare tout pour vous";
   tx.textContent=lines[0]; w.hidden=false; void w.offsetWidth; w.classList.add("on");
   let i=0; const it=setInterval(()=>{ i=(i+1)%lines.length; tx.style.opacity=0; setTimeout(()=>{ tx.textContent=lines[i]; tx.style.opacity=1; },300); },1100);
   let res, err;
   try{ [res]=await Promise.all([work?work():Promise.resolve(),sleep(minMs)]); }catch(e){ err=e; }
-  clearInterval(it); w.classList.remove("on"); await sleep(450); w.hidden=true; tx.style.opacity=1;
+  clearInterval(it); if(swap&&!err){ try{ swap(); }catch(_){} await sleep(60); } w.classList.remove("on"); await sleep(650); w.hidden=true; tx.style.opacity=1;
   if(err) throw err; return res;
 }
 const WARM_LINES=["Nous réchauffons votre foyer…","On allume le feu de camp…","On range les papiers…","On prépare vos rappels…"];
@@ -2603,7 +2604,7 @@ function buildEditor(){
   const nom=bind(el("input",{type:"text",id:"fiNom",maxlength:"30",required:true,placeholder:t==="animal"?"Moka, Rex…":t==="enfant"?"Léo, Jade…":"Prénom"}),"nom"); nom.value=d.nom||"";
   const sur=bind(el("input",{type:"text",id:"fiSurnom",maxlength:"30",placeholder:"Facultatif"}),"surnom"); sur.value=d.surnom||"";
   const needBirth=!!(E.self||(E.id&&E.id===meId()))&&t!=="animal"; const nais=el("input",{type:"date",id:"fiNaissance"}); nais.value=d.naissance||""; nais.addEventListener("input",()=>{ d.naissance=nais.value||null; refreshPreview(); });
-  const row=el("div",{class:"frow"},field(t==="animal"?"Nom":"Prénom",nom),field("Surnom",sur),field(t==="animal"?"Date de naissance (ou d'adoption)":needBirth?"Date de naissance *":"Date de naissance",nais));
+  const row=el("div",{class:"frow"},field(t==="animal"?"Nom *":"Prénom *",nom),field("Surnom",sur),field(t==="animal"?"Date de naissance (ou d'adoption)":needBirth?"Date de naissance *":"Date de naissance",nais));
   if(t==="animal"){
     const esp=el("select",{id:"fiEspece"}); for(const e of ESPECES) esp.append(el("option",{value:e,text:e})); esp.value=d.espece||"Chat";
     esp.addEventListener("change",()=>{ d.espece=esp.value; refreshPreview(); });
@@ -3191,7 +3192,7 @@ function renderWizard(){
   
   const needMsg=wzNeed(key,a), need=!!needMsg;
   const showNeed=need&&/^Vérifie/.test(needMsg); nav.append(el("span",{class:"wz-need",text:showNeed?needMsg:"",hidden:!showNeed||null}));
-  nav.append(el("button",{type:"button",class:"btn"+(last?" big":""),id:"wzNext",disabled:need||null,text:last?(W.pre?"Continuer":"Tout mettre en place"):"Continuer",onclick:()=>{ if(last){ if(W.pre){ S.pendingW=W; warmup(WARM_LINES,3300).then(goProfileStage); } else warmup(WARM_LINES,2600,()=>applyPlan()).catch(()=>{}); } else { W.step++; if(W.steps[W.step]==="plan") W.plan=null; rerender(); window.scrollTo({top:0}); } }}));
+  nav.append(el("button",{type:"button",class:"btn"+(last?" big":""),id:"wzNext",disabled:need||null,text:last?(W.pre?"Continuer":"Tout mettre en place"):"Continuer",onclick:()=>{ if(last){ if(W.pre){ S.pendingW=W; warmup(WARM_LINES,3300,null,null,goProfileStage).catch(()=>{}); } else warmup(WARM_LINES,2600,()=>applyPlan()).catch(()=>{}); } else { W.step++; if(W.steps[W.step]==="plan") W.plan=null; rerender(); window.scrollTo({top:0}); } }}));
   box.append(nav);
 }
 function wzNeed(key,a){
@@ -5771,10 +5772,10 @@ const TOUR=[
   {sel:"#navAdd",t:"Le +",d:"Pour ajouter n'importe quoi en un geste. Bonne installation dans ton cocon !"}];
 function startTour(force){
   if(!force&&((S.prefs||{}).tourVu||S.tourOn||window.__noTour)) return; if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches&&!force){}
-  S.tourOn=true; let i=0;
+  S.tourOn=true; let i=0; const noScroll=e=>{ if(!e.target.closest||!e.target.closest(".tour-card")) e.preventDefault(); }; document.documentElement.classList.add("tour-lock"); window.addEventListener("wheel",noScroll,{passive:false}); window.addEventListener("touchmove",noScroll,{passive:false});
   const bg=el("div",{class:"tour-bg"}), hole=el("div",{class:"tour-hole"}), card=el("div",{class:"tour-card",role:"dialog","aria-live":"polite"});
   document.body.append(bg,hole,card);
-  const end=()=>{ bg.remove(); hole.remove(); card.remove(); S.tourOn=false; try{ window.scrollTo({top:0,behavior:"smooth"}); }catch(_){ window.scrollTo(0,0); } window.removeEventListener("resize",place); S.prefs=Object.assign({},S.prefs||{},{tourVu:true}); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); };
+  const end=()=>{ bg.remove(); hole.remove(); card.remove(); S.tourOn=false; document.documentElement.classList.remove("tour-lock"); window.removeEventListener("wheel",noScroll); window.removeEventListener("touchmove",noScroll); try{ window.scrollTo({top:0,behavior:"smooth"}); }catch(_){ window.scrollTo(0,0); } window.removeEventListener("resize",place); S.prefs=Object.assign({},S.prefs||{},{tourVu:true}); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); };
   const target=st=>{ let e=document.querySelector(st.sel); if(!e||!e.offsetParent&&getComputedStyle(e).position!=="fixed") e=st.alt?document.querySelector(st.alt):null; return e&&(e.offsetParent||getComputedStyle(e).position==="fixed")?e:null; };
   function place(){ const st=TOUR[i], e=target(st); if(!e){ hole.style.opacity="0"; card.style.top="50%"; card.style.transform="translate(-50%,-50%)"; return; }
     const r=e.getBoundingClientRect(), pad=4, br=parseFloat(getComputedStyle(e).borderTopLeftRadius)||14; hole.style.opacity="1";
