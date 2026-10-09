@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 15:20";</script>
+<script>window.COCOON_BUILD="09/10 23:58";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1867,6 +1867,21 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .wizard input[type=date]{position:relative;padding-right:46px!important}
 .wizard input[type=date]::-webkit-calendar-picker-indicator{position:absolute;right:14px;top:50%;transform:translateY(-50%);margin:0}
 html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior:none}
+.acc-big.col{display:flex;flex-direction:column;gap:2px}
+.acc-cmp{font-size:13.5px!important;font-weight:600;color:var(--muted)}
+.acc-cmp.up{color:#E8765A}.acc-cmp.down{color:#3E9B5F}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .acc-cmp.up{color:#FF9C80}:root:not([data-theme="light"]) .acc-cmp.down{color:#7FD39A}}
+:root[data-theme="dark"] .acc-cmp.up{color:#FF9C80}:root[data-theme="dark"] .acc-cmp.down{color:#7FD39A}
+.acc-chart{position:relative;height:96px;margin:2px 0 0}
+.acc-spark{width:100%;height:100%;display:block;overflow:visible}
+.acc-prev{stroke:var(--muted);opacity:.45;stroke-width:2.5;stroke-dasharray:4 6;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.acc-est{stroke:#FF9C80;opacity:.55;stroke-width:2;stroke-dasharray:2 5;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.acc-goal{stroke:var(--muted);opacity:.35;stroke-width:1.5;stroke-dasharray:1 4;vector-effect:non-scaling-stroke}
+.acc-dot{position:absolute;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;background:#FF9C80;box-shadow:0 0 0 3px color-mix(in srgb,#FF9C80 30%,transparent)}
+.acc-leg{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12.5px;color:var(--muted)}
+.acc-leg .ln{display:inline-block;width:16px;height:3px;border-radius:2px;background:linear-gradient(90deg,#FFC94A,#E79ADB);margin-right:6px;vertical-align:middle}
+.acc-leg .ln.d{background:none;border-top:2.5px dashed var(--muted);opacity:.6;height:0}
+.acc-estl{margin-left:auto;font-weight:600}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3605,18 +3620,37 @@ function rdvFormEl(){
 }
 function renderAccBudget(){
   const w=$("accBudget"); if(!w) return; w.innerHTML="";
-  const t=today(), ms=new Date(t.getFullYear(),t.getMonth(),1).getTime(), dim=new Date(t.getFullYear(),t.getMonth()+1,0).getDate();
-  const month=S.depenses.filter(d=>d.type!=="rembt"&&parse(d.date).getTime()>=ms), tot=month.reduce((a,d)=>a+d.montant,0);
+  const t=today(), Y=t.getFullYear(), M=t.getMonth(), day=t.getDate(), dim=new Date(Y,M+1,0).getDate(), pdim=new Date(Y,M,0).getDate();
+  const ms=new Date(Y,M,1).getTime(), pms=new Date(Y,M-1,1).getTime();
+  const spend=S.depenses.filter(d=>d.type!=="rembt"&&d.date);
+  const cur=new Array(dim+1).fill(0), prev=new Array(pdim+1).fill(0);
+  for(const d of spend){ const x=parse(d.date), tt=x.getTime(); if(tt>=ms&&x.getMonth()===M&&x.getFullYear()===Y) cur[x.getDate()]+=d.montant; else if(tt>=pms&&tt<ms) prev[x.getDate()]+=d.montant; }
+  for(let i=1;i<=dim;i++) cur[i]+=cur[i-1]; for(let i=1;i<=pdim;i++) prev[i]+=prev[i-1];
+  const tot=cur[day], prevTot=prev[pdim], prevAt=prev[Math.min(day,pdim)], hasPrev=prevTot>0;
+  const nm=new Intl.DateTimeFormat("fr-FR",{month:"long"}).format(t), pnm=new Intl.DateTimeFormat("fr-FR",{month:"long"}).format(new Date(Y,M-1,1));
+  const est=tot?(hasPrev?tot+Math.max(0,prevTot-prevAt):(day>=5?Math.round(tot/day*dim):null)):null;
   const obj=(S.config&&S.config.objectifs)||{}, goal=Object.values(obj).reduce((a,v)=>a+(v||0),0);
-  const subs=(S.abos||[]).filter(a=>a.actif!==false), subTot=subs.reduce((a,x)=>a+subMonthly(x),0);
-  const nm=new Intl.DateTimeFormat("fr-FR",{month:"long"}).format(t);
-  const dayPct=Math.round(t.getDate()/dim*100), pct=goal?Math.min(100,Math.round(tot/goal*100)):dayPct;
-  const card=el("button",{type:"button",class:"acc-card acc-budget",onclick:()=>{ setTab("budget"); window.scrollTo({top:0}); }},
+  let cmp=null, cls="";
+  if(hasPrev&&prevAt>0&&tot>0){ const p=Math.round((tot-prevAt)/prevAt*100); cmp=Math.abs(p)<3?"comme en "+pnm:(p>0?"+":"−")+Math.abs(p)+" % vs "+pnm; cls=Math.abs(p)<3?"":p>0?" up":" down"; }
+  else if(!hasPrev) cmp=tot?"premier mois suivi":null;
+  const card=el("button",{type:"button",class:"acc-card acc-budget acc-curve",onclick:()=>{ setTab("budget"); window.scrollTo({top:0}); }},
     el("div",{class:"acc-h"},el("span",{class:"acc-lbl",text:"Budget "+de(nm)}),el("span",{class:"acc-go",text:"Voir →"})),
-    el("div",{class:"acc-big"},el("b",{text:money(tot)}),el("span",{text:goal?" sur "+money(goal)+" d'objectifs":" dépensés ce mois-ci"})));
-  const bar=el("div",{class:"acc-bar"+(goal&&tot>goal?" over":goal&&tot>=goal*.8?" near":"")},el("i",{style:"width:"+Math.max(2,pct)+"%"}));
-  if(goal) bar.append(el("em",{style:"left:"+dayPct+"%",title:"Aujourd'hui"}));
-  card.append(bar,el("div",{class:"acc-sub",text:(goal?pct+" % des objectifs · "+dayPct+" % du mois écoulé":dayPct+" % du mois écoulé")+(subTot?" · abonnements "+money(subTot)+"/mois":"")}));
+    el("div",{class:"acc-big col"},el("b",{text:money(tot)}),el("span",{class:"acc-cmp"+cls,text:cmp||(goal?"sur "+money(goal)+" d'objectifs":"dépensés ce mois-ci")})));
+  // courbe
+  const W=300,H=96,X0=6,X1=W-8,YT=8,YB=H-6, nx=Math.max(dim,pdim);
+  const ymax=Math.max(1,prevTot,est||0,tot,goal||0)*1.08, sx=d=>X0+d*(X1-X0)/nx, sy=v=>YB-v*(YB-YT)/ymax;
+  const pth=(arr,n)=>{ let s="M"+sx(0).toFixed(1)+" "+sy(0).toFixed(1); for(let i=1;i<=n;i++) s+=" L"+sx(i).toFixed(1)+" "+sy(arr[i]).toFixed(1); return s; };
+  let svg='<svg viewBox="0 0 '+W+' '+H+'" class="acc-spark" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="accG" x1="0" x2="1"><stop offset="0" stop-color="#FFC94A"/><stop offset=".6" stop-color="#FF9C80"/><stop offset="1" stop-color="#E79ADB"/></linearGradient><linearGradient id="accA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9C80" stop-opacity=".28"/><stop offset="1" stop-color="#FF9C80" stop-opacity="0"/></linearGradient></defs>';
+  if(goal) svg+='<line x1="'+X0+'" x2="'+X1+'" y1="'+sy(goal).toFixed(1)+'" y2="'+sy(goal).toFixed(1)+'" class="acc-goal"/>';
+  if(hasPrev) svg+='<path d="'+pth(prev,pdim)+'" class="acc-prev" fill="none"/>';
+  if(est&&est>tot) svg+='<path d="M'+sx(day).toFixed(1)+' '+sy(tot).toFixed(1)+' L'+sx(dim).toFixed(1)+' '+sy(est).toFixed(1)+'" class="acc-est" fill="none"/>';
+  const cp=pth(cur,day); svg+='<path d="'+cp+' L'+sx(day).toFixed(1)+' '+YB+' L'+sx(0).toFixed(1)+' '+YB+' Z" fill="url(#accA)"/><path d="'+cp+'" fill="none" stroke="url(#accG)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>';
+  svg+='</svg><span class="acc-dot" style="left:'+(sx(day)/W*100).toFixed(2)+'%;top:'+(sy(tot)/H*100).toFixed(2)+'%"></span>';
+  const box=el("div",{class:"acc-chart"}); box.innerHTML=svg; card.append(box);
+  const leg=el("div",{class:"acc-leg"},el("span",{},el("i",{class:"ln"}),nm));
+  if(hasPrev) leg.append(el("span",{},el("i",{class:"ln d"}),pnm));
+  if(est) leg.append(el("span",{class:"acc-estl",text:"Fin de mois estimée ≈ "+money(Math.round(est/100)*100).replace(/,00\s?€/," €")}));
+  card.append(leg);
   const al=objAlerts(); if(al.length) card.append(el("div",{class:"acc-alert",text:al.slice(0,2).map(a=>(BCAT[a.c]||BCAT.autre).nom+(a.v>=a.g?" : objectif dépassé":" : "+Math.round(a.v/a.g*100)+" %")).join(" · ")}));
   w.append(card);
 }
