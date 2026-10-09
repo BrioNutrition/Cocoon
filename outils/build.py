@@ -196,11 +196,11 @@ INTRO_CSS = """<style>
 #cxIntro .cxi-w i{position:absolute;inset:0;border-radius:30px;border:2px solid rgba(255,201,74,.6);opacity:0;animation:cxiRing 2.4s cubic-bezier(.2,.6,.4,1) .7s infinite}
 #cxIntro .cxi-w i:nth-child(2){animation-delay:1.9s}
 @keyframes cxiRing{0%{opacity:.75;transform:scale(1)}100%{opacity:0;transform:scale(2.6)}}
-@keyframes cxiFloat{0%,100%{translate:0 0;rotate:0deg}25%{translate:0 -3px;rotate:2deg}50%{translate:0 -6px;rotate:0deg}75%{translate:0 -3px;rotate:-2deg}}
+@keyframes cxiFloat{0%,100%{translate:0 0}50%{translate:0 -5px}}
 #cxIntro .cxi-logo{position:relative;display:block;width:132px;height:132px;border-radius:30px;filter:drop-shadow(0 16px 30px rgba(232,118,90,.28));animation:cxiPop .9s cubic-bezier(.34,1.45,.64,1) .05s both}
 #cxIntro .cxi-name{font-family:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;font-weight:800;font-size:58px;letter-spacing:-.045em;line-height:.95;color:#1C1B2E;display:flex}
 #cxIntro .cxi-name span{display:inline-block;animation:cxiRise .7s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(.32s + var(--i) * .06s)}
-@keyframes cxiPop{from{opacity:0;transform:scale(.15) rotate(-30deg)}to{opacity:1;transform:none}}
+@keyframes cxiPop{from{opacity:0;transform:scale(.15)}to{opacity:1;transform:none}}
 @keyframes cxiRise{from{opacity:0;transform:translateY(22px) scale(.9)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){#cxIntro *{animation:none!important}}
 #cxGate .cx-card{animation:cxCardIn .5s cubic-bezier(.2,.9,.3,1) both}
