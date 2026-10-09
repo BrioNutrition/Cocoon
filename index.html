@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 11:02";</script>
+<script>window.COCOON_BUILD="09/10 11:04";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1787,6 +1787,7 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 #wzNext:disabled{opacity:1!important;background:var(--au-glass)!important;color:var(--au-sub)!important;border:1px solid var(--au-line)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .splash.sp-flown .sp-logo,.splash.sp-flown .sp-name span,.splash.sp-flown .sp-hero{animation:none!important}
 .splash.sp-flown .sp-logo{animation:none!important;transform:none!important;rotate:none!important;translate:none!important}
+.splash .sp-logo{filter:none!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -5743,8 +5744,6 @@ async function flySplash(b,logo){
   const fly=flyLogo(logo,tl,980);
   setTimeout(()=>{ sp.classList.remove("sp-wait"); sp.classList.add("sp-show"); },700);
   await fly;
-  const sh=getComputedStyle(tl).filter;
-  if(sh&&sh!=="none") tl.animate([{filter:"drop-shadow(0 0 0 rgba(0,0,0,0))"},{filter:sh}],{duration:650,easing:"cubic-bezier(.2,.8,.2,1)"});
   const letters=[...tn.querySelectorAll("span")];
   tn.style.visibility="";
   if(letters.length) letters.forEach((l,i)=>l.animate([{opacity:0,transform:"translateY(26px) rotate(8deg)"},{opacity:1,transform:"none"}],{duration:700,delay:i*60,easing:"cubic-bezier(.2,1.4,.4,1)",fill:"backwards"}));
