@@ -15,6 +15,7 @@ async def main():
     await ctx.route('**/config.js',lambda r:r.fulfill(body='window.COCOON_CONFIG={url:"https://mock.supabase.co",key:"anon",vapid:"BHK-FwWfQD0A4HJEo7IY4-PmER_oO3kGTGA799csoc5aRJOWnky_Ay4TAmRSfsgZHnsH0Z2Ftld7-Fcv4cntx4k"};',content_type='application/javascript'))
     await ctx.route('**/fonts.g*/**',lambda r:r.abort())
     pg=await ctx.new_page(); errs=[]; pg.on('pageerror',lambda e:errs.append(str(e)))
+    await pg.add_init_script('window.__noTour=1')
     await pg.goto('http://localhost:8769/'); await pg.wait_for_timeout(800)
     await pg.click('#cxGate [data-go="signup"]'); await pg.fill('#cxGate input[name=email]','angel@test.fr'); await pg.fill('#cxGate input[name=pw]','secret123'); await pg.click('#cxGate .cx-btn')
     await pg.wait_for_timeout(500); await pg.click('#cxGate [data-act="create"]'); await pg.wait_for_selector('#cxGate', state='hidden'); await pg.wait_for_timeout(2500)

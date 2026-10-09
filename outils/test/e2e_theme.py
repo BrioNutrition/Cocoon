@@ -11,6 +11,7 @@ async def main():
       await ctx.route('**/config.js',lambda r:r.fulfill(body='window.COCOON_CONFIG={url:"https://mock.supabase.co",key:"anon"};',content_type='application/javascript'))
       await ctx.route('**/fonts.g*/**',lambda r:r.abort())
       pg=await ctx.new_page(); await pg.goto('http://localhost:8769/'); await pg.wait_for_timeout(1200)
+      await pg.add_init_script('window.__noTour=1')
       print(cs,'data-theme:',await pg.evaluate("document.documentElement.dataset.theme||'(auto)'"),'| fond connexion:',await pg.evaluate("getComputedStyle(document.getElementById('cxGate')).backgroundColor"),'| fond app:',await pg.evaluate("getComputedStyle(document.body).backgroundColor"))
       await ctx.close()
     await b.close()

@@ -13,6 +13,7 @@ async def main():
     await ctx.route('**/config.js',lambda r:r.fulfill(body='window.COCOON_CONFIG={url:"https://mock.supabase.co",key:"anon"};',content_type='application/javascript'))
     await ctx.route('**/fonts.g*/**',lambda r:r.abort())
     pg=await ctx.new_page()
+    await pg.add_init_script('window.__noTour=1')
     await pg.goto(f'http://localhost:{PORT}/'); await pg.wait_for_timeout(800)
     await pg.click('#cxGate [data-go="signup"]'); await pg.fill('#cxGate input[name=email]','angel@test.fr'); await pg.fill('#cxGate input[name=pw]','secret123'); await pg.click('#cxGate .cx-btn')
     await pg.wait_for_timeout(500); await pg.click('#cxGate [data-act="create"]'); await pg.wait_for_selector('#cxGate', state='hidden'); await pg.wait_for_timeout(2500)

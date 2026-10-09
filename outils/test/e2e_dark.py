@@ -10,6 +10,7 @@ async def main():
     await ctx.route('**/config.js',lambda r:r.fulfill(body='window.COCOON_CONFIG={url:"https://mock.supabase.co",key:"anon"};',content_type='application/javascript'))
     await ctx.route('**/fonts.g*/**',lambda r:r.abort())
     pg=await ctx.new_page(); errs=[]; pg.on('pageerror',lambda e:errs.append(str(e)))
+    await pg.add_init_script('window.__noTour=1')
     await pg.goto('http://localhost:8768/'); await pg.wait_for_timeout(1500)
     await pg.fill('#cxGate input[name=pw]','x'); await pg.screenshot(path='../dk/50gate.png')
     print('theme-color', await pg.get_attribute('#cxTc','content'))

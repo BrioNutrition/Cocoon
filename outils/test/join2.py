@@ -15,6 +15,7 @@ async def main():
     await ctx.route('**/config.js',lambda r:r.fulfill(body='window.COCOON_CONFIG={url:"https://mock.supabase.co",key:"anon"};',content_type='application/javascript'))
     await ctx.route('**/fonts.g*/**',lambda r:r.abort())
     pg=await ctx.new_page(); errs=[]; pg.on('pageerror',lambda e:errs.append(str(e)))
+    await pg.add_init_script('window.__noTour=1')
     await pg.goto('http://localhost:8766/?rejoindre=f1.c0de'); await pg.wait_for_timeout(800)
     print('url nettoyée:',pg.url); await pg.screenshot(path='../j1.png')
     await pg.fill('#cxGate input[name=email]','emma@test.fr'); await pg.fill('#cxGate input[name=pw]','secret123'); await pg.click('#cxGate .cx-btn')
