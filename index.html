@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 10:48";</script>
+<script>window.COCOON_BUILD="09/10 10:53";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1785,6 +1785,7 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .wrap.finishing #fiSave{flex:1;width:100%;justify-content:center;font-size:17px!important}
 .wizard .wz-top{min-height:40px}
 #wzNext:disabled{opacity:1!important;background:var(--au-glass)!important;color:var(--au-sub)!important;border:1px solid var(--au-line)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.splash.sp-flown .sp-logo,.splash.sp-flown .sp-name span,.splash.sp-flown .sp-hero{animation:none!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -5728,14 +5729,30 @@ function bootCheck(){
   S.booted=true;
   b._done=true; requestAnimationFrame(()=>requestAnimationFrame(bootOut));
 }
+async function flySplash(b,logo){
+  const sp=$("splash"), tl=$("spLogo"), tn=sp.querySelector(".sp-name"), bn=b.querySelector(".bt-name");
+  sp.getAnimations({subtree:true}).forEach(a=>a.cancel()); clearTimeout(sp._t);
+  sp.classList.add("sp-flown","sp-wait"); sp.classList.remove("sp-show");
+  tn.style.visibility="hidden"; b.style.pointerEvents="none";
+  b.querySelector(".bt-bg").animate([{opacity:1},{opacity:1,offset:.12},{opacity:0}],{duration:1000,easing:"cubic-bezier(.5,0,.3,1)",fill:"forwards"});
+  b.querySelector(".bt-dots").animate([{opacity:1},{opacity:0}],{duration:200,fill:"forwards"});
+  logo.parentElement.querySelectorAll("i").forEach(i=>{ i.getAnimations().forEach(a=>a.cancel()); i.style.display="none"; });
+  bn.getAnimations({subtree:true}).forEach(a=>{ try{ a.finish(); }catch(_){ a.cancel(); } });
+  const r0=bn.getBoundingClientRect(), r1=tn.getBoundingClientRect(), s=r1.height/(r0.height||1);
+  const nameA=bn.animate([{transformOrigin:"0 0",transform:"translate(0,0) scale(1)"},{transformOrigin:"0 0",transform:"translate("+(r1.left-r0.left)+"px,"+(r1.top-r0.top)+"px) scale("+s+")"}],{duration:980,easing:"cubic-bezier(.55,0,.15,1)",fill:"forwards"});
+  const fly=flyLogo(logo,tl,980);
+  setTimeout(()=>{ sp.classList.remove("sp-wait"); sp.classList.add("sp-show"); },700);
+  await Promise.all([fly,nameA.finished.catch(()=>{})]);
+  tn.style.visibility="";
+}
 async function bootOut(){
   const b=$("boot"), logo=$("bootLogo"), reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
   const sp=$("splash"), splashOn=sp&&!sp.hidden, wiz=$("wizard")&&!$("wizard").hidden;
   window.scrollTo({top:0});
   const target=document.querySelector(".brand-logo"), tr=target?target.getBoundingClientRect():null;
   const canFly=!reduced&&!splashOn&&!wiz&&tr&&tr.width>0&&!(S.edit);
-  if(splashOn&&!reduced) splashIntro(380);
   S.entering=true; S.entT=setTimeout(entryDone,4000);
+  if(splashOn&&!reduced&&logo&&$("spLogo")){ try{ await flySplash(b,logo); }catch(_){ splashIntro(0); } b.remove(); entryDone(); return; }
   if(!canFly){ await b.animate([{opacity:1},{opacity:0}],{duration:reduced?250:420,easing:"ease-out",fill:"forwards"}).finished; b.remove(); entryDone(); return; }
   const wrap=logo.parentElement;
   b.style.pointerEvents="none";
