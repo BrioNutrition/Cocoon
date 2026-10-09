@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 10:30";</script>
+<script>window.COCOON_BUILD="09/10 10:32";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1707,16 +1707,6 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .pal-sw.on .pal-dot{box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--ink)}
 .pal-btns{display:flex;gap:8px;margin-top:8px}.pal-btns .btn{flex:1;justify-content:center}
 .pal-panel .seg button{justify-content:center!important;text-align:center!important;flex:1 1 0!important;line-height:1.2}
-.wizard{position:relative;margin-top:96px!important}
-.wz-cat{position:absolute;right:18px;top:-86px;width:140px;height:104px;pointer-events:none;z-index:2}
-.wz-cat.in{animation:wzCatIn .6s cubic-bezier(.34,1.4,.64,1) both}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .wz-cat svg{filter:drop-shadow(0 0 1px rgba(255,255,255,.45))}}
-:root[data-theme="dark"] .wz-cat svg{filter:drop-shadow(0 0 1px rgba(255,255,255,.45))}
-
-.wz-cat .eye{transform-box:fill-box;transform-origin:center;animation:wzBlink 5s infinite}
-@keyframes wzBlink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
-@keyframes wzCatIn{from{transform:translateY(26px);opacity:0}to{transform:none;opacity:1}}
-@media (prefers-reduced-motion:reduce){.wz-cat,.wz-cat .eye{animation:none}}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -2848,10 +2838,9 @@ for(const k of ["radiateurs","chauffeeau","four","plaques","hotte","lavevaissell
 for(const k of Object.keys(Q)) if(Q[k].o) for(const o of Q[k].o) if(FI[o[0]]) o[2]=FI[o[0]];
 function optButton(label,icon,on,click){ const b=el("button",{type:"button",class:"opt","aria-pressed":String(!!on),onclick:click}); const ic=el("span",{class:"oi"}); if(icon) ic.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"'+(icon.includes('class="g')?' class="gly"':'')+'>'+icon+'</svg>'; b.append(ic,el("span",{class:"ol",text:label}),el("span",{class:"ok","aria-hidden":"true"})); return b; }
 function toggleIn(arr,v,none){ if(v===none) return arr.includes(v)?[]:[v]; const r=arr.filter(x=>x!==none); return r.includes(v)?r.filter(x=>x!==v):r.concat(v); }
-const WZCAT='<svg aria-hidden="true" viewBox="0 0 140 104"><defs><linearGradient id="kE" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3E2770"/><stop offset="1" stop-color="#1F1638"/></linearGradient><linearGradient id="kEi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9BB8"/><stop offset=".55" stop-color="#C63D86"/><stop offset="1" stop-color="#4A2266"/></linearGradient><radialGradient id="kH" cx=".55" cy=".2" r=".85"><stop offset="0" stop-color="#FFFCF7"/><stop offset=".5" stop-color="#FBEEE8"/><stop offset=".8" stop-color="#F6CFD3"/><stop offset="1" stop-color="#EE9FB8"/></radialGradient><linearGradient id="kI" x1=".85" y1="0" x2=".15" y2="1"><stop offset="0" stop-color="#FFEC90"/><stop offset=".5" stop-color="#FDB54A"/><stop offset="1" stop-color="#E8607E"/></linearGradient><radialGradient id="kP" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#4C2E74"/><stop offset="1" stop-color="#1B1230"/></radialGradient><linearGradient id="kPw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5E3790"/><stop offset=".5" stop-color="#34205A"/><stop offset="1" stop-color="#1F1638"/></linearGradient><clipPath id="kC"><rect x="0" y="0" width="140" height="86"/></clipPath><clipPath id="kHc"><path d="M8 92C8 48 36 24 70 24C104 24 132 48 132 92Z"/></clipPath></defs><g clip-path="url(#kC)"><path d="M14 66C4 44 2 22 6 2C28 6 48 18 60 30Z" fill="url(#kE)"/><path d="M17 54C11 40 10 26 12 13C25 18 38 26 47 34Z" fill="url(#kEi)" opacity=".35"/><path d="M80 30C92 16 110 6 132 2C136 24 134 46 126 66Z" fill="url(#kE)"/><path d="M90 32C100 22 112 15 126 11C128 28 126 42 120 54Z" fill="url(#kEi)" opacity=".9"/><path d="M8 92C8 48 36 24 70 24C104 24 132 48 132 92Z" fill="url(#kH)"/><g clip-path="url(#kHc)"><path d="M0 16C22 18 42 28 54 42C46 42 36 44 30 50C24 54 20 60 18 70L0 74Z" fill="url(#kE)"/></g><g class="eye"><ellipse cx="45" cy="60" rx="18.5" ry="18" fill="#24183F"/><circle cx="45" cy="59" r="15.8" fill="url(#kI)"/><circle cx="41.8" cy="62.4" r="12.6" fill="url(#kP)"/><ellipse cx="46.5" cy="56.5" rx="2.4" ry="3.2" fill="#FFF6D8"/><circle cx="38" cy="66" r="1.2" fill="#fff" opacity=".75"/><path d="M26.5 57C30 45 38 41 45 41C53 41 60 45 63.5 56" fill="none" stroke="#24183F" stroke-width="4.4" stroke-linecap="round"/></g><g class="eye"><ellipse cx="95" cy="60" rx="18.5" ry="18" fill="#24183F"/><circle cx="95" cy="59" r="15.8" fill="url(#kI)"/><circle cx="91.8" cy="62.4" r="12.6" fill="url(#kP)"/><ellipse cx="96.5" cy="56.5" rx="2.4" ry="3.2" fill="#FFF6D8"/><circle cx="88" cy="66" r="1.2" fill="#fff" opacity=".75"/><path d="M76.5 57C80 45 88 41 95 41C103 41 110 45 113.5 56" fill="none" stroke="#24183F" stroke-width="4.4" stroke-linecap="round"/></g><path d="M65.5 76h9l-4.5 5z" fill="#2A1C48"/></g><path d="M19 100C17 88 25 79 38 79C51 79 59 88 57 100Z" fill="url(#kPw)"/><path d="M31.5 82C29.5 87 29.5 92 30.5 97M44.5 82C46.5 87 46.5 92 45.5 97" fill="none" stroke="#1A1230" stroke-width="1.6" stroke-linecap="round" opacity=".7"/><path d="M25 85C28 81.5 33 80.4 38 80.4" fill="none" stroke="#9A6CC6" stroke-width="2" stroke-linecap="round" opacity=".75"/><path d="M83 100C81 88 89 79 102 79C115 79 123 88 121 100Z" fill="url(#kPw)"/><path d="M95.5 82C93.5 87 93.5 92 94.5 97M108.5 82C110.5 87 110.5 92 109.5 97" fill="none" stroke="#1A1230" stroke-width="1.6" stroke-linecap="round" opacity=".7"/><path d="M89 85C92 81.5 97 80.4 102 80.4" fill="none" stroke="#9A6CC6" stroke-width="2" stroke-linecap="round" opacity=".75"/></svg>';
 function renderWizard(){
   const W=S.wiz, box=$("wizard"); if(!W){ box.hidden=true; return; }
-  box.hidden=false; document.querySelector(".wrap").classList.add("wizarding"); box.innerHTML=""; { const _c=el("span",{class:"wz-cat"+(window._wzCatSeen?"":" in")}); window._wzCatSeen=1; _c.innerHTML=WZCAT; box.append(_c); }
+  box.hidden=false; document.querySelector(".wrap").classList.add("wizarding"); box.innerHTML="";
   const key=W.steps[W.step], a=W.a, last=W.step===W.steps.length-1;
   const dots=el("div",{class:"wz-dots"}); W.steps.forEach((_,i)=>dots.append(el("span",{class:i<=W.step?"on":""})));
   if(W.pre) box.append(el("span",{class:"step-tag",style:"align-self:flex-start",text:"Étape 1 sur 2 · Tes besoins"}));
