@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 11:19";</script>
+<script>window.COCOON_BUILD="09/10 11:27";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -5728,7 +5728,7 @@ function bootCheck(){
   const b=$("boot"); if(!b||b._done) return;
   const t=performance.now()-BOOT_T0, ready=(S.loaded.t&&((S.membresLoaded&&S.profilsLoaded)||!S.db))||t>5000;
   const fontsOk=S.fontsOk||t>1800;
-  if(!ready||!fontsOk||t<800){ setTimeout(bootCheck,60); return; }
+  if(!ready||!fontsOk||t<2400){ setTimeout(bootCheck,60); return; }
   S.booted=true;
   b._done=true; requestAnimationFrame(()=>requestAnimationFrame(bootOut));
 }
@@ -5738,7 +5738,7 @@ async function flySplash(b,logo){
   sp.classList.add("sp-flown","sp-wait"); sp.classList.remove("sp-show");
   tn.style.visibility="hidden"; b.style.pointerEvents="none";
   b.querySelector(".bt-bg").animate([{opacity:1},{opacity:1,offset:.12},{opacity:0}],{duration:1000,easing:"cubic-bezier(.5,0,.3,1)",fill:"forwards"});
-  b.querySelector(".bt-dots").animate([{opacity:1},{opacity:0}],{duration:200,fill:"forwards"});
+  b.querySelector(".bt-dots").animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(10px) scale(.96)"}],{duration:320,easing:"ease-in",fill:"forwards"});
   logo.parentElement.querySelectorAll("i").forEach(i=>{ i.getAnimations().forEach(a=>a.cancel()); i.style.display="none"; });
   bn.getAnimations({subtree:true}).forEach(a=>{ try{ a.finish(); }catch(_){ a.cancel(); } });
   bn.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(10px) scale(.96)"}],{duration:320,easing:"ease-in",fill:"forwards"});
@@ -5764,7 +5764,7 @@ async function bootOut(){
   const fade=[{opacity:1},{opacity:1,offset:.2},{opacity:0}], fo={duration:900,easing:"cubic-bezier(.5,0,.3,1)",fill:"forwards"};
   b.querySelector(".bt-bg").animate(fade,fo);
   b.querySelector(".bt-name").animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(14px) scale(.96)"}],{duration:380,easing:"ease-in",fill:"forwards"});
-  b.querySelector(".bt-dots").animate([{opacity:1},{opacity:0}],{duration:250,fill:"forwards"});
+  b.querySelector(".bt-dots").animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(14px) scale(.96)"}],{duration:380,easing:"ease-in",fill:"forwards"});
   wrap.querySelectorAll("i").forEach(i=>{ i.getAnimations().forEach(a=>a.cancel()); i.style.display="none"; });
   const W=document.querySelector(".wrap");
   const fly=flyLogo(logo,target,980); W.classList.add("arrive");
