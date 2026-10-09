@@ -147,13 +147,7 @@
                 if (!r.data.session) { G.show("login", { t: "Compte créé ! Ouvre l'e-mail de confirmation qu'on vient de t'envoyer, puis connecte-toi ici." }); return; }
               } else {
                 var r2 = await sb.auth.signInWithPassword({ email: em, password: pw });
-                if (r2.error) {
-                  if (/Invalid login/i.test(r2.error.message || "")) {
-                    try { var ex = await sb.rpc("cocoon_email_exists", { e: em }); if (!ex.error && ex.data === false) throw new Error("COCOON_NO_ACCOUNT"); if (!ex.error && ex.data === true) throw new Error("COCOON_BAD_PW"); }
-                    catch (x) { if (/COCOON_/.test(x && x.message)) throw x; }
-                  }
-                  throw r2.error;
-                }
+                if (r2.error) throw r2.error;
               }
             } catch (err) { msg(frErr(err), true); }
             finally { b.disabled = false; }
@@ -223,13 +217,11 @@
   }
   function frErr(e) {
     var m = String((e && (e.message || e.error_description)) || e || "");
-    if (/COCOON_NO_ACCOUNT/.test(m)) return "Aucun compte n'existe avec cette adresse e-mail. Vérifie l'adresse ou crée un compte.";
-    if (/COCOON_BAD_PW/.test(m)) return "Mot de passe incorrect. Tu peux le réinitialiser avec « Mot de passe oublié ».";
     if (/Invalid login/i.test(m)) return "E-mail ou mot de passe incorrect.";
     if (/Email not confirmed/i.test(m)) return "Confirme d'abord ton adresse : clique sur le lien reçu par e-mail.";
     if (/already registered|already exists/i.test(m)) return "Un compte existe déjà avec cet e-mail : connecte-toi.";
     if (/Password should be/i.test(m)) return "Le mot de passe doit faire au moins 6 caractères.";
-    if (/rate limit|too many/i.test(m)) return "Trop de tentatives en peu de temps : par sécurité, attends quelques minutes avant de réessayer.";
+    if (/rate limit|too many/i.test(m)) return "Trop d'essais d'un coup : réessaie dans quelques minutes.";
     if (/fetch|network/i.test(m)) return "Pas de connexion internet.";
     return m || "Une erreur est survenue.";
   }
