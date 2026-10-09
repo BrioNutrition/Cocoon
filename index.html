@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 11:48";</script>
+<script>window.COCOON_BUILD="09/10 12:31";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1805,6 +1805,36 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 @keyframes cfE{0%{transform:translate(0,0);opacity:0}15%{opacity:1}100%{transform:translate(8px,-62px);opacity:0}}
 .cf-e.e2{animation-name:cfE2}@keyframes cfE2{0%{transform:translate(0,0);opacity:0}15%{opacity:1}100%{transform:translate(-10px,-56px);opacity:0}}
 @media (prefers-reduced-motion:reduce){.cf-f1,.cf-f2,.cf-f3,.cf-glow,.cf-e{animation:none}}
+.wz-pass{border:0;background:none;color:var(--au-sub);font-weight:700;font-size:13.5px;padding:8px 2px 8px 6px;cursor:pointer}
+.wz-bin,.wz-abo{background:var(--au-glass);border:1px solid var(--au-line);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.wz-bin.on,.wz-abo.on{border-color:#FFB38A;background:linear-gradient(135deg,rgba(255,201,74,.16),rgba(231,154,219,.16))}
+.wz-bin-h{display:flex;align-items:center;gap:10px}.wz-bin-h b{font-size:15px}
+.wz-bin-dot,.wz-abo-dot{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.wz-bin .pchips{gap:6px}.wz-bin .pchip.day{min-width:44px;justify-content:center}
+.wz-bin .seg{align-self:stretch}.wz-bin .seg button{flex:1;justify-content:center}
+.wz-mini{font-size:12.5px;font-weight:600;color:var(--au-sub);margin-bottom:-4px}
+.wz-abos{display:flex;flex-direction:column;gap:10px}
+.wz-abo{padding:0;gap:0;overflow:hidden}
+.wz-abo-h{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;color:var(--ink);padding:14px;font:inherit;font-weight:700;font-size:15px;text-align:left;cursor:pointer}
+.wz-abo-n{flex:1;min-width:0}.wz-abo-f{font-size:12.5px;font-weight:600;color:var(--au-sub)}
+.wz-abo-h .ok{width:22px;height:22px;border-radius:50%;border:2px solid var(--au-line);flex:none}
+.wz-abo-h[aria-pressed="true"] .ok{border:0;background:#FFC94A url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.5 12.5l3.5 3.5 7.5-8' fill='none' stroke='%231C1B2E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+.wz-abo-in{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px 14px}.wz-abo-in.one{grid-template-columns:1fr}
+.wz-abo-in .field,.wz-soin .field{font-size:12.5px;margin:0}
+.wz-pct{display:grid;grid-template-columns:1fr 90px auto;gap:10px;align-items:center;font-weight:700}
+.wz-pct input{text-align:right}
+.wz-soin{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end;background:var(--au-glass);border:1px solid var(--au-line);border-radius:18px;padding:12px}
+.wz-soin>b{grid-column:1/-1;font-size:15px}
+.wizard .mate-row input[type=date]{min-width:0}
+@media (max-width:360px){.wz-abo-in,.wz-soin{grid-template-columns:1fr}}
+.wizard input[type=number]{background:var(--au-glass)!important;border:1px solid var(--au-line)!important;border-radius:16px!important;color:var(--ink);padding:12px 14px;font:inherit;font-size:16px;width:100%;-moz-appearance:textfield}
+.wizard input[type=number]::-webkit-inner-spin-button,.wizard input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.wz-bin .pchips{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px!important;background:none!important;padding:0!important;border:0!important}
+.wz-bin .pchip.day{min-width:0!important;padding:9px 0!important;justify-content:center;border-radius:12px!important;background:var(--au-glass)!important;border:1px solid var(--au-line)!important;color:var(--ink)!important;font-size:13px;font-weight:700}
+.wz-bin .pchip.day[aria-pressed="true"]{background:#FFC94A!important;border-color:#FFC94A!important;color:#1C1B2E!important}
+.wz-abo-in{grid-template-columns:1.3fr 1fr}
+.wizard .mate-row.kid{grid-template-columns:minmax(0,1fr) auto}.wizard .mate-row.kid:not(:has(.mate-x)){grid-template-columns:minmax(0,1fr)}.wizard .mate-row.kid input[type=text]{grid-column:1;grid-row:1}.wizard .mate-row.kid .mate-x{grid-column:2;grid-row:1}.wizard .mate-row.kid input[type=date]{grid-column:1/-1;grid-row:2}
+.wz-soin input,.wz-abo-in input,.wz-mates input{width:100%;box-sizing:border-box}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -2863,9 +2893,35 @@ const Q={
 const LOGT=[["appart","Appartement"],["maison","Maison"]], STATUT=[["locataire","Locataire"],["proprio","Propriétaire"]];
 const EQUIP=[["chaudiere","Chaudière (gaz, fioul)"],["pac","Pompe à chaleur"],["cheminee","Cheminée ou poêle"],["vmc","VMC"],["clim","Climatisation"],["radiateurs","Radiateurs"],["chauffeeau","Chauffe-eau ou ballon"],["four","Four"],["plaques","Plaques de cuisson"],["hotte","Hotte"],["lavevaisselle","Lave-vaisselle"],["lavelinge","Lave-linge"],["sechelinge","Sèche-linge"],["frigo","Frigo ou congélateur"],["fosse","Fosse septique"],["jardin","Jardin"]];
 function openWizard(mode){
-  S.wiz={mode,step:0,a:{nom:(S.config&&S.config.nom)||"",menage:[],partenaire:"",enfants:"",animaux:[],noms:{},logement:"",statut:"",equip:[],vehicules:[],prio:[]},plan:null};
-  S.wiz.steps=mode==="foyer"?["nom","menage","animaux","logement","vehicules","prio","plan"]:["prio","plan"];
+  S.wiz={mode,step:0,a:{nom:(S.config&&S.config.nom)||"",menage:[],partenaire:"",enfants:"",kids:[],animaux:[],noms:{},soins:{},logement:"",statut:"",equip:[],entree:"",foncier:"",bins:{},vehicules:[],voitureCT:"",voitureMec:"",abos:{},partageMode:"",pct:{},papiers:{},prio:[]},plan:null};
+  S.wiz.steps=wzSteps(S.wiz);
   renderWizard(); window.scrollTo({top:0});
+}
+/* ===== Questionnaire complet : helpers ===== */
+const PAPIERS=[["cni","Carte d'identité","moi"],["passeport","Passeport","moi"],["permis","Permis de conduire","moi"],["bail","Fin du bail","foyer"],["assurhab","Assurance habitation","foyer"],["assurauto","Assurance auto","foyer"]];
+const wzAbos=()=>PRESETS.filter(p=>!["Netflix","Spotify","Disney+","Salle de sport"].includes(p[0])).concat([["Streaming (Netflix, Spotify…)","streaming","mensuel"]]);
+function wzAdults(a){ const n=[]; if((a.menage||[]).includes("couple")&&(a.partenaire||"").trim()) n.push(a.partenaire.trim().slice(0,30)); if((a.menage||[]).includes("coloc")) for(const c of (a.colocs||[])){ const x=(c.nom||"").trim(); if(x) n.push(x.slice(0,30)); } return n; }
+function wzSteps(W){ if(W.mode!=="foyer") return ["prio","plan"]; const a=W.a;
+  return ["nom","menage","animaux","logement","poubelles","vehicules","abonnements"].concat(wzAdults(a).length?["partage"]:[],["papiers","prio","plan"]); }
+function wzAddDays(n){ const t=today(); return new Date(t.getFullYear(),t.getMonth(),t.getDate()+(n||0)); }
+function wzDays(isoD){ if(!isoD) return null; const n=daysTo(isoD); return n; }
+function wzNext(lastIso,months){ if(!lastIso) return null; let d=addMonths(parse(lastIso),months); const t=today(); let g=0; while(d<t&&g<50){ g++; d=addMonths(d,months); } return Math.max(1,Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()))/864e5)); }
+function wzAnniv(isoD,before){ if(!isoD) return null; const p=parse(isoD), t=today(); let d=new Date(t.getFullYear(),p.getMonth(),p.getDate()); d=new Date(d.getTime()-(before||0)*864e5); if(d<=t) d=new Date(t.getFullYear()+1,p.getMonth(),p.getDate()-(before||0)); return Math.max(1,Math.round((d-t)/864e5)); }
+function wzDayOfMonth(day){ const t=today(); const dd=Math.min(28,Math.max(1,parseInt(day,10)||1)); let d=new Date(t.getFullYear(),t.getMonth(),dd); if(d<t) d=new Date(t.getFullYear(),t.getMonth()+1,dd); return iso(d); }
+function wzAge(isoD){ if(!isoD) return null; const p=parse(isoD), t=today(); let a=t.getFullYear()-p.getFullYear(); if(t<new Date(t.getFullYear(),p.getMonth(),p.getDate())) a--; return a; }
+function wzBinRef(jours,week){ const t=today(); const j=(jours||[])[0]; if(j==null) return iso(t); let d=new Date(t); let g=0; while(d.getDay()!==j&&g<8){ d.setDate(d.getDate()+1); g++; } if(week==="next") d.setDate(d.getDate()+7); return iso(d); }
+function wzField(label,input,id){ return el("label",{class:"field",for:id},label,input); }
+function wzDate(id,val,set,ph){ const i=el("input",{type:"date",id}); i.value=val||""; i.addEventListener("input",()=>set(i.value)); if(ph) i.setAttribute("aria-label",ph); return i; }
+function wzSkip(key,a){
+  if(key==="menage"){ a.menage=[]; a.partenaire=""; a.partenaireEmail=""; a.colocs=[]; a.kids=[]; a.enfants=""; }
+  else if(key==="animaux"){ a.animaux=[]; a.noms={}; a.soins={}; }
+  else if(key==="logement"){ a.logement=""; a.statut=""; a.equip=[]; a.entree=""; a.foncier=""; }
+  else if(key==="poubelles") a.bins={};
+  else if(key==="vehicules"){ a.vehicules=[]; a.voitureMec=""; a.voitureCT=""; }
+  else if(key==="abonnements") a.abos={};
+  else if(key==="partage"){ a.partageMode=""; a.pct={}; }
+  else if(key==="papiers") a.papiers={};
+  else if(key==="prio") a.prio=[];
 }
 function closeWizard(){ S.wiz=null; $("wizard").hidden=true; document.querySelector(".wrap").classList.remove("wizarding");
   if(S.flow&&meId()){ S.flow=false; S.editFinish=true; renderAll(); openEditor(meId()); window.scrollTo({top:0}); return; }
@@ -2890,12 +2946,14 @@ function buildPlan(mode,a){
   if(a.menage.includes("couple")&&(a.partenaire||"").trim()) profiles.push({nom:a.partenaire.trim().slice(0,30),type:"adulte",on:true,email:/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(a.partenaireEmail||"")?a.partenaireEmail.trim().toLowerCase():null});
   if(a.menage.includes("coloc")) for(const c of (a.colocs||[])){ const n=(c.nom||"").trim(); if(n) profiles.push({nom:n.slice(0,30),type:"adulte",on:true,email:MAILOK(c.email)?c.email.trim().toLowerCase():null}); }
   if(kids){ add("ecole",2); add("rdv",1); T("Souscrire l'assurance scolaire","ecole",12,"Prochaine assurance scolaire",nextDate(7,25));
-    for(const n of splitNames(a.enfants)) profiles.push({nom:n,type:"enfant",on:true}); }
+    const kl=(a.kids&&a.kids.length?a.kids:splitNames(a.enfants).map(n=>({nom:n,naissance:""}))).filter(k=>(k.nom||"").trim());
+    for(const k of kl){ const n=k.nom.trim().slice(0,30), age=wzAge(k.naissance); profiles.push({nom:n,type:"enfant",naissance:k.naissance||null,on:true});
+      if(age==null||(age>=2&&age<=17)){ T("Préparer la rentrée "+de(n),"ecole",12,"Prochaine rentrée",nextDate(7,20)); if(age==null||age<=11) T("Inscrire "+n+" à la cantine et au périscolaire","ecole",12,"Prochaine inscription",nextDate(5,15)); } } }
   const SP={chat:"Chat",chien:"Chien",lapin:"Lapin",autre:"Autre"};
   for(const sp of a.animaux.filter(x=>x!=="aucun")){ add("animaux",2);
     const names=splitNames(a.noms[sp]); const list=names.length?names:[sp==="chat"?"Le chat":sp==="chien"?"Le chien":sp==="lapin"?"Le lapin":"Notre animal"];
     for(const n of list){ profiles.push({nom:n,type:"animal",espece:SP[sp],on:true});
-      if(sp==="chat"||sp==="chien"){ T("Vermifuge "+de(n),"animaux",3,"Prochain vermifuge recommandé",14,{animal:n}); T("Pipette anti-puces "+de(n),"animaux",1,"Prochaine pipette recommandée",7,{animal:n}); T("Rappel de vaccin "+de(n),"animaux",12,"Prochain rappel de vaccin",90,{animal:n}); }
+      if(sp==="chat"||sp==="chien"){ const so=(a.soins||{})[n]||{}; T("Vermifuge "+de(n),"animaux",3,"Prochain vermifuge recommandé",wzNext(so.vermif,3)||14,{animal:n}); T("Pipette anti-puces "+de(n),"animaux",1,"Prochaine pipette recommandée",7,{animal:n}); T("Rappel de vaccin "+de(n),"animaux",12,"Prochain rappel de vaccin",wzNext(so.vaccin,12)||90,{animal:n}); }
       else T("Visite annuelle chez le vétérinaire pour "+n,"animaux",12,"Prochaine visite recommandée",90,{animal:n}); } }
   T("Tester le détecteur de fumée","maison",12,"Prochain test recommandé",30);
   const E=a.equip;
@@ -2915,20 +2973,32 @@ function buildPlan(mode,a){
   if(E.includes("frigo")) T("Dégivrer et nettoyer le frigo","maison",6,"Prochain nettoyage recommandé",45);
   if(E.includes("fosse")) T("Vidanger la fosse septique","entretien",48,"Prochaine vidange recommandée",120);
   if(E.includes("jardin")){ add("jardin",2); T("Tailler la haie","jardin",12,"Prochaine taille recommandée",nextDate(2,15)); }
-  if(a.statut==="locataire"){ add("documents",1); T("Envoyer l'attestation d'assurance habitation au propriétaire","documents",12,"Prochain envoi",30); }
+  if(a.statut==="locataire"){ add("documents",1); T("Envoyer l'attestation d'assurance habitation au propriétaire","documents",12,"Prochain envoi",wzAnniv(a.entree,15)||30); if(a.entree) T("Anniversaire du bail : vérifier la révision du loyer","factures",12,"Prochain anniversaire du bail",wzAnniv(a.entree,0)); }
   if(a.statut==="proprio"){ add("factures",1); T("Payer la taxe foncière","factures",12,"Prochaine taxe foncière",nextDate(9,15)); }
   const V=a.vehicules.filter(x=>x!=="aucun");
   if(V.length) add("voitures",2);
-  if(V.includes("voiture")){ T("Contrôle technique de la voiture","voitures",24,"Prochain contrôle technique",60); T("Révision et vidange de la voiture","voitures",12,"Prochaine révision recommandée",90); T("Vérifier l'échéance de l'assurance auto","factures",12,"Prochaine vérification",30); add("factures",1); }
+  if(V.includes("voiture")){ const ct=a.voitureCT?wzNext(a.voitureCT,24):(a.voitureMec&&wzAge(a.voitureMec)<4?Math.max(1,Math.round((addMonths(parse(a.voitureMec),48)-today())/864e5)):null); T("Contrôle technique de la voiture","voitures",24,"Prochain contrôle technique",ct||60); T("Révision et vidange de la voiture","voitures",12,"Prochaine révision recommandée",90); T("Vérifier l'échéance de l'assurance auto","factures",12,"Prochaine vérification",30); add("factures",1); }
   if(V.includes("moto")) T("Révision de la moto","voitures",12,"Prochaine révision recommandée",90);
   if(V.includes("velo")) T("Révision du vélo électrique","voitures",12,"Prochaine révision recommandée",120);
   if(a.prio.includes("factures")) T("Faire le point sur les abonnements","factures",12,"Prochain point recommandé",30);
   if(a.prio.includes("papiers")){ add("documents",1); T("Ranger les papiers importants dans l'app","documents",0,null,7); }
+  const bins=[], abos=[], docs=[];
+  for(const [n,c] of BIN_PRESETS){ const B=(a.bins||{})[n]; if(B&&B.jours&&B.jours.length) bins.push({nom:n,c,jours:B.jours.slice().sort(),freq:B.freq||1,ref:(B.freq||1)>1?wzBinRef(B.jours,B.week):null,on:true}); }
+  for(const [n,c,fq] of wzAbos()){ const A=(a.abos||{})[n]; const m=A&&A.on?parseMoney(A.montant):null; if(m) abos.push({nom:n==="Streaming (Netflix, Spotify…)"?"Streaming":n,cat:c,freq:fq,montant:m,debut:wzDayOfMonth(A.jour),on:true}); }
+  if(a.statut==="proprio"){ const m=parseMoney(a.foncier); if(m) abos.push({nom:"Taxe foncière",cat:"logement",freq:"annuel",montant:m,debut:iso(wzAddDays(nextDate(9,15))),on:true}); }
+  if(abos.length) add("factures",1);
+  for(const [k,l,who] of PAPIERS){ const P=(a.papiers||{})[k]; if(!(P&&P.on&&P.date)) continue;
+    docs.push({titre:k==="bail"?"Bail du logement":l,expire:P.date,pour:who,on:true});
+    const n=daysTo(P.date), before=k==="bail"?90:60, dd=Math.max(1,n-before);
+    if(n>0) T(k==="bail"?"Préparer la fin du bail (préavis)":k.startsWith("assur")?"Comparer "+(k==="assurhab"?"l'assurance habitation":"l'assurance auto")+" avant l'échéance":"Renouveler "+(k==="cni"?"la carte d'identité":k==="passeport"?"le passeport":"le permis de conduire"),"documents",0,null,dd);
+    add("documents",1); }
+  const partage=a.partageMode&&wzAdults(a).length?{mode:a.partageMode,pct:a.partageMode==="prorata"?Object.assign({},a.pct||{}):null}:null;
   // sans doublon avec l'existant
   const open=new Set(S.foyer.filter(t=>!t.fait).map(t=>t.titre.toLowerCase()));
   const known=new Set(membres().map(m=>(m.nom||"").toLowerCase()));
   const cats=Object.keys(sc).filter(id=>CAT[id]).sort((x,y)=>sc[y]-sc[x]);
-  return {cats,catsOn:new Set(cats),tasks:tasks.filter(t=>!open.has(t.titre.toLowerCase())),profiles:profiles.filter(p=>!known.has(p.nom.toLowerCase()))};
+  const haveB=new Set((S.bins||[]).map(b=>b.nom)), haveA=new Set((S.abos||[]).map(x=>(x.nom||"").toLowerCase())), haveD=new Set((S.docs||[]).map(x=>(x.titre||"").toLowerCase()));
+  return {cats,catsOn:new Set(cats),tasks:tasks.filter(t=>!open.has(t.titre.toLowerCase())),profiles:profiles.filter(p=>!known.has(p.nom.toLowerCase())),bins:bins.filter(b=>!haveB.has(b.nom)),abos:abos.filter(x=>!haveA.has(x.nom.toLowerCase())),docs:docs.filter(x=>!haveD.has(x.titre.toLowerCase())),partage};
 }
 const FI={"couple": "<path d=\"M12 20.6s-8.3-4.8-8.3-10.8A4.5 4.5 0 0 1 12 7.2a4.5 4.5 0 0 1 8.3 2.6c0 6-8.3 10.8-8.3 10.8z\"/>", "enfants": "<circle cx=\"8.5\" cy=\"6\" r=\"3.2\"/><path d=\"M2.8 20.5v-2.8a5.7 5.7 0 0 1 11.4 0v2.8z\"/><circle cx=\"17.6\" cy=\"10.2\" r=\"2.4\"/><path d=\"M14.4 20.5v-2.3a3.2 3.2 0 0 1 6.4 0v2.3z\"/>", "coloc": "<circle cx=\"8\" cy=\"7.2\" r=\"3.3\"/><circle cx=\"16.6\" cy=\"7.2\" r=\"3.3\"/><path d=\"M2.3 20.5v-2.4a5.7 5.7 0 0 1 11.4 0v2.4z\"/><path d=\"M15.4 20.5v-2.4c0-1.7-.5-3.2-1.3-4.4a5.7 5.7 0 0 1 7.6 4.4v2.4z\"/>", "seul": "<circle cx=\"12\" cy=\"7.3\" r=\"4.2\"/><path d=\"M3.8 21v-1.3a8.2 8.2 0 0 1 16.4 0V21z\"/>", "chat": "<path d=\"M4 3.2l4.3 4.1a10.2 10.2 0 0 1 7.4 0L20 3.2v9.6a8 8 0 0 1-16 0z\"/><circle cx=\"9\" cy=\"12.6\" r=\"1.25\" fill=\"#fff\"/><circle cx=\"15\" cy=\"12.6\" r=\"1.25\" fill=\"#fff\"/>", "chien": "<path d=\"M5 4c-1.5 0-3 2-3 5 0 1.6 1 2.4 2 2.6V15c0 3.3 3.6 6 8 6s8-2.7 8-6v-3.4c1-.2 2-1 2-2.6 0-3-1.5-5-3-5-1.4 0-2.6 1.3-3.2 2.6A9 9 0 0 0 12 6.2c-1.4 0-2.7.2-3.8.4C7.6 5.3 6.4 4 5 4z\"/><circle cx=\"9\" cy=\"12.5\" r=\"1.15\" fill=\"#fff\"/><circle cx=\"15\" cy=\"12.5\" r=\"1.15\" fill=\"#fff\"/>", "lapin": "<path d=\"M8.6 2.3c1.7 0 2.4 2.6 2.4 6v.9a7.3 7.3 0 0 1 2 0v-.9c0-3.4.7-6 2.4-6s2.1 2.8 1.4 6.5l-.6 2.6a6.6 6.6 0 1 1-9.3 0l-.6-2.6C5.5 5.1 6.9 2.3 8.6 2.3z\"/>", "autre": "<ellipse cx=\"12\" cy=\"16.2\" rx=\"5.2\" ry=\"4.3\"/><circle cx=\"5.6\" cy=\"10.3\" r=\"2.2\"/><circle cx=\"9.7\" cy=\"6.3\" r=\"2.2\"/><circle cx=\"14.3\" cy=\"6.3\" r=\"2.2\"/><circle cx=\"18.4\" cy=\"10.3\" r=\"2.2\"/>", "aucun": "<circle cx=\"12\" cy=\"12\" r=\"9.5\"/><path d=\"M8.6 8.6l6.8 6.8M15.4 8.6l-6.8 6.8\" stroke=\"#fff\" stroke-width=\"2.2\" stroke-linecap=\"round\"/>", "appart": "<path d=\"M5 3.6A1.6 1.6 0 0 1 6.6 2h10.8A1.6 1.6 0 0 1 19 3.6V22h-5v-4h-4v4H5z\"/><rect x=\"8\" y=\"5.5\" width=\"2.6\" height=\"2.6\" rx=\".6\" fill=\"#fff\"/><rect x=\"13.4\" y=\"5.5\" width=\"2.6\" height=\"2.6\" rx=\".6\" fill=\"#fff\"/><rect x=\"8\" y=\"10.7\" width=\"2.6\" height=\"2.6\" rx=\".6\" fill=\"#fff\"/><rect x=\"13.4\" y=\"10.7\" width=\"2.6\" height=\"2.6\" rx=\".6\" fill=\"#fff\"/>", "maison": "<path d=\"M12 3.2 3 10.6V20a1 1 0 0 0 1 1h5.2v-5.6h5.6V21H20a1 1 0 0 0 1-1v-9.4z\"/>", "locataire": "<path fill-rule=\"evenodd\" d=\"M15 2.5a6.5 6.5 0 0 0-6.2 8.5L2.5 17.3v4.2h4.2v-2h2v-2h2l1.9-1.9A6.5 6.5 0 1 0 15 2.5zm1.6 3.6a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6z\"/>", "proprio": "<path d=\"M12 3.2 3 10.6V20a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-9.4z\"/><path d=\"M12 18.3s-3.6-2.1-3.6-4.6a1.9 1.9 0 0 1 3.6-1 1.9 1.9 0 0 1 3.6 1c0 2.5-3.6 4.6-3.6 4.6z\" fill=\"#fff\"/>", "chaudiere": "<path d=\"M12 2c1.3 4.3 6.2 5.9 6.2 12.2a6.2 6.2 0 0 1-12.4 0c0-3.1 1.5-5 3.1-6.6.2 2 .9 3.3 2.1 4C11.2 8.2 10.5 5.3 12 2z\"/>", "pac": "<rect x=\"2\" y=\"5\" width=\"20\" height=\"14\" rx=\"3.2\"/><circle cx=\"9\" cy=\"12\" r=\"4.2\" fill=\"#fff\"/><circle cx=\"9\" cy=\"12\" r=\"1.4\"/><rect x=\"15\" y=\"9\" width=\"4\" height=\"1.9\" rx=\".95\" fill=\"#fff\"/><rect x=\"15\" y=\"13.1\" width=\"4\" height=\"1.9\" rx=\".95\" fill=\"#fff\"/>", "cheminee": "<rect x=\"2.5\" y=\"3\" width=\"19\" height=\"4.2\" rx=\"1.3\"/><path d=\"M4 7.2h16V21h-4.6v-5.2a3.4 3.4 0 0 0-6.8 0V21H4z\"/>", "vmc": "<path d=\"M12 10.2c-.6-3.6.7-7.2 3.3-7.2 2.2 0 2.7 3.4-.8 6.4zM13.8 12c3.6-.6 7.2.7 7.2 3.3 0 2.2-3.4 2.7-6.4-.8zM12 13.8c.6 3.6-.7 7.2-3.3 7.2-2.2 0-2.7-3.4.8-6.4zM10.2 12c-3.6.6-7.2-.7-7.2-3.3 0-2.2 3.4-2.7 6.4.8z\"/><circle cx=\"12\" cy=\"12\" r=\"1.9\"/>", "clim": "<rect x=\"2\" y=\"3.5\" width=\"20\" height=\"9.5\" rx=\"2.6\"/><rect x=\"5\" y=\"9\" width=\"14\" height=\"1.7\" rx=\".85\" fill=\"#fff\"/><rect x=\"6\" y=\"15.5\" width=\"2\" height=\"4\" rx=\"1\"/><rect x=\"11\" y=\"15.5\" width=\"2\" height=\"5.5\" rx=\"1\"/><rect x=\"16\" y=\"15.5\" width=\"2\" height=\"4\" rx=\"1\"/>", "jardin": "<path d=\"M20.5 3.5C11 3.5 4 8 4 15.5c0 1.6.4 3 1 4.2C7 15 10.6 11.8 15 10c-4 2.4-7 5.7-8.7 10.2.9.5 2 .8 3.2.8C17 21 20.5 13 20.5 3.5z\"/>", "voiture": "<path d=\"M5.4 6.3A2 2 0 0 1 7.3 5h9.4a2 2 0 0 1 1.9 1.3L20.3 10H3.7z\"/><path d=\"M2 11.6A1.6 1.6 0 0 1 3.6 10h16.8a1.6 1.6 0 0 1 1.6 1.6V17a1 1 0 0 1-1 1h-1v1.4a1.5 1.5 0 0 1-3 0V18H7v1.4a1.5 1.5 0 0 1-3 0V18H3a1 1 0 0 1-1-1z\"/><circle cx=\"6.5\" cy=\"14\" r=\"1.5\" fill=\"#fff\"/><circle cx=\"17.5\" cy=\"14\" r=\"1.5\" fill=\"#fff\"/>", "moto": "<circle cx=\"5.5\" cy=\"16.5\" r=\"3.8\"/><circle cx=\"18.5\" cy=\"16.5\" r=\"3.8\"/><circle cx=\"5.5\" cy=\"16.5\" r=\"1.6\" fill=\"#fff\"/><circle cx=\"18.5\" cy=\"16.5\" r=\"1.6\" fill=\"#fff\"/><path d=\"M13.6 4h3.6a1 1 0 0 1 1 .8l1.1 5.1-3.5 6.6H9.6l-2.2-4.2h4.9l2.3-3z\"/>", "velo": "<circle cx=\"5.5\" cy=\"15.5\" r=\"4.5\"/><circle cx=\"18.5\" cy=\"15.5\" r=\"4.5\"/><circle cx=\"5.5\" cy=\"15.5\" r=\"2.5\" fill=\"#fff\"/><circle cx=\"18.5\" cy=\"15.5\" r=\"2.5\" fill=\"#fff\"/><path d=\"M5.5 15.5L9.5 8h6l3 7.5M9.5 8l3 7.5 3-7.5M8.5 5.5h3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.1\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>", "factures": "<path d=\"M5 2.5h14V21.3l-2.3-1.5-2.4 1.5-2.3-1.5-2.3 1.5-2.4-1.5L5 21.3z\"/><rect x=\"8\" y=\"6.8\" width=\"8\" height=\"1.9\" rx=\".95\" fill=\"#fff\"/><rect x=\"8\" y=\"10.8\" width=\"8\" height=\"1.9\" rx=\".95\" fill=\"#fff\"/><rect x=\"8\" y=\"14.8\" width=\"5\" height=\"1.9\" rx=\".95\" fill=\"#fff\"/>", "courses": "<path d=\"M1.6 3.3a1 1 0 0 1 1-.8h2.1a1 1 0 0 1 1 .8l.4 1.7h14.3a1 1 0 0 1 1 1.2l-1.8 8a1 1 0 0 1-1 .8H7.7l.4 1.5H19a1 1 0 0 1 0 2H7.3a1 1 0 0 1-1-.8L4 4.5H2.6a1 1 0 0 1-1-1.2z\"/><circle cx=\"8.6\" cy=\"20.4\" r=\"1.8\"/><circle cx=\"17.4\" cy=\"20.4\" r=\"1.8\"/>", "entretien": "<path d=\"M21.2 6.4l-3.3 3.3-3.1-.5-.5-3.1 3.3-3.3a6 6 0 0 0-7.6 7.6L3 17.4a2.3 2.3 0 0 0 3.3 3.3l7-7a6 6 0 0 0 7.9-7.3z\"/>", "papiers": "<path d=\"M7 2h7.2L20 7.8V20a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z\"/><path d=\"M8.6 13h6.8M8.6 17h4.6\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\"/>", "colis": "<path d=\"M12 2l9 4.2v11.6L12 22l-9-4.2V6.2z\"/><path d=\"M3.6 6.6L12 10.6l8.4-4M12 10.6V21.4\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.7\" stroke-linejoin=\"round\"/>", "rdv": "<path d=\"M3 7a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z\"/><rect x=\"3\" y=\"8.6\" width=\"18\" height=\"1.7\" fill=\"#fff\"/><rect x=\"7\" y=\"2\" width=\"2.2\" height=\"4.6\" rx=\"1.1\"/><rect x=\"14.8\" y=\"2\" width=\"2.2\" height=\"4.6\" rx=\"1.1\"/><rect x=\"7\" y=\"13\" width=\"3.2\" height=\"3.2\" rx=\".9\" fill=\"#fff\"/>", "partage": "<circle cx=\"8\" cy=\"7.2\" r=\"3.3\"/><circle cx=\"16.6\" cy=\"7.2\" r=\"3.3\"/><path d=\"M2.3 20.5v-2.4a5.7 5.7 0 0 1 11.4 0v2.4z\"/><path d=\"M15.4 20.5v-2.4c0-1.7-.5-3.2-1.3-4.4a5.7 5.7 0 0 1 7.6 4.4v2.4z\"/>"};
 for(const k of ["radiateurs","chauffeeau","four","plaques","hotte","lavevaisselle","lavelinge","sechelinge","frigo","fosse"]) if(!FI[k]) FI[k]=GLY[k];
@@ -2938,10 +3008,11 @@ function toggleIn(arr,v,none){ if(v===none) return arr.includes(v)?[]:[v]; const
 function renderWizard(){
   const W=S.wiz, box=$("wizard"); if(!W){ box.hidden=true; return; }
   box.hidden=false; document.querySelector(".wrap").classList.add("wizarding"); box.innerHTML="";
+  W.steps=wzSteps(W); if(W.step>=W.steps.length) W.step=W.steps.length-1;
   const key=W.steps[W.step], a=W.a, last=W.step===W.steps.length-1;
   const dots=el("div",{class:"wz-dots"}); W.steps.forEach((_,i)=>{ const d=el("span",{class:i<=W.step?"on":""}); dots.append(d); }); dots.style.setProperty("--p",((W.step+1)/W.steps.length).toFixed(3));
   if(W.pre) box.append(el("span",{class:"step-tag",style:"align-self:flex-start",text:"Étape 1 sur 2 · Tes besoins"}));
-  box.append(el("div",{class:"wz-top"},W.step>0?(()=>{ const bk=el("button",{type:"button",class:"wz-back","aria-label":"Question précédente",onclick:()=>{W.step--;rerender();}}); bk.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>'; return bk; })():null,dots,el("span",{class:"wz-count",text:(W.step+1)+"/"+W.steps.length}),W.pre?el("span"):el("button",{type:"button",class:"wz-skip",text:"Annuler",onclick:()=>{ closeWizard(); }})));
+  box.append(el("div",{class:"wz-top"},W.step>0?(()=>{ const bk=el("button",{type:"button",class:"wz-back","aria-label":"Question précédente",onclick:()=>{W.step--;rerender();}}); bk.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>'; return bk; })():null,dots,el("span",{class:"wz-count",text:(W.step+1)+"/"+W.steps.length}),(key!=="nom"&&key!=="plan")?el("button",{type:"button",class:"wz-pass",text:"Passer",onclick:()=>{ wzSkip(key,a); W.plan=null; W.step++; W.steps=wzSteps(W); rerender(); window.scrollTo({top:0}); }}):null,W.pre?el("span"):el("button",{type:"button",class:"wz-skip",text:"Annuler",onclick:()=>{ closeWizard(); }})));
   const rerender=()=>renderWizard();
   if(key==="nom"){
     box.append(el("h1",{text:"Bienvenue chez toi."}),el("p",{class:"help",text:"Quelques questions pour préparer ton cocon, une minute. Tu pourras tout changer ensuite."}));
@@ -2952,7 +3023,64 @@ function renderWizard(){
     const g1=el("div",{class:"opts-grid"}); for(const [v,l] of LOGT) g1.append(optButton(l,FI[v],a.logement===v,()=>{a.logement=a.logement===v?"":v;rerender();}));
     const g2=el("div",{class:"opts-grid"}); for(const [v,l] of STATUT) g2.append(optButton(l,FI[v],a.statut===v,()=>{a.statut=a.statut===v?"":v;rerender();}));
     const g3=el("div",{class:"opts-grid"}); for(const [v,l] of EQUIP) g3.append(optButton(l,FI[v],a.equip.includes(v),()=>{a.equip=toggleIn(a.equip,v);rerender();}));
-    box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:"Type"}),g1),el("div",{class:"wz-group"},el("span",{class:"label",text:"Tu es"}),g2),el("div",{class:"wz-group"},el("span",{class:"label",text:"Équipements"}),g3));
+    box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:"Type"}),g1),el("div",{class:"wz-group"},el("span",{class:"label",text:"Tu es"}),g2));
+    if(a.statut){ const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"Pour aller plus loin (facultatif)"}));
+      const row=el("div",{class:"wz-soin"});
+      row.append(wzField(a.statut==="locataire"?"Date d'entrée dans le logement (début du bail)":"Date d'achat ou d'emménagement",wzDate("wzEntree",a.entree,v=>{ a.entree=v; W.plan=null; }),"wzEntree"));
+      if(a.statut==="proprio"){ const f=el("input",{type:"text",inputmode:"decimal",id:"wzFoncier",placeholder:"0,00 €"}); f.value=a.foncier||""; f.addEventListener("input",()=>{ a.foncier=f.value; W.plan=null; }); row.append(wzField("Montant de la taxe foncière",f,"wzFoncier")); }
+      grp.append(row); box.append(grp); }
+    box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:"Équipements"}),g3));
+  } else if(key==="poubelles"){
+    box.append(el("h1",{text:"Les poubelles"}),el("p",{class:"help",text:"Coche les jours de collecte : Cocoon te rappellera de les sortir la veille au soir."}));
+    a.bins=a.bins||{};
+    for(const [n,c] of BIN_PRESETS){ const B=a.bins[n]=a.bins[n]||{jours:[],freq:1,week:"this"};
+      const card=el("div",{class:"wz-bin"+(B.jours.length?" on":"")});
+      card.append(el("div",{class:"wz-bin-h"},el("span",{class:"wz-bin-dot",style:"background:"+c}),el("b",{text:n})));
+      const jd=el("div",{class:"pchips"});
+      for(const [v,l] of [[1,"Lun"],[2,"Mar"],[3,"Mer"],[4,"Jeu"],[5,"Ven"],[6,"Sam"],[0,"Dim"]]) jd.append(el("button",{type:"button",class:"pchip day","aria-pressed":String(B.jours.includes(v)),text:l,onclick:()=>{ B.jours=B.jours.includes(v)?B.jours.filter(x=>x!==v):B.jours.concat(v); W.plan=null; rerender(); }}));
+      card.append(jd);
+      if(B.jours.length){ const fq=el("div",{class:"seg"}); for(const [v,l] of [[1,"Chaque semaine"],[2,"Une semaine sur deux"]]) fq.append(el("button",{type:"button","aria-pressed":String(B.freq===v),text:l,onclick:()=>{ B.freq=v; W.plan=null; rerender(); }}));
+        card.append(fq);
+        if(B.freq===2){ const wk=el("div",{class:"seg"}); for(const [v,l] of [["this","Cette semaine"],["next","La semaine prochaine"]]) wk.append(el("button",{type:"button","aria-pressed":String(B.week===v),text:l,onclick:()=>{ B.week=v; W.plan=null; rerender(); }}));
+          card.append(el("span",{class:"wz-mini",text:"Prochaine collecte"}),wk); } }
+      box.append(card); }
+  } else if(key==="abonnements"){
+    box.append(el("h1",{text:"Tes abonnements et factures"}),el("p",{class:"help",text:"Coche ce que tu paies régulièrement : on les ajoute au Budget avec un rappel avant chaque prélèvement."}));
+    a.abos=a.abos||{};
+    const g=el("div",{class:"wz-abos"});
+    for(const [n,c,fq] of wzAbos()){ if(n==="Loyer"&&a.statut==="proprio") continue; if(n==="Assurance auto"&&!(a.vehicules||[]).some(v=>v==="voiture"||v==="moto")) continue;
+      const A=a.abos[n]=a.abos[n]||{on:false,montant:"",jour:"5"};
+      const row=el("div",{class:"wz-abo"+(A.on?" on":"")});
+      const head=el("button",{type:"button",class:"wz-abo-h","aria-pressed":String(A.on),onclick:()=>{ A.on=!A.on; W.plan=null; rerender(); if(A.on) setTimeout(()=>{ const x=document.getElementById("wzAm-"+slug(n)); if(x) x.focus(); },40); }},el("span",{class:"wz-abo-dot",style:"background:"+BCAT[c].c}),el("span",{class:"wz-abo-n",text:n}),el("span",{class:"wz-abo-f",text:(FREQ[fq]||FREQ.mensuel).short}),el("span",{class:"ok","aria-hidden":"true"}));
+      row.append(head);
+      if(A.on){ const am=el("input",{type:"text",inputmode:"decimal",id:"wzAm-"+slug(n),placeholder:"0,00 €"}); am.value=A.montant; am.addEventListener("input",()=>{ A.montant=am.value; W.plan=null; wzRefresh(key,a); });
+        const jr=el("input",{type:"number",min:"1",max:"28",inputmode:"numeric",id:"wzJr-"+slug(n),placeholder:"5"}); jr.value=A.jour; jr.addEventListener("input",()=>{ A.jour=jr.value; W.plan=null; });
+        row.append(el("div",{class:"wz-abo-in"},wzField("Montant",am,"wzAm-"+slug(n)),wzField("Jour du prélèvement",jr,"wzJr-"+slug(n)))); }
+      g.append(row); }
+    box.append(g);
+  } else if(key==="partage"){
+    const names=wzAdults(a);
+    box.append(el("h1",{text:"Comment partagez-vous l'argent ?"}),el("p",{class:"help",text:"Ce sera le réglage par défaut de chaque nouvelle dépense. Tu pourras toujours le changer au cas par cas."}));
+    const g=el("div",{class:"opts-grid"});
+    for(const [v,l] of [["egal","Moitié-moitié"],["prorata","Au prorata des revenus"],["chacun","Chacun paie ses dépenses"]]) g.append(optButton(l,"",a.partageMode===v,()=>{ a.partageMode=a.partageMode===v?"":v; W.plan=null; rerender(); }));
+    box.append(g);
+    if(a.partageMode==="prorata"){ a.pct=a.pct||{}; const ppl=["__moi"].concat(names); if(!ppl.some(p=>a.pct[p])){ const eq=Math.floor(100/ppl.length); ppl.forEach((p,i)=>a.pct[p]=i===0?100-eq*(ppl.length-1):eq); }
+      const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"La part de chacun, en %"}));
+      const sum=el("span",{class:"mate-hint"}); const upd=()=>{ const t=ppl.reduce((s,p)=>s+(parseInt(a.pct[p],10)||0),0); sum.textContent=t===100?"Total : 100 %, c'est juste.":"Total : "+t+" % (il faut 100 %)"; };
+      for(const p of ppl){ const i=el("input",{type:"number",min:"0",max:"100",inputmode:"numeric",id:"wzPct-"+slug(p),"aria-label":"Part de "+(p==="__moi"?"toi":p)}); i.value=a.pct[p]; i.addEventListener("input",()=>{ a.pct[p]=parseInt(i.value,10)||0; upd(); W.plan=null; wzRefresh(key,a); });
+        grp.append(el("label",{class:"wz-pct",for:"wzPct-"+slug(p)},el("span",{text:p==="__moi"?"Toi":p}),i,el("span",{text:"%"}))); }
+      upd(); grp.append(sum); box.append(grp); }
+  } else if(key==="papiers"){
+    box.append(el("h1",{text:"Les papiers qui expirent"}),el("p",{class:"help",text:"Indique la date d'expiration : Cocoon te prévient deux mois avant."}));
+    a.papiers=a.papiers||{};
+    const g=el("div",{class:"wz-abos"});
+    for(const [k,l,who] of PAPIERS){ if(k==="bail"&&a.statut!=="locataire") continue; if(k==="assurauto"&&!(a.vehicules||[]).some(v=>v==="voiture"||v==="moto")) continue;
+      const P=a.papiers[k]=a.papiers[k]||{on:false,date:""};
+      const row=el("div",{class:"wz-abo"+(P.on?" on":"")});
+      row.append(el("button",{type:"button",class:"wz-abo-h","aria-pressed":String(P.on),onclick:()=>{ P.on=!P.on; W.plan=null; rerender(); }},el("span",{class:"wz-abo-n",text:l}),el("span",{class:"wz-abo-f",text:who==="moi"?"à toi":"au foyer"}),el("span",{class:"ok","aria-hidden":"true"})));
+      if(P.on) row.append(el("div",{class:"wz-abo-in one"},wzField(k==="bail"?"Le bail se termine le":k.startsWith("assur")?"Échéance du contrat":"Expire le",wzDate("wzPap-"+k,P.date,v=>{ P.date=v; W.plan=null; wzRefresh(key,a); }),"wzPap-"+k)));
+      g.append(row); }
+    box.append(g);
   } else if(key==="plan"){
     if(!W.plan) W.plan=buildPlan(W.mode,a);
     const P=W.plan;
@@ -2966,9 +3094,18 @@ function renderWizard(){
       box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:"Profils à créer"}),pl)); }
     if(P.tasks.length){ const tl=el("div",{class:"plan-list"});
       for(const t of P.tasks){ const cb=el("input",{type:"checkbox"}); cb.checked=t.on; cb.addEventListener("change",()=>t.on=cb.checked);
-        const d=new Date(today().getTime()+t.days*864e5);
+        const d=wzAddDays(t.days);
         tl.append(el("label",{class:"plan-row"},cb,el("span",{class:"pr-t",text:t.titre}),el("span",{class:"pr-m",text:(t.recur?"↻ "+recText(t.recur)+" · ":"")+fmtDue(iso(d))}))); }
       box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:W.mode==="foyer"?"Rappels conseillés pour le foyer":"Rappels conseillés, rien que pour toi"}),tl)); }
+    const JL=["dim.","lun.","mar.","mer.","jeu.","ven.","sam."];
+    const sect=(label,items,meta)=>{ if(!items||!items.length) return; const l=el("div",{class:"plan-list"});
+      for(const x of items){ const cb=el("input",{type:"checkbox"}); cb.checked=x.on; cb.addEventListener("change",()=>x.on=cb.checked); l.append(el("label",{class:"plan-row"},cb,el("span",{class:"pr-t",text:x.nom||x.titre}),el("span",{class:"pr-m",text:meta(x)}))); }
+      box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:label}),l)); };
+    sect("Poubelles à sortir",P.bins,b=>b.jours.map(j=>JL[j]).join(", ")+(b.freq>1?" · 1 sem. sur 2":"")+" · la veille au soir");
+    sect("Abonnements et factures au Budget",P.abos,x=>money(x.montant)+" "+(FREQ[x.freq]||FREQ.mensuel).short+" · prochain "+fmtDue(x.debut));
+    sect("Papiers suivis",P.docs,x=>"expire "+fmtDue(x.expire)+(x.pour==="moi"?" · à toi":""));
+    if(P.partage) box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:"Partage des dépenses"}),el("div",{class:"plan-list"},el("div",{class:"plan-row"},el("span",{class:"pr-t",text:P.partage.mode==="egal"?"Moitié-moitié":P.partage.mode==="chacun"?"Chacun paie ses dépenses":"Au prorata"}),el("span",{class:"pr-m",text:P.partage.mode==="prorata"?Object.entries(P.partage.pct||{}).map(([k,v])=>(k==="__moi"?"Toi":k)+" "+v+" %").join(" · "):"réglage par défaut du Budget"})))));
+
   } else {
     const q=Q[key]; box.append(el("h1",{text:W.mode==="perso"&&key==="prio"?"Toi, qu'est-ce qui t'aiderait le plus ?":q.t}),el("p",{class:"help",text:q.h}));
     const g=el("div",{class:"opts-grid"});
@@ -2994,10 +3131,27 @@ function renderWizard(){
       if(a.colocs.length<6) grp.append(el("button",{type:"button",class:"btn ghost mate-add",text:"+ Ajouter un coloc",onclick:()=>{ a.colocs.push({nom:"",email:""}); W.plan=null; rerender(); setTimeout(()=>{ const x=$("wzMate"+(a.colocs.length-1)); if(x) x.focus(); },30); }}));
       grp.append(el("span",{class:"mate-hint",text:"L'e-mail est facultatif : "+MAIL_HINT()+"."}));
       box.append(grp); }
-    if(key==="menage"&&a.menage.includes("enfants")){ const i=el("input",{type:"text",id:"wzEnf",placeholder:"Léo, Jade"}); i.value=a.enfants; live(i,v=>a.enfants=v);
-      box.append(el("label",{class:"field",for:"wzEnf"},"Leurs prénoms, séparés par des virgules : on leur crée un profil",i)); }
-    if(key==="animaux") for(const sp of a.animaux.filter(x=>x!=="aucun")){ const i=el("input",{type:"text",id:"wzA"+sp,placeholder:sp==="chat"?"Moka":sp==="chien"?"Rex":"Son nom"}); i.value=a.noms[sp]||""; live(i,v=>a.noms[sp]=v);
+    if(key==="animaux") for(const sp of a.animaux.filter(x=>x!=="aucun")){ const i=el("input",{type:"text",id:"wzA"+sp,placeholder:sp==="chat"?"Moka":sp==="chien"?"Rex":"Son nom"}); i.value=a.noms[sp]||""; live(i,v=>a.noms[sp]=v); i.addEventListener("change",()=>rerender());
       box.append(el("label",{class:"field",for:"wzA"+sp},"Le nom de ton "+(sp==="chat"?"chat":sp==="chien"?"chien":sp==="lapin"?"lapin":"animal")+" (plusieurs : séparés par des virgules)",i)); }
+    if(key==="menage"&&a.menage.includes("enfants")){ a.kids=a.kids&&a.kids.length?a.kids:splitNames(a.enfants).map(n=>({nom:n,naissance:""})); if(!a.kids.length) a.kids=[{nom:"",naissance:""}];
+      const sync=()=>{ a.enfants=a.kids.map(k=>(k.nom||"").trim()).filter(Boolean).join(", "); };
+      const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"Tes enfants : prénom et date de naissance (facultative)"}));
+      a.kids.forEach((k,i)=>{ const n=el("input",{type:"text",id:"wzKid"+i,maxlength:"30",placeholder:"Son prénom","aria-label":"Prénom de l'enfant "+(i+1)}); n.value=k.nom; n.addEventListener("input",()=>{ k.nom=n.value; sync(); W.plan=null; wzRefresh(key,a); });
+        const d=wzDate("wzKidD"+i,k.naissance,v=>{ k.naissance=v; W.plan=null; },"Date de naissance de l'enfant "+(i+1));
+        const row=el("div",{class:"mate-row kid"},n,d); if(a.kids.length>1) row.append(el("button",{type:"button",class:"mate-x","aria-label":"Retirer cet enfant",text:"×",onclick:()=>{ a.kids.splice(i,1); sync(); W.plan=null; rerender(); }}));
+        grp.append(row); });
+      if(a.kids.length<6) grp.append(el("button",{type:"button",class:"btn ghost mate-add",text:"+ Ajouter un enfant",onclick:()=>{ a.kids.push({nom:"",naissance:""}); W.plan=null; rerender(); setTimeout(()=>{ const x=$("wzKid"+(a.kids.length-1)); if(x) x.focus(); },30); }}));
+      grp.append(el("span",{class:"mate-hint",text:"Avec la date, on prépare la rentrée, la cantine et l'assurance scolaire au bon moment."}));
+      sync(); box.append(grp); }
+    if(key==="animaux"){ a.soins=a.soins||{}; const pets=[]; for(const sp of ["chat","chien"]) if(a.animaux.includes(sp)) for(const n of splitNames(a.noms[sp])) pets.push(n);
+      if(pets.length){ const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"Derniers soins (facultatif) : on démarre les rappels à la bonne date"}));
+        pets.forEach((n,i)=>{ const S0=a.soins[n]=a.soins[n]||{vaccin:"",vermif:""};
+          grp.append(el("div",{class:"wz-soin"},el("b",{text:n}),wzField("Dernier vaccin",wzDate("wzVac"+i,S0.vaccin,v=>{ S0.vaccin=v; W.plan=null; }),"wzVac"+i),wzField("Dernier vermifuge",wzDate("wzVer"+i,S0.vermif,v=>{ S0.vermif=v; W.plan=null; }),"wzVer"+i))); });
+        box.append(grp); } }
+    if(key==="vehicules"&&a.vehicules.includes("voiture")){
+      const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"Ta voiture (facultatif) : pour caler le contrôle technique"}));
+      grp.append(el("div",{class:"wz-soin"},wzField("Dernier contrôle technique",wzDate("wzCT",a.voitureCT,v=>{ a.voitureCT=v; W.plan=null; }),"wzCT"),wzField("Ou mise en circulation (si moins de 4 ans)",wzDate("wzMec",a.voitureMec,v=>{ a.voitureMec=v; W.plan=null; }),"wzMec")));
+      box.append(grp); }
   }
   const nav=el("div",{class:"wz-nav"});
   
@@ -3014,6 +3168,9 @@ function wzNeed(key,a){
     if(a.menage.includes("coloc")&&!(a.colocs||[]).some(c=>(c.nom||"").trim())) return "Indique le prénom d'au moins un coloc";
     if(a.menage.includes("coloc")&&(a.colocs||[]).some(c=>(c.email||"").trim()&&!MAILOK(c.email))) return "Vérifie l'e-mail de tes colocs";
     if(a.menage.includes("enfants")&&!splitNames(a.enfants).length) return "Indique le prénom des enfants"; return null; }
+  if(key==="abonnements"){ for(const [n,A] of Object.entries(a.abos||{})) if(A.on&&!parseMoney(A.montant)) return "Indique le montant : "+n; return null; }
+  if(key==="partage"){ if(!a.partageMode) return "Choisis une réponse"; if(a.partageMode==="prorata"){ const t=Object.entries(a.pct||{}).filter(([p])=>p==="__moi"||wzAdults(a).includes(p)).reduce((s,[,v])=>s+(parseInt(v,10)||0),0); if(t!==100) return "Le total doit faire 100 %"; } return null; }
+  if(key==="papiers"){ for(const [k,P] of Object.entries(a.papiers||{})) if(P.on&&!P.date) return "Indique la date d'expiration"; return null; }
   if(key==="animaux"){ if(!a.animaux.length) return "Choisis au moins une réponse";
     if(a.animaux.some(sp=>sp!=="aucun"&&!splitNames(a.noms[sp]).length)) return "Indique le nom de tes animaux"; return null; }
   if(key==="logement") return a.logement&&a.statut?null:"Choisis le type et ton statut";
@@ -3031,18 +3188,27 @@ async function applyPlan(Wx){
       for(const p of P.profiles.filter(x=>x.on)){
         let id=slug(p.nom); const taken=new Set(membres().map(m=>m.id).concat(Object.values(ids))); let i=2; while(taken.has(id)) id=slug(p.nom)+"-"+(i++);
         ids[p.nom]=id;
-        await S.db.collection("membres").doc(id).set({nom:p.nom,type:p.type,espece:p.espece||null,email:p.email||null,role:p.type==="adulte"?"membre":null,invite:p.type==="adulte"||null,c:COLORS[(Object.keys(ids).length+3)%COLORS.length],ordre:now+Object.keys(ids).length,creePar:me,creeLe:now});
+        await S.db.collection("membres").doc(id).set({nom:p.nom,type:p.type,espece:p.espece||null,naissance:p.naissance||null,email:p.email||null,role:p.type==="adulte"?"membre":null,invite:p.type==="adulte"||null,c:COLORS[(Object.keys(ids).length+3)%COLORS.length],ordre:now+Object.keys(ids).length,creePar:me,creeLe:now});
         if(p.email&&canMail()) sendInviteMail(p.email,p.nom,id);
       }
       for(const t of P.tasks.filter(x=>x.on)){
         const conc=t.animal?(ids[t.animal]||(membres().find(m=>(m.nom||"").toLowerCase()===t.animal.toLowerCase())||{}).id||null):null;
-        await S.db.collection("taches").add({titre:t.titre,cat:t.cat,pour:"tous",concerne:conc,echeance:iso(new Date(today().getTime()+t.days*864e5)),recur:t.recur||0,recurMsg:t.recurMsg||null,fait:false,creePar:me,creeLe:now,suggere:true});
+        await S.db.collection("taches").add({titre:t.titre,cat:t.cat,pour:"tous",concerne:conc,echeance:iso(wzAddDays(t.days)),recur:t.recur||0,recurMsg:t.recurMsg||null,fait:false,creePar:me,creeLe:now,suggere:true});
       }
+      const meA=meId(); const adIds=[meA].concat(P.profiles.filter(x=>x.on&&x.type==="adulte").map(x=>ids[x.nom]).filter(Boolean));
+      let partCfg=null;
+      if(P.partage){ partCfg={mode:P.partage.mode}; if(P.partage.mode==="prorata"){ const pc={}; for(const [k,v] of Object.entries(P.partage.pct||{})){ const id=k==="__moi"?meA:(ids[k]||(membres().find(m=>(m.nom||"").toLowerCase()===k.toLowerCase())||{}).id); if(id) pc[id]=parseInt(v,10)||0; } partCfg.pct=pc; } }
+      const shareFor=montant=>{ if(!partCfg||partCfg.mode==="chacun"||adIds.length<2) return {partage:[meA],parts:null};
+        if(partCfg.mode==="egal") return {partage:adIds.slice(),parts:null};
+        return {partage:Object.keys(partCfg.pct||{}),parts:pctParts(montant,partCfg.pct)}; };
+      for(const b of (P.bins||[]).filter(x=>x.on)) await S.db.collection("poubelles").add({nom:b.nom,c:b.c,jours:b.jours,freq:b.freq,ref:b.ref,veille:true,qui:["tous"],tour:false,tourIdx:0,creePar:me,creeLe:now});
+      for(const x of (P.abos||[]).filter(x=>x.on)){ const sh=shareFor(x.montant); await S.db.collection("abonnements").add({nom:x.nom,montant:x.montant,cat:x.cat,freq:x.freq,debut:x.debut,payePar:meA,partage:sh.partage,parts:sh.parts,rappel:true,actif:true,auto:true,recurrente:false,creePar:me,creeLe:now}); }
+      for(const d of (P.docs||[]).filter(x=>x.on)) await S.db.collection("documents").add({titre:d.titre,pour:d.pour==="moi"?meA:"foyer",cat:"documents",catNom:null,catC:null,expire:d.expire,note:null,ajoutePar:me,ajouteLe:now,assetId:null,fichierType:null});
       const cats=P.cats.filter(id=>P.catsOn.has(id)); const rest=DEFAULT_CATS.filter(id=>!cats.includes(id)&&!["ecole","jardin"].includes(id));
-      await S.db.doc("foyer/config").set(Object.assign({},S.config||{},{nom:(W.a.nom||"").trim()||(S.config&&S.config.nom)||"",categories:cats.concat(rest),questionnaire:W.a,qFait:true,qPar:me,qLe:now}));
+      await S.db.doc("foyer/config").set(Object.assign({},S.config||{},partCfg?{partage:partCfg}:{},{nom:(W.a.nom||"").trim()||(S.config&&S.config.nom)||"",categories:cats.concat(rest),questionnaire:W.a,qFait:true,qPar:me,qLe:now}));
     }
     for(const t of (W.mode==="perso"?P.tasks.filter(x=>x.on):[]))
-      await persoCol().add({titre:t.titre,cat:t.cat,pour:me,concerne:null,echeance:iso(new Date(today().getTime()+t.days*864e5)),recur:t.recur||0,recurMsg:t.recurMsg||null,fait:false,creePar:me,creeLe:now,suggere:true});
+      await persoCol().add({titre:t.titre,cat:t.cat,pour:me,concerne:null,echeance:iso(wzAddDays(t.days)),recur:t.recur||0,recurMsg:t.recurMsg||null,fait:false,creePar:me,creeLe:now,suggere:true});
     const prio=W.mode==="perso"?P.cats.filter(id=>P.catsOn.has(id)):P.cats.filter(id=>P.catsOn.has(id)).slice(0,3);
     await S.db.doc("data/users/"+S.uid+"/prefs").set(Object.assign({},S.prefs||{},{priorites:prio,qFait:true,qVu:true}));
     S.prefs=Object.assign({},S.prefs||{},{priorites:prio,qFait:true,qVu:true});
@@ -3178,6 +3344,7 @@ function subNext(a){ if(!a.debut) return null; let d=parse(a.debut); const t=tod
 const subMonthly=a=>Math.round((a.montant||0)*((FREQ[a.freq]||FREQ.mensuel).perMonth));
 const adults=()=>humains().filter(m=>typeOf(m)==="adulte");
 function monthStart(){ const d=today(); d.setDate(1); return d; }
+function pctParts(montant,pct){ const ids=Object.keys(pct||{}).filter(k=>(pct[k]||0)>0); const tot=ids.reduce((s,k)=>s+pct[k],0)||1; const out={}; let acc=0; ids.forEach((k,i)=>{ const v=i===ids.length-1?montant-acc:Math.round(montant*pct[k]/tot); out[k]=v; acc+=v; }); return out; }
 function shareOf(x,id){
   if(x.parts&&typeof x.parts==="object") return x.parts[id]||0;
   const p=Array.isArray(x.partage)&&x.partage.length?x.partage:[x.payePar];
@@ -3560,6 +3727,7 @@ function openBForm(kind,item){
   if(item&&!(isAdmin()||item.creePar===me||item.payePar===me)){ toast("Seuls les admins et la personne qui l'a ajouté peuvent le modifier."); return; }
   const ad=adults().map(m=>m.id);
   S.bForm={kind,id:item?item.id:null,confirm:false,d:item?(x=>{ if(Array.isArray(x.partage)&&x.partage.length===1&&x.partage[0]===x.payePar) x.partage=[]; return x; })(Object.assign(JSON.parse(JSON.stringify(item)),{splitMode:item.parts?"perso":"egal"})):(kind==="dep"?{titre:"",montant:null,cat:"courses",payePar:me,date:iso(today()),partage:[],freq:"once"}:{nom:"",montant:null,cat:"streaming",freq:"mensuel",debut:iso(today()),payePar:me,partage:[],rappel:true,actif:true,auto:true})};
+  if(!item){ const pc=S.config&&S.config.partage, d=S.bForm.d; if(pc&&ad.length>1){ if(pc.mode==="egal") d.partage=ad.slice(); else if(pc.mode==="prorata"&&pc.pct){ const ids=ad.filter(id=>(pc.pct[id]||0)>0); if(ids.length>1){ d.partage=ids; d.splitMode="pct"; } } } }
   if(S.tab!=="budget") setTab("budget");
   if(!item) bfHome(); renderBudget(); renderBForm(); setTimeout(()=>{ if(BF.isConnected) (item?(()=>{ const r=BF.getBoundingClientRect(); if(r.top<70) window.scrollBy({top:r.top-80,behavior:"smooth"}); })():BF.scrollIntoView({behavior:"smooth",block:"start"})); const i=$("bfName"); if(i&&!item) i.focus(); },60);
 }
@@ -3595,8 +3763,10 @@ function renderBForm(){
       if(d.partage.length>1){
         const mode=d.splitMode||"egal";
         const sg=el("div",{class:"seg seg-split",role:"group","aria-label":"Répartition"});
-        for(const [k,l] of [["egal","À parts égales"],["perso","Montants personnalisés"]]) sg.append(el("button",{type:"button","aria-pressed":String(mode===k),text:l,onclick:()=>{ d.splitMode=k; if(k==="perso"){ d.parts=d.parts||{}; const eq=d.montant?Math.floor(d.montant/d.partage.length):0; d.partage.forEach((id,i)=>{ if(d.parts[id]==null) d.parts[id]=i===0&&d.montant?d.montant-eq*(d.partage.length-1):eq; }); } else d.parts=null; renderBForm(); }}));
+        const PC=S.config&&S.config.partage&&S.config.partage.mode==="prorata"&&S.config.partage.pct;
+        for(const [k,l] of [["egal","À parts égales"]].concat(PC?[["pct","Au prorata"]]:[],[["perso","Montants personnalisés"]])) sg.append(el("button",{type:"button","aria-pressed":String(mode===k),text:l,onclick:()=>{ d.splitMode=k; if(k==="perso"){ d.parts=d.parts||{}; const eq=d.montant?Math.floor(d.montant/d.partage.length):0; d.partage.forEach((id,i)=>{ if(d.parts[id]==null) d.parts[id]=i===0&&d.montant?d.montant-eq*(d.partage.length-1):eq; }); } else d.parts=null; renderBForm(); }}));
         f.append(el("div",{class:"field"},"Répartition",sg));
+        if(mode==="pct"&&PC) f.append(el("p",{class:"muted",style:"margin:-4px 0 0;font-size:13px",text:d.partage.map(id=>(id===me?"Toi":membre(id).nom)+" "+(PC[id]||0)+" %").join(" · ")+(d.montant?" → "+d.partage.map(id=>money(Math.round(d.montant*(PC[id]||0)/100))).join(" / "):"")}));
         if(mode==="perso"){
           const box=el("div",{class:"split-rows"}), sum=el("div",{class:"split-sum"});
           const upd=()=>{ const tot=d.partage.reduce((a,id)=>a+((d.parts||{})[id]||0),0), diff=(d.montant||0)-tot;
@@ -3631,6 +3801,7 @@ async function saveBForm(e){
   const doc=!asSub?{titre:label,montant:d.montant,cat:d.cat||"autre",payePar:d.payePar||me,partage:parts,date:d.date||iso(today())}
                :{nom:label,montant:d.montant,cat:d.cat||"autre",freq:dep?d.freq:(d.freq||"mensuel"),debut:dep?(d.date||iso(today())):(d.debut||iso(today())),payePar:d.payePar||me,partage:parts,rappel:dep?true:d.rappel!==false,actif:true,auto:dep?true:d.auto!==false,recurrente:dep||!!d.recurrente};
   try{
+    if(d.splitMode==="pct"&&parts.length>1){ const PC=(S.config&&S.config.partage&&S.config.partage.pct)||{}; const pc={}; for(const id of parts) pc[id]=PC[id]||0; doc.parts=Object.values(pc).some(v=>v>0)?pctParts(d.montant,pc):null; } else
     if(d.splitMode==="perso"&&parts.length>1){ const pp={}; for(const id of parts) pp[id]=(d.parts||{})[id]||0; const tot=Object.values(pp).reduce((a,v)=>a+v,0);
       if(Math.abs(tot-d.montant)>1){ toast("La répartition ("+money(tot)+") doit faire "+money(d.montant)+"."); return; } doc.parts=pp; } else doc.parts=null;
     if(B.id) await col.doc(B.id).update(Object.assign(doc,{modifiePar:me,modifieLe:Date.now()}));
