@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 15:08";</script>
+<script>window.COCOON_BUILD="09/10 15:16";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1851,9 +1851,9 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .ct-call::before{content:"";width:16px;height:16px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z'/%3E%3C/svg%3E") center/contain no-repeat}
 /* Visite guidée */
 .tour-bg{position:fixed;inset:0;z-index:90}
-.tour-hole{position:fixed;z-index:91;pointer-events:none;box-shadow:0 0 0 9999px rgba(12,10,22,.66),0 0 0 3px #FFC94A;transition:left .35s cubic-bezier(.2,.8,.2,1),top .35s cubic-bezier(.2,.8,.2,1),width .35s,height .35s,border-radius .35s,opacity .2s}
-.tour-card{position:fixed;z-index:92;left:50%;width:min(340px,calc(100vw - 32px));background:var(--surface);color:var(--ink);border-radius:22px;padding:16px 16px 14px;box-shadow:0 18px 50px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:6px;transition:top .35s cubic-bezier(.2,.8,.2,1)}
-.tour-card.in{animation:tourIn .35s cubic-bezier(.2,.8,.2,1)}
+.tour-hole{position:fixed;z-index:91;pointer-events:none;box-shadow:0 0 0 9999px rgba(12,10,22,.72),0 0 28px 4px rgba(255,214,140,.28)}
+.tour-card{position:fixed;z-index:92;left:50%;width:min(340px,calc(100vw - 32px));background:var(--surface);color:var(--ink);border-radius:22px;padding:16px 16px 14px;box-shadow:0 18px 50px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:6px}
+.tour-card.in{animation:tourIn .16s ease-out}
 @keyframes tourIn{from{opacity:0;translate:0 8px}}
 .tour-card b{font-size:18px;font-weight:800;letter-spacing:-.01em}
 .tour-card p{margin:0;font-size:14.5px;line-height:1.45;color:var(--muted)}
@@ -2681,7 +2681,7 @@ function buildEditor(){
   f.append(act);
   refreshPreview();
 }
-function finishFlow(res){ document.querySelector(".wrap").classList.remove("finishing"); S.edit=null; S.flow=false; setTab("accueil"); renderAll(); window.scrollTo({top:0}); setTimeout(()=>{ try{ startTour(); }catch(_){} },2600);
+function finishFlow(res){ document.querySelector(".wrap").classList.remove("finishing"); S.edit=null; S.flow=false; setTab("accueil"); renderAll(); window.scrollTo({top:0}); requestAnimationFrame(()=>{ try{ startTour(); }catch(_){} });
   toast("Bienvenue dans ton cocon !"+(res&&(res.nT||res.nP)?" "+res.nT+" rappel"+(res.nT>1?"s":"")+(res.nP?" et "+res.nP+" profil"+(res.nP>1?"s":""):"")+((res.nT+res.nP)>1?" prêts.":" prêt."):"")); }
 function closeEditor(){ if(S.edit&&S.edit.finish){ finishFlow(); return; } const back=S.editPrev&&S.editPrev!=="fiche"?S.editPrev:"accueil"; S.edit=null; document.querySelector(".wrap").classList.remove("finishing"); setTab(back); renderAll(); }
 async function saveProfile(){
@@ -5777,15 +5777,15 @@ function startTour(force){
   const end=()=>{ bg.remove(); hole.remove(); card.remove(); S.tourOn=false; try{ window.scrollTo({top:0,behavior:"smooth"}); }catch(_){ window.scrollTo(0,0); } window.removeEventListener("resize",place); S.prefs=Object.assign({},S.prefs||{},{tourVu:true}); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); };
   const target=st=>{ let e=document.querySelector(st.sel); if(!e||!e.offsetParent&&getComputedStyle(e).position!=="fixed") e=st.alt?document.querySelector(st.alt):null; return e&&(e.offsetParent||getComputedStyle(e).position==="fixed")?e:null; };
   function place(){ const st=TOUR[i], e=target(st); if(!e){ hole.style.opacity="0"; card.style.top="50%"; card.style.transform="translate(-50%,-50%)"; return; }
-    const r=e.getBoundingClientRect(), pad=8; hole.style.opacity="1";
-    Object.assign(hole.style,{left:(r.left-pad)+"px",top:(r.top-pad)+"px",width:(r.width+pad*2)+"px",height:(r.height+pad*2)+"px",borderRadius:Math.min(28,(r.height+pad*2)/2)+"px"});
+    const r=e.getBoundingClientRect(), pad=4, br=parseFloat(getComputedStyle(e).borderTopLeftRadius)||14; hole.style.opacity="1";
+    Object.assign(hole.style,{left:(r.left-pad)+"px",top:(r.top-pad)+"px",width:(r.width+pad*2)+"px",height:(r.height+pad*2)+"px",borderRadius:Math.min(br+pad,(r.height+pad*2)/2)+"px"});
     const ch=card.offsetHeight||170, below=r.bottom+pad+14, above=r.top-pad-14-ch;
     let top=below+ch<innerHeight-12?below:(above>12?above:Math.max(12,innerHeight-ch-12));
     card.style.transform="translateX(-50%)"; card.style.top=top+"px"; }
   function show(){ const st=TOUR[i], e=target(st);
     card.innerHTML=""; card.append(el("span",{class:"tour-n",text:(i+1)+" / "+TOUR.length}),el("b",{text:st.t}),el("p",{text:st.d}),
       el("div",{class:"tour-btns"},el("button",{type:"button",class:"btn ghost",text:i===TOUR.length-1?"Fermer":"Passer",onclick:end}),el("button",{type:"button",class:"btn tour-next",text:i===TOUR.length-1?"C'est parti !":"Suivant",onclick:()=>{ if(i>=TOUR.length-1) return end(); i++; show(); }})));
-    if(e&&getComputedStyle(e).position!=="fixed"){ const r=e.getBoundingClientRect(); if(r.top<80||r.bottom>innerHeight-200) window.scrollTo({top:Math.max(0,window.scrollY+r.top-120),behavior:"smooth"}); setTimeout(place,380); } else place();
+    if(e&&getComputedStyle(e).position!=="fixed"){ const r=e.getBoundingClientRect(); if(r.top<80||r.bottom>innerHeight-200) window.scrollTo({top:Math.max(0,window.scrollY+r.top-120),behavior:"instant"}); } place(); requestAnimationFrame(place);
     card.classList.remove("in"); void card.offsetWidth; card.classList.add("in"); }
   window.addEventListener("resize",place); bg.addEventListener("click",()=>{}); show();
 }
