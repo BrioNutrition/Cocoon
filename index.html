@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 10:32";</script>
+<script>window.COCOON_BUILD="09/10 10:42";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1707,6 +1707,73 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .pal-sw.on .pal-dot{box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--ink)}
 .pal-btns{display:flex;gap:8px;margin-top:8px}.pal-btns .btn{flex:1;justify-content:center}
 .pal-panel .seg button{justify-content:center!important;text-align:center!important;flex:1 1 0!important;line-height:1.2}
+
+/* ===== Style Aurore : arrivée + questionnaire ===== */
+:root{--au-bg:#F7F4FB;--au-glass:rgba(255,255,255,.66);--au-line:rgba(28,27,46,.09);--au-op:.42;--au-sub:#5E5A78}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--au-bg:#100E1A;--au-glass:rgba(255,255,255,.07);--au-line:rgba(255,255,255,.13);--au-op:.55;--au-sub:#CFCBE6}}
+:root[data-theme="dark"]{--au-bg:#100E1A;--au-glass:rgba(255,255,255,.07);--au-line:rgba(255,255,255,.13);--au-op:.55;--au-sub:#CFCBE6}
+.aurora{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .5s;background:var(--au-bg)}
+.aurora i{position:absolute;border-radius:50%;filter:blur(64px);opacity:var(--au-op)}
+.aurora i:nth-child(1){width:340px;height:340px;background:#FFC94A;left:-110px;top:-80px}
+.aurora i:nth-child(2){width:320px;height:320px;background:#FF7FA0;right:-130px;top:70px}
+.aurora i:nth-child(3){width:300px;height:300px;background:#8C6BFF;left:20px;top:300px;opacity:calc(var(--au-op) * .6)}
+@media (prefers-reduced-motion:no-preference){.aurora i{animation:auFloat 14s ease-in-out infinite alternate}.aurora i:nth-child(2){animation-duration:17s}.aurora i:nth-child(3){animation-duration:20s}
+@keyframes auFloat{to{transform:translate(30px,40px) scale(1.12)}}}
+body:has(#splash:not([hidden])) .aurora,body:has(.wrap.wizarding) .aurora,body:has(.wrap.gated) .aurora{opacity:1}
+body:has(#splash:not([hidden])),body:has(.wrap.wizarding){background:var(--au-bg)!important}
+/* arrivée */
+.splash{max-width:460px!important;text-align:left!important;gap:22px!important;margin-top:18px!important}
+.splash .sp-glow{display:none!important}
+.splash .sp-hero{display:grid!important;grid-template-columns:auto 1fr;align-items:center;column-gap:14px;row-gap:0;padding-top:4px}
+.splash .sp-logo{width:68px!important;height:68px!important;margin:0!important;border-radius:20px!important;filter:drop-shadow(0 10px 22px rgba(0,0,0,.28))!important}
+.splash .sp-name{font-size:30px!important;letter-spacing:-.03em!important;margin:0!important}
+.splash .sp-tag{grid-column:1/-1;margin:26px 0 0!important;font-family:var(--f-display);font-size:44px!important;font-weight:900!important;letter-spacing:-.04em;line-height:1!important;color:var(--ink)!important}
+.splash .sp-sub{grid-column:1/-1;margin:14px 0 0!important;font-size:16px!important;line-height:1.45;color:var(--au-sub)!important;font-weight:400!important}
+.splash .sp-stickers{grid-template-columns:1fr!important;gap:10px!important;padding:0!important}
+.splash .sp-stickers li{display:grid!important;grid-template-columns:40px 1fr;column-gap:14px;row-gap:1px;align-items:center;transform:none!important;background:var(--au-glass)!important;border:1px solid var(--au-line);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-radius:20px!important;padding:12px 14px!important;box-shadow:none!important;color:var(--ink)!important}
+.splash .sp-stickers li::before{display:none!important}
+.splash .sp-stickers .sp-ic{grid-row:1/3;width:40px!important;height:40px!important;border-radius:12px!important;background:var(--bg)!important;margin:0!important;box-shadow:none!important}
+.splash .sp-stickers .sp-ic svg{width:22px!important;height:22px!important}
+.splash .sp-stickers b{font-size:15px!important}
+.splash .sp-stickers span:not(.sp-ic){font-size:12.5px!important;color:var(--au-sub)!important;line-height:1.3!important}
+.sp-go,#wzNext{background:linear-gradient(100deg,#FFC94A,#FF9C80 55%,#E79ADB)!important;color:#1C1B2E!important;border:0!important;border-radius:20px!important;min-height:56px;font-weight:800!important;font-size:17px!important;box-shadow:0 12px 30px rgba(255,140,140,.32)!important}
+#wzNext:disabled{opacity:.45;box-shadow:none!important;filter:saturate(.6)}
+/* questionnaire */
+.wizard{background:transparent!important;box-shadow:none!important;border:0!important;padding:6px 2px 0!important;margin-top:14px!important;gap:20px!important}
+.wizard .step-tag{background:var(--au-glass)!important;color:var(--ink)!important;border:1px solid var(--au-line);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.wizard .wz-top{gap:12px!important}
+.wizard .wz-dots{flex:1;gap:0!important;height:6px;border-radius:9px;overflow:hidden;background:var(--au-line)}
+.wizard .wz-dots span{flex:1;width:auto!important;height:6px!important;border-radius:0!important;background:transparent!important}
+.wizard .wz-dots span.on{background:linear-gradient(90deg,#FFC94A,#FF9C80,#E79ADB)!important;background-size:var(--n,700%) 100%!important}
+.wz-count{font-size:13px;font-weight:700;color:var(--au-sub);font-variant-numeric:tabular-nums}
+.wizard h1{font-size:36px!important;font-weight:900!important;letter-spacing:-.035em!important;line-height:1.04!important}
+.wizard .help{color:var(--au-sub)!important;font-size:15px!important}
+.wizard .opt,.wizard .opt:not([aria-pressed="true"]){background:var(--au-glass)!important;border:1px solid var(--au-line)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:none!important;border-radius:20px!important;color:var(--ink)!important}
+.wizard .opt .oi{color:#FF9C80!important}
+.wizard .opt[aria-pressed="true"]{background:linear-gradient(135deg,rgba(255,201,74,.26),rgba(231,154,219,.26))!important;border:1.5px solid #FFB38A!important;color:var(--ink)!important;box-shadow:0 8px 24px rgba(255,150,130,.18)!important}
+.wizard .opt[aria-pressed="true"] .oi{color:#FF9C80!important}
+.wizard .opt .ok{border-color:var(--au-line)!important}
+.wizard .opt[aria-pressed="true"] .ok{background:#FFC94A url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.5 12.5l3.5 3.5 7.5-8' fill='none' stroke='%231C1B2E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat!important;border:0!important}
+.wizard input[type=text],.wizard input[type=email],.wizard input[type=date],.wizard input:not([type]),.wizard select,.wizard textarea{background:var(--au-glass)!important;border:1px solid var(--au-line)!important;border-radius:16px!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.wizard input:focus{border-color:#FFB38A!important;outline:none}
+.wizard .label,.wizard .field{color:var(--au-sub)}
+.wizard .cat-chip,.wizard .plan-row{background:var(--au-glass)!important;border-color:var(--au-line)!important}
+.wz-nav{border-top:0!important;padding-top:6px!important;position:sticky;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:3}
+.wz-nav #wzNext{flex:1}
+.wz-nav .btn.ghost{background:var(--au-glass)!important;border:1px solid var(--au-line)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-radius:20px!important;min-height:56px;color:var(--ink)!important}
+.wz-need{position:absolute;bottom:100%;left:0;right:0;text-align:center;margin:0 0 6px!important}
+.wizard .wz-dots{position:relative}
+.wizard .wz-dots span,.wizard .wz-dots span.on{background:transparent!important}
+.wizard .wz-dots::after{content:"";position:absolute;left:0;top:0;bottom:0;width:calc(var(--p,0) * 100%);border-radius:9px;background:linear-gradient(90deg,#FFC94A,#FF9C80,#E79ADB);transition:width .45s cubic-bezier(.2,.8,.2,1)}
+body:has(.wrap.finishing) .aurora{opacity:1}
+body:has(.wrap.finishing){background:var(--au-bg)!important}
+.wrap.finishing .fiche{background:var(--au-glass)!important;border:1px solid var(--au-line)!important;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:none!important;border-radius:26px!important}
+.wrap.finishing .fiche .step-tag{background:linear-gradient(100deg,#FFC94A,#FF9C80 55%,#E79ADB)!important;color:#1C1B2E!important}
+.wrap.finishing .fiche input:not([type=checkbox]):not([type=radio]):not([type=color]),.wrap.finishing .fiche select,.wrap.finishing .fiche textarea{background:var(--au-glass)!important;border:1px solid var(--au-line)!important;border-radius:16px!important}
+.wrap.finishing #fiSave{background:linear-gradient(100deg,#FFC94A,#FF9C80 55%,#E79ADB)!important;color:#1C1B2E!important;border:0!important;border-radius:20px!important;min-height:56px;font-weight:800!important;box-shadow:0 12px 30px rgba(255,140,140,.32)!important}
+.wz-nav{padding-top:18px!important;isolation:isolate}
+.wz-nav::before{content:"";position:absolute;left:-16px;right:-16px;top:0;bottom:calc(-10px - env(safe-area-inset-bottom,0px));z-index:-1;background:linear-gradient(to bottom,transparent,var(--au-bg) 45%);pointer-events:none}
+.wz-nav .btn.ghost{background:color-mix(in srgb,var(--au-bg) 70%,#fff 8%)!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -1735,16 +1802,16 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
       <div class="sp-glow" aria-hidden="true"></div>
       <img class="sp-logo" id="spLogo" alt="" width="132" height="132">
       <h1 class="sp-name">Cocoon</h1>
-      <p class="sp-tag">Ton foyer, bien rangé et bien au chaud.</p>
-      <p class="sp-sub">Seul·e ou à plusieurs, animaux compris.</p>
+      <p class="sp-tag">Ton foyer,<br>enfin serein.</p>
+      <p class="sp-sub">Tâches, papiers, budget et rendez-vous, rangés au même endroit. Seul·e ou à plusieurs, animaux compris.</p>
     </div>
     <ul class="sp-stickers" aria-label="Ce que fait Cocoon">
-      <li style="--bg:#FFE7A6;--pin:#F2A93B;--r:-4deg"><span class="sp-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.5" fill="currentColor"/><path d="M7.6 12.3l3 3 5.8-6.2" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Les tâches du foyer</b><span>Qui fait quoi, et les rappels qui reviennent tout seuls.</span></li>
-      <li style="--bg:#E4DDFB;--pin:#8E78E0;--r:3deg"><span class="sp-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h7.2L20 7.8V20a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="currentColor"/><path d="M14 2v4.2A1.8 1.8 0 0 0 15.8 8H20" fill="#fff" fill-opacity=".45"/><path d="M8.6 13h6.8M8.6 17h4.6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></span><b>Les papiers rangés</b><span>Bail, contrats, garanties&nbsp;: Cocoon te prévient avant qu'ils expirent.</span></li>
-      <li style="--bg:#FFD9CC;--pin:#E8765A;--r:2.5deg"><span class="sp-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5H16a1.5 1.5 0 0 1 1.5 1.5v1.5h-11a1.5 1.5 0 0 1 0-3z" fill="currentColor" fill-opacity=".55"/><path d="M2.5 9A2.5 2.5 0 0 1 5 6.5h13.5a3 3 0 0 1 3 3V18a3 3 0 0 1-3 3H5.5a3 3 0 0 1-3-3z" fill="currentColor"/><rect x="15" y="11.5" width="6.5" height="4" rx="2" fill="#fff" fill-opacity=".9"/><circle cx="17.2" cy="13.5" r="1" fill="currentColor"/></svg></span><b>Le budget partagé</b><span>Abonnements, dépenses et qui doit quoi à qui.</span></li>
-      <li style="--bg:#D8E6FF;--pin:#5B8DEF;--r:-3deg"><span class="sp-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3c.8 4.3 2.7 6.2 7 7-4.3.8-6.2 2.7-7 7-.8-4.3-2.7-6.2-7-7 4.3-.8 6.2-2.7 7-7z" fill="currentColor"/><path d="M18.5 14c.4 2 1.3 2.9 3.3 3.3-2 .4-2.9 1.3-3.3 3.3-.4-2-1.3-2.9-3.3-3.3 2-.4 2.9-1.3 3.3-3.3z" fill="currentColor"/></svg></span><b>Un secrétaire</b><span>Pose-lui tes questions, il connaît ta maison par cœur.</span></li>
+      <li style="--bg:#FFE7A6;--pin:#F2A93B;--r:-4deg"><span class="sp-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.5" fill="currentColor"/><path d="M7.6 12.3l3 3 5.8-6.2" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Qui fait quoi</b><span>Les tâches et les rappels qui reviennent tout seuls</span></li>
+      <li style="--bg:#E4DDFB;--pin:#8E78E0;--r:3deg"><span class="sp-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h7.2L20 7.8V20a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="currentColor"/><path d="M14 2v4.2A1.8 1.8 0 0 0 15.8 8H20" fill="#fff" fill-opacity=".45"/><path d="M8.6 13h6.8M8.6 17h4.6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></span><b>Papiers rangés</b><span>Prévenu avant qu'ils expirent</span></li>
+      <li style="--bg:#FFD9CC;--pin:#E8765A;--r:2.5deg"><span class="sp-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5H16a1.5 1.5 0 0 1 1.5 1.5v1.5h-11a1.5 1.5 0 0 1 0-3z" fill="currentColor" fill-opacity=".55"/><path d="M2.5 9A2.5 2.5 0 0 1 5 6.5h13.5a3 3 0 0 1 3 3V18a3 3 0 0 1-3 3H5.5a3 3 0 0 1-3-3z" fill="currentColor"/><rect x="15" y="11.5" width="6.5" height="4" rx="2" fill="#fff" fill-opacity=".9"/><circle cx="17.2" cy="13.5" r="1" fill="currentColor"/></svg></span><b>Budget partagé</b><span>Dépenses, abonnements et qui doit quoi</span></li>
+      <li style="--bg:#D8E6FF;--pin:#5B8DEF;--r:-3deg"><span class="sp-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3c.8 4.3 2.7 6.2 7 7-4.3.8-6.2 2.7-7 7-.8-4.3-2.7-6.2-7-7 4.3-.8 6.2-2.7 7-7z" fill="currentColor"/><path d="M18.5 14c.4 2 1.3 2.9 3.3 3.3-2 .4-2.9 1.3-3.3 3.3-.4-2-1.3-2.9-3.3-3.3 2-.4 2.9-1.3 3.3-3.3z" fill="currentColor"/></svg></span><b>Cocoony</b><span>Ton secrétaire qui connaît ta maison</span></li>
     </ul>
-    <button class="btn big sp-go" type="button" id="spGo">Commencer</button>
+    <button class="btn big sp-go" type="button" id="spGo">Créer mon cocon</button>
   </div>
 
   <div class="wizard" id="wizard" hidden></div>
@@ -2174,6 +2241,7 @@ function renderHeader(){
   document.querySelectorAll("#quickForm .seg button[data-where]").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.where===wv)));
   $("quickTitle").placeholder=wv==="perso"?"Ex. : Appeler la banque lundi":"Ex. : Acheter du pain demain";
 }
+if(!document.querySelector(".aurora")){ const au=document.createElement("div"); au.className="aurora"; au.setAttribute("aria-hidden","true"); au.innerHTML="<i></i><i></i><i></i>"; document.body.prepend(au); }
 function renderOnboard(){
   const gate=!!(S.db&&S.uid&&S.membresLoaded&&!meM()&&!S.forceMe&&!S.readOnly);
   const splash=gate&&!S.splashDone;
@@ -2842,9 +2910,9 @@ function renderWizard(){
   const W=S.wiz, box=$("wizard"); if(!W){ box.hidden=true; return; }
   box.hidden=false; document.querySelector(".wrap").classList.add("wizarding"); box.innerHTML="";
   const key=W.steps[W.step], a=W.a, last=W.step===W.steps.length-1;
-  const dots=el("div",{class:"wz-dots"}); W.steps.forEach((_,i)=>dots.append(el("span",{class:i<=W.step?"on":""})));
+  const dots=el("div",{class:"wz-dots"}); W.steps.forEach((_,i)=>{ const d=el("span",{class:i<=W.step?"on":""}); dots.append(d); }); dots.style.setProperty("--p",((W.step+1)/W.steps.length).toFixed(3));
   if(W.pre) box.append(el("span",{class:"step-tag",style:"align-self:flex-start",text:"Étape 1 sur 2 · Tes besoins"}));
-  box.append(el("div",{class:"wz-top"},dots,W.pre?el("span"):el("button",{type:"button",class:"wz-skip",text:"Annuler",onclick:()=>{ closeWizard(); }})));
+  box.append(el("div",{class:"wz-top"},dots,el("span",{class:"wz-count",text:(W.step+1)+"/"+W.steps.length}),W.pre?el("span"):el("button",{type:"button",class:"wz-skip",text:"Annuler",onclick:()=>{ closeWizard(); }})));
   const rerender=()=>renderWizard();
   if(key==="nom"){
     box.append(el("h1",{text:"Bienvenue chez toi."}),el("p",{class:"help",text:"Quelques questions pour préparer ton cocon, une minute. Tu pourras tout changer ensuite."}));
