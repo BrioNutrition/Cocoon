@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 10:42";</script>
+<script>window.COCOON_BUILD="09/10 10:48";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1774,6 +1774,17 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .wz-nav{padding-top:18px!important;isolation:isolate}
 .wz-nav::before{content:"";position:absolute;left:-16px;right:-16px;top:0;bottom:calc(-10px - env(safe-area-inset-bottom,0px));z-index:-1;background:linear-gradient(to bottom,transparent,var(--au-bg) 45%);pointer-events:none}
 .wz-nav .btn.ghost{background:color-mix(in srgb,var(--au-bg) 70%,#fff 8%)!important}
+.wz-nav{position:static!important;padding-top:4px!important;isolation:auto}
+.wz-nav::before{content:none!important;display:none!important}
+.wz-nav #wzNext{flex:1;width:100%}
+.wz-back{width:40px;height:40px;flex:none;border-radius:50%;display:grid;place-items:center;padding:0;color:var(--ink);background:var(--au-glass);border:1px solid var(--au-line);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);cursor:pointer;transition:transform .15s}
+.wz-back:active{transform:scale(.92)}
+.wz-back svg{width:20px;height:20px}
+.wz-back[hidden]{display:none}
+#wzNext:disabled{opacity:.5!important;filter:none!important}
+.wrap.finishing #fiSave{flex:1;width:100%;justify-content:center;font-size:17px!important}
+.wizard .wz-top{min-height:40px}
+#wzNext:disabled{opacity:1!important;background:var(--au-glass)!important;color:var(--au-sub)!important;border:1px solid var(--au-line)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -2912,7 +2923,7 @@ function renderWizard(){
   const key=W.steps[W.step], a=W.a, last=W.step===W.steps.length-1;
   const dots=el("div",{class:"wz-dots"}); W.steps.forEach((_,i)=>{ const d=el("span",{class:i<=W.step?"on":""}); dots.append(d); }); dots.style.setProperty("--p",((W.step+1)/W.steps.length).toFixed(3));
   if(W.pre) box.append(el("span",{class:"step-tag",style:"align-self:flex-start",text:"Étape 1 sur 2 · Tes besoins"}));
-  box.append(el("div",{class:"wz-top"},dots,el("span",{class:"wz-count",text:(W.step+1)+"/"+W.steps.length}),W.pre?el("span"):el("button",{type:"button",class:"wz-skip",text:"Annuler",onclick:()=>{ closeWizard(); }})));
+  box.append(el("div",{class:"wz-top"},W.step>0?(()=>{ const bk=el("button",{type:"button",class:"wz-back","aria-label":"Question précédente",onclick:()=>{W.step--;rerender();}}); bk.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>'; return bk; })():null,dots,el("span",{class:"wz-count",text:(W.step+1)+"/"+W.steps.length}),W.pre?el("span"):el("button",{type:"button",class:"wz-skip",text:"Annuler",onclick:()=>{ closeWizard(); }})));
   const rerender=()=>renderWizard();
   if(key==="nom"){
     box.append(el("h1",{text:"Bienvenue chez toi."}),el("p",{class:"help",text:"Quelques questions pour préparer ton cocon, une minute. Tu pourras tout changer ensuite."}));
@@ -2971,7 +2982,7 @@ function renderWizard(){
       box.append(el("label",{class:"field",for:"wzA"+sp},"Le nom de ton "+(sp==="chat"?"chat":sp==="chien"?"chien":sp==="lapin"?"lapin":"animal")+" (plusieurs : séparés par des virgules)",i)); }
   }
   const nav=el("div",{class:"wz-nav"});
-  nav.append(W.step>0?el("button",{type:"button",class:"btn ghost",text:"Retour",onclick:()=>{W.step--;rerender();}}):el("span"));
+  
   const needMsg=wzNeed(key,a), need=!!needMsg;
   const showNeed=need&&/^Vérifie/.test(needMsg); nav.append(el("span",{class:"wz-need",text:showNeed?needMsg:"",hidden:!showNeed||null}));
   nav.append(el("button",{type:"button",class:"btn"+(last?" big":""),id:"wzNext",disabled:need||null,text:last?(W.pre?"Continuer":"Tout mettre en place"):"Continuer",onclick:()=>{ if(last){ if(W.pre){ S.pendingW=W; warmup(WARM_LINES,3300).then(goProfileStage); } else warmup(WARM_LINES,2600,()=>applyPlan()).catch(()=>{}); } else { W.step++; if(W.steps[W.step]==="plan") W.plan=null; rerender(); window.scrollTo({top:0}); } }}));
