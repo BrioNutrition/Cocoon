@@ -24,18 +24,18 @@
 #cxIntro .cxi-w i{position:absolute;inset:0;border-radius:30px;border:2px solid rgba(255,201,74,.6);opacity:0;animation:cxiRing 2.4s cubic-bezier(.2,.6,.4,1) .7s infinite}
 #cxIntro .cxi-w i:nth-child(2){animation-delay:1.9s}
 @keyframes cxiRing{0%{opacity:.75;transform:scale(1)}100%{opacity:0;transform:scale(2.6)}}
-@keyframes cxiFloat{0%,100%{translate:0 0}50%{translate:0 -5px}}
+@keyframes cxiFloat{0%,100%{translate:0 0;rotate:0deg}25%{translate:0 -3px;rotate:2deg}50%{translate:0 -6px;rotate:0deg}75%{translate:0 -3px;rotate:-2deg}}
 #cxIntro .cxi-logo{position:relative;display:block;width:132px;height:132px;border-radius:30px;filter:drop-shadow(0 16px 30px rgba(232,118,90,.28));animation:cxiPop .9s cubic-bezier(.34,1.45,.64,1) .05s both}
 #cxIntro .cxi-name{font-family:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;font-weight:800;font-size:58px;letter-spacing:-.045em;line-height:.95;color:#1C1B2E;display:flex}
 #cxIntro .cxi-name span{display:inline-block;animation:cxiRise .7s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(.32s + var(--i) * .06s)}
-@keyframes cxiPop{from{opacity:0;transform:scale(.15)}to{opacity:1;transform:none}}
+@keyframes cxiPop{from{opacity:0;transform:scale(.15) rotate(-30deg)}to{opacity:1;transform:none}}
 @keyframes cxiRise{from{opacity:0;transform:translateY(22px) scale(.9)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){#cxIntro *{animation:none!important}}
 #cxGate .cx-card{animation:cxCardIn .5s cubic-bezier(.2,.9,.3,1) both}
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 10:56";</script>
+<script>window.COCOON_BUILD="09/10 10:58";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -862,7 +862,7 @@ button,a,input,select,textarea,label,summary,[role="button"]{touch-action:manipu
 .splash .sp-go{width:100%;justify-content:center;font-size:17px;padding:15px 18px}
 @media (prefers-reduced-motion:no-preference){
   .splash .sp-logo{animation:spFloat 4s ease-in-out infinite}
-  @keyframes spFloat{0%,100%{translate:0 0}50%{translate:0 -5px}}
+  @keyframes spFloat{0%,100%{translate:0 0;rotate:0deg}25%{translate:0 -3px;rotate:2deg}50%{translate:0 -6px;rotate:0deg}75%{translate:0 -3px;rotate:-2deg}}
   .sp-stickers li{animation:spStick .5s cubic-bezier(.2,1.4,.4,1) both}
   .sp-stickers li:nth-child(2){animation-delay:.08s}.sp-stickers li:nth-child(3){animation-delay:.16s}.sp-stickers li:nth-child(4){animation-delay:.24s}
   @keyframes spStick{from{opacity:0;transform:translateY(14px) rotate(0) scale(.92)}}
@@ -915,7 +915,7 @@ button,a,input,select,textarea,label,summary,[role="button"]{touch-action:manipu
   .reveal.in .rv-hello{animation:rvUp .6s ease-out 1.45s both}
   .reveal.in .rv-status{animation:rvFade .6s ease-out 1.9s both}
   @keyframes rvFade{from{opacity:0}}
-  @keyframes rvPop{from{opacity:0;transform:scale(.15) }to{opacity:1;transform:scale(1)}}
+  @keyframes rvPop{from{opacity:0;transform:scale(.15) rotate(-30deg)}to{opacity:1;transform:scale(1) rotate(0deg)}}
   @keyframes rvFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-8px) rotate(2deg)}}
   @keyframes rvRing{0%{opacity:.75;transform:scale(1)}100%{opacity:0;transform:scale(2.6)}}
   @keyframes rvRise{from{opacity:0;transform:translateY(40px) rotate(8deg)}}
@@ -1786,6 +1786,7 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .wizard .wz-top{min-height:40px}
 #wzNext:disabled{opacity:1!important;background:var(--au-glass)!important;color:var(--au-sub)!important;border:1px solid var(--au-line)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .splash.sp-flown .sp-logo,.splash.sp-flown .sp-name span,.splash.sp-flown .sp-hero{animation:none!important}
+.splash.sp-flown .sp-logo{animation:none!important;transform:none!important;rotate:none!important;translate:none!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
