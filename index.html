@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="09/10 11:42";</script>
+<script>window.COCOON_BUILD="09/10 11:48";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2275,14 +2275,17 @@ function renderOnboard(){
   const wasHidden=$("splash").hidden; $("splash").hidden=!splash; document.querySelector(".wrap").classList.toggle("gated",splash);
   if(wasHidden&&splash) requestAnimationFrame(splashIntro);
 }
-function splashIntro(hold){ hold=typeof hold==="number"?hold:1550;
-  const sp=$("splash"); if(!sp||sp.hidden) return; if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const hero=sp.querySelector(".sp-hero"), logo=$("spLogo"), name=sp.querySelector(".sp-name"); if(!hero||!logo||!name) return;
-  clearTimeout(sp._t); hero.getAnimations().forEach(a=>a.cancel()); sp.classList.remove("sp-show"); sp.classList.add("sp-wait");
-  const hr=hero.getBoundingClientRect(), top=hr.top+logo.offsetTop, bottom=hr.top+name.offsetTop+name.offsetHeight;
-  const dy=Math.max(0,Math.round(window.innerHeight/2-(top+bottom)/2));
-  const tot=hold+950; hero.animate([{transform:"translateY("+dy+"px)"},{transform:"translateY("+dy+"px)",offset:hold/tot,easing:"cubic-bezier(.65,0,.25,1)"},{transform:"translateY(0px)"}],{duration:tot});
-  sp._t=setTimeout(()=>{ sp.classList.remove("sp-wait"); sp.classList.add("sp-show"); },hold+470);
+function splashIntro(){
+  const sp=$("splash"); if(!sp||sp.hidden) return;
+  if(document.getElementById("boot")) return; /* l'écran de lancement s'en charge (flySplash) */
+  clearTimeout(sp._t); sp.getAnimations({subtree:true}).forEach(a=>a.cancel());
+  sp.classList.add("sp-flown"); sp.classList.remove("sp-show","sp-wait");
+  const hero=sp.querySelector(".sp-hero"); if(hero){ hero.style.transform=""; }
+  const tl=$("spLogo"), tn=sp.querySelector(".sp-name"); if(tl) tl.style.visibility=""; if(tn) tn.style.visibility="";
+  if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  void sp.offsetWidth; sp.classList.add("sp-show");
+  if(tl) tl.animate([{opacity:0,transform:"scale(.85)"},{opacity:1,transform:"none"}],{duration:450,easing:"cubic-bezier(.2,.8,.2,1)",fill:"backwards"});
+  if(tn) [...tn.querySelectorAll("span")].forEach((l,i)=>l.animate([{opacity:0,transform:"translateY(26px) rotate(8deg)"},{opacity:1,transform:"none"}],{duration:700,delay:80+i*60,easing:"cubic-bezier(.2,1.4,.4,1)",fill:"backwards"}));
 }
 
 function sortOpen(a,b){ const da=a.echeance||"9999", dbb=b.echeance||"9999"; return da<dbb?-1:da>dbb?1:(b.creeLe||0)-(a.creeLe||0); }
@@ -5768,7 +5771,7 @@ async function bootOut(){
   const target=document.querySelector(".brand-logo"), tr=target?target.getBoundingClientRect():null;
   const canFly=!reduced&&!splashOn&&!wiz&&tr&&tr.width>0&&!(S.edit);
   S.entering=true; S.entT=setTimeout(entryDone,4000);
-  if(splashOn&&!reduced&&logo&&$("spLogo")){ try{ await flySplash(b,logo); }catch(_){ splashIntro(0); } b.remove(); entryDone(); return; }
+  if(splashOn&&!reduced&&logo&&$("spLogo")){ try{ await flySplash(b,logo); b.remove(); }catch(_){ b.remove(); splashIntro(); } entryDone(); return; }
   if(!canFly){ await b.animate([{opacity:1},{opacity:0}],{duration:reduced?250:420,easing:"ease-out",fill:"forwards"}).finished; b.remove(); entryDone(); return; }
   const wrap=logo.parentElement;
   b.style.pointerEvents="none";
