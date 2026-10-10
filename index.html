@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 17:56";</script>
+<script>window.COCOON_BUILD="10/10 18:25";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2007,6 +2007,10 @@ details.b-vol>.b-vol-in{padding:0 10px 12px;display:flex;flex-direction:column;g
 /* pas de zoom au double tap (le pincement reste possible) ; pas de zoom auto sur iOS au focus d'un champ */
 html,body{touch-action:pan-x pan-y}
 @supports (-webkit-touch-callout:none){input,select,textarea{font-size:max(16px,1em)}}
+
+/* sélection : seule la case touchée fait le petit « pop », pas les autres déjà cochées */
+.item .check.sel{animation:none}.item .check.sel.just{animation:pop .28s cubic-bezier(.3,1.8,.5,1)}
+.c-item.sel .c-box{animation:none}.c-item.sel.just .c-box{animation:pop .28s cubic-bezier(.3,1.8,.5,1)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -2502,7 +2506,7 @@ function taskRow(t,opts={}){
   const row=el("div",{class:"item"+(t.fait?" done":""),style:"--stripe:"+(CAT[t.cat]||CAT.maison).c,"data-key":(t.prive?"ptaches:":"taches:")+t.id});
   const skey=(t.prive?"p:":"f:")+t.id, isSel=!t.fait&&S.sel.has(skey);
   if(isSel) row.classList.add("selected");
-  const chk=el("button",{class:"check"+(isSel?" sel":""),type:"button","aria-pressed":t.fait?null:String(isSel),"aria-label":t.fait?"Remettre « "+t.titre+" » à faire":(isSel?"Retirer de la sélection":"Sélectionner « "+t.titre+" »"),onclick:()=>toggleDone(t)});
+  const chk=el("button",{class:"check"+(isSel?" sel":"")+(isSel&&S.selJust===skey?" just":""),type:"button","aria-pressed":t.fait?null:String(isSel),"aria-label":t.fait?"Remettre « "+t.titre+" » à faire":(isSel?"Retirer de la sélection":"Sélectionner « "+t.titre+" »"),onclick:()=>toggleDone(t)});
   chk.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   if(S.readOnly||!meId()) chk.disabled=true;
   let first=chk;
@@ -4312,7 +4316,7 @@ async function addTask({titre,cat,where,echeance,recur,silent}){
 async function toggleDone(t){
   if(!S.db||!needMe()) return;
   const key=(t.prive?"p:":"f:")+t.id;
-  if(!t.fait){ S.sel.has(key)?S.sel.delete(key):S.sel.add(key); renderTaskViews(); renderSelBar(); return; }
+  if(!t.fait){ S.sel.has(key)?S.sel.delete(key):S.sel.add(key); S.selJust=key; renderTaskViews(); S.selJust=null; renderSelBar(); return; }
   try{ await colFor(t).doc(t.id).update({fait:false,faitPar:null,faitLe:null,nextMsg:null}); }catch(e){ writeErr(e); }
 }
 function renderSelBar(){
@@ -5728,7 +5732,7 @@ function courseRow(i,o){ o=o||{}; const me=meId();
   if(i.repas) meta.push(el("span",{class:"c-rep",text:"🍽 "+i.repas}));
   if(flash&&!i.fait&&i.ajoutePar&&i.ajoutePar!==me) meta.push(el("span",{class:"c-new",text:"Nouveau · "+membre(i.ajoutePar).nom}));
   const isSel=!i.fait&&S.cSel.has(i.id);
-  const b=el("button",{type:"button",class:"c-item"+(i.fait?" on":"")+(isSel?" sel":"")+(flash?" flash":""),"aria-pressed":String(!!i.fait||isSel),onclick:()=>toggleCourse(i)},el("span",{class:"c-box","aria-hidden":"true"}),
+  const b=el("button",{type:"button",class:"c-item"+(i.fait?" on":"")+(isSel?" sel":"")+(isSel&&S.cSelJust===i.id?" just":"")+(flash?" flash":""),"aria-pressed":String(!!i.fait||isSel),onclick:()=>toggleCourse(i)},el("span",{class:"c-box","aria-hidden":"true"}),
     el("span",{class:"c-tx"},el("span",{class:"c-n",text:i.nom}),meta.length?el("span",{class:"c-meta"},...meta):null),
     i.qte?el("span",{class:"c-q",text:i.qte}):null,
     i.fait&&i.faitPar&&i.faitPar!==me?el("span",{class:"c-by",title:"Dans le caddie "+de(membre(i.faitPar).nom)},avatar(i.faitPar,20)):null);
@@ -5769,7 +5773,7 @@ async function cSelDel(){ const its=[...S.cSel].map(id=>(S.courses||[]).find(i=>
   softDelete(its.map(i=>({key:"courses:"+i.id,arr:"courses",item:i,run:()=>S.db.collection("courses").doc(i.id).delete()})),its.length>1?its.length+" articles retirés de la liste.":"« "+esc(its[0].nom)+" » retiré de la liste."); }
 async function cDelOne(i){ await rowOut(cRowEl(i.id),"del"); softDelete([{key:"courses:"+i.id,arr:"courses",item:i,run:()=>S.db.collection("courses").doc(i.id).delete()}],"« "+esc(i.nom)+" » retiré de la liste."); }
 async function toggleCourse(i){ if(!S.db||!needMe()) return;
-  if(!i.fait){ S.cSel.has(i.id)?S.cSel.delete(i.id):S.cSel.add(i.id); renderCourses(); renderSelBar(); return; }
+  if(!i.fait){ S.cSel.has(i.id)?S.cSel.delete(i.id):S.cSel.add(i.id); S.cSelJust=i.id; renderCourses(); S.cSelJust=null; renderSelBar(); return; }
   const me=meId(); i.fait=!i.fait; i.faitPar=i.fait?me:null; i.faitLe=i.fait?Date.now():null; if(S.cKnown) S.cKnown.set(i.id,i.fait); renderCourses();
   try{ await S.db.collection("courses").doc(i.id).update({fait:i.fait,faitPar:i.faitPar,faitLe:i.faitLe}); }catch(e){ writeErr(e); } }
 function renderCLive(){ const w=$("cLive"); if(!w) return; w.innerHTML=""; const ss=cSession(), me=meId(), items=S.courses||[], todo=items.filter(i=>!i.fait).length, done=items.filter(i=>i.fait).length, tot=todo+done;
