@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 16:53";</script>
+<script>window.COCOON_BUILD="10/10 17:04";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1948,6 +1948,23 @@ html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior
 .b-curve .acc-dot::before,.b-curve .acc-dot::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #FF9C80;opacity:0;pointer-events:none}
 @media (prefers-reduced-motion:no-preference){.b-curve .acc-dot::before{animation:accWave 2.2s ease-out infinite}.b-curve .acc-dot::after{animation:accWave 2.2s ease-out 1.1s infinite}}
 @keyframes accWave{0%{transform:scale(1);opacity:.75}100%{transform:scale(3.4);opacity:0}}
+.bc-pace{stroke:var(--hero-ink);opacity:.35;stroke-width:1.5;stroke-dasharray:2 4;vector-effect:non-scaling-stroke}
+.bc-pace-l{display:inline-block;width:16px;border-top:2px dotted currentColor;opacity:.7;margin-right:6px;vertical-align:middle;transform:rotate(-20deg)}
+.bc-emptyl{stroke:var(--hero-ink);opacity:.35;stroke-width:2;stroke-dasharray:4 6;vector-effect:non-scaling-stroke}
+.bc-chart.empty{cursor:default}
+.bc-mark{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--hero);border:2.5px solid #FFC94A;pointer-events:none}
+.bc-day{display:flex;flex-direction:column;gap:6px;background:var(--hero-soft);border-radius:14px;padding:10px 12px;min-height:44px;justify-content:center}
+.bc-day-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;position:relative;padding-right:26px}
+.bc-day-h b{font-size:14px;font-weight:800}.bc-day-h b::first-letter{text-transform:uppercase}.bc-day-h span{font-size:12.5px;opacity:.75}
+.bc-day-x{position:absolute;right:-4px;top:-4px;width:28px;height:28px;border:0;background:none;color:var(--hero-ink);font-size:20px;line-height:1;cursor:pointer;opacity:.7}
+.bc-day .bc-it{background:rgba(255,255,255,.08);color:var(--hero-ink)}
+.bc-day .bc-none,.bc-hint{font-size:13px;opacity:.75}
+.bc-msg{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.bc-edit{border:0;background:var(--mark);color:var(--mark-ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}
+.bc-edit.ghost{background:rgba(255,255,255,.12);color:var(--hero-ink)}
+.bc-gin{width:90px;border:0;border-radius:10px;padding:6px 10px;font:inherit;font-size:14px;font-weight:700;background:rgba(255,255,255,.12);color:var(--hero-ink)}
+.bc-tip,.bc-goal{display:none!important}
+.bc-chart,.bc-chart:focus,.bc-chart:active{background:transparent!important;outline:none;box-shadow:none!important;border:0!important;border-radius:0!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3714,40 +3731,38 @@ function budgetCurve(off){
   if(fCat){ if(obj[fCat]){ goal=obj[fCat]; goalKind="cat"; } } else if(!fWho){ if(S.config&&S.config.budgetMois){ goal=S.config.budgetMois; goalKind="mois"; } else { const g=Object.values(obj).reduce((a,v)=>a+(v||0),0); if(g){ goal=g; goalKind="sum"; } } }
   if(B.dragGoal!=null&&!fCat&&!fWho) goal=B.dragGoal;
   // géométrie
-  const W=300,H=110,X0=6,X1=W-8,YT=10,YB=H-8;
-  const ymax=Math.max(1,cTot,est||0,tot,goal||0)*1.1, sx=d=>X0+d*(X1-X0)/dim, sy=v=>YB-v*(YB-YT)/ymax;
+  const W=300,H=110,X0=6,X1=W-8,YT=10,YB=H-8, empty=!tot&&!(cur.items&&Object.keys(cur.items).length);
+  const ymax=Math.max(1,cTot,est||0,tot,isCur?(goal||0):0)*1.1, sx=d=>X0+d*(X1-X0)/dim, sy=v=>YB-v*(YB-YT)/ymax;
   const pth=(f,n)=>{ let s="M"+sx(0).toFixed(1)+" "+sy(0).toFixed(1); for(let i=1;i<=n;i++) s+=" L"+sx(i).toFixed(1)+" "+sy(f(i)).toFixed(1); return s; };
   let svg='<svg viewBox="0 0 '+W+' '+H+'" class="acc-spark" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="accG" x1="0" x2="1"><stop offset="0" stop-color="#FFC94A"/><stop offset=".6" stop-color="#FF9C80"/><stop offset="1" stop-color="#E79ADB"/></linearGradient><linearGradient id="accA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9C80" stop-opacity=".3"/><stop offset="1" stop-color="#FF9C80" stop-opacity="0"/></linearGradient></defs>';
+  if(goal&&isCur) svg+='<line x1="'+sx(0).toFixed(1)+'" y1="'+sy(0).toFixed(1)+'" x2="'+sx(dim).toFixed(1)+'" y2="'+sy(goal).toFixed(1)+'" class="bc-pace"/>';
   if(cmpS) svg+='<path d="'+pth(i=>cmpS.a[Math.min(i,cmpS.n)],dim)+'" class="acc-prev" fill="none"/>';
-  if(est!=null&&day<dim) svg+='<path d="'+(()=>{ let s="M"+sx(day).toFixed(1)+" "+sy(tot).toFixed(1); for(let k=day+1;k<=dim;k++){ const pv=estAt(k-1), nv=estAt(k); if(up.some(u=>u.d===k)) s+=" L"+sx(k).toFixed(1)+" "+sy(pv).toFixed(1); s+=" L"+sx(k).toFixed(1)+" "+sy(nv).toFixed(1); } return s; })()+'" class="acc-est" fill="none"/>';
-  const cp=pth(i=>cur.a[i],day); svg+='<path d="'+cp+' L'+sx(day).toFixed(1)+' '+YB+' L'+sx(0).toFixed(1)+' '+YB+' Z" fill="url(#accA)"/><path d="'+cp+'" fill="none" stroke="url(#accG)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>';
+  if(!empty&&est!=null&&day<dim) svg+='<path d="'+(()=>{ let s="M"+sx(day).toFixed(1)+" "+sy(tot).toFixed(1); for(let k=day+1;k<=dim;k++){ const pv=estAt(k-1), nv=estAt(k); if(up.some(u=>u.d===k)) s+=" L"+sx(k).toFixed(1)+" "+sy(pv).toFixed(1); s+=" L"+sx(k).toFixed(1)+" "+sy(nv).toFixed(1); } return s; })()+'" class="acc-est" fill="none"/>';
+  if(empty) svg+='<line x1="'+sx(0).toFixed(1)+'" y1="'+YB+'" x2="'+sx(dim).toFixed(1)+'" y2="'+YB+'" class="bc-emptyl"/>';
+  else { const cp=pth(i=>cur.a[i],day); svg+='<path d="'+cp+' L'+sx(day).toFixed(1)+' '+YB+' L'+sx(0).toFixed(1)+' '+YB+' Z" fill="url(#accA)"/><path d="'+cp+'" fill="none" stroke="url(#accG)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'; }
   svg+='</svg>';
-  const box=el("div",{class:"acc-chart bc-chart"}); box.innerHTML=svg;
+  const box=el("div",{class:"acc-chart bc-chart"+(empty?" empty":"")}); box.innerHTML=svg;
   const pt=(d,v,cls,title)=>{ const s=el("span",{class:cls,style:"left:"+(sx(d)/W*100).toFixed(2)+"%;top:"+(sy(v)/H*100).toFixed(2)+"%"}); if(title) s.title=title; return s; };
-  for(let k=1;k<=day;k++){ const big=(cur.items[k]||[]).filter(d=>amt(d)>=10000); if(big.length) box.append(pt(k,cur.a[k],"bc-pic",big.map(d=>d.titre+" "+money(amt(d))).join(", "))); }
-  for(const u of up) box.append(pt(u.d,estAt(u.d),"bc-up",u.a.nom+" "+money(u.v)));
-  box.append(pt(day,tot,"acc-dot"));
-  // objectif glissable
-  const canGoal=!fWho&&(fCat?false:isAdmin()&&!S.readOnly&&isCur);
-  if(goal){ const gl=el("div",{class:"bc-goal"+(canGoal?" drag":""),style:"top:"+(sy(goal)/H*100).toFixed(2)+"%"},el("span",{class:"bc-goal-l",text:(goalKind==="cat"?"Objectif ":"Objectif · ")+money(Math.round(goal/100)*100).replace(/,00\s?€/," €")}));
-    box.append(gl);
-    if(canGoal){ gl.addEventListener("pointerdown",e=>{ e.preventDefault(); e.stopPropagation(); gl.setPointerCapture(e.pointerId); const r=box.getBoundingClientRect();
-        const mv=ev=>{ const y=Math.min(Math.max(ev.clientY-r.top,4),r.height-4)/r.height*H; let v=Math.max(1000,Math.round((YB-y)/(YB-YT)*ymax/1000)*1000); B.dragGoal=v; gl.style.top=(sy(v)/H*100).toFixed(2)+"%"; gl.firstChild.textContent="Objectif · "+money(v).replace(/,00\s?€/," €"); };
-        const upf=async()=>{ gl.removeEventListener("pointermove",mv); gl.removeEventListener("pointerup",upf); gl.removeEventListener("pointercancel",upf); const v=B.dragGoal; B.dragGoal=null; if(v!=null){ try{ S.config=Object.assign({},S.config||{},{budgetMois:v}); await S.db.doc("foyer/config").set(S.config); }catch(err){ writeErr(err); } } renderBudget(); };
-        gl.addEventListener("pointermove",mv); gl.addEventListener("pointerup",upf); gl.addEventListener("pointercancel",upf); }); } }
-  // bulle au toucher
-  const tip=el("div",{class:"bc-tip",hidden:true}), vline=el("span",{class:"bc-vl",hidden:true}); box.append(vline,tip);
-  const showDay=k=>{ const its=(cur.items[k]||[]).slice().sort((a,b)=>amt(b)-amt(a)); tip.innerHTML=""; const dt=new Date(Y,M,k);
-    tip.append(el("b",{text:new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"short"}).format(dt)+" · "+money(cur.a[k])}));
-    if(its.length) for(const d of its.slice(0,3)) tip.append(el("button",{type:"button",class:"bc-it",onclick:ev=>{ ev.stopPropagation(); openBForm("dep",d); }},el("span",{text:d.titre}),el("em",{text:money(amt(d))})));
-    else tip.append(el("span",{class:"bc-none",text:"Aucune dépense ce jour-là"}));
-    if(its.length>3) tip.append(el("span",{class:"bc-none",text:"+ "+(its.length-3)+" autre"+(its.length>4?"s":"")}));
-    const x=sx(k)/W*100; vline.style.left=x+"%"; vline.hidden=false; tip.hidden=false; const bw=box.clientWidth, tw=tip.offsetWidth||180; tip.style.left=Math.min(Math.max(x/100*bw,tw/2),bw-tw/2)+"px"; };
+  if(!empty){ for(let k=1;k<=day;k++){ const big=(cur.items[k]||[]).filter(d=>amt(d)>=10000); if(big.length) box.append(pt(k,cur.a[k],"bc-pic",big.map(d=>d.titre+" "+money(amt(d))).join(", "))); }
+    for(const u of up) box.append(pt(u.d,estAt(u.d),"bc-up",u.a.nom+" "+money(u.v)));
+    box.append(pt(day,tot,"acc-dot")); }
+  // jour choisi : détail sous la courbe
+  const mk=Y+"-"+M; if(B.selM!==mk){ B.selM=mk; B.sel=null; }
+  const vline=el("span",{class:"bc-vl",hidden:true}), mark=el("span",{class:"bc-mark",hidden:true}); box.append(vline,mark);
+  const detail=el("div",{class:"bc-day"});
+  const showDay=k=>{ B.sel=k; const its=(cur.items[k]||[]).slice().sort((a,b)=>amt(b)-amt(a)); detail.innerHTML=""; const dt=new Date(Y,M,k);
+    const x=sx(k)/W*100; vline.style.left=x+"%"; vline.hidden=false; mark.style.left=x+"%"; mark.style.top=(sy(cur.a[k])/H*100).toFixed(2)+"%"; mark.hidden=false;
+    detail.append(el("div",{class:"bc-day-h"},el("b",{text:new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(dt)}),el("span",{text:"total du mois à ce jour : "+money(cur.a[k])}),el("button",{type:"button",class:"bc-day-x","aria-label":"Fermer",text:"×",onclick:ev=>{ ev.stopPropagation(); B.sel=null; vline.hidden=true; mark.hidden=true; hint(); }})));
+    if(its.length) for(const d of its.slice(0,4)) detail.append(el("button",{type:"button",class:"bc-it",onclick:ev=>{ ev.stopPropagation(); openBForm("dep",d); }},el("span",{text:d.titre}),el("em",{text:money(amt(d))})));
+    else detail.append(el("span",{class:"bc-none",text:"Aucune dépense ce jour-là."}));
+    if(its.length>4) detail.append(el("span",{class:"bc-none",text:"+ "+(its.length-4)+" autre"+(its.length>5?"s":"")})); };
+  const hint=()=>{ detail.innerHTML=""; detail.append(el("span",{class:"bc-hint",text:empty?"Aucune dépense notée ce mois-là.":"Touche ou fais glisser ton doigt sur la courbe pour voir les dépenses d'un jour."})); };
   const pick=e=>{ const r=box.getBoundingClientRect(); const k=Math.round(((e.clientX-r.left)/r.width*W-X0)/(X1-X0)*dim); return Math.min(Math.max(1,k),day); };
-  box.addEventListener("pointerdown",e=>{ if(e.target.closest(".bc-goal,.bc-tip")) return; showDay(pick(e)); box.setPointerCapture&&box.setPointerCapture(e.pointerId); box._drag=true; });
-  box.addEventListener("pointermove",e=>{ if(box._drag||e.pointerType==="mouse"){ if(e.target.closest&&e.target.closest(".bc-tip")) return; showDay(pick(e)); } });
-  box.addEventListener("pointerup",()=>{ box._drag=false; });
-  box.addEventListener("pointerleave",e=>{ if(e.pointerType==="mouse"&&!box._drag){ tip.hidden=true; vline.hidden=true; } });
+  if(!empty){ box.addEventListener("pointerdown",e=>{ showDay(pick(e)); box.setPointerCapture&&box.setPointerCapture(e.pointerId); box._drag=true; });
+    box.addEventListener("pointermove",e=>{ if(box._drag) showDay(pick(e)); });
+    box.addEventListener("pointerup",()=>{ box._drag=false; }); box.addEventListener("pointercancel",()=>{ box._drag=false; }); }
+  if(B.sel&&!empty&&B.sel<=day) setTimeout(()=>showDay(B.sel),0); else hint();
+  const canGoal=!fWho&&!fCat&&isAdmin()&&!S.readOnly&&isCur;
   box.addEventListener("click",e=>e.stopPropagation());
   // en-tête : comparaison
   const wrap=el("div",{class:"b-curve"});
@@ -3756,18 +3771,23 @@ function budgetCurve(off){
   else if(!cmpS&&tot) cmpTxt=B.cmp==="year"?"pas de données l'an dernier":"premier mois suivi";
   const seg=el("div",{class:"bc-seg"}); for(const [k,l] of [["prev","Mois dernier"],["avg3","Moy. 3 mois"],["year","L'an dernier"]]) seg.append(el("button",{type:"button","aria-pressed":String(B.cmp===k),text:l,onclick:()=>{ B.cmp=k; renderBudget(); }}));
   wrap.append(el("div",{class:"bc-top"},cmpTxt?el("span",{class:"acc-cmp"+cls,text:cmpTxt}):el("span"),seg));
-  wrap.append(box);
+  wrap.append(box,detail);
   // légende + estimation
   const leg=el("div",{class:"acc-leg"},el("span",{},el("i",{class:"ln"}),nm));
   if(cmpS) leg.append(el("span",{},el("i",{class:"ln d"}),cmpShort));
-  if(up.length) leg.append(el("span",{},el("i",{class:"bc-up-l"}),"prélèvements"));
-  if(est!=null) leg.append(el("span",{class:"acc-estl",text:"Fin de mois ≈ "+money(Math.round(est/100)*100).replace(/,00\s?€/," €")+(upTot?" · dont "+money(upTot).replace(/,00\s?€/," €")+" prévus":"")}));
+  if(up.length&&!empty) leg.append(el("span",{},el("i",{class:"bc-up-l"}),"prélèvements"));
+  if(goal&&isCur) leg.append(el("span",{},el("i",{class:"bc-pace-l"}),"rythme de l'objectif"));
+  if(est!=null&&!empty) leg.append(el("span",{class:"acc-estl",text:"Fin de mois ≈ "+money(Math.round(est/100)*100).replace(/,00\s?€/," €")+(upTot?" · dont "+money(upTot).replace(/,00\s?€/," €")+" prévus":"")}));
   wrap.append(leg);
   // message d'objectif
   if(goal&&isCur){ const rest=goal-tot-upTot, left=dim-day;
     let msg; if(est!=null&&est>goal+500){ let k=day; while(k<dim&&estAt(k)<=goal) k++; msg=(estAt(day)>goal?"Objectif déjà dépassé de "+money(tot-goal):"Au rythme actuel, tu dépasses de "+money(Math.round((est-goal)/100)*100).replace(/,00\s?€/," €")+" vers le "+k)+"."; }
     else msg=left>0&&rest>0?"Il te reste "+money(Math.floor(rest/left/100)*100).replace(/,00\s?€/," €")+" par jour jusqu'à la fin du mois.":"Dans les clous pour l'objectif.";
-    wrap.append(el("div",{class:"bc-msg"+(est!=null&&est>goal+500?" warn":"")},msg+(canGoal?" Fais glisser la ligne pour l'ajuster.":""))); }
+    const gm=el("div",{class:"bc-msg"+(est!=null&&est>goal+500?" warn":"")},el("span",{text:"Objectif "+(goalKind==="cat"?"de la catégorie":"du mois")+" : "+eurR(goal)+". "+msg}));
+    if(canGoal) gm.append(el("button",{type:"button",class:"bc-edit",text:"Modifier",onclick:()=>{ const inp=el("input",{type:"text",inputmode:"decimal",class:"bc-gin","aria-label":"Objectif du mois en euros"}); inp.value=String(Math.round(goal/100));
+      const save=async()=>{ const v=parseMoney(inp.value); try{ S.config=Object.assign({},S.config||{},{budgetMois:v||null}); await S.db.doc("foyer/config").set(S.config); }catch(err){ writeErr(err); } renderBudget(); };
+      gm.replaceChildren(el("span",{text:"Objectif du mois :"}),inp,el("span",{text:"€"}),el("button",{type:"button",class:"bc-edit",text:"OK",onclick:save}),el("button",{type:"button",class:"bc-edit ghost",text:"Retirer",onclick:()=>{ inp.value=""; save(); }})); inp.focus(); inp.select(); inp.addEventListener("keydown",e=>{ if(e.key==="Enter") save(); }); }}));
+    wrap.append(gm); }
   else if(isCur&&!fCat&&!fWho&&isAdmin()&&!S.readOnly&&(tot||cTot)) wrap.append(el("button",{type:"button",class:"bc-setgoal",text:"+ Fixer un objectif pour le mois",onclick:async()=>{ const v=Math.max(10000,Math.ceil(((est||cTot||tot)*1.08)/10000)*10000); try{ S.config=Object.assign({},S.config||{},{budgetMois:v}); await S.db.doc("foyer/config").set(S.config); renderBudget(); }catch(err){ writeErr(err); } }}));
   // filtres
   const chips=el("div",{class:"bc-chips"}), cc=Object.keys(cur.cats).filter(c=>cur.cats[c][31]>0).sort((a,b)=>cur.cats[b][31]-cur.cats[a][31]).slice(0,4);
@@ -3775,10 +3795,10 @@ function budgetCurve(off){
   const chip=(k,l,c)=>el("button",{type:"button",class:"bc-chip","aria-pressed":String(B.f===k),style:c?"--c:"+c:"",onclick:()=>{ B.f=B.f===k?"all":k; renderBudget(); }},c?el("i"):null,l);
   chips.append(chip("all","Tout"));
   for(const c of cc) chips.append(chip("c:"+c,(BCAT[c]||BCAT.autre).nom,(BCAT[c]||BCAT.autre).c));
-  const ppl=adults().filter(m=>S.depenses.some(d=>d.type!=="rembt"&&(d.payePar===m.id||shareOf(d,m.id)>0))||(S.abos||[]).some(x=>x.actif!==false&&(x.payePar===m.id||shareOf(x,m.id)>0)));
+  const ppl=empty?[]:adults().filter(m=>Object.values(cur.items).some(arr=>arr.some(d=>d.payePar===m.id||shareOf(d,m.id)>0)));
   if(fWho&&!ppl.some(m=>m.id===fWho)){ B.f="all"; }
   if(adults().length>1) for(const m of ppl) chips.append(chip("p:"+m.id,m.id===me?"Toi":m.nom));
-  if(cc.length||(adults().length>1&&ppl.length)) wrap.append(chips);
+  if(!empty&&(cc.length||(adults().length>1&&ppl.length))) wrap.append(chips);
   // résumé en une phrase
   if(cmpS&&tot&&cAt){ const diff=tot-cAt; if(Math.abs(diff)>=500){ let best=null;
       for(const c of new Set(Object.keys(cur.cats).concat(Object.keys(cmpS.cats)))){ const dv=(cur.cats[c]?cur.cats[c][day]:0)-(cmpS.cats[c]?cmpS.cats[c][Math.min(day,cmpS.n)]:0); if(!best||(diff>0?dv>best.v:dv<best.v)) best={c,v:dv}; }
