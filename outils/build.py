@@ -247,7 +247,7 @@ head = f"""<!doctype html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#F6F5FB" id="cxTc"><script>(function(){{var r=document.documentElement,m=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)");function u(){{var t=document.getElementById("cxTc");if(!t)return;var d=r.dataset.theme==="dark"||(r.dataset.theme!=="light"&&m&&m.matches);t.content=d?"#13121C":"#F6F5FB";}}try{{new MutationObserver(u).observe(r,{{attributes:true,attributeFilter:["data-theme"]}});m&&m.addEventListener&&m.addEventListener("change",u);document.addEventListener("DOMContentLoaded",u);}}catch(e){{}}u();}})()</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">

@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#F6F5FB" id="cxTc"><script>(function(){var r=document.documentElement,m=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)");function u(){var t=document.getElementById("cxTc");if(!t)return;var d=r.dataset.theme==="dark"||(r.dataset.theme!=="light"&&m&&m.matches);t.content=d?"#13121C":"#F6F5FB";}try{new MutationObserver(u).observe(r,{attributes:true,attributeFilter:["data-theme"]});m&&m.addEventListener&&m.addEventListener("change",u);document.addEventListener("DOMContentLoaded",u);}catch(e){}u();})()</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 17:50";</script>
+<script>window.COCOON_BUILD="10/10 17:56";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2005,7 +2005,7 @@ details.b-vol>.b-vol-in{padding:0 10px 12px;display:flex;flex-direction:column;g
 @media (prefers-reduced-motion:reduce){.seg-pill.go{transition:none}}
 
 /* pas de zoom au double tap (le pincement reste possible) ; pas de zoom auto sur iOS au focus d'un champ */
-html,body{touch-action:manipulation}
+html,body{touch-action:pan-x pan-y}
 @supports (-webkit-touch-callout:none){input,select,textarea{font-size:max(16px,1em)}}
 </style>
 
@@ -2017,6 +2017,14 @@ html,body{touch-action:manipulation}
       <button class="coc-pill" type="button" id="cocBtn" hidden aria-haspopup="dialog" aria-expanded="false"></button><button class="bell" type="button" id="searchBtn" aria-label="Rechercher"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><g transform="translate(-.12 -.12)"><path fill-rule="evenodd" d="M10 3.1a6.9 6.9 0 1 1 0 13.8a6.9 6.9 0 0 1 0-13.8zm0 3a3.9 3.9 0 1 0 0 7.8a3.9 3.9 0 0 0 0-7.8z"/><rect x="13.1" y="15.7" width="9" height="3.8" rx="1.9" transform="rotate(45 17.6 17.6)"/></g></svg></button><button class="bell" type="button" id="bellBtn" aria-label="Notifications" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><g transform="translate(.12 .25)"><circle cx="12" cy="3.35" r="1.75"/><path d="M12 4.4c-3.6 0-6.2 2.8-6.2 6.4v3.2l-1.6 2.6c-.5.8.1 1.6 1 1.6h13.6c.9 0 1.5-.8 1-1.6l-1.6-2.6v-3.2c0-3.6-2.6-6.4-6.2-6.4z"/><path d="M9.4 19.4h5.2a2.6 2.6 0 0 1-5.2 0z"/></g></svg><span class="n" id="nRappels" hidden></span></button>
     </div>
   </div>
+<script>
+/* pas de zoom : ni pincement ni double tap (iOS ignore user-scalable, on bloque les gestes) */
+(function(){ const no=e=>e.preventDefault();
+  ["gesturestart","gesturechange","gestureend"].forEach(t=>document.addEventListener(t,no,{passive:false}));
+  document.addEventListener("touchmove",e=>{ if(e.touches&&e.touches.length>1) e.preventDefault(); },{passive:false});
+  document.addEventListener("wheel",e=>{ if(e.ctrlKey) e.preventDefault(); },{passive:false});
+})();
+</script>
 <script>(function(){var b=document.getElementById("bootLogo"),l=document.querySelector(".brand-logo"),n=document.getElementById("bootName");if(b&&l)b.src=l.src;if(n){var t=n.textContent;n.textContent="";for(var i=0;i<t.length;i++){var s=document.createElement("span");s.textContent=t[i];s.style.setProperty("--i",i);n.appendChild(s);}}})();</script>
   <header class="head">
     <div class="brand">
