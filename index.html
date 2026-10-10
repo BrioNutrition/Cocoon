@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 09:13";</script>
+<script>window.COCOON_BUILD="10/10 11:41";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1916,6 +1916,17 @@ html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior
 .bc-sum{margin:0;font-size:13.5px;line-height:1.45;opacity:.9}
 .tile,.tile:hover,.tile:active,.tile:focus{transform:none!important;translate:none!important}
 .tile:active{filter:brightness(1.12)}
+.pal-sec{display:flex;align-items:center;gap:12px}
+.pal-sec-av{width:52px;height:52px;border-radius:16px;object-fit:cover;flex:none;box-shadow:0 0 0 2px var(--surface),0 0 0 4px #FFC94A}
+.pal-sec-n{flex:1;display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:600;color:var(--muted);min-width:0}
+.pal-sec-n input{border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:9px 12px;font:inherit;font-size:15px;font-weight:600;width:100%}
+.pal-pics{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.pal-pic{width:40px;height:40px;border-radius:12px;border:0;padding:0;background:var(--sunk);overflow:hidden;cursor:pointer;display:grid;place-items:center;outline:2px solid transparent;outline-offset:2px}
+.pal-pic img{width:100%;height:100%;object-fit:cover;display:block}
+.pal-pic.on{outline-color:var(--ink)}
+.pal-pic.up span{font-size:22px;font-weight:700;color:var(--muted)}
+.pal-panel{max-height:calc(100vh - 32px);overflow-y:auto}
+.sec-big,.sec-av{object-fit:cover}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -1973,7 +1984,7 @@ html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior
     <div id="setupCard" hidden></div>
     <div class="sec-day" id="secDay" aria-hidden="true"></div>
     <div class="secretary sec-chat">
-      <div class="sec-head"><span class="sec-ring"><img class="sec-big" id="secBig" alt="" aria-hidden="true"></span><div><b class="sec-name">Cocoony</b><span class="sec-sub">Ton secrétaire du foyer</span></div><button type="button" class="pal-btn" id="palBtn" aria-label="Couleurs et thème de Cocoon" title="Couleurs et thème"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.5C6.7 2.5 2.5 6.5 2.5 11.6c0 4.6 3.6 8.9 8.3 8.9 1.4 0 2.1-.8 2.1-1.8 0-.5-.2-.9-.4-1.3-.3-.4-.4-.8-.4-1.2 0-1 .8-1.7 1.8-1.7h2.2c3.2 0 5.4-2.3 5.4-5.3 0-3.9-4.2-6.7-9.5-6.7z"/><circle cx="7.4" cy="11.2" r="1.55" fill="#FF6B8B"/><circle cx="9.7" cy="7" r="1.55" fill="#FFC94A"/><circle cx="14.4" cy="6.6" r="1.55" fill="#5FD3A0"/><circle cx="17.6" cy="10" r="1.55" fill="#6F8CFF"/></svg></button></div>
+      <div class="sec-head"><span class="sec-ring"><img class="sec-big" id="secBig" alt="" aria-hidden="true"></span><div><b class="sec-name">Cocoony</b><span class="sec-sub">Ton secrétaire du foyer</span></div><button type="button" class="pal-btn" id="palBtn" aria-label="Personnaliser le secrétaire, les couleurs et le thème de Cocoon" title="Couleurs et thème"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.5C6.7 2.5 2.5 6.5 2.5 11.6c0 4.6 3.6 8.9 8.3 8.9 1.4 0 2.1-.8 2.1-1.8 0-.5-.2-.9-.4-1.3-.3-.4-.4-.8-.4-1.2 0-1 .8-1.7 1.8-1.7h2.2c3.2 0 5.4-2.3 5.4-5.3 0-3.9-4.2-6.7-9.5-6.7z"/><circle cx="7.4" cy="11.2" r="1.55" fill="#FF6B8B"/><circle cx="9.7" cy="7" r="1.55" fill="#FFC94A"/><circle cx="14.4" cy="6.6" r="1.55" fill="#5FD3A0"/><circle cx="17.6" cy="10" r="1.55" fill="#6F8CFF"/></svg></button></div>
       <div class="sec-thread" id="secThread">
         <div class="sec-row bot" id="secFirst"><img class="sec-av" alt="" aria-hidden="true"><div class="sec-bub"><h2 id="secTitle">Chargement du foyer…</h2><ul id="secList"></ul></div></div>
         <div class="sec-ans" id="secAns" hidden aria-live="polite"></div>
@@ -5352,22 +5363,41 @@ function applyPalette(p){ p=p||palGet(); const P=PALS.find(x=>x.id===p.id)||PALS
   const tc=document.getElementById("cxTc"); }
 function savePalette(p){ S.palLocal=p; try{ localStorage.setItem("cocoon.palette",JSON.stringify(p)); }catch(_){}
   if(S.db&&S.uid){ S.prefs=Object.assign({},S.prefs||{},{palette:p}); S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); } }
-function openPalette(){ const was={pal:palGet(),theme:curTheme()}, cur={pal:Object.assign({},was.pal),theme:was.theme};
+/* ===== Identité du secrétaire : nom et photo ===== */
+const SEC_EMO=[["🦊","#FFB38A","#FF7FA0"],["🐻","#FFD66B","#F2A93B"],["🐶","#A9C8FF","#8C6BFF"],["🐰","#FFC2D8","#E79ADB"],["🤖","#9BE3D0","#5BB8D9"],["🦉","#D7C2FF","#9B7BE8"]];
+function emoSrc(e,a,b){ return "data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+a+'"/><stop offset="1" stop-color="'+b+'"/></linearGradient></defs><rect width="100" height="100" rx="24" fill="url(#g)"/><text x="50" y="66" font-size="54" text-anchor="middle">'+e+'</text></svg>'); }
+function secIdent(over){ const p=Object.assign({},S.prefs||{},S.secIdLocal||{},over||{}); const lg=document.querySelector(".brand-logo");
+  let src=lg?lg.src:""; if(p.secPhoto){ if(String(p.secPhoto).startsWith("emo:")){ const e=SEC_EMO[parseInt(p.secPhoto.slice(4),10)]; if(e) src=emoSrc(...e); } else src=p.secPhoto; }
+  return {nom:String(p.secNom||"").trim()||"Cocoony",src}; }
+function applySecIdent(over){ const I=secIdent(over); const n=document.querySelector(".sec-name"); if(n) n.textContent=I.nom;
+  const g=$("secBig"); if(g&&I.src) g.src=I.src; document.querySelectorAll(".sec-av").forEach(im=>{ if(I.src) im.src=I.src; }); return I; }
+function squareImg(file,size){ return new Promise((res,rej)=>{ const fr=new FileReader(); fr.onerror=rej; fr.onload=()=>{ const im=new Image(); im.onerror=rej; im.onload=()=>{ const c=document.createElement("canvas"); c.width=c.height=size; const s=Math.min(im.width,im.height), x=(im.width-s)/2, y=(im.height-s)/2; c.getContext("2d").drawImage(im,x,y,s,s,0,0,size,size); res(c.toDataURL("image/jpeg",.85)); }; im.src=fr.result; }; fr.readAsDataURL(file); }); }
+function openPalette(){ const was={pal:palGet(),theme:curTheme(),sec:{secNom:(secIdent().nom),secPhoto:(Object.assign({},S.prefs||{},S.secIdLocal||{})).secPhoto||null}}, cur={pal:Object.assign({},was.pal),theme:was.theme,sec:Object.assign({},was.sec)};
   let bg=$("palBg"), pn=$("palPanel"); if(!bg){ bg=el("div",{class:"np-bg",id:"palBg"}); pn=el("div",{class:"pal-panel",id:"palPanel",role:"dialog","aria-label":"Couleurs et thème"}); document.body.append(bg,pn); }
-  const close=keep=>{ if(!keep){ applyPalette(was.pal); applyTheme(was.theme); } pn.classList.remove("on"); bg.hidden=true; setTimeout(()=>{ pn.hidden=true; },180); };
+  const close=keep=>{ if(!keep){ applyPalette(was.pal); applyTheme(was.theme); applySecIdent(); } pn.classList.remove("on"); bg.hidden=true; setTimeout(()=>{ pn.hidden=true; },180); };
   bg.onclick=()=>close(false);
   const draw=()=>{ pn.innerHTML="";
-    pn.append(el("div",{class:"pal-h"},el("b",{text:"Couleurs de Cocoon"}),el("button",{type:"button",class:"np-x","aria-label":"Fermer",text:"×",onclick:()=>close(false)})));
+    pn.append(el("div",{class:"pal-h"},el("b",{text:"Personnaliser"}),el("button",{type:"button",class:"np-x","aria-label":"Fermer",text:"×",onclick:()=>close(false)})));
+    { const I=secIdent(cur.sec); const fi=el("input",{type:"file",accept:"image/*",hidden:true});
+      fi.addEventListener("change",async()=>{ const f=fi.files[0]; if(!f) return; try{ cur.sec.secPhoto=await squareImg(f,160); applySecIdent(cur.sec); draw(); }catch(_){ toast("Cette image n'a pas pu être lue."); } });
+      const nm=el("input",{type:"text",id:"palSecNom",maxlength:"20",placeholder:"Cocoony","aria-label":"Nom du secrétaire"}); nm.value=cur.sec.secNom==="Cocoony"?"":cur.sec.secNom||""; nm.addEventListener("input",()=>{ cur.sec.secNom=nm.value; applySecIdent(cur.sec); });
+      const pics=el("div",{class:"pal-pics"});
+      const opt=(val,src,lab)=>{ const on=(cur.sec.secPhoto||null)===val; const b=el("button",{type:"button",class:"pal-pic"+(on?" on":""),"aria-label":lab,"aria-pressed":String(on),onclick:()=>{ cur.sec.secPhoto=val; applySecIdent(cur.sec); draw(); }}); b.append(el("img",{alt:"",src})); return b; };
+      { const lg=document.querySelector(".brand-logo"); pics.append(opt(null,lg?lg.src:"","Logo Cocoon")); }
+      SEC_EMO.forEach((e,i)=>pics.append(opt("emo:"+i,emoSrc(...e),"Avatar "+e[0])));
+      const own=cur.sec.secPhoto&&!String(cur.sec.secPhoto).startsWith("emo:");
+      const up=el("button",{type:"button",class:"pal-pic up"+(own?" on":""),"aria-label":"Choisir une photo",onclick:()=>fi.click()}); if(own) up.append(el("img",{alt:"",src:cur.sec.secPhoto})); else up.append(el("span",{text:"+"})); pics.append(up,fi);
+      pn.append(el("span",{class:"pal-l",text:"Ton secrétaire"}),el("div",{class:"pal-sec"},el("img",{class:"pal-sec-av",alt:"",src:I.src}),el("label",{class:"pal-sec-n",for:"palSecNom"},el("span",{text:"Son nom"}),nm)),pics); }
     const th=el("div",{class:"seg pal-seg"}); for(const [v,l] of [["auto","Automatique"],["light","Clair"],["dark","Sombre"]]) th.append(el("button",{type:"button","aria-pressed":String(cur.theme===v),text:l,onclick:()=>{ cur.theme=v; applyTheme(v); draw(); }}));
     pn.append(el("span",{class:"pal-l",text:"Thème"}),th);
     const g=el("div",{class:"pal-grid"}); for(const P of PALS){ const on=cur.pal.id===P.id; g.append(el("button",{type:"button",class:"pal-sw"+(on?" on":""),"aria-pressed":String(on),onclick:()=>{ cur.pal.id=P.id; applyPalette(cur.pal); draw(); }},el("span",{class:"pal-dot",style:"background:linear-gradient(135deg,"+P.g[0]+","+P.g[1]+" 55%,"+P.g[2]+")"}),el("span",{text:P.n}))); }
     pn.append(el("span",{class:"pal-l",text:"Couleurs"}),g);
     const bl=el("div",{class:"seg pal-seg"}); for(const [v,l] of BULLES) bl.append(el("button",{type:"button","aria-pressed":String(cur.pal.bulle===v),text:l,onclick:()=>{ cur.pal.bulle=v; applyPalette(cur.pal); draw(); }}));
     pn.append(el("span",{class:"pal-l",text:"Tes bulles dans la discussion"}),bl);
-    pn.append(el("div",{class:"pal-btns"},el("button",{type:"button",class:"btn",text:"Enregistrer",onclick:()=>{ savePalette(cur.pal); if(cur.theme!==was.theme) setTheme(cur.theme); toast("Couleurs enregistrées."); close(true); }}),el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>close(false)})));
+    pn.append(el("div",{class:"pal-btns"},el("button",{type:"button",class:"btn",text:"Enregistrer",onclick:()=>{ savePalette(cur.pal); if(cur.theme!==was.theme) setTheme(cur.theme); const sn=String(cur.sec.secNom||"").trim(); const sid={secNom:sn&&sn!=="Cocoony"?sn:null,secPhoto:cur.sec.secPhoto||null}; S.secIdLocal=sid; S.prefs=Object.assign({},S.prefs||{},sid); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); applySecIdent(); toast("Personnalisation enregistrée."); close(true); }}),el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>close(false)})));
   };
   draw(); pn.hidden=false; bg.hidden=false; requestAnimationFrame(()=>pn.classList.add("on")); }
-function secAv(){ const im=el("img",{class:"sec-av",alt:"","aria-hidden":"true"}); const lg=document.querySelector(".brand-logo"); if(lg) im.src=lg.src; return im; }
+function secAv(){ const im=el("img",{class:"sec-av",alt:"","aria-hidden":"true"}); const I=secIdent(); if(I.src) im.src=I.src; return im; }
 function secReadFx(){ const reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches; if(reduced) return;
   const bots=document.querySelectorAll("#secThread .sec-row.bot .sec-bub"), last=bots[bots.length-1]; const av=document.querySelectorAll("#secThread .sec-row.bot .sec-av"), la=av[av.length-1];
   setTimeout(()=>{ if(last) last.animate([{transform:"translate(0,0) rotate(0)"},{transform:"translate(3px,-6px) rotate(-1.2deg)",offset:.35},{transform:"translate(-1px,1px) rotate(.4deg)",offset:.7},{transform:"translate(0,0) rotate(0)"}],{duration:520,easing:"cubic-bezier(.3,1.4,.5,1)"});
@@ -5386,6 +5416,7 @@ function secBotRow(X){ const bub=el("div",{class:"sec-bub"});
   if(X.r.note) bub.append(el("span",{class:"v4",text:X.r.note}));
   return el("div",{class:"sec-row bot"+(X.popped?"":" pop")},secAv(),bub); }
 function renderSecAns(){
+  try{ applySecIdent(); }catch(_){}
   { const g=$("secBig"), lg0=document.querySelector(".brand-logo"); if(g&&!g.getAttribute("src")&&lg0) g.src=lg0.src; } { const f=document.querySelector("#secFirst .sec-av"); if(f&&!f.getAttribute("src")){ const lg=document.querySelector(".brand-logo"); if(lg) f.src=lg.src; } }
   const b=$("secAns"); if(!b) return; const X=S.secAns, H=S.secHist||[]; b.innerHTML=""; b.hidden=!X&&!H.length;
   
@@ -5912,7 +5943,7 @@ function bilanAuto(){
 }
 /* ===== Visite guidée après le questionnaire ===== */
 const TOUR=[
-  {sel:".secretary",t:"Voici Cocoony",d:"Ton secrétaire du foyer. Demande-lui « le numéro du véto », « le bilan du mois » ou d'ajouter un rendez-vous, une course, une dépense…"},
+  {sel:".secretary",t:"Voici ton secrétaire",d:"Ton secrétaire du foyer. Demande-lui « le numéro du véto », « le bilan du mois » ou d'ajouter un rendez-vous, une course, une dépense…"},
   {sel:"#fridge",alt:"#rdvWrap",t:"Tes rappels",d:"Tout ce qui approche arrive ici : entretiens, papiers, poubelles. Coche quand c'est fait."},
   {sel:'.tab[data-tab="budget"]',t:"Le Budget",d:"Tes abonnements et factures y sont déjà, avec un rappel avant chaque prélèvement."},
   {sel:'.tab[data-tab="foyer"]',t:"Le Foyer",d:"Les tâches, les courses, les repas, les papiers et la maison : poubelles, équipements, contacts utiles."},
@@ -6161,7 +6192,7 @@ let prefsUnsub=null;
 function subscribePerso(){
   if(persoUnsub||!S.db||!S.uid) return;
   if(prefsUnsub) prefsUnsub(); S.prefs=null; S.prefsLoaded=false;
-  prefsUnsub=S.db.doc("data/users/"+S.uid+"/prefs").onSnapshot(p=>{ S.prefs=p.exists?p.data():null; if(S.prefs&&Array.isArray(S.prefs.notifMasquees)) S.npHide=new Set(S.prefs.notifMasquees); if(S.prefs&&S.prefs.theme) applyTheme(S.prefs.theme); try{ applyPalette(); }catch(_){} S.prefsLoaded=true; renderAll(); },()=>{ S.prefsLoaded=true; });
+  prefsUnsub=S.db.doc("data/users/"+S.uid+"/prefs").onSnapshot(p=>{ S.prefs=p.exists?p.data():null; if(S.prefs&&Array.isArray(S.prefs.notifMasquees)) S.npHide=new Set(S.prefs.notifMasquees); if(S.prefs&&S.prefs.theme) applyTheme(S.prefs.theme); try{ applyPalette(); applySecIdent(); }catch(_){} S.prefsLoaded=true; renderAll(); },()=>{ S.prefsLoaded=true; });
   vehCol().onSnapshot(s=>{ S.vehic=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"vehicules"); renderAll(); },()=>{});
   persoUnsub=persoCol().onSnapshot(s=>{ S.perso=live(s.docs.map(d=>Object.assign({id:d.id,prive:true},d.data())),"ptaches"); S.loaded.p=true; renderAll(); },()=>{ S.loaded.p=true; renderAll(); });
 }
