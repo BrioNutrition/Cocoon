@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 18:25";</script>
+<script>window.COCOON_BUILD="10/10 19:24";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2514,7 +2514,7 @@ function taskRow(t,opts={}){
     first=el("button",{class:"del-x",type:"button","aria-label":"Supprimer « "+t.titre+" » de l'historique",title:"Supprimer de l'historique",onclick:async ev=>{ await rowOut(ev.currentTarget.closest(".item"),"del"); softDelete([taskEntry(t)],"« "+esc(t.titre)+" » retirée de l'historique."); }});
     first.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg>';
     if(!okDel) first.style.visibility="hidden";
-    const rs=el("button",{class:"res-y",type:"button","aria-label":"Remettre « "+t.titre+" » à faire",title:"Restaurer",onclick:async ev=>{ await rowOut(ev.currentTarget.closest(".item"),"res"); toggleDone(t); }});
+    const rs=el("button",{class:"res-y",type:"button","aria-label":"Remettre « "+t.titre+" » à faire",title:"Restaurer",onclick:ev=>restoreTask(t,ev.currentTarget)});
     rs.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>';
     if(S.readOnly||!meId()) rs.style.visibility="hidden";
     first=el("span",{class:"hist-acts"},rs,first); }
@@ -2884,7 +2884,7 @@ $("ficheForm").addEventListener("submit",e=>{ e.preventDefault(); saveProfile();
 $("ficheBack").addEventListener("click",closeEditor);
 $("invBack").addEventListener("click",()=>{ setTab(S.invPrev&&!["inviter","fiche"].includes(S.invPrev)?S.invPrev:"accueil"); renderHeader(); });
 
-function renderTaskViews(){ const v=S.tab; if(v==="moi") renderMine(); else if(v==="foyer") renderFoyer(); else if(v==="profil") renderProfile(); else if(v==="accueil") renderFridge(); renderBadges(); }
+function renderTaskViews(){ const v=S.tab; if(v==="moi") renderMine(); else if(v==="foyer") renderFoyer(); else if(v==="profil") renderProfile(); else if(v==="accueil") renderFridge(); renderBadges(); if(S.flip&&!S.flipping){ S.flipping=true; try{ applyFlip(); }finally{ S.flipping=false; } } }
 function reminders(){
   const me=meId(), out=[];
   for(const t of allTasks()) if(!t.fait&&t.echeance) out.push({kind:t.prive?"Perso":"Foyer",date:t.echeance,titre:t.titre,cat:t.cat,who:!t.prive&&t.pour!=="tous"?t.pour:null,ref:t,mine:t.prive||t.pour===me});
@@ -4272,7 +4272,7 @@ function renderBadges(){
   if(urgent&&!S.bellRung){ S.bellRung=true; const b=$("bellBtn"); b.classList.add("ring"); setTimeout(()=>b.classList.remove("ring"),2600); }
   setN("nBudget",(S.abos||[]).filter(a=>a.actif!==false&&(()=>{ const n=subNext(a); return n&&daysTo(n)<=7; })()).length);
 }
-function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; try{ renderAllNowInner(); }catch(e){ console.error(e); } if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
+function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; try{ renderAllNowInner(); }catch(e){ console.error(e); } if(S.flip) applyFlip(); if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
 function renderAllNowInner(){
   const v=S.tab;
   renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon();
@@ -4312,6 +4312,35 @@ async function addTask({titre,cat,where,echeance,recur,silent}){
     if(!silent) toast(prive?"Ajouté dans ton espace perso"+rec+".":"Ajouté au foyer pour "+(pour==="tous"?"tout le monde":pour===me?"toi":membre(pour).nom)+rec+".");
     return true;
   }catch(e){ writeErr(e); return false; }
+}
+/* Restaurer une tâche : mise à jour immédiate à l'écran, puis chaque ligne glisse de son ancienne place à la nouvelle (FLIP, transform seulement).
+   Si la liste est redessinée pendant l'animation (retour de la base), l'animation reprend là où elle en était. */
+function applyFlip(){
+  const F=S.flip; if(!F) return; const el0=performance.now()-F.t0; if(el0>1200){ S.flip=null; return; }
+  const ease="cubic-bezier(.22,.9,.24,1)";
+  for(const r of F.scope.querySelectorAll(".item[data-key]")){ const b=F.before.get(r.dataset.key), top=r.getBoundingClientRect().top; let a=null;
+    if(r.dataset.key===F.key){ r.style.zIndex="3";
+      const dy=b!=null?b-top:12;
+      a=r.animate([{transform:"translate3d(0,"+dy+"px,0) scale(.98)",boxShadow:"0 14px 30px rgba(0,0,0,.22)"},{transform:"translate3d(0,0,0) scale(1.015)",boxShadow:"0 10px 24px rgba(0,0,0,.16)",offset:.8},{transform:"translate3d(0,0,0) scale(1)",boxShadow:"0 2px 0 var(--shadow)"}],{duration:F.dur,easing:ease});
+      const tint=document.createElement("span"); tint.className="row-tint res"; r.appendChild(tint);
+      const ta=tint.animate([{opacity:1},{opacity:1,offset:.5},{opacity:0}],{duration:1100,easing:"ease-out",fill:"forwards"}); ta.currentTime=el0; ta.finished.then(()=>tint.remove()).catch(()=>{});
+      a.finished.then(()=>{ r.style.zIndex=""; }).catch(()=>{}); }
+    else if(b==null) a=r.animate([{opacity:0},{opacity:1}],{duration:260,easing:"ease-out"});
+    else { const dy=b-top; if(Math.abs(dy)>.5) a=r.animate([{transform:"translate3d(0,"+dy+"px,0)"},{transform:"translate3d(0,0,0)"}],{duration:420,easing:ease}); }
+    if(a) a.currentTime=el0; }
+}
+async function restoreTask(t,btn){
+  if(!S.db||!needMe()) return;
+  const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const key=(t.prive?"ptaches:":"taches:")+t.id, scope=(btn&&btn.closest(".view"))||document.body;
+  const old={fait:t.fait,faitPar:t.faitPar,faitLe:t.faitLe,nextMsg:t.nextMsg};
+  const before=reduce?null:new Map([...scope.querySelectorAll(".item[data-key]")].map(r=>[r.dataset.key,r.getBoundingClientRect().top]));
+  S.flip=null; Object.assign(t,{fait:false,faitPar:null,faitLe:null,nextMsg:null});
+  renderTaskViews();
+  if(before){ const r=scope.querySelector('.item[data-key="'+key+'"]'), b0=before.get(key); let dur=600; if(r&&b0!=null) dur=Math.min(720,380+Math.abs(b0-r.getBoundingClientRect().top)*.35);
+    S.flip={before,key,scope,t0:performance.now(),dur}; applyFlip(); }
+  try{ await colFor(t).doc(t.id).update({fait:false,faitPar:null,faitLe:null,nextMsg:null}); }
+  catch(e){ S.flip=null; Object.assign(t,old); renderTaskViews(); writeErr(e); }
 }
 async function toggleDone(t){
   if(!S.db||!needMe()) return;
