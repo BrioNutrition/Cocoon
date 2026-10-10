@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 19:24";</script>
+<script>window.COCOON_BUILD="10/10 19:28";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2514,7 +2514,7 @@ function taskRow(t,opts={}){
     first=el("button",{class:"del-x",type:"button","aria-label":"Supprimer « "+t.titre+" » de l'historique",title:"Supprimer de l'historique",onclick:async ev=>{ await rowOut(ev.currentTarget.closest(".item"),"del"); softDelete([taskEntry(t)],"« "+esc(t.titre)+" » retirée de l'historique."); }});
     first.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"><path d="M7 7l10 10M17 7 7 17"/></svg>';
     if(!okDel) first.style.visibility="hidden";
-    const rs=el("button",{class:"res-y",type:"button","aria-label":"Remettre « "+t.titre+" » à faire",title:"Restaurer",onclick:ev=>restoreTask(t,ev.currentTarget)});
+    const rs=el("button",{class:"res-y",type:"button","aria-label":"Remettre « "+t.titre+" » à faire",title:"Restaurer",onclick:async ev=>{ const b=ev.currentTarget, sc=b.closest(".view"); await rowOut(b.closest(".item"),"res"); restoreTask(t,sc); }});
     rs.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>';
     if(S.readOnly||!meId()) rs.style.visibility="hidden";
     first=el("span",{class:"hist-acts"},rs,first); }
@@ -4319,12 +4319,10 @@ function applyFlip(){
   const F=S.flip; if(!F) return; const el0=performance.now()-F.t0; if(el0>1200){ S.flip=null; return; }
   const ease="cubic-bezier(.22,.9,.24,1)";
   for(const r of F.scope.querySelectorAll(".item[data-key]")){ const b=F.before.get(r.dataset.key), top=r.getBoundingClientRect().top; let a=null;
-    if(r.dataset.key===F.key){ r.style.zIndex="3";
-      const dy=b!=null?b-top:12;
-      a=r.animate([{transform:"translate3d(0,"+dy+"px,0) scale(.98)",boxShadow:"0 14px 30px rgba(0,0,0,.22)"},{transform:"translate3d(0,0,0) scale(1.015)",boxShadow:"0 10px 24px rgba(0,0,0,.16)",offset:.8},{transform:"translate3d(0,0,0) scale(1)",boxShadow:"0 2px 0 var(--shadow)"}],{duration:F.dur,easing:ease});
+    if(r.dataset.key===F.key){
+      a=r.animate([{transform:"translate3d(0,-16px,0) scale(.97)",opacity:0},{transform:"translate3d(0,0,0) scale(1)",opacity:1}],{duration:380,easing:ease,fill:"backwards"});
       const tint=document.createElement("span"); tint.className="row-tint res"; r.appendChild(tint);
-      const ta=tint.animate([{opacity:1},{opacity:1,offset:.5},{opacity:0}],{duration:1100,easing:"ease-out",fill:"forwards"}); ta.currentTime=el0; ta.finished.then(()=>tint.remove()).catch(()=>{});
-      a.finished.then(()=>{ r.style.zIndex=""; }).catch(()=>{}); }
+      const ta=tint.animate([{opacity:1},{opacity:1,offset:.4},{opacity:0}],{duration:1000,easing:"ease-out",fill:"forwards"}); ta.currentTime=el0; ta.finished.then(()=>tint.remove()).catch(()=>{}); }
     else if(b==null) a=r.animate([{opacity:0},{opacity:1}],{duration:260,easing:"ease-out"});
     else { const dy=b-top; if(Math.abs(dy)>.5) a=r.animate([{transform:"translate3d(0,"+dy+"px,0)"},{transform:"translate3d(0,0,0)"}],{duration:420,easing:ease}); }
     if(a) a.currentTime=el0; }
@@ -4332,13 +4330,13 @@ function applyFlip(){
 async function restoreTask(t,btn){
   if(!S.db||!needMe()) return;
   const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const key=(t.prive?"ptaches:":"taches:")+t.id, scope=(btn&&btn.closest(".view"))||document.body;
+  const key=(t.prive?"ptaches:":"taches:")+t.id, scope=(btn&&(btn.classList&&btn.classList.contains("view")?btn:btn.closest&&btn.closest(".view")))||document.body;
   const old={fait:t.fait,faitPar:t.faitPar,faitLe:t.faitLe,nextMsg:t.nextMsg};
-  const before=reduce?null:new Map([...scope.querySelectorAll(".item[data-key]")].map(r=>[r.dataset.key,r.getBoundingClientRect().top]));
+  const before=reduce?null:new Map([...scope.querySelectorAll(".item[data-key]")].filter(r=>r.dataset.key!==key&&r.offsetParent).map(r=>[r.dataset.key,r.getBoundingClientRect().top]));
   S.flip=null; Object.assign(t,{fait:false,faitPar:null,faitLe:null,nextMsg:null});
+  const de=document.documentElement; de.style.overflowAnchor="none"; clearTimeout(S.flipAnchorT); S.flipAnchorT=setTimeout(()=>{ de.style.overflowAnchor=""; },1400);
   renderTaskViews();
-  if(before){ const r=scope.querySelector('.item[data-key="'+key+'"]'), b0=before.get(key); let dur=600; if(r&&b0!=null) dur=Math.min(720,380+Math.abs(b0-r.getBoundingClientRect().top)*.35);
-    S.flip={before,key,scope,t0:performance.now(),dur}; applyFlip(); }
+  if(before){ S.flip={before,key,scope,t0:performance.now()}; applyFlip(); }
   try{ await colFor(t).doc(t.id).update({fait:false,faitPar:null,faitLe:null,nextMsg:null}); }
   catch(e){ S.flip=null; Object.assign(t,old); renderTaskViews(); writeErr(e); }
 }
