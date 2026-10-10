@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 19:28";</script>
+<script>window.COCOON_BUILD="10/10 19:36";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2011,6 +2011,11 @@ html,body{touch-action:pan-x pan-y}
 /* sélection : seule la case touchée fait le petit « pop », pas les autres déjà cochées */
 .item .check.sel{animation:none}.item .check.sel.just{animation:pop .28s cubic-bezier(.3,1.8,.5,1)}
 .c-item.sel .c-box{animation:none}.c-item.sel.just .c-box{animation:pop .28s cubic-bezier(.3,1.8,.5,1)}
+
+/* comportement d'app : pas de sélection / copie / menu au appui long, sauf dans les champs de saisie */
+html,body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+img,svg,a{-webkit-user-drag:none;-webkit-touch-callout:none}
+input,textarea,select,[contenteditable="true"]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
