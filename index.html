@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 16:24";</script>
+<script>window.COCOON_BUILD="10/10 16:28";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3409,7 +3409,6 @@ function renderWeek(){
   const days=new Set(all.filter(t=>t.fait&&t.faitLe).map(t=>{ const d=new Date(t.faitLe); d.setHours(0,0,0,0); return d.getTime(); }));
   let streak=0; let d=today().getTime(); if(!days.has(d)) d-=864e5; while(days.has(d)){ streak++; d-=864e5; }
   const top=el("div",{class:"wk-top"},el("h2",{text:"Ta semaine"}));
-  if(streak>=1){ const sk=el("span",{class:"wk-streak"}); sk.innerHTML=FLAME; sk.append(streak+" jour"+(streak>1?"s":"")+" d'affilée"); top.append(sk); }
   w.append(top);
   const fill=el("div",{class:"wk-fill"}); if(goal) w.append(el("div",{class:"wk-bar",role:"progressbar","aria-valuemin":"0","aria-valuemax":String(goal),"aria-valuenow":String(done.length)},fill));
   if(S.animDone&&S.animDone.week) fill.style.width=pct+"%"; else { S.animDone=Object.assign(S.animDone||{},{week:1}); requestAnimationFrame(()=>requestAnimationFrame(()=>{ fill.style.width=pct+"%"; })); }
