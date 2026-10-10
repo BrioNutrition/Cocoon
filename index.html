@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 20:53";</script>
+<script>window.COCOON_BUILD="10/10 21:01";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2021,6 +2021,23 @@ input,textarea,select,[contenteditable="true"]{-webkit-user-select:text;user-sel
 
 .wizard .mate-row.pet{grid-template-columns:minmax(0,1fr) auto}.wizard .mate-row.pet:not(:has(.mate-x)){grid-template-columns:minmax(0,1fr)}
 .wz-pets+.wz-pets{margin-top:18px}
+
+/* Recadrage photo */
+.crop-bg{position:fixed;inset:0;z-index:200;background:rgba(8,7,14,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:grid;place-items:center;padding:16px;opacity:0;transition:opacity .2s}
+.crop-bg.on{opacity:1}
+.crop{width:min(400px,100%);background:var(--surface);color:var(--ink);border-radius:26px;padding:18px 16px 16px;display:flex;flex-direction:column;gap:14px;box-shadow:0 24px 60px rgba(0,0,0,.35);transform:translateY(12px) scale(.98);transition:transform .25s cubic-bezier(.2,.9,.3,1)}
+.crop-bg.on .crop{transform:none}
+.crop h3{margin:0;font-size:18px;font-weight:800;text-align:center}
+.crop p{margin:-8px 0 0;text-align:center;font-size:13px;color:var(--muted)}
+.crop-stage{position:relative;align-self:center;border-radius:20px;overflow:hidden;background:#0d0c14;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.crop-stage:active{cursor:grabbing}
+.crop-stage img{position:absolute;left:0;top:0;max-width:none;transform-origin:0 0;pointer-events:none;will-change:transform}
+.crop-ring{position:absolute;pointer-events:none;box-shadow:0 0 0 999px rgba(8,7,14,.58);border:2px solid rgba(255,255,255,.9);border-radius:18px}
+.crop-ring.round{border-radius:50%}
+.crop-zoom{display:flex;align-items:center;gap:10px;padding:0 4px}
+.crop-zoom span{font-size:16px;font-weight:800;color:var(--muted);width:16px;text-align:center}
+.crop-zoom input{flex:1;accent-color:var(--mark)}
+.crop-acts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -2725,6 +2742,42 @@ function openSelfEditor(){
   setTab("fiche"); buildEditor();
 }
 function refreshPreview(){ const p=$("fPreview"); p.innerHTML=""; p.append(profileCard(Object.assign({id:S.edit.id||"_new"},S.edit.d))); }
+/* Recadrage : glisser pour déplacer, pincer / molette / curseur pour zoomer. Renvoie un canvas carré (ou null si annulé). */
+function cropImage(file,o){ o=o||{}; const out=o.out||512, round=o.round!==false;
+  return new Promise(res=>{ let url; try{ url=URL.createObjectURL(file); }catch(_){ res(null); return; }
+    const im=new Image(); im.onerror=()=>{ URL.revokeObjectURL(url); res(null); };
+    im.onload=()=>{ const iw=im.naturalWidth, ih=im.naturalHeight; if(!iw||!ih){ im.onerror(); return; }
+      const W=Math.min(340,innerWidth-64), C=W-36, s0=Math.max(C/iw,C/ih); let z=1, tx=0, ty=0;
+      const bg=el("div",{class:"crop-bg"}), box=el("div",{class:"crop",role:"dialog","aria-label":o.title||"Recadrer la photo"});
+      const stage=el("div",{class:"crop-stage",style:"width:"+W+"px;height:"+W+"px"}), img=el("img",{alt:"",draggable:"false"}); img.src=url;
+      img.style.width=iw+"px"; img.style.height=ih+"px";
+      const ring=el("div",{class:"crop-ring"+(round?" round":""),style:"left:"+(W-C)/2+"px;top:"+(W-C)/2+"px;width:"+C+"px;height:"+C+"px"});
+      stage.append(img,ring);
+      const zr=el("input",{type:"range",min:"1",max:"4",step:"0.01","aria-label":"Zoom"}); zr.value="1";
+      const clamp=()=>{ const sc=s0*z, mx=Math.max(0,(iw*sc-C)/2), my=Math.max(0,(ih*sc-C)/2); tx=Math.max(-mx,Math.min(mx,tx)); ty=Math.max(-my,Math.min(my,ty)); };
+      const draw=()=>{ clamp(); const sc=s0*z; img.style.transform="translate3d("+(W/2-iw*sc/2+tx)+"px,"+(W/2-ih*sc/2+ty)+"px,0) scale("+sc+")"; zr.value=String(z); };
+      const setZ=(nz,cx,cy)=>{ nz=Math.max(1,Math.min(4,nz)); const k=nz/z; if(cx!=null){ const dx=cx-W/2, dy=cy-W/2; tx=dx-(dx-tx)*k; ty=dy-(dy-ty)*k; } else { tx*=k; ty*=k; } z=nz; draw(); };
+      zr.addEventListener("input",()=>setZ(parseFloat(zr.value)));
+      const P=new Map(); let last=null;
+      const loc=e=>{ const r=stage.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; };
+      stage.addEventListener("pointerdown",e=>{ stage.setPointerCapture&&stage.setPointerCapture(e.pointerId); P.set(e.pointerId,loc(e)); last=null; e.preventDefault(); });
+      stage.addEventListener("pointermove",e=>{ if(!P.has(e.pointerId)) return; const prev=P.get(e.pointerId), p=loc(e); P.set(e.pointerId,p);
+        if(P.size===1){ tx+=p.x-prev.x; ty+=p.y-prev.y; draw(); }
+        else if(P.size===2){ const [a,b]=[...P.values()], d=Math.hypot(a.x-b.x,a.y-b.y), mid={x:(a.x+b.x)/2,y:(a.y+b.y)/2};
+          if(last){ tx+=mid.x-last.mid.x; ty+=mid.y-last.mid.y; setZ(z*d/last.d,mid.x,mid.y); } last={d,mid}; } });
+      const up=e=>{ P.delete(e.pointerId); last=null; }; stage.addEventListener("pointerup",up); stage.addEventListener("pointercancel",up);
+      stage.addEventListener("wheel",e=>{ e.preventDefault(); const p=loc(e); setZ(z*Math.exp(-e.deltaY*.0015),p.x,p.y); },{passive:false});
+      const close=v=>{ bg.classList.remove("on"); document.removeEventListener("keydown",kd); setTimeout(()=>{ bg.remove(); URL.revokeObjectURL(url); },200); res(v); };
+      const kd=e=>{ if(e.key==="Escape") close(null); }; document.addEventListener("keydown",kd);
+      const ok=()=>{ const sc=s0*z, c=document.createElement("canvas"); c.width=c.height=out; const g=c.getContext("2d"); g.imageSmoothingQuality="high";
+        const sx=(iw*sc/2-tx-C/2)/sc, sy=(ih*sc/2-ty-C/2)/sc, sw=C/sc; g.fillStyle="#fff"; g.fillRect(0,0,out,out); g.drawImage(im,sx,sy,sw,sw,0,0,out,out); close(c); };
+      box.append(el("h3",{text:o.title||"Recadrer la photo"}),el("p",{text:"Fais glisser pour placer, pince ou utilise le curseur pour zoomer."}),stage,
+        el("div",{class:"crop-zoom"},el("span",{text:"−"}),zr,el("span",{text:"+"})),
+        el("div",{class:"crop-acts"},el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>close(null)}),el("button",{type:"button",class:"btn",id:"cropOk",text:"Valider",onclick:ok})));
+      bg.append(box); bg.addEventListener("click",e=>{ if(e.target===bg) close(null); }); document.body.append(bg); draw(); requestAnimationFrame(()=>bg.classList.add("on")); };
+    im.src=url; });
+}
+const canvasBlob=(c,q)=>new Promise(r=>c.toBlob(r,"image/jpeg",q||.9));
 async function shrink(file,max){
   try{ const bmp=await createImageBitmap(file); const r=Math.min(1,max/Math.max(bmp.width,bmp.height)); const c=document.createElement("canvas"); c.width=Math.round(bmp.width*r); c.height=Math.round(bmp.height*r); c.getContext("2d").drawImage(bmp,0,0,c.width,c.height); const b=await new Promise(res=>c.toBlob(res,"image/jpeg",.85)); if(b) return b; }catch(_){}
   return file;
@@ -2776,7 +2829,7 @@ function buildEditor(){
   // Photo
   const phStatus=el("span",{class:"upl"});
   const phIn=el("input",{type:"file",id:"fiPhoto",accept:"image/png,image/jpeg,image/webp","aria-label":"Choisir une photo"});
-  phIn.addEventListener("change",async()=>{ const file=phIn.files[0]; if(!file) return; phStatus.textContent="Envoi de la photo…"; try{ d.photo=await uploadImg(file,640); phStatus.textContent="Photo ajoutée."; refreshPreview(); buildEditor(); }catch(e){ phStatus.textContent=""; imgErr(e); } });
+  phIn.addEventListener("change",async()=>{ const file0=phIn.files[0]; phIn.value=""; if(!file0) return; const cv=await cropImage(file0,{out:640,title:"Recadrer ta photo"}); if(!cv) return; const bl=await canvasBlob(cv,.9); const file=bl?new File([bl],"photo.jpg",{type:"image/jpeg"}):file0; phStatus.textContent="Envoi de la photo…"; try{ d.photo=await uploadImg(file,640); phStatus.textContent="Photo ajoutée."; refreshPreview(); buildEditor(); }catch(e){ phStatus.textContent=""; imgErr(e); } });
   const phPick=el("div",{class:"pick"},avatarFor(Object.assign({},d),56),el("span",{class:"btn ghost filebtn"},d.photo?"Changer la photo":"Choisir une photo",phIn));
   if(d.photo) phPick.append(el("button",{class:"btn ghost",type:"button",text:"Retirer",onclick:()=>{ d.photo=null; refreshPreview(); buildEditor(); }}));
   phPick.append(phStatus);
@@ -4631,7 +4684,7 @@ function renderCocPanel(){
     p.append(pk);
     if(S.cocPlus){ const more=el("div",{class:"coc-more"});
       const fileOpt=(label,icon,capture)=>{ const lb=el("label",{class:"coc-mo"}); const ic=el("span",{class:"coc-mo-ic",text:icon}); const fi=el("input",{type:"file",accept:"image/*",class:"coc-file"}); if(capture) fi.setAttribute("capture",capture);
-        fi.addEventListener("change",async()=>{ const f=fi.files&&fi.files[0]; if(!f) return; try{ await cocSetImg("photo",await cocShrink(f)); }catch(_){ toast("Cette image n'a pas pu être utilisée."); } }); lb.append(ic,el("span",{text:label}),fi); return lb; };
+        fi.addEventListener("change",async()=>{ const f=fi.files&&fi.files[0]; fi.value=""; if(!f) return; try{ const cv=await cropImage(f,{out:240,title:"Recadrer l'image du cocon"}); if(!cv) return; await cocSetImg("photo",cv.toDataURL("image/jpeg",.85)); }catch(_){ toast("Cette image n'a pas pu être utilisée."); } }); lb.append(ic,el("span",{text:label}),fi); return lb; };
       more.append(fileOpt("Prendre une photo","📷","user"),fileOpt("Choisir une photo","🖼️",null));
       const ew=el("label",{class:"coc-mo emo-in"},el("span",{class:"coc-mo-ic",text:"😊"})); const ei=el("input",{type:"text",inputmode:"text",maxlength:"8",placeholder:"Mon emoji","aria-label":"Taper un emoji"});
       const okE=el("button",{type:"button",class:"coc-mo-ok",text:"OK",onclick:()=>{ const v=(ei.value||"").trim(); const seg=v?[...(window.Intl&&Intl.Segmenter?new Intl.Segmenter("fr",{granularity:"grapheme"}).segment(v):v)].map(x=>x.segment||x)[0]:""; if(!seg||!/\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(seg)){ toast("Tape un emoji 🙂"); ei.focus(); return; } cocSetImg("emoji",seg); }});
@@ -5499,7 +5552,7 @@ function openPalette(){ const was={pal:palGet(),theme:curTheme(),sec:{secNom:(se
   const draw=()=>{ pn.innerHTML="";
     pn.append(el("div",{class:"pal-h"},el("b",{text:"Personnaliser"}),el("button",{type:"button",class:"np-x","aria-label":"Fermer",text:"×",onclick:()=>close(false)})));
     { const I=secIdent(cur.sec); const fi=el("input",{type:"file",accept:"image/*",hidden:true});
-      fi.addEventListener("change",async()=>{ const f=fi.files[0]; if(!f) return; try{ cur.sec.secPhoto=await squareImg(f,160); applySecIdent(cur.sec); draw(); }catch(_){ toast("Cette image n'a pas pu être lue."); } });
+      fi.addEventListener("change",async()=>{ const f=fi.files[0]; fi.value=""; if(!f) return; try{ const cv=await cropImage(f,{out:160,title:"Recadrer la photo de "+(secIdent(cur.sec).nom||"ton secrétaire")}); if(!cv) return; cur.sec.secPhoto=cv.toDataURL("image/jpeg",.85); applySecIdent(cur.sec); draw(); }catch(_){ toast("Cette image n'a pas pu être lue."); } });
       const nm=el("input",{type:"text",id:"palSecNom",maxlength:"20",placeholder:"Cocoony","aria-label":"Nom du secrétaire"}); nm.value=cur.sec.secNom==="Cocoony"?"":cur.sec.secNom||""; nm.addEventListener("input",()=>{ cur.sec.secNom=nm.value; applySecIdent(cur.sec); });
       const pics=el("div",{class:"pal-pics"});
       const opt=(val,src,lab)=>{ const on=(cur.sec.secPhoto||null)===val; const b=el("button",{type:"button",class:"pal-pic"+(on?" on":""),"aria-label":lab,"aria-pressed":String(on),onclick:()=>{ cur.sec.secPhoto=val; applySecIdent(cur.sec); draw(); }}); b.append(el("img",{alt:"",src})); return b; };
