@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 16:43";</script>
+<script>window.COCOON_BUILD="10/10 16:48";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1945,6 +1945,8 @@ html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior
 .wk-dots i.on{background:#3CC37A;opacity:1}.wk-dots i.late{background:#FF7A5C;opacity:1}
 .wk-d.now .wk-dots i{background:rgba(28,27,46,.35);opacity:1}.wk-d.now .wk-dots i.on{background:#1C1B2E}.wk-d.now .wk-dots i.late{background:#B3261E}
 .wk-card .wk-sub{border-top:0;padding-top:0;margin-top:4px}
+@media (prefers-reduced-motion:no-preference){.b-curve .acc-dot{animation:accBeat 1.6s ease-in-out infinite}}
+@keyframes accBeat{0%,100%{transform:scale(1);box-shadow:0 0 0 3px rgba(255,156,128,.3)}50%{transform:scale(1.18);box-shadow:0 0 0 7px rgba(255,156,128,0)}}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3772,8 +3774,10 @@ function budgetCurve(off){
   const chip=(k,l,c)=>el("button",{type:"button",class:"bc-chip","aria-pressed":String(B.f===k),style:c?"--c:"+c:"",onclick:()=>{ B.f=B.f===k?"all":k; renderBudget(); }},c?el("i"):null,l);
   chips.append(chip("all","Tout"));
   for(const c of cc) chips.append(chip("c:"+c,(BCAT[c]||BCAT.autre).nom,(BCAT[c]||BCAT.autre).c));
-  if(adults().length>1) for(const m of adults()) chips.append(chip("p:"+m.id,m.id===me?"Toi":m.nom));
-  if(cc.length||adults().length>1) wrap.append(chips);
+  const ppl=adults().filter(m=>S.depenses.some(d=>d.type!=="rembt"&&(d.payePar===m.id||shareOf(d,m.id)>0))||(S.abos||[]).some(x=>x.actif!==false&&(x.payePar===m.id||shareOf(x,m.id)>0)));
+  if(fWho&&!ppl.some(m=>m.id===fWho)){ B.f="all"; }
+  if(ppl.length>1) for(const m of ppl) chips.append(chip("p:"+m.id,m.id===me?"Toi":m.nom));
+  if(cc.length||ppl.length>1) wrap.append(chips);
   // résumé en une phrase
   if(cmpS&&tot&&cAt){ const diff=tot-cAt; if(Math.abs(diff)>=500){ let best=null;
       for(const c of new Set(Object.keys(cur.cats).concat(Object.keys(cmpS.cats)))){ const dv=(cur.cats[c]?cur.cats[c][day]:0)-(cmpS.cats[c]?cmpS.cats[c][Math.min(day,cmpS.n)]:0); if(!best||(diff>0?dv>best.v:dv<best.v)) best={c,v:dv}; }
