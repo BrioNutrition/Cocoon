@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 11:41";</script>
+<script>window.COCOON_BUILD="10/10 16:24";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1927,6 +1927,11 @@ html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior
 .pal-pic.up span{font-size:22px;font-weight:700;color:var(--muted)}
 .pal-panel{max-height:calc(100vh - 32px);overflow-y:auto}
 .sec-big,.sec-av{object-fit:cover}
+.wk-card{background:var(--surface);border-radius:22px;box-shadow:0 2px 0 var(--shadow);padding:16px;gap:12px!important}
+.wk-card .week{background:none;box-shadow:none;padding:0;border-radius:0}
+.wk-sub{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:800;font-size:15px;border-top:1px solid var(--line);padding-top:12px;margin-top:2px}
+.wk-sub .muted{font-size:13px;font-weight:600}
+.wk-card .fridge .item{background:var(--bg);box-shadow:none}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -1995,12 +2000,12 @@ html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior
       </form>
       <div class="sec-chips" id="secChips"></div>
     </div>
-    <div class="sub" id="fridgeWrap">
-      <div class="sec-title"><h2>À faire bientôt</h2><span class="muted" style="font-size:13px" id="fridgeCount"></span></div>
+    <div class="sub wk-card" id="fridgeWrap">
+      <div class="week" id="week"></div>
+      <div class="wk-sub"><span>À faire bientôt</span><span class="muted" id="fridgeCount"></span></div>
       <div class="list fridge" id="fridge"></div>
     </div>
     <div class="sub" id="rdvWrap"></div>
-    <div class="week" id="week"></div>
     <div id="accBudget"></div>
     <div id="accWho"></div>
   </section>
@@ -2905,6 +2910,15 @@ function renderFeed(){
     row.append(when); f.append(row);
   }
 }
+function monthEst(){
+  const t=today(), Y=t.getFullYear(), M=t.getMonth(), day=t.getDate(), dim=new Date(Y,M+1,0).getDate();
+  const ms=new Date(Y,M,1).getTime(), pms=new Date(Y,M-1,1).getTime(); let tot=0, prevAfter=0, prevAny=0, curVar=0;
+  for(const d of S.depenses){ if(d.type==="rembt"||!d.date) continue; const x=parse(d.date), tt=x.getTime();
+    if(tt>=ms&&x.getMonth()===M){ tot+=d.montant; if(!d.auto) curVar+=d.montant; } else if(tt>=pms&&tt<ms){ prevAny+=d.montant; if(!d.auto&&x.getDate()>day) prevAfter+=d.montant; } }
+  let up=0; for(const a of (S.abos||[])){ if(a.actif===false) continue; const n=subNext(a); if(!n) continue; const x=parse(n); if(x>t&&x.getMonth()===M&&x.getFullYear()===Y) up+=a.montant; }
+  const rest=prevAny?prevAfter:(day>=5?curVar/day*(dim-day):0);
+  return {tot,est:tot||up?Math.round(tot+up+rest):null,nm:new Intl.DateTimeFormat("fr-FR",{month:"long"}).format(t)}; }
+const eurR=v=>money(Math.round(v/100)*100).replace(/,00\s?€/," €");
 function renderSecretary(){
   { const sd=$("secDay"); if(sd) sd.textContent="Aujourd'hui"; }
   const list=$("secList"); list.innerHTML=""; renderSecChips(); renderSecAns();
@@ -2923,6 +2937,7 @@ function renderSecretary(){
   for(const r of late.slice(0,3)) list.append(el("li",{text:r.titre+(r.kind==="Perso"?" (perso)":"")+" — "+dueLabel(r.date)}));
   for(const r of week.slice(0,4)) list.append(el("li",{text:r.titre+(r.kind==="Perso"?" (perso)":"")+" — "+dueLabel(r.date)}));
   for(const d of docsSoon.slice(0,2)) if(!week.some(w=>w.ref===d)) list.append(el("li",{text:d.titre+" expire "+dueLabel(d.expire)}));
+  { const E=monthEst(); if(E.tot||E.est) list.append(el("li",{},el("button",{type:"button",class:"sec-link",text:"Budget "+de(E.nm)+" : "+eurR(E.tot)+" dépensés"+(E.est&&E.est>E.tot?" · fin de mois ≈ "+eurR(E.est):""),onclick:()=>{ setTab("budget"); window.scrollTo({top:0}); }}))); }
   if(m&&(minePerso||mineFoyer)) list.append(el("li",{text:"Dans ton espace : "+[minePerso?minePerso+" perso":null,mineFoyer?mineFoyer+" confiée"+(mineFoyer>1?"s":"")+" par le foyer":null].filter(Boolean).join(" et ")}));
   { const ce=(S.repas||[]).find(r=>r.date===iso(today())&&r.slot==="soir"&&r.plat); if(ce){ const who=[]; if(ce.cuisine&&membre(ce.cuisine).nom) who.push(ce.cuisine===meId()?"c'est toi qui cuisines":membre(ce.cuisine).nom+" cuisine"); if(ce.vaisselle&&membre(ce.vaisselle).nom) who.push(ce.vaisselle===meId()?"tu fais la vaisselle":membre(ce.vaisselle).nom+" fait la vaisselle"); list.append(el("li",{text:"Ce soir au menu : "+ce.plat+(who.length?" ("+who.join(", ")+")":"")})); } }
   { const ss=cSession(); if(ss&&ss.par!==meId()) list.append(el("li",{text:"🛒 "+membre(ss.par).nom+" fait les courses en ce moment : ajoute vite ce qui manque"})); }
@@ -3393,13 +3408,13 @@ function renderWeek(){
   // série de jours avec au moins une tâche faite
   const days=new Set(all.filter(t=>t.fait&&t.faitLe).map(t=>{ const d=new Date(t.faitLe); d.setHours(0,0,0,0); return d.getTime(); }));
   let streak=0; let d=today().getTime(); if(!days.has(d)) d-=864e5; while(days.has(d)){ streak++; d-=864e5; }
-  const top=el("div",{class:"wk-top"},el("h2",{text:"Ta semaine dans le cocon"}));
+  const top=el("div",{class:"wk-top"},el("h2",{text:"Ta semaine"}));
   if(streak>=1){ const sk=el("span",{class:"wk-streak"}); sk.innerHTML=FLAME; sk.append(streak+" jour"+(streak>1?"s":"")+" d'affilée"); top.append(sk); }
   w.append(top);
-  const fill=el("div",{class:"wk-fill"}); w.append(el("div",{class:"wk-bar",role:"progressbar","aria-valuemin":"0","aria-valuemax":String(goal),"aria-valuenow":String(done.length)},fill));
+  const fill=el("div",{class:"wk-fill"}); if(goal) w.append(el("div",{class:"wk-bar",role:"progressbar","aria-valuemin":"0","aria-valuemax":String(goal),"aria-valuenow":String(done.length)},fill));
   if(S.animDone&&S.animDone.week) fill.style.width=pct+"%"; else { S.animDone=Object.assign(S.animDone||{},{week:1}); requestAnimationFrame(()=>requestAnimationFrame(()=>{ fill.style.width=pct+"%"; })); }
   const left=dueWeek;
-  const msg=!goal?"Rien de prévu cette semaine, profites-en !":left===0?"Tout ce qui était prévu est fait, bravo !":done.length===0?(left===1?"1 chose prévue cette semaine.":left+" choses prévues cette semaine."):left===1?"Plus qu'une pour boucler la semaine !":pct>=50?"Plus que "+left+", vous y êtes presque.":"Bon début, encore "+left+" à faire.";
+  const msg=!goal?"Rien à cocher d'ici dimanche.":left===0?"Tout ce qui était prévu est fait, bravo !":done.length===0?(left===1?"1 chose prévue cette semaine.":left+" choses prévues cette semaine."):left===1?"Plus qu'une pour boucler la semaine !":pct>=50?"Plus que "+left+", vous y êtes presque.":"Bon début, encore "+left+" à faire.";
   w.append(el("div",{class:"wk-msg"},el("span",{text:msg}),el("b",{text:goal?done.length+" / "+goal:""})));
   const sc={}; for(const t of done){ const who=t.prive?me:t.faitPar; if(who) sc[who]=(sc[who]||0)+1; }
   const ranks=Object.entries(sc).sort((a,b)=>b[1]-a[1]).slice(0,3);
@@ -5120,7 +5135,7 @@ const secOn=()=>!!S.sample&&!S.sampleOff;
 const SEC_BCATS=BCATS.map(c=>c.id).join("|");
 function secRules(){
   const me=meM(), admin=isAdmin();
-  return "Tu t'appelles Cocoony : tu es le secrétaire de Cocoon, l'application qui organise le foyer"+(S.foyerNom?" de la famille "+S.foyerNom:"")+". Tu parles à "+(me?me.nom:"un membre du foyer")+(admin?" (admin du foyer)":"")+".\n"+
+  return "Tu t'appelles "+secIdent().nom+" : tu es le secrétaire de Cocoon, l'application qui organise le foyer"+(S.foyerNom?" de la famille "+S.foyerNom:"")+". Tu parles à "+(me?me.nom:"un membre du foyer")+(admin?" (admin du foyer)":"")+".\n"+
   "Règles :\n"+
   "- Français, tutoiement, ton chaleureux et simple. Va droit au but : 1 à 5 phrases, ou une courte liste à puces (« - »). Pas de titres, pas de gras, pas d'emoji.\n"+
   "- Appuie-toi UNIQUEMENT sur les données du foyer fournies. Si une info manque, dis-le simplement et propose de l'ajouter. N'invente jamais de date, de montant ou de nom.\n"+
@@ -5247,7 +5262,7 @@ function secHowTo(raw){
   const has=(...k)=>k.some(x=>q.includes(x));
   const T=(intro,steps,act)=>secA(intro,steps.map((t,i)=>({t:(i+1)+". "+t})),act?[act]:[]);
   if(has("que peux tu","tu sais faire","tu peux faire")||(has(" aide")&&q.trim().split(" ").length<=3))
-    return secA("Je suis Cocoony, ton secrétaire. Je peux :",[{t:"te dire ce qui est prévu, en retard ou à renouveler"},{t:"ajouter tout seul une tâche, un rendez-vous, un repas, des courses ou une dépense : écris par exemple « Ajoute un rendez-vous chez le dentiste vendredi à 14h »"},{t:"t'expliquer comment utiliser Cocoon : « Comment ranger un papier ? »"},{t:"répondre sur le budget, les papiers, la maison, les poubelles…"}]);
+    return secA("Je suis "+secIdent().nom+", ton secrétaire. Je peux :",[{t:"te dire ce qui est prévu, en retard ou à renouveler"},{t:"ajouter tout seul une tâche, un rendez-vous, un repas, des courses ou une dépense : écris par exemple « Ajoute un rendez-vous chez le dentiste vendredi à 14h »"},{t:"t'expliquer comment utiliser Cocoon : « Comment ranger un papier ? »"},{t:"répondre sur le budget, les papiers, la maison, les poubelles…"}]);
   if(has("papier","document","facture","contrat","passeport","carte grise","attestation","scanner","photo"))
     return T("Pour ranger un papier :",["Touche le + en bas, puis « Un papier » (ou va dans Foyer › Papiers).","Donne-lui un nom, par exemple « Bail » ou « Carte grise ».","Choisis la catégorie et, si besoin, la date d'expiration : je te préviendrai avant.","Ajoute la photo ou le PDF, puis touche « Ranger »."],{l:"Ranger un papier",run:cocoGo("documents",null,()=>{ try{ $("dTitle").focus(); }catch(_){} })});
   if(has("rendez","rdv"))
@@ -5894,7 +5909,7 @@ function contactFormEl(){
     if(!tel||String(tel).replace(/\D/g,"").length<4){ toast("Indique un numéro de téléphone."); tl.focus(); return; }
     const doc={role:role||null,nom:nom||null,tel,note:(F.note||"").trim()||null,c:F.c||"#C9C7DD"};
     try{ if(F.id) await S.db.collection("contacts").doc(F.id).update(Object.assign(doc,{modifiePar:meId(),modifieLe:Date.now()})); else await S.db.collection("contacts").add(Object.assign(doc,{creePar:meId(),creeLe:Date.now()}));
-      S.ctForm=null; toast(F.id?"Contact modifié.":"Contact ajouté : Cocoony le retrouvera si tu lui demandes."); renderContacts(); }catch(err){ writeErr(err); } });
+      S.ctForm=null; toast(F.id?"Contact modifié.":"Contact ajouté : "+secIdent().nom+" le retrouvera si tu lui demandes."); renderContacts(); }catch(err){ writeErr(err); } });
   return f;
 }
 function secContactQ(raw){
@@ -5943,11 +5958,11 @@ function bilanAuto(){
 }
 /* ===== Visite guidée après le questionnaire ===== */
 const TOUR=[
-  {sel:".secretary",t:"Voici ton secrétaire",d:"Ton secrétaire du foyer. Demande-lui « le numéro du véto », « le bilan du mois » ou d'ajouter un rendez-vous, une course, une dépense…"},
-  {sel:"#fridge",alt:"#rdvWrap",t:"Tes rappels",d:"Tout ce qui approche arrive ici : entretiens, papiers, poubelles. Coche quand c'est fait."},
-  {sel:'.tab[data-tab="budget"]',t:"Le Budget",d:"Tes abonnements et factures y sont déjà, avec un rappel avant chaque prélèvement."},
-  {sel:'.tab[data-tab="foyer"]',t:"Le Foyer",d:"Les tâches, les courses, les repas, les papiers et la maison : poubelles, équipements, contacts utiles."},
-  {sel:"#navAdd",t:"Le +",d:"Pour ajouter n'importe quoi en un geste. Bonne installation dans ton cocon !"}];
+  {sel:".secretary",t:"Voici %N",d:"Ton secrétaire du foyer. Demande-lui « le numéro du véto », « le bilan du mois », ou d'ajouter un rendez-vous, une course, une dépense…"},
+  {sel:"#navAdd",t:"Ton réflexe : le +",d:"Une tâche, une course, une dépense, un rendez-vous, un papier : tout s'ajoute d'ici, en un geste, depuis n'importe quel écran."},
+  {sel:"#fridgeWrap",alt:"#rdvWrap",t:"Ta semaine",d:"Tes progrès et tout ce qui approche : entretiens, papiers, poubelles. Coche quand c'est fait."},
+  {sel:'.tab[data-tab="budget"]',t:"Le Budget",d:"Tes abonnements et factures y sont déjà, avec la courbe du mois et l'estimation de fin de mois."},
+  {sel:'.tab[data-tab="foyer"]',t:"Le Foyer",d:"Les tâches, les courses, les repas, les papiers et la maison : poubelles, équipements, contacts utiles. Bonne installation dans ton cocon !"}];
 function startTour(force){
   if(!force&&((S.prefs||{}).tourVu||S.tourOn||window.__noTour)) return; if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches&&!force){}
   S.tourOn=true; let i=0; const noScroll=e=>{ if(!e.target.closest||!e.target.closest(".tour-card")) e.preventDefault(); }; document.documentElement.classList.add("tour-lock"); window.addEventListener("wheel",noScroll,{passive:false}); window.addEventListener("touchmove",noScroll,{passive:false});
@@ -5962,7 +5977,7 @@ function startTour(force){
     let top=below+ch<innerHeight-12?below:(above>12?above:Math.max(12,innerHeight-ch-12));
     card.style.transform="translateX(-50%)"; card.style.top=top+"px"; }
   function show(){ const st=TOUR[i], e=target(st);
-    card.innerHTML=""; card.append(el("span",{class:"tour-n",text:(i+1)+" / "+TOUR.length}),el("b",{text:st.t}),el("p",{text:st.d}),
+    card.innerHTML=""; card.append(el("span",{class:"tour-n",text:(i+1)+" / "+TOUR.length}),el("b",{text:st.t.replace("%N",secIdent().nom)}),el("p",{text:st.d.replace("%N",secIdent().nom)}),
       el("div",{class:"tour-btns"},el("button",{type:"button",class:"btn ghost",text:i===TOUR.length-1?"Fermer":"Passer",onclick:end}),el("button",{type:"button",class:"btn tour-next",text:i===TOUR.length-1?"C'est parti !":"Suivant",onclick:()=>{ if(i>=TOUR.length-1) return end(); i++; show(); }})));
     if(e&&getComputedStyle(e).position!=="fixed"){ const r=e.getBoundingClientRect(); if(r.top<80||r.bottom>innerHeight-200) window.scrollTo({top:Math.max(0,window.scrollY+r.top-120),behavior:"instant"}); } place(); requestAnimationFrame(place);
     card.classList.remove("in"); void card.offsetWidth; card.classList.add("in"); }
