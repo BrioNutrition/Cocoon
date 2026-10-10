@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 16:37";</script>
+<script>window.COCOON_BUILD="10/10 16:43";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3419,7 +3419,7 @@ function renderWeek(){
   const ws=weekStart(), all=allTasks(), td=iso(today());
   const done=all.filter(t=>t.fait&&t.faitLe>=ws), we=ws+7*864e5;
   const dueWeek=all.filter(t=>!t.fait&&t.echeance&&parse(t.echeance).getTime()<we).length, goal=done.length+dueWeek;
-  w.append(el("div",{class:"wk-top"},el("h2",{text:"Ta semaine"}),goal?el("span",{class:"wk-pill",text:done.length+" / "+goal+" faite"+(done.length>1||goal>1?"s":"")}):el("span")));
+  w.append(el("div",{class:"wk-top"},el("h2",{text:"Ta semaine"}),el("span")));
   if(!S.wkDay||S.wkDay<iso(new Date(ws))||S.wkDay>=iso(new Date(we))) S.wkDay=td;
   const fr=el("div",{class:"wk-frise",role:"tablist","aria-label":"Jours de la semaine"}), L=["L","M","M","J","V","S","D"];
   for(let i=0;i<7;i++){ const d=new Date(ws); d.setDate(d.getDate()+i); const k=iso(d);
