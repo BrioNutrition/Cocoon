@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 17:18";</script>
+<script>window.COCOON_BUILD="10/10 17:24";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1991,6 +1991,11 @@ details.b-vol>.b-vol-in{padding:0 10px 12px;display:flex;flex-direction:column;g
 .b-vol #bCatsWrap>.sec-title h2{display:none}.b-vol #bCatsWrap>.sec-title{justify-content:flex-end}
 .b-vol .sec-title h2{font-size:15px}
 .b-vol .cbars,.b-vol .b-empty{box-shadow:none}
+
+.bc-msg{flex-wrap:nowrap;align-items:flex-start;padding:9px 9px 9px 12px}.bc-msg>span:first-child{flex:1;min-width:0}
+.bc-msg.editing{flex-wrap:wrap;align-items:center}.bc-msg.editing>span:first-child{flex:none}
+.bc-msg .pencil-btn.bc-pen{width:30px;height:30px;flex:none;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:var(--hero-ink);display:grid;place-items:center;padding:0;margin:-2px 0 -2px 4px;box-shadow:none;position:static}
+.bc-msg .pencil-btn.bc-pen svg{width:15px;height:15px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3800,7 +3805,6 @@ function budgetCurve(off){
   const leg=el("div",{class:"acc-leg"},el("span",{},el("i",{class:"ln"}),nm));
   if(cmpS) leg.append(el("span",{},el("i",{class:"ln d"}),cmpShort));
   if(up.length&&!empty) leg.append(el("span",{},el("i",{class:"bc-up-l"}),"prélèvements"));
-  if(goal&&isCur) leg.append(el("span",{},el("i",{class:"bc-pace-l"}),"rythme de l'objectif"));
   if(est!=null&&!empty) leg.append(el("span",{class:"acc-estl",text:"Fin de mois ≈ "+money(Math.round(est/100)*100).replace(/,00\s?€/," €")+(upTot?" · dont "+money(upTot).replace(/,00\s?€/," €")+" prévus":"")}));
   wrap.append(leg);
   // message d'objectif
@@ -3808,9 +3812,9 @@ function budgetCurve(off){
     let msg; if(est!=null&&est>goal+500){ let k=day; while(k<dim&&estAt(k)<=goal) k++; msg=(estAt(day)>goal?"Objectif déjà dépassé de "+money(tot-goal):"Au rythme actuel, tu dépasses de "+money(Math.round((est-goal)/100)*100).replace(/,00\s?€/," €")+" vers le "+k)+"."; }
     else msg=left>0&&rest>0?"Il te reste "+money(Math.floor(rest/left/100)*100).replace(/,00\s?€/," €")+" par jour jusqu'à la fin du mois.":"Dans les clous pour l'objectif.";
     const gm=el("div",{class:"bc-msg"+(est!=null&&est>goal+500?" warn":"")},el("span",{text:"Objectif "+(goalKind==="cat"?"de la catégorie":"du mois")+" : "+eurR(goal)+". "+msg}));
-    if(canGoal) gm.append(el("button",{type:"button",class:"bc-edit",text:"Modifier",onclick:()=>{ const inp=el("input",{type:"text",inputmode:"decimal",class:"bc-gin","aria-label":"Objectif du mois en euros"}); inp.value=String(Math.round(goal/100));
+    if(canGoal) gm.append((b=>{ b.classList.add("bc-pen"); return b; })(pencilBtn(()=>{ gm.classList.add("editing"); const inp=el("input",{type:"text",inputmode:"decimal",class:"bc-gin","aria-label":"Objectif du mois en euros"}); inp.value=String(Math.round(goal/100));
       const save=async()=>{ const v=parseMoney(inp.value); try{ S.config=Object.assign({},S.config||{},{budgetMois:v||null}); await S.db.doc("foyer/config").set(S.config); }catch(err){ writeErr(err); } renderBudget(); };
-      gm.replaceChildren(el("span",{text:"Objectif du mois :"}),inp,el("span",{text:"€"}),el("button",{type:"button",class:"bc-edit",text:"OK",onclick:save}),el("button",{type:"button",class:"bc-edit ghost",text:"Retirer",onclick:()=>{ inp.value=""; save(); }})); inp.focus(); inp.select(); inp.addEventListener("keydown",e=>{ if(e.key==="Enter") save(); }); }}));
+      gm.replaceChildren(el("span",{text:"Objectif du mois :"}),inp,el("span",{text:"€"}),el("button",{type:"button",class:"bc-edit",text:"OK",onclick:save}),el("button",{type:"button",class:"bc-edit ghost",text:"Retirer",onclick:()=>{ inp.value=""; save(); }})); inp.focus(); inp.select(); inp.addEventListener("keydown",e=>{ if(e.key==="Enter") save(); }); },"Modifier l'objectif du mois")));
     wrap.append(gm); }
   else if(isCur&&!fCat&&!fWho&&isAdmin()&&!S.readOnly&&(tot||cTot)) wrap.append(el("button",{type:"button",class:"bc-setgoal",text:"+ Fixer un objectif pour le mois",onclick:async()=>{ const v=Math.max(10000,Math.ceil(((est||cTot||tot)*1.08)/10000)*10000); try{ S.config=Object.assign({},S.config||{},{budgetMois:v}); await S.db.doc("foyer/config").set(S.config); renderBudget(); }catch(err){ writeErr(err); } }}));
   // filtres
