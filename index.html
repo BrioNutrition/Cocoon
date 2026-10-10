@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 19:39";</script>
+<script>window.COCOON_BUILD="10/10 20:53";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2018,6 +2018,9 @@ img,svg,a{-webkit-user-drag:none;-webkit-touch-callout:none}
 input,textarea,select,[contenteditable="true"]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 
 .wrap.keep-top > .topbar{display:flex}
+
+.wizard .mate-row.pet{grid-template-columns:minmax(0,1fr) auto}.wizard .mate-row.pet:not(:has(.mate-x)){grid-template-columns:minmax(0,1fr)}
+.wz-pets+.wz-pets{margin-top:18px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3334,8 +3337,17 @@ function renderWizard(){
       if(a.colocs.length<6) grp.append(el("button",{type:"button",class:"btn ghost mate-add",text:"+ Ajouter un coloc",onclick:()=>{ a.colocs.push({nom:"",email:""}); W.plan=null; rerender(); setTimeout(()=>{ const x=$("wzMate"+(a.colocs.length-1)); if(x) x.focus(); },30); }}));
       grp.append(el("span",{class:"mate-hint",text:"L'e-mail est facultatif : "+MAIL_HINT()+"."}));
       box.append(grp); }
-    if(key==="animaux") for(const sp of a.animaux.filter(x=>x!=="aucun")){ const i=el("input",{type:"text",id:"wzA"+sp,placeholder:sp==="chat"?"Moka":sp==="chien"?"Rex":"Son nom"}); i.value=a.noms[sp]||""; live(i,v=>a.noms[sp]=v); i.addEventListener("input",()=>{ clearTimeout(W._soinT); W._soinT=setTimeout(()=>{ if(W._fillSoins) W._fillSoins(); },350); });
-      box.append(el("label",{class:"field",for:"wzA"+sp},"Le nom de ton "+(sp==="chat"?"chat":sp==="chien"?"chien":sp==="lapin"?"lapin":"animal")+" (plusieurs : séparés par des virgules)",i)); }
+    if(key==="animaux"){ a.pets=a.pets||{};
+      const SPN={chat:["chat","chats","Moka","Un autre chat"],chien:["chien","chiens","Rex","Un autre chien"],lapin:["lapin ou rongeur","lapins ou rongeurs","Noisette","Un autre lapin ou rongeur"],autre:["animal","animaux","Son nom","Un autre animal"]};
+      for(const sp of a.animaux.filter(x=>x!=="aucun")){ const L=SPN[sp]||SPN.autre;
+        if(!a.pets[sp]||!a.pets[sp].length){ a.pets[sp]=splitNames(a.noms[sp]||""); if(!a.pets[sp].length) a.pets[sp]=[""]; }
+        const arr=a.pets[sp], sync=()=>{ a.noms[sp]=arr.map(x=>(x||"").trim()).filter(Boolean).join(", "); W.plan=null; wzRefresh(key,a); clearTimeout(W._soinT); W._soinT=setTimeout(()=>{ if(W._fillSoins) W._fillSoins(); },350); };
+        const grp=el("div",{class:"wz-mates wz-pets"}); grp.append(el("span",{class:"label",text:arr.length>1?"Le nom de tes "+L[1]:"Le nom de ton "+L[0]}));
+        arr.forEach((v,i)=>{ const n=el("input",{type:"text",id:"wzA"+sp+(i||""),maxlength:"30",placeholder:i?"Son nom":L[2],"aria-label":"Nom "+(arr.length>1?"de l'animal "+(i+1):"de l'animal")}); n.value=v; n.addEventListener("input",()=>{ arr[i]=n.value; sync(); });
+          const row=el("div",{class:"mate-row pet"},n); if(arr.length>1) row.append(el("button",{type:"button",class:"mate-x","aria-label":"Retirer cet animal",text:"×",onclick:()=>{ arr.splice(i,1); sync(); rerender(); }}));
+          grp.append(row); });
+        if(arr.length<10) grp.append(el("button",{type:"button",class:"btn ghost mate-add",text:"+ "+L[3],onclick:()=>{ arr.push(""); sync(); rerender(); setTimeout(()=>{ const x=$("wzA"+sp+(arr.length-1)); if(x) x.focus(); },30); }}));
+        box.append(grp); } }
     if(key==="menage"&&a.menage.includes("enfants")){ a.kids=a.kids&&a.kids.length?a.kids:splitNames(a.enfants).map(n=>({nom:n,naissance:""})); if(!a.kids.length) a.kids=[{nom:"",naissance:""}];
       const sync=()=>{ a.enfants=a.kids.map(k=>(k.nom||"").trim()).filter(Boolean).join(", "); };
       const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"Tes enfants : prénom et date de naissance (facultative)"}));
