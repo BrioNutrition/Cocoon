@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 16:28";</script>
+<script>window.COCOON_BUILD="10/10 16:37";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1932,6 +1932,19 @@ html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior
 .wk-sub{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:800;font-size:15px;border-top:1px solid var(--line);padding-top:12px;margin-top:2px}
 .wk-sub .muted{font-size:13px;font-weight:600}
 .wk-card .fridge .item{background:var(--bg);box-shadow:none}
+.wk-pill{background:linear-gradient(100deg,#FFC94A,#FF9C80 55%,#E79ADB);color:#1C1B2E;font-weight:800;font-size:12.5px;border-radius:999px;padding:4px 10px}
+.wk-frise{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.wk-d{border:0;background:var(--bg);color:var(--ink);border-radius:14px;padding:8px 0 9px;display:flex;flex-direction:column;align-items:center;gap:3px;font:inherit;cursor:pointer;box-shadow:inset 0 0 0 2px transparent}
+.wk-d.past{opacity:.7}
+.wk-d.now{background:linear-gradient(160deg,#FFC94A,#FF9C80 60%,#E79ADB);color:#1C1B2E;opacity:1}
+.wk-d.sel:not(.now){box-shadow:inset 0 0 0 2px var(--ink)}
+.wk-d.now.sel{box-shadow:none}
+.wk-dl{font-size:11px;font-weight:700;opacity:.7}.wk-d b{font-size:16px;font-weight:800;font-family:var(--f-display)}
+.wk-dots{display:flex;gap:3px;min-height:6px;flex-wrap:wrap;justify-content:center;max-width:34px}
+.wk-dots i{width:6px;height:6px;border-radius:50%;background:var(--muted);opacity:.5}
+.wk-dots i.on{background:#3CC37A;opacity:1}.wk-dots i.late{background:#FF7A5C;opacity:1}
+.wk-d.now .wk-dots i{background:rgba(28,27,46,.35);opacity:1}.wk-d.now .wk-dots i.on{background:#1C1B2E}.wk-d.now .wk-dots i.late{background:#B3261E}
+.wk-card .wk-sub{border-top:0;padding-top:0;margin-top:4px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -2002,7 +2015,7 @@ html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior
     </div>
     <div class="sub wk-card" id="fridgeWrap">
       <div class="week" id="week"></div>
-      <div class="wk-sub"><span>À faire bientôt</span><span class="muted" id="fridgeCount"></span></div>
+      <div class="wk-sub"><span id="fridgeDay">Aujourd'hui</span><span class="muted" id="fridgeCount"></span></div>
       <div class="list fridge" id="fridge"></div>
     </div>
     <div class="sub" id="rdvWrap"></div>
@@ -2980,13 +2993,16 @@ function renderTiles(){
     tl.append(b); }
 }
 function renderFridge(){
-  const open=allTasks().filter(t=>!t.fait);
-  const dated=open.filter(t=>t.echeance&&daysTo(t.echeance)<=7).sort(sortOpen);
-  const list=dated, late=dated.filter(t=>daysTo(t.echeance)<0).length;
-  $("fridgeCount").textContent=!S.loaded.t?"":late?late+" en retard":"Les 7 prochains jours";
+  const box=$("fridge"); if(!box) return;
+  if(!S.loaded.t){ fillList(box,[],["Chargement…",""]); $("fridgeCount").textContent=""; return; }
+  const td=iso(today()), k=S.wkDay||td, open=allTasks().filter(t=>!t.fait);
+  const list=open.filter(t=>t.echeance===k||(k===td&&t.echeance&&t.echeance<td)).sort(sortOpen);
+  const late=list.filter(t=>t.echeance<td).length, d=parse(k);
+  const lbl=$("fridgeDay"); if(lbl){ const j=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric"}).format(d); lbl.textContent=(k===td?"Aujourd'hui":j.charAt(0).toUpperCase()+j.slice(1)); }
+  $("fridgeCount").textContent=list.length?list.length+" à faire"+(late?" · dont "+late+" en retard":""):"";
   const free=open.filter(t=>!t.echeance).length;
-  fillList($("fridge"),list,S.loaded.t?["Rien de prévu cette semaine",free?free+" tâche"+(free>1?"s":"")+" sans date dans le foyer.":"Donne une échéance à une tâche avec + : elle apparaîtra ici."]:["Chargement…",""]);
-  if(S.loaded.t&&!list.length&&free){ const e=$("fridge").querySelector(".empty"); if(e) e.append(el("div",{style:"margin-top:10px"},el("button",{type:"button",class:"btn ghost",style:"padding:7px 16px;font-size:13.5px",text:"Voir",onclick:()=>{ openSearch(); S.sShort="sansdate"; renderSearch(); try{ $("sQ").blur(); }catch(_){} }}))); }
+  fillList(box,list,[k<td?"Rien de prévu ce jour-là":k===td?"Rien à faire aujourd'hui":"Rien de prévu ce jour-là",k===td&&free?free+" tâche"+(free>1?"s":"")+" sans date dans le foyer.":"Touche un autre jour pour voir ses tâches."]);
+  if(k===td&&!list.length&&free){ const e=box.querySelector(".empty"); if(e) e.append(el("div",{style:"margin-top:10px"},el("button",{type:"button",class:"btn ghost",style:"padding:7px 16px;font-size:13.5px",text:"Voir",onclick:()=>{ openSearch(); S.sShort="sansdate"; renderSearch(); try{ $("sQ").blur(); }catch(_){} }}))); }
 }
 /* ===== Questionnaire d'accueil ===== */
 const APP_URL=location.origin+location.pathname;
@@ -3400,28 +3416,18 @@ const FLAME='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><pa
 function renderWeek(){
   const w=$("week"); if(!w) return; w.innerHTML="";
   if(!S.loaded.t||!meId()){ w.hidden=true; return; } w.hidden=false;
-  const ws=weekStart(), we=ws+7*864e5, me=meId();
-  const all=S.foyer.concat(S.perso);
-  const done=all.filter(t=>t.fait&&t.faitLe>=ws);
-  const dueWeek=all.filter(t=>!t.fait&&t.echeance&&parse(t.echeance).getTime()<we).length;
-  const goal=done.length+dueWeek, pct=goal?Math.round(done.length/goal*100):0;
-  // série de jours avec au moins une tâche faite
-  const days=new Set(all.filter(t=>t.fait&&t.faitLe).map(t=>{ const d=new Date(t.faitLe); d.setHours(0,0,0,0); return d.getTime(); }));
-  let streak=0; let d=today().getTime(); if(!days.has(d)) d-=864e5; while(days.has(d)){ streak++; d-=864e5; }
-  const top=el("div",{class:"wk-top"},el("h2",{text:"Ta semaine"}));
-  w.append(top);
-  const fill=el("div",{class:"wk-fill"}); if(goal) w.append(el("div",{class:"wk-bar",role:"progressbar","aria-valuemin":"0","aria-valuemax":String(goal),"aria-valuenow":String(done.length)},fill));
-  if(S.animDone&&S.animDone.week) fill.style.width=pct+"%"; else { S.animDone=Object.assign(S.animDone||{},{week:1}); requestAnimationFrame(()=>requestAnimationFrame(()=>{ fill.style.width=pct+"%"; })); }
-  const left=dueWeek;
-  const msg=!goal?"Rien à cocher d'ici dimanche.":left===0?"Tout ce qui était prévu est fait, bravo !":done.length===0?(left===1?"1 chose prévue cette semaine.":left+" choses prévues cette semaine."):left===1?"Plus qu'une pour boucler la semaine !":pct>=50?"Plus que "+left+", vous y êtes presque.":"Bon début, encore "+left+" à faire.";
-  w.append(el("div",{class:"wk-msg"},el("span",{text:msg}),el("b",{text:goal?done.length+" / "+goal:""})));
-  const sc={}; for(const t of done){ const who=t.prive?me:t.faitPar; if(who) sc[who]=(sc[who]||0)+1; }
-  const ranks=Object.entries(sc).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  if(ranks.length>1||(ranks.length===1&&humains().length>1)){
-    const pd=el("div",{class:"podium"});
-    ranks.forEach(([id,n],i)=>pd.append(el("div",{class:"pod p"+(i+1)},avatar(id),el("span",{class:"pc",text:String(n)}),el("span",{class:"pn",text:id===me?"Toi":membre(id).nom}))));
-    w.append(el("div",{style:"display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap"},el("span",{class:"podium-label",text:"Qui a le plus coché cette semaine"}),pd));
-  }
+  const ws=weekStart(), all=allTasks(), td=iso(today());
+  const done=all.filter(t=>t.fait&&t.faitLe>=ws), we=ws+7*864e5;
+  const dueWeek=all.filter(t=>!t.fait&&t.echeance&&parse(t.echeance).getTime()<we).length, goal=done.length+dueWeek;
+  w.append(el("div",{class:"wk-top"},el("h2",{text:"Ta semaine"}),goal?el("span",{class:"wk-pill",text:done.length+" / "+goal+" faite"+(done.length>1||goal>1?"s":"")}):el("span")));
+  if(!S.wkDay||S.wkDay<iso(new Date(ws))||S.wkDay>=iso(new Date(we))) S.wkDay=td;
+  const fr=el("div",{class:"wk-frise",role:"tablist","aria-label":"Jours de la semaine"}), L=["L","M","M","J","V","S","D"];
+  for(let i=0;i<7;i++){ const d=new Date(ws); d.setDate(d.getDate()+i); const k=iso(d);
+    const ts=all.filter(t=>t.echeance===k||(k===td&&!t.fait&&t.echeance&&t.echeance<td)), dn=ts.filter(t=>t.fait).length;
+    const dots=el("span",{class:"wk-dots"}); ts.slice(0,5).forEach((t,j)=>dots.append(el("i",{class:j<dn?"on":(t.echeance<td&&!t.fait?"late":"")})));
+    const b=el("button",{type:"button",role:"tab",class:"wk-d"+(k===td?" now":"")+(k===S.wkDay?" sel":"")+(k<td?" past":""),"aria-selected":String(k===S.wkDay),"aria-label":new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric"}).format(d)+", "+ts.length+" tâche"+(ts.length>1?"s":""),onclick:()=>{ S.wkDay=k; renderWeek(); renderFridge(); }},el("span",{class:"wk-dl",text:L[i]}),el("b",{text:String(d.getDate())}),dots);
+    fr.append(b); }
+  w.append(fr);
 }
 function confetti(x,y){ okPop(x,y); }
 function okPop(x,y){
