@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 17:24";</script>
+<script>window.COCOON_BUILD="10/10 17:30";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1996,6 +1996,13 @@ details.b-vol>.b-vol-in{padding:0 10px 12px;display:flex;flex-direction:column;g
 .bc-msg.editing{flex-wrap:wrap;align-items:center}.bc-msg.editing>span:first-child{flex:none}
 .bc-msg .pencil-btn.bc-pen{width:30px;height:30px;flex:none;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:var(--hero-ink);display:grid;place-items:center;padding:0;margin:-2px 0 -2px 4px;box-shadow:none;position:static}
 .bc-msg .pencil-btn.bc-pen svg{width:15px;height:15px}
+
+.b-who,.bc-seg{position:relative}
+.b-who button,.bc-seg button{position:relative;z-index:1;transition:color .25s ease,opacity .25s ease}
+.seg-pill{position:absolute;top:3px;bottom:3px;left:0;width:0;border-radius:999px;background:var(--mark);z-index:0;pointer-events:none}
+.seg-pill.go{transition:left .34s cubic-bezier(.3,1.25,.5,1),width .34s cubic-bezier(.3,1.25,.5,1)}
+.has-pill button[aria-pressed="true"]{background:transparent!important}
+@media (prefers-reduced-motion:reduce){.seg-pill.go{transition:none}}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3732,6 +3739,15 @@ function rdvFormEl(){
   setTimeout(()=>{ const x=$("rdvTitre"); if(x&&!F.id&&!F.titre) x.focus(); },40);
   return f;
 }
+function segAnim(box,key){
+  requestAnimationFrame(()=>{ const on=box.querySelector('button[aria-pressed="true"]'); if(!on||!on.offsetWidth) return;
+    const pill=el("span",{class:"seg-pill","aria-hidden":"true"}); box.prepend(pill); box.classList.add("has-pill");
+    const P=S._segPos=S._segPos||{}, prev=P[key], to={l:on.offsetLeft,w:on.offsetWidth};
+    const put=p=>{ pill.style.left=p.l+"px"; pill.style.width=p.w+"px"; };
+    if(prev&&(prev.l!==to.l||prev.w!==to.w)){ put(prev); void pill.offsetWidth; pill.classList.add("go"); put(to); } else put(to);
+    P[key]=to; });
+  return box;
+}
 function budgetCurve(off){
   const B=S.bc=S.bc||{f:"all",cmp:"prev"}, me=meId(), t=today(), M0=new Date(t.getFullYear(),t.getMonth()+off,1), Y=M0.getFullYear(), M=M0.getMonth(), isCur=off===0;
   const dim=new Date(Y,M+1,0).getDate(), day=isCur?t.getDate():dim;
@@ -3799,13 +3815,12 @@ function budgetCurve(off){
   if(cmpS&&cAt>0&&tot>0){ const p=Math.round((tot-cAt)/cAt*100); cmpTxt=Math.abs(p)<3?"comme "+(B.cmp==="avg3"?"d'habitude":"en "+cmpShort):(p>0?"+":"−")+Math.abs(p)+" % vs "+cmpShort; cls=Math.abs(p)<3?"":p>0?" up":" down"; }
   else if(!cmpS&&tot) cmpTxt=B.cmp==="year"?"pas de données l'an dernier":"premier mois suivi";
   const seg=el("div",{class:"bc-seg"}); for(const [k,l] of [["prev","Mois dernier"],["avg3","Moy. 3 mois"],["year","L'an dernier"]]) seg.append(el("button",{type:"button","aria-pressed":String(B.cmp===k),text:l,onclick:()=>{ B.cmp=k; renderBudget(); }}));
-  wrap.append(el("div",{class:"bc-top"},cmpTxt?el("span",{class:"acc-cmp"+cls,text:cmpTxt}):el("span"),seg));
+  wrap.append(el("div",{class:"bc-top"},cmpTxt?el("span",{class:"acc-cmp"+cls,text:cmpTxt}):el("span"),segAnim(seg,"cmp")));
   wrap.append(box,detail);
   // légende + estimation
   const leg=el("div",{class:"acc-leg"},el("span",{},el("i",{class:"ln"}),nm));
   if(cmpS) leg.append(el("span",{},el("i",{class:"ln d"}),cmpShort));
   if(up.length&&!empty) leg.append(el("span",{},el("i",{class:"bc-up-l"}),"prélèvements"));
-  if(est!=null&&!empty) leg.append(el("span",{class:"acc-estl",text:"Fin de mois ≈ "+money(Math.round(est/100)*100).replace(/,00\s?€/," €")+(upTot?" · dont "+money(upTot).replace(/,00\s?€/," €")+" prévus":"")}));
   wrap.append(leg);
   // message d'objectif
   if(goal&&isCur){ const rest=goal-tot-upTot, left=dim-day;
@@ -3875,7 +3890,7 @@ function renderBudget(){
   const amtOf=d=>who==="moi"?shareOf(d,me):d.montant;
   const mois=new Intl.DateTimeFormat("fr-FR",M0.getFullYear()===today().getFullYear()?{month:"long"}:{month:"long",year:"numeric"}).format(M0), quand=cur?"ce mois-ci":"en "+mois;
   const mine=month.filter(d=>amtOf(d)>0), hTot=mine.reduce((a,d)=>a+amtOf(d),0);
-  if(duo) h.append(el("div",{class:"b-who",role:"group","aria-label":"Budget affiché"},...[["foyer","Foyer"],["moi","Moi"]].map(([k,l])=>el("button",{type:"button","aria-pressed":String(who===k),text:l,onclick:()=>{ S.bWho=k; renderBudget(); }}))));
+  if(duo) h.append(segAnim(el("div",{class:"b-who",role:"group","aria-label":"Budget affiché"},...[["foyer","Foyer"],["moi","Moi"]].map(([k,l])=>el("button",{type:"button","aria-pressed":String(who===k),text:l,onclick:()=>{ S.bWho=k; renderBudget(); }}))),"who"));
   h.append(el("div",{class:"b-mnav"},el("button",{type:"button","aria-label":"Mois précédent",text:"‹",disabled:off<=-36||null,onclick:()=>{ S.bMonth=off-1; renderBudget(); }}),el("span",{class:"label",text:(who==="moi"?"Ta part · ":"Budget du foyer · ")+mois}),el("button",{type:"button","aria-label":"Mois suivant",text:"›",disabled:cur||null,onclick:()=>{ S.bMonth=Math.min(0,off+1); renderBudget(); }})),
     el("div",{},el("div",{class:"b-big",text:money(hTot)}),el("div",{class:"b-sub",text:(mine.length?mine.length+" dépense"+(mine.length>1?"s":"")+" "+quand:(cur?"Aucune dépense ce mois-ci pour l'instant":"Aucune dépense "+quand))})));
   if(month.length||deps.length) h.append(budgetCurve(off));
