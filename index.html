@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="10/10 17:04";</script>
+<script>window.COCOON_BUILD="10/10 17:18";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1965,6 +1965,32 @@ html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior
 .bc-gin{width:90px;border:0;border-radius:10px;padding:6px 10px;font:inherit;font-size:14px;font-weight:700;background:rgba(255,255,255,.12);color:var(--hero-ink)}
 .bc-tip,.bc-goal{display:none!important}
 .bc-chart,.bc-chart:focus,.bc-chart:active{background:transparent!important;outline:none;box-shadow:none!important;border:0!important;border-radius:0!important}
+
+/* Budget : frise + Foyer/Moi */
+.b-who{display:flex;background:var(--hero-soft);border-radius:999px;padding:3px;gap:2px}
+.b-who button{flex:1;border:0;background:none;color:var(--hero-ink);opacity:.75;font:inherit;font-size:13.5px;font-weight:800;padding:8px 10px;border-radius:999px;cursor:pointer}
+.b-who button[aria-pressed="true"]{background:var(--mark);color:var(--mark-ink);opacity:1}
+.view[data-view="budget"] .b-actions .b-add{flex-direction:row;align-items:center;gap:8px;padding:8px 10px;justify-content:center}
+.view[data-view="budget"] .b-actions .b-add small{display:none}
+.view[data-view="budget"] .b-actions .b-add span{width:30px;height:30px;border-radius:10px}
+.view[data-view="budget"] .b-actions .b-add svg{width:18px;height:18px}
+.view[data-view="budget"] .b-actions .b-add b{font-size:14px}
+.b-fut-l{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:2px 2px -2px}
+.b-row.fut{background:none;box-shadow:none;border:1.5px dashed color-mix(in srgb,var(--muted) 45%,transparent);opacity:.72}
+.b-today{display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:800;color:#E07A5F;margin:4px 2px}
+.b-today::before,.b-today::after{content:"";flex:1;height:1.5px;background:currentColor;opacity:.45}
+.b-amt small.of{display:block;font-size:11px;font-weight:500;color:var(--muted)}
+.b-owe .bal{gap:8px}.b-owe .sec-title h2{font-size:17px}
+details.b-vol{background:var(--surface);border-radius:18px;box-shadow:0 2px 0 var(--shadow)}
+details.b-vol>summary{list-style:none;display:flex;align-items:center;gap:10px;padding:14px 16px;font-weight:800;font-size:15px;cursor:pointer}
+details.b-vol>summary::-webkit-details-marker{display:none}
+details.b-vol>summary em{margin-left:auto;font-style:normal;font-weight:600;font-size:13px;color:var(--muted)}
+details.b-vol>summary::after{content:"›";font-size:20px;line-height:1;color:var(--muted);transition:transform .2s}
+details.b-vol[open]>summary::after{transform:rotate(90deg)}
+details.b-vol>.b-vol-in{padding:0 10px 12px;display:flex;flex-direction:column;gap:12px}
+.b-vol #bCatsWrap>.sec-title h2{display:none}.b-vol #bCatsWrap>.sec-title{justify-content:flex-end}
+.b-vol .sec-title h2{font-size:15px}
+.b-vol .cbars,.b-vol .b-empty{box-shadow:none}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -2167,18 +2193,16 @@ html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior
   <!-- BUDGET (V2) -->
   <section class="view" data-view="budget" hidden>
     <div class="b-hero" id="bHero"></div>
+    <div class="sub b-owe" id="bBalanceWrap"></div>
     <div class="b-actions">
       <button type="button" class="b-add" id="bAddDep"><span style="--stripe:#FF9C80"><svg class="gly" viewBox="0 0 24 24" aria-hidden="true"><circle class="gb" cx="12" cy="12" r="10"/><path class="gl" d="M15.6 8.4a4.6 4.6 0 1 0 0 7.2M7.2 10.8h6M7.2 13.2h6"/></svg></span><b>Dépense</b><small>Achat ponctuel</small></button>
       <button type="button" class="b-add" id="bAddSub"><span style="--stripe:#8FB8FF"><svg class="gly" viewBox="0 0 24 24" aria-hidden="true"><path class="gb" d="M4.01 9.09A8.5 8.5 0 0 1 18.96 7.12L16.83 8.62A5.9 5.9 0 0 0 6.46 9.98zM19.70 6.61L20.19 11.15L16.10 9.13zM19.99 14.91A8.5 8.5 0 0 1 5.04 16.88L7.17 15.38A5.9 5.9 0 0 0 17.54 14.02zM4.30 17.39L3.81 12.85L7.90 14.87z"/></svg></span><b>Récurrent</b><small>Chaque mois</small></button>
           <button type="button" class="b-add" id="bAddCr"><span style="--stripe:#B9A8F0"><svg class="gly" viewBox="0 0 24 24" aria-hidden="true"><path class="gb" d="M12 2.6 2.4 7.4v2.2h19.2V7.4z"/><rect class="gb" x="4" y="10.8" width="3" height="7" rx=".8"/><rect class="gb" x="10.5" y="10.8" width="3" height="7" rx=".8"/><rect class="gb" x="17" y="10.8" width="3" height="7" rx=".8"/><rect class="gb" x="2.4" y="19" width="19.2" height="2.6" rx="1.2"/></svg></span><b>Crédit</b><small>Prêt en cours</small></button>
     </div>
     <form class="b-form" id="bForm" hidden autocomplete="off"></form>
-    <div class="sub"><div class="sec-title"><h2 id="bDepTitle">Dépenses récentes</h2><span class="muted" style="font-size:13px" id="bDepCount"></span></div><div class="list b-list" id="bDeps"></div></div>
-    <div class="sub"><div class="sec-title"><h2>Récurrent &amp; abonnements</h2><span class="muted" style="font-size:13px" id="bSubsTotal"></span></div><div class="list b-list" id="bSubs"></div></div>
-    <div class="sub" id="bCreditsWrap"></div>
-    <div class="sub" id="bCatsWrap"></div>
-    <div class="sub" id="bBalanceWrap"></div>
-    <div class="sub" id="bPeopleWrap"></div>
+    <div class="sub"><div class="sec-title"><h2 id="bDepTitle">Le fil du mois</h2><span class="muted" style="font-size:13px" id="bDepCount"></span></div><div class="list b-list b-frise" id="bDeps"></div></div>
+    <details class="b-vol" id="bVolRec"><summary>Récurrent et crédits<em id="bSubsTotal"></em></summary><div class="b-vol-in"><div class="list b-list" id="bSubs"></div><div class="sub" id="bCreditsWrap"></div></div></details>
+    <details class="b-vol" id="bVolCat"><summary>Catégories et objectifs<em id="bCatMois"></em></summary><div class="b-vol-in"><div class="sub" id="bCatsWrap"></div></div></details>
   </section>
 
 </div>
@@ -3707,7 +3731,7 @@ function budgetCurve(off){
   const B=S.bc=S.bc||{f:"all",cmp:"prev"}, me=meId(), t=today(), M0=new Date(t.getFullYear(),t.getMonth()+off,1), Y=M0.getFullYear(), M=M0.getMonth(), isCur=off===0;
   const dim=new Date(Y,M+1,0).getDate(), day=isCur?t.getDate():dim;
   const fm=x=>new Intl.DateTimeFormat("fr-FR",{month:"long"}).format(x), nm=fm(M0);
-  const fCat=B.f.startsWith("c:")?B.f.slice(2):null, fWho=B.f.startsWith("p:")?B.f.slice(2):null;
+  const fCat=B.f.startsWith("c:")?B.f.slice(2):null, fWho=S.bWho==="moi"&&adults().length>1&&me?me:null; if(B.f.startsWith("p:")) B.f="all";
   const amt=d=>fWho?shareOf(d,fWho):d.montant, keep=d=>d.type!=="rembt"&&d.date&&(!fCat||(d.cat||"autre")===fCat)&&(!fWho||amt(d)>0);
   const deps=S.depenses.filter(keep);
   const series=(y,m)=>{ const n=new Date(y,m+1,0).getDate(), a=new Array(32).fill(0), na=new Array(32).fill(0), cats={}, items={}; const s=new Date(y,m,1).getTime(), e=new Date(y,m+1,1).getTime();
@@ -3795,10 +3819,7 @@ function budgetCurve(off){
   const chip=(k,l,c)=>el("button",{type:"button",class:"bc-chip","aria-pressed":String(B.f===k),style:c?"--c:"+c:"",onclick:()=>{ B.f=B.f===k?"all":k; renderBudget(); }},c?el("i"):null,l);
   chips.append(chip("all","Tout"));
   for(const c of cc) chips.append(chip("c:"+c,(BCAT[c]||BCAT.autre).nom,(BCAT[c]||BCAT.autre).c));
-  const ppl=empty?[]:adults().filter(m=>Object.values(cur.items).some(arr=>arr.some(d=>d.payePar===m.id||shareOf(d,m.id)>0)));
-  if(fWho&&!ppl.some(m=>m.id===fWho)){ B.f="all"; }
-  if(adults().length>1) for(const m of ppl) chips.append(chip("p:"+m.id,m.id===me?"Toi":m.nom));
-  if(!empty&&(cc.length||(adults().length>1&&ppl.length))) wrap.append(chips);
+  if(!empty&&cc.length) wrap.append(chips);
   // résumé en une phrase
   if(cmpS&&tot&&cAt){ const diff=tot-cAt; if(Math.abs(diff)>=500){ let best=null;
       for(const c of new Set(Object.keys(cur.cats).concat(Object.keys(cmpS.cats)))){ const dv=(cur.cats[c]?cur.cats[c][day]:0)-(cmpS.cats[c]?cmpS.cats[c][Math.min(day,cmpS.n)]:0); if(!best||(diff>0?dv>best.v:dv<best.v)) best={c,v:dv}; }
@@ -3846,92 +3867,65 @@ function renderBudget(){
   const soon=subs.map(a=>({a,n:subNext(a)})).filter(x=>x.n&&daysTo(x.n)<=7);
   // héro
   const h=$("bHero"); h.innerHTML="";
+  const duo=adults().length>1&&!!me, who=duo&&S.bWho==="moi"?"moi":"foyer"; if(!duo) S.bWho=null;
+  const amtOf=d=>who==="moi"?shareOf(d,me):d.montant;
   const mois=new Intl.DateTimeFormat("fr-FR",M0.getFullYear()===today().getFullYear()?{month:"long"}:{month:"long",year:"numeric"}).format(M0), quand=cur?"ce mois-ci":"en "+mois;
-  const P0=new Date(M0.getFullYear(),M0.getMonth()-1,1).getTime(), prevTot=deps.filter(d=>{ const t=parse(d.date).getTime(); return t>=P0&&t<ms; }).reduce((a,d)=>a+d.montant,0);
-  const cmp=!cur&&prevTot&&tot?" · "+(tot>=prevTot?"+":"−")+Math.abs(Math.round((tot-prevTot)/prevTot*100))+" % sur le mois d'avant":"";
-  h.append(el("div",{class:"b-mnav"},el("button",{type:"button","aria-label":"Mois précédent",text:"‹",disabled:off<=-36||null,onclick:()=>{ S.bMonth=off-1; S.bPerson=null; renderBudget(); }}),el("span",{class:"label",text:"Budget du foyer · "+mois}),el("button",{type:"button","aria-label":"Mois suivant",text:"›",disabled:cur||null,onclick:()=>{ S.bMonth=Math.min(0,off+1); S.bPerson=null; renderBudget(); }})),
-    el("div",{},el("div",{class:"b-big",text:money(tot)}),el("div",{class:"b-sub",text:(month.length?month.length+" dépense"+(month.length>1?"s":"")+" "+quand:(cur?"Aucune dépense ce mois-ci pour l'instant":"Aucune dépense "+quand))})));
+  const mine=month.filter(d=>amtOf(d)>0), hTot=mine.reduce((a,d)=>a+amtOf(d),0);
+  if(duo) h.append(el("div",{class:"b-who",role:"group","aria-label":"Budget affiché"},...[["foyer","Foyer"],["moi","Moi"]].map(([k,l])=>el("button",{type:"button","aria-pressed":String(who===k),text:l,onclick:()=>{ S.bWho=k; renderBudget(); }}))));
+  h.append(el("div",{class:"b-mnav"},el("button",{type:"button","aria-label":"Mois précédent",text:"‹",disabled:off<=-36||null,onclick:()=>{ S.bMonth=off-1; renderBudget(); }}),el("span",{class:"label",text:(who==="moi"?"Ta part · ":"Budget du foyer · ")+mois}),el("button",{type:"button","aria-label":"Mois suivant",text:"›",disabled:cur||null,onclick:()=>{ S.bMonth=Math.min(0,off+1); renderBudget(); }})),
+    el("div",{},el("div",{class:"b-big",text:money(hTot)}),el("div",{class:"b-sub",text:(mine.length?mine.length+" dépense"+(mine.length>1?"s":"")+" "+quand:(cur?"Aucune dépense ce mois-ci pour l'instant":"Aucune dépense "+quand))})));
   if(month.length||deps.length) h.append(budgetCurve(off));
-  h.append(el("div",{class:"b-kpis"},el("div",{class:"b-kpi"},el("b",{text:money(subTot)}),el("span",{text:subs.length+" abonnement"+(subs.length>1?"s":"")+", par mois"})),el("div",{class:"b-kpi"},el("b",{text:soon.length?String(soon.length):"0"}),el("span",{text:"prélèvement"+(soon.length>1?"s":"")+" dans les 7 jours"}))));
   $("nBudget").textContent=soon.length; $("nBudget").hidden=!soon.length;
   setTimeout(bookRecurring,0);
   renderCredits();
-  // budget par personne
-  { const pw=$("bPeopleWrap"); pw.innerHTML=""; const ppl=adults();
-    if(ppl.length&&(S.depenses.length||S.abos.length)){
-      const net={}; for(const d of S.depenses){ if(!d.payePar||d.payePar==="chacun") continue; const ids=d.parts&&typeof d.parts==="object"?Object.keys(d.parts):(Array.isArray(d.partage)&&d.partage.length?d.partage:[d.payePar]); net[d.payePar]=(net[d.payePar]||0)+d.montant; for(const p of ids) net[p]=(net[p]||0)-shareOf(d,p); }
-      const row=el("div",{class:"people"});
-      for(const m of ppl){
-        const mine=month.map(d=>({d,v:shareOf(d,m.id)})).filter(x=>x.v>0);
-        const tot=mine.reduce((a,x)=>a+x.v,0);
-        const engage=subs.reduce((a,x)=>a+Math.round(shareOf(x,m.id)*((FREQ[x.freq]||FREQ.mensuel).perMonth)),0);
-        const by={}; for(const x of mine) by[x.d.cat||"autre"]=(by[x.d.cat||"autre"]||0)+x.v;
-        const top=Object.entries(by).sort((a,b)=>b[1]-a[1]).slice(0,3);
-        const open=S.bPerson===m.id;
-        const c=el("button",{type:"button",class:"pcard-b","aria-expanded":String(open),onclick:()=>{ S.bPerson=open?null:m.id; renderBudget(); }},
-          el("div",{class:"pb-top"},avatar(m.id),el("b",{text:m.id===me?"Toi":m.nom}),el("span",{class:"pb-chev","aria-hidden":"true",text:"›"})),
-          el("div",{},el("div",{class:"pb-big",text:money(tot)}),el("div",{class:"pb-lbl",text:"sa part des dépenses en "+mois})));
-        if(top.length){ const mx=top[0][1]; const bars=el("div",{class:"cbars",style:"box-shadow:none;padding:0;background:none;gap:6px"});
-          for(const [cat,v] of top){ const fl=el("div",{class:"fillb",style:"width:"+Math.max(4,Math.round(v/mx*100))+"%"}); bars.append(el("div",{class:"cbar",title:(BCAT[cat]||BCAT.autre).nom+" : "+money(v)},el("span",{class:"cn",text:(BCAT[cat]||BCAT.autre).nom}),el("div",{class:"track"},fl),el("span",{class:"cv",text:money(v)}))); }
-          c.append(bars); }
-        c.append(el("div",{class:"pb-row"},el("span",{text:"Engagements récurrents"}),el("b",{text:money(engage)+" / mois"})));
-        const n=Math.round(net[m.id]||0);
-        c.append(el("span",{class:"pb-bal "+(Math.abs(n)<50?"zero":n>0?"plus":"minus"),text:Math.abs(n)<50?"Rien à régler":n>0?(m.id===me?"On te doit ":"On lui doit ")+money(n):(m.id===me?"Tu dois ":"Doit ")+money(-n)}));
-        row.append(c);
-      }
-      pw.append(el("div",{class:"sec-title"},el("h2",{text:"Budget par personne"})),row);
-      if(S.bPerson&&ppl.some(m=>m.id===S.bPerson)){
-        const id=S.bPerson, det=el("div",{class:"pdetail"});
-        const lines=month.map(d=>({t:d.titre,v:shareOf(d,id),w:d.date})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v);
-        const subl=subs.map(a=>({t:a.nom,v:Math.round(shareOf(a,id)),f:(FREQ[a.freq]||FREQ.mensuel).l})).filter(x=>x.v>0);
-        for(const x of lines) det.append(el("div",{class:"dl"},el("span",{},x.t+" ",el("small",{text:fmtDue(x.w)})),el("b",{text:money(x.v)})));
-        for(const x of subl) det.append(el("div",{class:"dl"},el("span",{},x.t+" ",el("small",{text:"récurrent, "+x.f})),el("b",{text:money(x.v)})));
-        if(!lines.length&&!subl.length) det.append(el("div",{class:"dl"},el("span",{class:"muted",text:"Rien pour "+(id===me?"toi":membre(id).nom)+" ce mois-ci."})));
-        det.classList.add("in-card"); const card=row.querySelector('.pcard-b[aria-expanded="true"]'); if(card) card.append(det); else pw.append(det);
-      }
-    } }
-  // équilibre
+  // qui doit quoi : seulement s'il y a quelque chose à régler
   const bw=$("bBalanceWrap"); bw.innerHTML="";
-  const payers=new Set(S.depenses.map(d=>d.payePar));
-  if(adults().length>1&&payers.size){
-    const tr=balances(); const box=el("div",{class:"bal"});
-    if(!tr.length){ const ok=el("span",{}); ok.innerHTML=I_CHECK; box.append(el("div",{class:"bal-ok"},ok,"Les comptes sont bons, personne ne doit rien.")); }
-    for(const t of tr){
-      const row=t.a===me?el("div",{class:"bal-row"},avatar(t.de,30),el("span",{text:membre(t.de).nom+" te doit"}),el("b",{text:money(t.montant)})):el("div",{class:"bal-row"},avatar(t.de,30),el("span",{text:(t.de===me?"Tu dois":membre(t.de).nom+" doit")+" à"}),avatar(t.a,30),el("span",{text:membre(t.a).nom}),el("b",{text:money(t.montant)}));
-      if(me&&(t.de===me||t.a===me||isAdmin())) row.append(el("button",{type:"button",class:"btn ghost",style:"padding:6px 12px;font-size:13px",text:"C'est réglé",onclick:async(e)=>{ try{ await S.db.collection("depenses").add({type:"rembt",titre:"Remboursement",montant:t.montant,payePar:t.de,partage:[t.a],date:iso(today()),cat:"autre",creePar:me,creeLe:Date.now()}); const r=e.target.getBoundingClientRect(); confetti(r.left+r.width/2,r.top); toast("Comptes réglés entre "+esc(membre(t.de).nom)+" et "+esc(membre(t.a).nom)+"."); }catch(err){ writeErr(err); } }}));
-      box.append(row);
-    }
-    bw.append(el("div",{class:"sec-title"},el("h2",{text:"Qui doit quoi"})),box);
-  }
-  // répartition du mois (une seule série : barres classées, valeurs en clair)
-  renderBudgetCats(month,tot,mois);
-  // abonnements
-  $("bSubsTotal").textContent=subs.length?money(subTot)+" par mois":"";
+  if(adults().length>1){
+    const tr=balances().filter(t=>who==="foyer"||t.de===me||t.a===me);
+    if(tr.length){ const box=el("div",{class:"bal"});
+      for(const t of tr){
+        const row=t.a===me?el("div",{class:"bal-row"},avatar(t.de,30),el("span",{text:membre(t.de).nom+" te doit"}),el("b",{text:money(t.montant)})):el("div",{class:"bal-row"},avatar(t.de,30),el("span",{text:(t.de===me?"Tu dois":membre(t.de).nom+" doit")+" à"}),avatar(t.a,30),el("span",{text:membre(t.a).nom}),el("b",{text:money(t.montant)}));
+        if(me&&(t.de===me||t.a===me||isAdmin())) row.append(el("button",{type:"button",class:"btn ghost",style:"padding:6px 12px;font-size:13px",text:"C'est réglé",onclick:async(e)=>{ try{ await S.db.collection("depenses").add({type:"rembt",titre:"Remboursement",montant:t.montant,payePar:t.de,partage:[t.a],date:iso(today()),cat:"autre",creePar:me,creeLe:Date.now()}); const r=e.target.getBoundingClientRect(); confetti(r.left+r.width/2,r.top); toast("Comptes réglés entre "+esc(membre(t.de).nom)+" et "+esc(membre(t.a).nom)+"."); }catch(err){ writeErr(err); } }}));
+        box.append(row); }
+      bw.append(el("div",{class:"sec-title"},el("h2",{text:"Qui doit quoi"})),box); } }
+  bw.hidden=!bw.childNodes.length;
+  // catégories (volet)
+  renderBudgetCats(month,tot,mois); $("bCatMois").textContent=mois;
+  // récurrent (volet)
+  const crN=(S.credits||[]).length;
+  $("bSubsTotal").textContent=subs.length||crN?(subs.length?money(subTot)+" / mois":"")+(crN?(subs.length?" · ":"")+crN+" crédit"+(crN>1?"s":""):""):"";
   const sl=$("bSubs"); sl.innerHTML="";
   const sorted=subs.map(a=>({a,n:subNext(a)})).sort((x,y)=>(x.n||"9")<(y.n||"9")?-1:1);
-  if(!sorted.length) sl.append(el("div",{class:"b-empty"},el("strong",{text:"Rien de récurrent pour l'instant"}),"Loyer, box, électricité, Netflix, assurances… Ajoute-les : Cocoon les inscrit au budget à chaque échéance et te prévient avant."));
-  for(const {a,n} of sorted){ const dd=n?daysTo(n):null;
+  const subRow=(a,n,fut)=>{ const dd=n?daysTo(n):null;
     const meta=el("div",{class:"meta"},el("span",{class:"tag",text:(BCAT[a.cat]||BCAT.autre).nom}));
     if(a.payePar) meta.append(payerTag(a.payePar));
     { const pt=partsText(a); if(pt) meta.append(el("span",{text:pt})); }
     if(a.auto!==false) meta.append(el("span",{class:"rec",text:"↻ auto"}));
     if(n) meta.append(el("span",{class:"due"+(dd<=3?" soon":""),text:dd===0?"prélevé aujourd'hui":dd===1?"prélevé demain":dd<7?"prélevé dans "+dd+" j":fmtDue(n)}));
-    if(S.bForm&&S.bForm.id===a.id&&S.bForm.kind==="sub"){ sl.append(BF); continue; }
-    sl.append(el("div",{class:"item b-row","data-bid":"sub:"+a.id,role:"button",tabindex:"0","aria-label":"Modifier "+a.nom,onclick:()=>openBForm("sub",a)},bIcon(a.cat,a.nom),el("div",{class:"t-body"},el("div",{class:"t-title",text:a.nom}),meta),el("div",{class:"b-amt"},money(a.montant),el("small",{text:(FREQ[a.freq]||FREQ.mensuel).l})))); }
-  // dépenses
+    const v=fut&&who==="moi"?Math.round(shareOf(a,me)):a.montant;
+    return el("div",{class:"item b-row"+(fut?" fut":""),"data-bid":(fut?"fut:":"sub:")+a.id,role:"button",tabindex:"0","aria-label":"Modifier "+a.nom,onclick:()=>{ S.bFormSrc=fut?"frise":"vol"; openBForm("sub",a); }},bIcon(a.cat,a.nom),el("div",{class:"t-body"},el("div",{class:"t-title",text:a.nom}),meta),el("div",{class:"b-amt"},money(v),el("small",{text:fut?(v!==a.montant?"ta part":"à venir"):(FREQ[a.freq]||FREQ.mensuel).l}))); };
+  if(!sorted.length) sl.append(el("div",{class:"b-empty"},el("strong",{text:"Rien de récurrent pour l'instant"}),"Loyer, box, électricité, Netflix, assurances… Ajoute-les : Cocoon les inscrit au budget à chaque échéance et te prévient avant."));
+  for(const {a,n} of sorted){ if(S.bForm&&S.bForm.id===a.id&&S.bForm.kind==="sub"&&S.bFormSrc!=="frise"){ sl.append(BF); continue; } sl.append(subRow(a,n,false)); }
+  // le fil du mois : à venir, aujourd'hui, puis ce qui est payé (du plus récent au plus ancien)
+  const fC=((S.bc&&S.bc.f)||"all").startsWith("c:")?S.bc.f.slice(2):null;
+  const keepD=d=>{ if(d.type==="rembt") return !fC&&(who==="foyer"||d.payePar===me||(d.partage||[]).includes(me)); return (!fC||(d.cat||"autre")===fC)&&(who==="foyer"||shareOf(d,me)>0); };
+  const past=S.depenses.filter(d=>d.date&&inM(d)&&keepD(d)).sort((x,y)=>(y.date||"")<(x.date||"")?-1:(y.date||"")>(x.date||"")?1:(y.creeLe||0)-(x.creeLe||0));
+  const tNow=today(), fut=cur?subs.map(a=>({a,n:subNext(a)})).filter(x=>{ if(!x.n) return false; const d=parse(x.n); return d>tNow&&d.getTime()<mEnd&&(!fC||(x.a.cat||"autre")===fC)&&(who==="foyer"||shareOf(x.a,me)>0); }).sort((x,y)=>x.n<y.n?1:-1):[];
   const dl=$("bDeps"); dl.innerHTML="";
-  const recent=(cur?S.depenses:S.depenses.filter(inM)).slice().sort((x,y)=>(y.date||"")<(x.date||"")?-1:(y.date||"")>(x.date||"")?1:(y.creeLe||0)-(x.creeLe||0)).slice(0,cur?25:300);
-  $("bDepTitle").textContent=cur?"Dépenses récentes":"Dépenses "+de(mois);
-  $("bDepCount").textContent=cur?(deps.length?deps.length+" au total":""):(month.length?month.length+" ce mois-là":"");
-  if(!recent.length) dl.append(el("div",{class:"b-empty"},el("strong",{text:cur?"Aucune dépense":"Aucune dépense en "+mois}),"Note les courses, le plein, le véto… Cocoon calcule qui doit quoi à qui."));
-  for(const d of recent){ const rb=d.type==="rembt";
+  $("bDepTitle").textContent=cur?"Le fil du mois":"Dépenses "+de(mois);
+  $("bDepCount").textContent=[past.length?past.length+" dépense"+(past.length>1?"s":""):"",fut.length?fut.length+" à venir":""].filter(Boolean).join(" · ");
+  if(fut.length){ dl.append(el("div",{class:"b-fut-l",text:"À venir ce mois-ci"})); for(const {a,n} of fut){ if(S.bForm&&S.bForm.id===a.id&&S.bForm.kind==="sub"&&S.bFormSrc==="frise"){ dl.append(BF); continue; } dl.append(subRow(a,n,true)); } }
+  if(cur) dl.append(el("div",{class:"b-today",text:"Aujourd'hui · "+new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"short"}).format(tNow)}));
+  if(!past.length) dl.append(el("div",{class:"b-empty"},el("strong",{text:fC?"Rien dans cette catégorie":cur?"Aucune dépense pour l'instant":"Aucune dépense en "+mois}),fC?"Touche « Tout » sous la courbe pour tout revoir.":"Note les courses, le plein, le véto… Cocoon calcule qui doit quoi à qui."));
+  for(const d of past){ const rb=d.type==="rembt";
     const meta=el("div",{class:"meta"});
     meta.append(el("span",{class:"tag"},d.payePar==="chacun"?null:avatar(d.payePar,16),(rb?(d.payePar===me?"tu as remboursé ":membre(d.payePar).nom+" a remboursé ")+(d.partage&&d.partage[0]===me?"toi":membre((d.partage||[])[0]).nom):(d.payePar==="chacun"?"chacun paie sa part":"payé par "+(d.payePar===me?"toi":membre(d.payePar).nom)))));
     meta.append(el("span",{text:fmtDue(d.date)}));
     if(!rb){ const pt=partsText(d); if(pt) meta.append(el("span",{text:pt})); }
     if(d.auto) meta.append(el("span",{class:"rec",text:"↻ auto"}));
     if(S.bForm&&S.bForm.id===d.id&&S.bForm.kind==="dep"){ dl.append(BF); continue; }
-    dl.append(el("div",{class:"item b-row","data-bid":"dep:"+d.id,role:"button",tabindex:"0","aria-label":"Modifier "+d.titre,onclick:()=>openBForm("dep",d)},bIcon(rb?"autre":d.cat,rb?"↔":d.titre),el("div",{class:"t-body"},el("div",{class:"t-title",text:d.titre}),meta),el("div",{class:"b-amt",text:money(d.montant)}))); }
+    const v=who==="moi"&&!rb?shareOf(d,me):d.montant;
+    dl.append(el("div",{class:"item b-row","data-bid":"dep:"+d.id,role:"button",tabindex:"0","aria-label":"Modifier "+d.titre,onclick:()=>openBForm("dep",d)},bIcon(rb?"autre":d.cat,rb?"↔":d.titre),el("div",{class:"t-body"},el("div",{class:"t-title",text:d.titre}),meta),el("div",{class:"b-amt"},money(v),v!==d.montant?el("small",{class:"of",text:"sur "+money(d.montant)}):null))); }
 }
 function subDue(a){
   if(!a.debut||a.actif===false||a.auto===false) return [];
@@ -3967,7 +3961,7 @@ function openBForm(kind,item){
   S.bForm={kind,id:item?item.id:null,confirm:false,d:item?(x=>{ if(Array.isArray(x.partage)&&x.partage.length===1&&x.partage[0]===x.payePar) x.partage=[]; return x; })(Object.assign(JSON.parse(JSON.stringify(item)),{splitMode:item.parts?"perso":"egal"})):(kind==="dep"?{titre:"",montant:null,cat:"courses",payePar:me,date:iso(today()),partage:[],freq:"once"}:{nom:"",montant:null,cat:"streaming",freq:"mensuel",debut:iso(today()),payePar:me,partage:[],rappel:true,actif:true,auto:true})};
   if(!item){ const pc=S.config&&S.config.partage, d=S.bForm.d; if(pc&&ad.length>1){ if(pc.mode==="egal") d.partage=ad.slice(); else if(pc.mode==="prorata"&&pc.pct){ const ids=ad.filter(id=>(pc.pct[id]||0)>0); if(ids.length>1){ d.partage=ids; d.splitMode="pct"; } } } }
   if(S.tab!=="budget") setTab("budget");
-  if(!item) bfHome(); renderBudget(); renderBForm(); setTimeout(()=>{ if(BF.isConnected) (item?(()=>{ const r=BF.getBoundingClientRect(); if(r.top<70) window.scrollBy({top:r.top-80,behavior:"smooth"}); })():BF.scrollIntoView({behavior:"smooth",block:"start"})); const i=$("bfName"); if(i&&!item) i.focus(); },60);
+  if(!item){ bfHome(); S.bFormSrc=null; } else if(kind==="dep") S.bFormSrc=null; renderBudget(); renderBForm(); { const dt=BF.closest("details"); if(dt) dt.open=true; } setTimeout(()=>{ if(BF.isConnected) (item?(()=>{ const r=BF.getBoundingClientRect(); if(r.top<70) window.scrollBy({top:r.top-80,behavior:"smooth"}); })():BF.scrollIntoView({behavior:"smooth",block:"start"})); const i=$("bfName"); if(i&&!item) i.focus(); },60);
 }
 const BF=document.getElementById("bForm"), BF_HOME=BF.nextElementSibling;
 function bfHome(){ if(BF_HOME&&BF_HOME.parentNode&&BF.nextElementSibling!==BF_HOME) BF_HOME.parentNode.insertBefore(BF,BF_HOME); }
@@ -4054,7 +4048,7 @@ function delBItem(){ const B=S.bForm; if(!B||!B.id) return; const dep=B.kind==="
 $("bForm").addEventListener("submit",saveBForm);
 $("bAddDep").addEventListener("click",()=>openBForm("dep"));
 $("bAddSub").addEventListener("click",()=>openBForm("sub"));
-$("bAddCr").addEventListener("click",()=>{ const me=meId(); if(!me){ needMe(); return; } if(S.readOnly) return; closeBForm(); S.crForm={titulaires:[me],type:"autre"}; renderBudget(); setTimeout(()=>{ const w=$("bCreditsWrap"); if(w) w.scrollIntoView({behavior:"smooth",block:"start"}); const i=$("crNom"); if(i) i.focus({preventScroll:true}); },60); });
+$("bAddCr").addEventListener("click",()=>{ const me=meId(); if(!me){ needMe(); return; } if(S.readOnly) return; closeBForm(); S.crForm={titulaires:[me],type:"autre"}; renderBudget(); $("bVolRec").open=true; setTimeout(()=>{ const w=$("bCreditsWrap"); if(w) w.scrollIntoView({behavior:"smooth",block:"start"}); const i=$("crNom"); if(i) i.focus({preventScroll:true}); },60); });
 $("sgDep").addEventListener("click",()=>{ closeSheet(); openBForm("dep"); });
 $("sgRdv").addEventListener("click",()=>{ closeSheet(); if(!needMe()) return; setTab("accueil"); S.rdvForm={pour:[meId()]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({behavior:"smooth",block:"start"}); },60); });
 $("sgSub").addEventListener("click",()=>{ closeSheet(); openBForm("sub"); });
