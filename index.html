@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 00:05";</script>
+<script>window.COCOON_BUILD="11/10 00:09";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2044,6 +2044,12 @@ input,textarea,select,[contenteditable="true"]{-webkit-user-select:text;user-sel
 .sec-bub button,.sec-bub button *{-webkit-user-select:none;user-select:none}
 
 .wz-soin.one{grid-template-columns:minmax(0,1fr)!important}
+
+.bc-gin{width:104px;-webkit-user-select:text!important;user-select:text!important;-webkit-text-fill-color:var(--hero-ink);color:var(--hero-ink)!important;background:rgba(255,255,255,.16)!important;border:1.5px solid rgba(255,255,255,.28)!important;border-radius:10px!important;padding:7px 10px!important;font-size:16px!important;font-weight:800;opacity:1!important;caret-color:var(--mark);min-height:0;height:auto;box-shadow:none!important}
+.bc-gin::placeholder{color:var(--hero-ink);-webkit-text-fill-color:var(--hero-ink);opacity:.45}
+.bc-gin:focus{outline:none;border-color:var(--mark)!important}
+.bc-msg.editing{gap:8px}
+input,textarea{-webkit-user-select:text!important;user-select:text!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div></div></div>
@@ -3921,15 +3927,27 @@ function budgetCurve(off){
   if(up.length&&!empty) leg.append(el("span",{},el("i",{class:"bc-up-l"}),"prélèvements"));
   wrap.append(leg);
   // message d'objectif
+  const gk=fWho?"moi":"foyer", sugg=Math.max(fWho?50:100,Math.ceil(((est||cTot||tot)*1.08)/10000)*100);
+  const goalEditor=(gm,has)=>{ gm.classList.add("editing");
+    const inp=el("input",{type:"text",inputmode:"decimal",enterkeyhint:"done",class:"bc-gin",placeholder:"ex. "+sugg,"aria-label":fWho?"Ton objectif en euros":"Objectif du mois en euros",autocomplete:"off"}); inp.value=B.goalDraft||"";
+    inp.addEventListener("input",()=>{ B.goalDraft=inp.value; });
+    const done=()=>{ B.goalEdit=null; B.goalDraft=""; };
+    const save=()=>{ const v=parseMoney(inp.value); if(!v){ toast("Écris un montant, par exemple "+sugg+" €."); inp.focus(); return; } done(); saveGoal(v); };
+    gm.replaceChildren(el("span",{text:(fWho?"Ton objectif":"Objectif du mois")+" :"}),inp,el("span",{text:"€"}),el("button",{type:"button",class:"bc-edit",text:"Valider",onclick:save}),
+      has?el("button",{type:"button",class:"bc-edit ghost",text:"Retirer",onclick:()=>{ done(); saveGoal(null); }}):"",
+      el("button",{type:"button",class:"bc-edit ghost",text:"Annuler",onclick:()=>{ done(); renderBudget(); }}));
+    inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); save(); } if(e.key==="Escape"){ done(); renderBudget(); } });
+    setTimeout(()=>{ if(inp.isConnected){ inp.focus({preventScroll:true}); const n=inp.value.length; try{ inp.setSelectionRange(n,n); }catch(_){} } },30); };
   if(goal&&isCur){ const rest=goal-tot-upTot, left=dim-day;
     let msg; if(est!=null&&est>goal+500){ let k=day; while(k<dim&&estAt(k)<=goal) k++; msg=(estAt(day)>goal?"Objectif déjà dépassé de "+money(tot-goal):"Au rythme actuel, tu dépasses de "+money(Math.round((est-goal)/100)*100).replace(/,00\s?€/," €")+" vers le "+k)+"."; }
     else msg=left>0&&rest>0?"Il te reste "+money(Math.floor(rest/left/100)*100).replace(/,00\s?€/," €")+" par jour jusqu'à la fin du mois.":"Dans les clous pour l'objectif.";
     const gm=el("div",{class:"bc-msg"+(est!=null&&est>goal+500?" warn":"")},el("span",{text:(goalKind==="moi"?"Ton objectif du mois":"Objectif "+(goalKind==="cat"?"de la catégorie":"du mois"))+" : "+eurR(goal)+". "+msg}));
-    if(canGoal) gm.append((b=>{ b.classList.add("bc-pen"); return b; })(pencilBtn(()=>{ gm.classList.add("editing"); const inp=el("input",{type:"text",inputmode:"decimal",class:"bc-gin","aria-label":"Objectif du mois en euros"}); inp.value=String(Math.round(goal/100));
-      const save=()=>saveGoal(parseMoney(inp.value));
-      gm.replaceChildren(el("span",{text:(fWho?"Ton objectif":"Objectif du mois")+" :"}),inp,el("span",{text:"€"}),el("button",{type:"button",class:"bc-edit",text:"OK",onclick:save}),el("button",{type:"button",class:"bc-edit ghost",text:"Retirer",onclick:()=>{ inp.value=""; save(); }})); inp.focus(); inp.select(); inp.addEventListener("keydown",e=>{ if(e.key==="Enter") save(); }); },"Modifier l'objectif du mois")));
+    if(canGoal) gm.append((b=>{ b.classList.add("bc-pen"); return b; })(pencilBtn(()=>{ B.goalEdit=gk; B.goalDraft=String(Math.round(goal/100)); goalEditor(gm,true); },"Modifier l'objectif du mois")));
+    if(canGoal&&B.goalEdit===gk) goalEditor(gm,true);
     wrap.append(gm); }
-  else if(canGoal&&(tot||cTot)) wrap.append(el("button",{type:"button",class:"bc-setgoal",text:fWho?"+ Fixer mon objectif personnel":"+ Fixer un objectif pour le mois",onclick:()=>saveGoal(Math.max(fWho?5000:10000,Math.ceil(((est||cTot||tot)*1.08)/10000)*10000))}));
+  else if(canGoal&&(tot||cTot)){
+    if(B.goalEdit===gk){ const gm=el("div",{class:"bc-msg"}); goalEditor(gm,false); wrap.append(gm); }
+    else wrap.append(el("button",{type:"button",class:"bc-setgoal",text:fWho?"+ Fixer mon objectif personnel":"+ Fixer un objectif pour le mois",onclick:()=>{ B.goalEdit=gk; B.goalDraft=""; renderBudget(); }})); }
   // filtres
   const chips=el("div",{class:"bc-chips"}), cc=Object.keys(cur.cats).filter(c=>cur.cats[c][31]>0).sort((a,b)=>cur.cats[b][31]-cur.cats[a][31]).slice(0,4);
   if(fCat&&!cc.includes(fCat)) cc.push(fCat);
