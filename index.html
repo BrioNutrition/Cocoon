@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 12:08";</script>
+<script>window.COCOON_BUILD="11/10 14:52";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3009,7 +3009,7 @@ function buildEditor(){
   f.append(act);
   refreshPreview();
 }
-function finishFlow(res){ document.querySelector(".wrap").classList.remove("finishing"); S.edit=null; S.flow=false; setTab("accueil"); renderAll(); window.scrollTo({top:0}); requestAnimationFrame(()=>{ try{ if(!maybeCgu(()=>startTour())) startTour(); }catch(_){} });
+function finishFlow(res){ document.querySelector(".wrap").classList.remove("finishing"); S.edit=null; S.flow=false; setTab("accueil"); renderAll(); window.scrollTo({top:0}); requestAnimationFrame(()=>{ try{ onboardGate(); if(!S.cguOpen&&!S.tourOn&&!S.tourPending&&!needCgu()) startTour(); }catch(_){} });
   toast("Bienvenue dans ton cocon !"+(res&&(res.nT||res.nP)?" "+res.nT+" rappel"+(res.nT>1?"s":"")+(res.nP?" et "+res.nP+" profil"+(res.nP>1?"s":""):"")+((res.nT+res.nP)>1?" prêts.":" prêt."):"")); }
 function closeEditor(){ if(S.edit&&S.edit.finish){ finishFlow(); return; } const back=S.editPrev&&S.editPrev!=="fiche"?S.editPrev:"accueil"; S.edit=null; document.querySelector(".wrap").classList.remove("finishing"); setTab(back); renderAll(); }
 async function saveProfile(){
@@ -4474,7 +4474,7 @@ function renderBadges(){
   if(urgent&&!S.bellRung){ S.bellRung=true; const b=$("bellBtn"); b.classList.add("ring"); setTimeout(()=>b.classList.remove("ring"),2600); }
   setN("nBudget",(S.abos||[]).filter(a=>a.actif!==false&&(()=>{ const n=subNext(a); return n&&daysTo(n)<=7; })()).length);
 }
-function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; try{ renderAllNowInner(); }catch(e){ console.error(e); } if(S.flip) applyFlip(); if(!S.migDone) setTimeout(migrateFiles,1500); if(!S.cguOpen&&S.booted&&!S.flow&&!S.entering&&S.tab&&!document.querySelector(".wrap.wizarding,.wrap.finishing")&&$("splash")&&$("splash").hidden) setTimeout(()=>{ if(!S.flow&&!S.tourOn) maybeCgu(()=>{ try{ startTour(); }catch(_){} }); },400); if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
+function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; try{ renderAllNowInner(); }catch(e){ console.error(e); } if(S.flip) applyFlip(); if(!S.migDone) setTimeout(migrateFiles,1500); onboardGate(); if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
 function renderAllNowInner(){
   const v=S.tab;
   renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon();
@@ -4708,7 +4708,7 @@ $("dTitle").addEventListener("input",e=>{ if($("dCat").value==="__new"||!CAT[$("
 
 /* Onglets */
 const TABS=["accueil","moi","foyer","courses","repas","rappels","documents","budget","maison"];
-function setTab(name){ const prevTab=S.tab; S.tab=name; if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["foyer","documents","maison","courses","repas","budget","moi"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({documents:"foyer",maison:"foyer",courses:"foyer",repas:"foyer"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name); if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  if(prevTab&&prevTab!==name) renderAllNow(); else renderAll(); }
+function setTab(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; const prevTab=S.tab; S.tab=name; if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["foyer","documents","maison","courses","repas","budget","moi"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({documents:"foyer",maison:"foyer",courses:"foyer",repas:"foyer"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name); if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  if(prevTab&&prevTab!==name) renderAllNow(); else renderAll(); }
 $("tabs").addEventListener("click",e=>{ const b=e.target.closest(".tab"); if(b&&b.dataset.tab){ const same=S.tab===b.dataset.tab; closeSheet(); setTab(b.dataset.tab); renderHeader(); if(same) window.scrollTo({top:0,behavior:"smooth"}); } });
 function openSheet(o){ if(!meId()){ needMe(); return; } o=(o&&(o.where||o.text))?o:{}; resetQuick();
   if(o.where){ fillWhere($("qWhere"),o.where); $("qWhere").value=o.where; $("qWhere").dataset.touched="1"; if(o.where!=="perso"&&o.where!=="tous") S.qSel.add(o.where); }
@@ -5436,6 +5436,14 @@ function openTerms(){
   bg.append(box); bg.addEventListener("click",e=>{ if(e.target===bg) close(); }); document.addEventListener("keydown",kd); document.body.append(bg);
 }
 /* ===== Avant de commencer : accepter les conditions (obligatoire) + notifications (facultatif) ===== */
+/* En entrant dans l'app : d'abord les conditions (si besoin), puis la visite guidée (une seule fois), avant de pouvoir aller ailleurs */
+function onboardGate(){
+  if(S.cguOpen||S.tourOn||S.tourPending||!S.booted||S.flow||S.entering||!S.prefsLoaded||!meM()||document.querySelector(".wrap.wizarding,.wrap.finishing,.warmup:not([hidden])")||!$("splash")||!$("splash").hidden) return;
+  const tour=()=>{ if((S.prefs||{}).tourVu||window.__noTour) return; S.tourPending=true; if(S.tab!=="accueil") setTab("accueil"); try{ window.scrollTo({top:0,behavior:"instant"}); }catch(_){}
+    requestAnimationFrame(()=>{ S.tourPending=false; try{ startTour(); }catch(_){} }); };
+  if(needCgu()){ openCgu(tour); return; }
+  tour();
+}
 function needCgu(){ return !!(S.db&&S.uid&&S.prefsLoaded&&meM()&&!S.readOnly&&!window.__noCgu&&!window.__noTour&&(S.prefs||{}).cgu!==CGU_V); }
 function maybeCgu(after){ if(!needCgu()) return false; if(!S.cguOpen) openCgu(after); return true; }
 function openCgu(after){
@@ -5888,7 +5896,7 @@ function sparkle(box,stop){
 /* On retire la classe d'arrivée seulement quand TOUTES ses animations sont finies (sinon un élément saute) */
 function endArrive(W){ const go=()=>{ const an=W.getAnimations({subtree:true}).filter(a=>a.animationName&&/^arrive/.test(a.animationName)&&a.playState!=="finished");
   if(an.length) Promise.all(an.map(a=>a.finished.catch(()=>{}))).then(()=>setTimeout(go,60)); else { W.classList.remove("arrive"); entryDone(); } }; setTimeout(go,300); }
-function entryDone(){ if(!S.entering) return; S.entering=false; clearTimeout(S.entT); if(S.entPending){ S.entPending=false; requestAnimationFrame(()=>renderAll()); } }
+function entryDone(){ if(!S.entering) return; S.entering=false; clearTimeout(S.entT); if(S.entPending){ S.entPending=false; requestAnimationFrame(()=>renderAll()); } setTimeout(()=>{ try{ onboardGate(); }catch(_){} },60); }
 function flyLogo(logo,target,D){
   const wrap=logo.parentElement, wcs=getComputedStyle(wrap), lcs=getComputedStyle(logo);
   const pt=v=>{ const m=String(v||"").match(/-?[0-9.]+/g)||[]; return [parseFloat(m[0]||0),parseFloat(m[1]||0)]; };
