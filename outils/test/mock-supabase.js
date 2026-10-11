@@ -43,6 +43,7 @@
       if (n === "cocoon_merge") { var rows = T.cocoon_docs, i = rows.findIndex(function (x) { return x.foyer === a.f && x.path === a.p && x.id === a.i; }); var r = i >= 0 ? rows[i] : { foyer: a.f, path: a.p, id: a.i, data: {} }; r.data = Object.assign({}, r.data, a.patch); r.updated_by = me; if (i < 0) rows.push(r); rt("UPDATE", JSON.parse(JSON.stringify(r))); return ok(null); }
       if (n === "cocoon_push_claim") { var L = T.cocoon_push_subs = (T.cocoon_push_subs || []).filter(function (x) { return x.endpoint !== a.e; }); L.push({ endpoint: a.e, user_id: me, foyer: a.f, p256dh: a.k, auth: a.a, tz: a.z }); return ok(null); }
       if (n === "cocoon_remove_member") { window.__mock.removed_member = a.u; T.cocoon_members = T.cocoon_members.filter(function (x) { return !(x.foyer === a.f && x.user_id === a.u); }); return ok(null); }
+      if (n === "cocoon_delete_me") { window.__mock.deleted_me = me; T.cocoon_members.filter(function (x) { return x.user_id === me; }).forEach(function (mm) { var others = T.cocoon_members.filter(function (x) { return x.foyer === mm.foyer && x.user_id !== me; }); if (!others.length) { T.cocoon_foyers = T.cocoon_foyers.filter(function (x) { return x.id !== mm.foyer; }); T.cocoon_docs = T.cocoon_docs.filter(function (x) { return x.foyer !== mm.foyer; }); } else T.cocoon_docs = T.cocoon_docs.filter(function (x) { return !(x.foyer === mm.foyer && x.path.indexOf("data/users/" + me) === 0); }); }); T.cocoon_members = T.cocoon_members.filter(function (x) { return x.user_id !== me; }); Object.keys(users).forEach(function (k) { if (users[k].u.id === me) delete users[k]; }); return ok({ foyers_supprimes: 1 }); }
       if (n === "cocoon_cal_token") return ok("ab12cd34ef56ab12cd34ef56ab12cd34");
       if (n === "cocoon_new_code") { var h = T.cocoon_foyers.find(function (x) { return x.id === a.f; }); h.code = "n3w"; return ok("n3w"); }
       return Promise.resolve({ data: null, error: { message: "rpc inconnue " + n } });
@@ -53,6 +54,9 @@
     storage: { from: function () { return {
       upload: function (p, f) { files[p] = f; return ok({ path: p }); },
       createSignedUrl: function (p) { return ok({ signedUrl: "https://mock.supabase.co/storage/v1/object/sign/cocoon/" + encodeURIComponent(p).replace(/%2F/g, "/") + "?token=t" }); },
+      createSignedUrls: function (ps) { return ok(ps.map(function (p) { return { path: p, signedUrl: "https://mock.supabase.co/storage/v1/object/sign/cocoon/" + encodeURIComponent(p).replace(/%2F/g, "/") + "?token=short" }; })); },
+      download: function (p) { return files[p] ? ok(files[p]) : Promise.resolve({ data: null, error: { message: "not found" } }); },
+      list: function (dir) { return ok(Object.keys(files).filter(function (k) { return k.indexOf(dir + "/") === 0; }).map(function (k) { return { name: k.slice(dir.length + 1) }; })); },
       remove: function (ps) { ps.forEach(function (p) { delete files[p]; }); window.__mock.removed = ps; return ok(null); }
     }; } }
   };

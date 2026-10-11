@@ -51,7 +51,7 @@
     var iv = setInterval(function () { if (window.supabase) { clearInterval(iv); ok(); } }, 40);
   });
   function introOut() { try { if (window.cxIntroOut) window.cxIntroOut(); } catch (_) {} }
-  var ME = null, FOYER = null, ROLE = "membre", INVITE = null;
+  var ME = null, FOYER = null, ROLE = "membre", INVITE = null, DELETING = false;
   var readyResolve, READY = new Promise(function (r) { readyResolve = r; });
   var liveResolve, LIVE = new Promise(function (r) { liveResolve = r; }); /* connexion Supabase confirmée */
   var FROM_SNAP = false;
@@ -76,6 +76,7 @@
       "#cxGate .cx-btn{font:inherit;font-weight:700;font-size:17px;border:0;border-radius:16px;padding:15px;background:#1C1B2E;color:#fff;cursor:pointer;margin-top:4px}",
       "#cxGate .cx-btn.alt{background:linear-gradient(135deg,#FFD66B,#FFB38A,#FF9CB0);color:#1C1B2E}",
       "#cxGate .cx-btn[disabled]{opacity:.6}",
+      "#cxGate .cx-legal{margin:10px 0 0;font-size:12.5px;line-height:1.45;color:#6A6886;text-align:center}#cxGate .cx-legal .cx-link{font-size:12.5px;padding:2px}" +
       "#cxGate .cx-link{font:inherit;border:0;background:none;color:#3D3A5C;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:6px;font-size:14.5px}",
       "#cxGate .cx-keep{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:inherit;cursor:pointer;margin:2px 0}",
       "#cxGate .cx-keep input{width:22px;height:22px;accent-color:#1C1B2E;margin:0;padding:0}",
@@ -132,7 +133,8 @@
             '<label class="cx-keep"><input type="checkbox" name="keep"' + (keep() ? " checked" : "") + '><span>Rester connecté</span></label>' +
             '<div class="cx-msg" hidden></div><button class="cx-btn" type="submit">' + (sign ? "Créer mon compte" : "Se connecter") + "</button></form>" +
             '<button class="cx-link" type="button" data-go="' + (sign ? "login" : "signup") + '">' + (sign ? "J'ai déjà un compte" : "Pas encore de compte ? Créer un compte") + "</button>" +
-            (sign ? "" : '<button class="cx-link" type="button" data-go="forgot">Mot de passe oublié</button>');
+            (sign ? "" : '<button class="cx-link" type="button" data-go="forgot">Mot de passe oublié</button>') +
+            '<p class="cx-legal">' + (sign ? "En créant un compte, tu acceptes que Cocoon garde les données de ton foyer pour le faire fonctionner. " : "") + '<button class="cx-link cx-priv" type="button" data-priv="1">Confidentialité</button></p>';
           var f = card.querySelector("form");
           if (extra) msg(extra.t, extra.err);
           f.addEventListener("submit", async function (e) {
@@ -212,7 +214,8 @@
       });
     }
     var _show = G.show; G.show = function () { var r = _show.apply(G, arguments); try { addEyes(); } catch (_) {} return r; };
-    function bindGo() { card.querySelectorAll("[data-go]").forEach(function (b) { b.addEventListener("click", function () { G.show(b.getAttribute("data-go")); }); }); }
+    function bindGo() { card.querySelectorAll("[data-go]").forEach(function (b) { b.addEventListener("click", function () { G.show(b.getAttribute("data-go")); }); });
+      card.querySelectorAll("[data-priv]").forEach(function (b) { b.addEventListener("click", function () { if (typeof window.openPrivacy === "function") window.openPrivacy(); }); }); }
     return G;
   }
   function frErr(e) {
@@ -279,13 +282,13 @@
     sb.auth.onAuthStateChange(function (ev, session) {
       if (ev === "PASSWORD_RECOVERY") { gate().show("newpw"); return; }
       if (ev === "SIGNED_IN" && session && !started && G && G.mode !== "foyer") afterLogin(session.user);
-      if (ev === "SIGNED_OUT" && started) location.reload();
+      if (ev === "SIGNED_OUT" && started && !DELETING) location.reload();
     });
     var s = await sb.auth.getSession();
     if (FROM_SNAP) {
       if (s.data && s.data.session && s.data.session.user.id === ME.id) { goLive(s.data.session.user); }
       else if ((s.error && isNetErr(s.error)) || !navigator.onLine) { netDown = true; offUI(); waitOnline(); }
-      else { LS.del("cocoon.snap"); location.reload(); }
+      else if (!DELETING) { LS.del("cocoon.snap"); location.reload(); }
       return;
     }
     if (s.data && s.data.session) { try { if (window.cxIntroOut) window.cxIntroOut(true); } catch (_) {} if (!started) afterLogin(s.data.session.user); }
@@ -461,7 +464,7 @@
   function goLive(user) { if (IS_LIVE) return; ME = user; IS_LIVE = true; netDown = false; liveResolve(); startRealtime(); refreshAll(); run(); offUI(); stillMember(); }
   async function stillMember() {
     try { var r = await sb.from("cocoon_members").select("foyer").eq("foyer", FOYER).eq("user_id", ME.id).maybeSingle();
-      if (!r.error && !r.data) { LS.del("cocoon.snap"); LS.del("cocoon.foyer"); LS.del("cocoon.outbox"); location.reload(); } } catch (_) {}
+      if (!r.error && !r.data && !DELETING) { LS.del("cocoon.snap"); LS.del("cocoon.foyer"); LS.del("cocoon.outbox"); location.reload(); } } catch (_) {}
   }
   function waitOnline() {
     var tries = 0;
@@ -538,7 +541,15 @@
   };
 
   /* =================== Fichiers =================== */
-  var TEN_YEARS = 60 * 60 * 24 * 365 * 10;
+  /* Les fichiers ne sont plus partagés par des liens permanents : on garde seulement leur chemin
+     (« sb:<foyer>/<id>-nom ») et on crée un lien temporaire au moment de l'afficher. */
+  var LINK_S = 60 * 60;           // images affichées dans l'app : 1 h
+  var OPEN_S = 5 * 60;            // document ouvert : 5 min
+  function refPath(ref) {
+    ref = String(ref || "");
+    if (ref.indexOf("sb:") === 0) return ref.slice(3);
+    var m = ref.match(/\/object\/sign\/[^/]+\/([^?]+)/); return m ? decodeURIComponent(m[1]) : null;
+  }
   var assets = {
     upload: async function (file, opts) {
       if (!navigator.onLine || netDown) { var eo = new Error("Pas de connexion : ajoute ce fichier quand tu auras du réseau."); eo.code = "offline"; throw eo; }
@@ -550,14 +561,38 @@
       var path = FOYER + "/" + genId() + "-" + name;
       var r = await sb.storage.from(BUCKET).upload(path, file, { contentType: type, upsert: false });
       if (r.error) { var e3 = new Error(frErr(r.error)); e3.code = /size|large/i.test(r.error.message) ? "too_large" : "upload_failed"; throw e3; }
-      var s = await sb.storage.from(BUCKET).createSignedUrl(path, TEN_YEARS);
-      if (s.error) throw s.error;
-      return { id: s.data.signedUrl, path: path, url: s.data.signedUrl };
+      var s = await sb.storage.from(BUCKET).createSignedUrl(path, LINK_S);
+      return { id: "sb:" + path, path: path, url: s.error ? null : s.data.signedUrl };
     },
     delete: async function (ref) {
       await LIVE;
-      var m = String(ref || "").match(/\/object\/sign\/[^/]+\/([^?]+)/), path = m ? decodeURIComponent(m[1]) : String(ref || "");
+      var path = refPath(ref) || String(ref || "");
       if (path) await sb.storage.from(BUCKET).remove([path]);
+    },
+    /* Est-ce une référence de fichier de cette version (à signer avant affichage) ? */
+    isRef: function (ref) { return !!refPath(ref); },
+    /* Liens temporaires pour plusieurs fichiers : { ref: url } */
+    sign: async function (refs, secs) {
+      await LIVE;
+      var list = (refs || []).map(function (r) { return { r: r, p: refPath(r) }; }).filter(function (x) { return x.p; });
+      if (!list.length) return {};
+      var res = await sb.storage.from(BUCKET).createSignedUrls(list.map(function (x) { return x.p; }), secs || LINK_S);
+      var out = {}; if (res.error || !res.data) return out;
+      res.data.forEach(function (d, i) { if (d && d.signedUrl && list[i]) out[list[i].r] = d.signedUrl; });
+      return out;
+    },
+    open: async function (ref) { var o = await assets.sign([ref], OPEN_S); return o[ref] || null; },
+    /* Ancien lien permanent → le fichier change d'adresse (l'ancien lien ne marche plus) */
+    migrate: async function (ref) {
+      await LIVE;
+      ref = String(ref || ""); if (ref.indexOf("sb:") === 0) return ref;
+      var path = refPath(ref); if (!path) return ref;
+      var dl = await sb.storage.from(BUCKET).download(path); if (dl.error || !dl.data) return ref;
+      var tail = path.split("/").pop().replace(/^[^-]*-/, ""), np = path.split("/")[0] + "/" + genId() + "-" + tail;
+      var up = await sb.storage.from(BUCKET).upload(np, dl.data, { contentType: dl.data.type || undefined, upsert: false });
+      if (up.error) return ref;
+      await sb.storage.from(BUCKET).remove([path]);
+      return "sb:" + np;
     }
   };
 
@@ -596,6 +631,26 @@
     email: function () { return ME && ME.email; },
     isAdmin: function () { return ROLE === "admin"; },
     logout: logout,
+    /* Supprimer mon compte : fichiers (si je suis le dernier du foyer), données perso, accès, puis le compte lui-même */
+    deleteAccount: async function (myFiles) {
+      await LIVE;
+      var mem = await sb.from("cocoon_members").select("user_id").eq("foyer", FOYER);
+      var alone = !mem.error && (mem.data || []).filter(function (x) { return x.user_id !== ME.id; }).length === 0;
+      var paths = [];
+      if (alone) {
+        var ls = await sb.storage.from(BUCKET).list(FOYER, { limit: 1000 });
+        if (!ls.error) paths = (ls.data || []).map(function (o) { return FOYER + "/" + o.name; });
+      } else paths = (myFiles || []).map(refPath).filter(Boolean);
+      for (var i = 0; i < paths.length; i += 100) { try { await sb.storage.from(BUCKET).remove(paths.slice(i, i + 100)); } catch (_) {} }
+      DELETING = true;
+      var r = await sb.rpc("cocoon_delete_me");
+      if (r.error) { DELETING = false; throw new Error(/function|exist/i.test(r.error.message) ? "la suppression de compte n'est pas encore installée dans Supabase (script securite.sql)" : frErr(r.error)); }
+      try { await Promise.race([PUSH.disable(), new Promise(function (ok) { setTimeout(ok, 2500); })]); } catch (_) {}
+      ["cocoon.snap", "cocoon.outbox", "cocoon.foyer", "cocoon.theme", "cocoon.palette", "cocoon.bootSeen"].forEach(function (k) { LS.del(k); });
+      try { await sb.auth.signOut(); } catch (_) {}
+      authStore.removeItem("cocoon.auth");
+      return { foyerSupprime: alone };
+    },
     /* Le créateur retire un membre du foyer (accès coupé côté serveur) */
     removeMember: async function (uid) { await LIVE; var r = await sb.rpc("cocoon_remove_member", { f: FOYER, u: uid }); if (r.error) throw new Error(/function|exist/i.test(r.error.message) ? "la protection du serveur n'est pas encore installée dans Supabase (securite.sql)" : frErr(r.error)); },
     newCode: async function () { await LIVE; var r = await sb.rpc("cocoon_new_code", { f: FOYER }); if (r.error) throw new Error(frErr(r.error)); INVITE = r.data; return INVITE; },

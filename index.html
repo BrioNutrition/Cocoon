@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 10:49";</script>
+<script>window.COCOON_BUILD="11/10 11:16";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2080,6 +2080,22 @@ input,textarea{-webkit-user-select:text!important;user-select:text!important}
   .boot.quick .bt-dots i:nth-child(2){animation-delay:1.65s}
   .boot.quick .bt-dots i:nth-child(3){animation-delay:1.8s}
 }
+
+button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
+.d-sante{font-size:12.5px;color:var(--muted);line-height:1.45;margin:-2px 2px 4px}
+.del-acc{display:flex;flex-direction:column;gap:10px;padding:2px 14px 14px;font-size:13.5px;line-height:1.45}
+.del-acc ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+.del-acc input{width:100%;font:inherit;font-size:16px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--sunk);color:var(--ink)}
+.del-acc .btn.danger{background:var(--late);color:#fff}
+.del-acc .btn.danger:disabled{opacity:.4}
+.priv-bg{position:fixed;inset:0;z-index:2147483500;background:rgba(8,7,14,.6);display:flex;align-items:flex-end;justify-content:center}
+.priv{width:min(560px,100%);max-height:92vh;overflow:auto;background:var(--surface);color:var(--ink);border-radius:26px 26px 0 0;padding:22px 20px 30px;-webkit-user-select:text;user-select:text}
+.priv h2{margin:0 0 4px;font-size:22px}.priv h3{margin:18px 0 6px;font-size:15.5px}
+.priv p,.priv li{font-size:14px;line-height:1.55;color:var(--ink)}.priv ul{padding-left:18px;margin:4px 0}
+.priv .muted{color:var(--muted);font-size:12.5px}
+.priv-x{position:sticky;top:0;float:right;width:36px;height:36px;border-radius:50%;border:0;background:var(--sunk);color:var(--ink);font-size:20px;cursor:pointer}
+.acc-gone{position:fixed;inset:0;z-index:300;background:var(--bg);display:grid;place-items:center;padding:24px;text-align:center}
+.acc-gone div{max-width:360px;display:flex;flex-direction:column;gap:12px;align-items:center}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2182,6 +2198,7 @@ input,textarea{-webkit-user-select:text!important;user-select:text!important}
     <div class="sub cx-notif" id="cxNotif" hidden></div>
     <div class="sub cx-account" id="cxAccount" hidden></div>
     <details class="done-list" id="mDoneWrap"><summary id="mDoneSummary">Tâches réalisées</summary><div class="list" id="mDoneList"></div></details>
+    <div class="sub" id="mSettings"></div>
   </section>
 
   <!-- FOYER -->
@@ -2263,6 +2280,7 @@ input,textarea{-webkit-user-select:text!important;user-select:text!important}
       <div class="newcat" id="dNewCat" hidden><input type="text" id="dCatNom" maxlength="28" placeholder="Nom de la catégorie : Santé, Impôts, Travail…" aria-label="Nom de la nouvelle catégorie"><div class="nc-sw" id="dCatCol" role="radiogroup" aria-label="Couleur du classeur"></div></div>
       <div class="field" id="docPourWrap">Classeur de<div class="pchips" id="docPour"></div></div>
       <textarea id="dNote" placeholder="Note : n° de contrat, où est l'original, qui contacter…" aria-label="Note"></textarea>
+      <p class="d-sante">Papiers de santé (ordonnances, comptes rendus…) : facultatifs. En les ajoutant, tu acceptes qu'ils soient gardés pour ton foyer. N'écris pas ton numéro de sécurité sociale dans les notes.</p>
       <label class="file-in" id="fileWrap" for="dFile">Fichiers (PDF ou photos, 20 Mo max chacun) <input type="file" id="dFile" multiple accept="application/pdf,image/png,image/jpeg,image/webp"></label>
     </form>
     <div class="chips" id="docFilter"></div>
@@ -2421,7 +2439,7 @@ const $=id=>document.getElementById(id);
 function de(w){ w=String(w==null?"":w); return (/^[aeiouyhàâäéèêëîïôöûüœ]/i.test(w)?"d'":"de ")+w; }
 const el=(tag,attrs={},...kids)=>{ const e=document.createElement(tag); for(const [k,v] of Object.entries(attrs)){ if(v==null||v===false) continue; if(k==="class") e.className=v; else if(k==="text") e.textContent=v; else if(k.startsWith("on")) e.addEventListener(k.slice(2),v); else e.setAttribute(k,v===true?"":v); } for(const k of kids){ if(k!=null) e.append(k); } return e; };
 const membres=()=>S.membres.length?S.membres:(S.membresLoaded?[]:DEFAULT_MEMBRES);
-const membre=id=>membres().find(m=>m.id===id)||{id,nom:id||"Quelqu'un",c:"#888",type:"humain"};
+const membre=id=>membres().find(m=>m.id===id)||{id,nom:id?"Ancien membre":"Quelqu'un",c:"#9A98B0",type:"humain"};
 const humains=()=>membres().filter(m=>m.type!=="animal");
 const typeOf=m=>m.type==="animal"?"animal":m.type==="enfant"?"enfant":"adulte";
 const isAdmin=()=>{ const m=meM(); return !!S.isOwner||(!!(m&&m.role==="admin")&&S.canEdit!==false); };
@@ -2454,7 +2472,31 @@ const BANNERS=[
 ];
 const ESPECES=["Chat","Chien","Lapin","Oiseau","Poisson","Rongeur","Autre"];
 const SUGG={adulte:["Téléphone","Pointure","Taille de vêtements","Mutuelle","Plat préféré"],enfant:["École","Classe","Maîtresse / maître","Pointure","Taille de vêtements","Activités","Médecin"],animal:["N° de puce","Vétérinaire","Croquettes","Poids","Assurance animale"]};
-function imgUrl(ref){ if(!ref) return null; return /^(data:|blob:|https?:)/.test(ref)?ref:"/_blob/"+ref; }
+/* Fichiers de la version hébergée : jamais de lien permanent. On demande un lien temporaire (1 h) au moment d'afficher. */
+const SIGNED=new Map(), SIGN_Q=new Set(); let SIGN_T=0;
+const hostedRef=ref=>!!(ref&&S.assets&&S.assets.isRef&&S.assets.isRef(ref));
+function imgUrl(ref){ if(!ref) return null;
+  if(hostedRef(ref)){ const c=SIGNED.get(ref); if(c&&c.exp>Date.now()) return c.url; SIGN_Q.add(ref); if(!SIGN_T) SIGN_T=setTimeout(signFlush,0); return c?c.url:null; }
+  return /^(data:|blob:|https?:)/.test(ref)?ref:"/_blob/"+ref; }
+async function signFlush(){ SIGN_T=0; const refs=[...SIGN_Q]; SIGN_Q.clear(); if(!refs.length) return; let o={};
+  try{ o=await S.assets.sign(refs)||{}; }catch(_){}
+  const now=Date.now(); let got=false;
+  for(const r of refs){ if(o[r]){ SIGNED.set(r,{url:o[r],exp:now+50*60*1000}); got=true; } else SIGNED.set(r,{url:(SIGNED.get(r)||{}).url||null,exp:now+5*60*1000}); }
+  if(got) renderAll(); }
+const seedSigned=up=>{ if(up&&up.id&&up.url) SIGNED.set(up.id,{url:up.url,exp:Date.now()+50*60*1000}); };
+async function openFile(ref){ const w=window.open("","_blank");
+  try{ const u=await S.assets.open(ref); if(!u) throw 0; if(w) w.location.href=u; else location.href=u; }
+  catch(_){ if(w) w.close(); toast("Ce fichier n'a pas pu être ouvert. Vérifie ta connexion."); } }
+/* Anciens fichiers partagés par lien permanent : on les déplace une fois pour couper ces liens */
+async function migrateFiles(){
+  if(S.migDone||S.migBusy||!S.assets||!S.assets.migrate||S.readOnly||!S.db||!S.loaded.d||!S.membresLoaded||!S.profilsLoaded) return;
+  S.migBusy=true; const old=r=>hostedRef(r)&&!String(r).startsWith("sb:");
+  const jobs=[];
+  for(const d of S.docs||[]) if(old(d.assetId)) jobs.push(["documents",d.id,"assetId",d.assetId]);
+  for(const m of S.membresRaw||[]) for(const k of ["photo","banniere"]) if(old(m[k])) jobs.push(["membres",m.id,k,m[k]]);
+  for(const p of S.profils||[]) if(p.id===S.uid) for(const k of ["photo","banniere"]) if(old(p[k])) jobs.push(["profils",p.id,k,p[k]]);
+  for(const [col,id,k,ref] of jobs){ try{ const nr=await S.assets.migrate(ref); if(nr&&nr!==ref) await S.db.collection(col).doc(id).update({[k]:nr}); }catch(_){} }
+  S.migBusy=false; S.migDone=true; }
 function ageText(m){ if(!m.naissance) return null; const b=parse(m.naissance), t=today(); let mo=(t.getFullYear()-b.getFullYear())*12+(t.getMonth()-b.getMonth()); if(t.getDate()<b.getDate()) mo--; if(mo<0) return null; if(mo<24) return mo+" mois"; return Math.floor(mo/12)+" ans"; }
 function nextBirthday(m){ if(!m.naissance) return null; const b=parse(m.naissance), t=today(); let d=new Date(t.getFullYear(),b.getMonth(),b.getDate()); if(d<t) d=new Date(t.getFullYear()+1,b.getMonth(),b.getDate()); return {date:iso(d),age:d.getFullYear()-b.getFullYear()}; }
 function typeLabel(m){ const t=typeOf(m); if(t==="animal") return (m.espece||"Animal")+(m.race?" · "+m.race:""); return t==="enfant"?"Enfant":"Adulte"; }
@@ -2827,7 +2869,7 @@ async function shrink(file,max){
 async function uploadImg(file,max){
   if(!S.assets) throw {code:"no_assets"};
   const blob=await shrink(file,max); const type=blob.type||file.type;
-  const up=await S.assets.upload(blob,type?{type}:undefined); return up.id;
+  const up=await S.assets.upload(blob,type?{type}:undefined); seedSigned(up); return up.id;
 }
 function imgErr(e){ const c=e&&e.code; toast(c==="no_assets"?"L'ajout de photos demande d'être Éditeur de la page.":c==="too_large"?"Image trop lourde (20 Mo max).":c==="unsupported_type"?"Format non pris en charge : JPG, PNG ou WebP.":"La photo n'a pas pu être envoyée. Réessaie."); }
 function buildEditor(){
@@ -3073,7 +3115,7 @@ function renderDocs(){
           const body=el("div",{class:"bd-db"},el("b",{text:d.titre}),d.note?el("p",{text:d.note}):"",meta);
           row.append(ft,body);
           const acts=el("div",{class:"bd-acts"});
-          if(d.assetId){ const o=el("a",{class:"bd-eye",href:imgUrl(d.assetId),target:"_blank",rel:"noopener","aria-label":"Voir "+d.titre,title:"Voir"}); o.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 5C6.5 5 2.7 9.2 1.5 11.1a1.7 1.7 0 0 0 0 1.8C2.7 14.8 6.5 19 12 19s9.3-4.2 10.5-6.1a1.7 1.7 0 0 0 0-1.8C21.3 9.2 17.5 5 12 5Z"/><circle cx="12" cy="12" r="4" fill="var(--eyebg)"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>'; acts.append(o); }
+          if(d.assetId){ const o=hostedRef(d.assetId)?el("button",{type:"button",class:"bd-eye","aria-label":"Voir "+d.titre,title:"Voir",onclick:e=>{ e.preventDefault(); e.stopPropagation(); openFile(d.assetId); }}):el("a",{class:"bd-eye",href:imgUrl(d.assetId),target:"_blank",rel:"noopener","aria-label":"Voir "+d.titre,title:"Voir"}); o.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 5C6.5 5 2.7 9.2 1.5 11.1a1.7 1.7 0 0 0 0 1.8C2.7 14.8 6.5 19 12 19s9.3-4.2 10.5-6.1a1.7 1.7 0 0 0 0-1.8C21.3 9.2 17.5 5 12 5Z"/><circle cx="12" cy="12" r="4" fill="var(--eyebg)"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>'; acts.append(o); }
           if(!S.readOnly&&meId()) acts.append(el("button",{class:"more",type:"button","aria-label":"Supprimer "+d.titre,text:"×",onclick:()=>softDelete([{key:"documents:"+d.id,arr:"docs",item:d,run:()=>delDoc(d)}],"Document « "+esc(d.titre)+" » supprimé.")}));
           row.append(acts); list.append(row); } };
       if(ds.length>2){ const si=el("input",{type:"search",class:"bd-search",placeholder:"Chercher dans "+c.nom+"…","aria-label":"Chercher dans "+c.nom}); si.value=S.docQ[key]||""; si.addEventListener("input",()=>{ S.docQ[key]=si.value; draw(); }); b.append(el("div",{class:"bd-sw"},si)); }
@@ -4402,7 +4444,7 @@ function renderBadges(){
   if(urgent&&!S.bellRung){ S.bellRung=true; const b=$("bellBtn"); b.classList.add("ring"); setTimeout(()=>b.classList.remove("ring"),2600); }
   setN("nBudget",(S.abos||[]).filter(a=>a.actif!==false&&(()=>{ const n=subNext(a); return n&&daysTo(n)<=7; })()).length);
 }
-function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; try{ renderAllNowInner(); }catch(e){ console.error(e); } if(S.flip) applyFlip(); if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
+function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; try{ renderAllNowInner(); }catch(e){ console.error(e); } if(S.flip) applyFlip(); if(!S.migDone) setTimeout(migrateFiles,1500); if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
 function renderAllNowInner(){
   const v=S.tab;
   renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon();
@@ -4610,7 +4652,7 @@ $("docForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||
   try{
     const files=[...$("dFile").files];
     if(files.length&&S.assets){
-      for(const f of files){ const type=f.type||(f.name.toLowerCase().endsWith(".pdf")?"application/pdf":""); const up=await S.assets.upload(f,type?{type}:undefined);
+      for(const f of files){ const type=f.type||(f.name.toLowerCase().endsWith(".pdf")?"application/pdf":""); const up=await S.assets.upload(f,type?{type}:undefined); seedSigned(up);
         const base=f.name.replace(/\.[a-z0-9]+$/i,"");
         await S.db.collection("documents").add(Object.assign({},doc,{titre:files.length>1?titre+" · "+base:titre,assetId:up.id,fichierType:type==="application/pdf"?"PDF":"Photo",ajouteLe:Date.now()})); }
     } else await S.db.collection("documents").add(doc);
@@ -5287,6 +5329,8 @@ const SET_IC={
   home:'<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/>',
   dl:'<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/>',
   wipe:'<g fill="currentColor" stroke="none"><rect x="3.5" y="5" width="17" height="2.7" rx="1.35"/><path d="M9 5.2V4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4v1.2h-2V4.4h-2v.8z"/><path fill-rule="evenodd" d="M5.5 9.2h13l-1.1 10.9a2.1 2.1 0 0 1-2.1 1.9H8.7a2.1 2.1 0 0 1-2.1-1.9zM9.9 11.6a.8.8 0 0 0-.8.8v5.6a.8.8 0 0 0 1.6 0v-5.6a.8.8 0 0 0-.8-.8zm4.2 0a.8.8 0 0 0-.8.8v5.6a.8.8 0 0 0 1.6 0v-5.6a.8.8 0 0 0-.8-.8z"/></g>',
+  shield:'<path d="M12 3 5 6v5.5c0 4.4 3 8 7 9.5 4-1.5 7-5.1 7-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>',
+  bye:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5"/><path d="M16 16l5 5M21 16l-5 5"/>',
   quit:'<path d="M14 4h5v16h-5"/><path d="M10 12H3M6 9l-3 3 3 3"/>'
 };
 function renderSettings(){
@@ -5309,7 +5353,58 @@ function renderSettings(){
       box.append(el("div",{class:"set-confirm"},...(lastAdmin?[el("span",{text:"Tu es le seul admin : nomme quelqu'un d'autre admin (dans son profil) avant de partir."}),el("button",{type:"button",class:"btn ghost",text:"D'accord",onclick:()=>{ S.setConfirm=null; renderSettings(); }})]
         :[el("span",{text:"Tu ne verras plus le foyer avec ce compte. Tes données perso restent dans ton espace."}),el("button",{type:"button",class:"btn ghost",text:"Rester",onclick:()=>{ S.setConfirm=null; renderSettings(); }}),el("button",{type:"button",class:"btn danger",text:"Quitter le foyer",onclick:quitFoyer})]))); }
   }
+  box.append(row("shield","#7FCDB9","Confidentialité","Ce qui est enregistré, qui y a accès, tes droits",openPrivacy));
+  if(!S.readOnly&&window.cocoonHost&&cocoonHost.deleteAccount){
+    box.append(row("bye","#E5484D","Supprimer mon compte","Ton compte, ton profil et tes données, pour de bon",()=>{ S.setConfirm=S.setConfirm==="del"?null:"del"; renderSettings(); },"danger"));
+    if(S.setConfirm==="del"){ const alone=humains().filter(x=>x.uid&&x.uid!==S.uid).length===0;
+      const inp=el("input",{type:"text",autocomplete:"off",autocapitalize:"characters",placeholder:"Écris SUPPRIMER","aria-label":"Écris SUPPRIMER pour confirmer"});
+      const okTxt=v=>String(v||"").trim().toUpperCase()==="SUPPRIMER";
+      inp.value=S.delTxt||""; const hadFocus=S.delFocus;
+      const go=el("button",{type:"button",class:"btn danger",text:S.delBusy?"Suppression…":"Supprimer définitivement",disabled:S.delBusy||!okTxt(S.delTxt),onclick:()=>deleteMyAccount(go)});
+      inp.addEventListener("input",()=>{ S.delTxt=inp.value; go.disabled=!okTxt(inp.value); });
+      inp.addEventListener("focus",()=>{ S.delFocus=true; }); inp.addEventListener("blur",()=>{ S.delFocus=false; });
+      if(hadFocus) setTimeout(()=>{ if(inp.isConnected){ inp.focus({preventScroll:true}); const n=inp.value.length; try{ inp.setSelectionRange(n,n); }catch(_){} } },0);
+      box.append(el("div",{class:"del-acc"},el("b",{text:"Ce qui sera effacé, sans retour possible :"}),
+        el("ul",{},el("li",{text:"ton compte de connexion et ton profil"}),el("li",{text:"ton espace perso (tâches, véhicules, préférences)"}),el("li",{text:"tes papiers personnels et leurs fichiers"}),
+          alone?el("li",{text:"tout le foyer : tu es la dernière personne avec un compte, ses tâches, papiers, budget et fichiers seront effacés aussi"}):el("li",{text:"ton accès au foyer : les autres gardent les données communes, ta fiche devient « Ancien membre »"})),
+        el("span",{class:"muted",text:"Pense à exporter tes données avant, si tu veux les garder."}),inp,
+        el("div",{style:"display:flex;gap:8px;flex-wrap:wrap"},el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>{ S.setConfirm=null; S.delTxt=""; renderSettings(); }}),go))); }
+  }
   w.append(el("div",{class:"sec-title"},el("h2",{text:"Réglages"})),box,el("p",{class:"version",text:"Cocoon · version 4.1"}));
+}
+
+/* ===== RGPD : suppression du compte (version hébergée) ===== */
+function myFileRefs(){ const p=(S.profils||[]).find(x=>x.id===S.uid)||{}, m=meM()||{}, me=meId();
+  return [p.photo,p.banniere,m.uid===S.uid?m.photo:null,m.uid===S.uid?m.banniere:null].concat((S.docs||[]).filter(d=>me&&d.pour===me).map(d=>d.assetId)).filter(Boolean); }
+async function deleteMyAccount(btn){
+  if(S.delBusy) return; S.delBusy=true; if(btn){ btn.disabled=true; btn.textContent="Suppression…"; }
+  try{ await cocoonHost.deleteAccount(myFileRefs()); }
+  catch(e){ S.delBusy=false; renderSettings(); toast("La suppression n'a pas abouti : "+esc(e&&e.message||"erreur")+"."); return; }
+  document.body.append(el("div",{class:"acc-gone",role:"alertdialog","aria-label":"Compte supprimé"},el("div",{},el("h2",{text:"Ton compte a été supprimé"}),
+    el("p",{class:"muted",text:"Tes données ont été effacées. Merci d'avoir utilisé Cocoon."}),el("button",{type:"button",class:"btn",text:"Fermer",onclick:()=>location.reload()}))));
+}
+/* ===== Confidentialité ===== */
+function openPrivacy(){
+  const hosted=!!window.cocoonHost, C=(window.COCOON_CONFIG||{}), contact=C.contact||null;
+  const bg=el("div",{class:"priv-bg"}), box=el("div",{class:"priv",role:"dialog","aria-label":"Confidentialité"});
+  const close=()=>{ bg.remove(); document.removeEventListener("keydown",kd); }, kd=e=>{ if(e.key==="Escape") close(); };
+  const h3=t=>el("h3",{text:t}), p=t=>el("p",{text:t}), ul=(...a)=>el("ul",{},...a.map(t=>el("li",{text:t})));
+  box.append(el("button",{type:"button",class:"priv-x","aria-label":"Fermer",text:"×",onclick:close}),el("h2",{text:"Confidentialité"}),el("p",{class:"muted",text:"Ce que Cocoon garde sur toi et sur ton foyer, en clair."}),
+    h3("Qui s'occupe de tes données"),
+    p(hosted?("Cocoon est édité par "+(C.editeur||"la personne qui a créé l'app")+". Pour toute question ou demande sur tes données : "+(contact||"l'adresse de contact indiquée par la personne qui t'a invité")+"."):"Dans cette version, ouverte depuis Claude, tes données sont enregistrées par Claude (Anthropic) dans l'espace de cette page. Ce sont les règles de confidentialité de Claude qui s'appliquent."),
+    h3("Ce qui est enregistré"),
+    ul("Ton adresse e-mail de connexion"+(hosted?"":" (gérée par Claude)"),"Les profils du foyer : prénoms, dates de naissance, photos, couleurs","Les tâches, rappels, rendez-vous, courses, repas","Les papiers : titre, date d'expiration, note, et les fichiers que tu ajoutes","Le budget : dépenses, abonnements, crédits, qui doit quoi","Tes préférences (thème, couleurs, secrétaire) et, si tu les actives, les notifications de ce téléphone"),
+    h3("Pourquoi"),
+    p("Uniquement pour faire fonctionner Cocoon pour ton foyer : te rappeler les choses, partager l'organisation, calculer le budget. Pas de publicité, pas de revente, pas de pistage."),
+    p("Les papiers de santé sont facultatifs : en les ajoutant, tu acceptes qu'ils soient gardés pour ton foyer, et tu peux les supprimer à tout moment."),
+    h3("Qui y a accès"),
+    ul("Les membres de ton foyer voient les données communes ; ton espace perso n'est visible que par toi",hosted?"Les fichiers ne sont jamais publics : ils s'ouvrent avec un lien qui expire au bout de quelques minutes, réservé aux membres connectés":"Les fichiers ne sont visibles que par les personnes qui ont accès à cette page",hosted?"Notre hébergeur, Supabase, stocke les données pour nous"+(C.regionUE?", sur des serveurs en Europe":"")+", sans pouvoir les utiliser pour lui":"Anthropic, qui héberge Claude et cette page"),
+    h3("Combien de temps"),
+    p("Tant que ton compte existe. Quand tu supprimes un élément, il est effacé tout de suite. Quand tu supprimes ton compte, tes données sont effacées aussitôt ; les copies de sauvegarde techniques de l'hébergeur disparaissent ensuite d'elles-mêmes."),
+    h3("Tes droits"),
+    ul("Voir et récupérer tes données : Moi → Exporter mes données","Corriger : modifie directement ton profil ou l'élément concerné","Effacer : supprime l'élément, ton espace perso, ou ton compte"+(hosted?" (Moi → Supprimer mon compte)":""),"Te plaindre si quelque chose ne va pas : la CNIL, sur cnil.fr"),
+    el("p",{class:"muted",text:"Dernière mise à jour : octobre 2026."}));
+  bg.append(box); bg.addEventListener("click",e=>{ if(e.target===bg) close(); }); document.addEventListener("keydown",kd); document.body.append(bg);
 }
 async function exportMine(){
   const me=meId(), m=meM(); if(!m) return;

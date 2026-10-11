@@ -114,3 +114,53 @@ end $$;
 grant execute on function public.cocoon_remove_member(uuid, uuid) to authenticated;
 grant execute on function public.cocoon_is_owner(uuid) to authenticated;
 grant execute on function public.cocoon_is_admin(uuid) to authenticated;
+
+-- =========================================================
+--  RGPD : « Supprimer mon compte » (bouton dans Moi → Mon compte)
+--  - si je suis seul dans un foyer : le foyer et toutes ses données sont effacés
+--    (l'app a déjà supprimé les fichiers juste avant) ;
+--  - sinon : mon espace perso, mon profil, mes papiers personnels et mon accès sont effacés,
+--    ma fiche de membre devient « Ancien membre », le foyer passe à un autre membre si je l'avais créé ;
+--  - enfin le compte de connexion lui-même est supprimé.
+-- =========================================================
+create or replace function public.cocoon_delete_me()
+returns json language plpgsql security definer set search_path = public as $$
+declare
+  me uuid := auth.uid(); r record; other uuid; mid text; gone int := 0;
+begin
+  if me is null then raise exception 'non connecté'; end if;
+  for r in select foyer from public.cocoon_members where user_id = me loop
+    select user_id into other from public.cocoon_members
+      where foyer = r.foyer and user_id <> me order by (role = 'admin') desc, joined_at limit 1;
+    if other is null then
+      update public.cocoon_foyers set owner = me where id = r.foyer;  -- seul membre : il en devient le créateur pour pouvoir tout effacer
+      delete from public.cocoon_docs where foyer = r.foyer;
+      delete from public.cocoon_foyers where id = r.foyer;          -- efface aussi membres, calendrier, notifications
+      gone := gone + 1;
+    else
+      update public.cocoon_foyers set owner = other where id = r.foyer and owner = me;
+      update public.cocoon_members set role = 'admin'
+        where foyer = r.foyer and user_id = other
+          and not exists (select 1 from public.cocoon_members where foyer = r.foyer and role = 'admin' and user_id <> me);
+      select coalesce((select data->>'membre' from public.cocoon_docs where foyer = r.foyer and path = 'profils' and id = me::text),
+                      (select id from public.cocoon_docs where foyer = r.foyer and path = 'membres' and data->>'uid' = me::text limit 1))
+        into mid;
+      delete from public.cocoon_docs where foyer = r.foyer and (path like 'data/users/' || me::text || '%' or (path = 'profils' and id = me::text));
+      if mid is not null then
+        delete from public.cocoon_docs where foyer = r.foyer and path = 'documents' and data->>'pour' = mid;
+        update public.cocoon_docs
+          set data = jsonb_build_object('nom', 'Ancien membre', 'type', coalesce(data->>'type', 'adulte'), 'c', '#9A98B0', 'parti', true)
+          where foyer = r.foyer and path = 'membres' and id = mid;
+      end if;
+      delete from public.cocoon_cal where foyer = r.foyer and owner = me::text;
+      delete from public.cocoon_members where foyer = r.foyer and user_id = me;
+    end if;
+  end loop;
+  if to_regclass('public.cocoon_push_log') is not null then
+    execute 'delete from public.cocoon_push_log where user_id = $1' using me;
+  end if;
+  delete from auth.users where id = me;                             -- notifications, réglages, liens calendrier : effacés avec
+  return json_build_object('foyers_supprimes', gone);
+end $$;
+revoke all on function public.cocoon_delete_me() from public;
+grant execute on function public.cocoon_delete_me() to authenticated;
