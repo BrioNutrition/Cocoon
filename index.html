@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 19:12";</script>
+<script>window.COCOON_BUILD="11/10 20:20";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2189,6 +2189,79 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .wk-leg span{display:flex;align-items:center;gap:5px}
 .wk-leg i{width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.5}
 .wk-leg i.on{background:#3CC37A;opacity:1}.wk-leg i.late{background:#FF7A5C;opacity:1}
+
+/* Courses : résumé, habituels, lignes fines, caddie repliable */
+.c-live.c-sum{flex-direction:row;align-items:center;gap:12px;padding:13px 14px}
+.c-live.c-sum .cl-t b{font-size:19px;font-family:var(--f-display);font-weight:800}
+.c-live.c-sum .cl-go{background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB);color:#1C1B2E;border:0;border-radius:999px;padding:10px 14px;font-size:14px;box-shadow:none}
+.c-hab{display:flex;flex-wrap:wrap;gap:7px;margin-top:-4px}
+.c-hab[hidden]{display:none}
+.c-hb{border:0;background:var(--surface);box-shadow:0 1px 0 var(--shadow);border-radius:999px;padding:7px 12px 7px 10px;font:inherit;font-size:13.5px;font-weight:700;color:var(--ink);display:inline-flex;align-items:center;gap:4px;cursor:pointer;transition:transform .15s ease,opacity .25s ease}
+.c-hb b{color:#E0A100;font-weight:900}
+.c-hb:active{transform:scale(.94)}
+.c-hb.go{opacity:.35;transform:scale(.9)}
+.c-list{gap:6px}
+.c-item{padding:9px 12px;border-radius:13px;gap:11px;box-shadow:0 1px 0 var(--shadow)}
+.c-list .c-row:nth-child(n) .c-item{transform:none}
+.c-box{width:21px;height:21px}
+.c-group h3{margin:0 0 7px;font-size:14.5px}
+.c-cart h3{margin:0}
+.c-cart-t{flex:1;display:flex;align-items:center;gap:8px;border:0;background:#E6F6EC;color:#2F6B45;border-radius:14px;padding:11px 14px;font:inherit;font-weight:800;font-size:14.5px;cursor:pointer;text-align:left}
+.c-group .c-cart-t .count{color:inherit;font-weight:800;font-size:14.5px}
+.c-cart-t .c-chev{margin-left:auto;font-size:20px;line-height:1;transition:transform .2s ease}
+.c-cart.open .c-cart-t .c-chev{transform:rotate(90deg)}
+.c-cart.open .c-list{margin-top:8px}
+.c-cart .c-clear{margin-left:8px}
+:root[data-theme="dark"] .c-cart-t{background:#1A2A22;color:#7FD39A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .c-cart-t{background:#1A2A22;color:#7FD39A}}
+:root[data-theme="dark"] .c-hb b{color:#FFC94A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .c-hb b{color:#FFC94A}}
+
+/* Repas : la semaine en tableau */
+.r-grid{display:grid;grid-template-columns:40px repeat(var(--rc),minmax(0,1fr));gap:5px;align-items:stretch}
+.r-gh0{min-height:0}
+.r-gh{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center;padding:2px 0}
+.r-gd{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;color:var(--muted);line-height:1.1;letter-spacing:.03em}
+.r-gd b{font-size:15px;color:var(--ink);font-family:var(--f-display)}
+.r-gd.now{color:#C98A00}.r-gd.now b{color:#C98A00}
+.r-gd.past{opacity:.55}
+.r-cell{border:0;background:var(--surface);box-shadow:0 1px 0 var(--shadow);border-radius:11px;padding:7px 8px;min-height:46px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:1px;font:inherit;color:var(--ink);text-align:left;cursor:pointer;min-width:0;border-left:3px solid var(--rk,transparent)}
+.r-cell.r-matin{--rk:#E9A86B}.r-cell.r-midi{--rk:#6FA8DC}.r-cell.r-soir{--rk:#E0B21C}
+.r-cell .r-cp{font-size:12.5px;font-weight:700;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word;width:100%}
+.r-cell small{font-size:10.5px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.r-cell.e{background:none;box-shadow:none;border:1.5px dashed var(--line);align-items:center}
+.r-cell.e .r-plus{color:var(--muted);font-size:17px;font-weight:700;opacity:.7}
+.r-cell.now{box-shadow:inset 0 0 0 2px #FFC94A}
+.r-cell.e.now{border-color:#FFC94A;box-shadow:none}
+.r-cell.past{opacity:.55}
+.r-cell.on{box-shadow:inset 0 0 0 2px var(--ink)}
+.r-cell:active{transform:scale(.97)}
+.r-grid + .r-ed{margin-top:4px}
+
+/* Maison : tableau de bord */
+.m-dash{display:flex;flex-direction:column;gap:8px}
+.m-dash:empty{display:none}
+.m-al{display:flex;align-items:center;gap:11px;background:var(--surface);border-radius:16px;padding:11px 12px;box-shadow:0 2px 0 var(--shadow)}
+.m-al>i{font-style:normal;font-size:21px;width:28px;text-align:center;flex:none}
+.m-al>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.m-al b{font-size:14.5px}
+.m-al span{font-size:12.5px;color:var(--muted)}
+.m-al.late span{color:var(--late)}
+.m-al.ok>i{color:#2E9E5B;font-weight:900}
+.m-al-go{flex:none;border:0;background:#FFC94A;color:#1C1B2E;font:inherit;font-weight:800;font-size:13px;padding:7px 12px;border-radius:999px;cursor:pointer}
+.m-al-go:active{transform:scale(.95)}
+.m-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.m-tiles[hidden]{display:none}
+.m-tile{position:relative;border:0;border-radius:20px;padding:13px;min-height:104px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;background:color-mix(in srgb,var(--bc) 22%,var(--surface));box-shadow:0 2px 0 var(--shadow)}
+.m-tile i{font-style:normal;font-size:22px;margin-bottom:auto}
+.m-tile b{font-size:16px;margin-top:8px}
+.m-tile span{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.m-tile em{position:absolute;top:11px;right:11px;font-style:normal;font-size:11px;font-weight:800;padding:3px 8px;border-radius:999px;background:var(--soon-bg);color:var(--soon)}
+.m-tile:active{transform:scale(.97)}
+.m-dash.is-sub{flex-direction:row;justify-content:flex-start}
+.m-dash .m-back{margin:0;align-self:flex-start}
+.m-back{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);border-radius:999px;padding:8px 14px 8px 10px;font:inherit;font-weight:800;font-size:14px;color:var(--ink);cursor:pointer}
+.m-back span{font-size:20px;line-height:1;margin-top:-2px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2315,6 +2388,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
       <input type="text" id="cNom" maxlength="120" placeholder="Lait, pain, piles…" aria-label="Article à ajouter" enterkeyhint="done">
       <button class="btn" type="submit">Ajouter</button>
     </form>
+    <div class="c-hab" id="cHab" role="group" aria-label="À racheter"></div>
     <div class="seg c-pour" id="cPour" role="group" aria-label="Pour qui"></div>
     <div id="cLists" class="c-lists"></div>
   </section>
@@ -2387,8 +2461,10 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
   <!-- MAISON & VÉHICULES (V3) -->
   <section class="view" data-view="maison" hidden>
     <div class="seg viewseg" role="group" aria-label="Foyer"><button type="button" data-go="foyer" aria-pressed="false">Tâches</button><button type="button" data-go="courses" aria-pressed="false">Courses</button><button type="button" data-go="repas" aria-pressed="false">Repas</button><button type="button" data-go="documents" aria-pressed="false">Papiers</button><button type="button" data-go="maison" aria-pressed="true">Maison</button></div>
+    <div class="m-dash" id="mDash"></div>
     <form class="b-form" id="mhForm" hidden autocomplete="off"></form>
     <div class="sub" id="mHome"></div>
+    <div class="m-tiles" id="mTiles"></div>
     <div class="sub" id="mBins"></div>
     <div class="sub" id="mContacts"></div>
     <div class="sub" id="mEquip"></div>
@@ -4381,7 +4457,7 @@ $("bAddCr").addEventListener("click",()=>{ const me=meId(); if(!me){ needMe(); r
 $("sgDep").addEventListener("click",()=>{ closeSheet(); openBForm("dep"); });
 $("sgRdv").addEventListener("click",()=>{ closeSheet(); if(!needMe()) return; setTab("accueil"); S.rdvForm={pour:[meId()]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({behavior:"smooth",block:"start"}); },60); });
 $("sgSub").addEventListener("click",()=>{ closeSheet(); openBForm("sub"); });
-document.querySelectorAll(".viewseg button").forEach(b=>b.addEventListener("click",()=>{ setTab(b.dataset.go); window.scrollTo({top:0}); }));
+document.querySelectorAll(".viewseg button").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.go==="maison") S.mSec=null; setTab(b.dataset.go); window.scrollTo({top:0}); }));
 /* ===== Maison & véhicules (V3) ===== */
 const MI=p=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
 const EQ_TYPES=[["chaudiere","Chaudière",12,'<rect x="6" y="3" width="12" height="18" rx="2"/><path d="M10 15c0-2 2-2.5 2-4.5 1 1 2 2 2 4a2 2 0 0 1-4 .5z"/>'],["pac","Pompe à chaleur",24,'<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="9" cy="12" r="3.5"/><path d="M15 10h3M15 14h3"/>'],["vmc","VMC",6,'<circle cx="12" cy="12" r="8"/><path d="M12 12c0-4 2-5 4-4-1 2-2 3-4 4zm0 0c4 0 5 2 4 4-2-1-3-2-4-4zm0 0c0 4-2 5-4 4 1-2 2-3 4-4zm0 0c-4 0-5-2-4-4 2 1 3 2 4 4z"/>'],["cheminee","Cheminée ou poêle",12,'<path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-5a3 3 0 0 1 6 0v5"/>'],["clim","Climatisation",12,'<rect x="3" y="5" width="18" height="8" rx="2"/><path d="M7 17l-1 3M12 17v3M17 17l1 3"/>'],["chauffeeau","Chauffe-eau",24,'<rect x="7" y="3" width="10" height="18" rx="5"/><path d="M12 8v5"/>'],["electromenager","Électroménager",0,'<rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M8 6h2"/>'],["detecteur","Détecteur de fumée",12,'<circle cx="12" cy="10" r="7"/><path d="M9 21h6M12 17v4"/>'],["radiateurs","Radiateurs",12,""],["four","Four",3,""],["plaques","Plaques de cuisson",0,""],["hotte","Hotte",3,""],["lavevaisselle","Lave-vaisselle",1,""],["lavelinge","Lave-linge",3,""],["sechelinge","Sèche-linge",3,""],["frigo","Frigo ou congélateur",6,""],["fosse","Fosse septique",48,""],["autre","Autre équipement",0,'<path d="M14.5 6.5a4 4 0 0 0-5 5L4 17l3 3 5.5-5.5a4 4 0 0 0 5-5l-2.5 2.5-3-3z"/>']];
@@ -4448,6 +4524,43 @@ function renderMaison(){
     rs.forEach((r,i)=>{ const p=rs[i+1]; hl.append(el("div",{class:"dl"},el("span",{},fmtDue(r.date)+" ",el("small",{text:p?"+"+nf.format(Math.round((r.valeur-p.valeur)*10)/10)+" "+M.u:""})),el("b",{text:nf.format(r.valeur)+" "+M.u}))); });
     mt.append(hl); }
   if(S.mForm&&S.mForm.slot==="meters"){ const box=el("div",{class:"m-card editing"}); box.append(MHF); mt.append(box); }
+  renderMDash();
+}
+/* Maison : tableau de bord (ce qui compte cette semaine + 4 tuiles qui s'ouvrent) */
+const MSECS=[["bins","Poubelles","#7FD39A","🗑"],["contacts","Contacts","#8FB8FF","📞"],["equip","Équipements","#FF9C80","🔧"],["meters","Compteurs","#FFC94A","⚡"]];
+function mOpen(sec){ S.mSec=sec||null; renderMaison(); window.scrollTo({top:0,behavior:"smooth"}); }
+function meterLast(){ const rs=(S.releves||[]).slice().sort((a,b)=>a.date<b.date?1:-1); return rs[0]||null; }
+function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; const sec=S.mSec||null, me=meId(), t0=iso(today());
+  D.innerHTML=""; T.innerHTML="";
+  const ids={bins:"mBins",contacts:"mContacts",equip:"mEquip",meters:"mMeters"};
+  for(const [k,id] of Object.entries(ids)){ const e=$(id); if(e) e.hidden=sec!==k; }
+  $("mHome").hidden=!!sec; T.hidden=!!sec;
+  if(sec){ const m=MSECS.find(x=>x[0]===sec); D.className="m-dash is-sub";
+    D.append(el("button",{type:"button",class:"m-back","aria-label":"Retour à la maison",onclick:()=>mOpen(null)},el("span",{"aria-hidden":"true",text:"‹"}),"La maison"));
+    return; }
+  D.className="m-dash";
+  // ce qui compte cette semaine
+  const al=[];
+  for(const b of (S.bins||[])){ const nx=binNext(b); if(!nx) continue; const d=iso(nx.sortie); if(d!==t0&&d!==iso(new Date(today().getTime()+864e5))) continue;
+    const w=binWho(b), tdy=d===t0, h=new Date().getHours();
+    al.push({o:tdy?0:2,ic:"🗑",t:(tdy?(h>=16?"Ce soir":"Aujourd'hui"):"Demain")+" : "+b.nom,s:w.label,btn:tdy?["Fait",x=>binDone(b,x)]:null}); }
+  for(const x of (S.equip||[])){ const nx=eqNext(x); if(!nx) continue; const n=daysTo(nx); if(n>45) continue; const T2=EQ[x.type]||EQ.autre;
+    al.push({o:n<0?1:3,ic:"🔧",t:"Entretien "+(x.nom||T2.nom).toLowerCase().replace(/^entretien /,""),s:n<0?"en retard de "+(-n)+" j":n===0?"aujourd'hui":"à prévoir d'ici "+n+" j",late:n<0,btn:["C'est fait",()=>{ S.mSec="equip"; openMForm("maint",null,x); }]}); }
+  { const L=meterLast(); if(L&&daysTo(L.date)<-30) al.push({o:4,ic:"⚡",t:"Relever les compteurs",s:"dernier relevé "+ago(parse(L.date).getTime()),btn:["Relever",()=>{ S.mSec="meters"; openMForm("releve",{compteur:L.compteur||"elec"}); }]}); }
+  al.sort((a,b)=>a.o-b.o);
+  if(al.length) for(const a of al.slice(0,3)){ const row=el("div",{class:"m-al"+(a.late?" late":"")},el("i",{"aria-hidden":"true",text:a.ic}),el("div",{},el("b",{text:a.t}),el("span",{text:a.s})));
+      if(a.btn){ const b=el("button",{type:"button",class:"m-al-go",text:a.btn[0]}); b.addEventListener("click",()=>a.btn[1](b)); row.append(b); } D.append(row); }
+  else if((S.bins||[]).length||(S.equip||[]).length||(S.releves||[]).length) D.append(el("div",{class:"m-al ok"},el("i",{"aria-hidden":"true",text:"✓"}),el("div",{},el("b",{text:"Rien d'urgent cette semaine"}),el("span",{text:"Poubelles, entretiens et relevés sont à jour."}))));
+  // les tuiles
+  const bins=S.bins||[], days=[...new Set(bins.flatMap(b=>b.jours||[]))].sort((a,b)=>((a+6)%7)-((b+6)%7));
+  const eqs=S.equip||[], eqSoon=eqs.filter(x=>{ const n=eqNext(x); return n&&daysTo(n)<=45; }).length, cts=S.contacts||[], L=meterLast();
+  const info={bins:[bins.length?bins.length+" bac"+(bins.length>1?"s":"")+(days.length?" · "+days.map(d=>JOURS_COURTS[d]).join(" "):""):"Qui les sort, et quand",null],
+    contacts:[cts.length?cts.length+" numéro"+(cts.length>1?"s":""):"Plombier, médecin, proprio…",null],
+    equip:[eqs.length?eqs.slice(0,2).map(x=>x.nom||(EQ[x.type]||EQ.autre).nom).join(", ")+(eqs.length>2?"…":""):"Chaudière, VMC…",eqSoon?eqSoon+" bientôt":null],
+    meters:[L?"dernier relevé "+ago(parse(L.date).getTime()):"Électricité, eau, gaz",L&&daysTo(L.date)<-30?"relevé":null]};
+  for(const [k,n,c,ic] of MSECS){ const [sub,badge]=info[k];
+    const t=el("button",{type:"button",class:"m-tile",style:"--bc:"+c,"aria-label":n+", "+sub,onclick:()=>mOpen(k)},el("i",{"aria-hidden":"true",text:ic}),el("b",{text:n}),el("span",{text:sub}));
+    if(badge) t.append(el("em",{text:badge})); T.append(t); }
 }
 function renderCars(){
   const cw=$("mCars"); if(!cw) return; cw.innerHTML=""; const me=meId(); if(!me) return; const q=(S.config&&S.config.questionnaire)||{};
@@ -4495,6 +4608,7 @@ function mSlotOf(kind,item,ctx){ const id=item&&item.id&&!item._new?item.id:null
 function mPlace(key,container,mode){ if(!S.mForm||S.mForm.slot!==key) return false; if(mode==="replace") container.replaceChildren(MHF); else container.append(MHF); container.classList.add("editing"); return true; }
 function openMForm(kind,item,ctx){
   if(!meId()){ needMe(); return; }
+  if(kind==="equip"||kind==="maint") S.mSec="equip"; else if(kind==="releve") S.mSec="meters"; else if(kind==="logement") S.mSec=null;
   const d=Object.assign({},item||{});
   if(kind==="logement") Object.assign(d,(S.config&&S.config.logement)||{});
   if(kind==="maint"||kind==="vent"||kind==="releve"){ d.date=d.date||iso(today()); d.budget=true; }
@@ -4972,7 +5086,8 @@ function npGo(r){ closeNotifs(); const x=r.ref; if(r.live){ setTab("courses"); r
   if(r.kind==="Anniversaire") return openProfile(x.id);
   if(r.kind==="Prélèvement"){ setTab("budget"); window.scrollTo({top:0}); return; }
   if(r.kind==="Rendez-vous"){ setTab("accueil"); setTimeout(()=>{ const e=$("rdvWrap"); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); },80); return; }
-  setTab("maison"); window.scrollTo({top:0}); if(r.kind==="Poubelles") setTimeout(()=>{ const e=$("mBins"); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); },80);
+  S.mSec={Poubelles:"bins",Contacts:"contacts",Contact:"contacts",Maison:"equip"}[r.kind]||null;
+  setTab("maison"); window.scrollTo({top:0});
 }
 function npSel(){ if(!S.npSelSet) S.npSelSet=new Set(); return S.npSelSet; }
 async function npValidate(list){ const me=meId(), rows=list.map(r=>document.querySelector('#npanel .np-row[data-k="'+CSS.escape(npKey(r))+'"]')).filter(Boolean);
@@ -5026,7 +5141,7 @@ setInterval(()=>{ renderFeed(); renderSecretary(); },60000);
 /* =====================================================================
    V3.5 — consolidation
    ===================================================================== */
-const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/œ/g,"oe").replace(/æ/g,"ae");
 
 /* ---------- Annuler au lieu de confirmer ---------- */
 const COMMITS=new Set();
@@ -5760,7 +5875,7 @@ async function askSecretary(q){
 }
 
 /* ===== Cocoony : tutoriel + création directe ===== */
-function cocoGo(tab,sel,after){ return ()=>{ setTab(tab); window.scrollTo({top:0}); if(sel) setTimeout(()=>{ const e=document.querySelector(sel); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); if(after) after(); },90); else if(after) setTimeout(after,90); }; }
+function cocoGo(tab,sel,after){ return ()=>{ if(tab==="maison") S.mSec={"#mBins":"bins","#mContacts":"contacts","#mEquip":"equip","#mMeters":"meters"}[sel]||null; setTab(tab); window.scrollTo({top:0}); if(sel) setTimeout(()=>{ const e=document.querySelector(sel); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); if(after) after(); },90); else if(after) setTimeout(after,90); }; }
 function secHowTo(raw){
   const q=" "+norm(raw).replace(/['’-]/g," ").replace(/[?!.,;:]/g," ").replace(/\s+/g," ")+" ";
   if(!/( comment | ou | explique| aide| tuto| c est quoi| a quoi sert| je fais comment| on fait comment| il faut faire quoi| que peux tu| tu sais faire| tu peux faire)/.test(q)) return null;
@@ -6223,8 +6338,10 @@ async function toggleCourse(i){ if(!S.db||!needMe()) return;
   const me=meId(); i.fait=!i.fait; i.faitPar=i.fait?me:null; i.faitLe=i.fait?Date.now():null; if(S.cKnown) S.cKnown.set(i.id,i.fait); renderCourses();
   try{ await S.db.collection("courses").doc(i.id).update({fait:i.fait,faitPar:i.faitPar,faitLe:i.faitLe}); }catch(e){ writeErr(e); } }
 function renderCLive(){ const w=$("cLive"); if(!w) return; w.innerHTML=""; const ss=cSession(), me=meId(), items=S.courses||[], todo=items.filter(i=>!i.fait).length, done=items.filter(i=>i.fait).length, tot=todo+done;
-  if(!ss){ w.hidden=!todo; w.className="c-live";
-    if(todo) w.append(el("div",{class:"cl-t"},el("b",{text:"Tu pars au magasin ?"}),el("span",{text:"Les autres voient en direct ce que tu coches, et ce qu'ils ajoutent apparaît chez toi."})),el("button",{type:"button",class:"btn cl-go",onclick:startShopping},"🛒 Je fais les courses"));
+  if(!ss){ w.hidden=!todo; w.className="c-live c-sum";
+    if(todo){ const its=items.filter(i=>!i.fait), nr=new Set(its.map(rayonOf)).size, last=its.slice().sort((a,b)=>(b.ajouteLe||0)-(a.ajouteLe||0))[0];
+      const sub=[nr+" rayon"+(nr>1?"s":"")]; if(last&&last.ajoutePar&&last.ajouteLe&&Date.now()-last.ajouteLe<48*3600e3) if(last.ajoutePar!==me) sub.push("ajouté par "+membre(last.ajoutePar).nom+" "+ago(last.ajouteLe));
+      w.append(el("div",{class:"cl-t"},el("b",{text:todo+" article"+(todo>1?"s":"")}),el("span",{text:sub.join(" · ")})),el("button",{type:"button",class:"btn cl-go",onclick:startShopping},"🛒 Je fais les courses")); }
     return; }
   w.hidden=false; const mine=ss.par===me; w.className="c-live on"+(mine?" mine":"");
   const pct=tot?Math.round(done/tot*100):0;
@@ -6245,7 +6362,7 @@ function renderCourses(){
   if(!opts.some(o=>o[0]===S.cPour)) S.cPour="tous";
   for(const [v,l] of opts) cp.append(el("button",{type:"button","aria-pressed":String(S.cPour===v),onclick:()=>{ S.cPour=v; renderCourses(); }},v==="tous"?null:avatar(v,18),l));
   $("cNom").placeholder=S.cPour==="tous"?"Lait, pain, piles…":"Pour "+(S.cPour===me?"moi":membre(S.cPour).nom)+" : shampoing, chaussettes…";
-  box.innerHTML="";
+  renderHab(); box.innerHTML="";
   const items=S.courses||[], todo=items.filter(i=>!i.fait), done=items.filter(i=>i.fait);
   if(!items.length){ box.append(el("div",{class:"list"},el("div",{class:"empty"},el("strong",{text:"La liste est vide"}),"Ajoute ce qui manque : chaque article se range tout seul dans son rayon, et tout le monde voit la liste à jour, même au magasin. Plusieurs articles d'un coup ? Sépare-les par des virgules."))); return; }
   for(const r of RAYONS){ const its=todo.filter(i=>rayonOf(i)===r[0]).sort((a,b)=>(a.ajouteLe||0)-(b.ajouteLe||0)); if(!its.length) continue;
@@ -6253,12 +6370,31 @@ function renderCourses(){
     box.append(el("div",{class:"c-group"},el("h3",{},el("span",{class:"c-ico","aria-hidden":"true",text:r[2]}),r[1],el("span",{class:"count",text:String(its.length)})),list)); }
   if(todo.length&&!shop) box.append(el("p",{class:"c-tip",text:"Astuce : appui long sur un article pour changer son rayon. Cocoon s'en souviendra."}));
   if(!todo.length) box.append(el("div",{class:"list"},el("div",{class:"empty"},el("strong",{text:"Tout est dans le caddie !"}),shop?"Appuie sur « J'ai fini les courses » : le caddie se vide tout seul.":"Vide le caddie quand les courses sont rangées.")));
-  if(done.length){ const list=el("div",{class:"c-list done"}); for(const i of done.slice().sort((a,b)=>(b.faitLe||0)-(a.faitLe||0))) list.append(courseRow(i));
-    box.append(el("div",{class:"c-group"},el("h3",{},el("span",{class:"c-ico","aria-hidden":"true",text:"🛒"}),"Dans le caddie",el("span",{class:"count",text:String(done.length)}),shop?null:el("button",{type:"button",class:"btn ghost c-clear",text:"Vider le caddie",onclick:async()=>{ await rowsOutAll(done.map(i=>cRowEl(i.id)).filter(Boolean)); softDelete(done.map(i=>({key:"courses:"+i.id,arr:"courses",item:i,run:()=>S.db.collection("courses").doc(i.id).delete()})),done.length>1?done.length+" articles retirés de la liste.":"Article retiré de la liste."); }})),list)); }
+  if(done.length){ const open=shop||!!S.cCartOpen, list=el("div",{class:"c-list done"}); if(open) for(const i of done.slice().sort((a,b)=>(b.faitLe||0)-(a.faitLe||0))) list.append(courseRow(i));
+    box.append(el("div",{class:"c-group c-cart"+(open?" open":"")},el("h3",{},el("button",{type:"button",class:"c-cart-t","aria-expanded":String(open),onclick:()=>{ S.cCartOpen=!S.cCartOpen; renderCourses(); }},el("span",{class:"c-ck","aria-hidden":"true",text:"✓"}),"Dans le caddie",el("span",{class:"count",text:"· "+done.length}),el("span",{class:"c-chev","aria-hidden":"true",text:"›"})),shop?null:el("button",{type:"button",class:"btn ghost c-clear",text:"Vider le caddie",onclick:async()=>{ await rowsOutAll(done.map(i=>cRowEl(i.id)).filter(Boolean)); softDelete(done.map(i=>({key:"courses:"+i.id,arr:"courses",item:i,run:()=>S.db.collection("courses").doc(i.id).delete()})),done.length>1?done.length+" articles retirés de la liste.":"Article retiré de la liste."); }})),list)); }
   if(S.cFlash&&S.cFlash.size){ clearTimeout(S.cFlashT); S.cFlashT=setTimeout(()=>{ const t=Date.now(); for(const [k,v] of S.cFlash) if(t-v>=4000) S.cFlash.delete(k); if(S.tab==="courses") renderCourses(); },4100); }
 }
 async function addCourses(arts,extra){ const me=meId(), now=Date.now(); let n=0;
-  for(const a of arts){ await S.db.collection("courses").add(Object.assign({nom:a.nom,qte:a.qte||null,pour:"tous",fait:false,ajoutePar:me,ajouteLe:now+(n++),rayon:rayonOf({nom:a.nom})},extra||{},a.extra||{})); } return n; }
+  for(const a of arts){ await S.db.collection("courses").add(Object.assign({nom:a.nom,qte:a.qte||null,pour:"tous",fait:false,ajoutePar:me,ajouteLe:now+(n++),rayon:rayonOf({nom:a.nom})},extra||{},a.extra||{})); habNote(a.nom); } return n; }
+/* Les habituels : ce que le foyer rachète souvent, proposé en un tap */
+const HAB0=["Lait","Pain","Œufs","Café","Beurre","Papier toilette","Bananes","Pâtes"];
+function habKey(n){ return cKey(n).replace(/ /g,"-").slice(0,60)||"x"; }
+function habNote(nom){ if(!S.db||!nom) return; const k=habKey(nom), p=(S.habituels||[]).find(h=>h.id===k);
+  const x={nom:p&&p.nom||nom,n:((p&&p.n)||0)+1,le:Date.now()};
+  S.habituels=(S.habituels||[]).filter(h=>h.id!==k).concat([Object.assign({id:k},x)]);
+  S.db.collection("habituels").doc(k).set(x).catch(()=>{}); }
+function habList(){ const on=new Set((S.courses||[]).filter(i=>!i.fait).map(i=>habKey(i.nom))), seen=new Set(), out=[];
+  const hs=(S.habituels||[]).filter(h=>!h.cache).slice().sort((a,b)=>(b.n||0)-(a.n||0)||(b.le||0)-(a.le||0));
+  for(const h of hs){ if(on.has(h.id)||seen.has(h.id)) continue; seen.add(h.id); out.push(h.nom); }
+  const pets=membres().filter(m=>typeOf(m)==="animal"); const base=HAB0.concat(pets.length?["Croquettes"+(pets.length===1?" "+pets[0].nom:"")]:[]);
+  const hidden=new Set((S.habituels||[]).filter(h=>h.cache).map(h=>h.id));
+  for(const n of base){ const k=habKey(n); if(out.length>=8) break; if(on.has(k)||seen.has(k)||hidden.has(k)) continue; seen.add(k); out.push(n); }
+  return out.slice(0,8); }
+function renderHab(){ const w=$("cHab"); if(!w) return; w.innerHTML=""; const l=habList(); w.hidden=!l.length||iShop();
+  for(const n of l){ const b=el("button",{type:"button",class:"c-hb","aria-label":"Ajouter "+n},el("b",{text:"+","aria-hidden":"true"}),n);
+    b.addEventListener("click",async()=>{ if(!S.db||!needMe()) return; b.disabled=true; b.classList.add("go");
+      try{ await addCourses([parseArticle(n)],{pour:S.cPour||"tous"}); toast("« "+esc(n)+" » ajouté à la liste."); }catch(e){ writeErr(e); b.disabled=false; } });
+    w.append(b); } }
 $("cForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||!needMe()) return; const raw=$("cNom").value.trim(); if(!raw) return;
   let pour=S.cPour||"tous", txt=raw; const m=raw.match(/^(.*?)\s+pour\s+(.+)$/i);
   if(m){ const w=m[2].trim(), who=humains().find(h=>norm(h.nom)===norm(w)); if(who){ pour=who.id; txt=m[1]; } else if(/^moi$/i.test(w)&&meId()){ pour=meId(); txt=m[1]; } else if(/^(le foyer|tous|tout le monde)$/i.test(w)){ pour="tous"; txt=m[1]; } }
@@ -6296,32 +6432,31 @@ function renderRepas(){
     el("button",{type:"button",class:"r-arw","aria-label":"Semaine précédente",onclick:()=>{ S.rWeek=(S.rWeek||0)-1; S.rEdit=null; renderRepas(); }},"‹"),
     el("div",{class:"r-wk"},el("b",{text:lbl}),el("span",{text:"Du "+fmt(d0)+" au "+d6.getDate()+" "+MOIS_C(d6)})),
     el("button",{type:"button",class:"r-arw","aria-label":"Semaine suivante",onclick:()=>{ S.rWeek=(S.rWeek||0)+1; S.rEdit=null; renderRepas(); }},"›"));
-  box.append(el("div",{},el("span",{class:"eyebrow",text:"Foyer"}),el("h2",{class:"r-h",text:"Repas de la semaine"})),nav);
+  const slots=RSLOTS.filter(r=>shown.includes(r[0])), weekMeals=[]; let planned=0;
+  for(let k=0;k<7;k++){ const ds=iso(new Date(ws+k*864e5)); for(const [sl] of slots){ const m=repasOf(ds,sl); if(m){ planned++; if(ds>=t0) weekMeals.push(m); } } }
+  nav.querySelector(".r-wk span").textContent="Du "+fmt(d0)+" au "+d6.getDate()+" "+MOIS_C(d6)+" · "+planned+" repas prévu"+(planned>1?"s":"")+" sur "+7*slots.length;
+  box.append(nav);
   const opt=el("div",{class:"r-opt",role:"group","aria-label":"Repas affichés"});
   for(const [v,l] of RSLOTS){ const on=shown.includes(v); opt.append(el("button",{type:"button",class:"r-chip r-c-"+v,"aria-pressed":String(on),onclick:()=>{ let a=on?shown.filter(x=>x!==v):shown.concat(v); if(!a.length){ toast("Garde au moins un repas affiché."); return; } a=RSLOTS.map(r=>r[0]).filter(x=>a.includes(x)); S.rSlots=a.join(","); try{ localStorage.setItem("cocoon.repasSlots",S.rSlots); }catch(_){} S.rEdit=null; renderRepas(); }},on?"✓ "+l:l)); }
   box.append(opt);
-  const slots=RSLOTS.filter(r=>shown.includes(r[0])), weekMeals=[];
-  const grid=el("div",{class:"r-days"});
-  for(let k=0;k<7;k++){ const d=new Date(ws+k*864e5), ds=iso(d), past=ds<t0;
-    if(past&&!slots.some(([sl])=>repasOf(ds,sl))) continue;
-    const card=el("div",{class:"r-day"+(ds===t0?" r-today":"")+(past?" past":"")});
-    card.append(el("div",{class:"r-dh"},el("b",{text:JOURS_LONGS[k]}),el("span",{text:d.getDate()+" "+MOIS_C(d)}),ds===t0?el("span",{class:"r-tag",text:"Aujourd'hui"}):null));
-    for(const [sl,sn] of slots){ const m=repasOf(ds,sl), key=ds+"_"+sl;
-      if(m&&!past) weekMeals.push(m);
-      if(S.rEdit===key){ card.append(repasEditor(ds,sl,sn,m)); continue; }
-      if(m){ const meta=[];
-        if(m.cuisine&&humains().some(h=>h.id===m.cuisine)) meta.push(el("span",{class:"r-cook",title:"Cuisine"},el("span",{class:"r-emo","aria-hidden":"true",text:"👩‍🍳"}),avatar(m.cuisine,18),m.cuisine===me?"Toi":membre(m.cuisine).nom));
-        if(m.vaisselle&&humains().some(h=>h.id===m.vaisselle)) meta.push(el("span",{class:"r-cook",title:"Vaisselle"},el("span",{class:"r-emo","aria-hidden":"true",text:"🧽"}),avatar(m.vaisselle,18),m.vaisselle===me?"Toi":membre(m.vaisselle).nom));
-        const inner=[slots.length>1?el("span",{class:"r-sl",text:sn}):null,el("span",{class:"r-p",text:m.plat}),meta.length?el("span",{class:"r-meta"},...meta):null];
-        if(past){ const row=el("div",{class:"r-meal r-ro r-"+sl},...inner);
-          row.append(el("button",{type:"button",class:"r-delp","aria-label":"Retirer "+m.plat,text:"×",onclick:async()=>{ if(!S.db||!needMe()) return; await rowOut(row,"del"); try{ await S.db.collection("repas").doc(m.id).delete(); toast("Plat retiré."); }catch(e){ writeErr(e); } renderRepas(); }}));
-          card.append(row); }
-        else card.append(el("button",{type:"button",class:"r-meal r-"+sl,onclick:()=>{ if(!needMe()) return; S.rEdit=key; renderRepas(); }},...inner)); }
-      else if(!past) card.append(el("button",{type:"button",class:"r-empty r-e-"+sl,onclick:()=>{ if(!needMe()) return; S.rEdit=key; renderRepas(); setTimeout(()=>{ const i=$("rPlat"); if(i) i.focus(); },40); }},"+ "+(slots.length>1?sn:"Ajouter un plat")));
-      else card.append(el("span",{class:"r-none",text:"—"})); }
-    grid.append(card); }
+  // la semaine en tableau : une ligne par jour, une colonne par repas
+  const JC=["LUN","MAR","MER","JEU","VEN","SAM","DIM"];
+  const grid=el("div",{class:"r-grid",style:"--rc:"+slots.length,role:"table","aria-label":"Repas de la semaine"});
+  grid.append(el("span",{class:"r-gh0"}),...slots.map(([sl,sn])=>el("span",{class:"r-gh r-gh-"+sl,text:sn})));
+  let edit=null;
+  for(let k=0;k<7;k++){ const d=new Date(ws+k*864e5), ds=iso(d), past=ds<t0, now=ds===t0;
+    grid.append(el("span",{class:"r-gd"+(now?" now":"")+(past?" past":"")},JC[k],el("b",{text:String(d.getDate())})));
+    for(const [sl,sn] of slots){ const m=repasOf(ds,sl), key=ds+"_"+sl, on=S.rEdit===key;
+      const lab=JOURS_LONGS[k]+" "+d.getDate()+", "+sn.toLowerCase();
+      const cell=el("button",{type:"button",class:"r-cell r-"+sl+(m?"":" e")+(now?" now":"")+(past?" past":"")+(on?" on":""),"aria-label":m?lab+" : "+m.plat:lab+" : ajouter",onclick:()=>{ if(!needMe()) return; S.rEdit=on?null:key; renderRepas(); if(!on) setTimeout(()=>{ const e=document.querySelector(".r-ed"); if(e){ e.scrollIntoView({block:"nearest",behavior:"smooth"}); const i=$("rPlat"); if(i&&!m) i.focus({preventScroll:true}); } },60); }});
+      if(m){ cell.append(el("span",{class:"r-cp",text:m.plat}));
+        const who=m.cuisine&&humains().some(h=>h.id===m.cuisine)?(m.cuisine===me?"Toi":membre(m.cuisine).nom):null; if(who) cell.append(el("small",{text:who})); }
+      else cell.append(el("span",{class:"r-plus","aria-hidden":"true",text:past?"":"+"}));
+      if(on) edit={ds,sl,sn,m,lab:JOURS_LONGS[k]+" "+d.getDate()+" "+MOIS_C(d)};
+      grid.append(cell); } }
   box.append(grid);
-  if(!weekMeals.length) box.append(el("p",{class:"muted r-hint",text:"Note ce que vous allez manger, qui cuisine et qui fait la vaisselle."}));
+  if(edit){ const f=repasEditor(edit.ds,edit.sl,edit.sn,edit.m); const h=f.querySelector(".r-edh b"); if(h) h.textContent=edit.lab+" · "+edit.sn.toLowerCase(); box.append(f); }
+  if(!planned&&!edit) box.append(el("p",{class:"muted r-hint",text:"Touche une case pour noter ce que vous allez manger, qui cuisine et qui fait la vaisselle."}));
 }
 const MOIS_C=d=>["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."][d.getMonth()];
 function repasEditor(ds,sl,sn,m){ const me=meId(), f=el("form",{class:"r-ed",autocomplete:"off"});
@@ -6744,6 +6879,7 @@ async function autoClaimLegacy(){
   db.collection("coursesLive").onSnapshot(s=>{ const d=s.docs.find(x=>x.id==="session"); const was=cSession(); S.cLive=d?d.data():null; cLiveChanged(was); renderAll(); },()=>{});
   db.collection("rayons").onSnapshot(s=>{ const m={}; s.docs.forEach(d=>{ const x=d.data(); if(x&&x.r) m[d.id]=x.r; }); S.rayonsPerso=m; renderAll(); },()=>{});
   db.collection("repas").onSnapshot(s=>{ S.repas=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"repas"); S.repasLoaded=true; renderAll(); },()=>{ S.repasLoaded=true; });
+  db.collection("habituels").onSnapshot(s=>{ S.habituels=s.docs.map(d=>Object.assign({id:d.id},d.data())); if(S.tab==="courses") renderHab(); },()=>{});
   db.collection("plats").onSnapshot(s=>{ S.plats=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("poubelles").onSnapshot(s=>{ S.bins=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"poubelles"); renderAll(); },()=>{});
   db.collection("contacts").onSnapshot(s=>{ S.contacts=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"contacts"); renderAll(); },()=>{});
