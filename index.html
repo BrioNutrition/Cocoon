@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 22:04";</script>
+<script>window.COCOON_BUILD="11/10 23:05";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3315,8 +3315,7 @@ function renderDocs(){
   const due=pool.filter(d=>d.expire&&daysTo(d.expire)<=90), late=due.filter(d=>daysTo(d.expire)<0).length;
   H.hidden=!S.docs.length;
   if(due.length){ H.className="warn"; H.append(el("b",{text:due.length+" papier"+(due.length>1?"s":"")+" à renouveler"}),el("span",{text:late?(late===due.length?(late>1?"déjà expirés":"déjà expiré"):"dont "+late+" déjà expiré"+(late>1?"s":"")):"dans les 3 prochains mois"})); }
-  else { const next=pool.filter(d=>d.expire).sort((a,b)=>a.expire<b.expire?-1:1)[0]; H.className="ok";
-    H.append(el("b",{text:"Tout est à jour"}),el("span",{text:pool.length+" papier"+(pool.length>1?"s":"")+" rangé"+(pool.length>1?"s":"")+(next?" · prochain renouvellement : "+next.titre+", "+new Intl.DateTimeFormat("fr-FR",{month:"long",year:"numeric"}).format(parse(next.expire)):"")})); }
+  else H.hidden=true;
   if(!S.docs.length){ G0.append(el("div",{class:"empty"},el("strong",{text:"Aucun papier rangé"}),"Bail, carte grise, assurances, carte d'identité : range-les ici avec leur date d'expiration, Cocoon te prévient avant.")); return; }
   const showWho=owners.length>1&&!S.docWho;
   const sortDocs=ds=>ds.slice().sort((a,b)=>{ const ea=a.expire||"9999", eb=b.expire||"9999"; return ea<eb?-1:ea>eb?1:(b.ajouteLe||0)-(a.ajouteLe||0); });
