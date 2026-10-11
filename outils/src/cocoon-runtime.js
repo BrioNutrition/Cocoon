@@ -134,7 +134,7 @@
             '<div class="cx-msg" hidden></div><button class="cx-btn" type="submit">' + (sign ? "Créer mon compte" : "Se connecter") + "</button></form>" +
             '<button class="cx-link" type="button" data-go="' + (sign ? "login" : "signup") + '">' + (sign ? "J'ai déjà un compte" : "Pas encore de compte ? Créer un compte") + "</button>" +
             (sign ? "" : '<button class="cx-link" type="button" data-go="forgot">Mot de passe oublié</button>') +
-            '<p class="cx-legal">' + (sign ? "En créant un compte, tu acceptes que Cocoon garde les données de ton foyer pour le faire fonctionner. " : "") + '<button class="cx-link cx-priv" type="button" data-priv="1">Confidentialité</button></p>';
+            '<p class="cx-legal">' + (sign ? "En créant un compte, tu acceptes les " : "") + '<button class="cx-link cx-priv" type="button" data-terms="1">' + (sign ? "conditions d'utilisation" : "Conditions d'utilisation") + '</button>' + (sign ? " et la " : " · ") + '<button class="cx-link cx-priv" type="button" data-priv="1">' + (sign ? "politique de confidentialité" : "Confidentialité") + "</button>" + (sign ? "." : "") + "</p>";
           var f = card.querySelector("form");
           if (extra) msg(extra.t, extra.err);
           f.addEventListener("submit", async function (e) {
@@ -215,7 +215,8 @@
     }
     var _show = G.show; G.show = function () { var r = _show.apply(G, arguments); try { addEyes(); } catch (_) {} return r; };
     function bindGo() { card.querySelectorAll("[data-go]").forEach(function (b) { b.addEventListener("click", function () { G.show(b.getAttribute("data-go")); }); });
-      card.querySelectorAll("[data-priv]").forEach(function (b) { b.addEventListener("click", function () { if (typeof window.openPrivacy === "function") window.openPrivacy(); }); }); }
+      card.querySelectorAll("[data-priv]").forEach(function (b) { b.addEventListener("click", function () { if (typeof window.openPrivacy === "function") window.openPrivacy(); }); });
+      card.querySelectorAll("[data-terms]").forEach(function (b) { b.addEventListener("click", function () { if (typeof window.openTerms === "function") window.openTerms(); }); }); }
     return G;
   }
   function frErr(e) {

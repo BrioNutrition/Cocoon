@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 11:16";</script>
+<script>window.COCOON_BUILD="11/10 11:51";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2096,6 +2096,27 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .priv-x{position:sticky;top:0;float:right;width:36px;height:36px;border-radius:50%;border:0;background:var(--sunk);color:var(--ink);font-size:20px;cursor:pointer}
 .acc-gone{position:fixed;inset:0;z-index:300;background:var(--bg);display:grid;place-items:center;padding:24px;text-align:center}
 .acc-gone div{max-width:360px;display:flex;flex-direction:column;gap:12px;align-items:center}
+
+/* Avant de commencer : conditions + notifications */
+.cgu-bg{position:fixed;inset:0;z-index:2147483400;background:var(--au-bg);display:grid;place-items:center;padding:20px 16px;overflow:auto;opacity:0;transition:opacity .35s}
+.cgu-bg.on{opacity:1}
+.cgu-bg .aurora{position:absolute;opacity:1;z-index:0}
+.cgu{position:relative;z-index:1;width:min(440px,100%);display:flex;flex-direction:column;gap:14px;transform:translateY(14px);transition:transform .45s cubic-bezier(.2,.9,.3,1)}
+.cgu-bg.on .cgu{transform:none}
+.cgu h2{margin:0;font-size:30px;line-height:1.05;letter-spacing:-.02em}
+.cgu>p{margin:-4px 0 4px;color:var(--au-sub);font-size:15px;line-height:1.5}
+.cgu-box{background:var(--au-glass);border:1px solid var(--au-line);border-radius:22px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.cgu-box b{display:block;font-size:15.5px;margin-bottom:2px}.cgu-box small{display:block;color:var(--au-sub);font-size:13px;line-height:1.45}
+.cgu-box .ln{border:0;background:none;padding:0;font:inherit;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.cgu-ck{flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--au-line);background:var(--surface);display:grid;place-items:center;cursor:pointer;margin-top:1px}
+.cgu-ck[aria-checked="true"]{background:var(--mark);border-color:var(--mark)}
+.cgu-ck svg{width:16px;height:16px;opacity:0}.cgu-ck[aria-checked="true"] svg{opacity:1}
+.cgu-sw{flex:none;width:50px;height:30px;border-radius:999px;border:0;background:var(--au-line);position:relative;cursor:pointer;margin-top:1px;transition:background .2s}
+.cgu-sw::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.3,1.3,.5,1)}
+.cgu-sw[aria-checked="true"]{background:#3FAE5A}.cgu-sw[aria-checked="true"]::after{transform:translateX(20px)}
+.cgu .btn.big{width:100%;padding:16px;font-size:17px;border-radius:18px;background:linear-gradient(100deg,#FFC94A,#FF9C80 55%,#E79ADB);color:#1C1B2E;border:0}
+.cgu .btn.big:disabled{background:var(--au-glass);color:var(--au-sub);border:1px solid var(--au-line)}
+.cgu-note{font-size:12.5px;color:var(--au-sub);text-align:center;margin:-4px 0 0}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2979,7 +3000,7 @@ function buildEditor(){
   f.append(act);
   refreshPreview();
 }
-function finishFlow(res){ document.querySelector(".wrap").classList.remove("finishing"); S.edit=null; S.flow=false; setTab("accueil"); renderAll(); window.scrollTo({top:0}); requestAnimationFrame(()=>{ try{ startTour(); }catch(_){} });
+function finishFlow(res){ document.querySelector(".wrap").classList.remove("finishing"); S.edit=null; S.flow=false; setTab("accueil"); renderAll(); window.scrollTo({top:0}); requestAnimationFrame(()=>{ try{ if(!maybeCgu(()=>startTour())) startTour(); }catch(_){} });
   toast("Bienvenue dans ton cocon !"+(res&&(res.nT||res.nP)?" "+res.nT+" rappel"+(res.nT>1?"s":"")+(res.nP?" et "+res.nP+" profil"+(res.nP>1?"s":""):"")+((res.nT+res.nP)>1?" prêts.":" prêt."):"")); }
 function closeEditor(){ if(S.edit&&S.edit.finish){ finishFlow(); return; } const back=S.editPrev&&S.editPrev!=="fiche"?S.editPrev:"accueil"; S.edit=null; document.querySelector(".wrap").classList.remove("finishing"); setTab(back); renderAll(); }
 async function saveProfile(){
@@ -4444,7 +4465,7 @@ function renderBadges(){
   if(urgent&&!S.bellRung){ S.bellRung=true; const b=$("bellBtn"); b.classList.add("ring"); setTimeout(()=>b.classList.remove("ring"),2600); }
   setN("nBudget",(S.abos||[]).filter(a=>a.actif!==false&&(()=>{ const n=subNext(a); return n&&daysTo(n)<=7; })()).length);
 }
-function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; try{ renderAllNowInner(); }catch(e){ console.error(e); } if(S.flip) applyFlip(); if(!S.migDone) setTimeout(migrateFiles,1500); if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
+function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; try{ renderAllNowInner(); }catch(e){ console.error(e); } if(S.flip) applyFlip(); if(!S.migDone) setTimeout(migrateFiles,1500); if(!S.cguOpen&&S.booted&&!S.flow&&!S.entering&&S.tab&&!document.querySelector(".wrap.wizarding,.wrap.finishing")&&$("splash")&&$("splash").hidden) setTimeout(()=>{ if(!S.flow&&!S.tourOn) maybeCgu(()=>{ try{ startTour(); }catch(_){} }); },400); if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
 function renderAllNowInner(){
   const v=S.tab;
   renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon();
@@ -5330,6 +5351,7 @@ const SET_IC={
   dl:'<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/>',
   wipe:'<g fill="currentColor" stroke="none"><rect x="3.5" y="5" width="17" height="2.7" rx="1.35"/><path d="M9 5.2V4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4v1.2h-2V4.4h-2v.8z"/><path fill-rule="evenodd" d="M5.5 9.2h13l-1.1 10.9a2.1 2.1 0 0 1-2.1 1.9H8.7a2.1 2.1 0 0 1-2.1-1.9zM9.9 11.6a.8.8 0 0 0-.8.8v5.6a.8.8 0 0 0 1.6 0v-5.6a.8.8 0 0 0-.8-.8zm4.2 0a.8.8 0 0 0-.8.8v5.6a.8.8 0 0 0 1.6 0v-5.6a.8.8 0 0 0-.8-.8z"/></g>',
   shield:'<path d="M12 3 5 6v5.5c0 4.4 3 8 7 9.5 4-1.5 7-5.1 7-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>',
+  doc:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 12h5M10 16h5"/>',
   bye:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5"/><path d="M16 16l5 5M21 16l-5 5"/>',
   quit:'<path d="M14 4h5v16h-5"/><path d="M10 12H3M6 9l-3 3 3 3"/>'
 };
@@ -5354,6 +5376,7 @@ function renderSettings(){
         :[el("span",{text:"Tu ne verras plus le foyer avec ce compte. Tes données perso restent dans ton espace."}),el("button",{type:"button",class:"btn ghost",text:"Rester",onclick:()=>{ S.setConfirm=null; renderSettings(); }}),el("button",{type:"button",class:"btn danger",text:"Quitter le foyer",onclick:quitFoyer})]))); }
   }
   box.append(row("shield","#7FCDB9","Confidentialité","Ce qui est enregistré, qui y a accès, tes droits",openPrivacy));
+  box.append(row("doc","#B9A8F0","Conditions d'utilisation","Les règles du jeu"+((S.prefs||{}).cguLe?" · acceptées le "+new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"long",year:"numeric"}).format(new Date(S.prefs.cguLe)):""),openTerms));
   if(!S.readOnly&&window.cocoonHost&&cocoonHost.deleteAccount){
     box.append(row("bye","#E5484D","Supprimer mon compte","Ton compte, ton profil et tes données, pour de bon",()=>{ S.setConfirm=S.setConfirm==="del"?null:"del"; renderSettings(); },"danger"));
     if(S.setConfirm==="del"){ const alone=humains().filter(x=>x.uid&&x.uid!==S.uid).length===0;
@@ -5371,6 +5394,53 @@ function renderSettings(){
         el("div",{style:"display:flex;gap:8px;flex-wrap:wrap"},el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>{ S.setConfirm=null; S.delTxt=""; renderSettings(); }}),go))); }
   }
   w.append(el("div",{class:"sec-title"},el("h2",{text:"Réglages"})),box,el("p",{class:"version",text:"Cocoon · version 4.1"}));
+}
+
+/* ===== Conditions d'utilisation ===== */
+const CGU_V="2026-10";
+function openTerms(){
+  const C=(window.COCOON_CONFIG||{}), hosted=!!window.cocoonHost;
+  const bg=el("div",{class:"priv-bg"}), box=el("div",{class:"priv",role:"dialog","aria-label":"Conditions d'utilisation"});
+  const close=()=>{ bg.remove(); document.removeEventListener("keydown",kd); }, kd=e=>{ if(e.key==="Escape") close(); };
+  const h3=t=>el("h3",{text:t}), p=t=>el("p",{text:t}), ul=(...a)=>el("ul",{},...a.map(t=>el("li",{text:t})));
+  box.append(el("button",{type:"button",class:"priv-x","aria-label":"Fermer",text:"×",onclick:close}),el("h2",{text:"Conditions d'utilisation"}),el("p",{class:"muted",text:"Les règles du jeu, en court."}),
+    h3("Le service"),p("Cocoon aide un foyer à s'organiser : tâches, rappels, papiers, budget, rendez-vous. C'est un outil d'organisation : il ne remplace ni un conseiller, ni un professionnel de santé, ni un expert-comptable."),
+    h3("Ton compte"),ul("Un compte par personne, avec une adresse e-mail à toi","Tu gardes ton mot de passe pour toi","Tu peux quitter un foyer ou supprimer ton compte quand tu veux, depuis Moi → Réglages"),
+    h3("Ce que tu mets dans Cocoon"),ul("Tu restes propriétaire de ce que tu ajoutes ; Cocoon ne s'en sert que pour faire fonctionner l'app","N'ajoute les papiers ou la photo de quelqu'un que s'il est d'accord (ou si tu en as la charge, pour un enfant)","Pas de contenu illégal, ni de documents qui ne te concernent pas, toi ou ton foyer"),
+    h3("Le foyer"),p("Les membres d'un foyer voient et modifient les données communes. Les admins peuvent inviter ou retirer des membres. Ton espace perso n'est visible que par toi."),
+    h3("Disponibilité"),p("Cocoon est fourni tel quel. On fait de notre mieux pour qu'il marche bien et que tes données soient protégées, mais une panne ou une erreur reste possible : garde l'original de tes papiers importants, et vérifie les rappels essentiels (rendez-vous médicaux, échéances)."),
+    h3("Les rappels"),p("Les dates proposées (vaccins, contrôle technique, renouvellements…) sont des repères courants. En cas de doute, celle qui compte est celle de ton professionnel ou du document officiel."),
+    h3("Changements"),p("Si ces conditions changent, Cocoon te les présentera à nouveau avant de continuer."),
+    h3("Contact"),p(hosted?(C.contact?"Une question : "+C.contact+".":"Une question : écris à la personne qui t'a invité dans Cocoon."):"Dans la version ouverte depuis Claude, les conditions de Claude s'appliquent aussi."),
+    el("p",{class:"muted",text:"Version "+CGU_V+"."}));
+  bg.append(box); bg.addEventListener("click",e=>{ if(e.target===bg) close(); }); document.addEventListener("keydown",kd); document.body.append(bg);
+}
+/* ===== Avant de commencer : accepter les conditions (obligatoire) + notifications (facultatif) ===== */
+function needCgu(){ return !!(S.db&&S.uid&&S.prefsLoaded&&meM()&&!S.readOnly&&!window.__noCgu&&!window.__noTour&&(S.prefs||{}).cgu!==CGU_V); }
+function maybeCgu(after){ if(!needCgu()) return false; if(!S.cguOpen) openCgu(after); return true; }
+function openCgu(after){
+  S.cguOpen=true; const P=window.cocoonHost&&cocoonHost.push, sup=P&&P.support?P.support():"off";
+  const again=!!((S.prefs||{}).cgu); let ok=false, notif=sup==="ok";
+  const bg=el("div",{class:"cgu-bg",role:"dialog","aria-label":"Avant de commencer"}); bg.append(el("div",{class:"aurora","aria-hidden":"true"},el("i"),el("i"),el("i")));
+  const tick='<svg viewBox="0 0 24 24" fill="none" stroke="#1C1B2E" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const ck=el("button",{type:"button",class:"cgu-ck",role:"checkbox","aria-checked":"false","aria-label":"J'accepte les conditions d'utilisation et la politique de confidentialité"}); ck.innerHTML=tick;
+  const go=el("button",{type:"button",class:"btn big",text:"C'est parti",disabled:true});
+  ck.onclick=()=>{ ok=!ok; ck.setAttribute("aria-checked",String(ok)); go.disabled=!ok; };
+  const card=el("div",{class:"cgu"},el("h2",{text:again?"Les conditions ont changé":"Avant de commencer"}),el("p",{text:again?"Prends une minute pour relire ce qui a changé, puis accepte pour continuer.":"Deux petites choses, et ton cocon est prêt."}),
+    el("div",{class:"cgu-box"},ck,el("div",{},el("b",{text:"J'accepte les conditions"}),el("small",{},"J'ai lu les ",el("button",{type:"button",class:"ln",text:"conditions d'utilisation",onclick:openTerms})," et la ",el("button",{type:"button",class:"ln",text:"politique de confidentialité",onclick:openPrivacy}),". Obligatoire pour utiliser Cocoon."))));
+  let sw=null;
+  if(sup==="ok"&&!again){ sw=el("button",{type:"button",class:"cgu-sw",role:"switch","aria-checked":String(notif),"aria-label":"Recevoir mes rappels en notification"}); sw.onclick=()=>{ notif=!notif; sw.setAttribute("aria-checked",String(notif)); };
+    card.append(el("div",{class:"cgu-box"},el("div",{style:"flex:1"},el("b",{text:"Mes rappels en notification"}),el("small",{text:"Un résumé le matin, s'il y a quelque chose à faire, et quelques alertes utiles. Jamais la nuit. Facultatif : tu peux changer d'avis dans Moi."})),sw)); }
+  else if(sup==="ios-home"&&!again) card.append(el("div",{class:"cgu-box"},el("div",{},el("b",{text:"Les notifications sur iPhone"}),el("small",{text:"Ajoute d'abord Cocoon à l'écran d'accueil (Partager → Sur l'écran d'accueil), puis active-les dans Moi. Facultatif."}))));
+  card.append(go,el("p",{class:"cgu-note",text:"Tu pourras relire ces textes à tout moment dans Moi → Réglages."}));
+  bg.append(card); document.body.append(bg); requestAnimationFrame(()=>bg.classList.add("on"));
+  go.onclick=async()=>{ if(!ok) return; go.disabled=true; go.textContent="Un instant…";
+    let nmsg=null;
+    const markAsk=v=>{ try{ localStorage.setItem("cocoon.pushAsk",v); }catch(_){} };
+    if(sw&&notif){ try{ await P.enable(); markAsk("oui"); nmsg="Notifications activées sur ce téléphone."; }catch(e){ markAsk("refus"); nmsg="Notifications non activées : "+(e&&e.message||"autorisation refusée")+". Tu pourras les activer dans Moi."; } document.dispatchEvent(new Event("cocoon-push")); }
+    else if(sw) markAsk("plus-tard");
+    try{ S.prefs=Object.assign({},S.prefs||{},{cgu:CGU_V,cguLe:Date.now()}); await S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs); }catch(e){ writeErr(e); go.disabled=false; go.textContent="C'est parti"; return; }
+    bg.classList.remove("on"); setTimeout(()=>{ bg.remove(); S.cguOpen=false; if(nmsg) toast(esc(nmsg)); if(after) try{ after(); }catch(_){} },350); };
 }
 
 /* ===== RGPD : suppression du compte (version hébergée) ===== */
@@ -6632,7 +6702,7 @@ bootCheck();
   function mark(v){ try{ localStorage.setItem(KEY,v); }catch(_){} }
   function hid(id){ var e=document.getElementById(id); return !e||e.hidden; }
   function calm(){ return !document.getElementById("boot")&&!document.getElementById("cxIntro")&&hid("cxGate")&&hid("wizard")&&hid("splash")&&hid("reveal")&&hid("sheet")
-    &&!document.querySelector(".wrap.arrive")&&!!document.querySelector('.view[data-view="accueil"]:not([hidden])')&&document.visibilityState==="visible"; }
+    &&!document.querySelector(".wrap.arrive")&&!document.querySelector(".cgu-bg,.tour-card")&&!!document.querySelector('.view[data-view="accueil"]:not([hidden])')&&document.visibilityState==="visible"; }
   cocoonHost.ready.then(async function(){
     var P=cocoonHost.push; if(asked()||P.support()!=="ok") return;
     if(P.permission()==="denied"){ mark("bloque"); return; }

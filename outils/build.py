@@ -79,7 +79,7 @@ ACCOUNT_JS = r"""
   function mark(v){ try{ localStorage.setItem(KEY,v); }catch(_){} }
   function hid(id){ var e=document.getElementById(id); return !e||e.hidden; }
   function calm(){ return !document.getElementById("boot")&&!document.getElementById("cxIntro")&&hid("cxGate")&&hid("wizard")&&hid("splash")&&hid("reveal")&&hid("sheet")
-    &&!document.querySelector(".wrap.arrive")&&!!document.querySelector('.view[data-view="accueil"]:not([hidden])')&&document.visibilityState==="visible"; }
+    &&!document.querySelector(".wrap.arrive")&&!document.querySelector(".cgu-bg,.tour-card")&&!!document.querySelector('.view[data-view="accueil"]:not([hidden])')&&document.visibilityState==="visible"; }
   cocoonHost.ready.then(async function(){
     var P=cocoonHost.push; if(asked()||P.support()!=="ok") return;
     if(P.permission()==="denied"){ mark("bloque"); return; }

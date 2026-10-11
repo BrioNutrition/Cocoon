@@ -29,6 +29,7 @@ async def main():
     await pg.click('#wzNext'); await pg.wait_for_timeout(4200)
     await pg.fill('#fiNom','Angel'); await pg.fill('#fiNaissance','1990-05-04'); await pg.click('#fiSave'); await pg.wait_for_timeout(8000)
     await pg.add_style_tag(content='.toast{display:none!important}')
+    if await pg.is_visible('.cx-ask-no'): await pg.click('.cx-ask-no'); await pg.wait_for_timeout(500)
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(500)
     print('carte:', (await pg.inner_text('#cxNotif'))[:140].replace('\n',' | '))
     await pg.locator('#cxNotif').scroll_into_view_if_needed(); await pg.screenshot(path='../pn0.png')
