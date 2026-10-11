@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 20:20";</script>
+<script>window.COCOON_BUILD="11/10 20:47";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2229,10 +2229,10 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .r-cell.r-matin{--rk:#E9A86B}.r-cell.r-midi{--rk:#6FA8DC}.r-cell.r-soir{--rk:#E0B21C}
 .r-cell .r-cp{font-size:12.5px;font-weight:700;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word;width:100%}
 .r-cell small{font-size:10.5px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.r-cell.e{background:none;box-shadow:none;border:1.5px dashed var(--line);align-items:center}
+.r-cell.e{background:none;box-shadow:none;border:1.5px dashed color-mix(in srgb,var(--ink) 28%,transparent);align-items:center}
 .r-cell.e .r-plus{color:var(--muted);font-size:17px;font-weight:700;opacity:.7}
 .r-cell.now{box-shadow:inset 0 0 0 2px #FFC94A}
-.r-cell.e.now{border-color:#FFC94A;box-shadow:none}
+.r-cell.e.now{box-shadow:none}
 .r-cell.past{opacity:.55}
 .r-cell.on{box-shadow:inset 0 0 0 2px var(--ink)}
 .r-cell:active{transform:scale(.97)}
@@ -6456,7 +6456,6 @@ function renderRepas(){
       grid.append(cell); } }
   box.append(grid);
   if(edit){ const f=repasEditor(edit.ds,edit.sl,edit.sn,edit.m); const h=f.querySelector(".r-edh b"); if(h) h.textContent=edit.lab+" · "+edit.sn.toLowerCase(); box.append(f); }
-  if(!planned&&!edit) box.append(el("p",{class:"muted r-hint",text:"Touche une case pour noter ce que vous allez manger, qui cuisine et qui fait la vaisselle."}));
 }
 const MOIS_C=d=>["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."][d.getMonth()];
 function repasEditor(ds,sl,sn,m){ const me=meId(), f=el("form",{class:"r-ed",autocomplete:"off"});
