@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 16:42";</script>
+<script>window.COCOON_BUILD="11/10 17:48";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2165,6 +2165,25 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .pf-days{flex:none;font-size:12px;font-weight:800;padding:4px 9px;border-radius:999px;background:var(--late-bg);color:var(--late)}
 .pf-days.soon{background:var(--soon-bg);color:var(--soon)}
 .pap-frise .bd-none{padding:18px;text-align:center;color:var(--muted);background:var(--surface);border-radius:16px}
+
+/* Papiers : tuiles de catégories */
+.pap-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:560px){.pap-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.pk{position:relative;border:0;border-radius:20px;padding:14px;min-height:112px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;background:color-mix(in srgb,var(--bc) 22%,var(--surface));box-shadow:0 2px 0 var(--shadow)}
+.pk .pk-ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--bc) 45%,var(--surface));margin-bottom:auto;--stripe:var(--bc)}
+.pk .pk-ic svg{width:22px;height:22px}
+.pk .pk-ic.perso{font-weight:800;font-size:17px}
+.pk b{font-size:16px;margin-top:10px}
+.pk span{font-size:12.5px;color:var(--muted)}
+.pk em{position:absolute;top:12px;right:12px;font-style:normal;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:999px;background:var(--late-bg);color:var(--late)}
+.pk em.soon{background:var(--soon-bg);color:var(--soon)}
+.pk:active{transform:scale(.97)}
+.pk-head{display:flex;align-items:center;gap:10px;margin:2px 0 4px}
+.pk-back{width:38px;height:38px;border-radius:50%;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);color:var(--ink);font-size:22px;line-height:1;display:grid;place-items:center;cursor:pointer;flex:none;padding:0 0 2px}
+.pk-head .pk-ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:color-mix(in srgb,var(--bc) 40%,var(--surface));--stripe:var(--bc)}
+.pk-head .pk-ic svg{width:20px;height:20px}
+.pk-head b{font-size:19px;flex:1}
+.pk-head span{color:var(--muted);font-size:13px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2627,14 +2646,26 @@ function fillWhere(sel, def){
   sel.value=[...sel.options].some(o=>o.value===v)?v:(me?def:"tous");
 }
 const DCOLS=["#FF9C80","#FFC94A","#A8D672","#7FD39A","#7CCFE0","#8FB8FF","#B9A8F0","#E79ADB","#F4A7A7","#A9B4C2"];
-function docCustom(){ const m={}; for(const d of (S.docs||[])) if(d.cat&&!CAT[d.cat]&&d.catNom&&!m[d.cat]) m[d.cat]={id:d.cat,nom:d.catNom,c:d.catC||"#A9B4C2",perso:true}; return m; }
-function catOf(id){ return CAT[id]||docCustom()[id]||CAT.documents; }
+function docCustom(){ const m={}; for(const d of (S.docs||[])) if(d.cat&&!CAT[d.cat]&&!DOCX[d.cat]&&d.catNom&&!m[d.cat]) m[d.cat]={id:d.cat,nom:d.catNom,c:d.catC||"#A9B4C2",perso:true}; return m; }
+const DOCX={identite:{id:"identite",nom:"Identité",c:"#FF9CB0"},sante:{id:"sante",nom:"Santé",c:"#7FD39A"},assurance:{id:"assurance",nom:"Assurances",c:"#7CCFE0"}};
+function catOf(id){ return CAT[id]||DOCX[id]||docCustom()[id]||CAT.documents; }
+/* catégorie devinée d'après le nom du papier */
+const DOC_GUESS=[["identite",/carte d.?identit|\bcni\b|passeport|permis de conduire|\bpermis\b|titre de s[ée]jour|livret de famille|acte de (naissance|mariage)|carte d.?[ée]lecteur/],
+  ["sante",/ordonnance|mutuelle|carte vitale|m[ée]dic|analyses?\b|radio|irm\b|h[oô]pital|dentiste|ophtalmo|kin[ée]|carnet de sant[ée]|arr[êe]t (de )?travail|certificat m[ée]dical/],
+  ["voitures",/carte grise|contr[ôo]le technique|certificat d.?immatriculation|\bct\b|vignette|crit.?air/],
+  ["assurance",/assurance|attestation d.?assurance|\bmaif\b|\bmacif\b|\bmatmut\b|axa\b|allianz/],
+  ["maison",/\bbail\b|quittance|[ée]tat des lieux|loyer|edf|engie|compteur|syndic|copropri|acte de vente|notaire|garantie/],
+  ["factures",/facture|imp[ôo]t|avis d.?imposition|taxe|amende/],
+  ["ecole",/scolarit|bulletin|[ée]cole|cantine|dipl[ôo]me|cr[èe]che/],
+  ["animaux",/v[ée]to|carnet (de vaccination )?(du |de )?(chat|chien)|puce|identification/]];
+function docGuess(t){ const x=" "+String(t||"").toLowerCase()+" "; for(const [c,re] of DOC_GUESS) if(re.test(x)) return c; return null; }
 function fillDocCats(){ const sel=$("dCat"); if(!sel) return; const cur=sel.value; sel.innerHTML="";
-  for(const c of CATS) sel.append(el("option",{value:c.id,text:c.nom}));
+  for(const c of [DOCX.identite,CAT.maison,CAT.voitures,DOCX.assurance,DOCX.sante,CAT.factures,CAT.ecole,CAT.animaux,CAT.documents]) sel.append(el("option",{value:c.id,text:c.nom}));
+  { const og=document.createElement("optgroup"); og.label="Autres"; for(const c of CATS) if(!["maison","voitures","factures","ecole","animaux","documents"].includes(c.id)) og.append(el("option",{value:c.id,text:c.nom})); sel.append(og); }
   const cu=Object.values(docCustom()).sort((a,b)=>a.nom.localeCompare(b.nom,"fr"));
   if(cu.length){ const og=document.createElement("optgroup"); og.label="Mes catégories"; for(const c of cu) og.append(el("option",{value:c.id,text:c.nom})); sel.append(og); }
   sel.append(el("option",{value:"__new",text:"＋ Nouvelle catégorie…"}));
-  if(cur&&[...sel.options].some(o=>o.value===cur)) sel.value=cur; }
+  if(cur&&[...sel.options].some(o=>o.value===cur)) sel.value=cur; else sel.value="documents"; }
 function renderNewCat(){ const on=$("dCat").value==="__new"; $("dNewCat").hidden=!on; if(!on) return; const w=$("dCatCol"); w.innerHTML=""; if(!S.dCatC) S.dCatC=DCOLS[Object.keys(docCustom()).length%DCOLS.length];
   for(const c of DCOLS) w.append(el("button",{type:"button",class:"nc-c",style:"--c:"+c,role:"radio","aria-checked":String(S.dCatC===c),"aria-label":"Couleur "+c,onclick:()=>{ S.dCatC=c; renderNewCat(); }}));
   const own=!DCOLS.includes(S.dCatC), pk=el("input",{type:"color","aria-label":"Choisir une couleur personnalisée"}); pk.value=own?S.dCatC:"#5B8DEF";
@@ -3165,33 +3196,47 @@ function renderDocs(){
   renderDocPour(); fillDocCats();
   const me=meId(), f=$("docFilter"); f.innerHTML="";
   const owners=[...new Set(S.docs.map(d=>d.pour||"foyer"))].sort((a,b)=>a==="foyer"?-1:b==="foyer"?1:a===me?-1:b===me?1:membre(a).nom<membre(b).nom?-1:1);
-  const ownerName=o=>o==="foyer"?"Foyer":o===me?"Moi":membre(o).nom;
+  const ownerName=o=>o==="foyer"?"Commun":o===me?"Moi":membre(o).nom;
   if(S.docWho&&!owners.includes(S.docWho)) S.docWho=null;
   f.hidden=owners.length<2; f.className="seg docwho";
-  if(owners.length>1){ f.append(el("button",{type:"button","aria-pressed":String(!S.docWho),text:"Tous",onclick:()=>{ S.docWho=null; renderDocs(); }}));
+  if(owners.length>1){ f.append(el("button",{type:"button","aria-pressed":String(!S.docWho),text:"Tout le foyer",onclick:()=>{ S.docWho=null; renderDocs(); }}));
     for(const o of owners) f.append(el("button",{type:"button","aria-pressed":String(S.docWho===o),onclick:()=>{ S.docWho=S.docWho===o?null:o; renderDocs(); }},o!=="foyer"?avatar(o,18):"",ownerName(o))); }
   const H=$("papHero"), G0=$("docGrid"); G0.innerHTML=""; G0.className="pap-frise"; H.innerHTML=""; H.className="";
   if(!S.loaded.d){ H.hidden=true; G0.append(el("div",{class:"empty",text:"Chargement des documents…"})); return; }
-  // résumé
   const pool=S.docs.filter(d=>!S.docWho||(d.pour||"foyer")===S.docWho);
+  // résumé
   const due=pool.filter(d=>d.expire&&daysTo(d.expire)<=90), late=due.filter(d=>daysTo(d.expire)<0).length;
   H.hidden=!S.docs.length;
   if(due.length){ H.className="warn"; H.append(el("b",{text:due.length+" papier"+(due.length>1?"s":"")+" à renouveler"}),el("span",{text:late?(late===due.length?(late>1?"déjà expirés":"déjà expiré"):"dont "+late+" déjà expiré"+(late>1?"s":"")):"dans les 3 prochains mois"})); }
   else { const next=pool.filter(d=>d.expire).sort((a,b)=>a.expire<b.expire?-1:1)[0]; H.className="ok";
     H.append(el("b",{text:"Tout est à jour"}),el("span",{text:pool.length+" papier"+(pool.length>1?"s":"")+" rangé"+(pool.length>1?"s":"")+(next?" · prochain renouvellement : "+next.titre+", "+new Intl.DateTimeFormat("fr-FR",{month:"long",year:"numeric"}).format(parse(next.expire)):"")})); }
-  if(!S.docs.length){ G0.append(el("div",{class:"empty"},el("strong",{text:"Aucun papier rangé"}),"Bail, carte grise, assurances, garanties : range-les ici avec leur date d'expiration, Cocoon te prévient avant.")); return; }
-  // recherche
-  const q=norm(($("papQ")&&$("papQ").value)||"").trim();
-  const hay=d=>norm([d.titre,d.note||"",catOf(d.cat||"documents").nom,ownerName(d.pour||"foyer")].join(" "));
-  const list=pool.filter(d=>!q||q.split(/\s+/).every(w=>hay(d).includes(w)));
-  if(!list.length){ G0.append(el("div",{class:"bd-none",text:q?"Aucun papier ne correspond à « "+$("papQ").value.trim()+" ».":"Aucun papier ici."})); return; }
-  // frise : ce qui presse en haut
-  const G=[["late","Expirés",d=>d.expire&&daysTo(d.expire)<0],["soon30","Dans les 30 jours",d=>d.expire&&daysTo(d.expire)>=0&&daysTo(d.expire)<=30],["soon90","Dans les 3 mois",d=>d.expire&&daysTo(d.expire)>30&&daysTo(d.expire)<=90],["later","Plus tard",d=>d.expire&&daysTo(d.expire)>90],["none","Sans date",d=>!d.expire]];
+  if(!S.docs.length){ G0.append(el("div",{class:"empty"},el("strong",{text:"Aucun papier rangé"}),"Bail, carte grise, assurances, carte d'identité : range-les ici avec leur date d'expiration, Cocoon te prévient avant.")); return; }
   const showWho=owners.length>1&&!S.docWho;
-  for(const [k,lab,fn] of G){ let ds=list.filter(fn); if(!ds.length) continue;
-    ds=k==="none"?ds.sort((a,b)=>(b.ajouteLe||0)-(a.ajouteLe||0)):ds.sort((a,b)=>a.expire<b.expire?-1:a.expire>b.expire?1:0);
-    G0.append(el("div",{class:"pf-l"+(k==="late"||k==="soon30"?" late":k==="soon90"?" soon":"")},lab,el("em",{text:"· "+ds.length})));
-    for(const d of ds) G0.append(docRow(d,showWho)); }
+  const sortDocs=ds=>ds.slice().sort((a,b)=>{ const ea=a.expire||"9999", eb=b.expire||"9999"; return ea<eb?-1:ea>eb?1:(b.ajouteLe||0)-(a.ajouteLe||0); });
+  // recherche : résultats directs
+  const q=norm(($("papQ")&&$("papQ").value)||"").trim();
+  if(q){ const hay=d=>norm([d.titre,d.note||"",catOf(d.cat||"documents").nom,ownerName(d.pour||"foyer")].join(" "));
+    const hits=sortDocs(pool.filter(d=>q.split(/\s+/).every(w=>hay(d).includes(w))));
+    G0.append(el("div",{class:"pf-l"},"Résultats",el("em",{text:"· "+hits.length})));
+    if(!hits.length) G0.append(el("div",{class:"bd-none",text:"Aucun papier ne correspond à « "+$("papQ").value.trim()+" »."}));
+    for(const d of hits) G0.append(docRow(d,showWho)); return; }
+  // regroupement par catégorie
+  const groups={}; for(const d of pool){ const c=catOf(d.cat||"documents").id||"documents"; (groups[c]=groups[c]||[]).push(d); }
+  if(S.docCat&&!groups[S.docCat]) S.docCat=null;
+  const icon=(c,cls)=>{ const x=el("span",{class:cls,style:"--bc:"+c.c}); if(c.perso){ x.classList.add("perso"); x.textContent=c.nom.charAt(0).toUpperCase(); } else x.innerHTML=GI(c.id==="voitures"?"voiture":c.id); return x; };
+  if(S.docCat){ // une catégorie ouverte
+    const c=catOf(S.docCat), ds=sortDocs(groups[S.docCat]);
+    G0.append(el("div",{class:"pk-head",style:"--bc:"+c.c},el("button",{type:"button",class:"pk-back","aria-label":"Retour aux catégories",text:"‹",onclick:()=>{ S.docCat=null; renderDocs(); window.scrollTo({top:0,behavior:"smooth"}); }}),icon(c,"pk-ic"),el("b",{text:c.nom}),el("span",{text:ds.length+" papier"+(ds.length>1?"s":"")})));
+    for(const d of ds) G0.append(docRow(d,showWho)); return; }
+  if(!pool.length){ G0.append(el("div",{class:"bd-none",text:"Aucun papier pour "+(S.docWho===me?"toi":ownerName(S.docWho))+" pour l'instant."})); return; }
+  const urg=ds=>{ const e=ds.filter(d=>d.expire).map(d=>daysTo(d.expire)); return e.length?Math.min(...e):9999; };
+  const order=Object.keys(groups).sort((a,b)=>{ const ua=urg(groups[a])<=90?urg(groups[a]):9999, ub=urg(groups[b])<=90?urg(groups[b]):9999; return ua-ub||groups[b].length-groups[a].length; });
+  const grid=el("div",{class:"pap-tiles"});
+  for(const cid of order){ const c=catOf(cid), ds=groups[cid], lt=ds.filter(d=>d.expire&&daysTo(d.expire)<0).length, u=urg(ds);
+    const t=el("button",{type:"button",class:"pk",style:"--bc:"+c.c,"aria-label":c.nom+", "+ds.length+" papier"+(ds.length>1?"s":""),onclick:()=>{ S.docCat=cid; renderDocs(); window.scrollTo({top:0,behavior:"smooth"}); }},icon(c,"pk-ic"),el("b",{text:c.nom}),el("span",{text:ds.length+" papier"+(ds.length>1?"s":"")}));
+    if(lt) t.append(el("em",{text:lt+" expiré"+(lt>1?"s":"")})); else if(u<=90) t.append(el("em",{class:u<=30?"":"soon",text:u<=60?u+" j":Math.round(u/30)+" mois"}));
+    grid.append(t); }
+  G0.append(grid);
 }
 function renderFeed(){
   const ev=[];
@@ -3249,6 +3294,7 @@ function renderSecretary(){
 }
 const GLY={"factures": "<path class=\"gb\" d=\"M5.5 2.5h13a1.5 1.5 0 0 1 1.5 1.5v17.2l-2.7-1.7-2.6 1.7-2.7-1.7-2.7 1.7-2.6-1.7L4 21.2V4a1.5 1.5 0 0 1 1.5-1.5z\"/><path class=\"gl\" d=\"M8 7.5h8M8 11h8M8 14.5h4.5\"/>", "entretien": "<path class=\"gb\" d=\"M20.6 6.3a5.6 5.6 0 0 1-7.3 6.9l-6.9 6.9a2.3 2.3 0 0 1-3.3-3.2l6.9-7a5.6 5.6 0 0 1 6.9-7.3l-3.5 3.5.7 2.9 2.9.7z\"/><circle class=\"gd\" cx=\"5.3\" cy=\"18.6\" r=\"1.05\"/>", "courses": "<path class=\"gb\" d=\"M2.4 4.4c0-.7.5-1.2 1.2-1.2h1.5c.8 0 1.4.5 1.6 1.2l.3 1h13c.7 0 1.2.6 1 1.3l-1.6 6.3a2 2 0 0 1-1.9 1.5H8.6l.3 1.4h9.2a1.1 1.1 0 0 1 0 2.2H8.2c-.8 0-1.4-.5-1.6-1.2L4.2 5.6h-.6c-.7 0-1.2-.5-1.2-1.2z\"/><circle class=\"gb\" cx=\"8.8\" cy=\"20.3\" r=\"1.7\"/><circle class=\"gb\" cx=\"17\" cy=\"20.3\" r=\"1.7\"/><path class=\"gl\" d=\"M11.2 8.6v3M15.2 8.6v3\"/>", "colis": "<path class=\"gb\" d=\"M12 2.2l8.7 4.3v11L12 21.8l-8.7-4.3v-11z\"/><path class=\"gl\" d=\"M3.8 6.8 12 10.9l8.2-4.1M12 11v10.4M7.7 4.6l8.4 4.2\"/>", "animaux": "<path class=\"gb\" d=\"M12 11.6c2.8 0 5.6 3.2 5.6 5.8 0 1.9-1.4 2.9-3 2.9-1.1 0-1.6-.5-2.6-.5s-1.5.5-2.6.5c-1.6 0-3-1-3-2.9 0-2.6 2.8-5.8 5.6-5.8z\"/><ellipse class=\"gb\" cx=\"5.3\" cy=\"10.4\" rx=\"1.9\" ry=\"2.4\" transform=\"rotate(-25 5.3 10.4)\"/><ellipse class=\"gb\" cx=\"9.2\" cy=\"6.2\" rx=\"2\" ry=\"2.6\" transform=\"rotate(-8 9.2 6.2)\"/><ellipse class=\"gb\" cx=\"14.8\" cy=\"6.2\" rx=\"2\" ry=\"2.6\" transform=\"rotate(8 14.8 6.2)\"/><ellipse class=\"gb\" cx=\"18.7\" cy=\"10.4\" rx=\"1.9\" ry=\"2.4\" transform=\"rotate(25 18.7 10.4)\"/>", "rdv": "<rect class=\"gb\" x=\"3\" y=\"4.5\" width=\"18\" height=\"16.5\" rx=\"3.5\"/><rect class=\"gb\" x=\"6.6\" y=\"2.2\" width=\"2.2\" height=\"4.6\" rx=\"1.1\"/><rect class=\"gb\" x=\"15.2\" y=\"2.2\" width=\"2.2\" height=\"4.6\" rx=\"1.1\"/><path class=\"gl\" d=\"M3.6 9.4h16.8\"/><circle class=\"gd\" cx=\"8\" cy=\"13.6\" r=\"1.15\"/><circle class=\"gd\" cx=\"12\" cy=\"13.6\" r=\"1.15\"/><circle class=\"gd\" cx=\"16\" cy=\"13.6\" r=\"1.15\"/><circle class=\"gd\" cx=\"8\" cy=\"17.3\" r=\"1.15\"/><circle class=\"gd\" cx=\"12\" cy=\"17.3\" r=\"1.15\"/>", "maison": "<path class=\"gb\" d=\"M12 3.2 3 10.6V20a1 1 0 0 0 1 1h5.2v-5.6h5.6V21H20a1 1 0 0 0 1-1v-9.4z\" transform=\"translate(0 -.1)\"/>", "documents": "<path class=\"gb\" d=\"M6.2 2h8L20 7.8V20a2 2 0 0 1-2 2H6.2a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z\"/><path class=\"gl\" d=\"M14 2.4v3.9c0 .9.7 1.6 1.6 1.6h3.9M8 12.5h8M8 16.5h5\"/>", "voiture": "<path class=\"gb\" d=\"M6.6 5h10.8c.8 0 1.5.5 1.8 1.2l1.8 4.4c1 .4 1.7 1.3 1.7 2.4v4.3c0 .6-.5 1-1 1h-1.3v1.2a1.6 1.6 0 0 1-3.2 0v-1.2H6.8v1.2a1.6 1.6 0 0 1-3.2 0v-1.2H2.3c-.6 0-1-.4-1-1V13c0-1.1.7-2 1.7-2.4l1.8-4.4C5.1 5.5 5.8 5 6.6 5z\"/><path class=\"gd\" d=\"M7.4 7.2h9.2l1.3 3.3H6.1z\"/><circle class=\"gd\" cx=\"5.9\" cy=\"14.1\" r=\"1.35\"/><circle class=\"gd\" cx=\"18.1\" cy=\"14.1\" r=\"1.35\"/>", "ecole": "<path class=\"gb\" d=\"M12 3.2l10.2 5L12 13.1 1.8 8.2z\"/><path class=\"gb\" d=\"M5.8 11.3l6.2 3 6.2-3v4.6c0 2-2.8 3.8-6.2 3.8s-6.2-1.8-6.2-3.8z\"/><rect class=\"gb\" x=\"20.2\" y=\"8.4\" width=\"1.7\" height=\"6\" rx=\"0.85\"/><circle class=\"gb\" cx=\"21.05\" cy=\"15\" r=\"1.35\"/>", "jardin": "<path class=\"gb\" d=\"M12.6 13.3c-.1-5.2 3.3-8.8 8.9-8.8.3 5.5-3.4 9.1-8.9 8.8z\"/><path class=\"gb\" d=\"M11.3 15.6c.2-4.1-2.6-7.1-7.5-6.9-.1 4.6 2.9 7.2 7.5 6.9z\"/><rect class=\"gb\" x=\"11.1\" y=\"12\" width=\"1.8\" height=\"9.6\" rx=\"0.9\"/><rect class=\"gb\" x=\"6.5\" y=\"19.8\" width=\"11\" height=\"2.2\" rx=\"1.1\"/><path class=\"gl\" d=\"M14.6 11.5l4.2-4.3M9.5 13.8 6.3 10.9\"/>", "elec": "<path class=\"gb\" d=\"M13.7 1.9 4.4 13.5c-.4.5 0 1.2.6 1.2h5.6l-1.3 7.1c-.1.6.6.9 1 .5l9.3-11.6c.4-.5 0-1.2-.6-1.2h-5.6l1.3-7.1c.1-.6-.6-.9-1-.5z\"/>", "eau": "<path class=\"gb\" d=\"M12 2.1c.4 0 .7.2.9.5 2.3 3.4 6.7 8.3 6.7 12.2a7.6 7.6 0 0 1-15.2 0c0-3.9 4.4-8.8 6.7-12.2.2-.3.5-.5.9-.5z\"/><path class=\"gl\" d=\"M8.4 15.2a3.6 3.6 0 0 0 3.1 3.3\"/>", "gaz": "<path class=\"gb\" d=\"M12.3 1.9c.5-.3 1.1 0 1.1.6.1 2.6 1.4 4 2.9 5.6 1.6 1.8 3.2 3.7 3.2 6.9a7.5 7.5 0 0 1-15 0c0-2.6 1.2-4.6 2.6-6 .4-.4 1.1-.2 1.2.4.2 1 .6 1.9 1.3 2.4.4-3.6 1.2-7.9 2.7-9.9z\"/><path class=\"gd\" d=\"M12 20.4a2.8 2.8 0 0 1-2.8-2.8c0-1.6 1.3-2.8 2.4-4.3.2-.3.6-.3.8 0 1.1 1.5 2.4 2.7 2.4 4.3a2.8 2.8 0 0 1-2.8 2.8z\"/>", "poubelle": "<rect class=\"gb\" x=\"3.4\" y=\"4.6\" width=\"17.2\" height=\"2.9\" rx=\"1.45\"/><rect class=\"gb\" x=\"9.2\" y=\"2.2\" width=\"5.6\" height=\"3\" rx=\"1.3\"/><path class=\"gb\" d=\"M5.2 9.2h13.6l-1.1 10.9a2 2 0 0 1-2 1.8H8.3a2 2 0 0 1-2-1.8z\"/><path class=\"gl\" d=\"M10 12.3v6.3M14 12.3v6.3\"/>", "chaudiere": "<rect class=\"gb\" x=\"4.8\" y=\"2\" width=\"14.4\" height=\"20\" rx=\"2.8\"/><path class=\"gl\" d=\"M8.4 6h7.2\"/><path class=\"gd\" d=\"M12 18.8a2.7 2.7 0 0 1-2.7-2.7c0-1.7 1.6-2.7 2.3-4.4.1-.3.5-.4.7-.1 1 1.3 2.4 2.6 2.4 4.5a2.7 2.7 0 0 1-2.7 2.7z\"/>", "pac": "<rect class=\"gb\" x=\"2\" y=\"4.6\" width=\"20\" height=\"14\" rx=\"3\"/><rect class=\"gb\" x=\"4.4\" y=\"17\" width=\"3.2\" height=\"4.2\" rx=\"1\"/><rect class=\"gb\" x=\"16.4\" y=\"17\" width=\"3.2\" height=\"4.2\" rx=\"1\"/><circle class=\"gd\" cx=\"9\" cy=\"11.6\" r=\"4.4\"/><circle class=\"gb\" cx=\"9\" cy=\"11.6\" r=\"1.3\"/><path class=\"gl\" d=\"M16.4 8.8h2.6M16.4 11.6h2.6M16.4 14.4h2.6\"/>", "vmc": "<circle class=\"gb\" cx=\"12\" cy=\"12\" r=\"10\"/><path class=\"gd\" transform=\"rotate(0 12 12)\" d=\"M12 10.3c-.6-2.6.3-5 2.4-5.6 1.7-.5 2.9 1.3 1.9 2.8-.9 1.4-2.5 2.2-4.3 2.8z\"/><path class=\"gd\" transform=\"rotate(120 12 12)\" d=\"M12 10.3c-.6-2.6.3-5 2.4-5.6 1.7-.5 2.9 1.3 1.9 2.8-.9 1.4-2.5 2.2-4.3 2.8z\"/><path class=\"gd\" transform=\"rotate(240 12 12)\" d=\"M12 10.3c-.6-2.6.3-5 2.4-5.6 1.7-.5 2.9 1.3 1.9 2.8-.9 1.4-2.5 2.2-4.3 2.8z\"/><circle class=\"gd\" cx=\"12\" cy=\"12\" r=\"1.7\"/>", "cheminee": "<rect class=\"gb\" x=\"2.4\" y=\"2.6\" width=\"19.2\" height=\"3.4\" rx=\"1.5\"/><path class=\"gb\" d=\"M4.2 6h15.6v15H15.6v-6.4a3.6 3.6 0 0 0-7.2 0V21H4.2z\"/><path class=\"gb\" d=\"M12 21a2.3 2.3 0 0 1-2.3-2.3c0-1.4 1.2-2.2 1.9-3.6.1-.3.5-.3.7-.1.8 1.1 2 2.1 2 3.7A2.3 2.3 0 0 1 12 21z\"/>", "clim": "<rect class=\"gb\" x=\"2\" y=\"3.6\" width=\"20\" height=\"9.6\" rx=\"3\"/><path class=\"gl\" d=\"M5.2 9.8h13.6\"/><path class=\"gk\" d=\"M8 16c.6 1.4-.6 2.3 0 4M12 16c.6 1.4-.6 2.3 0 4M16 16c.6 1.4-.6 2.3 0 4\"/>", "chauffeeau": "<rect class=\"gb\" x=\"5.6\" y=\"2\" width=\"12.8\" height=\"17.6\" rx=\"4.4\"/><path class=\"gk\" d=\"M9 19v3M15 19v3\"/><path class=\"gd\" d=\"M12 7.6c1.1 1.5 2.5 2.9 2.5 4.6a2.5 2.5 0 0 1-5 0c0-1.7 1.4-3.1 2.5-4.6z\"/>", "electromenager": "<rect class=\"gb\" x=\"3.6\" y=\"2\" width=\"16.8\" height=\"20\" rx=\"3.2\"/><path class=\"gl\" d=\"M3.9 7.4h16.2\"/><circle class=\"gd\" cx=\"7\" cy=\"4.75\" r=\"0.95\"/><circle class=\"gd\" cx=\"10\" cy=\"4.75\" r=\"0.95\"/><circle class=\"gd\" cx=\"12\" cy=\"14.4\" r=\"5\"/><path class=\"gb\" d=\"M8.5 15.2a3.6 3.6 0 0 0 7 0c-1.3-.7-2.3-.9-3.5-.2s-2.2.6-3.5.2z\"/>", "detecteur": "<rect class=\"gb\" x=\"2\" y=\"2.6\" width=\"20\" height=\"2.4\" rx=\"1.2\"/><path class=\"gb\" d=\"M3.6 5h16.8v2.2a4.6 4.6 0 0 1-4.6 4.6H8.2a4.6 4.6 0 0 1-4.6-4.6z\"/><circle class=\"gd\" cx=\"12\" cy=\"8.3\" r=\"1.2\"/><path class=\"gk\" d=\"M8.3 15.3a5.3 5.3 0 0 0 7.4 0M5.6 18.4a9.2 9.2 0 0 0 12.8 0\"/>", "engrenage": "<path class=\"gb\" d=\"M10.23 4.61L10.95 2.06L13.05 2.06L13.77 4.61A7.6 7.6 0 0 1 15.98 5.52L15.98 5.52L18.29 4.23L19.77 5.71L18.48 8.02A7.6 7.6 0 0 1 19.39 10.23L19.39 10.23L21.94 10.95L21.94 13.05L19.39 13.77A7.6 7.6 0 0 1 18.48 15.98L18.48 15.98L19.77 18.29L18.29 19.77L15.98 18.48A7.6 7.6 0 0 1 13.77 19.39L13.77 19.39L13.05 21.94L10.95 21.94L10.23 19.39A7.6 7.6 0 0 1 8.02 18.48L8.02 18.48L5.71 19.77L4.23 18.29L5.52 15.98A7.6 7.6 0 0 1 4.61 13.77L4.61 13.77L2.06 13.05L2.06 10.95L4.61 10.23A7.6 7.6 0 0 1 5.52 8.02L5.52 8.02L4.23 5.71L5.71 4.23L8.02 5.52A7.6 7.6 0 0 1 10.23 4.61z\"/><circle class=\"gd\" cx=\"12\" cy=\"12\" r=\"3\"/>", "depense": "<circle class=\"gb\" cx=\"12\" cy=\"12\" r=\"10\"/><path class=\"gl\" d=\"M15.6 8.4a4.6 4.6 0 1 0 0 7.2M7.2 10.8h6M7.2 13.2h6\"/>", "abonnement": "<path class=\"gb\" d=\"M4.01 9.09A8.5 8.5 0 0 1 18.96 7.12L16.83 8.62A5.9 5.9 0 0 0 6.46 9.98zM19.70 6.61L20.19 11.15L16.10 9.13zM19.99 14.91A8.5 8.5 0 0 1 5.04 16.88L7.17 15.38A5.9 5.9 0 0 0 17.54 14.02zM4.30 17.39L3.81 12.85L7.90 14.87z\"/>", "internet": "<rect class=\"gb\" x=\"5.6\" y=\"1.8\" width=\"12.8\" height=\"20.4\" rx=\"3.2\"/><path class=\"gl\" d=\"M10.6 18.6h2.8M9 9.4a4.4 4.4 0 0 1 6 0M10.5 11.6a2.2 2.2 0 0 1 3 0\"/><circle class=\"gd\" cx=\"12\" cy=\"13.9\" r=\"1\"/>", "streaming": "<rect class=\"gb\" x=\"2\" y=\"3.6\" width=\"20\" height=\"14.2\" rx=\"3.2\"/><rect class=\"gb\" x=\"7.4\" y=\"19.6\" width=\"9.2\" height=\"2.2\" rx=\"1.1\"/><path class=\"gd\" d=\"M10 8.1v6.6c0 .6.6.9 1.1.6l4.7-3.3c.4-.3.4-.9 0-1.2l-4.7-3.3c-.5-.3-1.1 0-1.1.6z\"/>", "assurance": "<path class=\"gb\" d=\"M12 2l8.2 3.1v6.1c0 5.1-3.5 9.3-8.2 10.9-4.7-1.6-8.2-5.8-8.2-10.9V5.1z\"/><path class=\"gl\" d=\"M8.4 12l2.6 2.6 4.6-5\"/>", "loisirs": "<path class=\"gb\" d=\"M3 6.5C3 5.7 3.7 5 4.5 5h15c.8 0 1.5.7 1.5 1.5V9a3 3 0 0 0 0 6v2.5c0 .8-.7 1.5-1.5 1.5h-15c-.8 0-1.5-.7-1.5-1.5V15a3 3 0 0 0 0-6z\"/><path class=\"gl\" d=\"M15 7.6v1.2M15 11.4v1.2M15 15.2v1.2\"/><path class=\"gd\" d=\"M8.6 8.6l.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3z\"/>", "sante": "<path class=\"gb\" d=\"M12 21.2S3.2 16 3.2 9.6A4.9 4.9 0 0 1 12 6.8a4.9 4.9 0 0 1 8.8 2.8c0 6.4-8.8 11.6-8.8 11.6z\"/><path class=\"gl\" d=\"M6.2 12h2.9l1.4-2.4 2 4.6 1.5-2.2h3.8\"/>", "enfants": "<circle class=\"gb\" cx=\"6.2\" cy=\"6.6\" r=\"3\"/><circle class=\"gb\" cx=\"17.8\" cy=\"6.6\" r=\"3\"/><circle class=\"gb\" cx=\"12\" cy=\"13.2\" r=\"8\"/><circle class=\"gd\" cx=\"9.2\" cy=\"11.8\" r=\"1.05\"/><circle class=\"gd\" cx=\"14.8\" cy=\"11.8\" r=\"1.05\"/><ellipse class=\"gd\" cx=\"12\" cy=\"15.8\" rx=\"3.2\" ry=\"2.5\" transform=\"rotate(0 12 15.8)\"/><ellipse class=\"gb\" cx=\"12\" cy=\"15\" rx=\"1.1\" ry=\"0.8\" transform=\"rotate(0 12 15)\"/>", "autre": "<path class=\"gb\" d=\"M3 4.5v6.3c0 .5.2 1 .6 1.4l8.7 8.7a2 2 0 0 0 2.8 0l5.7-5.7a2 2 0 0 0 0-2.8L12.1 3.7a2 2 0 0 0-1.4-.6H4.5A1.5 1.5 0 0 0 3 4.5z\"/><circle class=\"gd\" cx=\"7.6\" cy=\"7.7\" r=\"1.7\"/>"};
 Object.assign(GLY,{"radiateurs": "<rect class=\"gb\" x=\"2.6\" y=\"4.5\" width=\"4\" height=\"13.5\" rx=\"2\"/><rect class=\"gb\" x=\"7.4\" y=\"4.5\" width=\"4\" height=\"13.5\" rx=\"2\"/><rect class=\"gb\" x=\"12.2\" y=\"4.5\" width=\"4\" height=\"13.5\" rx=\"2\"/><rect class=\"gb\" x=\"17\" y=\"4.5\" width=\"4\" height=\"13.5\" rx=\"2\"/><rect class=\"gb\" x=\"2\" y=\"14.2\" width=\"20\" height=\"2.6\" rx=\"1.3\"/><path class=\"gk\" d=\"M5 18.5v2.5M19 18.5v2.5\"/>", "four": "<rect class=\"gb\" x=\"3\" y=\"2.5\" width=\"18\" height=\"19\" rx=\"3.2\"/><path class=\"gl\" d=\"M3.4 8h17.2\"/><circle class=\"gd\" cx=\"7\" cy=\"5.3\" r=\"1\"/><circle class=\"gd\" cx=\"10.4\" cy=\"5.3\" r=\"1\"/><rect class=\"gd\" x=\"6.4\" y=\"11\" width=\"11.2\" height=\"7\" rx=\"1.8\"/>", "plaques": "<rect class=\"gb\" x=\"2.4\" y=\"4\" width=\"19.2\" height=\"16\" rx=\"3.4\"/><circle class=\"gd\" cx=\"8.2\" cy=\"9.6\" r=\"2.9\"/><circle class=\"gd\" cx=\"15.9\" cy=\"9.6\" r=\"2.2\"/><circle class=\"gd\" cx=\"8.2\" cy=\"15.4\" r=\"2.2\"/><circle class=\"gd\" cx=\"15.9\" cy=\"15.1\" r=\"2.9\"/>", "hotte": "<path class=\"gb\" d=\"M8.2 2.5h7.6v6.3l5.3 6.9c.5.7 0 1.6-.8 1.6H3.7c-.8 0-1.3-.9-.8-1.6l5.3-6.9z\"/><path class=\"gl\" d=\"M5.8 14h12.4\"/><path class=\"gk\" d=\"M8 20v1.6M12 20v1.6M16 20v1.6\"/>", "lavevaisselle": "<rect class=\"gb\" x=\"3.6\" y=\"2\" width=\"16.8\" height=\"20\" rx=\"3.2\"/><path class=\"gl\" d=\"M3.9 7.4h16.2M7.4 12.4h9.2M7.4 16.6h9.2\"/><circle class=\"gd\" cx=\"7\" cy=\"4.75\" r=\"0.95\"/><rect class=\"gd\" x=\"13.6\" y=\"4\" width=\"3.6\" height=\"1.5\" rx=\"0.75\"/>", "sechelinge": "<rect class=\"gb\" x=\"3.6\" y=\"2\" width=\"16.8\" height=\"20\" rx=\"3.2\"/><path class=\"gl\" d=\"M3.9 7.4h16.2\"/><circle class=\"gd\" cx=\"7\" cy=\"4.75\" r=\"0.95\"/><circle class=\"gd\" cx=\"10\" cy=\"4.75\" r=\"0.95\"/><circle class=\"gd\" cx=\"12\" cy=\"14.4\" r=\"5\"/><path class=\"gk\" d=\"M10.3 12.2c.9.9-.9 2.1 0 3.4M13.7 12.2c.9.9-.9 2.1 0 3.4\"/>", "frigo": "<rect class=\"gb\" x=\"4.5\" y=\"2\" width=\"15\" height=\"20\" rx=\"3.2\"/><path class=\"gl\" d=\"M4.8 9.2h14.4\"/><rect class=\"gd\" x=\"7.2\" y=\"4.2\" width=\"1.7\" height=\"3\" rx=\"0.85\"/><rect class=\"gd\" x=\"7.2\" y=\"11.4\" width=\"1.7\" height=\"4.6\" rx=\"0.85\"/>", "fosse": "<rect class=\"gb\" x=\"2.5\" y=\"10.5\" width=\"19\" height=\"10\" rx=\"4.6\"/><rect class=\"gb\" x=\"9\" y=\"4.6\" width=\"6\" height=\"6.6\" rx=\"1.4\"/><path class=\"gk\" d=\"M2 6h4.6M17.4 6H22\"/><path class=\"gl\" d=\"M7 15.5h10\"/>"}); GLY.lavelinge=GLY.electromenager; Object.assign(GLY,{"pilule": "<g transform=\"rotate(-45 12 12)\"><rect class=\"gb\" x=\"3.5\" y=\"8.2\" width=\"17\" height=\"7.6\" rx=\"3.8\"/><path class=\"gl\" d=\"M12 8.8v6.4\"/></g>", "seringue": "<g transform=\"rotate(45 12 12)\"><rect class=\"gb\" x=\"9.6\" y=\"5.5\" width=\"4.8\" height=\"11\" rx=\"1.2\"/><rect class=\"gb\" x=\"8\" y=\"2.2\" width=\"8\" height=\"2\" rx=\"1\"/><rect class=\"gb\" x=\"11.1\" y=\"3.6\" width=\"1.8\" height=\"2.4\"/><path class=\"gk\" d=\"M12 16.6v5\"/><path class=\"gl\" d=\"M9.9 8.6h2.2M9.9 11.2h2.2M9.9 13.8h2.2\"/></g>"}); GLY.membre="<circle class=\"gb\" cx=\"9.5\" cy=\"7.6\" r=\"4.1\"/><path class=\"gb\" d=\"M2 20.3c0-4 3.4-7 7.5-7s7.5 3 7.5 7c0 .6-.4 1.1-1 1.1H3c-.6 0-1-.5-1-1.1z\"/><path class=\"gk\" d=\"M19.6 7.6v6M16.6 10.6h6\" style=\"stroke-width:2.3\"/>";
+GLY.identite='<path class="gb" d="M3.5 5h17A1.5 1.5 0 0 1 22 6.5v11a1.5 1.5 0 0 1-1.5 1.5h-17A1.5 1.5 0 0 1 2 17.5v-11A1.5 1.5 0 0 1 3.5 5z"/><circle class="gl" cx="8.5" cy="11" r="2.3"/><path class="gl" d="M5.2 16.2c.7-1.7 1.9-2.6 3.3-2.6s2.6.9 3.3 2.6M14 10h5M14 13.5h4"/>';
 const GI=k=>'<svg class="gly" viewBox="0 0 24 24" aria-hidden="true">'+(GLY[k]||GLY.autre)+'</svg>';
 const BCAT_GLY={courses:"courses",logement:"maison",energie:"elec",internet:"internet",streaming:"streaming",assurance:"assurance",transport:"voiture",loisirs:"loisirs",sante:"sante",animaux:"animaux",enfants:"enfants",autre:"autre"};
 const CAT_ICON={
@@ -4739,14 +4785,14 @@ $("docForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||
         const base=f.name.replace(/\.[a-z0-9]+$/i,"");
         await S.db.collection("documents").add(Object.assign({},doc,{titre:files.length>1?titre+" · "+base:titre,assetId:up.id,fichierType:type==="application/pdf"?"PDF":"Photo",ajouteLe:Date.now()})); }
     } else await S.db.collection("documents").add(doc);
-    S.docOpen=S.docOpen||{}; S.docOpen[(doc.pour||"foyer")+":"+doc.cat]=true;
+    S.docCat=catOf(doc.cat||"documents").id||"documents";
     if(doc.expire&&daysTo(doc.expire)>1){ const n=daysTo(doc.expire), dd=Math.max(1,n-60), t0=today(); const due=iso(new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+dd));
       try{ await S.db.collection("taches").add({titre:"Renouveler « "+titre+" »",cat:"documents",pour:doc.pour&&doc.pour!=="foyer"?doc.pour:"tous",concerne:null,echeance:due,recur:0,recurMsg:null,fait:false,creePar:meId(),creeLe:Date.now(),suggere:true}); }catch(_){} }
     $("docForm").reset(); S.dCatC=null; $("dNewCat").hidden=true; fillDocCats(); updConsent(); $("docForm").hidden=true; $("papAdd").setAttribute("aria-expanded","false"); toast((files.length>1?files.length+" documents rangés dans « "+esc((catNom||catOf(doc.cat).nom))+" »":catNom?"Nouvelle catégorie « "+esc(catNom)+" » créée, document rangé":"Document rangé")+(doc.expire?(daysTo(doc.expire)>1?" · rappel deux mois avant l'expiration":" · expire "+fmtDue(doc.expire)):"")+".");
   }catch(err){ if(err&&err.code==="too_large") toast("Fichier trop lourd (20 Mo max)."); else if(err&&err.code==="unsupported_type") toast("Format non pris en charge : PDF, JPG, PNG ou WebP."); else writeErr(err); }
   finally{ btn.disabled=false; btn.textContent="Ranger"; }
 });
-$("dTitle").addEventListener("input",e=>{ if($("dCat").value==="__new"||!CAT[$("dCat").value]) return; const g=guess(e.target.value); if(g.cat) $("dCat").value=g.cat; });
+$("dTitle").addEventListener("input",e=>{ const v=$("dCat").value; if(v==="__new"||!(CAT[v]||DOCX[v])) return; const g=docGuess(e.target.value); if(g) $("dCat").value=g; });
 
 /* Onglets */
 const TABS=["accueil","moi","foyer","courses","repas","rappels","documents","budget","maison"];
@@ -4916,7 +4962,7 @@ function npIcon(r){ if(r.live){ const i=el("span",{class:"np-ic",style:"--bc:#7F
   const i=el("span",{class:"np-ic",style:"--bc:"+c}); i.innerHTML=GI(GLY[k]?k:"autre"); return i; }
 function npGo(r){ closeNotifs(); const x=r.ref; if(r.live){ setTab("courses"); renderHeader(); window.scrollTo({top:0,behavior:"instant"}); return; } if(r.merci) return;
   if(r.kind==="Perso"||r.kind==="Foyer") return goTask(x);
-  if(r.kind==="Document"){ S.docOpen=S.docOpen||{}; S.docOpen[(x.pour||"foyer")+":"+(x.cat||"documents")]=true; S.docWho=null; return goDoc(x); }
+  if(r.kind==="Document"){ S.docWho=null; S.docCat=catOf(x.cat||"documents").id||"documents"; if($("papQ")) $("papQ").value=""; return goDoc(x); }
   if(r.kind==="Anniversaire") return openProfile(x.id);
   if(r.kind==="Prélèvement"){ setTab("budget"); window.scrollTo({top:0}); return; }
   if(r.kind==="Rendez-vous"){ setTab("accueil"); setTimeout(()=>{ const e=$("rdvWrap"); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); },80); return; }
