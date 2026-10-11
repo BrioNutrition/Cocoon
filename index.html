@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 15:04";</script>
+<script>window.COCOON_BUILD="11/10 15:20";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -743,15 +743,15 @@ button,a,input,select,textarea,label,summary,[role="button"]{touch-action:manipu
   @keyframes rvRing{0%{opacity:.75;transform:scale(1)}100%{opacity:0;transform:scale(2.6)}}
   @keyframes rvRise{from{opacity:0;transform:translateY(40px) rotate(8deg)}}
   @keyframes rvUp{from{opacity:0;transform:translateY(12px)}}
-  .wrap.arrive .head,.wrap.arrive .members,.wrap.arrive .view:not([hidden]) > *{animation:arriveUp .7s cubic-bezier(.2,1,.3,1) .7s both}
-  .wrap.arrive .head{animation-delay:.27s}
-  .wrap.arrive .members{animation-delay:.34s}
-  .wrap.arrive .view:not([hidden]) > :nth-child(1){animation-delay:.42s}
-  .wrap.arrive .view:not([hidden]) > :nth-child(2){animation-delay:.5s}
-  .wrap.arrive .view:not([hidden]) > :nth-child(3){animation-delay:.58s}
-  .wrap.arrive .view:not([hidden]) > :nth-child(4){animation-delay:.66s}
-  .wrap.arrive .tabs{animation:arriveNav .8s cubic-bezier(.2,1.3,.4,1) .52s both}
-  .wrap.arrive .topbar .wordmark,.wrap.arrive .topbar .head-right{animation:arriveFade .6s ease-out .32s both}
+  .wrap.arrive .head,.wrap.arrive .members,.wrap.arrive .view:not([hidden]) > *{animation:arriveUp .55s cubic-bezier(.2,1,.3,1) .2s both}
+  .wrap.arrive .head{animation-delay:.06s}
+  .wrap.arrive .members{animation-delay:.1s}
+  .wrap.arrive .view:not([hidden]) > :nth-child(1){animation-delay:.12s}
+  .wrap.arrive .view:not([hidden]) > :nth-child(2){animation-delay:.17s}
+  .wrap.arrive .view:not([hidden]) > :nth-child(3){animation-delay:.22s}
+  .wrap.arrive .view:not([hidden]) > :nth-child(4){animation-delay:.27s}
+  .wrap.arrive .tabs{animation:arriveNav .65s cubic-bezier(.2,1.3,.4,1) .18s both}
+  .wrap.arrive .topbar .wordmark,.wrap.arrive .topbar .head-right{animation:arriveFade .5s ease-out .1s both}
   @keyframes arriveUp{from{opacity:0;translate:0 26px}}
   @keyframes arriveNav{from{opacity:0;translate:0 140%}}
   @keyframes arriveFade{from{opacity:0;translate:-8px 0}}
@@ -6683,6 +6683,8 @@ function bootCheck(){
      si les points ont eu le temps d'apparaître, on les laisse finir leur vague. */
   const quick=b.classList.contains("quick"), minT=quick?(t<1500?950:2950):2400;
   if(!ready||!fontsOk||t<minT){ setTimeout(bootCheck,60); return; }
+  /* l'accueil doit être dessiné AVANT que le logo s'envole, sinon on voit un écran vide pendant le vol */
+  try{ if(_raf){ cancelAnimationFrame(_raf); _raf=0; } renderAllNow(); }catch(_){}
   S.booted=true; try{ localStorage.setItem("cocoon.bootSeen","1"); }catch(_){}
   b._done=true; requestAnimationFrame(()=>requestAnimationFrame(bootOut));
 }
@@ -6715,13 +6717,13 @@ async function bootOut(){
   if(!canFly){ await b.animate([{opacity:1},{opacity:0}],{duration:reduced?250:420,easing:"ease-out",fill:"forwards"}).finished; b.remove(); entryDone(); return; }
   const wrap=logo.parentElement;
   b.style.pointerEvents="none";
-  const fade=[{opacity:1},{opacity:1,offset:.2},{opacity:0}], fo={duration:900,easing:"cubic-bezier(.5,0,.3,1)",fill:"forwards"};
+  const fade=[{opacity:1},{opacity:0}], fo={duration:620,easing:"cubic-bezier(.5,0,.3,1)",fill:"forwards"};
   b.querySelector(".bt-bg").animate(fade,fo);
   b.querySelector(".bt-name").animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(14px) scale(.96)"}],{duration:380,easing:"ease-in",fill:"forwards"});
   b.querySelector(".bt-dots").animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(14px) scale(.96)"}],{duration:380,easing:"ease-in",fill:"forwards"});
   wrap.querySelectorAll("i").forEach(i=>{ i.getAnimations().forEach(a=>a.cancel()); i.style.display="none"; });
   const W=document.querySelector(".wrap");
-  const fly=flyLogo(logo,target,980); W.classList.add("arrive");
+  const fly=flyLogo(logo,target,b.classList.contains("quick")?760:980); W.classList.add("arrive");
   await fly;
   b.remove(); endArrive(W);
 }
