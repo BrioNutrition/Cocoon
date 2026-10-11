@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 18:04";</script>
+<script>window.COCOON_BUILD="11/10 19:12";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1965,13 +1965,13 @@ html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior
 .wk-d.now.sel{box-shadow:none}
 .wk-dl{font-size:11px;font-weight:700;opacity:.7}
 .wk-d b{font-size:16px;font-weight:800;font-family:var(--f-display)}
-.wk-dots{display:flex;gap:3px;min-height:6px;flex-wrap:wrap;justify-content:center;max-width:34px}
-.wk-dots i{width:6px;height:6px;border-radius:50%;background:var(--muted);opacity:.5}
+.wk-dots{display:flex;gap:3px;min-height:7px;flex-wrap:wrap;justify-content:center;max-width:38px}
+.wk-dots i{width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.5}
 .wk-dots i.on{background:#3CC37A;opacity:1}
 .wk-dots i.late{background:#FF7A5C;opacity:1}
-.wk-d.now .wk-dots i{background:rgba(28,27,46,.35);opacity:1}
-.wk-d.now .wk-dots i.on{background:#1C1B2E}
-.wk-d.now .wk-dots i.late{background:#B3261E}
+.wk-d.now .wk-dots i{background:rgba(255,255,255,.75);opacity:1}
+.wk-d.now .wk-dots i.on{background:#2FB56C;box-shadow:0 0 0 1.5px #fff}
+.wk-d.now .wk-dots i.late{background:#E5484D;box-shadow:0 0 0 1.5px #fff}
 .wk-card .wk-sub{border-top:0;padding-top:0;margin-top:4px}
 .b-curve .acc-dot::before,.b-curve .acc-dot::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #FF9C80;opacity:0;pointer-events:none}
 @media (prefers-reduced-motion:no-preference){
@@ -2184,6 +2184,11 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .pk-head .pk-ic svg{width:20px;height:20px}
 .pk-head b{font-size:19px;flex:1}
 .pk-head span{color:var(--muted);font-size:13px}
+
+.wk-leg{display:flex;justify-content:center;gap:16px;margin-top:-2px;font-size:12px;font-weight:600;color:var(--muted)}
+.wk-leg span{display:flex;align-items:center;gap:5px}
+.wk-leg i{width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.5}
+.wk-leg i.on{background:#3CC37A;opacity:1}.wk-leg i.late{background:#FF7A5C;opacity:1}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -3773,6 +3778,7 @@ function renderWeek(){
     const b=el("button",{type:"button",role:"tab",class:"wk-d"+(k===td?" now":"")+(k===S.wkDay?" sel":"")+(k<td?" past":""),"aria-selected":String(k===S.wkDay),"aria-label":new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric"}).format(d)+", "+ts.length+" tâche"+(ts.length>1?"s":""),onclick:()=>{ S.wkDay=k; renderWeek(); renderFridge(); }},el("span",{class:"wk-dl",text:L[i]}),el("b",{text:String(d.getDate())}),dots);
     fr.append(b); }
   w.append(fr);
+  if(fr.querySelector(".wk-dots i")) w.append(el("div",{class:"wk-leg","aria-hidden":"true"},el("span",{},el("i",{class:"on"}),"fait"),el("span",{},el("i"),"à faire"),el("span",{},el("i",{class:"late"}),"en retard")));
 }
 function confetti(x,y){ okPop(x,y); }
 function okPop(x,y){
