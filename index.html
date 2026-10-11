@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 20:47";</script>
+<script>window.COCOON_BUILD="11/10 21:02";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -554,7 +554,7 @@ button,a,input,select,textarea,label,summary,[role="button"]{touch-action:manipu
 .item{transition:box-shadow .15s ease}
 .members,.people,.view{-webkit-overflow-scrolling:touch}
 @media (prefers-reduced-motion:no-preference){
-  .view:not([hidden]) > :not(.viewseg){animation:viewIn .18s ease-out}
+  .view.vin > :not(.viewseg){animation:viewIn .18s ease-out}
   @keyframes viewIn{from{opacity:0;transform:translateY(6px)}}
 }
 .m-card{background:var(--surface);border-radius:22px;box-shadow:0 2px 0 var(--shadow);padding:14px;display:flex;flex-direction:column;gap:10px}
@@ -1188,7 +1188,7 @@ button.acc-card{cursor:pointer}
 @keyframes doneWk{0%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--d) * -.55)) scale(0)}45%{opacity:1;transform:rotate(var(--a)) translateY(calc(var(--d) * -1)) scale(var(--s))}100%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--d) * -1.2)) scale(0)}}
 @keyframes doneOut{0%,82%{opacity:1;transform:none}100%{opacity:0;transform:scale(.97)}}
 @keyframes chkPop{0%{transform:scale(.55)}100%{transform:scale(1)}}
-body .view:not([hidden]) > :not(.viewseg){animation:viewFade .14s ease-out}
+body .view.vin > :not(.viewseg){animation:viewFade .14s ease-out}
 @keyframes viewFade{from{opacity:0}}
 .del-x{background:#E5484D;margin-top:1px;box-shadow:0 1px 0 rgba(0,0,0,.08)}
 .item .del-x{order:2;width:30px;height:30px;border-radius:10px;margin:0}
@@ -2030,8 +2030,8 @@ details.b-vol>.b-vol-in{padding:0 10px 12px;display:flex;flex-direction:column;g
 .bc-msg .pencil-btn.bc-pen svg{width:15px;height:15px}
 .b-who,.bc-seg{position:relative}
 .b-who button,.bc-seg button{position:relative;z-index:1;transition:color .25s ease,opacity .25s ease}
-.seg-pill{position:absolute;top:3px;bottom:3px;left:0;width:0;border-radius:999px;background:var(--mark);z-index:0;pointer-events:none}
-.seg-pill.go{transition:left .34s cubic-bezier(.3,1.25,.5,1),width .34s cubic-bezier(.3,1.25,.5,1)}
+.seg-pill{position:absolute;top:3px;bottom:3px;left:0;width:0;border-radius:999px;background:var(--mark);z-index:0;pointer-events:none;transform-origin:0 50%;will-change:transform}
+
 .has-pill button[aria-pressed="true"]{background:transparent!important}
 @media (prefers-reduced-motion:reduce){
   .seg-pill.go{transition:none}
@@ -2262,6 +2262,30 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .m-dash .m-back{margin:0;align-self:flex-start}
 .m-back{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);border-radius:999px;padding:8px 14px 8px 10px;font:inherit;font-weight:800;font-size:14px;color:var(--ink);cursor:pointer}
 .m-back span{font-size:20px;line-height:1;margin-top:-2px}
+
+/* Repas : cases à la couleur du repas */
+.r-cell:not(.e){border-left:0;box-shadow:none}
+.r-cell.r-matin:not(.e){background:#FFE6DA;color:#1C1B2E}
+.r-cell.r-midi:not(.e){background:#E7F0FF;color:#1C1B2E}
+.r-cell.r-soir:not(.e){background:#FFF4D6;color:#1C1B2E}
+.r-cell:not(.e) small{color:rgba(28,27,46,.62)}
+:root[data-theme="dark"] .r-cell.r-matin:not(.e){background:#43302C;color:#FFE3D8}
+:root[data-theme="dark"] .r-cell.r-midi:not(.e){background:#273349;color:#DCE8FF}
+:root[data-theme="dark"] .r-cell.r-soir:not(.e){background:#433A22;color:#FFEBB8}
+:root[data-theme="dark"] .r-cell:not(.e) small{color:rgba(255,255,255,.62)}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .r-cell.r-matin:not(.e){background:#43302C;color:#FFE3D8}
+  :root:not([data-theme="light"]) .r-cell.r-midi:not(.e){background:#273349;color:#DCE8FF}
+  :root:not([data-theme="light"]) .r-cell.r-soir:not(.e){background:#433A22;color:#FFEBB8}
+  :root:not([data-theme="light"]) .r-cell:not(.e) small{color:rgba(255,255,255,.62)}
+}
+.r-cell.now:not(.e){box-shadow:inset 0 0 0 2px #FFC94A}
+.r-cell.on{box-shadow:inset 0 0 0 2px var(--ink)!important}
+.r-role{display:flex;align-items:center;gap:10px;margin-top:6px}
+.r-role-ic{width:34px;height:34px;border-radius:11px;background:var(--sunk);display:grid;place-items:center;font-size:18px;flex:none}
+.r-role div{display:flex;flex-direction:column;gap:1px}
+.r-role b{font-size:14.5px}
+.r-role div span{font-size:12px;color:var(--muted)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -4111,14 +4135,16 @@ function rdvFormEl(){
   return f;
 }
 function segAnim(box,key){
-  requestAnimationFrame(()=>{ const on=box.querySelector('button[aria-pressed="true"]'); if(!on||!on.offsetWidth) return;
-    box.querySelectorAll(":scope > .seg-pill").forEach(p=>p.remove()); box.classList.remove("has-pill");
-    const pill=el("span",{class:"seg-pill","aria-hidden":"true"});
-    box.prepend(pill); box.classList.add("has-pill");
+  const run=()=>{ const on=box.querySelector('button[aria-pressed="true"]'); if(!on||!on.offsetWidth) return;
+    let pill=box.querySelector(":scope > .seg-pill"); if(!pill){ pill=el("span",{class:"seg-pill","aria-hidden":"true"}); box.prepend(pill); }
+    box.classList.add("has-pill");
     const P=S._segPos=S._segPos||{}, prev=P[key], to={l:on.offsetLeft,w:on.offsetWidth};
-    const put=p=>{ pill.style.left=p.l+"px"; pill.style.width=p.w+"px"; };
-    if(prev&&(prev.l!==to.l||prev.w!==to.w)){ put(prev); void pill.offsetWidth; pill.classList.add("go"); put(to); } else put(to);
-    P[key]=to; });
+    try{ pill.getAnimations().forEach(x=>x.cancel()); }catch(_){}
+    pill.style.left=to.l+"px"; pill.style.width=to.w+"px";
+    const calm=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(prev&&(prev.l!==to.l||prev.w!==to.w)&&!calm&&pill.animate) pill.animate([{transform:"translateX("+(prev.l-to.l)+"px) scaleX("+(prev.w/to.w)+")"},{transform:"none"}],{duration:380,easing:"cubic-bezier(.25,1.15,.45,1)"});
+    P[key]=to; };
+  if(box.isConnected&&box.offsetParent) run(); else requestAnimationFrame(run);
   return box;
 }
 function budgetCurve(off){
@@ -4916,7 +4942,9 @@ $("dTitle").addEventListener("input",e=>{ const v=$("dCat").value; if(v==="__new
 
 /* Onglets */
 const TABS=["accueil","moi","foyer","courses","repas","rappels","documents","budget","maison"];
-function setTab(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; const prevTab=S.tab; S.tab=name; if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["foyer","documents","maison","courses","repas","budget","moi"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({documents:"foyer",maison:"foyer",courses:"foyer",repas:"foyer"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name); { const vs=document.querySelector('.view[data-view="'+name+'"] .viewseg'); if(vs) segAnim(vs,"viewseg"); } if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  if(prevTab&&prevTab!==name) renderAllNow(); else renderAll(); }
+function setTab(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; const prevTab=S.tab; S.tab=name; if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["foyer","documents","maison","courses","repas","budget","moi"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({documents:"foyer",maison:"foyer",courses:"foyer",repas:"foyer"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name);
+  if(prevTab&&prevTab!==name&&!document.querySelector(".wrap.arrive")){ const v=document.querySelector('.view[data-view="'+name+'"]'); if(v){ v.classList.remove("vin"); void v.offsetWidth; v.classList.add("vin"); clearTimeout(S._vinT); S._vinT=setTimeout(()=>v.classList.remove("vin"),320); } }
+  { const vs=document.querySelector('.view[data-view="'+name+'"] .viewseg'); if(vs) segAnim(vs,"viewseg"); } if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  if(prevTab&&prevTab!==name) renderAllNow(); else renderAll(); }
 $("tabs").addEventListener("click",e=>{ const b=e.target.closest(".tab"); if(b&&b.dataset.tab){ const same=S.tab===b.dataset.tab; closeSheet(); setTab(b.dataset.tab); renderHeader(); if(same) window.scrollTo({top:0,behavior:"smooth"}); } });
 function openSheet(o){ if(!meId()){ needMe(); return; } o=(o&&(o.where||o.text))?o:{}; resetQuick();
   if(o.where){ fillWhere($("qWhere"),o.where); $("qWhere").value=o.where; $("qWhere").dataset.touched="1"; if(o.where!=="perso"&&o.where!=="tous") S.qSel.add(o.where); }
@@ -6450,7 +6478,8 @@ function renderRepas(){
       const lab=JOURS_LONGS[k]+" "+d.getDate()+", "+sn.toLowerCase();
       const cell=el("button",{type:"button",class:"r-cell r-"+sl+(m?"":" e")+(now?" now":"")+(past?" past":"")+(on?" on":""),"aria-label":m?lab+" : "+m.plat:lab+" : ajouter",onclick:()=>{ if(!needMe()) return; S.rEdit=on?null:key; renderRepas(); if(!on) setTimeout(()=>{ const e=document.querySelector(".r-ed"); if(e){ e.scrollIntoView({block:"nearest",behavior:"smooth"}); const i=$("rPlat"); if(i&&!m) i.focus({preventScroll:true}); } },60); }});
       if(m){ cell.append(el("span",{class:"r-cp",text:m.plat}));
-        const who=m.cuisine&&humains().some(h=>h.id===m.cuisine)?(m.cuisine===me?"Toi":membre(m.cuisine).nom):null; if(who) cell.append(el("small",{text:who})); }
+        const nm=id=>id&&humains().some(h=>h.id===id)?(id===me?"Toi":membre(id).nom):null, ck=nm(m.cuisine), vs=nm(m.vaisselle);
+        if(ck) cell.append(el("small",{title:"Cuisine : "+ck},"👩‍🍳 "+ck)); if(vs) cell.append(el("small",{title:"Vaisselle : "+vs},"🧽 "+vs)); }
       else cell.append(el("span",{class:"r-plus","aria-hidden":"true",text:past?"":"+"}));
       if(on) edit={ds,sl,sn,m,lab:JOURS_LONGS[k]+" "+d.getDate()+" "+MOIS_C(d)};
       grid.append(cell); } }
@@ -6466,11 +6495,11 @@ function repasEditor(ds,sl,sn,m){ const me=meId(), f=el("form",{class:"r-ed",aut
     for(const p of all.slice(0,8)) ideas.append(el("button",{type:"button",onclick:()=>{ pi.value=p.nom; drawIdeas(); pi.focus(); }},p.nom)); ideas.hidden=!ideas.childNodes.length; };
   drawIdeas(); pi.addEventListener("input",drawIdeas);
   const who=(k,label)=>{ const g=el("div",{class:"seg r-cooks",role:"group","aria-label":label});
-    const draw=()=>{ g.innerHTML=""; for(const [v,l] of [[null,"Personne"]].concat(humains().map(h=>[h.id,h.id===me?"Moi":h.nom]))) g.append(el("button",{type:"button","aria-pressed":String(st[k]===v),onclick:()=>{ st[k]=v; draw(); }},v?avatar(v,18):null,l)); }; draw(); return g; };
+    const draw=()=>{ g.innerHTML=""; for(const [v,l] of [[null,"Pas décidé"]].concat(humains().map(h=>[h.id,h.id===me?"Moi":h.nom]))) g.append(el("button",{type:"button","aria-pressed":String(st[k]===v),onclick:()=>{ st[k]=v; draw(); }},v?avatar(v,18):null,l)); }; draw(); return g; };
   const close=()=>{ S.rEdit=null; renderRepas(); };
   f.append(el("div",{class:"r-edh"},el("b",{text:sn+(m?" · modifier":" · ajouter un plat")}),el("button",{type:"button",class:"r-x","aria-label":"Fermer",text:"×",onclick:close})),pi,ideas,
-    el("span",{class:"r-lab",text:"👩‍🍳 Qui cuisine ?"}),who("cuisine","Qui cuisine ?"),
-    el("span",{class:"r-lab",text:"🧽 Qui fait la vaisselle ?"}),who("vaisselle","Qui fait la vaisselle ?"));
+    el("div",{class:"r-role"},el("span",{class:"r-role-ic","aria-hidden":"true",text:"👩‍🍳"}),el("div",{},el("b",{text:"Qui prépare le repas ?"}),el("span",{text:"Il ou elle s'occupe de cuisiner ce plat."}))),who("cuisine","Qui prépare le repas ?"),
+    el("div",{class:"r-role"},el("span",{class:"r-role-ic","aria-hidden":"true",text:"🧽"}),el("div",{},el("b",{text:"Qui fait la vaisselle après ?"}),el("span",{text:"Il ou elle range et lave après le repas."}))),who("vaisselle","Qui fait la vaisselle après ?"));
   const btns=el("div",{class:"r-btns"},el("button",{type:"submit",class:"btn",text:"Enregistrer"}));
   if(m) btns.append(el("button",{type:"button",class:"btn ghost r-del",text:"Retirer",onclick:async()=>{ S.rEdit=null; try{ await S.db.collection("repas").doc(m.id).delete(); toast("Plat retiré."); }catch(e){ writeErr(e); } renderRepas(); }}));
   f.append(btns);
