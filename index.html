@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 15:32";</script>
+<script>window.COCOON_BUILD="11/10 15:50";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -6679,6 +6679,8 @@ function bootCheck(){
      si les points ont eu le temps d'apparaître, on les laisse finir leur vague. */
   const quick=b.classList.contains("quick"), minT=quick?(t<1500?1350:2950):2400;
   if(!ready||!fontsOk||t<minT){ setTimeout(bootCheck,60); return; }
+  /* les petits points encore « en attente » (lancement rapide) bloquaient l'affichage de l'accueil pendant l'envol du logo */
+  if(quick){ b.querySelectorAll(".bt-dots,.bt-dots i").forEach(e=>{ e.style.animation="none"; }); b.classList.remove("quick"); }
   S.booted=true; try{ localStorage.setItem("cocoon.bootSeen","1"); }catch(_){}
   b._done=true; requestAnimationFrame(()=>requestAnimationFrame(bootOut));
 }
@@ -6718,6 +6720,8 @@ async function bootOut(){
   wrap.querySelectorAll("i").forEach(i=>{ i.getAnimations().forEach(a=>a.cancel()); i.style.display="none"; });
   const W=document.querySelector(".wrap");
   const fly=flyLogo(logo,target,980); W.classList.add("arrive");
+  /* l'accueil se dévoile en fondu de gauche à droite pendant que le logo rejoint sa place */
+  try{ const sw=W.animate([{opacity:0,clipPath:"inset(0 100% 0 0)"},{opacity:.35,clipPath:"inset(0 55% 0 0)",offset:.35},{opacity:1,clipPath:"inset(0 0% 0 0)"}],{duration:1000,delay:80,easing:"cubic-bezier(.3,.7,.25,1)",fill:"backwards"}); sw.finished.then(()=>{ try{ sw.cancel(); }catch(_){} }).catch(()=>{}); }catch(_){}
   await fly;
   b.remove(); endArrive(W);
 }
