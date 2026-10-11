@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 16:10";</script>
+<script>window.COCOON_BUILD="11/10 16:42";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2134,6 +2134,37 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .viewseg .seg-pill{background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 /* plus de petits points de chargement à l'ouverture */
 .bt-dots{display:none!important}
+
+/* Papiers : résumé, recherche, ajout, frise des échéances */
+#papHero{display:flex;flex-direction:column;gap:4px;background:var(--hero);color:var(--hero-ink);border-radius:22px;padding:16px 18px}
+#papHero[hidden]{display:none}
+#papHero b{font-family:var(--f-display);font-size:22px;font-weight:800;letter-spacing:-.01em}
+#papHero span{font-size:13.5px;opacity:.82}
+#papHero.ok b::before{content:"✓ ";color:#7FD39A}
+#papHero.warn b{color:#FFB39A}
+.pap-search{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:16px;padding:0 14px;box-shadow:0 2px 0 var(--shadow);color:var(--muted)}
+.pap-search svg{width:19px;height:19px;flex:none}
+.pap-search input{flex:1;min-width:0;border:0;background:none;font:inherit;font-size:16px;padding:13px 0;color:var(--ink);outline:none;-webkit-appearance:none;appearance:none}
+.pap-add{display:flex;align-items:center;gap:12px;border:0;border-radius:18px;padding:13px 14px;background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB);color:#1C1B2E;text-align:left;font:inherit;cursor:pointer}
+.pap-add .pa-ic{width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.4);display:grid;place-items:center;flex:none}
+.pap-add .pa-ic svg{width:22px;height:22px}
+.pap-add .pa-t{flex:1;display:flex;flex-direction:column}.pap-add b{font-size:16px;font-weight:800}.pap-add small{font-size:12.5px;opacity:.75}
+.pap-add .pa-x{font-size:26px;font-weight:700;line-height:1;transition:transform .25s ease}
+.pap-add[aria-expanded="true"] .pa-x{transform:rotate(45deg)}
+.pap-frise{display:flex;flex-direction:column;gap:8px}
+.pf-l{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:8px 2px 0;display:flex;gap:8px;align-items:baseline}
+.pf-l em{font-style:normal;font-weight:600;letter-spacing:0;text-transform:none}
+.pf-l.late{color:var(--late)}.pf-l.soon{color:#C97A00}
+:root[data-theme="dark"] .pf-l.soon{color:#FFC94A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pf-l.soon{color:#FFC94A}}
+.pap-frise .bd-doc{background:var(--surface);border-radius:16px;box-shadow:0 2px 0 var(--shadow);border:0;border-left:4px solid var(--bc);padding:11px 12px;align-items:center}
+.pap-frise .bd-ft{width:34px;height:40px}
+.pap-frise .bd-db b{font-size:14.5px}
+.pf-cat{font-weight:700;color:color-mix(in srgb,var(--bc) 60%,var(--ink))}
+.pf-who{display:inline-flex;align-items:center;gap:4px;color:var(--muted)}
+.pf-days{flex:none;font-size:12px;font-weight:800;padding:4px 9px;border-radius:999px;background:var(--late-bg);color:var(--late)}
+.pf-days.soon{background:var(--soon-bg);color:var(--soon)}
+.pap-frise .bd-none{padding:18px;text-align:center;color:var(--muted);background:var(--surface);border-radius:16px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2306,7 +2337,10 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
   <!-- DOCUMENTS -->
   <section class="view" data-view="documents" hidden>
     <div class="seg viewseg" role="group" aria-label="Foyer"><button type="button" data-go="foyer" aria-pressed="false">Tâches</button><button type="button" data-go="courses" aria-pressed="false">Courses</button><button type="button" data-go="repas" aria-pressed="false">Repas</button><button type="button" data-go="documents" aria-pressed="true">Papiers</button><button type="button" data-go="maison" aria-pressed="false">Maison</button></div>
-    <form class="quick" id="docForm" autocomplete="off">
+    <div id="papHero"></div>
+    <label class="pap-search" for="papQ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg><input type="search" id="papQ" placeholder="Chercher : bail, mutuelle, carte grise…" aria-label="Chercher un papier" autocomplete="off" enterkeyhint="search"></label>
+    <button type="button" class="pap-add" id="papAdd" aria-expanded="false"><span class="pa-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v9A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.6"/></svg></span><span class="pa-t"><b>Ranger un papier</b><small>Photo, PDF, ou juste une date à ne pas oublier</small></span><span class="pa-x" aria-hidden="true">+</span></button>
+    <form class="quick" id="docForm" autocomplete="off" hidden>
       <div class="quick-row">
         <input type="text" id="dTitle" placeholder="Nom du document : bail, carte grise, contrat box…" aria-label="Nom du document" required>
         <button class="btn" type="submit" id="dSubmit">Ranger</button>
@@ -3112,60 +3146,52 @@ function renderDocPour(){
   const opts=[["foyer","Foyer",null]].concat(membres().map(m=>[m.id,m.id===me?"Moi":m.nom,m.id]));
   for(const [v,l,id] of opts) w.append(el("button",{type:"button",class:"pchip","aria-pressed":String(S.docPour===v),onclick:()=>{ S.docPour=v; renderDocPour(); updConsent(); }},id?avatar(id,20):"",l));
 }
+function docRow(d,showWho){
+  const me=meId(), c=catOf(d.cat||"documents");
+  const row=el("div",{class:"bd-doc","data-key":"documents:"+d.id,style:"--bc:"+(c.c||"#A9B4C2")});
+  const ft=el("span",{class:"bd-ft",text:d.fichierType==="PDF"?"PDF":d.fichierType?"IMG":"—"});
+  const meta=el("div",{class:"bd-meta"},el("span",{class:"pf-cat",text:c.nom}));
+  if(showWho){ const o=d.pour||"foyer"; meta.append(o==="foyer"?el("span",{class:"pf-who",text:"Foyer"}):el("span",{class:"pf-who"},avatar(o,16),o===me?"Moi":membre(o).nom)); }
+  if(d.expire){ const n=daysTo(d.expire); meta.append(el("span",{class:"due"+(n<0?" late":n<=30?" soon":""),text:(n<0?"Expiré · ":"Expire ")+fmtDue(d.expire)})); }
+  const body=el("div",{class:"bd-db"},el("b",{text:d.titre}),d.note?el("p",{text:d.note}):"",meta);
+  row.append(ft,body);
+  if(d.expire){ const n=daysTo(d.expire); if(n<=90) row.append(el("span",{class:"pf-days"+(n<0||n<=30?"":" soon"),text:n<0?"expiré":n===0?"aujourd'hui":n<=60?n+" j":Math.round(n/30)+" mois"})); }
+  const acts=el("div",{class:"bd-acts"});
+  if(d.assetId){ const o=hostedRef(d.assetId)?el("button",{type:"button",class:"bd-eye","aria-label":"Voir "+d.titre,title:"Voir",onclick:e=>{ e.preventDefault(); e.stopPropagation(); openFile(d.assetId); }}):el("a",{class:"bd-eye",href:imgUrl(d.assetId),target:"_blank",rel:"noopener","aria-label":"Voir "+d.titre,title:"Voir"}); o.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 5C6.5 5 2.7 9.2 1.5 11.1a1.7 1.7 0 0 0 0 1.8C2.7 14.8 6.5 19 12 19s9.3-4.2 10.5-6.1a1.7 1.7 0 0 0 0-1.8C21.3 9.2 17.5 5 12 5Z"/><circle cx="12" cy="12" r="4" fill="var(--eyebg)"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>'; acts.append(o); }
+  if(!S.readOnly&&meId()) acts.append(el("button",{class:"more",type:"button","aria-label":"Supprimer "+d.titre,text:"×",onclick:()=>softDelete([{key:"documents:"+d.id,arr:"docs",item:d,run:()=>delDoc(d)}],"Document « "+esc(d.titre)+" » supprimé.")}));
+  row.append(acts); return row;
+}
 function renderDocs(){
   renderDocPour(); fillDocCats();
   const me=meId(), f=$("docFilter"); f.innerHTML="";
   const owners=[...new Set(S.docs.map(d=>d.pour||"foyer"))].sort((a,b)=>a==="foyer"?-1:b==="foyer"?1:a===me?-1:b===me?1:membre(a).nom<membre(b).nom?-1:1);
   const ownerName=o=>o==="foyer"?"Foyer":o===me?"Moi":membre(o).nom;
+  if(S.docWho&&!owners.includes(S.docWho)) S.docWho=null;
   f.hidden=owners.length<2; f.className="seg docwho";
   if(owners.length>1){ f.append(el("button",{type:"button","aria-pressed":String(!S.docWho),text:"Tous",onclick:()=>{ S.docWho=null; renderDocs(); }}));
     for(const o of owners) f.append(el("button",{type:"button","aria-pressed":String(S.docWho===o),onclick:()=>{ S.docWho=S.docWho===o?null:o; renderDocs(); }},o!=="foyer"?avatar(o,18):"",ownerName(o))); }
-  if(S.docWho&&!owners.includes(S.docWho)) S.docWho=null;
-  const G0=$("docGrid"); G0.innerHTML=""; G0.className="binders";
-  if(!S.loaded.d){ G0.append(el("div",{class:"empty",text:"Chargement des documents…"})); return; }
-  if(!S.docs.length){ G0.append(el("div",{class:"empty"},el("strong",{text:"Aucun document rangé"}),"Bail, carte grise, contrats d'assurance, garanties : range-les ici avec leur date d'expiration, l'app te le rappellera.")); return; }
-  S.docOpen=S.docOpen||{}; S.docQ=S.docQ||{};
-  for(const own of owners){ if(S.docWho&&S.docWho!==own) continue;
-  const mine=S.docs.filter(d=>(d.pour||"foyer")===own);
-  if(owners.length>1){ const ic=own==="foyer"?(()=>{ const x=el("span",{class:"bd-own-ic"}); x.innerHTML=GI("maison"); return x; })():avatar(own,34);
-    G0.append(el("div",{class:"bd-owner"},ic,el("b",{text:own==="foyer"?"Papiers du foyer":own===me?"Mes papiers":"Papiers "+de(membre(own).nom)}),el("span",{text:mine.length+" papier"+(mine.length>1?"s":"")}))); }
-  const g=G0;
-  const groups={}, CU=docCustom(); for(const d of mine){ const c=(CAT[d.cat]||CU[d.cat])?d.cat:"documents"; (groups[c]=groups[c]||[]).push(d); }
-  const soonOf=ds=>ds.filter(d=>d.expire&&daysTo(d.expire)<=30).length;
-  const order=Object.keys(groups).sort((a,b)=>soonOf(groups[b])-soonOf(groups[a])||groups[b].length-groups[a].length);
-  for(const cid of order){ const c=CAT[cid]||CU[cid], key=own+":"+cid, ds=groups[cid].slice().sort((a,b)=>(b.ajouteLe||0)-(a.ajouteLe||0)), open=!!S.docOpen[key], soon=soonOf(ds), late=ds.filter(d=>d.expire&&daysTo(d.expire)<0).length;
-    const b=el("div",{class:"binder"+(open?" open":""),style:"--bc:"+c.c});
-    const ic=el("span",{class:"bd-ic"}); if(c.perso){ ic.classList.add("perso"); ic.textContent=c.nom.charAt(0).toUpperCase(); } else ic.innerHTML=GI(cid==="voitures"?"voiture":cid);
-    const sub=ds.length+" papier"+(ds.length>1?"s":"")+(late?" · "+late+" expiré"+(late>1?"s":""):soon?" · "+soon+" expire"+(soon>1?"nt":"")+" bientôt":"");
-    const head=el("button",{type:"button",class:"bd-head","aria-expanded":String(open),onclick:()=>{ S.docOpen[key]=!open; renderDocs(); }},ic,
-      el("div",{class:"bd-t"},el("b",{text:c.nom}),el("span",{class:late?"late":soon?"soon":"",text:sub})),
-      el("span",{class:"bd-count",text:String(ds.length)}),
-      (()=>{ const c=el("span",{class:"bd-chev"}); c.innerHTML='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>'; return c; })());
-    b.append(el("span",{class:"bd-memo"}),head);
-    if(!open){ const pv=el("div",{class:"bd-peek"}); for(const d of ds.slice(0,3)) pv.append(el("span",{text:d.titre})); if(ds.length>3) pv.append(el("span",{class:"more",text:"+"+(ds.length-3)})); b.append(pv); }
-    else {
-      const list=el("div",{class:"bd-list"});
-      const draw=()=>{ list.innerHTML=""; const q=(S.docQ[key]||"").trim().toLowerCase();
-        const hits=ds.filter(d=>!q||(d.titre+" "+(d.note||"")).toLowerCase().includes(q));
-        if(!hits.length) list.append(el("div",{class:"bd-none",text:"Aucun papier ne correspond à « "+S.docQ[key]+" »."}));
-        for(const d of hits){
-          const row=el("div",{class:"bd-doc","data-key":"documents:"+d.id});
-          const ft=el("span",{class:"bd-ft",text:d.fichierType==="PDF"?"PDF":d.fichierType?"IMG":"—"});
-          const meta=el("div",{class:"bd-meta"});
-          if(d.expire){ const n=daysTo(d.expire); meta.append(el("span",{class:"due"+(n<0?" late":n<=30?" soon":""),text:(n<0?"Expiré · ":"Expire ")+fmtDue(d.expire)})); }
-          meta.append(el("span",{class:"muted",text:"par "+membre(d.ajoutePar).nom}));
-          const body=el("div",{class:"bd-db"},el("b",{text:d.titre}),d.note?el("p",{text:d.note}):"",meta);
-          row.append(ft,body);
-          const acts=el("div",{class:"bd-acts"});
-          if(d.assetId){ const o=hostedRef(d.assetId)?el("button",{type:"button",class:"bd-eye","aria-label":"Voir "+d.titre,title:"Voir",onclick:e=>{ e.preventDefault(); e.stopPropagation(); openFile(d.assetId); }}):el("a",{class:"bd-eye",href:imgUrl(d.assetId),target:"_blank",rel:"noopener","aria-label":"Voir "+d.titre,title:"Voir"}); o.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 5C6.5 5 2.7 9.2 1.5 11.1a1.7 1.7 0 0 0 0 1.8C2.7 14.8 6.5 19 12 19s9.3-4.2 10.5-6.1a1.7 1.7 0 0 0 0-1.8C21.3 9.2 17.5 5 12 5Z"/><circle cx="12" cy="12" r="4" fill="var(--eyebg)"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>'; acts.append(o); }
-          if(!S.readOnly&&meId()) acts.append(el("button",{class:"more",type:"button","aria-label":"Supprimer "+d.titre,text:"×",onclick:()=>softDelete([{key:"documents:"+d.id,arr:"docs",item:d,run:()=>delDoc(d)}],"Document « "+esc(d.titre)+" » supprimé.")}));
-          row.append(acts); list.append(row); } };
-      if(ds.length>2){ const si=el("input",{type:"search",class:"bd-search",placeholder:"Chercher dans "+c.nom+"…","aria-label":"Chercher dans "+c.nom}); si.value=S.docQ[key]||""; si.addEventListener("input",()=>{ S.docQ[key]=si.value; draw(); }); b.append(el("div",{class:"bd-sw"},si)); }
-      draw(); b.append(list);
-    }
-    g.append(b);
-  }
-  }
+  const H=$("papHero"), G0=$("docGrid"); G0.innerHTML=""; G0.className="pap-frise"; H.innerHTML=""; H.className="";
+  if(!S.loaded.d){ H.hidden=true; G0.append(el("div",{class:"empty",text:"Chargement des documents…"})); return; }
+  // résumé
+  const pool=S.docs.filter(d=>!S.docWho||(d.pour||"foyer")===S.docWho);
+  const due=pool.filter(d=>d.expire&&daysTo(d.expire)<=90), late=due.filter(d=>daysTo(d.expire)<0).length;
+  H.hidden=!S.docs.length;
+  if(due.length){ H.className="warn"; H.append(el("b",{text:due.length+" papier"+(due.length>1?"s":"")+" à renouveler"}),el("span",{text:late?(late===due.length?(late>1?"déjà expirés":"déjà expiré"):"dont "+late+" déjà expiré"+(late>1?"s":"")):"dans les 3 prochains mois"})); }
+  else { const next=pool.filter(d=>d.expire).sort((a,b)=>a.expire<b.expire?-1:1)[0]; H.className="ok";
+    H.append(el("b",{text:"Tout est à jour"}),el("span",{text:pool.length+" papier"+(pool.length>1?"s":"")+" rangé"+(pool.length>1?"s":"")+(next?" · prochain renouvellement : "+next.titre+", "+new Intl.DateTimeFormat("fr-FR",{month:"long",year:"numeric"}).format(parse(next.expire)):"")})); }
+  if(!S.docs.length){ G0.append(el("div",{class:"empty"},el("strong",{text:"Aucun papier rangé"}),"Bail, carte grise, assurances, garanties : range-les ici avec leur date d'expiration, Cocoon te prévient avant.")); return; }
+  // recherche
+  const q=norm(($("papQ")&&$("papQ").value)||"").trim();
+  const hay=d=>norm([d.titre,d.note||"",catOf(d.cat||"documents").nom,ownerName(d.pour||"foyer")].join(" "));
+  const list=pool.filter(d=>!q||q.split(/\s+/).every(w=>hay(d).includes(w)));
+  if(!list.length){ G0.append(el("div",{class:"bd-none",text:q?"Aucun papier ne correspond à « "+$("papQ").value.trim()+" ».":"Aucun papier ici."})); return; }
+  // frise : ce qui presse en haut
+  const G=[["late","Expirés",d=>d.expire&&daysTo(d.expire)<0],["soon30","Dans les 30 jours",d=>d.expire&&daysTo(d.expire)>=0&&daysTo(d.expire)<=30],["soon90","Dans les 3 mois",d=>d.expire&&daysTo(d.expire)>30&&daysTo(d.expire)<=90],["later","Plus tard",d=>d.expire&&daysTo(d.expire)>90],["none","Sans date",d=>!d.expire]];
+  const showWho=owners.length>1&&!S.docWho;
+  for(const [k,lab,fn] of G){ let ds=list.filter(fn); if(!ds.length) continue;
+    ds=k==="none"?ds.sort((a,b)=>(b.ajouteLe||0)-(a.ajouteLe||0)):ds.sort((a,b)=>a.expire<b.expire?-1:a.expire>b.expire?1:0);
+    G0.append(el("div",{class:"pf-l"+(k==="late"||k==="soon30"?" late":k==="soon90"?" soon":"")},lab,el("em",{text:"· "+ds.length})));
+    for(const d of ds) G0.append(docRow(d,showWho)); }
 }
 function renderFeed(){
   const ev=[];
@@ -4693,6 +4719,8 @@ function docIsSante(){ const pour=S.docPour||"foyer", m=pour!=="foyer"?membre(po
 function updConsent(){ const box=$("dConsent"); if(!box) return; const h=docIsSante(); box.hidden=!h; if(!h) $("dConsentCk").checked=false;
   const pour=S.docPour||"foyer"; $("dConsentWho").textContent=pour==="foyer"?"tout le foyer":"tout le foyer (rangé dans le classeur de "+(pour===meId()?"toi":membre(pour).nom)+")"; }
 ["dTitle","dNote","dCatNom"].forEach(id=>{ const x=$(id); if(x) x.addEventListener("input",updConsent); }); $("dCat").addEventListener("change",updConsent);
+$("papAdd").addEventListener("click",()=>{ const f=$("docForm"), open=f.hidden; f.hidden=!open; $("papAdd").setAttribute("aria-expanded",String(open)); if(open){ setTimeout(()=>{ $("dTitle").focus(); },60); } });
+$("papQ").addEventListener("input",()=>renderDocs());
 $("docForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||!needMe()) return; const titre=$("dTitle").value.trim(); if(!titre) return;
   updConsent(); const sante=!$("dConsent").hidden;
   if(sante&&!$("dConsentCk").checked){ const b=$("dConsent"); b.classList.remove("need"); void b.offsetWidth; b.classList.add("need"); b.scrollIntoView({behavior:"smooth",block:"center"}); toast("Coche la case pour accepter de garder ce papier de santé, ou ne l'ajoute pas."); return; }
@@ -4714,7 +4742,7 @@ $("docForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||
     S.docOpen=S.docOpen||{}; S.docOpen[(doc.pour||"foyer")+":"+doc.cat]=true;
     if(doc.expire&&daysTo(doc.expire)>1){ const n=daysTo(doc.expire), dd=Math.max(1,n-60), t0=today(); const due=iso(new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+dd));
       try{ await S.db.collection("taches").add({titre:"Renouveler « "+titre+" »",cat:"documents",pour:doc.pour&&doc.pour!=="foyer"?doc.pour:"tous",concerne:null,echeance:due,recur:0,recurMsg:null,fait:false,creePar:meId(),creeLe:Date.now(),suggere:true}); }catch(_){} }
-    $("docForm").reset(); S.dCatC=null; $("dNewCat").hidden=true; fillDocCats(); updConsent(); toast((files.length>1?files.length+" documents rangés dans « "+esc((catNom||catOf(doc.cat).nom))+" »":catNom?"Nouvelle catégorie « "+esc(catNom)+" » créée, document rangé":"Document rangé")+(doc.expire?(daysTo(doc.expire)>1?" · rappel deux mois avant l'expiration":" · expire "+fmtDue(doc.expire)):"")+".");
+    $("docForm").reset(); S.dCatC=null; $("dNewCat").hidden=true; fillDocCats(); updConsent(); $("docForm").hidden=true; $("papAdd").setAttribute("aria-expanded","false"); toast((files.length>1?files.length+" documents rangés dans « "+esc((catNom||catOf(doc.cat).nom))+" »":catNom?"Nouvelle catégorie « "+esc(catNom)+" » créée, document rangé":"Document rangé")+(doc.expire?(daysTo(doc.expire)>1?" · rappel deux mois avant l'expiration":" · expire "+fmtDue(doc.expire)):"")+".");
   }catch(err){ if(err&&err.code==="too_large") toast("Fichier trop lourd (20 Mo max)."); else if(err&&err.code==="unsupported_type") toast("Format non pris en charge : PDF, JPG, PNG ou WebP."); else writeErr(err); }
   finally{ btn.disabled=false; btn.textContent="Ranger"; }
 });
@@ -4778,7 +4806,8 @@ $("sheetBg").addEventListener("click",closeSheet);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("sheet").hidden) closeSheet(); });
 $("sgEquip").addEventListener("click",()=>{ closeSheet(); openMForm("equip"); });
 $("searchBtn").addEventListener("click",openSearch);
-$("sgDoc").addEventListener("click",()=>{ closeSheet(); setTab("documents"); window.scrollTo({top:0}); setTimeout(()=>{ try{ $("dTitle").focus(); }catch(_){} },80); });
+function openDocForm(){ setTab("documents"); window.scrollTo({top:0}); const f=$("docForm"); f.hidden=false; $("papAdd").setAttribute("aria-expanded","true"); setTimeout(()=>{ try{ $("dTitle").focus(); }catch(_){} },80); }
+$("sgDoc").addEventListener("click",()=>{ closeSheet(); openDocForm(); });
 
 { const bh=$("brandHome"); const goHome=()=>{ if(typeof closeNotifs==="function") closeNotifs(); closeSheet(); if(S.tab!=="accueil"){ setTab("accueil"); renderHeader(); } else window.scrollTo({top:0,behavior:"smooth"}); };
   bh.addEventListener("click",goHome); bh.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); goHome(); } }); }
@@ -5340,7 +5369,7 @@ function secLocal(raw){
       return secA(d.titre+(d.expire?(daysTo(d.expire)<0?" a expiré le ":" expire le ")+fmtDue(d.expire)+" ("+dueLabel(d.expire)+").":" : pas de date d'expiration notée.")+(d.note?" Note : "+d.note:""),docs.slice(1,4).map(x=>({t:x.titre+(x.expire?" — expire le "+fmtDue(x.expire):""),go:()=>goDoc(x)})),[{l:"Ouvrir",ghost:true,run:()=>goDoc(d)}]); }
     const exp=S.docs.filter(d=>d.expire&&daysTo(d.expire)<=90).sort((a,b)=>a.expire<b.expire?-1:1);
     if(exp.length) return secA("Les papiers qui expirent dans les 3 mois :",exp.slice(0,6).map(d=>({t:d.titre+" — "+(daysTo(d.expire)<0?"expiré":dueLabel(d.expire)),go:()=>goDoc(d)})));
-    if(!S.docs.length) return secA("Aucun papier rangé pour l'instant. Bail, carte grise, contrats : range-les avec leur date d'expiration et je te préviendrai.",[],[{l:"Ranger un papier",run:()=>{ setTab("documents"); setTimeout(()=>{ try{ $("dTitle").focus(); }catch(_){} },80); }}]);
+    if(!S.docs.length) return secA("Aucun papier rangé pour l'instant. Bail, carte grise, contrats : range-les avec leur date d'expiration et je te préviendrai.",[],[{l:"Ranger un papier",run:()=>{ openDocForm(); }}]);
     return secA("Rien n'expire dans les 3 prochains mois. "+S.docs.length+" papier"+(S.docs.length>1?"s rangés":" rangé")+".");
   }
   // La semaine

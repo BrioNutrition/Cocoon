@@ -30,7 +30,7 @@ async def main():
     # 1. papier avec fichier : référence « sb: » et lien temporaire à l'ouverture
     await pg.click('.tab[data-tab="foyer"]'); await pg.click('.viewseg button[data-go="documents"] >> visible=true'); await pg.wait_for_timeout(200)
     print('mention santé:', await pg.is_visible('.d-sante'))
-    await pg.fill('#dTitle','Carte identité'); await pg.set_input_files('#dFile','../tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(800)
+    await pg.click('#papAdd'); await pg.fill('#dTitle','Carte identité'); await pg.set_input_files('#dFile','../tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(800)
     ref=await pg.evaluate("(__mock.T.cocoon_docs.find(r=>r.path==='documents'&&r.data.assetId)||{data:{}}).data.assetId"); print('référence enregistrée:', ref)
     eye=pg.locator('.bd-eye').first; print('œil = bouton:', await eye.evaluate("e=>e.tagName"))
     async with ctx.expect_page() as np: await eye.click()
