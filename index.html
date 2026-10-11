@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 14:52";</script>
+<script>window.COCOON_BUILD="11/10 15:04";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2125,6 +2125,11 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .d-consent em{font-style:normal;font-weight:700}
 .d-consent.need{animation:dNeed .5s ease 2}
 @keyframes dNeed{50%{border-color:var(--late);box-shadow:0 0 0 3px color-mix(in srgb,var(--late) 25%,transparent)}}
+
+@media (prefers-reduced-motion:no-preference){
+  .boot.quick .bt-logo{animation-duration:.7s}
+  .boot.quick .bt-name span{animation-duration:.5s;animation-delay:calc(.12s + var(--i) * .04s)}
+}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2504,16 +2509,18 @@ const ESPECES=["Chat","Chien","Lapin","Oiseau","Poisson","Rongeur","Autre"];
 const SUGG={adulte:["Téléphone","Pointure","Taille de vêtements","Mutuelle","Plat préféré"],enfant:["École","Classe","Maîtresse / maître","Pointure","Taille de vêtements","Activités","Médecin"],animal:["N° de puce","Vétérinaire","Croquettes","Poids","Assurance animale"]};
 /* Fichiers de la version hébergée : jamais de lien permanent. On demande un lien temporaire (1 h) au moment d'afficher. */
 const SIGNED=new Map(), SIGN_Q=new Set(); let SIGN_T=0;
-const hostedRef=ref=>!!(ref&&S.assets&&S.assets.isRef&&S.assets.isRef(ref));
+try{ const c=JSON.parse(localStorage.getItem("cocoon.signed")||"{}"), now=Date.now(); for(const k in c) if(c[k]&&c[k].exp>now+60000) SIGNED.set(k,c[k]); }catch(_){}
+let SIGN_SAVE=0; const saveSigned=()=>{ clearTimeout(SIGN_SAVE); SIGN_SAVE=setTimeout(()=>{ try{ const o={}, now=Date.now(); SIGNED.forEach((v,k)=>{ if(v.url&&v.exp>now) o[k]=v; }); localStorage.setItem("cocoon.signed",JSON.stringify(o)); }catch(_){} },500); };
+const hostedRef=ref=>!!(ref&&(String(ref).startsWith("sb:")||(S.assets&&S.assets.isRef&&S.assets.isRef(ref))));
 function imgUrl(ref){ if(!ref) return null;
   if(hostedRef(ref)){ const c=SIGNED.get(ref); if(c&&c.exp>Date.now()) return c.url; SIGN_Q.add(ref); if(!SIGN_T) SIGN_T=setTimeout(signFlush,0); return c?c.url:null; }
   return /^(data:|blob:|https?:)/.test(ref)?ref:"/_blob/"+ref; }
-async function signFlush(){ SIGN_T=0; const refs=[...SIGN_Q]; SIGN_Q.clear(); if(!refs.length) return; let o={};
+async function signFlush(){ SIGN_T=0; if(!S.assets||!S.assets.sign){ SIGN_T=setTimeout(signFlush,300); return; } const refs=[...SIGN_Q]; SIGN_Q.clear(); if(!refs.length) return; let o={};
   try{ o=await S.assets.sign(refs)||{}; }catch(_){}
   const now=Date.now(); let got=false;
   for(const r of refs){ if(o[r]){ SIGNED.set(r,{url:o[r],exp:now+50*60*1000}); got=true; } else SIGNED.set(r,{url:(SIGNED.get(r)||{}).url||null,exp:now+5*60*1000}); }
-  if(got) renderAll(); }
-const seedSigned=up=>{ if(up&&up.id&&up.url) SIGNED.set(up.id,{url:up.url,exp:Date.now()+50*60*1000}); };
+  if(got){ saveSigned(); renderAll(); } }
+const seedSigned=up=>{ if(up&&up.id&&up.url){ SIGNED.set(up.id,{url:up.url,exp:Date.now()+50*60*1000}); saveSigned(); } };
 async function openFile(ref){ const w=window.open("","_blank");
   try{ const u=await S.assets.open(ref); if(!u) throw 0; if(w) w.location.href=u; else location.href=u; }
   catch(_){ if(w) w.close(); toast("Ce fichier n'a pas pu être ouvert. Vérifie ta connexion."); } }
@@ -2523,9 +2530,10 @@ async function migrateFiles(){
   S.migBusy=true; const old=r=>hostedRef(r)&&!String(r).startsWith("sb:");
   const jobs=[];
   for(const d of S.docs||[]) if(old(d.assetId)) jobs.push(["documents",d.id,"assetId",d.assetId]);
-  for(const m of S.membresRaw||[]) for(const k of ["photo","banniere"]) if(old(m[k])) jobs.push(["membres",m.id,k,m[k]]);
+  for(const m of S.membresRaw||[]) if(!m.uid||m.uid===S.uid) for(const k of ["photo","banniere"]) if(old(m[k])) jobs.push(["membres",m.id,k,m[k]]);
   for(const p of S.profils||[]) if(p.id===S.uid) for(const k of ["photo","banniere"]) if(old(p[k])) jobs.push(["profils",p.id,k,p[k]]);
-  for(const [col,id,k,ref] of jobs){ try{ const nr=await S.assets.migrate(ref); if(nr&&nr!==ref) await S.db.collection(col).doc(id).update({[k]:nr}); }catch(_){} }
+  if(!navigator.onLine){ S.migBusy=false; return; }
+  for(const [col,id,k,ref] of jobs.slice(0,6)){ await new Promise(r=>(window.requestIdleCallback||setTimeout)(r,{timeout:2000})); try{ const nr=await S.assets.migrate(ref); if(nr&&nr!==ref) await S.db.collection(col).doc(id).update({[k]:nr}); }catch(_){} }
   S.migBusy=false; S.migDone=true; }
 function ageText(m){ if(!m.naissance) return null; const b=parse(m.naissance), t=today(); let mo=(t.getFullYear()-b.getFullYear())*12+(t.getMonth()-b.getMonth()); if(t.getDate()<b.getDate()) mo--; if(mo<0) return null; if(mo<24) return mo+" mois"; return Math.floor(mo/12)+" ans"; }
 function nextBirthday(m){ if(!m.naissance) return null; const b=parse(m.naissance), t=today(); let d=new Date(t.getFullYear(),b.getMonth(),b.getDate()); if(d<t) d=new Date(t.getFullYear()+1,b.getMonth(),b.getDate()); return {date:iso(d),age:d.getFullYear()-b.getFullYear()}; }
@@ -4474,7 +4482,7 @@ function renderBadges(){
   if(urgent&&!S.bellRung){ S.bellRung=true; const b=$("bellBtn"); b.classList.add("ring"); setTimeout(()=>b.classList.remove("ring"),2600); }
   setN("nBudget",(S.abos||[]).filter(a=>a.actif!==false&&(()=>{ const n=subNext(a); return n&&daysTo(n)<=7; })()).length);
 }
-function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; try{ renderAllNowInner(); }catch(e){ console.error(e); } if(S.flip) applyFlip(); if(!S.migDone) setTimeout(migrateFiles,1500); onboardGate(); if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
+function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; try{ renderAllNowInner(); }catch(e){ console.error(e); } if(S.flip) applyFlip(); if(!S.migDone&&!S.migT) S.migT=setTimeout(()=>{ S.migT=0; migrateFiles(); },8000); onboardGate(); if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
 function renderAllNowInner(){
   const v=S.tab;
   renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon();
@@ -6673,7 +6681,7 @@ function bootCheck(){
   const fontsOk=S.fontsOk||t>1800;
   /* 1re ouverture : 2,4 s pour voir toute l'animation. Ensuite : on part dès que c'est prêt (1,35 s mini) ;
      si les points ont eu le temps d'apparaître, on les laisse finir leur vague. */
-  const quick=b.classList.contains("quick"), minT=quick?(t<1500?1350:2950):2400;
+  const quick=b.classList.contains("quick"), minT=quick?(t<1500?950:2950):2400;
   if(!ready||!fontsOk||t<minT){ setTimeout(bootCheck,60); return; }
   S.booted=true; try{ localStorage.setItem("cocoon.bootSeen","1"); }catch(_){}
   b._done=true; requestAnimationFrame(()=>requestAnimationFrame(bootOut));
