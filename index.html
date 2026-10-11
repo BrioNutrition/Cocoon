@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 21:02";</script>
+<script>window.COCOON_BUILD="11/10 22:04";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1970,8 +1970,10 @@ html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior
 .wk-dots i.on{background:#3CC37A;opacity:1}
 .wk-dots i.late{background:#FF7A5C;opacity:1}
 .wk-d.now .wk-dots i{background:rgba(255,255,255,.75);opacity:1}
-.wk-d.now .wk-dots i.on{background:#2FB56C;box-shadow:0 0 0 1.5px #fff}
-.wk-d.now .wk-dots i.late{background:#E5484D;box-shadow:0 0 0 1.5px #fff}
+.wk-d.now .wk-dots i.on,.wk-d.now .wk-dots i.late{width:10px;height:10px;box-sizing:border-box;border:2px solid #fff;margin:-1.5px 0}
+.wk-d.now .wk-dots i.on{background:#2FB56C}
+.wk-d.now .wk-dots i.late{background:#E5484D}
+.wk-dots{align-items:center}
 .wk-card .wk-sub{border-top:0;padding-top:0;margin-top:4px}
 .b-curve .acc-dot::before,.b-curve .acc-dot::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #FF9C80;opacity:0;pointer-events:none}
 @media (prefers-reduced-motion:no-preference){
