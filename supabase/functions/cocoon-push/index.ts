@@ -1,7 +1,7 @@
 // @ts-nocheck
 // Cocoon · notifications sur le téléphone
 // Fonction Supabase « cocoon-push » — à déployer avec « Verify JWT » DÉSACTIVÉ :
-//  - la tâche planifiée (toutes les 15 min) l'appelle avec une clé interne pour les rappels du matin ;
+//  - la tâche planifiée (toutes les 15 min) l'appelle avec une clé interne pour les rappels du matin et du soir (rendez-vous de demain, poubelles) ;
 //  - l'app l'appelle avec le compte connecté pour les événements en direct (courses, tâche confiée, test).
 // Secrets à ajouter (Edge Functions → Secrets) : VAPID_PUBLIC_KEY et VAPID_PRIVATE_KEY.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
@@ -118,7 +118,32 @@ function digestPayload(dg, nudge) {
   }
   return { title: "☀️ Ta journée dans le cocon", body: lines.join("\n"), url: "./", tag: "matin" };
 }
-const PREFS0 = { matin: true, heure: "08:00", courses: true, taches: true, nuit: true };
+// Le rappel du soir (vers 19 h) : rendez-vous de demain + poubelles à sortir
+function buildEvening({ shared, mine, moi, today }) {
+  const tomorrow = addDays(today, 1), rdv = [], bins = [];
+  const forMe = (e) => !e.pour || !e.pour.length || !moi || e.pour.includes(moi);
+  for (const e of (shared || []).concat(mine || [])) {
+    const id = String(e.uid || ""), t = String(e.titre || "").trim(); if (!t) continue;
+    if (id.startsWith("r-")) { if (e.date === tomorrow && forMe(e)) rdv.push(t); continue; }
+    if (id.startsWith("bin-")) {
+      if (e.tourDe && moi && e.tourDe !== moi) continue;
+      if (!e.tourDe && !forMe(e)) continue;
+      const nm = t.replace(/^Sortir la poubelle : /, "").replace(/ \(chacun son tour\)$/, "");
+      if (e.time === "193000" && occursOn(e, today)) bins.push({ nm, quand: "ce soir", tour: !!e.tourDe });
+      else if (e.time !== "193000" && occursOn(e, tomorrow)) bins.push({ nm, quand: "demain matin", tour: !!e.tourDe });
+    }
+  }
+  return { rdv, bins };
+}
+function eveningPayload(ev, P) {
+  const rdv = P.rdv === false ? [] : ev.rdv, bins = P.poubelles === false ? [] : ev.bins, lines = [];
+  for (const b of bins.slice().sort((x, y) => (x.quand === "ce soir" ? 0 : 1) - (y.quand === "ce soir" ? 0 : 1))) lines.push("🗑 " + (b.quand === "ce soir" ? "Ce soir" : "Demain matin") + " : sortir " + b.nm + (b.tour ? " (c'est ton tour)" : ""));
+  for (const r of rdv.slice(0, 4)) lines.push("📅 Demain · " + r);
+  if (!lines.length) return null;
+  const title = rdv.length && bins.length ? "🌙 Pour ce soir et demain" : rdv.length ? (rdv.length > 1 ? "📅 " + rdv.length + " rendez-vous demain" : "📅 Rendez-vous demain") : bins.length > 1 ? "🗑 Poubelles à sortir" : "🗑 Poubelle à sortir";
+  return { title, body: lines.join("\n"), url: "./", tag: "soir" };
+}
+const PREFS0 = { matin: true, heure: "08:00", courses: true, taches: true, nuit: true, rdv: true, poubelles: true };
 const prefsOf = (p) => Object.assign({}, PREFS0, p || {});
 const hm = (s) => { const m = /^(\d{1,2}):(\d{2})$/.exec(s || ""); return m ? +m[1] * 60 + +m[2] : 480; };
 // ---------- FIN CORE ----------
@@ -165,8 +190,21 @@ async function tick() {
   let sent = 0;
   for (const k of Object.keys(users)) {
     const [uid, foyer] = k.split("|"), list = users[k], P = prefs[uid] || prefsOf(null);
-    if (!P.matin) continue;
     const L = localNow(list[0].tz, now), H = hm(P.heure);
+    const soir = (P.rdv || P.poubelles) && L.min >= 19 * 60 && L.min < 20 * 60;
+    if (soir && (await once(uid, "soir", L.date))) {
+      if (!cache[foyer]) {
+        const [cal, rep, mem] = await Promise.all([
+          admin.from("cocoon_cal").select("owner,events,moi").eq("foyer", foyer),
+          foyerDocs(foyer, "repas"), membresOf(foyer)]);
+        cache[foyer] = { cal: cal.data || [], repas: Object.fromEntries(rep.map((r) => [r.id, r.data])), mem };
+      }
+      const C = cache[foyer], shared = C.cal.find((r) => r.owner === "foyer"), mine = C.cal.find((r) => r.owner === uid);
+      const moi = (mine && mine.moi) || C.mem.byUid[uid] || null;
+      const pl = eveningPayload(buildEvening({ shared: shared && shared.events, mine: mine && mine.events, moi, today: L.date }), P);
+      if (pl) sent += await deliver(list, pl);
+    }
+    if (!P.matin) continue;
     if (L.min < H || L.min >= H + 60) continue;
     if (!(await once(uid, "matin", L.date))) continue;
     if (!cache[foyer]) {
@@ -223,7 +261,8 @@ async function event(me, body) {
       digestPayload(dg, true) || digestPayload({ hasItems: false, lines: [] }, true),
       dg.hasItems ? digestPayload({ hasItems: false, lines: [] }, true) : null,
       { title: "🛒 " + autre + " part faire les courses", body: "Ajoute vite ce qui manque : ça apparaît en direct sur son téléphone.", url: "./#courses", tag: "courses" },
-      { title: "📌 " + autre + " t'a confié une tâche", body: "Sortir les poubelles · aujourd'hui", url: "./", tag: "tache" }
+      { title: "📌 " + autre + " t'a confié une tâche", body: "Sortir les poubelles · aujourd'hui", url: "./", tag: "tache" },
+      eveningPayload(buildEvening({ shared: sh && sh.events, mine: mi && mi.events, moi, today: L.date }), prefsOf(null)) || { title: "🌙 Pour ce soir et demain", body: "🗑 Ce soir : sortir Recyclage (c'est ton tour)\n📅 Demain · 10h30 · Dentiste", url: "./", tag: "soir" }
     ].filter(Boolean);
     let n = 0;
     for (let i = 0; i < list.length; i++) {
