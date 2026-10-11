@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 11:51";</script>
+<script>window.COCOON_BUILD="11/10 12:08";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2117,6 +2117,14 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .cgu .btn.big{width:100%;padding:16px;font-size:17px;border-radius:18px;background:linear-gradient(100deg,#FFC94A,#FF9C80 55%,#E79ADB);color:#1C1B2E;border:0}
 .cgu .btn.big:disabled{background:var(--au-glass);color:var(--au-sub);border:1px solid var(--au-line)}
 .cgu-note{font-size:12.5px;color:var(--au-sub);text-align:center;margin:-4px 0 0}
+
+.d-consent{display:flex;gap:10px;align-items:flex-start;background:color-mix(in srgb,#7FCDB9 18%,var(--surface));border:1.5px solid color-mix(in srgb,#7FCDB9 55%,transparent);border-radius:14px;padding:11px 12px;font-size:13px;line-height:1.45;color:var(--ink);cursor:pointer}
+.d-consent[hidden]{display:none}
+.d-consent input{flex:none;width:20px;height:20px;margin:1px 0 0;accent-color:#2E9E5B}
+.d-consent b{display:block;font-size:13.5px;margin-bottom:1px}
+.d-consent em{font-style:normal;font-weight:700}
+.d-consent.need{animation:dNeed .5s ease 2}
+@keyframes dNeed{50%{border-color:var(--late);box-shadow:0 0 0 3px color-mix(in srgb,var(--late) 25%,transparent)}}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2301,7 +2309,8 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
       <div class="newcat" id="dNewCat" hidden><input type="text" id="dCatNom" maxlength="28" placeholder="Nom de la catégorie : Santé, Impôts, Travail…" aria-label="Nom de la nouvelle catégorie"><div class="nc-sw" id="dCatCol" role="radiogroup" aria-label="Couleur du classeur"></div></div>
       <div class="field" id="docPourWrap">Classeur de<div class="pchips" id="docPour"></div></div>
       <textarea id="dNote" placeholder="Note : n° de contrat, où est l'original, qui contacter…" aria-label="Note"></textarea>
-      <p class="d-sante">Papiers de santé (ordonnances, comptes rendus…) : facultatifs. En les ajoutant, tu acceptes qu'ils soient gardés pour ton foyer. N'écris pas ton numéro de sécurité sociale dans les notes.</p>
+      <label class="d-consent" id="dConsent" hidden><input type="checkbox" id="dConsentCk"><span><b>Papier de santé</b> J'accepte que ce papier de santé soit gardé dans Cocoon. Il sera visible par <em id="dConsentWho">tout le foyer</em>, et je peux le supprimer à tout moment. Facultatif : sans cette case, ne l'ajoute pas.</span></label>
+      <p class="d-sante">N'écris jamais ton numéro de sécurité sociale, tes codes ou mots de passe dans les notes.</p>
       <label class="file-in" id="fileWrap" for="dFile">Fichiers (PDF ou photos, 20 Mo max chacun) <input type="file" id="dFile" multiple accept="application/pdf,image/png,image/jpeg,image/webp"></label>
     </form>
     <div class="chips" id="docFilter"></div>
@@ -3089,7 +3098,7 @@ function renderReminders(){
 function renderDocPour(){
   const w=$("docPour"); if(!w) return; w.innerHTML=""; const me=meId(); if(!S.docPour) S.docPour="foyer";
   const opts=[["foyer","Foyer",null]].concat(membres().map(m=>[m.id,m.id===me?"Moi":m.nom,m.id]));
-  for(const [v,l,id] of opts) w.append(el("button",{type:"button",class:"pchip","aria-pressed":String(S.docPour===v),onclick:()=>{ S.docPour=v; renderDocPour(); }},id?avatar(id,20):"",l));
+  for(const [v,l,id] of opts) w.append(el("button",{type:"button",class:"pchip","aria-pressed":String(S.docPour===v),onclick:()=>{ S.docPour=v; renderDocPour(); updConsent(); }},id?avatar(id,20):"",l));
 }
 function renderDocs(){
   renderDocPour(); fillDocCats();
@@ -4662,7 +4671,17 @@ $("quickForm").addEventListener("submit",async e=>{ e.preventDefault(); const v=
   const label=qTargetsLabel().replace(" · une tâche chacun","");
   const res=await Promise.all(targets.map(w=>addTask(Object.assign({where:w,silent:true},base))));
   if(res.every(Boolean)){ toast("« "+esc(base.titre)+" » ajoutée "+label.replace(/^Pour/,"pour")+"."); closeSheet(); resetQuick(); } });
+/* Papiers de santé : accord explicite, demandé seulement quand le papier en est un (pas pour un animal) */
+const SANTE_RE=/sant[eé]|m[eé]dic|ordonnance|vaccin|mutuelle|analyses?\b|radio(graphie)?\b|irm\b|scanner|compte[- ]rendu|h[oô]pita|clinique|docteur|m[eé]decin|kin[eé]|dentiste|dentaire|ophtalmo|orthodont|psy|th[eé]rapie|carte vitale|arr[eê]t (de )?travail|certificat m[eé]dical|grossesse|maternit|handicap|mdph|allergi|traitement|labo(ratoire)?\b|pharmac|lunettes|auditi/i;
+function docIsSante(){ const pour=S.docPour||"foyer", m=pour!=="foyer"?membre(pour):null; if(m&&typeOf(m)==="animal") return false;
+  const sel=$("dCat"), cat=sel?sel.value:"", nom=cat==="__new"?($("dCatNom").value||""):((CAT[cat]||docCustom()[cat]||{}).nom||"");
+  return SANTE_RE.test([$("dTitle").value,nom,$("dNote").value].join(" ").normalize("NFC")); }
+function updConsent(){ const box=$("dConsent"); if(!box) return; const h=docIsSante(); box.hidden=!h; if(!h) $("dConsentCk").checked=false;
+  const pour=S.docPour||"foyer"; $("dConsentWho").textContent=pour==="foyer"?"tout le foyer":"tout le foyer (rangé dans le classeur de "+(pour===meId()?"toi":membre(pour).nom)+")"; }
+["dTitle","dNote","dCatNom"].forEach(id=>{ const x=$(id); if(x) x.addEventListener("input",updConsent); }); $("dCat").addEventListener("change",updConsent);
 $("docForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||!needMe()) return; const titre=$("dTitle").value.trim(); if(!titre) return;
+  updConsent(); const sante=!$("dConsent").hidden;
+  if(sante&&!$("dConsentCk").checked){ const b=$("dConsent"); b.classList.remove("need"); void b.offsetWidth; b.classList.add("need"); b.scrollIntoView({behavior:"smooth",block:"center"}); toast("Coche la case pour accepter de garder ce papier de santé, ou ne l'ajoute pas."); return; }
   const btn=$("dSubmit"); btn.disabled=true; btn.textContent="Envoi…";
   let cat=$("dCat").value, catNom=null, catC=null;
   if(cat==="__new"){ const nm=$("dCatNom").value.trim(); if(!nm){ toast("Donne un nom à ta nouvelle catégorie."); $("dCatNom").focus(); btn.disabled=false; btn.textContent="Ranger"; return; }
@@ -4670,6 +4689,7 @@ $("docForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||
     if(ex) cat=ex.id; else { cat="c-"+nm.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,24)+"-"+Date.now().toString(36).slice(-4); catNom=nm; catC=S.dCatC||DCOLS[0]; } }
   else if(!CAT[cat]){ const cc=docCustom()[cat]; if(cc){ catNom=cc.nom; catC=cc.c; } }
   const doc={titre,pour:S.docPour||"foyer",cat,catNom,catC,expire:$("dExp").value||null,note:$("dNote").value.trim()||null,ajoutePar:meId(),ajouteLe:Date.now(),assetId:null,fichierType:null};
+  if(sante) doc.sante={accordPar:meId(),accordLe:Date.now()};
   try{
     const files=[...$("dFile").files];
     if(files.length&&S.assets){
@@ -4680,7 +4700,7 @@ $("docForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||
     S.docOpen=S.docOpen||{}; S.docOpen[(doc.pour||"foyer")+":"+doc.cat]=true;
     if(doc.expire&&daysTo(doc.expire)>1){ const n=daysTo(doc.expire), dd=Math.max(1,n-60), t0=today(); const due=iso(new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+dd));
       try{ await S.db.collection("taches").add({titre:"Renouveler « "+titre+" »",cat:"documents",pour:doc.pour&&doc.pour!=="foyer"?doc.pour:"tous",concerne:null,echeance:due,recur:0,recurMsg:null,fait:false,creePar:meId(),creeLe:Date.now(),suggere:true}); }catch(_){} }
-    $("docForm").reset(); S.dCatC=null; $("dNewCat").hidden=true; fillDocCats(); toast((files.length>1?files.length+" documents rangés dans « "+esc((catNom||catOf(doc.cat).nom))+" »":catNom?"Nouvelle catégorie « "+esc(catNom)+" » créée, document rangé":"Document rangé")+(doc.expire?(daysTo(doc.expire)>1?" · rappel deux mois avant l'expiration":" · expire "+fmtDue(doc.expire)):"")+".");
+    $("docForm").reset(); S.dCatC=null; $("dNewCat").hidden=true; fillDocCats(); updConsent(); toast((files.length>1?files.length+" documents rangés dans « "+esc((catNom||catOf(doc.cat).nom))+" »":catNom?"Nouvelle catégorie « "+esc(catNom)+" » créée, document rangé":"Document rangé")+(doc.expire?(daysTo(doc.expire)>1?" · rappel deux mois avant l'expiration":" · expire "+fmtDue(doc.expire)):"")+".");
   }catch(err){ if(err&&err.code==="too_large") toast("Fichier trop lourd (20 Mo max)."); else if(err&&err.code==="unsupported_type") toast("Format non pris en charge : PDF, JPG, PNG ou WebP."); else writeErr(err); }
   finally{ btn.disabled=false; btn.textContent="Ranger"; }
 });
@@ -5466,7 +5486,7 @@ function openPrivacy(){
     ul("Ton adresse e-mail de connexion"+(hosted?"":" (gérée par Claude)"),"Les profils du foyer : prénoms, dates de naissance, photos, couleurs","Les tâches, rappels, rendez-vous, courses, repas","Les papiers : titre, date d'expiration, note, et les fichiers que tu ajoutes","Le budget : dépenses, abonnements, crédits, qui doit quoi","Tes préférences (thème, couleurs, secrétaire) et, si tu les actives, les notifications de ce téléphone"),
     h3("Pourquoi"),
     p("Uniquement pour faire fonctionner Cocoon pour ton foyer : te rappeler les choses, partager l'organisation, calculer le budget. Pas de publicité, pas de revente, pas de pistage."),
-    p("Les papiers de santé sont facultatifs : en les ajoutant, tu acceptes qu'ils soient gardés pour ton foyer, et tu peux les supprimer à tout moment."),
+    p("Les papiers de santé (ordonnances, comptes rendus, mutuelle…) sont facultatifs. Cocoon ne les garde que si tu coches la case d'accord qui apparaît quand tu en ajoutes un ; la date de ton accord est notée avec le papier. Tu peux les supprimer à tout moment, ce qui retire aussi ton accord."),
     h3("Qui y a accès"),
     ul("Les membres de ton foyer voient les données communes ; ton espace perso n'est visible que par toi",hosted?"Les fichiers ne sont jamais publics : ils s'ouvrent avec un lien qui expire au bout de quelques minutes, réservé aux membres connectés":"Les fichiers ne sont visibles que par les personnes qui ont accès à cette page",hosted?"Notre hébergeur, Supabase, stocke les données pour nous"+(C.regionUE?", sur des serveurs en Europe":"")+", sans pouvoir les utiliser pour lui":"Anthropic, qui héberge Claude et cette page"),
     h3("Combien de temps"),
