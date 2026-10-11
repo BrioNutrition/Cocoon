@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 23:34";</script>
+<script>window.COCOON_BUILD="12/10 00:08";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2307,6 +2307,8 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .td-row:active{opacity:.6}
 .td-calm{margin:0 0 6px;color:var(--muted);font-size:14px}
 .bd-meta:empty{display:none}
+
+#secDay{display:none}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2368,7 +2370,6 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
   <!-- AUJOURD'HUI -->
   <section class="view" data-view="accueil">
     <div id="todayCard" class="jr-card" hidden></div>
-    <div id="motCard"></div>
     <div id="recapCard" class="recap" hidden></div>
     <div id="setupCard" hidden></div>
     <div class="sec-day" id="secDay" aria-hidden="true"></div>
@@ -2805,7 +2806,7 @@ $("dCat").addEventListener("change",()=>{ renderNewCat(); if($("dCat").value==="
 function renderHeader(){
   $("foyerName").textContent=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
   { const ht=$("homeTitle"); ht.innerHTML=""; const fam=(S.foyerNom||"").trim().replace(/^(la famille|famille|les)\s+/i,"");
-    if(fam){ ht.append("Aujourd'hui dans la famille\u00A0",el("span",{class:"fam",text:fam})); } else ht.append("Aujourd'hui",el("br"),"dans ton cocon"); }
+    if(fam){ ht.append("Chez les\u00A0",el("span",{class:"fam",text:fam})); } else ht.append("Chez toi,",el("br"),"dans ton cocon"); }
   const me=meId(), box=$("members"); box.innerHTML="";
   if(isAdmin()&&!S.readOnly){ const r=el("span",{class:"ring"}); r.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
     box.append(el("button",{type:"button",class:"story add","aria-label":"Ajouter un membre",onclick:openInvite},r,el("span",{class:"sn",text:"Ajouter"}))); }
@@ -3415,9 +3416,8 @@ function renderToday(){ const w=$("todayCard"); if(!w) return; w.innerHTML=""; c
   for(const m of membres()){ const nb=nextBirthday(m); if(nb&&nb.date===t0) row("🎂","Anniversaire "+de(m.nom),null,()=>openProfile(m.id)); }
   const dz=S.docs.filter(d=>d.expire&&daysTo(d.expire)>=0&&daysTo(d.expire)<=7);
   if(dz.length) row("📄",dz.length>1?dz.length+" papiers expirent cette semaine":dz[0].titre+" expire "+dueLabel(dz[0].expire),null,go("documents"));
-  const d=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(today());
   w.hidden=false; w.className="jr-card";
-  w.append(el("div",{class:"td-h"},el("b",{text:"Aujourd'hui"}),el("span",{text:d})));
+  w.append(el("div",{class:"td-h"},el("b",{text:"Aujourd'hui"})));
   if(rows.length) w.append(...rows.slice(0,6));
   else w.append(el("p",{class:"td-calm",text:"Journée calme : rien de prévu pour toi aujourd'hui."}));
 }
@@ -4763,7 +4763,7 @@ function renderAllNowInner(){
   const v=S.tab;
   renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon();
   if(S.pendingWizard&&meM()&&S.configLoaded){ S.pendingWizard=false; openWizard(isAdmin()&&!(S.config&&S.config.qFait)?"foyer":"perso"); }
-  if(v==="accueil"){ renderToday(); renderMot(); renderRecap(); renderSetupCard(); renderSecretary(); renderRdv(); renderWeek(); renderFridge(); renderAccBudget(); renderAccWho(); }
+  if(v==="accueil"){ renderToday(); renderRecap(); renderSetupCard(); renderSecretary(); renderRdv(); renderWeek(); renderFridge(); renderAccBudget(); renderAccWho(); }
   else if(v==="moi"){ renderMine(); renderCars(); renderPremium(); renderSettings(); }
   else if(v==="recherche") renderSearch();
   else if(v==="foyer") renderFoyer();
@@ -5985,8 +5985,6 @@ function secHowTo(raw){
     return T("Pour la maison :",["Va dans Foyer › Maison.","Ajoute tes équipements (chaudière, VMC…) : je calcule les prochains entretiens.","Dans Compteurs, note tes relevés pour suivre ta consommation."],{l:"Ouvrir la maison",ghost:true,run:cocoGo("maison")});
   if(has("inviter","membre","ajouter quelqu","emma","coloc","enfant","animal"))
     return T("Pour ajouter quelqu'un au foyer :",["Sur l'accueil, touche le rond « + Ajouter » à côté des membres.","Choisis adulte, enfant ou animal et donne un prénom.","Pour un adulte, indique son e-mail : il reçoit une invitation pour rejoindre le foyer."],{l:"Ajouter un membre",run:()=>openInvite()});
-  if(has("mot du foyer","post it","post-it","laisser un mot","message"))
-    return T("Pour laisser un mot au foyer :",["Sur l'accueil, touche « + Laisser un mot au foyer ».","Écris ton message, choisis la couleur et combien de jours il reste affiché.","Tout le foyer le voit en haut de l'accueil."],{l:"Laisser un mot",run:()=>{ setTab("accueil"); window.scrollTo({top:0}); S.motForm={jours:3,couleur:"jaune"}; renderMot(); }});
   if(has("notif"))
     return T("Pour les notifications :",["Va dans Moi, rubrique Notifications.","Active-les et choisis ce que tu veux recevoir : rappel du matin, courses, tâches confiées.","Le silence de nuit évite d'être dérangé le soir."],{l:"Ouvrir mon espace",ghost:true,run:cocoGo("moi")});
   if(has("theme","sombre","clair","couleur"))
