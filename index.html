@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="12/10 00:20";</script>
+<script>window.COCOON_BUILD="12/10 00:35";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2337,6 +2337,12 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .td-now s{position:absolute;left:-58px;top:-8px;width:36px;text-align:right;text-decoration:none;font-size:11.5px;font-weight:800;color:#E0A100}
 .td-x{display:flex;align-items:center;gap:9px;border:0;background:none;padding:2px 0;font:inherit;font-size:13.5px;font-weight:600;color:var(--ink);text-align:left;cursor:pointer}
 .td-x i{font-style:normal}
+
+/* Carte « Ta journée » : semaine + frise */
+.jr-card .week{background:none;box-shadow:none;padding:0;border-radius:0;gap:8px}
+.td-body{display:flex;flex-direction:column;gap:10px}
+.td-body:empty{display:none}
+#dayCard .wk-leg{margin-top:0}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2397,7 +2403,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 
   <!-- AUJOURD'HUI -->
   <section class="view" data-view="accueil">
-    <div id="todayCard" class="jr-card" hidden></div>
+    <div class="jr-card" id="dayCard" hidden><div class="td-h" id="dayHead"></div><div class="week" id="week"></div><div class="td-body" id="todayCard"></div></div>
     <div id="recapCard" class="recap" hidden></div>
     <div id="setupCard" hidden></div>
     <div class="sec-day" id="secDay" aria-hidden="true"></div>
@@ -2413,8 +2419,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
       </form>
       <div class="sec-chips" id="secChips"></div>
     </div>
-    <div class="sub wk-card" id="fridgeWrap">
-      <div class="week" id="week"></div>
+    <div class="sub wk-card" id="fridgeWrap" hidden>
       <div class="wk-sub"><span id="fridgeDay">Aujourd'hui</span><span class="muted" id="fridgeCount"></span></div>
       <div class="list fridge" id="fridge"></div>
     </div>
@@ -3421,16 +3426,16 @@ function monthEst(){
   return {tot,est:tot||up?Math.round(tot+up+rest):null,nm:new Intl.DateTimeFormat("fr-FR",{month:"long"}).format(t)}; }
 const eurR=v=>money(Math.round(v/100)*100).replace(/,00\s?€/," €");
 /* Aujourd'hui : la frise de la journée (dans l'ordre des heures, avec un repère « maintenant ») */
-function renderToday(){ const w=$("todayCard"); if(!w) return; w.innerHTML=""; const me=meId();
-  if(!S.loaded.t||!me){ w.hidden=true; return; }
-  const t0=iso(today()), N=new Date(), nowM=N.getHours()*60+N.getMinutes();
+function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); if(!w||!C) return; w.innerHTML=""; H.innerHTML=""; const me=meId();
+  if(!S.loaded.t||!me){ C.hidden=true; return; } C.hidden=false;
+  const td=iso(today()), t0=S.wkDay||td, isT=t0===td, N=new Date(), nowM=t0<td?24*60:t0>td?-1:N.getHours()*60+N.getMinutes();
   const go=(tab,sel)=>()=>{ setTab(tab); window.scrollTo({top:0}); if(sel) setTimeout(()=>{ const e=$(sel); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); },90); };
   const hm=h=>{ const m=/^(\d{1,2}):(\d{2})/.exec(h||""); return m?+m[1]*60+ +m[2]:null; }, hl=m=>Math.floor(m/60)+"h"+(m%60?String(m%60).padStart(2,"0"):"");
   const nm=id=>id&&membre(id).nom?(id===me?"toi":membre(id).nom):null;
   // tâches du jour (sans heure) : pastilles à cocher
   const mineT=t=>!t.pour||t.pour==="tous"||t.pour===me||S.perso.includes(t);
-  const open=allTasks().filter(t=>!t.fait&&t.echeance&&t.echeance<=t0&&mineT(t)).sort(sortOpen);
-  const doneT=allTasks().filter(t=>t.fait&&t.echeance===t0&&mineT(t)&&t.faitLe&&iso(new Date(t.faitLe))===t0);
+  const open=allTasks().filter(t=>!t.fait&&t.echeance&&(isT?t.echeance<=t0:t.echeance===t0)&&mineT(t)).sort(sortOpen);
+  const doneT=allTasks().filter(t=>t.fait&&t.echeance===t0&&mineT(t));
   // événements avec une heure
   const ev=[];
   for(const r of (S.rdvs||[])) if(r.date===t0&&!r.fait&&(!r.pour||!r.pour.length||r.pour.includes(me)||r.pour.includes("tous"))){ const m=hm(r.heure);
@@ -3439,17 +3444,17 @@ function renderToday(){ const w=$("todayCard"); if(!w) return; w.innerHTML=""; c
   for(const sl of ["matin","midi","soir"]){ const m=(S.repas||[]).find(r=>r.date===t0&&r.slot===sl&&r.plat); if(!m) continue; const c=nm(m.cuisine), v=nm(m.vaisselle), bits=[];
     if(c) bits.push(c==="toi"?"tu cuisines":c+" cuisine"); if(v) bits.push(v==="toi"?"tu fais la vaisselle":v+" fait la vaisselle");
     ev.push({m:MS[sl][0],h:hl(MS[sl][0]),t:m.plat,s:MS[sl][1]+(bits.length?" · "+bits.join(" · "):""),c:MS[sl][2],end:MS[sl][0]+60,fn:go("repas")}); }
-  for(const b of (S.bins||[])){ const nx=binNext(b); if(!nx||iso(nx.sortie)!==t0) continue; const wh=binWho(b), m=b.veille?19*60+30:7*60+30;
+  for(const b of (S.bins||[])){ const nx=binNext(b,parse(t0)); if(!nx||iso(nx.sortie)!==t0) continue; const wh=binWho(b), m=b.veille?19*60+30:7*60+30;
     ev.push({m,h:hl(m),t:"Sortir "+b.nom.toLowerCase().replace(/^ordures ménagères$/,"les ordures ménagères"),s:wh.label,c:"#7FD39A",end:m+90,fn:()=>{ S.mSec="bins"; go("maison")(); }}); }
   ev.sort((a,b)=>a.m-b.m);
   // à part : anniversaires et papiers qui expirent
   const extra=[];
   for(const m of membres()){ const nb=nextBirthday(m); if(nb&&nb.date===t0) extra.push(["🎂","Anniversaire "+de(m.nom),()=>openProfile(m.id)]); }
-  const dz=S.docs.filter(d=>d.expire&&daysTo(d.expire)>=0&&daysTo(d.expire)<=7);
+  const dz=isT?S.docs.filter(d=>d.expire&&daysTo(d.expire)>=0&&daysTo(d.expire)<=7):S.docs.filter(d=>d.expire===t0);
   if(dz.length) extra.push(["📄",dz.length>1?dz.length+" papiers expirent cette semaine":dz[0].titre+" expire "+dueLabel(dz[0].expire),go("documents")]);
-  w.hidden=false; w.className="jr-card";
-  const tot=open.length+doneT.length;
-  w.append(el("div",{class:"td-h"},el("b",{text:"Aujourd'hui"}),tot?el("span",{text:doneT.length+" / "+tot+" fait"+(doneT.length>1?"s":"")}):null));
+  const tot=open.length+doneT.length, dd=parse(t0), dl=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(dd);
+  const ttl=isT?"Aujourd'hui":t0===iso(new Date(today().getTime()+864e5))?"Demain":t0===iso(new Date(today().getTime()-864e5))?"Hier":dl.charAt(0).toUpperCase()+dl.slice(1);
+  H.append(el("b",{text:ttl}),tot?el("span",{text:doneT.length+" / "+tot+" fait"+(doneT.length>1?"s":"")}):el("span",{text:isT?dl:""}));
   if(open.length||doneT.length){ const pl=el("div",{class:"td-pills"});
     for(const t of open.slice(0,6)){ const late=t.echeance<t0, b=el("button",{type:"button",class:"td-pill"+(late?" late":""),"aria-label":"Marquer « "+t.titre+" » comme fait"},el("i",{"aria-hidden":"true"}),t.titre);
       b.addEventListener("click",async()=>{ if(!S.db||!needMe()) return; b.classList.add("ok"); b.disabled=true; try{ await completeTask(t); toast("✓ « "+esc(t.titre)+" » fait."); }catch(e){ b.classList.remove("ok"); b.disabled=false; writeErr(e); } });
@@ -3458,14 +3463,14 @@ function renderToday(){ const w=$("todayCard"); if(!w) return; w.innerHTML=""; c
     for(const t of doneT.slice(0,3)) pl.append(el("span",{class:"td-pill ok"},el("i",{"aria-hidden":"true"}),t.titre));
     w.append(pl); }
   if(ev.length){ const tl=el("div",{class:"td-tl"}); let placed=false;
-    const nowEl=()=>el("div",{class:"td-now","aria-label":"Maintenant, "+hl(nowM)},el("s",{text:hl(nowM)}),el("hr"));
-    for(const e of ev){ if(!placed&&e.m>nowM){ tl.append(nowEl()); placed=true; }
+    const nowEl=()=>isT?el("div",{class:"td-now","aria-label":"Maintenant, "+hl(nowM)},el("s",{text:hl(nowM)}),el("hr")):null;
+    for(const e of ev){ if(!placed&&e.m>nowM){ const n=nowEl(); if(n) tl.append(n); placed=true; }
       const past=(e.end||e.m)<=nowM;
       tl.append(el("button",{type:"button",class:"td-ev"+(past?" past":""),style:"--c:"+e.c,onclick:e.fn},el("s",{text:e.h}),el("b",{text:e.t}),e.s?el("span",{text:e.s}):null)); }
-    if(!placed) tl.append(nowEl());
+    if(!placed){ const n=nowEl(); if(n) tl.append(n); }
     w.append(tl); }
   for(const [ic,tx,fn] of extra) w.append(el("button",{type:"button",class:"td-x",onclick:fn},el("i",{"aria-hidden":"true",text:ic}),tx));
-  if(!open.length&&!doneT.length&&!ev.length&&!extra.length) w.append(el("p",{class:"td-calm",text:"Journée calme : rien de prévu pour toi aujourd'hui."}));
+  if(!open.length&&!doneT.length&&!ev.length&&!extra.length) w.append(el("p",{class:"td-calm",text:isT?"Journée calme : rien de prévu pour toi aujourd'hui.":"Rien de prévu ce jour-là."}));
 }
 function renderSecretary(){
   { const sd=$("secDay"); if(sd) sd.textContent="Aujourd'hui"; }
@@ -3967,13 +3972,12 @@ function renderWeek(){
   const ws=weekStart(), all=allTasks(), td=iso(today());
   const done=all.filter(t=>t.fait&&t.faitLe>=ws), we=ws+7*864e5;
   const dueWeek=all.filter(t=>!t.fait&&t.echeance&&parse(t.echeance).getTime()<we).length, goal=done.length+dueWeek;
-  w.append(el("div",{class:"wk-top"},el("h2",{text:"Ta semaine"}),el("span")));
   if(!S.wkDay||S.wkDay<iso(new Date(ws))||S.wkDay>=iso(new Date(we))) S.wkDay=td;
   const fr=el("div",{class:"wk-frise",role:"tablist","aria-label":"Jours de la semaine"}), L=["L","M","M","J","V","S","D"];
   for(let i=0;i<7;i++){ const d=new Date(ws); d.setDate(d.getDate()+i); const k=iso(d);
     const ts=all.filter(t=>t.echeance===k||(k===td&&!t.fait&&t.echeance&&t.echeance<td)), dn=ts.filter(t=>t.fait).length;
     const dots=el("span",{class:"wk-dots"}); ts.slice(0,5).forEach((t,j)=>dots.append(el("i",{class:j<dn?"on":(t.echeance<td&&!t.fait?"late":"")})));
-    const b=el("button",{type:"button",role:"tab",class:"wk-d"+(k===td?" now":"")+(k===S.wkDay?" sel":"")+(k<td?" past":""),"aria-selected":String(k===S.wkDay),"aria-label":new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric"}).format(d)+", "+ts.length+" tâche"+(ts.length>1?"s":""),onclick:()=>{ S.wkDay=k; renderWeek(); renderFridge(); }},el("span",{class:"wk-dl",text:L[i]}),el("b",{text:String(d.getDate())}),dots);
+    const b=el("button",{type:"button",role:"tab",class:"wk-d"+(k===td?" now":"")+(k===S.wkDay?" sel":"")+(k<td?" past":""),"aria-selected":String(k===S.wkDay),"aria-label":new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric"}).format(d)+", "+ts.length+" tâche"+(ts.length>1?"s":""),onclick:()=>{ S.wkDay=k; renderWeek(); renderToday(); }},el("span",{class:"wk-dl",text:L[i]}),el("b",{text:String(d.getDate())}),dots);
     fr.append(b); }
   w.append(fr);
   if(fr.querySelector(".wk-dots i")) w.append(el("div",{class:"wk-leg","aria-hidden":"true"},el("span",{},el("i",{class:"on"}),"fait"),el("span",{},el("i"),"à faire"),el("span",{},el("i",{class:"late"}),"en retard")));
@@ -6724,7 +6728,7 @@ function bilanAuto(){
 const TOUR=[
   {sel:".secretary",t:"Voici %N",d:"Ton secrétaire du foyer. Demande-lui « le numéro du véto », « le bilan du mois », ou d'ajouter un rendez-vous, une course, une dépense…"},
   {sel:"#navAdd",t:"Ton réflexe : le +",d:"Une tâche, une course, une dépense, un rendez-vous, un papier : tout s'ajoute d'ici, en un geste, depuis n'importe quel écran."},
-  {sel:"#fridgeWrap",alt:"#rdvWrap",t:"Ta semaine",d:"Tes progrès et tout ce qui approche : entretiens, papiers, poubelles. Coche quand c'est fait."},
+  {sel:"#dayCard",alt:"#rdvWrap",t:"Ta journée",d:"La semaine en un coup d'œil, et ta journée heure par heure : tâches à cocher, rendez-vous, repas, poubelles. Touche un jour pour le voir."},
   {sel:'.tab[data-tab="budget"]',t:"Le Budget",d:"Tes abonnements et factures y sont déjà, avec la courbe du mois et l'estimation de fin de mois."},
   {sel:'.tab[data-tab="foyer"]',t:"Le Foyer",d:"Les tâches, les courses, les repas, les papiers et la maison : poubelles, équipements, contacts utiles. Bonne installation dans ton cocon !"}];
 function startTour(force){
