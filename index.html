@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="11/10 17:48";</script>
+<script>window.COCOON_BUILD="11/10 18:04";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -554,7 +554,7 @@ button,a,input,select,textarea,label,summary,[role="button"]{touch-action:manipu
 .item{transition:box-shadow .15s ease}
 .members,.people,.view{-webkit-overflow-scrolling:touch}
 @media (prefers-reduced-motion:no-preference){
-  .view:not([hidden]){animation:viewIn .18s ease-out}
+  .view:not([hidden]) > :not(.viewseg){animation:viewIn .18s ease-out}
   @keyframes viewIn{from{opacity:0;transform:translateY(6px)}}
 }
 .m-card{background:var(--surface);border-radius:22px;box-shadow:0 2px 0 var(--shadow);padding:14px;display:flex;flex-direction:column;gap:10px}
@@ -1188,7 +1188,7 @@ button.acc-card{cursor:pointer}
 @keyframes doneWk{0%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--d) * -.55)) scale(0)}45%{opacity:1;transform:rotate(var(--a)) translateY(calc(var(--d) * -1)) scale(var(--s))}100%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--d) * -1.2)) scale(0)}}
 @keyframes doneOut{0%,82%{opacity:1;transform:none}100%{opacity:0;transform:scale(.97)}}
 @keyframes chkPop{0%{transform:scale(.55)}100%{transform:scale(1)}}
-body .view:not([hidden]){animation:viewFade .14s ease-out}
+body .view:not([hidden]) > :not(.viewseg){animation:viewFade .14s ease-out}
 @keyframes viewFade{from{opacity:0}}
 .del-x{background:#E5484D;margin-top:1px;box-shadow:0 1px 0 rgba(0,0,0,.08)}
 .item .del-x{order:2;width:30px;height:30px;border-radius:10px;margin:0}
