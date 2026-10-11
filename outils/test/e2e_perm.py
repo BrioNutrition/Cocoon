@@ -42,7 +42,7 @@ async def main():
     print('compte:', (await pg.inner_text('#cxAccount')).replace('\n',' | '))
     await pg.locator('#cxAccount').scroll_into_view_if_needed(); await pg.screenshot(path='../w4.png')
     await pg.click('.tab[data-tab="accueil"]'); await pg.wait_for_timeout(300)
-    await pg.locator('button[aria-label="Voir le profil de Emma"] >> visible=true').first.click(); await pg.wait_for_timeout(400)
+    await pg.locator('button[aria-label="Voir le profil d\'Emma"] >> visible=true').first.click(); await pg.wait_for_timeout(400)
     print('crayon Emma sans compte:', await pg.locator('.pencil-btn >> visible=true').count())
     await pg.evaluate("""(()=>{ const r=__mock.T.cocoon_docs.find(x=>x.path==='membres'&&x.id==='emma'); const n=JSON.parse(JSON.stringify(r)); n.data.uid='emma-uid'; n.updated_by='emma'; __mock.remote(n); })()""")
     await pg.wait_for_timeout(500)

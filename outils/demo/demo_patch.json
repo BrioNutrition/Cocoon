@@ -1,0 +1,177 @@
+[
+ {
+  "before": null,
+  "old": [
+   "<title>Cocoon</title>",
+   "<script>try{var _t=localStorage.getItem(\"cocoon.theme\");if(_t===\"dark\"||_t===\"light\")document.documentElement.dataset.theme=_t;}catch(e){}</script>"
+  ],
+  "new": [
+   "<title>Démo Cocoon</title>"
+  ],
+  "after": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">"
+ },
+ {
+  "before": "}",
+  "old": [],
+  "new": [
+   ".demo-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--soon-bg);border-radius:12px;padding:10px 12px;margin-bottom:16px}",
+   ".demo-bar .label{color:var(--soon)}"
+  ],
+  "after": ".av{overflow:hidden}"
+ },
+ {
+  "before": "/* ===== Questionnaire d'accueil ===== */",
+  "old": [
+   "const APP_URL=\"https://claude.ai/artifact/Xu9LzXYTYJVDHX4aZPyFkN\";"
+  ],
+  "new": [
+   "const APP_URL=\"https://claude.ai/artifact/7tebDVh9kopPojpP9pDoVe\";"
+  ],
+  "after": "const ICO=p=>'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">'+p+'</svg>';"
+ },
+ {
+  "before": "const MAILOK=x=>/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test((x||\"\").trim());",
+  "old": [
+   "const canMail=()=>!!(window.cocoonHost&&cocoonHost.inviteEmail);"
+  ],
+  "new": [
+   "const canMail=()=>!!(window.cocoonHost&&cocoonHost.inviteEmail)||true;"
+  ],
+  "after": "function mailInput(id,val,set){ const em=el(\"input\",{type:\"email\",id,inputmode:\"email\",autocomplete:\"off\",autocapitalize:\"off\",spellcheck:\"false\",placeholder:\"prenom@exemple.fr\"}); em.value=val||\"\"; em.addEventListener(\"input\",()=>set(em.value.trim())); return em; }"
+ },
+ {
+  "before": "async function sendInviteMail(email,nom,id){",
+  "old": [],
+  "new": [
+   "  if(!(window.cocoonHost&&cocoonHost.inviteEmail)){ toast(\"📩 Invitation envoyée à \"+esc(email)+\" (démo : aucun e-mail ne part vraiment).\"); if(id&&S.db) S.db.collection(\"membres\").doc(id).update({inviteEnvoyee:Date.now()}).catch(()=>{}); return; }"
+  ],
+  "after": "  try{ toast(\"Envoi de l'invitation à \"+esc(email)+\"…\"); const r=await cocoonHost.inviteEmail(email,nom);"
+ },
+ {
+  "before": "S.sample=null; S.sampleOff=false; S.secTurns=[]; S.secCtl=null;",
+  "old": [],
+  "new": [
+   "(async()=>{ try{ if(window.claude&&claude.use){ S.downloads=await claude.use(\"downloads\").catch(()=>null); } }catch(_){ S.downloads=null; } })();"
+  ],
+  "after": "(async()=>{ try{ if(window.claude&&claude.use){ S.sample=await claude.use(\"sample\"); if(S.sample){ S.sampleLimits=await S.sample.limits().catch(()=>null); renderSecChips(); renderDocAI(); } } }catch(_){ S.sample=null; } })();"
+ },
+ {
+  "before": "const BULLES=[[\"encre\",\"Foncées\"],[\"theme\",\"Couleur du thème\"],[\"douce\",\"Pastel\"]];",
+  "old": [
+   "function palGet(){ const p=(S.prefs&&S.prefs.palette)||S.palLocal||(()=>{ try{ return JSON.parse(localStorage.getItem(\"cocoon.palette\")||\"null\"); }catch(_){ return null; } })()||{}; return {id:PALS.some(x=>x.id===p.id)?p.id:\"soleil\",bulle:BULLES.some(b=>b[0]===p.bulle)?p.bulle:\"encre\"}; }"
+  ],
+  "new": [
+   "function palGet(){ const p=(S.prefs&&S.prefs.palette)||S.palLocal||{}; return {id:PALS.some(x=>x.id===p.id)?p.id:\"soleil\",bulle:BULLES.some(b=>b[0]===p.bulle)?p.bulle:\"encre\"}; }"
+  ],
+  "after": "function applyPalette(p){ p=p||palGet(); const P=PALS.find(x=>x.id===p.id)||PALS[0], G=\"linear-gradient(135deg,\"+P.g[0]+\",\"+P.g[1]+\" 55%,\"+P.g[2]+\")\";"
+ },
+ {
+  "before": "  const tc=document.getElementById(\"cxTc\"); }",
+  "old": [
+   "function savePalette(p){ S.palLocal=p; try{ localStorage.setItem(\"cocoon.palette\",JSON.stringify(p)); }catch(_){}"
+  ],
+  "new": [
+   "function savePalette(p){ S.palLocal=p;"
+  ],
+  "after": "  if(S.db&&S.uid){ S.prefs=Object.assign({},S.prefs||{},{palette:p}); S.db.doc(\"data/users/\"+S.uid+\"/prefs\").set(S.prefs).catch(()=>{}); } }"
+ },
+ {
+  "before": "/* ---------- Thème clair / sombre ---------- */",
+  "old": [
+   "function applyTheme(v){ const r=document.documentElement; if(v===\"light\"||v===\"dark\") r.dataset.theme=v; else delete r.dataset.theme; try{ localStorage.setItem(\"cocoon.theme\",v||\"auto\"); }catch(_){} }",
+   "function curTheme(){ return (S.prefs&&S.prefs.theme)||(()=>{ try{ return localStorage.getItem(\"cocoon.theme\"); }catch(_){ return null; } })()||\"auto\"; }"
+  ],
+  "new": [
+   "function applyTheme(v){ if(v!==\"light\") v=\"dark\"; /* démo : sombre par défaut */ const r=document.documentElement; if(v===\"light\"||v===\"dark\") r.dataset.theme=v; else delete r.dataset.theme; }",
+   "function curTheme(){ return (S.prefs&&S.prefs.theme)||\"auto\"; }"
+  ],
+  "after": "function setTheme(v){ applyTheme(v); S.prefs=Object.assign({},S.prefs||{},{theme:v}); if(S.db&&S.uid) S.db.doc(\"data/users/\"+S.uid+\"/prefs\").set(S.prefs).catch(()=>{}); }"
+ },
+ {
+  "before": "function setTheme(v){ applyTheme(v); S.prefs=Object.assign({},S.prefs||{},{theme:v}); if(S.db&&S.uid) S.db.doc(\"data/users/\"+S.uid+\"/prefs\").set(S.prefs).catch(()=>{}); }",
+  "old": [
+   "try{ const t=localStorage.getItem(\"cocoon.theme\"); if(t===\"light\"||t===\"dark\") applyTheme(t); }catch(_){}"
+  ],
+  "new": [
+   "/* démo : comme un nouvel utilisateur, le thème suit le téléphone */"
+  ],
+  "after": ""
+ },
+ {
+  "before": "}",
+  "old": [
+   "(async function boot(){",
+   "  if(!window.claude||!window.claude.use){ banner(\"Ouvre cette page depuis Claude pour partager le foyer.\"); S.loaded.t=S.loaded.p=S.loaded.d=true; renderAll(); return; }",
+   "  const [db,user,assets,downloads]=await Promise.all([claude.use(\"db\"),claude.use(\"user\"),claude.use(\"assets\"),Promise.resolve().then(()=>claude.use(\"downloads\")).catch(()=>null)]);",
+   "  S.downloads=downloads||null;",
+   "  S.assets=assets; if(!assets) $(\"fileWrap\").hidden=true;",
+   "  if(!db){ banner(\"Connecte-toi à Claude pour voir et modifier le foyer partagé.\"); S.loaded.t=S.loaded.p=S.loaded.d=true; renderAll(); return; }",
+   "  S.db=db;",
+   "  if(user){ S.isOwner=await user.isOwner(); try{ S.canEdit=(await user.canEdit())!==false; }catch(_){ S.canEdit=true; } S.uid=await user.id(); const w=await user.can(\"data.write\"); if(w===false){ S.readOnly=true; banner(\"Tu peux consulter le foyer mais pas le modifier. Demande à Angel de t'inviter comme Éditeur.\"); } }",
+   "  if(!S.uid){ banner(\"Connecte-toi à Claude pour avoir ton espace perso dans le foyer.\"); S.loaded.p=true; }",
+   "  else { try{ const s=await db.doc(\"data/users/\"+S.uid+\"/moi\").get(); if(s.exists&&s.data().membre) S.legacyMe=s.data().membre; }catch(_){} subscribePerso(); }",
+   "  db.doc(\"foyer/config\").onSnapshot(s=>{ S.config=s.exists?s.data():null; S.foyerNom=(S.config&&S.config.nom)||\"\"; S.configLoaded=true; renderAll(); },()=>{ S.configLoaded=true; });",
+   "  db.collection(\"membres\").onSnapshot(s=>{",
+   "    S.membresRaw=s.docs.map(d=>Object.assign({id:d.id},d.data())); mergeMembres();",
+   "    S.membresLoaded=true; renderAll(); autoClaimLegacy(); autoClaimEmail();",
+   "  },()=>{ S.membresLoaded=true; renderAll(); });",
+   "  db.collection(\"taches\").onSnapshot(s=>{ S.foyer=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),\"taches\"); S.loaded.t=true; renderAll(); },()=>{ S.loaded.t=true; banner(\"Les tâches ne se chargent plus. Recharge la page.\"); renderAll(); });"
+  ],
+  "new": [
+   "/* ---------- DÉMO : base en mémoire, données fictives ---------- */",
+   "(function demoBoot(){",
+   "  const store=new Map(); const listeners=[]; let seq=0;",
+   "  const parent=p=>p.split(\"/\").slice(0,-1).join(\"/\");",
+   "  const snapDoc=(path)=>{ const d=store.get(path); return {id:path.split(\"/\").pop(),exists:!!d,data:()=>d?JSON.parse(JSON.stringify(d)):undefined,metadata:{fromCache:false,hasPendingWrites:false}}; };",
+   "  const snapCol=(path)=>{ const docs=[...store.keys()].filter(k=>parent(k)===path).sort().map(snapDoc); return {docs,size:docs.length,empty:!docs.length,docChanges:()=>[],metadata:{fromCache:false,hasPendingWrites:false}}; };",
+   "  const notify=(path)=>{ for(const l of listeners){ if(l.path===path||l.path===parent(path)) setTimeout(()=>l.cb(l.kind===\"col\"?snapCol(l.path):snapDoc(l.path)),0); } };",
+   "  const docRef=(path)=>({ id:path.split(\"/\").pop(), path,",
+   "    get:async()=>snapDoc(path),",
+   "    set:async(d)=>{ store.set(path,JSON.parse(JSON.stringify(d))); notify(path); },",
+   "    update:async(d)=>{ if(!store.has(path)) throw {code:\"invalid_argument\",message:\"absent\"}; store.set(path,Object.assign({},store.get(path),JSON.parse(JSON.stringify(d)))); notify(path); },",
+   "    delete:async()=>{ store.delete(path); notify(path); },",
+   "    acquire:async()=>({acquired:true}),",
+   "    onSnapshot:(cb)=>{ const l={path,kind:\"doc\",cb}; listeners.push(l); setTimeout(()=>cb(snapDoc(path)),0); return ()=>{ const i=listeners.indexOf(l); if(i>=0) listeners.splice(i,1); }; },",
+   "    collection:(sub)=>colRef(path+\"/\"+sub) });",
+   "  const colRef=(path)=>({ path,",
+   "    doc:(id)=>docRef(path+\"/\"+(id||(\"d\"+Date.now().toString(36)+(seq++)))),",
+   "    add:async(d)=>{ const r=docRef(path+\"/d\"+Date.now().toString(36)+(seq++)); await r.set(d); return r; },",
+   "    get:async()=>snapCol(path),",
+   "    onSnapshot:(cb)=>{ const l={path,kind:\"col\",cb}; listeners.push(l); setTimeout(()=>cb(snapCol(path)),0); return ()=>{ const i=listeners.indexOf(l); if(i>=0) listeners.splice(i,1); }; } });",
+   "  const db={doc:docRef,collection:colRef};",
+   "",
+   "  /* Bandeau démo : chaque ouverture repart de zéro, comme une première installation */",
+   "  const bar=el(\"div\",{class:\"demo-bar\"},el(\"span\",{class:\"label\",text:\"Démo\"}),el(\"span\",{class:\"muted\",style:\"font-size:13px;flex:1;min-width:160px\",text:\"Tu découvres l'app comme lors d'une première installation. Rien n'est enregistré.\"}));",
+   "  document.querySelector(\".wrap\").prepend(bar);",
+   "  try{ applyTheme(\"dark\"); }catch(_){}",
+   "  function resetDemo(){",
+   "    try{ applyTheme(\"auto\"); S.prefs=null; S.palLocal=null; applyPalette(); }catch(_){}",
+   "    store.clear();",
+   "    S.pendingDel.clear(); $(\"secAns\").hidden=true;",
+   "    Object.assign(S,{cocon:[],mercis:[],docPour:\"foyer\",docWho:null,docOpen:{},docQ:{},mots:[],motForm:null,rdvs:[],rdvForm:null,credits:[],crForm:null,crPerson:null,cPour:\"tous\",binForm:null,objForm:null,recapHide:false,bMonth:0,secAns:null,setConfirm:null,exportTxt:null,qWhereAuto:null,bPerson:null,mForm:null,mOpen:null,mMeter:null,bForm:null,forceMe:null,pendingW:null,splashDone:false,flow:false,pendingWizard:false,wiz:null,edit:null,editFinish:false,prefs:null,profil:null,invite:{},newPhoto:null,confirm:null,editing:null,tdraft:null,catF:null,whoF:null,quickWhere:\"tous\"});",
+   "    $(\"wizard\").hidden=true; document.querySelector(\".wrap\").classList.remove(\"wizarding\",\"finishing\");",
+   "    for(const l of listeners.slice()) setTimeout(()=>l.cb(l.kind===\"col\"?snapCol(l.path):snapDoc(l.path)),0);",
+   "    setTab(\"accueil\"); window.scrollTo({top:0}); setTimeout(renderAll,20);",
+   "  }",
+   "",
+   "  S.db=db; S.uid=\"u_moi\"; setTab(\"accueil\");",
+   "  const toData=b=>new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(b); });",
+   "  S.assets={ upload:async(b)=>{ const u=await toData(b); return {id:u,url:u,sizeBytes:b.size,contentType:b.type}; }, delete:async()=>({deleted:true}), list:async()=>({assets:[],usage:{}}) };",
+   "  db.doc(\"foyer/config\").onSnapshot(s=>{ S.config=s.exists?s.data():null; S.foyerNom=(S.config&&S.config.nom)||\"\"; S.configLoaded=true; renderAll(); });",
+   "  db.collection(\"membres\").onSnapshot(s=>{ S.membresRaw=s.docs.map(d=>Object.assign({id:d.id},d.data())); mergeMembres(); S.membresLoaded=true; renderAll(); });",
+   "  db.collection(\"taches\").onSnapshot(s=>{ S.foyer=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),\"taches\"); S.loaded.t=true; renderAll(); });"
+  ],
+  "after": "  db.collection(\"profils\").onSnapshot(s=>{ S.profils=s.docs.map(d=>Object.assign({id:d.id},d.data())); mergeMembres(); S.profilsLoaded=true; renderAll(); },()=>{ S.profilsLoaded=true; renderAll(); });"
+ },
+ {
+  "before": "  db.collection(\"abonnements\").onSnapshot(s=>{ S.abos=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),\"abonnements\"); renderAll(); },()=>{});",
+  "old": [
+   "  db.collection(\"documents\").onSnapshot(s=>{ S.docs=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),\"documents\"); S.loaded.d=true; renderAll(); },()=>{ S.loaded.d=true; renderAll(); });"
+  ],
+  "new": [
+   "  db.collection(\"documents\").onSnapshot(s=>{ S.docs=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),\"documents\"); S.loaded.d=true; renderAll(); });",
+   "  subscribePerso();"
+  ],
+  "after": "})();"
+ }
+]
