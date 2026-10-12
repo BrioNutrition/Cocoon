@@ -33,8 +33,10 @@ async def main():
     await pg.click('#papAdd'); await pg.fill('#dTitle','Carte identité'); await pg.set_input_files('#dFile','../tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(800)
     ref=await pg.evaluate("(__mock.T.cocoon_docs.find(r=>r.path==='documents'&&r.data.assetId)||{data:{}}).data.assetId"); print('référence enregistrée:', ref)
     eye=pg.locator('.bd-eye').first; print('œil = bouton:', await eye.evaluate("e=>e.tagName"))
-    async with ctx.expect_page() as np: await eye.click()
+    await eye.click(); await pg.wait_for_selector('.vw'); print('visionneuse ouverte:', await pg.is_visible('.vw'))
+    async with ctx.expect_page() as np: await pg.click('.vw-bar .vw-b[aria-label^="Ouvrir"]')
     w=await np.value; await w.wait_for_timeout(300); print('lien ouvert:', w.url[:120]); await w.close()
+    await pg.click('.vw-bar .vw-b[aria-label="Fermer"]'); await pg.wait_for_timeout(300)
     # 2. migration d'un ancien lien permanent
     res=await pg.evaluate("""async()=>{ const a=await window.claude.use('assets'); const up=await a.upload(new Blob(['x'],{type:'image/png'}),{type:'image/png'}); const p=up.id.slice(3);
       const old='https://mock.supabase.co/storage/v1/object/sign/cocoon/'+p+'?token=10ans'; const nr=await a.migrate(old);

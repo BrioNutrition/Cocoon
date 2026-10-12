@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="12/10 09:22";</script>
+<script>window.COCOON_BUILD="12/10 09:43";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2379,6 +2379,37 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 :root[data-theme="dark"] .rdv-alert.on button{background:#1A2A22;color:#CFF2DA}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .rdv-alert button{background:#273349;color:#DCE8FF}:root:not([data-theme="light"]) .rdv-alert.on button{background:#1A2A22;color:#CFF2DA}}
 #rdvAlert[hidden]{display:none}
+
+/* Visionneuse */
+html.vw-lock,html.vw-lock body{overflow:hidden}
+.vw{position:fixed;inset:0;z-index:2147483000;background:#0B0A12;color:#EDEBF7;display:flex;flex-direction:column;animation:vwIn .18s ease-out}
+.vw.out{animation:vwOut .18s ease-in forwards}
+@keyframes vwIn{from{opacity:0;transform:scale(.98)}}
+@keyframes vwOut{to{opacity:0;transform:scale(.98)}}
+.vw-bar{display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 10px) 12px 10px}
+.vw-t{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center}
+.vw-t b{font-size:15.5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vw-t span{font-size:11.5px;color:#A9A4C7;font-weight:700;letter-spacing:.04em}
+.vw-b{width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
+.vw-b svg{width:20px;height:20px}
+.vw-sc{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;overscroll-behavior:contain;user-select:none;-webkit-user-select:none}
+.vw.zoomed .vw-sc{cursor:grab}
+.vw-in{width:100%;min-height:100%;margin:0 auto;display:flex;flex-direction:column;gap:12px;padding:6px 0 16px;box-sizing:border-box}
+.vw-in.img{justify-content:center}
+.vw-in img{width:100%;height:auto;display:block;-webkit-touch-callout:none;pointer-events:none}
+.vw-page{width:calc(100% - 16px);margin:0 auto;background:#fff;border-radius:4px;box-shadow:0 4px 18px rgba(0,0,0,.4);overflow:hidden}
+.vw-page canvas{width:100%;height:100%;display:block}
+.vw-msg{margin:auto;display:flex;flex-direction:column;align-items:center;gap:14px;color:#A9A4C7;font-size:14px;padding:24px;text-align:center}
+.vw-msg b{color:#EDEBF7;font-size:15px}
+.vw-spin{width:28px;height:28px;border-radius:50%;border:3px solid rgba(255,255,255,.15);border-top-color:#FFC94A;animation:vwSp .8s linear infinite}
+@keyframes vwSp{to{transform:rotate(360deg)}}
+.vw-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 12px)}
+.vw-pg{font-size:13px;color:#A9A4C7;font-weight:700;min-width:80px}
+.vw-zs{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border-radius:999px;padding:3px}
+.vw-zb{width:34px;height:34px;border-radius:50%;border:0;background:none;color:#fff;font-size:20px;font-weight:700;cursor:pointer}
+.vw-z{font-size:12.5px;font-weight:800;min-width:46px;text-align:center}
+.vw-fit{border:0;background:none;color:#FFC94A;font:inherit;font-weight:800;font-size:13.5px;cursor:pointer;min-width:80px;text-align:right}
+.bd-ft.tap{cursor:pointer}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2782,6 +2813,68 @@ async function signFlush(){ SIGN_T=0; if(!S.assets||!S.assets.sign){ SIGN_T=setT
   for(const r of refs){ if(o[r]){ SIGNED.set(r,{url:o[r],exp:now+50*60*1000}); got=true; } else SIGNED.set(r,{url:(SIGNED.get(r)||{}).url||null,exp:now+5*60*1000}); }
   if(got){ saveSigned(); renderAll(); } }
 const seedSigned=up=>{ if(up&&up.id&&up.url){ SIGNED.set(up.id,{url:up.url,exp:Date.now()+50*60*1000}); saveSigned(); } };
+/* ===== Visionneuse de papiers : photo ou PDF, dans l'app, avec zoom ===== */
+let _pdfjsP=null;
+function loadPdfJs(){ if(_pdfjsP) return _pdfjsP;
+  const base=window.cocoonHost?new URL("./pdfjs/",location.href).href:"https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/";
+  _pdfjsP=import(base+"pdf.min.mjs").then(m=>{ const L=m.GlobalWorkerOptions?m:(m.default||m); L.GlobalWorkerOptions.workerSrc=base+"pdf.worker.min.mjs"; return L; }).catch(e=>{ _pdfjsP=null; throw e; });
+  return _pdfjsP; }
+async function fileUrl(ref){ if(hostedRef(ref)) return S.assets&&S.assets.open?await S.assets.open(ref):null; return imgUrl(ref); }
+function openViewer(d){ const ref=d.assetId; if(!ref) return;
+  const isPdf=d.fichierType==="PDF";
+  const ov=el("div",{class:"vw",role:"dialog","aria-modal":"true","aria-label":d.titre});
+  const sc=el("div",{class:"vw-sc"}), inner=el("div",{class:"vw-in"+(isPdf?" pdf":" img")}); sc.append(inner);
+  const msg=el("div",{class:"vw-msg"},el("span",{class:"vw-spin","aria-hidden":"true"}),"Chargement…"); inner.append(msg);
+  const pg=el("span",{class:"vw-pg"}), zl=el("span",{class:"vw-z",text:"100 %"});
+  let z=1, pdf=null, pages=[], url=null, closed=false;
+  const close=()=>{ if(closed) return; closed=true; ov.classList.add("out"); document.documentElement.classList.remove("vw-lock"); document.removeEventListener("keydown",onKey); setTimeout(()=>{ ov.remove(); try{ pdf&&pdf.destroy(); }catch(_){} },180); };
+  const onKey=e=>{ if(e.key==="Escape") close(); };
+  const openOut=()=>{ if(hostedRef(ref)) openFile(ref); else if(url) window.open(url,"_blank","noopener"); };
+  const ob=el("button",{type:"button",class:"vw-b","aria-label":"Ouvrir ou enregistrer le fichier",title:"Ouvrir / enregistrer",onclick:openOut}); ob.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>';
+  const xb=el("button",{type:"button",class:"vw-b","aria-label":"Fermer",onclick:close}); xb.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  const zb=(t,lab,f)=>el("button",{type:"button",class:"vw-zb","aria-label":lab,text:t,onclick:f});
+  ov.append(el("div",{class:"vw-bar"},xb,el("div",{class:"vw-t"},el("b",{text:d.titre}),el("span",{text:isPdf?"PDF":"Photo"})),ob),sc,
+    el("div",{class:"vw-foot"},pg,el("div",{class:"vw-zs"},zb("−","Dézoomer",()=>zoomTo(z/1.5)),zl,zb("+","Zoomer",()=>zoomTo(z*1.5))),el("button",{type:"button",class:"vw-fit",text:"Ajuster",onclick:()=>zoomTo(1)})));
+  document.body.append(ov); document.documentElement.classList.add("vw-lock"); document.addEventListener("keydown",onKey);
+  // zoom : la largeur du contenu suit le zoom, le défilement natif gère le reste
+  const apply=(nz,cx,cy)=>{ nz=Math.max(1,Math.min(6,nz)); if(cx==null){ cx=sc.clientWidth/2; cy=sc.clientHeight/2; }
+    const fx=(sc.scrollLeft+cx)/inner.offsetWidth, fy=(sc.scrollTop+cy)/inner.offsetHeight; z=nz; inner.style.width=(100*z)+"%";
+    sc.scrollLeft=fx*inner.offsetWidth-cx; sc.scrollTop=fy*inner.offsetHeight-cy; zl.textContent=Math.round(z*100)+" %"; ov.classList.toggle("zoomed",z>1.01); };
+  let rt=0; const settle=()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(pdf) renderVisible(true); },220); };
+  const zoomTo=(nz,cx,cy)=>{ apply(nz,cx,cy); settle(); };
+  let p0=null; const pts=new Map();
+  const rel=t=>{ const r=sc.getBoundingClientRect(); return [t.clientX-r.left,t.clientY-r.top]; };
+  sc.addEventListener("touchstart",e=>{ if(e.touches.length===2){ const [a,b]=[e.touches[0],e.touches[1]], [ax,ay]=rel(a), [bx,by]=rel(b); p0={d:Math.hypot(ax-bx,ay-by),z,cx:(ax+bx)/2,cy:(ay+by)/2}; } },{passive:true});
+  sc.addEventListener("touchmove",e=>{ if(p0&&e.touches.length===2){ e.preventDefault(); const [ax,ay]=rel(e.touches[0]), [bx,by]=rel(e.touches[1]); apply(p0.z*Math.hypot(ax-bx,ay-by)/p0.d,(ax+bx)/2,(ay+by)/2); } },{passive:false});
+  sc.addEventListener("touchend",e=>{ if(p0&&e.touches.length<2){ p0=null; settle(); } });
+  let lastTap=0; sc.addEventListener("click",e=>{ const now=Date.now(); if(now-lastTap<320){ const [x,y]=rel(e); zoomTo(z>1.4?1:2.5,x,y); lastTap=0; } else lastTap=now; });
+  sc.addEventListener("wheel",e=>{ if(e.ctrlKey||e.metaKey){ e.preventDefault(); const [x,y]=rel(e); zoomTo(z*Math.exp(-e.deltaY/200),x,y); } },{passive:false});
+  // souris : glisser pour se déplacer quand on a zoomé
+  let drag=null; sc.addEventListener("pointerdown",e=>{ if(e.pointerType!=="mouse"||z<=1.01) return; drag={x:e.clientX,y:e.clientY,l:sc.scrollLeft,t:sc.scrollTop}; sc.setPointerCapture(e.pointerId); });
+  sc.addEventListener("pointermove",e=>{ if(!drag) return; sc.scrollLeft=drag.l-(e.clientX-drag.x); sc.scrollTop=drag.t-(e.clientY-drag.y); });
+  sc.addEventListener("pointerup",()=>{ drag=null; });
+  const fail=t=>{ inner.innerHTML=""; inner.append(el("div",{class:"vw-msg"},el("b",{text:t}),el("button",{type:"button",class:"btn",text:"Ouvrir le fichier",onclick:openOut}))); };
+  // PDF : pages rendues au fur et à mesure, plus nettes quand on zoome
+  const renderPage=async(p)=>{ if(closed) return; const W=Math.min(2600,Math.round(p.box.clientWidth*(window.devicePixelRatio||1)));
+    if(p.busy||p.w>=W*0.9) return; p.busy=true;
+    try{ const page=await pdf.getPage(p.n), v0=page.getViewport({scale:1}), vp=page.getViewport({scale:W/v0.width}), cv=document.createElement("canvas");
+      cv.width=Math.round(vp.width); cv.height=Math.round(vp.height); const ctx=cv.getContext("2d");
+      await page.render({canvasContext:ctx,canvas:cv,viewport:vp}).promise; p.box.querySelector("canvas")?.remove(); p.box.append(cv); p.w=W; }catch(_){ } finally{ p.busy=false; } };
+  const renderVisible=(force)=>{ const r=sc.getBoundingClientRect(); for(const p of pages){ const b=p.box.getBoundingClientRect(); if(b.bottom>r.top-r.height&&b.top<r.bottom+r.height) renderPage(p); } };
+  const updPg=()=>{ if(!pages.length) return; const r=sc.getBoundingClientRect(), mid=r.top+r.height/3; let k=1; for(const p of pages){ if(p.box.getBoundingClientRect().top<=mid) k=p.n; } pg.textContent="Page "+k+" / "+pages.length; };
+  sc.addEventListener("scroll",()=>{ if(pdf){ updPg(); clearTimeout(sc._t); sc._t=setTimeout(()=>renderVisible(false),120); } },{passive:true});
+  (async()=>{
+    try{ url=await fileUrl(ref); }catch(_){}
+    if(closed) return; if(!url){ fail("Ce fichier n'a pas pu être chargé. Vérifie ta connexion."); return; }
+    if(!isPdf){ const img=el("img",{alt:d.titre,draggable:"false"}); img.onload=()=>{ msg.remove(); inner.append(img); };
+      img.onerror=()=>fail("Cette image n'a pas pu être affichée."); img.src=url; return; }
+    try{ const L=await loadPdfJs(), buf=await (await fetch(url)).arrayBuffer(); if(closed) return;
+      pdf=await L.getDocument({data:new Uint8Array(buf)}).promise; msg.remove();
+      for(let n=1;n<=pdf.numPages;n++){ const page=await pdf.getPage(n), v=page.getViewport({scale:1}), box=el("div",{class:"vw-page",style:"aspect-ratio:"+v.width+" / "+v.height}); inner.append(box); pages.push({n,box,w:0}); if(closed) return; }
+      updPg(); renderVisible(false);
+    }catch(e){ fail("Ce PDF n'a pas pu être affiché ici."); }
+  })();
+}
 async function openFile(ref){ const w=window.open("","_blank");
   try{ const u=await S.assets.open(ref); if(!u) throw 0; if(w) w.location.href=u; else location.href=u; }
   catch(_){ if(w) w.close(); toast("Ce fichier n'a pas pu être ouvert. Vérifie ta connexion."); } }
@@ -3393,7 +3486,8 @@ function docRow(d,showWho,noCat){
   row.append(ft,body);
   if(d.expire){ const n=daysTo(d.expire); if(n<=90) row.append(el("span",{class:"pf-days"+(n<0||n<=30?"":" soon"),text:n<0?"expiré":n===0?"aujourd'hui":n<=60?n+" j":Math.round(n/30)+" mois"})); }
   const acts=el("div",{class:"bd-acts"});
-  if(d.assetId){ const o=hostedRef(d.assetId)?el("button",{type:"button",class:"bd-eye","aria-label":"Voir "+d.titre,title:"Voir",onclick:e=>{ e.preventDefault(); e.stopPropagation(); openFile(d.assetId); }}):el("a",{class:"bd-eye",href:imgUrl(d.assetId),target:"_blank",rel:"noopener","aria-label":"Voir "+d.titre,title:"Voir"}); o.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 5C6.5 5 2.7 9.2 1.5 11.1a1.7 1.7 0 0 0 0 1.8C2.7 14.8 6.5 19 12 19s9.3-4.2 10.5-6.1a1.7 1.7 0 0 0 0-1.8C21.3 9.2 17.5 5 12 5Z"/><circle cx="12" cy="12" r="4" fill="var(--eyebg)"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>'; acts.append(o); }
+  if(d.assetId){ const o=el("button",{type:"button",class:"bd-eye","aria-label":"Voir "+d.titre,title:"Voir",onclick:e=>{ e.preventDefault(); e.stopPropagation(); openViewer(d); }});
+    ft.classList.add("tap"); ft.setAttribute("role","button"); ft.setAttribute("aria-label","Voir "+d.titre); ft.addEventListener("click",e=>{ e.stopPropagation(); openViewer(d); }); o.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 5C6.5 5 2.7 9.2 1.5 11.1a1.7 1.7 0 0 0 0 1.8C2.7 14.8 6.5 19 12 19s9.3-4.2 10.5-6.1a1.7 1.7 0 0 0 0-1.8C21.3 9.2 17.5 5 12 5Z"/><circle cx="12" cy="12" r="4" fill="var(--eyebg)"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>'; acts.append(o); }
   if(!S.readOnly&&meId()) acts.append(el("button",{class:"more",type:"button","aria-label":"Supprimer "+d.titre,text:"×",onclick:()=>softDelete([{key:"documents:"+d.id,arr:"docs",item:d,run:()=>delDoc(d)}],"Document « "+esc(d.titre)+" » supprimé.")}));
   row.append(acts); return row;
 }

@@ -278,6 +278,9 @@ html = head + s + ACCOUNT_JS + "\n</body>\n</html>\n"
 open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(html)
 shutil.copy(os.path.join(HERE, "src", "cocoon-runtime.js"), os.path.join(OUT, "cocoon-runtime.js"))
 shutil.copy(os.path.join(HERE, "src", "sw.js"), os.path.join(OUT, "sw.js"))
+# Visionneuse PDF (pdf.js, Apache 2.0) servie avec l'app : pas de dépendance à un CDN
+if os.path.isdir(os.path.join(HERE, "src", "pdfjs")):
+    shutil.copytree(os.path.join(HERE, "src", "pdfjs"), os.path.join(OUT, "pdfjs"), dirs_exist_ok=True)
 if not os.path.exists(os.path.join(OUT, "config.js")):
     shutil.copy(os.path.join(HERE, "src", "config.example.js"), os.path.join(OUT, "config.js"))
 open(os.path.join(OUT, ".nojekyll"), "w").close()
