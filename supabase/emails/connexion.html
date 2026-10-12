@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light only"><title>Ton lien de connexion</title></head>
+<body style="margin:0;padding:0;background:#F6F5FB;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Ton lien de connexion à Cocoon.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F6F5FB;">
+<tr><td align="center" style="padding:32px 16px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;">
+<tr><td style="padding:0 4px 18px 4px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+<td style="vertical-align:middle;"><img src="https://brionutrition.github.io/Cocoon/icon-192.png" width="40" height="40" alt="" style="display:block;border-radius:11px;"></td>
+<td style="vertical-align:middle;padding-left:10px;font-size:20px;font-weight:800;color:#1C1B2E;letter-spacing:-.3px;">Cocoon</td>
+</tr></table></td></tr>
+<tr><td style="background:#FFFFFF;border-radius:22px;padding:32px 28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1C1B2E;">
+<h1 style="margin:0 0 14px 0;font-size:24px;line-height:1.25;font-weight:800;color:#1C1B2E;">Ton lien de connexion</h1>
+<p style="margin:0 0 12px 0;font-size:16px;line-height:1.55;color:#3A3852;">Touche le bouton pour te connecter à Cocoon sans mot de passe. Si on t'a invité·e dans un nouveau foyer, tu y arriveras directement.</p>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:26px 0 22px 0;"><tr>
+<td align="center" bgcolor="#FFC94A" style="border-radius:999px;background:#FFC94A;background-image:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB);">
+<a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:15px 30px;font-size:16px;font-weight:800;color:#1C1B2E;text-decoration:none;border-radius:999px;">Me connecter</a>
+</td></tr></table>
+<p style="margin:0;font-size:14px;line-height:1.5;color:#6A6886;">Le lien ne sert qu'une fois et expire dans 1 heure.</p>
+<p style="margin:22px 0 0 0;font-size:13px;line-height:1.5;color:#6A6886;">Le bouton ne marche pas ? Copie ce lien dans ton navigateur :<br><a href="{{ .ConfirmationURL }}" style="color:#6A6886;word-break:break-all;">{{ .ConfirmationURL }}</a></p>
+</td></tr>
+<tr><td style="padding:18px 8px 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.5;color:#8A87A6;text-align:center;">
+Tu reçois ce mail parce qu'une connexion à Cocoon a été demandée pour {{ .Email }}. Si ce n'est pas toi, ignore-le : ton compte reste protégé.<br>Cocoon · l'appli du foyer
+</td></tr>
+</table></td></tr></table></body></html>
