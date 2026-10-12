@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="12/10 09:43";</script>
+<script>window.COCOON_BUILD="12/10 10:01";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2381,11 +2381,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 #rdvAlert[hidden]{display:none}
 
 /* Visionneuse */
-html.vw-lock,html.vw-lock body{overflow:hidden}
-.vw{position:fixed;inset:0;z-index:2147483000;background:#0B0A12;color:#EDEBF7;display:flex;flex-direction:column;animation:vwIn .18s ease-out}
-.vw.out{animation:vwOut .18s ease-in forwards}
-@keyframes vwIn{from{opacity:0;transform:scale(.98)}}
-@keyframes vwOut{to{opacity:0;transform:scale(.98)}}
+.vw{position:fixed;inset:0;z-index:2147483000;background:#0B0A12;color:#EDEBF7;display:flex;flex-direction:column;will-change:opacity}
 .vw-bar{display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 10px) 12px 10px}
 .vw-t{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center}
 .vw-t b{font-size:15.5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -2827,7 +2823,9 @@ function openViewer(d){ const ref=d.assetId; if(!ref) return;
   const msg=el("div",{class:"vw-msg"},el("span",{class:"vw-spin","aria-hidden":"true"}),"Chargement…"); inner.append(msg);
   const pg=el("span",{class:"vw-pg"}), zl=el("span",{class:"vw-z",text:"100 %"});
   let z=1, pdf=null, pages=[], url=null, closed=false;
-  const close=()=>{ if(closed) return; closed=true; ov.classList.add("out"); document.documentElement.classList.remove("vw-lock"); document.removeEventListener("keydown",onKey); setTimeout(()=>{ ov.remove(); try{ pdf&&pdf.destroy(); }catch(_){} },180); };
+  const close=()=>{ if(closed) return; closed=true; document.removeEventListener("keydown",onKey);
+    const a=ov.animate?ov.animate([{opacity:1},{opacity:0}],{duration:220,easing:"ease",fill:"forwards"}):null;
+    const done=()=>{ ov.remove(); try{ pdf&&pdf.destroy(); }catch(_){} }; if(a) a.onfinish=done; else done(); };
   const onKey=e=>{ if(e.key==="Escape") close(); };
   const openOut=()=>{ if(hostedRef(ref)) openFile(ref); else if(url) window.open(url,"_blank","noopener"); };
   const ob=el("button",{type:"button",class:"vw-b","aria-label":"Ouvrir ou enregistrer le fichier",title:"Ouvrir / enregistrer",onclick:openOut}); ob.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>';
@@ -2835,7 +2833,9 @@ function openViewer(d){ const ref=d.assetId; if(!ref) return;
   const zb=(t,lab,f)=>el("button",{type:"button",class:"vw-zb","aria-label":lab,text:t,onclick:f});
   ov.append(el("div",{class:"vw-bar"},xb,el("div",{class:"vw-t"},el("b",{text:d.titre}),el("span",{text:isPdf?"PDF":"Photo"})),ob),sc,
     el("div",{class:"vw-foot"},pg,el("div",{class:"vw-zs"},zb("−","Dézoomer",()=>zoomTo(z/1.5)),zl,zb("+","Zoomer",()=>zoomTo(z*1.5))),el("button",{type:"button",class:"vw-fit",text:"Ajuster",onclick:()=>zoomTo(1)})));
-  document.body.append(ov); document.documentElement.classList.add("vw-lock"); document.addEventListener("keydown",onKey);
+  document.body.append(ov); document.addEventListener("keydown",onKey);
+  if(ov.animate) ov.animate([{opacity:0},{opacity:1}],{duration:220,easing:"ease"});
+  ov.addEventListener("touchmove",e=>{ if(!e.target.closest(".vw-sc")) e.preventDefault(); },{passive:false});
   // zoom : la largeur du contenu suit le zoom, le défilement natif gère le reste
   const apply=(nz,cx,cy)=>{ nz=Math.max(1,Math.min(6,nz)); if(cx==null){ cx=sc.clientWidth/2; cy=sc.clientHeight/2; }
     const fx=(sc.scrollLeft+cx)/inner.offsetWidth, fy=(sc.scrollTop+cy)/inner.offsetHeight; z=nz; inner.style.width=(100*z)+"%";
@@ -5885,10 +5885,6 @@ function renderSettings(){
   const ico=(k,c)=>{ const i=el("span",{class:"b-ico",style:"--stripe:"+c}); i.innerHTML=MI(SET_IC[k]); return i; };
   const row=(k,c,t,sub,on,cls)=>el("button",{type:"button",class:"set-row"+(cls?" "+cls:""),onclick:on},ico(k,c),el("span",{class:"t"},el("b",{text:t}),el("small",{text:sub})));
   const box=el("div",{class:"settings"});
-  box.append(row("quiz","#FFC94A","Refaire mon questionnaire","Change ce qui compte le plus pour toi",()=>openWizard("perso")));
-  if(isAdmin()&&!S.readOnly) box.append(row("home","#7FCDB9","Refaire le questionnaire du foyer","Logement, animaux, véhicules, catégories",()=>openWizard("foyer")));
-  box.append(row("quiz","#3D7BD9","Ajouter à l'agenda du téléphone","Échéances, CT, prélèvements, anniversaires et poubelles, avec une alerte",()=>{ setTab("rappels"); window.scrollTo({top:0}); }));
-  box.append(row("dl","#8FB8FF","Exporter mes données","Un fichier avec ton profil, tes tâches, tes véhicules et ce que tu as ajouté",exportMine));
   if(S.exportTxt){ const ta=el("textarea",{class:"export-txt",readonly:true,"aria-label":"Export de mes données"}); ta.value=S.exportTxt;
     box.append(el("div",{class:"set-confirm",style:"flex-direction:column;align-items:stretch"},el("span",{class:"muted",text:"Copie ce texte et colle-le dans un fichier .json pour le garder."}),ta,
       el("div",{style:"display:flex;gap:8px"},el("button",{type:"button",class:"btn",text:"Copier",onclick:async()=>{ try{ await navigator.clipboard.writeText(ta.value); toast("Copié."); }catch(_){ ta.focus(); ta.select(); toast("Sélectionne le texte et copie-le."); } }}),el("button",{type:"button",class:"btn ghost",text:"Fermer",onclick:()=>{ S.exportTxt=null; renderSettings(); }})))); }
@@ -6005,7 +6001,7 @@ function openPrivacy(){
     h3("Combien de temps"),
     p("Tant que ton compte existe. Quand tu supprimes un élément, il est effacé tout de suite. Quand tu supprimes ton compte, tes données sont effacées aussitôt ; les copies de sauvegarde techniques de l'hébergeur disparaissent ensuite d'elles-mêmes."),
     h3("Tes droits"),
-    ul("Voir et récupérer tes données : Moi → Exporter mes données","Corriger : modifie directement ton profil ou l'élément concerné","Effacer : supprime l'élément, ton espace perso, ou ton compte"+(hosted?" (Moi → Supprimer mon compte)":""),"Te plaindre si quelque chose ne va pas : la CNIL, sur cnil.fr"),
+    ul("Voir et récupérer tes données : demande-les à l'adresse de contact ci-dessus, tu les reçois sous un mois","Corriger : modifie directement ton profil ou l'élément concerné","Effacer : supprime l'élément, ton espace perso, ou ton compte"+(hosted?" (Moi → Supprimer mon compte)":""),"Te plaindre si quelque chose ne va pas : la CNIL, sur cnil.fr"),
     el("p",{class:"muted",text:"Dernière mise à jour : octobre 2026."}));
   bg.append(box); bg.addEventListener("click",e=>{ if(e.target===bg) close(); }); document.addEventListener("keydown",kd); document.body.append(bg);
 }
