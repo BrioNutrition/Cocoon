@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="12/10 00:35";</script>
+<script>window.COCOON_BUILD="12/10 09:22";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2343,6 +2343,42 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .td-body{display:flex;flex-direction:column;gap:10px}
 .td-body:empty{display:none}
 #dayCard .wk-leg{margin-top:0}
+
+/* Agenda */
+.viewseg button{font-size:13px}
+.ag-who{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%}
+.ag-who::-webkit-scrollbar{display:none}
+.ag-who button{flex:none;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.ag-who button .av{width:18px;height:18px;font-size:9px}
+.ag-cal{background:var(--surface);border-radius:20px;box-shadow:0 2px 0 var(--shadow);padding:12px;display:flex;flex-direction:column;gap:10px}
+.ag-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ag-h div{display:flex;flex-direction:column;align-items:center}
+.ag-h b{font-size:18px;font-family:var(--f-display)}
+.ag-h span{font-size:12.5px;color:var(--muted)}
+.ag-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+.ag-dn{text-align:center;font-size:10.5px;font-weight:800;color:var(--muted);padding-bottom:2px}
+.ag-d{position:relative;border:0;background:none;border-radius:11px;height:40px;font:inherit;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.ag-d b{font-size:14px;font-weight:700;line-height:1}
+.ag-d.past{color:var(--muted)}
+.ag-d.has b{font-weight:800}
+.ag-d.now{background:#FFC94A;color:#1C1B2E}
+.ag-d.sel{box-shadow:inset 0 0 0 2px var(--ink)}
+.ag-dots{display:flex;gap:2px;height:5px}
+.ag-dots i{width:5px;height:5px;border-radius:50%}
+.ag-dots i.f{opacity:.4}
+.ag-d:active{transform:scale(.94)}
+.ag-all{padding:5px 12px;font-size:13px}
+.rdv-alert button{width:100%;display:flex;align-items:center;gap:11px;border:0;background:#E7F0FF;color:#1C1B2E;border-radius:16px;padding:11px 13px;font:inherit;text-align:left;cursor:pointer;box-shadow:inset 0 0 0 2px #8FB8FF}
+.rdv-alert.on button{background:#E6F6EC;box-shadow:inset 0 0 0 2px #7FD39A}
+.rdv-alert i{font-style:normal;font-size:20px}
+.rdv-alert span{flex:1;min-width:0;display:flex;flex-direction:column}
+.rdv-alert b{font-size:14.5px}
+.rdv-alert small{font-size:12.5px;opacity:.7}
+.rdv-alert u{text-decoration:none;font-size:20px;opacity:.6}
+:root[data-theme="dark"] .rdv-alert button{background:#273349;color:#DCE8FF}
+:root[data-theme="dark"] .rdv-alert.on button{background:#1A2A22;color:#CFF2DA}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .rdv-alert button{background:#273349;color:#DCE8FF}:root:not([data-theme="light"]) .rdv-alert.on button{background:#1A2A22;color:#CFF2DA}}
+#rdvAlert[hidden]{display:none}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2403,6 +2439,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 
   <!-- AUJOURD'HUI -->
   <section class="view" data-view="accueil">
+    <div id="rdvAlert"></div>
     <div class="jr-card" id="dayCard" hidden><div class="td-h" id="dayHead"></div><div class="week" id="week"></div><div class="td-body" id="todayCard"></div></div>
     <div id="recapCard" class="recap" hidden></div>
     <div id="setupCard" hidden></div>
@@ -2423,7 +2460,6 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
       <div class="wk-sub"><span id="fridgeDay">Aujourd'hui</span><span class="muted" id="fridgeCount"></span></div>
       <div class="list fridge" id="fridge"></div>
     </div>
-    <div class="sub" id="rdvWrap"></div>
     <div id="accBudget"></div>
     <div id="accWho"></div>
   </section>
@@ -2449,7 +2485,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 
   <!-- FOYER -->
   <section class="view" data-view="foyer" hidden>
-    <div class="seg viewseg" role="group" aria-label="Foyer"><button type="button" data-go="foyer" aria-pressed="true">Tâches</button><button type="button" data-go="courses" aria-pressed="false">Courses</button><button type="button" data-go="repas" aria-pressed="false">Repas</button><button type="button" data-go="documents" aria-pressed="false">Papiers</button><button type="button" data-go="maison" aria-pressed="false">Maison</button></div>
+    <div class="seg viewseg" role="group" aria-label="Foyer"><button type="button" data-go="foyer" aria-pressed="true">Tâches</button><button type="button" data-go="courses" aria-pressed="false">Courses</button><button type="button" data-go="repas" aria-pressed="false">Repas</button><button type="button" data-go="agenda" aria-pressed="false">Agenda</button><button type="button" data-go="documents" aria-pressed="false">Papiers</button><button type="button" data-go="maison" aria-pressed="false">Maison</button></div>
     <div class="tiles" id="tiles" aria-label="Filtrer par catégorie"></div>
     <div class="chips" id="whoFilter" aria-label="Filtrer par personne"></div>
     <div class="list fridge" id="openList"></div>
@@ -2462,7 +2498,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 
   <!-- COURSES -->
   <section class="view" data-view="courses" hidden>
-    <div class="seg viewseg" role="group" aria-label="Foyer"><button type="button" data-go="foyer" aria-pressed="false">Tâches</button><button type="button" data-go="courses" aria-pressed="true">Courses</button><button type="button" data-go="repas" aria-pressed="false">Repas</button><button type="button" data-go="documents" aria-pressed="false">Papiers</button><button type="button" data-go="maison" aria-pressed="false">Maison</button></div>
+    <div class="seg viewseg" role="group" aria-label="Foyer"><button type="button" data-go="foyer" aria-pressed="false">Tâches</button><button type="button" data-go="courses" aria-pressed="true">Courses</button><button type="button" data-go="repas" aria-pressed="false">Repas</button><button type="button" data-go="agenda" aria-pressed="false">Agenda</button><button type="button" data-go="documents" aria-pressed="false">Papiers</button><button type="button" data-go="maison" aria-pressed="false">Maison</button></div>
     <div id="cLive" class="c-live" hidden></div>
     <form class="c-add" id="cForm" autocomplete="off">
       <input type="text" id="cNom" maxlength="120" placeholder="Lait, pain, piles…" aria-label="Article à ajouter" enterkeyhint="done">
@@ -2473,8 +2509,15 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
     <div id="cLists" class="c-lists"></div>
   </section>
 
+  <section class="view" data-view="agenda" hidden>
+    <div class="seg viewseg" role="group" aria-label="Foyer"><button type="button" data-go="foyer" aria-pressed="false">Tâches</button><button type="button" data-go="courses" aria-pressed="false">Courses</button><button type="button" data-go="repas" aria-pressed="false">Repas</button><button type="button" data-go="agenda" aria-pressed="true">Agenda</button><button type="button" data-go="documents" aria-pressed="false">Papiers</button><button type="button" data-go="maison" aria-pressed="false">Maison</button></div>
+    <div class="seg ag-who" id="agWho" role="group" aria-label="Pour qui"></div>
+    <div class="ag-cal" id="agCal"></div>
+    <div class="sub" id="rdvWrap"></div>
+  </section>
+
   <section class="view" data-view="repas" hidden>
-    <div class="seg viewseg" role="group" aria-label="Foyer"><button type="button" data-go="foyer" aria-pressed="false">Tâches</button><button type="button" data-go="courses" aria-pressed="false">Courses</button><button type="button" data-go="repas" aria-pressed="true">Repas</button><button type="button" data-go="documents" aria-pressed="false">Papiers</button><button type="button" data-go="maison" aria-pressed="false">Maison</button></div>
+    <div class="seg viewseg" role="group" aria-label="Foyer"><button type="button" data-go="foyer" aria-pressed="false">Tâches</button><button type="button" data-go="courses" aria-pressed="false">Courses</button><button type="button" data-go="repas" aria-pressed="true">Repas</button><button type="button" data-go="agenda" aria-pressed="false">Agenda</button><button type="button" data-go="documents" aria-pressed="false">Papiers</button><button type="button" data-go="maison" aria-pressed="false">Maison</button></div>
     <div id="rBody" class="r-body"></div>
   </section>
 
@@ -2514,7 +2557,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 
   <!-- DOCUMENTS -->
   <section class="view" data-view="documents" hidden>
-    <div class="seg viewseg" role="group" aria-label="Foyer"><button type="button" data-go="foyer" aria-pressed="false">Tâches</button><button type="button" data-go="courses" aria-pressed="false">Courses</button><button type="button" data-go="repas" aria-pressed="false">Repas</button><button type="button" data-go="documents" aria-pressed="true">Papiers</button><button type="button" data-go="maison" aria-pressed="false">Maison</button></div>
+    <div class="seg viewseg" role="group" aria-label="Foyer"><button type="button" data-go="foyer" aria-pressed="false">Tâches</button><button type="button" data-go="courses" aria-pressed="false">Courses</button><button type="button" data-go="repas" aria-pressed="false">Repas</button><button type="button" data-go="agenda" aria-pressed="false">Agenda</button><button type="button" data-go="documents" aria-pressed="true">Papiers</button><button type="button" data-go="maison" aria-pressed="false">Maison</button></div>
     <div id="papHero"></div>
     <label class="pap-search" for="papQ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg><input type="search" id="papQ" placeholder="Chercher : bail, mutuelle, carte grise…" aria-label="Chercher un papier" autocomplete="off" enterkeyhint="search"></label>
     <button type="button" class="pap-add" id="papAdd" aria-expanded="false"><span class="pa-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v9A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.6"/></svg></span><span class="pa-t"><b>Ranger un papier</b><small>Photo, PDF, ou juste une date à ne pas oublier</small></span><span class="pa-x" aria-hidden="true">+</span></button>
@@ -2540,7 +2583,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 
   <!-- MAISON & VÉHICULES (V3) -->
   <section class="view" data-view="maison" hidden>
-    <div class="seg viewseg" role="group" aria-label="Foyer"><button type="button" data-go="foyer" aria-pressed="false">Tâches</button><button type="button" data-go="courses" aria-pressed="false">Courses</button><button type="button" data-go="repas" aria-pressed="false">Repas</button><button type="button" data-go="documents" aria-pressed="false">Papiers</button><button type="button" data-go="maison" aria-pressed="true">Maison</button></div>
+    <div class="seg viewseg" role="group" aria-label="Foyer"><button type="button" data-go="foyer" aria-pressed="false">Tâches</button><button type="button" data-go="courses" aria-pressed="false">Courses</button><button type="button" data-go="repas" aria-pressed="false">Repas</button><button type="button" data-go="agenda" aria-pressed="false">Agenda</button><button type="button" data-go="documents" aria-pressed="false">Papiers</button><button type="button" data-go="maison" aria-pressed="true">Maison</button></div>
     <div class="m-dash" id="mDash"></div>
     <form class="b-form" id="mhForm" hidden autocomplete="off"></form>
     <div class="sub" id="mHome"></div>
@@ -3439,7 +3482,7 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
   // événements avec une heure
   const ev=[];
   for(const r of (S.rdvs||[])) if(r.date===t0&&!r.fait&&(!r.pour||!r.pour.length||r.pour.includes(me)||r.pour.includes("tous"))){ const m=hm(r.heure);
-    ev.push({m:m==null?9*60:m,h:m==null?"":hl(m),t:r.titre,s:[r.lieu,r.heureFin?"jusqu'à "+heureTxt(r.heureFin):null].filter(Boolean).join(" · ")||"Rendez-vous",c:"#8FB8FF",end:hm(r.heureFin)||(m==null?null:m+60),fn:go("accueil","rdvWrap")}); }
+    ev.push({m:m==null?9*60:m,h:m==null?"":hl(m),t:r.titre,s:[r.lieu,r.heureFin?"jusqu'à "+heureTxt(r.heureFin):null].filter(Boolean).join(" · ")||"Rendez-vous",c:"#8FB8FF",end:hm(r.heureFin)||(m==null?null:m+60),fn:()=>{ S.agDay=t0; setTab("agenda"); window.scrollTo({top:0}); }}); }
   const MS={matin:[8*60,"Petit-déj","#E9A86B"],midi:[12*60+30,"Déjeuner","#6FA8DC"],soir:[19*60+30,"Dîner","#E0B21C"]};
   for(const sl of ["matin","midi","soir"]){ const m=(S.repas||[]).find(r=>r.date===t0&&r.slot===sl&&r.plat); if(!m) continue; const c=nm(m.cuisine), v=nm(m.vaisselle), bits=[];
     if(c) bits.push(c==="toi"?"tu cuisines":c+" cuisine"); if(v) bits.push(v==="toi"?"tu fais la vaisselle":v+" fait la vaisselle");
@@ -3454,7 +3497,7 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
   if(dz.length) extra.push(["📄",dz.length>1?dz.length+" papiers expirent cette semaine":dz[0].titre+" expire "+dueLabel(dz[0].expire),go("documents")]);
   const tot=open.length+doneT.length, dd=parse(t0), dl=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(dd);
   const ttl=isT?"Aujourd'hui":t0===iso(new Date(today().getTime()+864e5))?"Demain":t0===iso(new Date(today().getTime()-864e5))?"Hier":dl.charAt(0).toUpperCase()+dl.slice(1);
-  H.append(el("b",{text:ttl}),tot?el("span",{text:doneT.length+" / "+tot+" fait"+(doneT.length>1?"s":"")}):el("span",{text:isT?dl:""}));
+  H.append(el("b",{text:ttl}),tot?el("span",{text:doneT.length+" / "+tot+" fait"+(doneT.length>1?"s":"")}):null);
   if(open.length||doneT.length){ const pl=el("div",{class:"td-pills"});
     for(const t of open.slice(0,6)){ const late=t.echeance<t0, b=el("button",{type:"button",class:"td-pill"+(late?" late":""),"aria-label":"Marquer « "+t.titre+" » comme fait"},el("i",{"aria-hidden":"true"}),t.titre);
       b.addEventListener("click",async()=>{ if(!S.db||!needMe()) return; b.classList.add("ok"); b.disabled=true; try{ await completeTask(t); toast("✓ « "+esc(t.titre)+" » fait."); }catch(e){ b.classList.remove("ok"); b.disabled=false; writeErr(e); } });
@@ -4180,8 +4223,11 @@ function rdvTimer(){ clearTimeout(S.rdvT); const list=(S.rdvs||[]).filter(r=>!r.
   const now=Date.now(); let nx=Infinity; for(const r of list){ const st0=new Date(r.date+"T"+(r.heure||"00:00")).getTime(); for(const t of [st0-2*36e5,st0,rdvEnd(r).getTime()]) if(t>now&&t<nx) nx=t; }
   if(nx<Infinity) S.rdvT=setTimeout(()=>{ renderRdv(); },Math.min(nx-now+500,6*36e5)); }
 function renderRdv(){
-  const w=$("rdvWrap"); if(!w) return; w.innerHTML=""; const me=meId(), can=!S.readOnly&&!!me, F=S.rdvForm, list=rdvList(60);
-  w.append(el("div",{class:"sec-title"},el("h2",{text:"Rendez-vous"})));
+  const w=$("rdvWrap"); if(!w) return; w.innerHTML=""; const me=meId(), can=!S.readOnly&&!!me, F=S.rdvForm, who=S.agWho||null, day=S.agDay||null;
+  let list=day?(S.rdvs||[]).filter(r=>r.date===day).map(r=>({r,date:r.date,heure:r.heure||"",titre:r.titre,lieu:r.lieu||"",pour:r.pour||[],kind:"rdv"})).sort((a,b)=>a.heure<b.heure?-1:1):rdvList(120);
+  if(who) list=list.filter(x=>(x.pour||[]).includes(who));
+  { const dl=day?new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(parse(day)):null;
+    w.append(el("div",{class:"sec-title"},el("h2",{text:day?dl.charAt(0).toUpperCase()+dl.slice(1):"À venir"}),day?el("button",{type:"button",class:"btn ghost ag-all",text:"Tout voir",onclick:()=>{ S.agDay=null; renderAgenda(); renderRdv(); }}):el("span",{class:"muted",style:"font-size:13px",text:list.length?list.length+" rendez-vous":""}))); }
   const box=el("div",{class:"rdv-list"});
   if(F&&!F.id) box.append(rdvFormEl());
   for(const x of list){
@@ -4202,15 +4248,39 @@ function renderRdv(){
       box.append(el("div",{class:"np-selbar rdv-selbar"},el("span",{text:n+" rendez-vous sélectionné"+(n>1?"s":"")}),
         el("button",{type:"button",class:"btn np-sel-ok",text:"C'est fait ("+n+")",onclick:()=>rdvAct(ids,"fait")}),
         el("button",{type:"button",class:"btn ghost np-sel-no",text:"Annuler",onclick:()=>{ S.rdvSelSet=new Set(); renderRdv(); }}),del)); } }
-  rdvTimer();
-  { const now=Date.now(), urgent=(S.rdvs||[]).some(r=>{ if(r.fait||!r.date) return false; const st=new Date(r.date+"T"+(r.heure||"00:00")).getTime(), en=rdvEnd(r).getTime(); return now<en&&st-now<=2*36e5; });
-    const sec=document.querySelector('[data-view="accueil"] .secretary'), fw=$("fridgeWrap");
-    if(urgent&&sec&&sec.nextElementSibling!==w) sec.after(w); else if(!urgent&&fw&&fw.nextElementSibling!==w) fw.after(w); }
-  if(!list.length&&!F) box.append(el("div",{class:"rdv-empty",text:"Aucun rendez-vous prévu. Médecin, véto, garage, réunion d'école : note-les ici, tout le foyer les voit."}));
-  if(can&&!(F&&!F.id)){ const add=el("button",{type:"button",class:"rdv-add2",onclick:()=>{ S.rdvForm={pour:[me]}; renderRdv(); }}), ic=el("i",{"aria-hidden":"true"});
+  rdvTimer(); try{ renderRdvAlert(); }catch(_){}
+  if(!list.length&&!F) box.append(el("div",{class:"rdv-empty",text:day?"Aucun rendez-vous ce jour-là.":who?"Aucun rendez-vous prévu pour "+(who===me?"toi":membre(who).nom)+".":"Aucun rendez-vous prévu. Médecin, véto, garage, réunion d'école : note-les ici, tout le foyer les voit."}));
+  if(can&&!(F&&!F.id)){ const add=el("button",{type:"button",class:"rdv-add2",onclick:()=>{ S.rdvForm={pour:[who||me],date:day&&day>=iso(today())?day:""}; renderRdv(); }}), ic=el("i",{"aria-hidden":"true"});
     ic.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'; add.append(ic,"Ajouter un rendez-vous"); box.append(add); }
   w.append(box);
 }
+function renderAgenda(){ const W=$("agWho"), C=$("agCal"); if(!W||!C) return; W.innerHTML=""; C.innerHTML=""; const me=meId();
+  const ms=membres(); if(S.agWho&&!ms.some(m=>m.id===S.agWho)) S.agWho=null;
+  W.append(el("button",{type:"button","aria-pressed":String(!S.agWho),onclick:()=>{ S.agWho=null; renderAgenda(); renderRdv(); }},"Tout le foyer"));
+  for(const m of ms) W.append(el("button",{type:"button","aria-pressed":String(S.agWho===m.id),onclick:()=>{ S.agWho=S.agWho===m.id?null:m.id; renderAgenda(); renderRdv(); }},avatar(m.id,18),m.id===me?"Moi":m.nom));
+  const t=today(), off=S.agM||0, M0=new Date(t.getFullYear(),t.getMonth()+off,1), Y=M0.getFullYear(), Mo=M0.getMonth(), dim=new Date(Y,Mo+1,0).getDate(), td=iso(t);
+  const rs=(S.rdvs||[]).filter(r=>r.date&&(!S.agWho||(r.pour||[]).includes(S.agWho))), by={};
+  for(const r of rs) (by[r.date]=by[r.date]||[]).push(r);
+  const inM=rs.filter(r=>{ const d=parse(r.date); return d.getMonth()===Mo&&d.getFullYear()===Y&&!r.fait; }).length;
+  const mn=new Intl.DateTimeFormat("fr-FR",{month:"long",year:Y!==t.getFullYear()?"numeric":undefined}).format(M0);
+  C.append(el("div",{class:"ag-h"},el("button",{type:"button",class:"r-arw","aria-label":"Mois précédent",onclick:()=>{ S.agM=off-1; renderAgenda(); }},"‹"),
+    el("div",{},el("b",{text:mn.charAt(0).toUpperCase()+mn.slice(1)}),el("span",{text:inM?inM+" rendez-vous":"aucun rendez-vous"})),
+    el("button",{type:"button",class:"r-arw","aria-label":"Mois suivant",onclick:()=>{ S.agM=off+1; renderAgenda(); }},"›")));
+  const g=el("div",{class:"ag-grid",role:"grid"}); for(const d of ["L","M","M","J","V","S","D"]) g.append(el("span",{class:"ag-dn",text:d}));
+  const lead=(M0.getDay()+6)%7; for(let i=0;i<lead;i++) g.append(el("span"));
+  for(let d=1;d<=dim;d++){ const k=iso(new Date(Y,Mo,d)), ev=by[k]||[], has=ev.some(r=>!r.fait), past=k<td;
+    const b=el("button",{type:"button",class:"ag-d"+(k===td?" now":"")+(k===S.agDay?" sel":"")+(past?" past":"")+(ev.length?" has":""),"aria-label":d+" "+mn+(ev.length?", "+ev.length+" rendez-vous":""),"aria-pressed":String(k===S.agDay),onclick:()=>{ S.agDay=S.agDay===k?null:k; renderAgenda(); renderRdv(); }},el("b",{text:String(d)}));
+    if(ev.length){ const dots=el("span",{class:"ag-dots"}); for(const r of ev.slice(0,3)) dots.append(el("i",{class:r.fait?"f":"",style:"background:"+((r.pour&&r.pour[0]&&membre(r.pour[0]).c)||"#8FB8FF")})); b.append(dots); }
+    g.append(b); }
+  C.append(g);
+}
+function renderRdvAlert(){ const w=$("rdvAlert"); if(!w) return; w.innerHTML=""; const me=meId(); if(!me){ w.hidden=true; return; }
+  const now=Date.now(), soon=(S.rdvs||[]).filter(r=>{ if(r.fait||!r.date||!r.heure) return false; if(r.pour&&r.pour.length&&!r.pour.includes(me)) return false; const st=new Date(r.date+"T"+r.heure).getTime(), en=rdvEnd(r).getTime(); return now<en&&st-now<=2*36e5; }).sort((a,b)=>(a.date+a.heure)<(b.date+b.heure)?-1:1)[0];
+  if(!soon){ w.hidden=true; w.className=""; return; }
+  const st=new Date(soon.date+"T"+soon.heure).getTime(), mins=Math.round((st-now)/6e4), on=mins<=0;
+  w.hidden=false; w.className="rdv-alert"+(on?" on":"");
+  w.append(el("button",{type:"button",onclick:()=>{ S.agDay=soon.date; setTab("agenda"); window.scrollTo({top:0}); }},el("i",{"aria-hidden":"true",text:"📅"}),
+    el("span",{},el("b",{text:soon.titre+(on?" · en cours":mins<60?" dans "+mins+" min":" à "+heureTxt(soon.heure))}),el("small",{text:[soon.lieu,on&&soon.heureFin?"jusqu'à "+heureTxt(soon.heureFin):null].filter(Boolean).join(" · ")||"Rendez-vous"})),el("u",{"aria-hidden":"true",text:"›"}))); }
 function rdvFormEl(){
   const F=S.rdvForm, f=el("form",{class:"rdv-form",autocomplete:"off"}), fld=(l,i)=>el("label",{class:"field"},l,i);
   const ti=el("input",{type:"text",id:"rdvTitre",maxlength:"80",placeholder:"Dentiste, véto pour Moka, garage…"}); ti.value=F.titre||""; ti.addEventListener("input",()=>F.titre=ti.value);
@@ -4583,7 +4653,7 @@ $("bAddDep").addEventListener("click",()=>openBForm("dep"));
 $("bAddSub").addEventListener("click",()=>openBForm("sub"));
 $("bAddCr").addEventListener("click",()=>{ const me=meId(); if(!me){ needMe(); return; } if(S.readOnly) return; closeBForm(); S.crForm={titulaires:[me],type:"autre"}; renderBudget(); $("bVolRec").open=true; setTimeout(()=>{ const w=$("bCreditsWrap"); if(w) w.scrollIntoView({behavior:"smooth",block:"start"}); const i=$("crNom"); if(i) i.focus({preventScroll:true}); },60); });
 $("sgDep").addEventListener("click",()=>{ closeSheet(); openBForm("dep"); });
-$("sgRdv").addEventListener("click",()=>{ closeSheet(); if(!needMe()) return; setTab("accueil"); S.rdvForm={pour:[meId()]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({behavior:"smooth",block:"start"}); },60); });
+$("sgRdv").addEventListener("click",()=>{ closeSheet(); if(!needMe()) return; setTab("agenda"); S.rdvForm={pour:[meId()]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({behavior:"smooth",block:"start"}); },60); });
 $("sgSub").addEventListener("click",()=>{ closeSheet(); openBForm("sub"); });
 document.querySelectorAll(".viewseg button").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.go==="maison") S.mSec=null; setTab(b.dataset.go); window.scrollTo({top:0}); }));
 /* ===== Maison & véhicules (V3) ===== */
@@ -4813,7 +4883,7 @@ function renderAllNowInner(){
   const v=S.tab;
   renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon();
   if(S.pendingWizard&&meM()&&S.configLoaded){ S.pendingWizard=false; openWizard(isAdmin()&&!(S.config&&S.config.qFait)?"foyer":"perso"); }
-  if(v==="accueil"){ renderToday(); renderRecap(); renderSetupCard(); renderSecretary(); renderRdv(); renderWeek(); renderFridge(); renderAccBudget(); renderAccWho(); }
+  if(v==="accueil"){ renderToday(); renderRecap(); renderSetupCard(); renderSecretary(); renderRdvAlert(); renderWeek(); renderFridge(); renderAccBudget(); renderAccWho(); }
   else if(v==="moi"){ renderMine(); renderCars(); renderPremium(); renderSettings(); }
   else if(v==="recherche") renderSearch();
   else if(v==="foyer") renderFoyer();
@@ -4821,6 +4891,7 @@ function renderAllNowInner(){
   else if(v==="rappels"){ renderCalCard(); renderReminders(); }
   else if(v==="courses") renderCourses();
   else if(v==="repas") renderRepas();
+  else if(v==="agenda"){ renderAgenda(); renderRdv(); }
   else if(v==="documents") renderDocs();
   else if(v==="budget") renderBudget();
   else if(v==="maison") renderMaison();
@@ -5044,7 +5115,7 @@ $("dTitle").addEventListener("input",e=>{ const v=$("dCat").value; if(v==="__new
 
 /* Onglets */
 const TABS=["accueil","moi","foyer","courses","repas","rappels","documents","budget","maison"];
-function setTab(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; const prevTab=S.tab; S.tab=name; if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["foyer","documents","maison","courses","repas","budget","moi"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({documents:"foyer",maison:"foyer",courses:"foyer",repas:"foyer"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name);
+function setTab(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; const prevTab=S.tab; S.tab=name; if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["foyer","documents","maison","courses","repas","agenda","budget","moi"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({documents:"foyer",maison:"foyer",courses:"foyer",repas:"foyer",agenda:"foyer"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name);
   if(prevTab&&prevTab!==name&&!document.querySelector(".wrap.arrive")){ const v=document.querySelector('.view[data-view="'+name+'"]'); if(v){ v.classList.remove("vin"); void v.offsetWidth; v.classList.add("vin"); clearTimeout(S._vinT); S._vinT=setTimeout(()=>v.classList.remove("vin"),320); } }
   { const vs=document.querySelector('.view[data-view="'+name+'"] .viewseg'); if(vs) segAnim(vs,"viewseg"); } if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  if(prevTab&&prevTab!==name) renderAllNow(); else renderAll(); }
 $("tabs").addEventListener("click",e=>{ const b=e.target.closest(".tab"); if(b&&b.dataset.tab){ const same=S.tab===b.dataset.tab; closeSheet(); setTab(b.dataset.tab); renderHeader(); if(same) window.scrollTo({top:0,behavior:"smooth"}); } });
@@ -5215,7 +5286,7 @@ function npGo(r){ closeNotifs(); const x=r.ref; if(r.live){ setTab("courses"); r
   if(r.kind==="Document"){ S.docWho=null; S.docCat=catOf(x.cat||"documents").id||"documents"; if($("papQ")) $("papQ").value=""; return goDoc(x); }
   if(r.kind==="Anniversaire") return openProfile(x.id);
   if(r.kind==="Prélèvement"){ setTab("budget"); window.scrollTo({top:0}); return; }
-  if(r.kind==="Rendez-vous"){ setTab("accueil"); setTimeout(()=>{ const e=$("rdvWrap"); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); },80); return; }
+  if(r.kind==="Rendez-vous"){ S.agDay=null; setTab("agenda"); return; }
   S.mSec={Poubelles:"bins",Contacts:"contacts",Contact:"contacts",Maison:"equip"}[r.kind]||null;
   setTab("maison"); window.scrollTo({top:0});
 }
@@ -5261,12 +5332,12 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeNotifs(); });
 
 /* À chaque lancement, on arrive sur l'accueil (le dernier onglet n'est plus repris) — sauf si une notification « courses » a ouvert l'app */
 setTab("accueil");
-{ const h=(location.hash||"").slice(1); if(h==="courses") setTimeout(()=>{ setTab("courses"); try{ history.replaceState(null,"",location.pathname+location.search); }catch(_){} },0); }
+{ const h=(location.hash||"").slice(1); if(h==="courses"||h==="agenda") setTimeout(()=>{ setTab(h); try{ history.replaceState(null,"",location.pathname+location.search); }catch(_){} },0); }
 try{ if(navigator.serviceWorker) navigator.serviceWorker.addEventListener("message",ev=>{ const u=ev.data&&ev.data.cocoonGo; if(!u) return; const h=String(u).split("#")[1]||""; closeSheet(); setTab(h==="courses"?"courses":"accueil"); renderHeader(); window.scrollTo({top:0,behavior:"instant"}); }); }catch(_){}
 
 $("today").textContent=new Intl.DateTimeFormat("fr-FR",{weekday:"short",day:"numeric",month:"short"}).format(new Date());
 renderAll();
-setInterval(()=>{ renderFeed(); renderSecretary(); },60000);
+setInterval(()=>{ renderFeed(); renderSecretary(); if(S.tab==="accueil"){ renderRdvAlert(); renderToday(); } },60000);
 
 /* =====================================================================
    V3.5 — consolidation
@@ -5450,7 +5521,7 @@ function repasHit(r,n){ const me=meId(), d=parse(r.date), sl={matin:"petit-déj"
   return {s:(n||1)+(r.date>=iso(today())?.5:0),g:"Repas",titre:r.plat,sub:[JOURS_LONGS[(d.getDay()+6)%7]+" "+d.getDate()+" "+MOIS_C(d)+" · "+sl].concat(who).join(" · "),ico:"🍽",c:S_COL.Repas,
     go:()=>{ S.rWeek=Math.round((weekStartOf(d)-weekStartOf(today()))/(7*864e5)); S.rEdit=null; setTab("repas"); window.scrollTo({top:0}); }}; }
 function rdvHit(r,n){ return {s:(n||1)+(r.date>=iso(today())?.5:0),g:"Rendez-vous",titre:r.titre,sub:[r.date?fmtDue(r.date):null,r.heure?heureTxt(r.heure):null,r.lieu].filter(Boolean).join(" · "),ico:"📅",c:S_COL["Rendez-vous"],
-    go:()=>{ setTab("accueil"); setTimeout(()=>{ const e=$("rdvWrap"); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); },80); }}; }
+    go:()=>{ S.agDay=null; setTab("agenda"); window.scrollTo({top:0}); }}; }
 function binHit(b,n){ const nx=binNext(b); return {s:n||1,g:"Poubelles",titre:b.nom,sub:nx?"à sortir "+dueLabel(iso(nx.sortie)):"",ico:"🗑",c:S_COL.Poubelles,go:()=>{ setTab("maison"); setTimeout(()=>{ const e=$("mBins"); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); },80); }}; }
 function taskHit(t){ const me=meId(), c=CAT[t.cat]||CAT.maison; return {s:1,g:"Tâches",titre:t.titre,sub:[t.prive?"Perso":t.pour&&t.pour!=="tous"?"Pour "+(t.pour===me?"toi":membre(t.pour).nom):"Foyer",c.nom,t.echeance?dueLabel(t.echeance):null].filter(Boolean).join(" · "),c:c.c,go:()=>goTask(t)}; }
 function docHit(d){ return {s:1,g:"Papiers",titre:d.titre,sub:[catOf(d.cat).nom,d.expire?(daysTo(d.expire)<0?"expiré le ":"expire le ")+fmtDue(d.expire):null].filter(Boolean).join(" · "),c:"#B9A8F0",go:()=>goDoc(d)}; }
@@ -6016,7 +6087,7 @@ function secHowTo(raw){
   if(has("papier","document","facture","contrat","passeport","carte grise","attestation","scanner","photo"))
     return T("Pour ranger un papier :",["Touche le + en bas, puis « Un papier » (ou va dans Foyer › Papiers).","Donne-lui un nom, par exemple « Bail » ou « Carte grise ».","Choisis la catégorie et, si besoin, la date d'expiration : je te préviendrai avant.","Ajoute la photo ou le PDF, puis touche « Ranger »."],{l:"Ranger un papier",run:cocoGo("documents",null,()=>{ try{ $("dTitle").focus(); }catch(_){} })});
   if(has("rendez","rdv"))
-    return T("Pour ajouter un rendez-vous :",["Sur l'accueil, descends jusqu'à « Rendez-vous » et touche « Ajouter un rendez-vous ».","Indique quoi, la date, l'heure de début et de fin, et le lieu si tu veux.","Choisis pour qui, puis « Ajouter » : tout le foyer le voit et je le rappelle la veille.","Plus rapide : écris-moi « Ajoute un rendez-vous chez le dentiste vendredi de 14h à 15h »."],{l:"Ajouter un rendez-vous",run:()=>{ setTab("accueil"); S.rdvForm={pour:[meId()]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({block:"start",behavior:"smooth"}); },80); }});
+    return T("Pour ajouter un rendez-vous :",["Va dans Foyer › Agenda et touche « Ajouter un rendez-vous ».","Indique quoi, la date, l'heure de début et de fin, et le lieu si tu veux.","Choisis pour qui, puis « Ajouter » : tout le foyer le voit et je le rappelle la veille.","Plus rapide : écris-moi « Ajoute un rendez-vous chez le dentiste vendredi de 14h à 15h »."],{l:"Ajouter un rendez-vous",run:()=>{ setTab("accueil"); S.rdvForm={pour:[meId()]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({block:"start",behavior:"smooth"}); },80); }});
   if(has("repas","menu","manger","diner","dejeuner","vaisselle","cuisine"))
     return T("Pour prévoir les repas :",["Va dans Foyer › Repas.","Touche le moment voulu (petit-déj, midi ou soir) sur le bon jour.","Écris le plat, puis choisis qui cuisine et qui fait la vaisselle.","Plus rapide : écris-moi « Ce soir on mange des lasagnes »."],{l:"Ouvrir les repas",ghost:true,run:cocoGo("repas")});
   if(has("course","liste","caddie","magasin"))
@@ -6069,7 +6140,7 @@ function secCreatePlan(raw){
     const p=parseQuick(rest); let titre=cocoStrip(String(p.titre||"").replace(/^(?:(?:un|le|mon|ce)\s+)?(?:rdv|rendez-vous|rendez vous)\s*(?:chez|avec|au|aux|à la|à l'|a la|pour|de|du|d')?\s*/i,"").replace(/\s+(?:de|à|a|le)\s*$/i,""))||"Rendez-vous";
     const date=p.echeance, heure=hs[0]||null; let fin=hs[1]||null;
     if(heure&&!fin){ const [H,M]=heure.split(":").map(Number), t=Math.min(23*60+59,H*60+M+60); fin=String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0"); }
-    const openForm=()=>{ setTab("accueil"); S.rdvForm={titre,date:date||"",heure:heure||"",heureFin:fin||"",pour:[me]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({block:"start",behavior:"smooth"}); },80); };
+    const openForm=()=>{ setTab("agenda"); S.rdvForm={titre,date:date||"",heure:heure||"",heureFin:fin||"",pour:[me]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({block:"start",behavior:"smooth"}); },80); };
     return {run:async()=>{
       if(!date||!heure) return secA("J'ai besoin "+(!date&&!heure?"du jour et de l'heure":!date?"du jour":"de l'heure")+" pour « "+titre+" ». Réécris-moi la demande avec, ou complète le formulaire.",[],[{l:"Compléter le rendez-vous",run:openForm}]);
       if(new Date(date+"T"+heure).getTime()<Date.now()) return secA("Ce moment est déjà passé : donne-moi une date et une heure à venir.",[],[{l:"Compléter le rendez-vous",run:openForm}]);
