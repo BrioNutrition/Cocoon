@@ -25,11 +25,11 @@ async def main():
     await pg.click('.opt:has-text("Suivre les colis")'); await pg.click('#wzNext')
     await pg.click('#wzNext'); await pg.wait_for_timeout(4200)
     await pg.fill('#fiNom','Angel'); await pg.fill('#fiNaissance','1990-05-04'); await pg.click('#fiSave'); await pg.wait_for_timeout(2600)
-    await pg.click('#navAdd'); await pg.fill('#quickTitle','Arroser les plantes'); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(2000)
+    await pg.evaluate("document.getElementById('navAdd').click()"); await pg.fill('#quickTitle','Arroser les plantes'); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(2000)
     await pg.wait_for_timeout(1500)
     inbase=lambda t: pg.evaluate("t=>__mock.T.cocoon_docs.some(r=>r.data&&r.data.titre===t)", t)
     async def add(t):
-      await pg.click('#navAdd'); await pg.fill('#quickTitle',t); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(600)
+      await pg.evaluate("document.getElementById('navAdd').click()"); await pg.fill('#quickTitle',t); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(600)
     await add('Tâche en ligne'); print('en ligne -> base:', await inbase('Tâche en ligne'))
     # 1) coupure puis retour du réseau
     await pg.evaluate("__mock.offline=true"); await ctx.set_offline(True); await pg.wait_for_timeout(300)

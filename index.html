@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="15/10 09:45";</script>
+<script>window.COCOON_BUILD="15/10 10:03";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2460,6 +2460,22 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .hb-spark svg{width:100%;height:36px;display:block}
 .hub-back{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);border-radius:999px;padding:8px 14px 8px 10px;font:inherit;font-weight:800;font-size:14px;color:var(--ink);cursor:pointer;width:max-content}
 .hub-back span{font-size:20px;line-height:1;margin-top:-2px}
+
+/* Plus de + central : un bouton « Ajouter » par rubrique */
+#navAdd{display:none!important}
+.add-fab{position:fixed;right:16px;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:24;display:inline-flex;align-items:center;gap:7px;border:0;border-radius:999px;padding:12px 18px 12px 14px;font:inherit;font-weight:800;font-size:15px;color:#1C1B2E;background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB);box-shadow:0 10px 24px rgba(255,156,128,.4);cursor:pointer;animation:fabIn .28s cubic-bezier(.2,1.2,.4,1)}
+.add-fab span{font-size:22px;line-height:1;margin-top:-2px;font-weight:900}
+.add-fab:active{transform:scale(.95)}
+.add-fab[hidden]{display:none}
+@keyframes fabIn{from{opacity:0;transform:translateY(10px) scale(.9)}}
+@media (prefers-reduced-motion:reduce){.add-fab{animation:none}}
+html.sheet-open .add-fab{display:none}
+.add-menu{position:fixed;right:16px;bottom:calc(152px + env(safe-area-inset-bottom,0px));z-index:26;background:var(--surface);border-radius:18px;box-shadow:0 14px 36px rgba(0,0,0,.28);padding:6px;display:flex;flex-direction:column;min-width:210px}
+.add-menu[hidden]{display:none}
+.add-menu button{display:flex;align-items:center;gap:10px;border:0;background:none;padding:11px 12px;border-radius:12px;font:inherit;font-weight:700;font-size:14.5px;color:var(--ink);text-align:left;cursor:pointer}
+.add-menu button:active{background:var(--sunk)}
+.add-menu i{font-style:normal;font-size:18px;width:24px;text-align:center}
+.tabs{justify-content:space-around}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2763,6 +2779,8 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
     <p class="rv-status" id="rvStatus"></p>
   </div>
 </div>
+<button type="button" class="add-fab" id="addFab" hidden></button>
+<div class="add-menu" id="addMenu" hidden role="menu"></div>
 <div class="toast" id="toast" hidden role="status"></div>
 
 <script>
@@ -3128,7 +3146,7 @@ function renderMine(){
   const li=$("lockInfo"); li.innerHTML=""; li.append(lockTag("Visibles par toi seul"));
   const perso=S.perso.filter(t=>!t.fait).sort(sortOpen);
   const assigned=S.foyer.filter(t=>!t.fait&&t.pour===me).sort(sortOpen);
-  fillList($("persoList"),perso,S.loaded.p?["Rien de perso pour l'instant","Touche + en bas et choisis « Pour moi » : RDV, papiers, achats perso."]:["Chargement…",""]);
+  fillList($("persoList"),perso,S.loaded.p?["Rien de perso pour l'instant","Touche « + Une tâche perso » en bas à droite : RDV, papiers, achats perso."]:["Chargement…",""]);
   fillList($("assignedList"),assigned,["Rien ne t'a été confié","Les tâches du foyer marquées « pour "+m.nom+" » arrivent ici."],{hideWho:true});
   const done=S.perso.filter(t=>t.fait).concat(S.foyer.filter(t=>t.fait&&(t.pour===me||t.faitPar===me))).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0)).slice(0,30);
   const dl=$("mDoneList"); dl.innerHTML=""; { const h=histHead(done); if(h) dl.append(h); } for(const t of done) dl.append(taskRow(t));
@@ -3145,7 +3163,7 @@ function renderFoyer(){
   const open=S.foyer.filter(t=>!t.fait&&match(t)).sort(sortOpen);
   const done=S.foyer.filter(t=>t.fait&&match(t)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0)).slice(0,40);
   if(!S.loaded.t){ $("openList").innerHTML=""; $("openList").append(el("div",{class:"empty",text:"Chargement des tâches du foyer…"})); }
-  else fillList($("openList"),open,[S.foyer.length?"Rien à faire ici":"Aucune tâche pour le foyer",S.foyer.length?"Change de filtre ou touche + pour en ajouter.":"Ajoute la première : « Acheter filtre VMC », « Vermifuge du chat »…"]);
+  else fillList($("openList"),open,[S.foyer.length?"Rien à faire ici":"Aucune tâche pour le foyer",S.foyer.length?"Change de filtre ou touche « + Une tâche » pour en ajouter.":"Ajoute la première : « Acheter filtre VMC », « Vermifuge du chat »…"]);
   const dl=$("doneList"); dl.innerHTML=""; { const h=histHead(done); if(h) dl.append(h); } for(const t of done) dl.append(taskRow(t));
   $("doneWrap").hidden=!done.length; $("doneSummary").textContent="Tâches réalisées ("+done.length+")";
   const n=S.foyer.filter(t=>!t.fait).length; $("nFoyer").textContent=n; $("nFoyer").hidden=!n;
@@ -5049,7 +5067,7 @@ function renderBadges(){
 function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; try{ renderAllNowInner(); }catch(e){ console.error(e); } if(S.flip) applyFlip(); if(!S.migDone&&!S.migT) S.migT=setTimeout(()=>{ S.migT=0; migrateFiles(); },8000); onboardGate(); if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
 function renderAllNowInner(){
   const v=S.tab;
-  renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon();
+  renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon(); renderFab();
   if(S.pendingWizard&&meM()&&S.configLoaded){ S.pendingWizard=false; openWizard(isAdmin()&&!(S.config&&S.config.qFait)?"foyer":"perso"); }
   if(v==="accueil"){ renderToday(); renderRecap(); renderSetupCard(); renderSecretary(); renderRdvAlert(); renderWeek(); renderFridge(); renderAccBudget(); renderAccWho(); }
   else if(v==="moi"){ renderMine(); renderCars(); renderPremium(); renderSettings(); renderMoiNav(); }
@@ -5338,6 +5356,8 @@ function closeSheet(o){ const sh=$("sheet"), bg=$("sheetBg"), nb=$("navAdd");
   bg.addEventListener("touchmove",e=>e.preventDefault(),{passive:false});
 })();
 $("navAdd").addEventListener("click",()=>{ $("sheet").hidden?openSheet():closeSheet(); });
+$("addFab").addEventListener("click",e=>{ e.stopPropagation(); fabAct(); });
+document.addEventListener("click",e=>{ const M=$("addMenu"); if(M&&!M.hidden&&!e.target.closest("#addMenu")) M.hidden=true; });
 $("sheetBg").addEventListener("click",closeSheet);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("sheet").hidden) closeSheet(); });
 $("sgEquip").addEventListener("click",()=>{ closeSheet(); openMForm("equip"); });
@@ -5957,7 +5977,7 @@ const SET_IC={
   user:'<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c.8-3.8 3.9-6 7.5-6s6.7 2.2 7.5 6"/>'
 };
 /* Onglet Moi : une page d'accueil (profil, Premium, tuiles « Mon espace », réglages) et des sous-pages */
-function moiOpen(sec){ S.moiSec=sec||null; renderMoiNav(); window.scrollTo({top:0,behavior:"smooth"}); }
+function moiOpen(sec){ S.moiSec=sec||null; renderMoiNav(); renderFab(); window.scrollTo({top:0,behavior:"smooth"}); }
 function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'); if(!V) return; const me=meId(), m=meM(), sec=S.moiSec||null;
   const SUBS={perso:["mPersoSub","mDoneWrap"],confie:["mAssignSub"],vehic:["mCars"],notif:["cxNotif"],premium:["mPremium"],compte:["cxAccount"]};
   for(const id of ["cxNotif","cxAccount"]){ const e=$(id); if(e) e.classList.add("ms-sub"); }
@@ -6013,6 +6033,32 @@ function renderHub(){ const G=$("hubGrid"); if(!G) return; G.innerHTML=""; const
   if(!mt){ const eq=(S.equip||[]).map(x=>[x,eqNext(x)]).filter(x=>x[1]).sort((a,b)=>a[1]<b[1]?-1:1)[0]; if(eq&&daysTo(eq[1])<=45) mt="Entretien "+(eq[0].nom||"équipement").toLowerCase()+" "+dueLabel(eq[1]); }
   tile("maison","","#7FCDB9","Maison",mt||"poubelles, contacts, équipements",{cls:"wide",gly:"maison"});
 }
+/* Bouton « Ajouter » propre à chaque rubrique (remplace le + central) */
+function nextFreeMeal(){ const t=today(), h=new Date().getHours(), slots=repasSlots();
+  for(let k=0;k<14;k++){ const d=iso(new Date(t.getFullYear(),t.getMonth(),t.getDate()+k));
+    for(const sl of ["matin","midi","soir"]){ if(!slots.includes(sl)) continue; if(k===0&&((sl==="matin"&&h>=10)||(sl==="midi"&&h>=14)||(sl==="soir"&&h>=21))) continue; if(!repasOf(d,sl)) return [d,sl]; } }
+  return [iso(t),"soir"]; }
+function fabAct(){ const me=meId(), v=S.tab;
+  const go=(sel)=>setTimeout(()=>{ const e=$(sel)||document.querySelector(sel); if(e) e.scrollIntoView({block:"center",behavior:"smooth"}); },80);
+  if(v==="courses"){ window.scrollTo({top:0,behavior:"smooth"}); setTimeout(()=>{ try{ $("cNom").focus(); }catch(_){} },250); return; }
+  if(v==="repas"){ if(!needMe()) return; const [d,sl]=nextFreeMeal(), t0=weekStartOf(today()); S.rWeek=Math.round((weekStartOf(parse(d))-t0)/(7*864e5)); S.rEdit=d+"_"+sl; renderRepas(); go(".r-ed"); setTimeout(()=>{ try{ $("rPlat").focus({preventScroll:true}); }catch(_){} },300); return; }
+  if(v==="agenda"){ if(!needMe()) return; const day=S.agDay&&S.agDay>=iso(today())?S.agDay:""; S.rdvForm={pour:[S.agWho||me],date:day}; renderRdv(); go(".rdv-form"); return; }
+  if(v==="documents"){ openDocForm(); return; }
+  if(v==="budget"){ openBForm("dep"); return; }
+  if(v==="moi"){ openSheet({where:"perso"}); return; }
+  if(v==="maison"){ const M=$("addMenu"); if(!M.hidden){ M.hidden=true; return; } M.innerHTML="";
+    const it=(ic,t,fn)=>M.append(el("button",{type:"button",role:"menuitem",onclick:()=>{ M.hidden=true; fn(); }},el("i",{"aria-hidden":"true",text:ic}),t));
+    it("🗑","Une poubelle",()=>{ S.mSec="bins"; renderMaison(); window.scrollTo({top:0,behavior:"smooth"}); });
+    it("📞","Un contact",()=>{ S.mSec="contacts"; S.ctForm={role:"",nom:"",tel:"",note:"",c:"#C9C7DD"}; renderMaison(); window.scrollTo({top:0,behavior:"smooth"}); setTimeout(()=>{ const x=$("ctRole"); if(x) x.focus(); },200); });
+    it("🔧","Un équipement",()=>openMForm("equip"));
+    it("⚡","Un relevé de compteur",()=>openMForm("releve",{compteur:"elec"}));
+    M.hidden=false; return; }
+  openSheet(); }
+function renderFab(){ const b=$("addFab"); if(!b) return; const v=S.tab, M=$("addMenu"); if(M) M.hidden=true;
+  const L={hub:"Ajouter",foyer:"Une tâche",courses:"Des courses",repas:"Un repas",agenda:"Un rendez-vous",documents:"Un papier",budget:"Une dépense",maison:"Ajouter"};
+  let lab=L[v]||null; if(v==="moi") lab=S.moiSec==="perso"?"Une tâche perso":null;
+  if(!lab||!meId()||S.readOnly){ b.hidden=true; return; }
+  b.hidden=false; b.innerHTML=""; b.append(el("span",{"aria-hidden":"true",text:"+"}),lab); b.setAttribute("aria-label","Ajouter : "+lab.toLowerCase()); }
 function renderSettings(){
   const w=$("mSettings"); if(!w) return; w.innerHTML=""; const m=meM(); if(!m) return;
   const ico=(k,c)=>{ const i=el("span",{class:"b-ico",style:"--stripe:"+c}); i.innerHTML=MI(SET_IC[k]); return i; };
@@ -6313,7 +6359,7 @@ function secHowTo(raw){
   if(has("que peux tu","tu sais faire","tu peux faire")||(has(" aide")&&q.trim().split(" ").length<=3))
     return secA("Je suis "+secIdent().nom+", ton secrétaire. Je peux :",[{t:"te dire ce qui est prévu, en retard ou à renouveler"},{t:"ajouter tout seul une tâche, un rendez-vous, un repas, des courses ou une dépense : écris par exemple « Ajoute un rendez-vous chez le dentiste vendredi à 14h »"},{t:"t'expliquer comment utiliser Cocoon : « Comment ranger un papier ? »"},{t:"répondre sur le budget, les papiers, la maison, les poubelles…"}]);
   if(has("papier","document","facture","contrat","passeport","carte grise","attestation","scanner","photo"))
-    return T("Pour ranger un papier :",["Touche le + en bas, puis « Un papier » (ou va dans Foyer › Papiers).","Donne-lui un nom, par exemple « Bail » ou « Carte grise ».","Choisis la catégorie et, si besoin, la date d'expiration : je te préviendrai avant.","Ajoute la photo ou le PDF, puis touche « Ranger »."],{l:"Ranger un papier",run:cocoGo("documents",null,()=>{ try{ $("dTitle").focus(); }catch(_){} })});
+    return T("Pour ranger un papier :",["Va dans Foyer › Papiers et touche « + Un papier » en bas à droite.","Donne-lui un nom, par exemple « Bail » ou « Carte grise ».","Choisis la catégorie et, si besoin, la date d'expiration : je te préviendrai avant.","Ajoute la photo ou le PDF, puis touche « Ranger »."],{l:"Ranger un papier",run:cocoGo("documents",null,()=>{ try{ $("dTitle").focus(); }catch(_){} })});
   if(has("rendez","rdv"))
     return T("Pour ajouter un rendez-vous :",["Va dans Foyer › Agenda et touche « Ajouter un rendez-vous ».","Indique quoi, la date, l'heure de début et de fin, et le lieu si tu veux.","Choisis pour qui, puis « Ajouter » : tout le foyer le voit et je le rappelle la veille.","Plus rapide : écris-moi « Ajoute un rendez-vous chez le dentiste vendredi de 14h à 15h »."],{l:"Ajouter un rendez-vous",run:()=>{ setTab("accueil"); S.rdvForm={pour:[meId()]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({block:"start",behavior:"smooth"}); },80); }});
   if(has("repas","menu","manger","diner","dejeuner","vaisselle","cuisine"))
@@ -6339,7 +6385,7 @@ function secHowTo(raw){
   if(has("theme","sombre","clair","couleur"))
     return T("Pour changer le thème :",["Va dans Moi et touche le crayon de ton profil.","Dans Apparence, choisis Automatique, Clair ou Sombre.","Touche « Enregistrer »."],{l:"Ouvrir mon espace",ghost:true,run:cocoGo("moi")});
   if(has("tache","rappel","faire"))
-    return T("Pour ajouter une tâche :",["Touche le + en bas de l'écran.","Écris la tâche ; tu peux ajouter la date dans la phrase, par exemple « Payer la cantine vendredi ».","Choisis « Pour moi » (privé) ou « Pour le foyer », puis « Ajouter ».","Plus rapide : écris-moi « Rappelle-moi d'appeler le plombier demain »."],{l:"Ajouter une tâche",run:()=>openSheet({})});
+    return T("Pour ajouter une tâche :",["Va dans Foyer › Tâches et touche « + Une tâche » en bas à droite (ou demande-le-moi directement).","Écris la tâche ; tu peux ajouter la date dans la phrase, par exemple « Payer la cantine vendredi ».","Choisis « Pour moi » (privé) ou « Pour le foyer », puis « Ajouter ».","Plus rapide : écris-moi « Rappelle-moi d'appeler le plombier demain »."],{l:"Ajouter une tâche",run:()=>openSheet({})});
   return null;
 }
 function cocoHours(raw){ const out=[]; for(const m of String(raw).matchAll(/(\d{1,2})\s*(?:h|:)\s*(\d{2})?/gi)){ const H=+m[1], M=+(m[2]||0); if(H<24&&M<60) out.push(String(H).padStart(2,"0")+":"+String(M).padStart(2,"0")); } return out; }
@@ -7027,9 +7073,8 @@ function bilanAuto(){
 /* ===== Visite guidée après le questionnaire ===== */
 const TOUR=[
   {sel:".secretary",t:"Voici %N",d:"Ton secrétaire du foyer. Demande-lui « le numéro du véto », « le bilan du mois », ou d'ajouter un rendez-vous, une course, une dépense…"},
-  {sel:"#navAdd",t:"Ton réflexe : le +",d:"Une tâche, une course, une dépense, un rendez-vous, un papier : tout s'ajoute d'ici, en un geste, depuis n'importe quel écran."},
   {sel:"#dayCard",alt:"#rdvWrap",t:"Ta journée",d:"La semaine en un coup d'œil, et ta journée heure par heure : tâches à cocher, rendez-vous, repas, poubelles. Touche un jour pour le voir."},
-  {sel:'.tab[data-tab="hub"]',t:"Le Foyer",d:"Tout le foyer en tuiles : tâches, courses, repas, agenda, budget, papiers et maison. Bonne installation dans ton cocon !"}];
+  {sel:'.tab[data-tab="hub"]',t:"Le Foyer",d:"Tout le foyer en tuiles : tâches, courses, repas, agenda, budget, papiers et maison. Dans chaque rubrique, le bouton « + » en bas à droite ajoute ce qu'il faut. Bonne installation dans ton cocon !"}];
 function startTour(force){
   if(!force&&((S.prefs||{}).tourVu||S.tourOn||window.__noTour)) return; if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches&&!force){}
   S.tourOn=true; let i=0; const noScroll=e=>{ if(!e.target.closest||!e.target.closest(".tour-card")) e.preventDefault(); }; document.documentElement.classList.add("tour-lock"); window.addEventListener("wheel",noScroll,{passive:false}); window.addEventListener("touchmove",noScroll,{passive:false});

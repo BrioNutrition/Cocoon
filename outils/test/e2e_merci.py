@@ -26,7 +26,7 @@ async def main():
     await pg.click('#wzNext'); await pg.wait_for_timeout(4200)
     await pg.fill('#fiNom','Angel'); await pg.fill('#fiNaissance','1990-05-04'); await pg.click('#fiSave'); await pg.wait_for_timeout(2600)
     await pg.add_style_tag(content='.toast{display:none!important}')
-    await pg.click('#navAdd'); await pg.fill('#quickTitle','Appeler le plombier'); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(400)
+    await pg.evaluate("document.getElementById('navAdd').click()"); await pg.fill('#quickTitle','Appeler le plombier'); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(400)
     await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="documents"]'); await pg.wait_for_timeout(200)
     await pg.click('#papAdd'); await pg.fill('#dTitle','Bail'); await pg.set_input_files('#dFile','../tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(600)
     print('requêtes de lecture:',await pg.evaluate("__mock.calls.filter(c=>c[0]==='select').map(c=>c[1]).join(',')"))

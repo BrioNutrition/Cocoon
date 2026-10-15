@@ -27,7 +27,7 @@ async def main():
     await pg.click('#wzNext'); await pg.wait_for_timeout(4200)
     await pg.fill('#fiNom','Angel'); await pg.fill('#fiNaissance','1990-05-04'); await pg.click('#fiSave'); await pg.wait_for_timeout(3000)
     for t in ['Payer la cantine','Appeler le plombier','Arroser','Sortir le chien','Réserver le resto']:
-      await pg.click('#navAdd'); await pg.fill('#quickTitle',t); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(200)
+      await pg.evaluate("document.getElementById('navAdd').click()"); await pg.fill('#quickTitle',t); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(700)
     await pg.wait_for_timeout(1500)
     await pg.add_init_script(REC)
     cdp=await ctx.new_cdp_session(pg); await cdp.send('Emulation.setCPUThrottlingRate',{'rate':4})

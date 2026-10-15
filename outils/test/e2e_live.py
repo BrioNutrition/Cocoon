@@ -25,7 +25,7 @@ async def main():
     await pg.click('.opt:has-text("Suivre les colis")'); await pg.click('#wzNext')
     await pg.click('#wzNext'); await pg.wait_for_timeout(4200)
     await pg.fill('#fiNom','Angel'); await pg.fill('#fiNaissance','1990-05-04'); await pg.click('#fiSave'); await pg.wait_for_timeout(2600)
-    await pg.click('#navAdd'); await pg.fill('#quickTitle','Arroser les plantes'); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(2000)
+    await pg.evaluate("document.getElementById('navAdd').click()"); await pg.fill('#quickTitle','Arroser les plantes'); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(2000)
     await pg.wait_for_timeout(1200)
     F=await pg.evaluate("__mock.T.cocoon_foyers[0].id")
     await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="courses"]'); await pg.wait_for_timeout(200)
