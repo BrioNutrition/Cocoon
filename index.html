@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="15/10 13:11";</script>
+<script>window.COCOON_BUILD="15/10 13:34";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2515,6 +2515,21 @@ html.sheet-open .hub-cx{display:none}
 .c-pick.lp-in{animation:lpIn .24s ease both}
 @keyframes lpIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.c-item.lp-hold{transform:none}.c-item.lp-pop,.c-pick.lp-in{animation:none}}
+.tk-seg{display:flex;gap:2px;background:var(--surface);border-radius:14px;padding:3px;overflow-x:auto;scrollbar-width:none;box-shadow:0 1px 0 var(--shadow)}
+.tk-seg::-webkit-scrollbar{display:none}
+.tk-seg button{flex:1 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:5px;border:0;background:none;border-radius:11px;padding:8px 12px;font:inherit;font-size:13.5px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.tk-seg button i{font-style:normal;font-size:11px;font-weight:800;opacity:.75}
+.tk-seg button[aria-pressed="true"]{background:#FFC94A;color:#1C1B2E}
+.tk-cats{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:6px 2px 2px;scroll-behavior:smooth}
+.tk-cats::-webkit-scrollbar{display:none}
+.tk-cat{flex:none;width:58px;border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;font:inherit;color:var(--ink);position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tk-cat .ic{width:50px;height:50px;border-radius:17px;display:grid;place-items:center;color:var(--ink);background:color-mix(in srgb,var(--stripe) 42%,var(--surface));--gbg:color-mix(in srgb,var(--stripe) 42%,var(--surface));transition:transform .15s ease,box-shadow .15s ease}
+.tk-cat .ic svg{width:23px;height:23px}
+.tk-cat .tn{font-size:11.5px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+.tk-cat[aria-pressed="true"] .ic{box-shadow:0 0 0 2.5px var(--bg),0 0 0 4.5px #FFC94A}
+.tk-cat[aria-pressed="true"] .tn{color:var(--ink);font-weight:800}
+.tk-cat:active .ic{transform:scale(.92)}
+.tk-cat em{position:absolute;top:-4px;right:0;font-style:normal;font-size:10.5px;font-weight:800;min-width:19px;text-align:center;padding:1px 5px;border-radius:999px;background:#FFC94A;color:#1C1B2E;box-shadow:0 0 0 2px var(--bg)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2627,8 +2642,8 @@ html.sheet-open .hub-cx{display:none}
   <section class="view" data-view="foyer" hidden>
     <button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button>
     <form class="c-add qa-add" id="tQa" autocomplete="off"><input type="text" id="tQaIn" maxlength="120" placeholder="Ajouter une tâche…" aria-label="Nouvelle tâche pour le foyer" enterkeyhint="done"><button class="btn" type="submit">Ajouter</button></form>
-    <div class="tiles" id="tiles" aria-label="Filtrer par catégorie"></div>
-    <div class="chips" id="whoFilter" aria-label="Filtrer par personne"></div>
+    <div class="tk-seg" id="whoFilter" role="group" aria-label="Filtrer par personne"></div>
+    <div class="tk-cats" id="tiles" role="group" aria-label="Filtrer par catégorie"></div>
     <div class="list fridge" id="openList"></div>
     <details class="done-list" id="doneWrap"><summary id="doneSummary">Tâches réalisées</summary><div class="list" id="doneList"></div></details>
     <div class="sub">
@@ -3199,8 +3214,8 @@ function renderFoyer(){
   const me=meId();
   renderTiles();
   const wf=$("whoFilter"); wf.innerHTML="";
-  if(S.catF&&CAT[S.catF]) wf.append(el("button",{class:"chip",type:"button","aria-pressed":"true","aria-label":"Retirer le filtre "+CAT[S.catF].nom,onclick:()=>{S.catF=null;renderFoyer();}},catDot(S.catF),CAT[S.catF].nom+" ×"));
-  for(const w of [{id:null,nom:"Tout le monde"},{id:"tous",nom:"Pour tout le foyer"},...humains().map(m=>({id:m.id,nom:"Pour "+(m.id===me?"moi":m.nom)}))]) wf.append(el("button",{class:"chip",type:"button","aria-pressed":String(S.whoF===w.id),text:w.nom,onclick:()=>{S.whoF=w.id;renderFoyer();}}));
+  { const op=S.foyer.filter(t=>!t.fait&&(!S.catF||t.cat===S.catF)), hs=humains(); const L=[{id:null,nom:"Tous",l:"Toutes les tâches"},{id:"tous",nom:"Foyer",l:"Pour tout le foyer"},...hs.filter(m=>m.id===me).concat(hs.filter(m=>m.id!==me)).map(m=>({id:m.id,nom:m.id===me?"Moi":m.nom,l:"Pour "+(m.id===me?"moi":m.nom)}))];
+    for(const w of L){ const n=op.filter(t=>!w.id||t.pour===w.id).length; wf.append(el("button",{type:"button","aria-pressed":String(S.whoF===w.id),"aria-label":w.l+" : "+n,onclick:()=>{S.whoF=w.id;renderFoyer();}},w.nom,n?el("i",{text:String(n)}):null)); } }
   const match=t=>(!S.catF||t.cat===S.catF)&&(!S.whoF||t.pour===S.whoF);
   const open=S.foyer.filter(t=>!t.fait&&match(t)).sort(sortOpen);
   const done=S.foyer.filter(t=>t.fait&&match(t)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0)).slice(0,40);
@@ -3799,12 +3814,14 @@ function enabledCats(){
 }
 function renderTiles(){
   const tl=$("tiles"); if(!tl) return; tl.innerHTML="";
-  const open=S.foyer.filter(t=>!t.fait), ids=enabledCats(); if(S.catF&&CAT[S.catF]&&!ids.includes(S.catF)) ids.push(S.catF);
-  for(const c of ids.map(id=>CAT[id])){ const n=open.filter(t=>t.cat===c.id).length, on=S.catF===c.id;
-    const b=el("button",{type:"button",class:"tile"+(n?"":" zero"),style:"--stripe:"+c.c,"aria-pressed":String(on),"aria-label":c.nom+" : "+n+" à faire",onclick:()=>{ S.catF=on?null:c.id; renderFoyer(); }});
-    const icw=document.createElement("div"); icw.innerHTML=GI(c.id==="voitures"?"voiture":c.id); const ic=icw.firstChild;
-    b.append(ic,el("span",{class:"tl"},el("span",{class:"tn",text:({rdv:"RDV",documents:"Docs"})[c.id]||c.nom}),el("span",{class:"tc",text:String(n)})));
-    tl.append(b); }
+  const open=S.foyer.filter(t=>!t.fait&&(!S.whoF||t.pour===S.whoF)), ids=enabledCats(); if(S.catF&&CAT[S.catF]&&!ids.includes(S.catF)) ids.push(S.catF);
+  const shown=ids.map(id=>CAT[id]).filter(c=>c.id===S.catF||open.some(t=>t.cat===c.id));
+  tl.hidden=!shown.length; if(!shown.length) return;
+  const mk=(id,nom,col,gly,n,on)=>{ const b=el("button",{type:"button",class:"tk-cat",style:"--stripe:"+col,"aria-pressed":String(on),"aria-label":nom+" : "+n+" à faire",onclick:()=>{ S.catF=id&&!on?id:null; renderFoyer(); }});
+    const ic=el("span",{class:"ic","aria-hidden":"true"}); ic.innerHTML=GI(gly); b.append(ic,el("span",{class:"tn",text:nom})); if(n) b.append(el("em",{text:String(n)})); tl.append(b); };
+  mk(null,"Tout","#FFC94A","taches",open.length,!S.catF);
+  for(const c of shown) mk(c.id,({rdv:"RDV",documents:"Docs"})[c.id]||c.nom,c.c,c.id==="voitures"?"voiture":c.id,open.filter(t=>t.cat===c.id).length,S.catF===c.id);
+  requestAnimationFrame(()=>{ const on=tl.querySelector('[aria-pressed="true"]'); if(on&&on.offsetLeft+on.offsetWidth>tl.clientWidth) tl.scrollLeft=on.offsetLeft-16; });
 }
 function renderFridge(){
   const box=$("fridge"); if(!box) return;
