@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="15/10 14:34";</script>
+<script>window.COCOON_BUILD="15/10 14:42";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2530,21 +2530,10 @@ html.sheet-open .hub-cx{display:none}
 .tk-cat[aria-pressed="true"] .tn{color:var(--ink);font-weight:800}
 .tk-cat:active .ic{transform:scale(.92)}
 .tk-cat em{position:absolute;top:-4px;right:0;font-style:normal;font-size:10.5px;font-weight:800;min-width:19px;text-align:center;padding:1px 5px;border-radius:999px;background:#FFC94A;color:#1C1B2E;box-shadow:0 0 0 2px var(--bg)}
-.nav-cx{position:relative;flex:none;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:58px;border:0;background:none;padding:6px 10px;border-radius:14px;font:inherit;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent}
-.nav-cx .tl{font-size:10.5px;font-weight:600;letter-spacing:.01em}
-.nav-cx img{width:28px;height:28px;border-radius:50%;object-fit:cover;padding:2px;background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB);transition:transform .2s}
-.nav-cx:active img{transform:scale(.9)}
-.nav-cx[aria-expanded="true"] .tl{color:var(--ink)}
-.cx-panel{position:fixed;left:0;right:0;top:0;height:100vh;height:100dvh;z-index:60;background:var(--bg);display:flex;flex-direction:column;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 12px);max-width:640px;margin:0 auto;animation:cxIn .26s cubic-bezier(.2,.9,.3,1) both}
-.cx-panel.out{animation:cxOut .2s ease both}
-@keyframes cxIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-@keyframes cxOut{to{opacity:0;transform:translateY(24px)}}
-@media (prefers-reduced-motion:reduce){.cx-panel,.cx-panel.out{animation:none}}
-.cx-bar{display:flex;align-items:center}
-.cx-panel .secretary.sec-chat{flex:1;min-height:0;margin:0}
-.cx-panel .sec-chat .sec-thread{flex:1;min-height:0;max-height:none!important}
-html.cx-open{overflow:hidden}
-html.cx-open .tabs,html.cx-open #addMenu{visibility:hidden}
+.tab .nav-cxi{width:28px;height:28px;border-radius:50%;object-fit:cover;padding:2px;background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB);transition:transform .2s}
+.tab[data-tab="cocoony"][aria-selected="true"] .nav-cxi{box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px #FF9C80}
+.view[data-view="cocoony"] .secretary.sec-chat{display:flex;flex-direction:column;min-height:320px;margin:0}
+.view[data-view="cocoony"] .sec-chat .sec-thread{flex:1;min-height:0;max-height:none!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2600,9 +2589,12 @@ html.cx-open .tabs,html.cx-open #addMenu{visibility:hidden}
     <button class="tab" data-tab="hub" aria-label="Foyer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="7.5" r="3.6"/><circle cx="17" cy="9" r="2.8"/><path d="M2.5 19.5c0-3.6 2.9-6.2 6.5-6.2s6.5 2.6 6.5 6.2V21h-13z"/><path d="M16.6 21v-1.5c0-1.9-.7-3.6-1.9-4.8.7-.3 1.5-.5 2.3-.5 2.7 0 4.5 2 4.5 4.6V21z"/></svg><span class="n" id="nFoyer" hidden></span><span class="tl">Foyer</span></button>
     <button class="nav-add" type="button" id="navAdd" aria-label="Ajouter" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
     <button class="tab" data-tab="budget" aria-label="Budget" hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 4H17v3H6.5a1 1 0 0 1 0-2z" opacity=".55"/><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6H18a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zm13.5 3.5a1.5 1.5 0 1 0 0 3h4.5v-3z"/></svg><span class="n" id="nBudget" hidden></span><span class="tl">Budget</span></button>
-    <button type="button" class="nav-cx" id="cxBtn" aria-label="Parler à Cocoony" aria-haspopup="dialog"><img alt="" aria-hidden="true"><span class="tl">Cocoony</span></button>
+    <button class="tab" data-tab="cocoony" id="cxBtn" aria-label="Cocoony"><img class="nav-cxi" alt="" aria-hidden="true"><span class="tl">Cocoony</span></button>
     <button class="tab" data-tab="moi" aria-label="Mon espace"><span class="nav-me" id="navMe"></span><span class="n" id="nMoi" hidden></span><span class="tl">Moi</span></button>
   </nav>
+
+  <!-- COCOONY -->
+  <section class="view" data-view="cocoony" id="cxView" hidden></section>
 
   <!-- AUJOURD'HUI -->
   <section class="view" data-view="accueil">
@@ -2853,7 +2845,6 @@ html.cx-open .tabs,html.cx-open #addMenu{visibility:hidden}
 </div>
 <button type="button" class="add-fab" id="addFab" hidden></button>
 <div class="add-menu" id="addMenu" hidden role="menu"></div>
-<div class="cx-panel" id="cxPanel" hidden role="dialog" aria-modal="true" aria-label="Cocoony"><div class="cx-bar"><button type="button" class="hub-back" id="cxClose"><span aria-hidden="true">‹</span>Fermer</button></div></div>
 <div class="toast" id="toast" hidden role="status"></div>
 
 <script>
@@ -5380,7 +5371,7 @@ $("dTitle").addEventListener("input",e=>{ const v=$("dCat").value; if(v==="__new
 
 /* Onglets */
 const TABS=["accueil","moi","foyer","courses","repas","rappels","documents","budget","maison"];
-function setTab(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; const prevTab=S.tab; S.tab=name; if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["hub","foyer","documents","maison","courses","repas","agenda","budget","moi"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({foyer:"hub",documents:"hub",maison:"hub",courses:"hub",repas:"hub",agenda:"hub",budget:"hub"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name);
+function setTab(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; const prevTab=S.tab; S.tab=name; if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["hub","foyer","documents","maison","courses","repas","agenda","budget","moi","cocoony"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({foyer:"hub",documents:"hub",maison:"hub",courses:"hub",repas:"hub",agenda:"hub",budget:"hub"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name);
   if(prevTab&&prevTab!==name&&!document.querySelector(".wrap.arrive")){ const v=document.querySelector('.view[data-view="'+name+'"]'); if(v){ v.classList.remove("vin"); void v.offsetWidth; v.classList.add("vin"); clearTimeout(S._vinT); S._vinT=setTimeout(()=>v.classList.remove("vin"),320); } }
   { const vs=document.querySelector('.view[data-view="'+name+'"] .viewseg'); if(vs) segAnim(vs,"viewseg"); } if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  if(prevTab&&prevTab!==name) renderAllNow(); else renderAll(); }
 $("tabs").addEventListener("click",e=>{ const b=e.target.closest(".tab"); if(b&&b.dataset.tab){ const same=S.tab===b.dataset.tab; closeSheet(); setTab(b.dataset.tab); renderHeader(); if(same) window.scrollTo({top:0,behavior:"smooth"}); } });
@@ -5466,14 +5457,12 @@ async function hubAsk(raw){ let v=String(raw||"").trim(); if(!v) { $("secQ").foc
   try{ r=await plan.run(); }catch(err){ writeErr(err); r=secA("Oups, je n'ai pas réussi."); }
   S.hubMode=null; S.secAns={q:v,r}; renderSecAns(); }
 /* Panneau Cocoony */
-function openCx(){ const P=$("cxPanel"); if(!P) return; if(!P.hidden){ return; } P.hidden=false; document.documentElement.classList.add("cx-open"); $("cxBtn").setAttribute("aria-expanded","true");
-  try{ renderSecChips(); renderSecAns(); }catch(_){} requestAnimationFrame(()=>{ const t=$("secThread"); if(t) t.scrollTop=t.scrollHeight; }); }
-function closeCx(){ const P=$("cxPanel"); if(!P||P.hidden) return; P.classList.add("out"); $("cxBtn").setAttribute("aria-expanded","false"); try{ $("secQ").blur(); }catch(_){}
-  setTimeout(()=>{ P.hidden=true; P.classList.remove("out"); document.documentElement.classList.remove("cx-open"); },200); }
-{ const card=document.querySelector(".secretary.sec-chat"); if(card) $("cxPanel").append(card); }
-$("cxBtn").addEventListener("click",openCx); $("cxClose").addEventListener("click",closeCx);
-document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("cxPanel").hidden) closeCx(); });
-{ const im=document.querySelector("#cxBtn img"), lg=document.querySelector(".brand-logo"); const set=()=>{ try{ const I=secIdent(); im.src=I.src||(lg&&lg.src)||""; }catch(_){ if(lg) im.src=lg.src; } }; set(); setTimeout(set,1500); }
+function cxFit(){ const c=document.querySelector("#cxView .secretary"), n=$("tabs"); if(!c||!n||S.tab!=="cocoony") return; const top=c.getBoundingClientRect().top+window.scrollY, nt=n.getBoundingClientRect().top+window.scrollY; c.style.height=Math.max(320,Math.round(nt-top-14))+"px"; }
+function openCx(){ if(S.tab!=="cocoony"){ try{ closeSheet(); }catch(_){} setTab("cocoony"); } try{ renderSecChips(); renderSecAns(); }catch(_){} requestAnimationFrame(()=>{ cxFit(); const t=$("secThread"); if(t) t.scrollTop=t.scrollHeight; }); }
+function closeCx(){}
+{ const card=document.querySelector(".secretary.sec-chat"); if(card) $("cxView").append(card); }
+$("cxBtn").addEventListener("click",()=>setTimeout(openCx,0)); window.addEventListener("resize",()=>{ try{ cxFit(); }catch(_){} });
+{ const im=document.querySelector("#cxBtn .nav-cxi"), lg=document.querySelector(".brand-logo"); const set=()=>{ try{ const I=secIdent(); im.src=I.src||(lg&&lg.src)||""; }catch(_){ if(lg) im.src=lg.src; } }; set(); setTimeout(set,1500); }
 $("sheetBg").addEventListener("click",closeSheet);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("sheet").hidden) closeSheet(); });
 $("sgEquip").addEventListener("click",()=>{ closeSheet(); openMForm("equip"); });
