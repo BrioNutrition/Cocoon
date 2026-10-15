@@ -45,7 +45,7 @@ async def main():
     # suppression d'un papier → fichier supprimé
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(300)
     await pg.evaluate("window.moiOpen&&moiOpen('compte')"); await pg.wait_for_timeout(200)
-    await pg.click('.set-row:has-text("Mon compte")'); await pg.wait_for_timeout(300)
+    await pg.click('.ms-reg'); await pg.wait_for_timeout(250); await pg.click('.set-row:has-text("Mon compte")'); await pg.wait_for_timeout(300)
     print('compte:', (await pg.inner_text('#cxAccount')).replace('\n',' | '))
     await pg.locator('#cxAccount').scroll_into_view_if_needed(); await pg.screenshot(path='../w4.png')
     await pg.evaluate("document.getElementById('navAdd').click()"); await pg.fill('#quickTitle','Payer la cantine'); await pg.eval_on_selector('#qDue','(e)=>{e.value=new Date(Date.now()+864e5).toISOString().slice(0,10)}'); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(3500)

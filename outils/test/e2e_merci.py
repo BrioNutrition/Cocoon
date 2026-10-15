@@ -45,7 +45,7 @@ async def main():
     # suppression d'un papier → fichier supprimé
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(300)
     await pg.evaluate("window.moiOpen&&moiOpen('compte')"); await pg.wait_for_timeout(200)
-    await pg.click('.set-row:has-text("Mon compte")'); await pg.wait_for_timeout(300)
+    await pg.click('.ms-reg'); await pg.wait_for_timeout(250); await pg.click('.set-row:has-text("Mon compte")'); await pg.wait_for_timeout(300)
     print('compte:', (await pg.inner_text('#cxAccount')).replace('\n',' | '))
     await pg.locator('#cxAccount').scroll_into_view_if_needed(); await pg.screenshot(path='../w4.png')
     await pg.evaluate("""(()=>{ const f=__mock.T.cocoon_members[0].foyer; __mock.remote({foyer:f,path:'taches',id:'em1',data:{titre:'Faire les courses',cat:'courses',pour:'tous',fait:true,faitPar:'emma',faitLe:Date.now()-3600e3,creePar:'emma',creeLe:1},updated_by:'emma'}); __mock.remote({foyer:f,path:'mercis',id:'x_emma',data:{de:'emma',a:'angel',tache:'x',titre:'Sortir le chien',le:Date.now()-600e3},updated_by:'emma'}); })()""")

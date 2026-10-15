@@ -36,7 +36,7 @@ html{background:#F6F5FB;color-scheme:light dark}@media (prefers-color-scheme: da
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="15/10 22:52";</script>
+<script>window.COCOON_BUILD="15/10 23:20";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2652,6 +2652,11 @@ div.pf-r{cursor:default}
 :root[data-theme="dark"] .pf-pill{color:#7BE0A6}:root[data-theme="dark"] .pf-pill.w{color:#FFC94A}:root[data-theme="dark"] .pf-pill.r{color:#FF8A8D}:root[data-theme="dark"] .pf-pill.n{color:var(--muted)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pf-pill{color:#7BE0A6}:root:not([data-theme="light"]) .pf-pill.w{color:#FFC94A}:root:not([data-theme="light"]) .pf-pill.r{color:#FF8A8D}:root:not([data-theme="light"]) .pf-pill.n{color:var(--muted)}}
 .pf-empty{border:2px dashed var(--line);background:none;border-radius:16px;padding:13px;font:inherit;font-weight:700;font-size:14px;color:var(--muted);text-align:left;cursor:pointer}
+.ms-reg{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);border-radius:18px;padding:14px;font:inherit;color:var(--ink);text-align:left;cursor:pointer}
+.ms-reg i{font-style:normal;font-size:20px;width:36px;height:36px;border-radius:12px;background:var(--sunk);display:grid;place-items:center;flex:none}.ms-reg span{flex:1;min-width:0}.ms-reg b{display:block;font-size:15.5px}.ms-reg small{color:var(--muted);font-size:12.5px}.ms-reg u{text-decoration:none;color:var(--muted);font-size:22px}
+.rg-ic{font-size:17px;display:grid;place-items:center}
+.rg-h{margin:4px 2px 2px;font:800 26px/1.1 var(--f-display);letter-spacing:-.02em}
+#moiFiche{margin-top:2px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -3335,7 +3340,8 @@ function renderMine(){
   const h=$("spaceHead"); h.innerHTML="";
   if(!m){ h.append(el("div",{},el("h2",{text:"Mon espace"}),el("p",{text:S.uid?"Crée ton espace en haut de la page pour avoir tes tâches perso.":"Connecte-toi à Claude pour avoir ton espace perso."}))); $("persoList").innerHTML=""; $("assignedList").innerHTML=""; $("mDoneWrap").hidden=true; return; }
   h.style.display="block";
-  h.append(profileCard(m,[pencilBtn(()=>openEditor(me),"Personnaliser mon profil")]));
+  h.append(pwCard(m));
+  { let F=$("moiFiche"); if(!F){ F=el("div",{id:"moiFiche",class:"pf"}); h.after(F); } pfFill(F,m,{soon:false}); const pd=F.querySelector(".pf-docs"); if(pd&&pd.previousElementSibling) F.append(pd.previousElementSibling,pd); }
   const li=$("lockInfo"); li.innerHTML=""; li.append(lockTag("Visibles par toi seul"));
   const perso=S.perso.filter(t=>!t.fait).sort(sortOpen);
   const assigned=S.foyer.filter(t=>!t.fait&&t.pour===me).sort(sortOpen);
@@ -3467,13 +3473,21 @@ function pfIcon(l){ l=norm(l||""); const T=[[/tel|portable|phone/,"📞"],[/poin
   for(const [r,e] of T) if(r.test(l)) return e; return "📝"; }
 function pfInfos(m){ const pub=(m.infos||[]).filter(x=>x&&x.v).map(x=>({l:x.l||"Info",v:x.v})); const pv=(((S.prefs||{}).fichePriv||{})[m.id]||[]).filter(x=>x&&x.v).map(x=>({l:x.l||"Info",v:x.v,p:true})); return pub.concat(pv); }
 function pfIsTel(v){ const d=String(v||"").replace(/[^\d+]/g,""); return d.length>=8&&d.length<=15&&/^[\d\s+().-]+$/.test(String(v).trim()); }
-function renderFiche(m){ const id=m.id, pet=typeOf(m)==="animal", can=canEditProfile(id)&&!S.readOnly, t0=iso(today());
+function renderFiche(m){ const h=$("pHead"); h.innerHTML=""; h.append(pwCard(m));
+  let F=$("pFiche"); if(!F){ F=el("div",{id:"pFiche",class:"pf"}); $("pCare").after(F); } pfFill(F,m,{soon:true});
+  for(const x of ["pStats","pPrivate","pGive"]) { const e=$(x); if(e) e.hidden=true; }
+  const pet=typeOf(m)==="animal";
+  for(const x of ["pOpen","pDone"]) { const e=$(x); if(e&&e.parentElement) e.parentElement.hidden=!pet; }
+  $("pDocsWrap").hidden=true;
+  if(pet){ const ch=document.querySelector("#pCare .pcare-h h3"); if(ch) ch.textContent="Carnet de santé"; }
+}
+function pfData(m){ const id=m.id, pet=typeOf(m)==="animal", can=canEditProfile(id)&&!S.readOnly;
   const all=pfInfos(m), prio=PF_KEYS[typeOf(m)]||PF_KEYS.adulte, keys=[];
   for(const k of prio){ const x=all.find(i=>i.l===k&&!i.p&&String(i.v).length<=22); if(x&&keys.length<3) keys.push(x); }
   for(const x of all){ if(keys.length>=3) break; if(!keys.includes(x)&&!x.p&&!pfIsTel(x.v)&&String(x.v).length<=12) keys.push(x); }
   const rest=all.filter(x=>!keys.includes(x));
-  // carte
-  const h=$("pHead"); h.innerHTML="";
+  return {id,pet,can,keys,rest,nb:nextBirthday(m)}; }
+function pwCard(m){ const D=pfData(m), id=D.id, pet=D.pet, can=D.can, keys=D.keys;
   const card=el("div",{class:"pw-card"+(pet?" pet":""),style:"--pw:"+(m.c||"#7552A8")});
   const age=ageText(m), sub=pet?[m.espece||"Animal",m.race,age].filter(Boolean).join(" · "):[typeLabel(m),age].filter(Boolean).join(" · ");
   const top=el("div",{class:"pw-top"},avatarFor(m,52),el("div",{class:"pw-id"},el("b",{text:m.nom||"Sans nom"}),el("span",{text:sub})));
@@ -3482,10 +3496,9 @@ function renderFiche(m){ const id=m.id, pet=typeOf(m)==="animal", can=canEditPro
   card.append(top);
   if(keys.length){ const k=el("div",{class:"pw-keys"}); for(const x of keys){ const kv=el("div",{},el("small",{text:PF_SHORT[x.l]||x.l}),el("b",{text:x.v})); if(pfIsTel(x.v)){ const a=el("a",{href:telHref(x.v),class:"pw-k"},...kv.childNodes); k.append(a); } else k.append(kv); } card.append(k); }
   else if(can) card.append(el("button",{type:"button",class:"pw-add",text:pet?"+ Ajoute son poids, sa puce, ses croquettes…":"+ Ajoute sa pointure, sa taille, son école…",onclick:()=>openEditor(id)}));
-  const nb=nextBirthday(m); if(nb){ const n=daysTo(nb.date); if(n<=30) card.append(el("div",{class:"pw-bday",text:"🎂 "+(n===0?"Anniversaire aujourd'hui !":"Anniversaire "+dueLabel(nb.date))})); }
-  h.append(card);
-  // blocs de la fiche
-  let F=$("pFiche"); if(!F){ F=el("div",{id:"pFiche",class:"pf"}); $("pCare").after(F); } F.innerHTML="";
+  const nb=D.nb; if(nb){ const n=daysTo(nb.date); if(n<=30) card.append(el("div",{class:"pw-bday",text:"🎂 "+(n===0?"Anniversaire aujourd'hui !":"Anniversaire "+dueLabel(nb.date))})); }
+  return card; }
+function pfFill(F,m,o){ o=o||{}; const D=pfData(m), id=D.id, pet=D.pet, can=D.can, keys=D.keys, rest=D.rest, nb=D.nb, t0=iso(today()); F.innerHTML="";
   const secT=(t,link)=>el("div",{class:"pf-sec"},el("span",{text:t}),link||"");
   const rowsCard=list=>{ const c=el("div",{class:"pf-card"}); for(const x of list) c.append(x); return c; };
   const infoRow=x=>{ const tel=pfIsTel(x.v); const r=el(tel?"a":"button",tel?{class:"pf-r",href:telHref(x.v)}:{type:"button",class:"pf-r",onclick:async()=>{ try{ await navigator.clipboard.writeText(x.v); toast("« "+esc(x.v)+" » copié."); }catch(_){ toast(esc(x.l)+" : "+esc(x.v)); } }},
@@ -3505,16 +3518,11 @@ function renderFiche(m){ const id=m.id, pet=typeOf(m)==="animal", can=canEditPro
   if(restRows.length||can){ F.append(secT(pet?"Infos":"Infos pratiques",can?el("button",{type:"button",class:"pf-link",text:"Modifier",onclick:()=>openEditor(id)}):null));
     if(restRows.length) F.append(rowsCard(restRows)); else F.append(el("button",{type:"button",class:"pf-empty",text:pet?"+ Véto, croquettes, assurance, qui le garde…":"+ Médecin, allergies, mutuelle, école…",onclick:()=>openEditor(id)})); }
   // bientôt (humains)
-  if(!pet){ const items=[];
+  if(!pet&&o.soon){ const items=[];
     for(const r of (S.rdvs||[]).filter(r=>!r.fait&&r.date&&r.date>=t0&&r.pour&&r.pour.includes(id)).sort((a,b)=>(a.date+(a.heure||""))<(b.date+(b.heure||""))?-1:1).slice(0,3)) items.push(["📅",r.titre,(r.date===t0?"aujourd'hui":dueLabel(r.date))+(r.heure?" "+heureTxt(r.heure):"")]);
     for(const t of S.foyer.filter(t=>!t.fait&&t.pour===id&&t.echeance).sort(sortOpen).slice(0,3)) items.push(["✓",t.titre,dueLabel(t.echeance)]);
     if(nb&&daysTo(nb.date)<=60&&daysTo(nb.date)>30) items.push(["🎂","Anniversaire",dueLabel(nb.date)]);
     if(items.length){ F.append(secT("Bientôt")); F.append(rowsCard(items.map(([i,t,w])=>el("div",{class:"pf-r"},el("i",{"aria-hidden":"true",text:i}),el("span",{class:"pf-l",text:t}),el("b",{text:w}))))); } }
-  // masquer l'ancien profil pour les humains (la mini-fiche montre déjà les tâches)
-  for(const x of ["pStats","pPrivate","pGive"]) { const e=$(x); if(e) e.hidden=true; }
-  for(const x of ["pOpen","pDone"]) { const e=$(x); if(e&&e.parentElement) e.parentElement.hidden=!pet; }
-  $("pDocsWrap").hidden=true;
-  if(pet){ const ch=document.querySelector("#pCare .pcare-h h3"); if(ch) ch.textContent="Carnet de santé"; }
 }
 async function removeFromFoyer(m){
   if(!S.db||!S.isOwner) return;
@@ -6307,13 +6315,13 @@ const SET_IC={
 /* Onglet Moi : une page d'accueil (profil, Premium, tuiles « Mon espace », réglages) et des sous-pages */
 function moiOpen(sec){ S.moiSec=sec||null; renderMoiNav(); renderFab(); window.scrollTo({top:0,behavior:"smooth"}); }
 function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'); if(!V) return; const me=meId(), m=meM(), sec=S.moiSec||null;
-  const SUBS={perso:["mPersoSub","mDoneWrap"],confie:["mAssignSub"],vehic:["mCars"],notif:["cxNotif"],premium:["mPremium"],compte:["cxAccount"]};
-  for(const id of ["cxNotif","cxAccount"]){ const e=$(id); if(e) e.classList.add("ms-sub"); }
+  const SUBS={perso:["mPersoSub","mDoneWrap"],confie:["mAssignSub"],vehic:["mCars"],notif:["cxNotif"],premium:["mPremium"],compte:["cxAccount"],reglages:["mReglages","mSettings"]};
+  for(const id of ["cxNotif","cxAccount","mSettings","moiPrem"]){ const e=$(id); if(e) e.classList.add("ms-sub"); }
   V.querySelectorAll(".ms-show").forEach(e=>e.classList.remove("ms-show"));
   if(sec&&SUBS[sec]){ V.dataset.sec=sec; for(const id of SUBS[sec]){ const e=$(id); if(e) e.classList.add("ms-show"); } } else { delete V.dataset.sec; S.moiSec=null; }
   const P=$("moiPrem"), T=$("moiTiles"); if(!P||!T) return; P.innerHTML=""; T.innerHTML="";
   if(!m) return;
-  // Premium : une ligne discrète
+  // Premium : une ligne discrète (dans Réglages)
   P.append(el("button",{type:"button",class:"ms-prem",onclick:()=>openPremium()},el("i",{"aria-hidden":"true",text:"✨"}),el("span",{},el("b",{text:"Cocoon Premium"}),el("small",{text:(S.prefs&&S.prefs.premiumInteret)?"Tu seras prévenu·e du lancement":"Papiers en photo, secrétaire intelligent, et plus"})),el("u",{text:"Découvrir"})));
   // Mon espace : tuiles
   const perso=S.perso.filter(t=>!t.fait), conf=S.foyer.filter(t=>!t.fait&&t.pour===me), late=perso.concat(conf).filter(t=>t.echeance&&daysTo(t.echeance)<0).length;
@@ -6323,9 +6331,18 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
     tile("perso","🔒","#FFC94A","Mes tâches perso",perso.length?perso.length+" à faire":"visibles par toi seul",perso.length?String(perso.length):null),
     tile("confie","📌","#8FB8FF","Confié par le foyer",conf.length?conf.length+" à faire":"rien pour l'instant",conf.length?String(conf.length):null),
     tile("vehic","🚗","#7FD39A","Mes véhicules",v0?(v0.nom||"Véhicule")+(vNext?" · "+vNext[0]+" "+MOIS.format(parse(vNext[1])):""):"ajouter une voiture",null),
-    window.cocoonHost&&$("cxNotif")?tile("notif","🔔","#E79ADB","Notifications","rappels sur ton téléphone",null):tile("perso","✓","#B9A8F0","Tâches réalisées","ton historique",null),
-    tile("apparence","🎨","#FF9C80","Apparence","thème, couleurs, Cocoony",null,()=>openPalette()));
-  T.append(el("div",{class:"ms-gl",text:"Mon espace"+(late?" · "+late+" en retard":"")}),g); }
+    window.cocoonHost&&$("cxNotif")?tile("notif","🔔","#E79ADB","Notifications","rappels sur ton téléphone",null):tile("perso","✓","#B9A8F0","Tâches réalisées","ton historique",null));
+  const reg=el("button",{type:"button",class:"ms-reg",onclick:()=>moiOpen("reglages")},el("i",{"aria-hidden":"true",text:"⚙️"}),el("span",{},el("b",{text:"Réglages"}),el("small",{text:"apparence, compte, confidentialité, mes données"})),el("u",{"aria-hidden":"true",text:"›"}));
+  T.append(el("div",{class:"ms-gl",text:"Mon espace"+(late?" · "+late+" en retard":"")}),g,reg);
+  // sous-page Réglages
+  let RG=$("mReglages"); if(!RG){ RG=el("div",{id:"mReglages",class:"sub ms-sub"}); $("mSettings").before(RG); } RG.innerHTML="";
+  const ico=(e,c)=>el("span",{class:"b-ico rg-ic",style:"--stripe:"+c,text:e});
+  const rrow=(e,c,t,sub,fn)=>el("button",{type:"button",class:"set-row",onclick:fn},ico(e,c),el("span",{class:"t"},el("b",{text:t}),el("small",{text:sub})));
+  const box=el("div",{class:"settings"});
+  box.append(rrow("🎨","#FF9C80","Apparence","Thème clair ou sombre, couleurs, Cocoony",()=>openPalette()));
+  if(window.cocoonHost&&$("cxNotif")) box.append(rrow("🔔","#E79ADB","Notifications","Rappels sur ton téléphone",()=>moiOpen("notif")));
+  box.append(rrow("✨","#FFC94A","Cocoon Premium",(S.prefs&&S.prefs.premiumInteret)?"Tu seras prévenu·e du lancement":"Papiers en photo, secrétaire intelligent, et plus",()=>openPremium()));
+  RG.append(el("h2",{class:"rg-h",text:"Réglages"}),el("div",{class:"ms-gl",text:"Préférences"}),box); }
 /* Foyer : toutes les rubriques en tuiles (bento) */
 function hubGo(v){ if(v==="premium"){ openPremium(); return; } if(v==="maison") S.mSec=null; setTab(v); window.scrollTo({top:0}); }
 function budgetSpark(){ const t=today(), Y=t.getFullYear(), M=t.getMonth(), dim=new Date(Y,M+1,0).getDate(), day=t.getDate();
