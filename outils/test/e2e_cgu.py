@@ -18,6 +18,10 @@ async def main():
     pass
     await pg.goto('http://localhost:8772/'); await pg.wait_for_timeout(800)
     await pg.click('#cxGate [data-go="signup"]'); await pg.fill('#cxGate input[name=email]','angel@test.fr'); await pg.fill('#cxGate input[name=pw]','secret123'); await pg.click('#cxGate .cx-btn')
+    for _ in range(6):  # GATE_RETRY
+      if await pg.is_visible('#cxGate [data-act="create"]'): break
+      if await pg.is_visible('#cxGate .cx-btn'): await pg.click('#cxGate .cx-btn')
+      await pg.wait_for_timeout(1500)
     await pg.wait_for_timeout(500); await pg.click('#cxGate [data-act="create"]'); await pg.wait_for_selector('#cxGate', state='hidden'); await pg.wait_for_timeout(2500)
     await pg.click('#spGo'); await pg.fill('#wzNom','Nours'); await pg.click('#wzNext')
     await pg.click('.opt:has-text("En couple")'); await pg.fill('#wzPart','Emma'); await pg.click('#wzNext')

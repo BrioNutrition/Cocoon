@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="15/10 15:02";</script>
+<script>window.COCOON_BUILD="15/10 15:22";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2530,12 +2530,11 @@ html.sheet-open .hub-cx{display:none}
 .tk-cat[aria-pressed="true"] .tn{color:var(--ink);font-weight:800}
 .tk-cat:active .ic{transform:scale(.92)}
 .tk-cat em{position:absolute;top:-4px;right:0;font-style:normal;font-size:10.5px;font-weight:800;min-width:19px;text-align:center;padding:1px 5px;border-radius:999px;background:#FFC94A;color:#1C1B2E;box-shadow:0 0 0 2px var(--bg)}
-.tab .nav-cxi{display:block;width:28px;height:28px;border-radius:50%;padding:2px;background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB);transition:transform .2s;box-sizing:border-box}
-.tab .nav-cxi>span{display:block;width:100%;height:100%;border-radius:50%;overflow:hidden;position:relative}
-.tab .nav-cxi img{position:absolute;left:50%;top:50%;width:122%;height:122%;max-width:none;transform:translate(-53%,-54%);object-fit:cover;display:block}
-.tab[data-tab="cocoony"][aria-selected="true"] .nav-cxi{padding:2.5px;background:#FF9C80}
+.tab .nav-cxi{width:28px;height:28px;border-radius:50%;object-fit:cover;padding:2px;background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB);transition:transform .2s;box-sizing:border-box}
+.tab[data-tab="cocoony"][aria-selected="true"] .nav-cxi{background:#FF9C80}
 .view[data-view="cocoony"] .secretary.sec-chat{display:flex;flex-direction:column;min-height:320px;margin:0}
 .view[data-view="cocoony"] .sec-chat .sec-thread{flex:1;min-height:0;max-height:none!important}
+#palBtn{display:none!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2591,7 +2590,7 @@ html.sheet-open .hub-cx{display:none}
     <button class="tab" data-tab="hub" aria-label="Foyer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="7.5" r="3.6"/><circle cx="17" cy="9" r="2.8"/><path d="M2.5 19.5c0-3.6 2.9-6.2 6.5-6.2s6.5 2.6 6.5 6.2V21h-13z"/><path d="M16.6 21v-1.5c0-1.9-.7-3.6-1.9-4.8.7-.3 1.5-.5 2.3-.5 2.7 0 4.5 2 4.5 4.6V21z"/></svg><span class="n" id="nFoyer" hidden></span><span class="tl">Foyer</span></button>
     <button class="nav-add" type="button" id="navAdd" aria-label="Ajouter" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
     <button class="tab" data-tab="budget" aria-label="Budget" hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 4H17v3H6.5a1 1 0 0 1 0-2z" opacity=".55"/><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6H18a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zm13.5 3.5a1.5 1.5 0 1 0 0 3h4.5v-3z"/></svg><span class="n" id="nBudget" hidden></span><span class="tl">Budget</span></button>
-    <button class="tab" data-tab="cocoony" id="cxBtn" aria-label="Cocoony"><span class="nav-cxi" aria-hidden="true"><span><img alt=""></span></span><span class="tl">Cocoony</span></button>
+    <button class="tab" data-tab="cocoony" id="cxBtn" aria-label="Cocoony"><img class="nav-cxi" alt="" aria-hidden="true"><span class="tl">Cocoony</span></button>
     <button class="tab" data-tab="moi" aria-label="Mon espace"><span class="nav-me" id="navMe"></span><span class="n" id="nMoi" hidden></span><span class="tl">Moi</span></button>
   </nav>
 
@@ -5464,7 +5463,7 @@ function openCx(){ if(S.tab!=="cocoony"){ try{ closeSheet(); }catch(_){} setTab(
 function closeCx(){}
 { const card=document.querySelector(".secretary.sec-chat"); if(card) $("cxView").append(card); }
 $("cxBtn").addEventListener("click",()=>setTimeout(openCx,0)); window.addEventListener("resize",()=>{ try{ cxFit(); }catch(_){} });
-{ const im=document.querySelector("#cxBtn .nav-cxi img"), lg=document.querySelector(".brand-logo"); const set=()=>{ try{ const I=secIdent(); im.src=I.src||(lg&&lg.src)||""; }catch(_){ if(lg) im.src=lg.src; } }; set(); setTimeout(set,1500); }
+{ const im=document.querySelector("#cxBtn .nav-cxi"), lg=document.querySelector(".brand-logo"); const set=()=>{ try{ const I=secIdent(); im.src=I.src||(lg&&lg.src)||""; }catch(_){ if(lg) im.src=lg.src; } }; set(); setTimeout(set,1500); }
 $("sheetBg").addEventListener("click",closeSheet);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("sheet").hidden) closeSheet(); });
 $("sgEquip").addEventListener("click",()=>{ closeSheet(); openMForm("equip"); });
@@ -6105,12 +6104,13 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
   // Mon espace : tuiles
   const perso=S.perso.filter(t=>!t.fait), conf=S.foyer.filter(t=>!t.fait&&t.pour===me), late=perso.concat(conf).filter(t=>t.echeance&&daysTo(t.echeance)<0).length;
   const vs=S.vehic||[], v0=vs[0], vNext=v0?[v0.ctProchain?["CT",v0.ctProchain]:null].filter(Boolean)[0]:null;
-  const tile=(k,ic,c,t,sub,badge)=>{ const b=el("button",{type:"button",class:"ms-tile",style:"--bc:"+c,onclick:()=>moiOpen(k)},el("i",{"aria-hidden":"true",text:ic}),el("b",{text:t}),el("span",{text:sub})); if(badge) b.append(el("em",{text:badge})); return b; };
+  const tile=(k,ic,c,t,sub,badge,fn)=>{ const b=el("button",{type:"button",class:"ms-tile",style:"--bc:"+c,onclick:fn||(()=>moiOpen(k))},el("i",{"aria-hidden":"true",text:ic}),el("b",{text:t}),el("span",{text:sub})); if(badge) b.append(el("em",{text:badge})); return b; };
   const g=el("div",{class:"ms-tiles"},
     tile("perso","🔒","#FFC94A","Mes tâches perso",perso.length?perso.length+" à faire":"visibles par toi seul",perso.length?String(perso.length):null),
     tile("confie","📌","#8FB8FF","Confié par le foyer",conf.length?conf.length+" à faire":"rien pour l'instant",conf.length?String(conf.length):null),
     tile("vehic","🚗","#7FD39A","Mes véhicules",v0?(v0.nom||"Véhicule")+(vNext?" · "+vNext[0]+" "+MOIS.format(parse(vNext[1])):""):"ajouter une voiture",null),
-    window.cocoonHost&&$("cxNotif")?tile("notif","🔔","#E79ADB","Notifications","rappels sur ton téléphone",null):tile("perso","✓","#B9A8F0","Tâches réalisées","ton historique",null));
+    window.cocoonHost&&$("cxNotif")?tile("notif","🔔","#E79ADB","Notifications","rappels sur ton téléphone",null):tile("perso","✓","#B9A8F0","Tâches réalisées","ton historique",null),
+    tile("apparence","🎨","#FF9C80","Apparence","thème, couleurs, Cocoony",null,()=>openPalette()));
   T.append(el("div",{class:"ms-gl",text:"Mon espace"+(late?" · "+late+" en retard":"")}),g); }
 /* Foyer : toutes les rubriques en tuiles (bento) */
 function hubGo(v){ if(v==="maison") S.mSec=null; setTab(v); window.scrollTo({top:0}); }
@@ -6503,7 +6503,7 @@ function secHowTo(raw){
   if(has("notif"))
     return T("Pour les notifications :",["Va dans Moi, rubrique Notifications.","Active-les et choisis ce que tu veux recevoir : rappel du matin, courses, tâches confiées.","Le silence de nuit évite d'être dérangé le soir."],{l:"Ouvrir mon espace",ghost:true,run:cocoGo("moi")});
   if(has("theme","sombre","clair","couleur"))
-    return T("Pour changer le thème :",["Va dans Moi et touche le crayon de ton profil.","Dans Apparence, choisis Automatique, Clair ou Sombre.","Touche « Enregistrer »."],{l:"Ouvrir mon espace",ghost:true,run:cocoGo("moi")});
+    return T("Pour changer le thème ou les couleurs :",["Va dans Moi, tuile « Apparence ».","Choisis Automatique, Clair ou Sombre, puis tes couleurs. Tu peux aussi me renommer et changer ma photo.","Touche « Enregistrer »."],{l:"Ouvrir l'apparence",run:()=>{ setTab("moi"); setTimeout(()=>openPalette(),150); }});
   if(has("tache","rappel","faire"))
     return T("Pour ajouter une tâche :",["Va dans Foyer › Tâches et écris-la dans le champ en haut (ou écris-la-moi directement).","Écris la tâche ; tu peux ajouter la date dans la phrase, par exemple « Payer la cantine vendredi ».","Choisis « Pour moi » (privé) ou « Pour le foyer », puis « Ajouter ».","Plus rapide : écris-moi « Rappelle-moi d'appeler le plombier demain »."],{l:"Ajouter une tâche",run:()=>openSheet({})});
   return null;
@@ -6654,7 +6654,7 @@ function emoSrc(e,a,b){ return "data:image/svg+xml,"+encodeURIComponent('<svg xm
 function secIdent(over){ const p=Object.assign({},S.prefs||{},S.secIdLocal||{},over||{}); const lg=document.querySelector(".brand-logo");
   let src=lg?lg.src:""; if(p.secPhoto){ if(String(p.secPhoto).startsWith("emo:")){ const e=SEC_EMO[parseInt(p.secPhoto.slice(4),10)]; if(e) src=emoSrc(...e); } else src=p.secPhoto; }
   return {nom:String(p.secNom||"").trim()||"Cocoony",src}; }
-function applySecIdent(over){ const I=secIdent(over); const n=document.querySelector(".sec-name"); if(n) n.textContent=I.nom;
+function applySecIdent(over){ const I=secIdent(over); { const nv=document.querySelector("#cxBtn .nav-cxi"), lg=document.querySelector(".brand-logo"); if(nv){ const src=I.src||(lg&&lg.src)||""; if(src&&nv.getAttribute("src")!==src) nv.src=src; } } const n=document.querySelector(".sec-name"); if(n) n.textContent=I.nom;
   const g=$("secBig"); if(g&&I.src) g.src=I.src; document.querySelectorAll(".sec-av").forEach(im=>{ if(I.src) im.src=I.src; }); return I; }
 function squareImg(file,size){ return new Promise((res,rej)=>{ const fr=new FileReader(); fr.onerror=rej; fr.onload=()=>{ const im=new Image(); im.onerror=rej; im.onload=()=>{ const c=document.createElement("canvas"); c.width=c.height=size; const s=Math.min(im.width,im.height), x=(im.width-s)/2, y=(im.height-s)/2; c.getContext("2d").drawImage(im,x,y,s,s,0,0,size,size); res(c.toDataURL("image/jpeg",.85)); }; im.src=fr.result; }; fr.readAsDataURL(file); }); }
 function openPalette(){ const was={pal:palGet(),theme:curTheme(),sec:{secNom:(secIdent().nom),secPhoto:(Object.assign({},S.prefs||{},S.secIdLocal||{})).secPhoto||null}}, cur={pal:Object.assign({},was.pal),theme:was.theme,sec:Object.assign({},was.sec)};
