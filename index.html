@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="15/10 11:00";</script>
+<script>window.COCOON_BUILD="15/10 11:16";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2476,6 +2476,35 @@ html.sheet-open .add-fab{display:none}
 .add-menu button:active{background:var(--sunk)}
 .add-menu i{font-style:normal;width:24px;display:grid;place-items:center;color:var(--ink);--gbg:var(--surface)}.add-menu i svg{width:20px;height:20px}
 .tabs{justify-content:space-around}
+#addFab{display:none!important}
+.qa-add{margin:2px 0 2px}
+.hub-bar{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hub-add{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:8px 15px 8px 12px;font:inherit;font-weight:800;font-size:14px;color:#1C1B2E;background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.hub-add span{font-size:19px;line-height:1;margin-top:-2px}
+.hub-add:active{transform:scale(.96)}
+.view[data-view="hub"]{padding-bottom:150px}
+.hub-cx{position:fixed;left:12px;right:12px;bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:24;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
+html.sheet-open .hub-cx{display:none}
+.hub-sug{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 2px}
+.hub-sug::-webkit-scrollbar{display:none}
+.hub-sug button{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 11px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.hub-sug button[aria-pressed="true"]{background:#FFC94A;border-color:#FFC94A;color:#1C1B2E}
+.hub-ask{display:flex;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:20px;padding:7px 7px 7px 9px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.hub-ask:focus-within{border-color:#FF9C80}
+.hub-av{width:28px;height:28px;border-radius:50%;flex:none;overflow:hidden;display:block}
+.hub-av img{width:100%;height:100%;object-fit:cover;display:block}
+.hub-ask input{flex:1;min-width:0;border:0;background:none;font:inherit;font-size:16px;color:var(--ink);padding:6px 2px;outline:none}
+.hub-ask button{flex:none;width:38px;height:38px;border:0;border-radius:13px;display:grid;place-items:center;color:#1C1B2E;background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB);cursor:pointer}
+.hub-ask button svg{width:19px;height:19px}
+.hub-ans{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 38px 12px 12px;box-shadow:0 8px 24px rgba(0,0,0,.18);font-size:14px;line-height:1.4;animation:fabIn .25s ease}
+.hub-ans .ha-t{display:flex;gap:9px;align-items:flex-start}
+.hub-ans .ha-t .hub-av{width:24px;height:24px}
+.hub-ans ul{margin:6px 0 0 33px;padding:0;list-style:none;font-size:13px;color:var(--muted)}
+.hub-ans .ha-act{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0 0 33px}
+.hub-ans .ha-act button{border:0;border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;font-weight:800;cursor:pointer;background:#FFC94A;color:#1C1B2E}
+.hub-ans .ha-act button.g{background:color-mix(in srgb,var(--ink) 9%,transparent);color:var(--ink)}
+.hub-ans .ha-x{position:absolute;top:6px;right:6px;width:28px;height:28px;border:0;border-radius:50%;background:none;color:var(--muted);font-size:18px;cursor:pointer}
+.hub-ans.busy .ha-txt{color:var(--muted)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2569,6 +2598,7 @@ html.sheet-open .add-fab{display:none}
     <div id="moiTiles"></div>
     <div class="sub ms-sub" id="mPersoSub">
       <h3>Mes tâches perso <span class="lock" id="lockInfo"></span></h3>
+      <form class="c-add qa-add" id="pQa" autocomplete="off"><input type="text" id="pQaIn" maxlength="120" placeholder="Ajouter une tâche perso…" aria-label="Nouvelle tâche perso" enterkeyhint="done"><button class="btn" type="submit">Ajouter</button></form>
       <div class="list fridge" id="persoList"></div>
     </div>
     <div class="sub ms-sub" id="mAssignSub">
@@ -2586,6 +2616,7 @@ html.sheet-open .add-fab{display:none}
   <!-- FOYER -->
   <section class="view" data-view="foyer" hidden>
     <button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button>
+    <form class="c-add qa-add" id="tQa" autocomplete="off"><input type="text" id="tQaIn" maxlength="120" placeholder="Ajouter une tâche…" aria-label="Nouvelle tâche pour le foyer" enterkeyhint="done"><button class="btn" type="submit">Ajouter</button></form>
     <div class="tiles" id="tiles" aria-label="Filtrer par catégorie"></div>
     <div class="chips" id="whoFilter" aria-label="Filtrer par personne"></div>
     <div class="list fridge" id="openList"></div>
@@ -2610,7 +2641,7 @@ html.sheet-open .add-fab{display:none}
   </section>
 
   <section class="view" data-view="agenda" hidden>
-    <button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button>
+    <div class="hub-bar"><button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button><button type="button" class="hub-add" data-add="agenda" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
     <div class="seg ag-who" id="agWho" role="group" aria-label="Pour qui"></div>
     <div class="ag-cal" id="agCal"></div>
     <div class="sub" id="rdvWrap"></div>
@@ -2618,6 +2649,7 @@ html.sheet-open .add-fab{display:none}
 
   <section class="view" data-view="repas" hidden>
     <button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button>
+    <form class="c-add qa-add" id="rQa" autocomplete="off"><input type="text" id="rQaIn" maxlength="80" placeholder="Un plat pour le prochain repas…" aria-label="Plat à prévoir au prochain repas libre" enterkeyhint="done"><button class="btn" type="submit">Ajouter</button></form>
     <div id="rBody" class="r-body"></div>
   </section>
 
@@ -2657,7 +2689,7 @@ html.sheet-open .add-fab{display:none}
 
   <!-- DOCUMENTS -->
   <section class="view" data-view="documents" hidden>
-    <button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button>
+    <div class="hub-bar"><button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button><button type="button" class="hub-add" data-add="documents" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
     <div id="papHero"></div>
     <label class="pap-search" for="papQ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg><input type="search" id="papQ" placeholder="Chercher : bail, mutuelle, carte grise…" aria-label="Chercher un papier" autocomplete="off" enterkeyhint="search"></label>
     <button type="button" class="pap-add" id="papAdd" aria-expanded="false"><span class="pa-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v9A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.6"/></svg></span><span class="pa-t"><b>Ranger un papier</b><small>Photo, PDF, ou juste une date à ne pas oublier</small></span><span class="pa-x" aria-hidden="true">+</span></button>
@@ -2683,7 +2715,7 @@ html.sheet-open .add-fab{display:none}
 
   <!-- MAISON & VÉHICULES (V3) -->
   <section class="view" data-view="maison" hidden>
-    <button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button>
+    <div class="hub-bar"><button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button><button type="button" class="hub-add" data-add="maison" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
     <div class="m-dash" id="mDash"></div>
     <form class="b-form" id="mhForm" hidden autocomplete="off"></form>
     <div class="sub" id="mHome"></div>
@@ -2705,10 +2737,11 @@ html.sheet-open .add-fab{display:none}
   <section class="view" data-view="hub" hidden>
     <div class="hub-h"><h2>Le foyer</h2></div>
     <div class="hub" id="hubGrid"></div>
+    <div class="hub-cx" id="hubCx"><div class="hub-ans" id="hubAns" hidden aria-live="polite"></div><div class="hub-sug" id="hubSug"></div><form class="hub-ask" id="hubAsk" autocomplete="off"><span class="hub-av" id="hubAv"></span><input type="text" id="hubQ" maxlength="200" enterkeyhint="send" placeholder="Ajoute ce que tu veux…" aria-label="Demander à Cocoony d'ajouter quelque chose"><button type="submit" aria-label="Envoyer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button></form></div>
   </section>
 
   <section class="view" data-view="budget" hidden>
-    <button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button>
+    <div class="hub-bar"><button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button><button type="button" class="hub-add" data-add="budget" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
     <div class="b-hero" id="bHero"></div>
     <div class="sub b-owe" id="bBalanceWrap"></div>
     <div class="b-actions">
@@ -3146,7 +3179,7 @@ function renderMine(){
   const li=$("lockInfo"); li.innerHTML=""; li.append(lockTag("Visibles par toi seul"));
   const perso=S.perso.filter(t=>!t.fait).sort(sortOpen);
   const assigned=S.foyer.filter(t=>!t.fait&&t.pour===me).sort(sortOpen);
-  fillList($("persoList"),perso,S.loaded.p?["Rien de perso pour l'instant","Touche le bouton « + » en bas à droite : RDV, papiers, achats perso."]:["Chargement…",""]);
+  fillList($("persoList"),perso,S.loaded.p?["Rien de perso pour l'instant","Écris-la dans le champ juste au-dessus : RDV, papiers, achats perso."]:["Chargement…",""]);
   fillList($("assignedList"),assigned,["Rien ne t'a été confié","Les tâches du foyer marquées « pour "+m.nom+" » arrivent ici."],{hideWho:true});
   const done=S.perso.filter(t=>t.fait).concat(S.foyer.filter(t=>t.fait&&(t.pour===me||t.faitPar===me))).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0)).slice(0,30);
   const dl=$("mDoneList"); dl.innerHTML=""; { const h=histHead(done); if(h) dl.append(h); } for(const t of done) dl.append(taskRow(t));
@@ -3163,7 +3196,7 @@ function renderFoyer(){
   const open=S.foyer.filter(t=>!t.fait&&match(t)).sort(sortOpen);
   const done=S.foyer.filter(t=>t.fait&&match(t)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0)).slice(0,40);
   if(!S.loaded.t){ $("openList").innerHTML=""; $("openList").append(el("div",{class:"empty",text:"Chargement des tâches du foyer…"})); }
-  else fillList($("openList"),open,[S.foyer.length?"Rien à faire ici":"Aucune tâche pour le foyer",S.foyer.length?"Change de filtre ou touche le bouton « + » pour en ajouter.":"Ajoute la première : « Acheter filtre VMC », « Vermifuge du chat »…"]);
+  else fillList($("openList"),open,[S.foyer.length?"Rien à faire ici":"Aucune tâche pour le foyer",S.foyer.length?"Change de filtre ou écris une tâche dans le champ en haut.":"Ajoute la première : « Acheter filtre VMC », « Vermifuge du chat »…"]);
   const dl=$("doneList"); dl.innerHTML=""; { const h=histHead(done); if(h) dl.append(h); } for(const t of done) dl.append(taskRow(t));
   $("doneWrap").hidden=!done.length; $("doneSummary").textContent="Tâches réalisées ("+done.length+")";
   const n=S.foyer.filter(t=>!t.fait).length; $("nFoyer").textContent=n; $("nFoyer").hidden=!n;
@@ -5361,6 +5394,40 @@ function closeSheet(o){ const sh=$("sheet"), bg=$("sheetBg"), nb=$("navAdd");
 $("navAdd").addEventListener("click",()=>{ $("sheet").hidden?openSheet():closeSheet(); });
 $("addFab").addEventListener("click",e=>{ e.stopPropagation(); fabAct(); });
 document.addEventListener("click",e=>{ const M=$("addMenu"); if(M&&!M.hidden&&!e.target.closest("#addMenu")) M.hidden=true; });
+document.querySelectorAll(".hub-add").forEach(b=>b.addEventListener("click",e=>{ e.stopPropagation(); fabAct(b.dataset.add,b); }));
+window.addEventListener("scroll",()=>{ const M=$("addMenu"); if(M&&!M.hidden&&M.style.top) M.hidden=true; },{passive:true});
+/* Champs d'ajout rapide en haut des rubriques */
+async function qaTask(inp,where){ const v=inp.value.trim(); if(!v){ openSheet(where==="perso"?{where:"perso"}:undefined); return; } if(!needMe()) return;
+  const p=parseQuick(v); const ok=await addTask({titre:p.titre||v,where:where==="perso"?"perso":(p.where||"tous"),echeance:p.echeance,recur:p.recur!=null?p.recur:undefined,cat:p.cat||undefined});
+  if(ok!==false){ inp.value=""; } }
+$("tQa").addEventListener("submit",e=>{ e.preventDefault(); qaTask($("tQaIn"),"tous"); });
+$("pQa").addEventListener("submit",e=>{ e.preventDefault(); qaTask($("pQaIn"),"perso"); });
+$("rQa").addEventListener("submit",async e=>{ e.preventDefault(); const inp=$("rQaIn"), plat=inp.value.trim(); if(!plat){ fabAct("repas"); return; } if(!needMe()) return;
+  const [d,sl]=nextFreeMeal(), id=d+"_"+sl;
+  try{ await S.db.collection("repas").doc(id).set({date:d,slot:sl,plat:plat.slice(0,80),cuisine:null,vaisselle:null,par:meId(),le:Date.now()}); inp.value="";
+    const when={matin:"le petit-déj",midi:"le midi",soir:"le soir"}[sl]+" "+(d===iso(today())?"d'aujourd'hui":dueLabel(d));
+    toast("« "+esc(plat)+" » prévu pour "+when+"."); }catch(err){ writeErr(err); } });
+/* Barre « Dis-le à Cocoony » du Foyer */
+const HUB_SUG=[["tache","Une tâche","Ex. Payer la cantine vendredi"],["courses","Des courses","Ex. pain, lait, œufs"],["rdv","Un rendez-vous","Ex. Dentiste jeudi à 15h"],["repas","Un repas","Ex. Lasagnes ce soir"],["dep","Une dépense","Ex. 45 € de courses"]];
+function hubAv(){ const s=el("span",{class:"hub-av"}); try{ s.append(secAv()); const im=s.firstChild; if(im&&!im.getAttribute("src")){ const lg=document.querySelector(".brand-logo"); if(lg) im.src=lg.src; } }catch(_){} return s; }
+function renderHubCx(){ const w=$("hubSug"); if(!w) return; w.innerHTML=""; const av=$("hubAv"); if(av&&!av.firstChild) av.replaceWith(Object.assign(hubAv(),{id:"hubAv"}));
+  for(const [k,l,ph] of HUB_SUG) w.append(el("button",{type:"button","aria-pressed":S.hubMode===k?"true":"false",text:"+ "+l,onclick:()=>{ S.hubMode=S.hubMode===k?null:k; const q=$("hubQ"); q.placeholder=S.hubMode?ph:"Ajoute ce que tu veux…"; renderHubCx(); q.focus(); }}));
+  const q=$("hubQ"); if(q){ const m=HUB_SUG.find(x=>x[0]===S.hubMode); q.placeholder=m?m[2]:"Ajoute ce que tu veux…"; } }
+function hubShow(r,busy){ const b=$("hubAns"); if(!b) return; b.innerHTML=""; if(!r){ b.hidden=true; return; } b.hidden=false; b.classList.toggle("busy",!!busy);
+  b.append(el("div",{class:"ha-t"},hubAv(),el("span",{class:"ha-txt",text:r.text||""})));
+  if(r.items&&r.items.length) b.append(el("ul",{},...r.items.slice(0,6).map(x=>el("li",{text:x.t||""}))));
+  if(r.actions&&r.actions.length){ const a=el("div",{class:"ha-act"}); for(const x of r.actions){ a.append(el("button",{type:"button",class:x.ghost?"g":"",text:x.l,onclick:async()=>{ try{ const res=await x.run(); if(typeof res==="string") hubShow({text:res}); else if(res&&res.text!==undefined) hubShow(res); else hubShow(null); }catch(err){ writeErr(err); } }})); } b.append(a); }
+  b.append(el("button",{type:"button",class:"ha-x","aria-label":"Fermer",text:"×",onclick:()=>hubShow(null)})); }
+async function hubAsk(raw){ let v=String(raw||"").trim(); if(!v) { $("hubQ").focus(); return; } if(!needMe()) return;
+  const m=S.hubMode, phr=m==="tache"?"Ajoute "+v:m==="courses"?"Ajoute "+v+" aux courses":m==="rdv"?"Ajoute un rendez-vous "+v.replace(/^(?:un\s+)?(?:rdv|rendez-vous)\s*/i,""):m==="repas"?"On mange "+v:m==="dep"?(/€|euro/i.test(v)?"J'ai dépensé "+v:"J'ai dépensé "+v+" €"):v;
+  const isQ=!m&&(/\?\s*$/.test(v)||/^\s*(?:comment|quand|qui|quoi|que |qu'|où|ou |combien|est-ce|pourquoi|quel|quelle|c'est quoi|explique|aide)/i.test(v));
+  const parts=v.split(/\s*[,;]\s*|\s+et\s+/).filter(Boolean), looksList=!m&&!isQ&&parts.length>=2&&parts.every(x=>x.split(/\s+/).length<=3)&&!/\d/.test(v)&&!/(demain|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche|soir|midi)/i.test(v);
+  let plan=isQ?null:secCreatePlan(looksList?"Ajoute "+v+" aux courses":phr); if(!plan&&!isQ&&!m) plan=secCreatePlan("Ajoute "+v);
+  if(!plan){ $("hubQ").value=""; setTab("accueil"); setTimeout(()=>{ const f=$("secAsk"); if(f) f.scrollIntoView({block:"center",behavior:"smooth"}); askSecretary(v); },120); return; }
+  hubShow({text:"Je m'en occupe…"},true); let r;
+  try{ r=await plan.run(); }catch(err){ writeErr(err); r=secA("Oups, je n'ai pas réussi."); }
+  $("hubQ").value=""; S.hubMode=null; renderHubCx(); hubShow(r); }
+$("hubAsk").addEventListener("submit",e=>{ e.preventDefault(); const i=$("hubQ"); hubAsk(i.value); });
 $("sheetBg").addEventListener("click",closeSheet);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("sheet").hidden) closeSheet(); });
 $("sgEquip").addEventListener("click",()=>{ closeSheet(); openMForm("equip"); });
@@ -6007,7 +6074,7 @@ function budgetSpark(){ const t=today(), Y=t.getFullYear(), M=t.getMonth(), dim=
   const pm=new Date(Y,M-1,1), cur=cum(Y,M,day), prev=cum(pm.getFullYear(),pm.getMonth(),dim), mx=Math.max(1,...cur,...prev);
   const pt=(a,len)=>a.map((v,i)=>((len>1?i/(dim-1):0)*200).toFixed(1)+","+(34-(v/mx)*30).toFixed(1)).join(" ");
   return '<svg viewBox="0 0 200 36" preserveAspectRatio="none" aria-hidden="true"><polyline points="'+pt(prev,dim)+'" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="1.6" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/><polyline points="'+pt(cur,day)+'" fill="none" stroke="var(--bc)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>'; }
-function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const me=meId(), t0=iso(today());
+function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; try{ renderHubCx(); }catch(_){} const me=meId(), t0=iso(today());
   const G1=el("div",{class:"hb-g2"}), G2=el("div",{class:"hb-g3"}); let G=G1;
   H.append(el("p",{class:"hb-sec",text:"Au quotidien"}),G1,el("p",{class:"hb-sec",text:"Gestion"}),G2);
   const tile=(v,ic,c,title,sub,o)=>{ o=o||{}; const b=el("div",{class:"hb-t"+(o.cls?" "+o.cls:""),role:"button",tabindex:"0","data-go":v,style:"--bc:"+c,"aria-label":title+(sub?", "+sub:"")});
@@ -6040,7 +6107,7 @@ function nextFreeMeal(){ const t=today(), h=new Date().getHours(), slots=repasSl
   for(let k=0;k<14;k++){ const d=iso(new Date(t.getFullYear(),t.getMonth(),t.getDate()+k));
     for(const sl of ["matin","midi","soir"]){ if(!slots.includes(sl)) continue; if(k===0&&((sl==="matin"&&h>=10)||(sl==="midi"&&h>=14)||(sl==="soir"&&h>=21))) continue; if(!repasOf(d,sl)) return [d,sl]; } }
   return [iso(t),"soir"]; }
-function fabAct(){ const me=meId(), v=S.tab;
+function fabAct(v0,anchor){ const me=meId(), v=v0||S.tab;
   const go=(sel)=>setTimeout(()=>{ const e=$(sel)||document.querySelector(sel); if(e) e.scrollIntoView({block:"center",behavior:"smooth"}); },80);
   if(v==="courses"){ window.scrollTo({top:0,behavior:"smooth"}); setTimeout(()=>{ try{ $("cNom").focus(); }catch(_){} },250); return; }
   if(v==="repas"){ if(!needMe()) return; const [d,sl]=nextFreeMeal(), t0=weekStartOf(today()); S.rWeek=Math.round((weekStartOf(parse(d))-t0)/(7*864e5)); S.rEdit=d+"_"+sl; renderRepas(); go(".r-ed"); setTimeout(()=>{ try{ $("rPlat").focus({preventScroll:true}); }catch(_){} },300); return; }
@@ -6054,6 +6121,7 @@ function fabAct(){ const me=meId(), v=S.tab;
     it("tel","Un contact",()=>{ S.mSec="contacts"; S.ctForm={role:"",nom:"",tel:"",note:"",c:"#C9C7DD"}; renderMaison(); window.scrollTo({top:0,behavior:"smooth"}); setTimeout(()=>{ const x=$("ctRole"); if(x) x.focus(); },200); });
     it("entretien","Un équipement",()=>openMForm("equip"));
     it("eclair","Un relevé de compteur",()=>openMForm("releve",{compteur:"elec"}));
+    if(anchor){ const r=anchor.getBoundingClientRect(); M.style.top=Math.round(r.bottom+8)+"px"; M.style.bottom="auto"; M.style.right=Math.max(12,Math.round(innerWidth-r.right))+"px"; } else { M.style.top=""; M.style.bottom=""; M.style.right=""; }
     M.hidden=false; return; }
   openSheet(); }
 function renderFab(){ const b=$("addFab"); if(!b) return; const v=S.tab, M=$("addMenu"); if(M) M.hidden=true;
@@ -6361,7 +6429,7 @@ function secHowTo(raw){
   if(has("que peux tu","tu sais faire","tu peux faire")||(has(" aide")&&q.trim().split(" ").length<=3))
     return secA("Je suis "+secIdent().nom+", ton secrétaire. Je peux :",[{t:"te dire ce qui est prévu, en retard ou à renouveler"},{t:"ajouter tout seul une tâche, un rendez-vous, un repas, des courses ou une dépense : écris par exemple « Ajoute un rendez-vous chez le dentiste vendredi à 14h »"},{t:"t'expliquer comment utiliser Cocoon : « Comment ranger un papier ? »"},{t:"répondre sur le budget, les papiers, la maison, les poubelles…"}]);
   if(has("papier","document","facture","contrat","passeport","carte grise","attestation","scanner","photo"))
-    return T("Pour ranger un papier :",["Va dans Foyer › Papiers et touche le bouton « + » en bas à droite.","Donne-lui un nom, par exemple « Bail » ou « Carte grise ».","Choisis la catégorie et, si besoin, la date d'expiration : je te préviendrai avant.","Ajoute la photo ou le PDF, puis touche « Ranger »."],{l:"Ranger un papier",run:cocoGo("documents",null,()=>{ try{ $("dTitle").focus(); }catch(_){} })});
+    return T("Pour ranger un papier :",["Va dans Foyer › Papiers et touche « + Ajouter » en haut à droite.","Donne-lui un nom, par exemple « Bail » ou « Carte grise ».","Choisis la catégorie et, si besoin, la date d'expiration : je te préviendrai avant.","Ajoute la photo ou le PDF, puis touche « Ranger »."],{l:"Ranger un papier",run:cocoGo("documents",null,()=>{ try{ $("dTitle").focus(); }catch(_){} })});
   if(has("rendez","rdv"))
     return T("Pour ajouter un rendez-vous :",["Va dans Foyer › Agenda et touche « Ajouter un rendez-vous ».","Indique quoi, la date, l'heure de début et de fin, et le lieu si tu veux.","Choisis pour qui, puis « Ajouter » : tout le foyer le voit et je le rappelle la veille.","Plus rapide : écris-moi « Ajoute un rendez-vous chez le dentiste vendredi de 14h à 15h »."],{l:"Ajouter un rendez-vous",run:()=>{ setTab("accueil"); S.rdvForm={pour:[meId()]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({block:"start",behavior:"smooth"}); },80); }});
   if(has("repas","menu","manger","diner","dejeuner","vaisselle","cuisine"))
@@ -6387,7 +6455,7 @@ function secHowTo(raw){
   if(has("theme","sombre","clair","couleur"))
     return T("Pour changer le thème :",["Va dans Moi et touche le crayon de ton profil.","Dans Apparence, choisis Automatique, Clair ou Sombre.","Touche « Enregistrer »."],{l:"Ouvrir mon espace",ghost:true,run:cocoGo("moi")});
   if(has("tache","rappel","faire"))
-    return T("Pour ajouter une tâche :",["Va dans Foyer › Tâches et touche le bouton « + » en bas à droite (ou demande-le-moi directement).","Écris la tâche ; tu peux ajouter la date dans la phrase, par exemple « Payer la cantine vendredi ».","Choisis « Pour moi » (privé) ou « Pour le foyer », puis « Ajouter ».","Plus rapide : écris-moi « Rappelle-moi d'appeler le plombier demain »."],{l:"Ajouter une tâche",run:()=>openSheet({})});
+    return T("Pour ajouter une tâche :",["Va dans Foyer › Tâches et écris-la dans le champ en haut (ou écris-la-moi dans la barre du Foyer).","Écris la tâche ; tu peux ajouter la date dans la phrase, par exemple « Payer la cantine vendredi ».","Choisis « Pour moi » (privé) ou « Pour le foyer », puis « Ajouter ».","Plus rapide : écris-moi « Rappelle-moi d'appeler le plombier demain »."],{l:"Ajouter une tâche",run:()=>openSheet({})});
   return null;
 }
 function cocoHours(raw){ const out=[]; for(const m of String(raw).matchAll(/(\d{1,2})\s*(?:h|:)\s*(\d{2})?/gi)){ const H=+m[1], M=+(m[2]||0); if(H<24&&M<60) out.push(String(H).padStart(2,"0")+":"+String(M).padStart(2,"0")); } return out; }
@@ -6413,7 +6481,7 @@ function secCreatePlan(raw){
   // Rendez-vous
   if(/( rdv | rendez vous | rendez-vous )/.test(q)&&(hasVerb||/^\s*(?:rdv|rendez-vous|j'ai (?:un )?(?:rdv|rendez-vous))/i.test(txt))){
     const hs=cocoHours(body); let rest=body.replace(/\b(?:de|à|a|vers|jusqu'à|jusqu'a|-)?\s*\d{1,2}\s*(?:h|:)\s*(?:\d{2})?/gi," ").replace(/^\s*j'ai\s+/i,"");
-    const p=parseQuick(rest); let titre=cocoStrip(String(p.titre||"").replace(/^(?:(?:un|le|mon|ce)\s+)?(?:rdv|rendez-vous|rendez vous)\s*(?:chez|avec|au|aux|à la|à l'|a la|pour|de|du|d')?\s*/i,"").replace(/\s+(?:de|à|a|le)\s*$/i,""))||"Rendez-vous";
+    const p=parseQuick(rest); let titre=cocoStrip(String(p.titre||"").replace(/^(?:(?:un|le|mon|ce)\s+)?(?:rdv|rendez-vous|rendez vous)\s*(?:(?:chez|avec|au|aux|à la|a la|pour|de|du)\s+|à l'|d')?\s*/i,"").replace(/\s+(?:de|à|a|le)\s*$/i,""))||"Rendez-vous";
     const date=p.echeance, heure=hs[0]||null; let fin=hs[1]||null;
     if(heure&&!fin){ const [H,M]=heure.split(":").map(Number), t=Math.min(23*60+59,H*60+M+60); fin=String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0"); }
     const openForm=()=>{ setTab("agenda"); S.rdvForm={titre,date:date||"",heure:heure||"",heureFin:fin||"",pour:[me]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({block:"start",behavior:"smooth"}); },80); };
@@ -6426,12 +6494,12 @@ function secCreatePlan(raw){
   // Repas
   if(/( on mange | au menu | repas | pour le diner | pour le dejeuner | petit dej| pour ce soir | pour le petit)/.test(q)&&(hasVerb||/ on mange /.test(q))){
     const slot=/(petit dej|petit-dej|matin|petit dejeuner)/.test(q)?"matin":/( midi|dejeuner)/.test(q)?"midi":"soir";
-    let rest=txt.replace(verb,"").replace(/\bon mange\b/i," ").replace(/\b(?:au menu|pour le repas|au repas|pour le (?:dîner|diner|déjeuner|dejeuner|petit[- ]d[ée]j(?:euner)?)|du (?:soir|midi))\b/gi," ").replace(/\b(?:midi|soir|matin)\b/gi," ");
+    let rest=txt.replace(verb,"").replace(/\bce\s+(?=soir|midi|matin)/gi," ").replace(/\bon mange\b/i," ").replace(/\b(?:au menu|pour le repas|au repas|pour le (?:dîner|diner|déjeuner|dejeuner|petit[- ]d[ée]j(?:euner)?)|du (?:soir|midi))\b/gi," ").replace(/\b(?:midi|soir|matin)\b/gi," ");
     const p=parseQuick(rest); const date=p.echeance||iso(today()); const plat=cocoStrip(String(p.titre||"").replace(/\s+(?:de|du|pour|au|à)\s*$/i,"").replace(/^(?:ce|de|pour)\s+/i,""));
     if(!plat) return null; if(date<iso(today())) return null;
     return {run:async()=>{ const id=date+"_"+slot; await S.db.collection("repas").doc(id).set({date,slot,plat,cuisine:null,vaisselle:null,par:me,le:Date.now()});
       const sl={matin:"le petit-déj",midi:"le midi",soir:"le soir"}[slot];
-      return secA("C'est noté : "+plat+" pour "+sl+" "+(date===iso(today())?"aujourd'hui":dueLabel(date))+".",[],[{l:"Voir les repas",ghost:true,run:cocoGo("repas")},cocoUndo("",()=>S.db.collection("repas").doc(id).delete(),"Repas retiré.")]); }}; }
+      return secA("C'est noté : "+plat+" "+(date===iso(today())?{matin:"ce matin",midi:"ce midi",soir:"ce soir"}[slot]:"pour "+sl+" "+dueLabel(date))+".",[],[{l:"Voir les repas",ghost:true,run:cocoGo("repas")},cocoUndo("",()=>S.db.collection("repas").doc(id).delete(),"Repas retiré.")]); }}; }
   // Tâche
   if(hasVerb&&body){
     const p=parseQuick(body), titre=p.titre||body, where=p.where||(/^\s*rappelle/i.test(txt)?"perso":"tous");
@@ -7076,7 +7144,7 @@ function bilanAuto(){
 const TOUR=[
   {sel:".secretary",t:"Voici %N",d:"Ton secrétaire du foyer. Demande-lui « le numéro du véto », « le bilan du mois », ou d'ajouter un rendez-vous, une course, une dépense…"},
   {sel:"#dayCard",alt:"#rdvWrap",t:"Ta journée",d:"La semaine en un coup d'œil, et ta journée heure par heure : tâches à cocher, rendez-vous, repas, poubelles. Touche un jour pour le voir."},
-  {sel:'.tab[data-tab="hub"]',t:"Le Foyer",d:"Tout le foyer en tuiles : tâches, courses, repas, agenda, budget, papiers et maison. Dans chaque rubrique, le bouton « + » en bas à droite ajoute ce qu'il faut. Bonne installation dans ton cocon !"}];
+  {sel:'.tab[data-tab="hub"]',t:"Le Foyer",d:"Tout le foyer en tuiles : tâches, courses, repas, agenda, budget, papiers et maison. En bas, écris à Cocoony ce que tu veux ajouter (« pain, lait », « dentiste jeudi 15h ») : il le range au bon endroit. Bonne installation dans ton cocon !"}];
 function startTour(force){
   if(!force&&((S.prefs||{}).tourVu||S.tourOn||window.__noTour)) return; if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches&&!force){}
   S.tourOn=true; let i=0; const noScroll=e=>{ if(!e.target.closest||!e.target.closest(".tour-card")) e.preventDefault(); }; document.documentElement.classList.add("tour-lock"); window.addEventListener("wheel",noScroll,{passive:false}); window.addEventListener("touchmove",noScroll,{passive:false});
