@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="15/10 14:18";</script>
+<script>window.COCOON_BUILD="15/10 14:34";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2530,9 +2530,10 @@ html.sheet-open .hub-cx{display:none}
 .tk-cat[aria-pressed="true"] .tn{color:var(--ink);font-weight:800}
 .tk-cat:active .ic{transform:scale(.92)}
 .tk-cat em{position:absolute;top:-4px;right:0;font-style:normal;font-size:10.5px;font-weight:800;min-width:19px;text-align:center;padding:1px 5px;border-radius:999px;background:#FFC94A;color:#1C1B2E;box-shadow:0 0 0 2px var(--bg)}
-.nav-cx{flex:none;display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:none;padding:0 6px;font:inherit;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent}
-.nav-cx img{width:46px;height:46px;border-radius:50%;object-fit:cover;margin-top:-26px;padding:3px;background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB);box-shadow:0 0 0 4px var(--surface),0 6px 16px rgba(255,140,120,.28);transition:transform .15s ease}
-.nav-cx:active img{transform:scale(.92)}
+.nav-cx{position:relative;flex:none;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:58px;border:0;background:none;padding:6px 10px;border-radius:14px;font:inherit;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.nav-cx .tl{font-size:10.5px;font-weight:600;letter-spacing:.01em}
+.nav-cx img{width:28px;height:28px;border-radius:50%;object-fit:cover;padding:2px;background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB);transition:transform .2s}
+.nav-cx:active img{transform:scale(.9)}
 .nav-cx[aria-expanded="true"] .tl{color:var(--ink)}
 .cx-panel{position:fixed;left:0;right:0;top:0;height:100vh;height:100dvh;z-index:60;background:var(--bg);display:flex;flex-direction:column;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 12px);max-width:640px;margin:0 auto;animation:cxIn .26s cubic-bezier(.2,.9,.3,1) both}
 .cx-panel.out{animation:cxOut .2s ease both}
