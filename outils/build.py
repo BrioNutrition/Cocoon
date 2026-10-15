@@ -31,8 +31,8 @@ b = s.index("\n", a)
 s = s[:a] + 'ol.append(el("li",{},el("b",{text:"Ce lien ouvre ton foyer : "}),"ne l\'envoie qu\'aux membres. Il crée son compte avec son e-mail et arrive directement chez vous."));' + s[b:]
 
 # Carte « Mon compte » en bas de l'onglet Moi
-rep('<details class="done-list" id="mDoneWrap">',
-    '<div class="sub cx-notif" id="cxNotif" hidden></div>\n    <div class="sub cx-account" id="cxAccount" hidden></div>\n    <details class="done-list" id="mDoneWrap">')
+rep('<details class="done-list ms-sub" id="mDoneWrap">',
+    '<div class="sub cx-notif" id="cxNotif" hidden></div>\n    <div class="sub cx-account" id="cxAccount" hidden></div>\n    <details class="done-list ms-sub" id="mDoneWrap">')
 
 # ---- Icônes de l'app (tirées du logo) ------------------------------------
 os.makedirs(OUT, exist_ok=True)
@@ -191,8 +191,9 @@ if("serviceWorker" in navigator&&location.protocol==="https:"){ var _had=!!navig
 </script>
 """
 INTRO_CSS = """<style>
-#cxIntro{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:#F6F5FB;pointer-events:none}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #cxIntro{background:#13121C}:root:not([data-theme="light"]) #cxIntro .cxi-name{color:#EDEBF7}:root:not([data-theme="light"]) .cx-warn,:root:not([data-theme="light"]) .cx-ask-m{color:#FFB3A6}:root:not([data-theme="light"]) .cx-ask-ic{background:#433A22;color:#FFE3A0}}:root[data-theme="dark"] #cxIntro{background:#13121C}:root[data-theme="dark"] #cxIntro .cxi-name{color:#EDEBF7}:root[data-theme="dark"] .cx-warn,:root[data-theme="dark"] .cx-ask-m{color:#FFB3A6}:root[data-theme="dark"] .cx-ask-ic{background:#433A22;color:#FFE3A0}
+html{background:#F6F5FB;color-scheme:light dark}@media (prefers-color-scheme: dark){html:not([data-theme="light"]){background:#13121C}}html[data-theme="dark"]{background:#13121C}html[data-theme="light"]{background:#F6F5FB}
+#cxIntro{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:radial-gradient(55% 38% at 50% 44%,rgba(255,201,74,.24),transparent 70%),radial-gradient(40% 30% at 70% 70%,rgba(255,156,176,.14),transparent 70%),#F6F5FB;pointer-events:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #cxIntro{background:radial-gradient(55% 38% at 50% 44%,rgba(255,201,74,.24),transparent 70%),radial-gradient(40% 30% at 70% 70%,rgba(255,156,176,.14),transparent 70%),#13121C}:root:not([data-theme="light"]) #cxIntro .cxi-name{color:#EDEBF7}:root:not([data-theme="light"]) .cx-warn,:root:not([data-theme="light"]) .cx-ask-m{color:#FFB3A6}:root:not([data-theme="light"]) .cx-ask-ic{background:#433A22;color:#FFE3A0}}:root[data-theme="dark"] #cxIntro{background:radial-gradient(55% 38% at 50% 44%,rgba(255,201,74,.24),transparent 70%),radial-gradient(40% 30% at 70% 70%,rgba(255,156,176,.14),transparent 70%),#13121C}:root[data-theme="dark"] #cxIntro .cxi-name{color:#EDEBF7}:root[data-theme="dark"] .cx-warn,:root[data-theme="dark"] .cx-ask-m{color:#FFB3A6}:root[data-theme="dark"] .cx-ask-ic{background:#433A22;color:#FFE3A0}
 #cxIntro .cxi-c{display:flex;flex-direction:column;align-items:center;gap:6px}
 #cxIntro .cxi-w{position:relative;width:132px;height:132px;margin-bottom:14px;animation:cxiFloat 5s linear .9s infinite}
 #cxIntro .cxi-w i{position:absolute;inset:0;border-radius:30px;border:2px solid rgba(255,201,74,.6);opacity:0;animation:cxiRing 2.4s cubic-bezier(.2,.6,.4,1) .7s infinite}
@@ -209,7 +210,7 @@ INTRO_CSS = """<style>
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>"""
 INTRO_HTML = """<div id="cxIntro" aria-hidden="true"><div class="cxi-c"><div class="cxi-w"><i></i><i></i><img class="cxi-logo" src="icon-192.png" alt=""></div><div class="cxi-name"><span style="--i:0">C</span><span style="--i:1">o</span><span style="--i:2">c</span><span style="--i:3">o</span><span style="--i:4">o</span><span style="--i:5">n</span></div></div></div>
-<script>(function(){var T=performance.now(),done=false;window.cxIntroOut=function(fast){if(done)return;done=true;var el=document.getElementById("cxIntro");if(!el)return;if(fast){el.remove();return;}var wait=Math.max(0,1250-(performance.now()-T));setTimeout(function(){var c=el.querySelector(".cxi-c");try{c.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(-26px) scale(.94)"}],{duration:420,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"});el.animate([{opacity:1},{opacity:0}],{duration:460,delay:120,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}},wait);};setTimeout(function(){window.cxIntroOut();},9000);})();</script>"""
+<script>(function(){var T=performance.now(),done=false;window.cxIntroOut=function(fast){if(done)return;done=true;var el=document.getElementById("cxIntro");if(!el)return;if(fast){try{el.animate([{opacity:1},{opacity:0}],{duration:280,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}return;}var wait=Math.max(0,1250-(performance.now()-T));setTimeout(function(){var c=el.querySelector(".cxi-c");try{c.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(-26px) scale(.94)"}],{duration:420,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"});el.animate([{opacity:1},{opacity:0}],{duration:460,delay:120,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}},wait);};setTimeout(function(){window.cxIntroOut();},9000);})();</script>"""
 ACCOUNT_CSS = """<style>
 .cx-acc{display:grid;gap:12px;background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:14px}
 .cx-row{display:grid;gap:4px}.cx-k{font-size:13px;color:var(--muted);font-weight:600}.cx-v{font-size:15.5px;word-break:break-all}
@@ -256,6 +257,8 @@ head = f"""<!doctype html>
 <meta name="apple-mobile-web-app-title" content="Cocoon">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="description" content="Cocoon, le carnet partagé de la maison : tâches, courses, papiers, budget.">
+<script>try{{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}}catch(e){{}}</script>
+{INTRO_CSS}
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -263,8 +266,6 @@ head = f"""<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-{INTRO_CSS}
-<script>try{{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}}catch(e){{}}</script>
 <script>window.COCOON_BUILD="{BUILD}";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="{SUPABASE_JS}"></script>

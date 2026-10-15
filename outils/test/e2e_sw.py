@@ -12,10 +12,11 @@ async def main():
     await pg.add_init_script('window.__noTour=1')
     await pg.goto('http://localhost:8766/'); await pg.wait_for_timeout(1500)
     await pg.click('#cxGate [data-go="signup"]'); await pg.fill('#cxGate input[name=email]','angel@test.fr'); await pg.fill('#cxGate input[name=pw]','secret123'); await pg.click('#cxGate .cx-btn')
-    for _ in range(6):  # GATE_RETRY
+    for _k in range(40):  # GATE_RETRY
       if await pg.is_visible('#cxGate [data-act="create"]'): break
-      if await pg.is_visible('#cxGate .cx-btn'): await pg.click('#cxGate .cx-btn')
-      await pg.wait_for_timeout(1500)
+      if _k==24 and await pg.is_visible('#cxGate .cx-btn'): await pg.click('#cxGate .cx-btn')
+      await pg.wait_for_timeout(250)
+    if not await pg.is_visible('#cxGate [data-act="create"]'): print('GATEFAIL', (await pg.inner_text('#cxGate'))[:250].replace('\n',' | '), await pg.evaluate('document.title'))
     await pg.wait_for_timeout(500); await pg.click('#cxGate [data-act="create"]'); await pg.wait_for_selector('#cxGate', state='hidden'); await pg.wait_for_timeout(2500)
     print('sw:', await pg.evaluate("navigator.serviceWorker.controller?'contrôlée':'non'"))
     await pg.evaluate("localStorage.setItem('foyer.tab','courses')")

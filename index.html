@@ -9,16 +9,11 @@
 <meta name="apple-mobile-web-app-title" content="Cocoon">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="description" content="Cocoon, le carnet partagé de la maison : tâches, courses, papiers, budget.">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="icon" type="image/png" href="icon-192.png">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
+<script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
 <style>
-#cxIntro{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:#F6F5FB;pointer-events:none}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #cxIntro{background:#13121C}:root:not([data-theme="light"]) #cxIntro .cxi-name{color:#EDEBF7}:root:not([data-theme="light"]) .cx-warn,:root:not([data-theme="light"]) .cx-ask-m{color:#FFB3A6}:root:not([data-theme="light"]) .cx-ask-ic{background:#433A22;color:#FFE3A0}}:root[data-theme="dark"] #cxIntro{background:#13121C}:root[data-theme="dark"] #cxIntro .cxi-name{color:#EDEBF7}:root[data-theme="dark"] .cx-warn,:root[data-theme="dark"] .cx-ask-m{color:#FFB3A6}:root[data-theme="dark"] .cx-ask-ic{background:#433A22;color:#FFE3A0}
+html{background:#F6F5FB;color-scheme:light dark}@media (prefers-color-scheme: dark){html:not([data-theme="light"]){background:#13121C}}html[data-theme="dark"]{background:#13121C}html[data-theme="light"]{background:#F6F5FB}
+#cxIntro{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:radial-gradient(55% 38% at 50% 44%,rgba(255,201,74,.24),transparent 70%),radial-gradient(40% 30% at 70% 70%,rgba(255,156,176,.14),transparent 70%),#F6F5FB;pointer-events:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #cxIntro{background:radial-gradient(55% 38% at 50% 44%,rgba(255,201,74,.24),transparent 70%),radial-gradient(40% 30% at 70% 70%,rgba(255,156,176,.14),transparent 70%),#13121C}:root:not([data-theme="light"]) #cxIntro .cxi-name{color:#EDEBF7}:root:not([data-theme="light"]) .cx-warn,:root:not([data-theme="light"]) .cx-ask-m{color:#FFB3A6}:root:not([data-theme="light"]) .cx-ask-ic{background:#433A22;color:#FFE3A0}}:root[data-theme="dark"] #cxIntro{background:radial-gradient(55% 38% at 50% 44%,rgba(255,201,74,.24),transparent 70%),radial-gradient(40% 30% at 70% 70%,rgba(255,156,176,.14),transparent 70%),#13121C}:root[data-theme="dark"] #cxIntro .cxi-name{color:#EDEBF7}:root[data-theme="dark"] .cx-warn,:root[data-theme="dark"] .cx-ask-m{color:#FFB3A6}:root[data-theme="dark"] .cx-ask-ic{background:#433A22;color:#FFE3A0}
 #cxIntro .cxi-c{display:flex;flex-direction:column;align-items:center;gap:6px}
 #cxIntro .cxi-w{position:relative;width:132px;height:132px;margin-bottom:14px;animation:cxiFloat 5s linear .9s infinite}
 #cxIntro .cxi-w i{position:absolute;inset:0;border-radius:30px;border:2px solid rgba(255,201,74,.6);opacity:0;animation:cxiRing 2.4s cubic-bezier(.2,.6,.4,1) .7s infinite}
@@ -34,8 +29,14 @@
 #cxGate .cx-card{animation:cxCardIn .5s cubic-bezier(.2,.9,.3,1) both}
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
-<script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="15/10 15:22";</script>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
+<script>window.COCOON_BUILD="15/10 16:00";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -73,7 +74,7 @@
 </head>
 <body>
 <div id="cxIntro" aria-hidden="true"><div class="cxi-c"><div class="cxi-w"><i></i><i></i><img class="cxi-logo" src="icon-192.png" alt=""></div><div class="cxi-name"><span style="--i:0">C</span><span style="--i:1">o</span><span style="--i:2">c</span><span style="--i:3">o</span><span style="--i:4">o</span><span style="--i:5">n</span></div></div></div>
-<script>(function(){var T=performance.now(),done=false;window.cxIntroOut=function(fast){if(done)return;done=true;var el=document.getElementById("cxIntro");if(!el)return;if(fast){el.remove();return;}var wait=Math.max(0,1250-(performance.now()-T));setTimeout(function(){var c=el.querySelector(".cxi-c");try{c.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(-26px) scale(.94)"}],{duration:420,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"});el.animate([{opacity:1},{opacity:0}],{duration:460,delay:120,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}},wait);};setTimeout(function(){window.cxIntroOut();},9000);})();</script>
+<script>(function(){var T=performance.now(),done=false;window.cxIntroOut=function(fast){if(done)return;done=true;var el=document.getElementById("cxIntro");if(!el)return;if(fast){try{el.animate([{opacity:1},{opacity:0}],{duration:280,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}return;}var wait=Math.max(0,1250-(performance.now()-T));setTimeout(function(){var c=el.querySelector(".cxi-c");try{c.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(-26px) scale(.94)"}],{duration:420,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"});el.animate([{opacity:1},{opacity:0}],{duration:460,delay:120,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}},wait);};setTimeout(function(){window.cxIntroOut();},9000);})();</script>
 <title>Cocoon</title>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -7561,6 +7562,10 @@ function bootCheck(){
   S.booted=true; try{ localStorage.setItem("cocoon.bootSeen","1"); }catch(_){}
   b._done=true; requestAnimationFrame(()=>requestAnimationFrame(bootOut));
 }
+/* les contours qui grossissent autour du logo s'effacent en fondu là où ils en sont */
+function ringsOut(w){ if(!w) return; w.querySelectorAll(":scope > i").forEach(i=>{ const cs=getComputedStyle(i), op=parseFloat(cs.opacity)||0, tf=cs.transform&&cs.transform!=="none"?cs.transform:"none";
+  i.getAnimations().forEach(a=>a.cancel()); i.style.animation="none"; i.style.transform=tf; i.style.opacity=String(op);
+  if(op>0.01){ try{ i.animate([{opacity:op},{opacity:0}],{duration:420,easing:"ease-out",fill:"forwards"}); }catch(_){ i.style.opacity="0"; } } else i.style.opacity="0"; }); }
 async function flySplash(b,logo){
   const sp=$("splash"), tl=$("spLogo"), tn=sp.querySelector(".sp-name"), bn=b.querySelector(".bt-name");
   sp.getAnimations({subtree:true}).forEach(a=>a.cancel()); clearTimeout(sp._t);
@@ -7568,7 +7573,7 @@ async function flySplash(b,logo){
   tn.style.visibility="hidden"; b.style.pointerEvents="none";
   b.querySelector(".bt-bg").animate([{opacity:1},{opacity:1,offset:.12},{opacity:0}],{duration:1000,easing:"cubic-bezier(.5,0,.3,1)",fill:"forwards"});
   b.querySelector(".bt-dots").animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(10px) scale(.96)"}],{duration:320,easing:"ease-in",fill:"forwards"});
-  logo.parentElement.querySelectorAll("i").forEach(i=>{ i.getAnimations().forEach(a=>a.cancel()); i.style.display="none"; });
+  ringsOut(logo.parentElement);
   bn.getAnimations({subtree:true}).forEach(a=>{ try{ a.finish(); }catch(_){ a.cancel(); } });
   bn.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(10px) scale(.96)"}],{duration:320,easing:"ease-in",fill:"forwards"});
   const fly=flyLogo(logo,tl,980);
@@ -7594,7 +7599,7 @@ async function bootOut(){
   b.querySelector(".bt-bg").animate(fade,fo);
   b.querySelector(".bt-name").animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(14px) scale(.96)"}],{duration:380,easing:"ease-in",fill:"forwards"});
   b.querySelector(".bt-dots").animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(14px) scale(.96)"}],{duration:380,easing:"ease-in",fill:"forwards"});
-  wrap.querySelectorAll("i").forEach(i=>{ i.getAnimations().forEach(a=>a.cancel()); i.style.display="none"; });
+  ringsOut(wrap);
   const W=document.querySelector(".wrap");
   const fly=flyLogo(logo,target,980); W.classList.add("arrive");
   /* l'accueil se dévoile en fondu de gauche à droite pendant que le logo rejoint sa place */
