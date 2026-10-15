@@ -36,7 +36,7 @@ html{background:#F6F5FB;color-scheme:light dark}@media (prefers-color-scheme: da
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="15/10 19:55";</script>
+<script>window.COCOON_BUILD="15/10 20:24";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2610,6 +2610,12 @@ html.prem-open{overflow:hidden}
 .agc-ic .agc-m{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#fff;background:#E5484D;padding:3px 0 2px}
 .agc-ic .agc-d{flex:1;display:grid;place-items:center;font:800 26px/1 var(--f-display);color:#1C1B2E}
 .ag-later{width:100%;margin-top:6px}
+.hub-sync{margin-left:auto;display:inline-flex;align-items:center;gap:6px;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);border-radius:999px;padding:8px 14px 8px 11px;font:inherit;font-weight:800;font-size:14px;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.hub-sync svg{width:18px;height:18px}
+.hb-t.hb-prem{color:#1C1B2E;background:radial-gradient(80% 90% at 0% 0%,rgba(255,255,255,.6),transparent 70%),linear-gradient(140deg,#FFE08A,#FFC2A0 52%,#FFA9C4)}
+.hb-t.hb-prem>i{background:#1C1B2E}
+.hb-t.hb-prem>i svg{width:20px;height:20px}
+.hb-t.hb-prem>span{color:rgba(28,27,46,.7)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2752,7 +2758,7 @@ html.prem-open{overflow:hidden}
   </section>
 
   <section class="view" data-view="agenda" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button><button type="button" class="hub-add" data-add="agenda" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
+    <div class="hub-bar"><button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button><button type="button" class="hub-sync" id="agSyncBtn" aria-label="Mettre l'agenda dans mon téléphone" title="Agenda du téléphone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.6"/><path d="M10.5 18.5h3"/><path d="M9 8.5h6M9 11.5h6M9 8.5v6h6v-6"/></svg>Synchro</button><button type="button" class="hub-add" data-add="agenda" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
     <div class="seg ag-who" id="agWho" role="group" aria-label="Pour qui"></div>
     <div class="ag-cal" id="agCal"></div>
     <div class="sub" id="rdvWrap"></div>
@@ -5525,6 +5531,7 @@ function closeSheet(o){ const sh=$("sheet"), bg=$("sheetBg"), nb=$("navAdd");
 $("navAdd").addEventListener("click",()=>{ $("sheet").hidden?openSheet():closeSheet(); });
 $("addFab").addEventListener("click",e=>{ e.stopPropagation(); fabAct(); });
 document.addEventListener("click",e=>{ const M=$("addMenu"); if(M&&!M.hidden&&!e.target.closest("#addMenu")) M.hidden=true; });
+$("agSyncBtn").addEventListener("click",e=>{ e.stopPropagation(); openCalSheet(); });
 document.querySelectorAll(".hub-add").forEach(b=>b.addEventListener("click",e=>{ e.stopPropagation(); fabAct(b.dataset.add,b); }));
 window.addEventListener("scroll",()=>{ const M=$("addMenu"); if(M&&!M.hidden&&M.style.top) M.hidden=true; },{passive:true});
 /* Champs d'ajout rapide en haut des rubriques */
@@ -6220,7 +6227,7 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
     tile("apparence","🎨","#FF9C80","Apparence","thème, couleurs, Cocoony",null,()=>openPalette()));
   T.append(el("div",{class:"ms-gl",text:"Mon espace"+(late?" · "+late+" en retard":"")}),g); }
 /* Foyer : toutes les rubriques en tuiles (bento) */
-function hubGo(v){ if(v==="maison") S.mSec=null; setTab(v); window.scrollTo({top:0}); }
+function hubGo(v){ if(v==="premium"){ openPremium(); return; } if(v==="maison") S.mSec=null; setTab(v); window.scrollTo({top:0}); }
 function budgetSpark(){ const t=today(), Y=t.getFullYear(), M=t.getMonth(), dim=new Date(Y,M+1,0).getDate(), day=t.getDate();
   const cum=(y,m,n)=>{ const a=new Array(n).fill(0); for(const d of (S.depenses||[])){ if(d.type==="rembt"||!d.date) continue; const x=parse(d.date); if(x.getFullYear()===y&&x.getMonth()===m&&x.getDate()<=n) a[x.getDate()-1]+=d.montant; } for(let i=1;i<n;i++) a[i]+=a[i-1]; return a; };
   const pm=new Date(Y,M-1,1), cur=cum(Y,M,day), prev=cum(pm.getFullYear(),pm.getMonth(),dim), mx=Math.max(1,...cur,...prev);
@@ -6253,6 +6260,7 @@ function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const
   let mt=null; for(const b of (S.bins||[])){ const nx=binNext(b); if(nx&&daysTo(iso(nx.sortie))<=1){ mt=b.nom+" "+(iso(nx.sortie)===t0?(b.veille?"ce soir":"aujourd'hui"):"demain"); break; } }
   if(!mt){ const eq=(S.equip||[]).map(x=>[x,eqNext(x)]).filter(x=>x[1]).sort((a,b)=>a[1]<b[1]?-1:1)[0]; if(eq&&daysTo(eq[1])<=45) mt="Entretien "+(eq[0].nom||"équipement").toLowerCase()+" "+dueLabel(eq[1]); }
   tile("maison","","#7FCDB9","Maison",mt||"tout le logement",{gly:"maison"});
+  { const pa=!!(S.prefs&&S.prefs.premiumInteret), pt=tile("premium","","#FFC94A","Premium",pa?"on te prévient à l'ouverture":"1 mois offert",{cls:"hb-prem"}); pt.firstChild.innerHTML='<svg viewBox="0 -4 64 64" aria-hidden="true"><path d="M32 4c2.6 15 9 21.4 24 24-15 2.6-21.4 9-24 24-2.6-15-9-21.4-24-24 15-2.6 21.4-9 24-24z" fill="#FFE7A0"/></svg>'; }
 }
 /* Bouton « Ajouter » propre à chaque rubrique (remplace le + central) */
 function nextFreeMeal(){ const t=today(), h=new Date().getHours(), slots=repasSlots();
