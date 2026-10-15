@@ -1,6 +1,6 @@
 /* Faux Supabase en mémoire, pour tester l'app sans réseau. */
 (function () {
-  var users0=null; var T = (function(){ try{ var x=JSON.parse(localStorage.getItem('mockT')||'null'); if(x) return x; }catch(_){} return { cocoon_foyers: [], cocoon_members: [], cocoon_docs: [], cocoon_cal: [] }; })(), STO=null; setInterval(function(){ try{ localStorage.setItem('mockT',JSON.stringify(T)); }catch(_){} },200), files = {}, users = {}, session = null, authCbs = [], chans = [];
+  var users0=null; var T = (function(){ try{ var x=JSON.parse(localStorage.getItem('mockT')||'null'); if(x) return x; }catch(_){} return { cocoon_foyers: [], cocoon_members: [], cocoon_docs: [], cocoon_cal: [] }; })(), STO=null; setInterval(function(){ try{ localStorage.setItem('mockT',JSON.stringify(T)); }catch(_){} },200), _sv=(addEventListener('pagehide',function(){ try{ localStorage.setItem('mockT',JSON.stringify(T)); }catch(_){} }),addEventListener('beforeunload',function(){ try{ localStorage.setItem('mockT',JSON.stringify(T)); }catch(_){} }),0), files = {}, users = {}, session = null, authCbs = [], chans = [];
   window.__mock = { T: T, files: files, chans: chans, calls: [] };
   function uuid() { return "xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx".replace(/x/g, function () { return (Math.random() * 16 | 0).toString(16); }); }
   function ok(d) { return Promise.resolve({ data: d, error: null }); }

@@ -610,7 +610,7 @@
   /* =================== Ouverture instantanée depuis l'instantané local =================== */
   (function () {
     var snap = null; try { snap = JSON.parse(localStorage.getItem("cocoon.snap") || "null"); } catch (_) {}
-    if (!snap || snap.v !== 1 || !keep() || !authStore.getItem("cocoon.auth") || LS.get("cocoon.join")) return;
+    if (!snap || snap.v !== 1 || !keep() || !authStore.getItem("cocoon.auth") || LS.get("cocoon.join") || (LS.get("cocoon.foyer") && LS.get("cocoon.foyer") !== snap.f)) return;
     ME = { id: snap.u, email: snap.email }; FOYER = snap.f; ROLE = snap.role || "membre"; INVITE = snap.invite || null;
     Object.keys(snap.cache || {}).forEach(function (p) { cache[p] = snap.cache[p]; }); ALL = true;
     FROM_SNAP = true; started = true; readyResolve();
@@ -654,6 +654,20 @@
     },
     /* Le créateur retire un membre du foyer (accès coupé côté serveur) */
     removeMember: async function (uid) { await LIVE; var r = await sb.rpc("cocoon_remove_member", { f: FOYER, u: uid }); if (r.error) throw new Error(/function|exist/i.test(r.error.message) ? "la protection du serveur n'est pas encore installée dans Supabase (securite.sql)" : frErr(r.error)); },
+    /* Plusieurs foyers : liste, changement, création */
+    foyers: async function () {
+      await LIVE; var m = await sb.from("cocoon_members").select("foyer,role").eq("user_id", ME.id);
+      if (m.error) throw new Error(frErr(m.error));
+      var out = [];
+      for (var i = 0; i < (m.data || []).length; i++) { var row = m.data[i], nom = "";
+        try { var c = await sb.from("cocoon_docs").select("data").eq("foyer", row.foyer).eq("path", "foyer").eq("id", "config"); if (!c.error && c.data && c.data[0] && c.data[0].data) nom = c.data[0].data.nom || ""; } catch (_) {}
+        out.push({ id: row.foyer, role: row.role, nom: nom, current: row.foyer === FOYER }); }
+      return out;
+    },
+    switchFoyer: function (id) { if (!id || id === FOYER) return false; if (OUT.length) throw new Error("des changements sont encore en cours d'envoi : réessaie dans un instant"); LS.set("cocoon.foyer", id); LS.del("cocoon.snap"); LS.del("cocoon.bootSeen"); location.reload(); return true; },
+    createFoyer: async function () { await LIVE; if (OUT.length) throw new Error("des changements sont encore en cours d'envoi : réessaie dans un instant");
+      var r = await sb.rpc("cocoon_create_foyer"); if (r.error) throw new Error(frErr(r.error));
+      LS.set("cocoon.foyer", r.data.id); LS.del("cocoon.snap"); location.reload(); return r.data.id; },
     newCode: async function () { await LIVE; var r = await sb.rpc("cocoon_new_code", { f: FOYER }); if (r.error) throw new Error(frErr(r.error)); INVITE = r.data; return INVITE; },
     ready: READY,
     pending: function () { return OUT.length; },
