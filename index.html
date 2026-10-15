@@ -36,7 +36,7 @@ html{background:#F6F5FB;color-scheme:light dark}@media (prefers-color-scheme: da
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="15/10 18:52";</script>
+<script>window.COCOON_BUILD="15/10 19:07";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2600,6 +2600,8 @@ html.prem-open{overflow:hidden}
 .sp-back{display:block;margin:14px auto 0;border:0;background:none;color:var(--muted);font:inherit;font-weight:700;font-size:14.5px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .sp-back[hidden]{display:none}
 @media (min-height:760px){.pp-feats{grid-template-columns:1fr;gap:6px}.pp-f:last-child{grid-column:auto}.pp-f{padding:9px 10px}.pp-f b{font-size:14px}.pp-f small{font-size:12px}.pp-f i{width:34px;height:34px}}
+.story .ring.prog{background:conic-gradient(#3CC37A var(--p,0%),var(--line) 0);transition:background .4s}
+.story .ss.ok{color:#3CC37A;font-weight:700}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -3193,13 +3195,17 @@ function renderHeader(){
   const me=meId(), box=$("members"); box.innerHTML="";
   if(isAdmin()&&!S.readOnly){ const r=el("span",{class:"ring"}); r.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
     S._addStory=el("button",{type:"button",class:"story add","aria-label":"Ajouter un membre",onclick:openInvite},r,el("span",{class:"sn",text:"Ajouter"})); } else S._addStory=null;
-  for(const m of membres()){ if(m.id===me) continue; const open=S.foyer.filter(t=>!t.fait&&(t.pour===m.id||t.concerne===m.id)).length;
+  const wsR=weekStart(), meM0=me?membres().find(x=>x.id===me):null;
+  for(const m of (meM0?[meM0]:[]).concat(membres().filter(x=>x.id!==me))){ const open=S.foyer.filter(t=>!t.fait&&(t.pour===m.id||t.concerne===m.id)).length;
+    const human=m.type!=="animal", done=human?S.foyer.filter(t=>t.fait&&t.faitPar===m.id&&t.faitLe>=wsR).length:0, todo=human?S.foyer.filter(t=>!t.fait&&t.pour===m.id).length:0;
     const pending=m.type!=="animal"&&!m.uid&&S.membresLoaded&&(m.invite||typeOf(m)==="adulte");
     const isOpen=S.tab==="profil"&&S.profil===m.id;
-    const st=el("button",{type:"button",class:"story"+(isOpen?" open":""),"aria-label":m.id===me?"Ouvrir mon espace":"Voir le profil "+de(m.nom),onclick:()=>openProfile(m.id)},
-      el("span",{class:"ring"+(open?" has":"")},avatar(m.id)),nameEl(m,m.id===me?"Toi":m.nom,"span"));
+    const pct=human&&(done+todo)?Math.round(done/(done+todo)*100):0;
+    const ring=el("span",{class:"ring"+(human?" prog":(open?" has":"")),style:human?"--p:"+pct+"%":null},avatar(m.id));
+    const st=el("button",{type:"button",class:"story"+(isOpen?" open":""),"aria-label":m.id===me?"Ouvrir mon espace":"Voir le profil "+de(m.nom),title:human?done+" tâche"+(done>1?"s":"")+" faite"+(done>1?"s":"")+" cette semaine":null,onclick:()=>{ if(m.id===me){ setTab("moi"); renderHeader(); } else openProfile(m.id); }},
+      ring,nameEl(m,m.id===me?"Toi":m.nom,"span"));
     st.lastChild.classList.add("sn");
-    if(pending) st.append(el("span",{class:"ss",text:"invité·e"})); else if(open) st.append(el("span",{class:"ss",text:open+" à faire"}));
+    if(pending) st.append(el("span",{class:"ss",text:"invité·e"})); else if(done) st.append(el("span",{class:"ss ok",text:done+" faite"+(done>1?"s":"")})); else if(open) st.append(el("span",{class:"ss",text:open+" à faire"}));
     box.append(st); }
   if(S._addStory) box.append(S._addStory);
   const nm=$("navMe"); nm.innerHTML=""; if(me) nm.append(avatar(me)); else nm.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>';
@@ -4785,7 +4791,7 @@ function rythmeAuto(){
 }
 function renderAccBudget(){ const w=$("accBudget"); if(w) w.innerHTML=""; }
 function renderAccWho(){
-  const w=$("accWho"); if(!w) return; w.innerHTML=""; const ppl=humains(); if(!ppl.length||!S.loaded.t){ return; }
+  const w=$("accWho"); if(!w) return; w.innerHTML=""; return; /* remplacé par les anneaux autour des avatars */ const ppl=humains(); if(!ppl.length||!S.loaded.t){ return; }
   const ws=weekStart(), me=meId();
   const rows=ppl.map(m=>({m,done:S.foyer.filter(t=>t.fait&&t.faitPar===m.id&&t.faitLe>=ws).length,todo:S.foyer.filter(t=>!t.fait&&t.pour===m.id).length})).sort((a,b)=>b.done-a.done);
   const max=Math.max(1,...rows.map(r=>r.done+r.todo)), totDone=rows.reduce((a,r)=>a+r.done,0);
