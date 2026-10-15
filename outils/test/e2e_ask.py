@@ -36,6 +36,8 @@ async def main():
     await pg.click('.cx-ask-ok'); await pg.wait_for_timeout(1500)
     print('après « Activer » : fenêtre fermée:', await pg.locator('.cx-ask').count()==0, '| abonnement:', await pg.evaluate("(__mock.T.cocoon_push_subs||[]).length"), '| mémo:', await pg.evaluate("localStorage.getItem('cocoon.pushAsk')"))
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(500)
+    await pg.evaluate("window.moiOpen&&moiOpen('notif')"); await pg.wait_for_timeout(200)
+    await pg.click('.ms-tile:has-text("Notifications")'); await pg.wait_for_timeout(300)
     print('carte Moi:', (await pg.inner_text('#cxNotif'))[:60].replace('\n',' | '))
     await pg.reload(); await pg.wait_for_timeout(9000)
     print('après relance, redemande ?', await pg.locator('.cx-ask').count())

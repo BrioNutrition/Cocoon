@@ -35,6 +35,8 @@ async def main():
     print('tâche présente:', await pg.locator('text=Arroser les plantes').count()>0)
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(300)
     pg.once('dialog', lambda d: asyncio.ensure_future(d.accept()))
+    await pg.evaluate("window.moiOpen&&moiOpen('compte')"); await pg.wait_for_timeout(200)
+    await pg.click('.set-row:has-text("Mon compte")'); await pg.wait_for_timeout(300)
     await pg.click('#cxAccount [data-a="out"]'); await pg.wait_for_timeout(2500)
     print('après déconnexion gate:', await pg.evaluate("(()=>{const g=document.getElementById('cxGate'); return !!g&&!g.hidden})()"), 'snap:', await pg.evaluate("!!localStorage.getItem('cocoon.snap')"))
     await pg.screenshot(path='../kp1.png')

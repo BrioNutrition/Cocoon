@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="12/10 10:01";</script>
+<script>window.COCOON_BUILD="15/10 09:10";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2406,6 +2406,34 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .vw-z{font-size:12.5px;font-weight:800;min-width:46px;text-align:center}
 .vw-fit{border:0;background:none;color:#FFC94A;font:inherit;font-weight:800;font-size:13.5px;cursor:pointer;min-width:80px;text-align:right}
 .bd-ft.tap{cursor:pointer}
+
+/* Onglet Moi */
+.ms-back{display:none;align-self:flex-start;align-items:center;gap:6px;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);border-radius:999px;padding:8px 14px 8px 10px;font:inherit;font-weight:800;font-size:14px;color:var(--ink);cursor:pointer}
+.ms-back span{font-size:20px;line-height:1;margin-top:-2px}
+.view[data-view="moi"]:not([data-sec]) .ms-sub{display:none!important}
+.view[data-view="moi"][data-sec] > :not(.ms-show):not(.ms-back){display:none!important}
+.view[data-view="moi"][data-sec] > .ms-back{display:inline-flex}
+.view[data-view="moi"][data-sec] .ms-show[open], .view[data-view="moi"][data-sec] details.ms-show{display:block}
+.ms-gl{font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:2px 4px -2px}
+.ms-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:8px}
+.ms-tile{position:relative;border:0;border-radius:20px;padding:13px;min-height:100px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;background:color-mix(in srgb,var(--bc) 22%,var(--surface));box-shadow:0 2px 0 var(--shadow)}
+.ms-tile i{font-style:normal;font-size:22px;margin-bottom:auto}
+.ms-tile b{font-size:15px;margin-top:8px}
+.ms-tile span{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.ms-tile em{position:absolute;top:10px;right:10px;font-style:normal;font-size:11.5px;font-weight:800;min-width:22px;text-align:center;padding:2px 7px;border-radius:999px;background:#FFC94A;color:#1C1B2E}
+.ms-tile:active{transform:scale(.97)}
+.ms-prem{width:100%;display:flex;align-items:center;gap:11px;border:0;border-radius:18px;padding:12px 13px;font:inherit;text-align:left;cursor:pointer;color:var(--ink);background:linear-gradient(110deg,color-mix(in srgb,#FFC94A 26%,var(--surface)),color-mix(in srgb,#E79ADB 22%,var(--surface)));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,#FFC94A 55%,transparent)}
+.ms-prem i{font-style:normal;font-size:20px}
+.ms-prem span{flex:1;min-width:0;display:flex;flex-direction:column}
+.ms-prem b{font-size:15px}
+.ms-prem small{font-size:12px;color:var(--muted)}
+.ms-prem u{text-decoration:none;font-size:12.5px;font-weight:800;background:#FFC94A;color:#1C1B2E;border-radius:999px;padding:6px 11px;flex:none}
+#mSettings{display:flex;flex-direction:column;gap:10px}
+.sec-prem{display:flex;flex-direction:column;gap:7px}
+.sec-prem-b{display:flex;gap:7px}
+.sec-prem-go,.sec-prem-no{border:0;border-radius:999px;padding:5px 11px;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}
+.sec-prem-go{background:#FFC94A;color:#1C1B2E}
+.sec-prem-no{background:rgba(127,127,160,.18);color:inherit}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2493,20 +2521,23 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 
   <!-- MON ESPACE -->
   <section class="view" data-view="moi" hidden>
+    <button type="button" class="ms-back" id="moiBack"><span aria-hidden="true">‹</span>Moi</button>
     <div class="space-head" id="spaceHead"></div>
-    <div class="sub">
+    <div id="moiPrem"></div>
+    <div id="moiTiles"></div>
+    <div class="sub ms-sub" id="mPersoSub">
       <h3>Mes tâches perso <span class="lock" id="lockInfo"></span></h3>
       <div class="list fridge" id="persoList"></div>
     </div>
-    <div class="sub">
+    <div class="sub ms-sub" id="mAssignSub">
       <h3>Ce que le foyer m'a confié</h3>
       <div class="list fridge" id="assignedList"></div>
     </div>
-    <div class="sub" id="mCars"></div>
-    <div class="sub" id="mPremium"></div>
+    <div class="sub ms-sub" id="mCars"></div>
+    <div class="sub ms-sub" id="mPremium"></div>
     <div class="sub cx-notif" id="cxNotif" hidden></div>
     <div class="sub cx-account" id="cxAccount" hidden></div>
-    <details class="done-list" id="mDoneWrap"><summary id="mDoneSummary">Tâches réalisées</summary><div class="list" id="mDoneList"></div></details>
+    <details class="done-list ms-sub" id="mDoneWrap"><summary id="mDoneSummary">Tâches réalisées</summary><div class="list" id="mDoneList"></div></details>
     <div class="sub" id="mSettings"></div>
   </section>
 
@@ -3609,6 +3640,13 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
   for(const [ic,tx,fn] of extra) w.append(el("button",{type:"button",class:"td-x",onclick:fn},el("i",{"aria-hidden":"true",text:ic}),tx));
   if(!open.length&&!doneT.length&&!ev.length&&!extra.length) w.append(el("p",{class:"td-calm",text:isT?"Journée calme : rien de prévu pour toi aujourd'hui.":"Rien de prévu ce jour-là."}));
 }
+function premiumTip(){ if(!meId()||(S.prefs&&S.prefs.premiumInteret)) return null;
+  let last=0; try{ last=+localStorage.getItem("cocoon.premTip")||0; }catch(_){} if(Date.now()-last<14*864e5) return null;
+  const nd=(S.docs||[]).length, nf=(S.docs||[]).filter(d=>d.assetId).length;
+  if(nd>=20) return "Tu as déjà "+nd+" papiers rangés. Avec Premium, plus de limite (25 en gratuit), photos et PDF compris.";
+  if(nf>=2) return "Tu ranges souvent des papiers en photo. Avec Premium, je lis la photo et je remplis tout : titre, date, montant.";
+  if((S.depenses||[]).length>=15) return "Ton budget prend forme. Avec Premium, tu vois toute l'année en graphiques et tu exportes pour les impôts.";
+  return null; }
 function renderSecretary(){
   { const sd=$("secDay"); if(sd) sd.textContent="Aujourd'hui"; }
   const list=$("secList"); list.innerHTML=""; renderSecChips(); renderSecAns();
@@ -3630,6 +3668,7 @@ function renderSecretary(){
   { const E=monthEst(); if(E.tot||E.est) list.append(el("li",{},el("button",{type:"button",class:"sec-link",text:"Budget "+de(E.nm)+" : "+eurR(E.tot)+" dépensés"+(E.est&&E.est>E.tot?" · fin de mois ≈ "+eurR(E.est):""),onclick:()=>{ setTab("budget"); window.scrollTo({top:0}); }}))); }
   if(m&&(minePerso||mineFoyer)) list.append(el("li",{text:"Dans ton espace : "+[minePerso?minePerso+" perso":null,mineFoyer?mineFoyer+" confiée"+(mineFoyer>1?"s":"")+" par le foyer":null].filter(Boolean).join(" et ")}));
   { const ce=(S.repas||[]).find(r=>r.date===iso(today())&&r.slot==="soir"&&r.plat); if(ce){ const who=[]; if(ce.cuisine&&membre(ce.cuisine).nom) who.push(ce.cuisine===meId()?"c'est toi qui cuisines":membre(ce.cuisine).nom+" cuisine"); if(ce.vaisselle&&membre(ce.vaisselle).nom) who.push(ce.vaisselle===meId()?"tu fais la vaisselle":membre(ce.vaisselle).nom+" fait la vaisselle"); list.append(el("li",{text:"Ce soir au menu : "+ce.plat+(who.length?" ("+who.join(", ")+")":"")})); } }
+  { const tip=premiumTip(); if(tip) list.append(el("li",{class:"sec-prem"},el("span",{text:"✨ "+tip}),el("span",{class:"sec-prem-b"},el("button",{type:"button",class:"sec-prem-go",text:"En savoir plus",onclick:()=>{ setTab("moi"); S.moiSec="premium"; renderMoiNav(); window.scrollTo({top:0}); }}),el("button",{type:"button",class:"sec-prem-no",text:"Plus tard",onclick:()=>{ try{ localStorage.setItem("cocoon.premTip",String(Date.now())); }catch(_){} renderSecretary(); }})))); }
   { const ss=cSession(); if(ss&&ss.par!==meId()) list.append(el("li",{text:"🛒 "+membre(ss.par).nom+" fait les courses en ce moment : ajoute vite ce qui manque"})); }
   { const nc=(S.courses||[]).filter(i=>!i.fait).length; if(nc) list.append(el("li",{text:nc+" article"+(nc>1?"s":"")+" sur la liste de courses"})); }
   for(const a of objAlerts().slice(0,2)) list.append(el("li",{text:"Budget "+(BCAT[a.c]||BCAT.autre).nom.toLowerCase()+" : "+(a.v>=a.g?"objectif dépassé ("+money(a.v)+" / "+money(a.g)+")":Math.round(a.v/a.g*100)+" % de l'objectif")}));
@@ -4749,6 +4788,7 @@ $("bAddCr").addEventListener("click",()=>{ const me=meId(); if(!me){ needMe(); r
 $("sgDep").addEventListener("click",()=>{ closeSheet(); openBForm("dep"); });
 $("sgRdv").addEventListener("click",()=>{ closeSheet(); if(!needMe()) return; setTab("agenda"); S.rdvForm={pour:[meId()]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({behavior:"smooth",block:"start"}); },60); });
 $("sgSub").addEventListener("click",()=>{ closeSheet(); openBForm("sub"); });
+document.querySelectorAll('.tab[data-tab="moi"]').forEach(b=>b.addEventListener("click",()=>{ if(S.moiSec){ S.moiSec=null; renderMoiNav(); } }));
 document.querySelectorAll(".viewseg button").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.go==="maison") S.mSec=null; setTab(b.dataset.go); window.scrollTo({top:0}); }));
 /* ===== Maison & véhicules (V3) ===== */
 const MI=p=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
@@ -4978,7 +5018,7 @@ function renderAllNowInner(){
   renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon();
   if(S.pendingWizard&&meM()&&S.configLoaded){ S.pendingWizard=false; openWizard(isAdmin()&&!(S.config&&S.config.qFait)?"foyer":"perso"); }
   if(v==="accueil"){ renderToday(); renderRecap(); renderSetupCard(); renderSecretary(); renderRdvAlert(); renderWeek(); renderFridge(); renderAccBudget(); renderAccWho(); }
-  else if(v==="moi"){ renderMine(); renderCars(); renderPremium(); renderSettings(); }
+  else if(v==="moi"){ renderMine(); renderCars(); renderPremium(); renderSettings(); renderMoiNav(); }
   else if(v==="recherche") renderSearch();
   else if(v==="foyer") renderFoyer();
   else if(v==="profil") renderProfile();
@@ -5878,8 +5918,30 @@ const SET_IC={
   shield:'<path d="M12 3 5 6v5.5c0 4.4 3 8 7 9.5 4-1.5 7-5.1 7-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>',
   doc:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 12h5M10 16h5"/>',
   bye:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5"/><path d="M16 16l5 5M21 16l-5 5"/>',
-  quit:'<path d="M14 4h5v16h-5"/><path d="M10 12H3M6 9l-3 3 3 3"/>'
+  quit:'<path d="M14 4h5v16h-5"/><path d="M10 12H3M6 9l-3 3 3 3"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c.8-3.8 3.9-6 7.5-6s6.7 2.2 7.5 6"/>'
 };
+/* Onglet Moi : une page d'accueil (profil, Premium, tuiles « Mon espace », réglages) et des sous-pages */
+function moiOpen(sec){ S.moiSec=sec||null; renderMoiNav(); window.scrollTo({top:0,behavior:"smooth"}); }
+function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'); if(!V) return; const me=meId(), m=meM(), sec=S.moiSec||null;
+  const SUBS={perso:["mPersoSub","mDoneWrap"],confie:["mAssignSub"],vehic:["mCars"],notif:["cxNotif"],premium:["mPremium"],compte:["cxAccount"]};
+  for(const id of ["cxNotif","cxAccount"]){ const e=$(id); if(e) e.classList.add("ms-sub"); }
+  V.querySelectorAll(".ms-show").forEach(e=>e.classList.remove("ms-show"));
+  if(sec&&SUBS[sec]){ V.dataset.sec=sec; for(const id of SUBS[sec]){ const e=$(id); if(e) e.classList.add("ms-show"); } } else { delete V.dataset.sec; S.moiSec=null; }
+  const P=$("moiPrem"), T=$("moiTiles"); if(!P||!T) return; P.innerHTML=""; T.innerHTML="";
+  if(!m) return;
+  // Premium : une ligne discrète
+  P.append(el("button",{type:"button",class:"ms-prem",onclick:()=>moiOpen("premium")},el("i",{"aria-hidden":"true",text:"✨"}),el("span",{},el("b",{text:"Cocoon Premium"}),el("small",{text:(S.prefs&&S.prefs.premiumInteret)?"Tu seras prévenu·e du lancement":"Papiers en photo, secrétaire intelligent, et plus"})),el("u",{text:"Découvrir"})));
+  // Mon espace : tuiles
+  const perso=S.perso.filter(t=>!t.fait), conf=S.foyer.filter(t=>!t.fait&&t.pour===me), late=perso.concat(conf).filter(t=>t.echeance&&daysTo(t.echeance)<0).length;
+  const vs=S.vehic||[], v0=vs[0], vNext=v0?[v0.ctProchain?["CT",v0.ctProchain]:null].filter(Boolean)[0]:null;
+  const tile=(k,ic,c,t,sub,badge)=>{ const b=el("button",{type:"button",class:"ms-tile",style:"--bc:"+c,onclick:()=>moiOpen(k)},el("i",{"aria-hidden":"true",text:ic}),el("b",{text:t}),el("span",{text:sub})); if(badge) b.append(el("em",{text:badge})); return b; };
+  const g=el("div",{class:"ms-tiles"},
+    tile("perso","🔒","#FFC94A","Mes tâches perso",perso.length?perso.length+" à faire":"visibles par toi seul",perso.length?String(perso.length):null),
+    tile("confie","📌","#8FB8FF","Confié par le foyer",conf.length?conf.length+" à faire":"rien pour l'instant",conf.length?String(conf.length):null),
+    tile("vehic","🚗","#7FD39A","Mes véhicules",v0?(v0.nom||"Véhicule")+(vNext?" · "+vNext[0]+" "+MOIS.format(parse(vNext[1])):""):"ajouter une voiture",null),
+    window.cocoonHost&&$("cxNotif")?tile("notif","🔔","#E79ADB","Notifications","rappels sur ton téléphone",null):tile("perso","✓","#B9A8F0","Tâches réalisées","ton historique",null));
+  T.append(el("div",{class:"ms-gl",text:"Mon espace"+(late?" · "+late+" en retard":"")}),g); }
 function renderSettings(){
   const w=$("mSettings"); if(!w) return; w.innerHTML=""; const m=meM(); if(!m) return;
   const ico=(k,c)=>{ const i=el("span",{class:"b-ico",style:"--stripe:"+c}); i.innerHTML=MI(SET_IC[k]); return i; };
@@ -5911,10 +5973,15 @@ function renderSettings(){
       box.append(el("div",{class:"del-acc"},el("b",{text:"Ce qui sera effacé, sans retour possible :"}),
         el("ul",{},el("li",{text:"ton compte de connexion et ton profil"}),el("li",{text:"ton espace perso (tâches, véhicules, préférences)"}),el("li",{text:"tes papiers personnels et leurs fichiers"}),
           alone?el("li",{text:"tout le foyer : tu es la dernière personne avec un compte, ses tâches, papiers, budget et fichiers seront effacés aussi"}):el("li",{text:"ton accès au foyer : les autres gardent les données communes, ta fiche devient « Ancien membre »"})),
-        el("span",{class:"muted",text:"Pense à exporter tes données avant, si tu veux les garder."}),inp,
+        inp,
         el("div",{style:"display:flex;gap:8px;flex-wrap:wrap"},el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>{ S.setConfirm=null; S.delTxt=""; renderSettings(); }}),go))); }
   }
-  w.append(el("div",{class:"sec-title"},el("h2",{text:"Réglages"})),box,el("p",{class:"version",text:"Cocoon · version 4.1"}));
+  const acc=el("div",{class:"settings"});
+  if(window.cocoonHost&&$("cxAccount")) acc.append(row("user","#8FB8FF","Mon compte","Adresse de connexion, lien d'invitation, déconnexion",()=>moiOpen("compte")));
+  acc.append(...[...box.querySelectorAll(":scope > .set-row")].filter(b=>/Confidentialit|Conditions/.test(b.textContent)));
+  w.append(el("div",{class:"ms-gl",text:"Compte"}),acc);
+  if(box.childNodes.length) w.append(el("div",{class:"ms-gl",text:"Mes données"}),box);
+  w.append(el("p",{class:"version",text:"Cocoon · version 4.1"}));
 }
 
 /* ===== Conditions d'utilisation ===== */
@@ -6691,6 +6758,7 @@ $("cForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||!n
   $("cNom").value="";
   try{ await addCourses(parts.map(parseArticle),{pour});
     toast(parts.length>1?parts.length+" articles ajoutés, rangés par rayon.":"Ajouté à la liste."); }catch(err){ writeErr(err); } });
+$("moiBack").addEventListener("click",()=>moiOpen(null));
 $("sgCourses").addEventListener("click",()=>{ closeSheet(); setTab("courses"); window.scrollTo({top:0}); setTimeout(()=>{ try{ $("cNom").focus(); }catch(_){} },80); });
 
 /* ---------- Repas de la semaine ---------- */
