@@ -36,7 +36,7 @@ html{background:#F6F5FB;color-scheme:light dark}@media (prefers-color-scheme: da
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="15/10 20:24";</script>
+<script>window.COCOON_BUILD="15/10 22:02";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2616,6 +2616,15 @@ html.prem-open{overflow:hidden}
 .hb-t.hb-prem>i{background:#1C1B2E}
 .hb-t.hb-prem>i svg{width:20px;height:20px}
 .hb-t.hb-prem>span{color:rgba(28,27,46,.7)}
+.mb-h{display:flex;align-items:center;gap:12px;margin:2px 2px 4px}.mb-h .av{flex:none;font-size:20px}.mb-h .mb-n{display:block;font:800 21px/1.1 var(--f-display);letter-spacing:-.01em}.mb-h .mb-s{font-size:13px;color:var(--muted)}
+.mb-list{display:flex;flex-direction:column;background:var(--surface);border-radius:18px;padding:4px 14px;box-shadow:0 2px 0 var(--shadow)}
+.mb-it{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14.5px;min-width:0}.mb-it:last-child{border-bottom:0}
+.mb-ic{font-style:normal;width:20px;text-align:center;flex:none;color:var(--muted)}.mb-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mb-it small{font-size:12px;color:var(--muted);flex:none}.mb-it small.late{color:var(--late);font-weight:700}
+.mb-more{border:0;background:none;font:inherit;font-weight:700;color:var(--muted);text-align:left;padding:10px 0;cursor:pointer}
+.mb-empty{margin:0;padding:14px 0;color:var(--muted);font-size:14px}
+.mb-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}.mb-acts .mb-main{grid-column:1/-1}.mb-acts.two .mb-prof{grid-column:1/-1}
+.mb-acts .btn{width:100%;margin:0}
+.mb-sheet .pp-in{gap:12px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -3216,7 +3225,7 @@ function renderHeader(){
     const isOpen=S.tab==="profil"&&S.profil===m.id;
     const pct=human&&(done+todo)?Math.round(done/(done+todo)*100):0;
     const ring=el("span",{class:"ring"+(human?" prog":(open?" has":"")),style:human?"--p:"+pct+"%":null},avatar(m.id));
-    const st=el("button",{type:"button",class:"story"+(isOpen?" open":""),"aria-label":m.id===me?"Ouvrir mon espace":"Voir le profil "+de(m.nom),title:human?done+" tâche"+(done>1?"s":"")+" faite"+(done>1?"s":"")+" cette semaine":null,onclick:()=>{ if(m.id===me){ setTab("moi"); renderHeader(); } else openProfile(m.id); }},
+    const st=el("button",{type:"button",class:"story"+(isOpen?" open":""),"aria-label":m.id===me?"Ma journée":"Fiche "+de(m.nom),title:human?done+" tâche"+(done>1?"s":"")+" faite"+(done>1?"s":"")+" cette semaine":null,onclick:()=>openMemberSheet(m.id)},
       ring,nameEl(m,m.id===me?"Toi":m.nom,"span"));
     st.lastChild.classList.add("sn");
     if(pending) st.append(el("span",{class:"ss",text:"invité·e"})); else if(done) st.append(el("span",{class:"ss ok",text:done+" faite"+(done>1?"s":"")})); else if(open) st.append(el("span",{class:"ss",text:open+" à faire"}));
@@ -6262,6 +6271,33 @@ function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const
   tile("maison","","#7FCDB9","Maison",mt||"tout le logement",{gly:"maison"});
   { const pa=!!(S.prefs&&S.prefs.premiumInteret), pt=tile("premium","","#FFC94A","Premium",pa?"on te prévient à l'ouverture":"1 mois offert",{cls:"hb-prem"}); pt.firstChild.innerHTML='<svg viewBox="0 -4 64 64" aria-hidden="true"><path d="M32 4c2.6 15 9 21.4 24 24-15 2.6-21.4 9-24 24-2.6-15-9-21.4-24-24 15-2.6 21.4-9 24-24z" fill="#FFE7A0"/></svg>'; }
 }
+
+/* Mini-fiche d'un membre (toucher une bulle de l'accueil) */
+function openMemberSheet(id){ const m=membre(id); if(!m) return; const me=meId(), isMe=id===me, ani=typeOf(m)==="animal", t0=iso(today()), ws=weekStart();
+  const U=upSheet("mbPage",isMe?"Ma journée":"Fiche "+de(m.nom)), sheet=U.sheet, close=U.close; sheet.classList.add("mb-sheet");
+  const pool=isMe?allTasks().filter(t=>t.prive||t.pour===me):S.foyer;
+  const open=pool.filter(t=>!t.fait&&(ani?t.concerne===id:(isMe?(t.prive||t.pour===me):t.pour===id))).sort(sortOpen);
+  const done=ani?0:S.foyer.filter(t=>t.fait&&t.faitPar===id&&t.faitLe>=ws).length;
+  const rdv=(S.rdvs||[]).filter(r=>!r.fait&&r.date&&r.date>=t0&&r.pour&&r.pour.includes(id)).sort((a,b)=>(a.date+(a.heure||""))<(b.date+(b.heure||""))?-1:1)[0];
+  const pending=!ani&&!isMe&&!m.uid&&(m.invite||typeOf(m)==="adulte");
+  const sub=[]; if(!ani) sub.push(done+" faite"+(done>1?"s":"")+" cette semaine"); sub.push(open.length?open.length+" à faire":"rien à faire"); if(pending) sub.push("invité·e");
+  const head=el("div",{class:"mb-h"},avatar(id,52),el("div",{},el("b",{class:"mb-n",text:isMe?"Toi":m.nom}),el("span",{class:"mb-s",text:sub.join(" · ")})));
+  const list=el("div",{class:"mb-list"});
+  const row=(ic,t,when,late)=>list.append(el("div",{class:"mb-it"},el("i",{class:"mb-ic","aria-hidden":"true",text:ic}),el("span",{class:"mb-t",text:t}),when?el("small",{class:late?"late":null,text:when}):null));
+  if(rdv) row("📅",rdv.titre+(rdv.lieu?" · "+rdv.lieu:""),(rdv.date===t0?"aujourd'hui":dueLabel(rdv.date))+(rdv.heure?" "+heureTxt(rdv.heure):""),false);
+  for(const t of open.slice(0,rdv?3:4)) row("○",t.titre,t.echeance?dueLabel(t.echeance):null,!!(t.echeance&&t.echeance<t0));
+  if(open.length>(rdv?3:4)) list.append(el("button",{type:"button",class:"mb-more",text:"+ "+(open.length-(rdv?3:4))+" autre"+(open.length-(rdv?3:4)>1?"s":""),onclick:()=>{ close(); setTimeout(()=>{ setTab(isMe?"moi":"foyer"); renderHeader(); },200); }}));
+  if(!list.childNodes.length) list.append(el("p",{class:"mb-empty",text:isMe?"Rien de prévu pour toi. Profite !":ani?"Rien de prévu pour "+m.nom+".":m.nom+" n'a rien de prévu."}));
+  const go=fn=>()=>{ close(); setTimeout(fn,220); };
+  const acts=el("div",{class:"mb-acts"});
+  if(!S.readOnly){
+    const lbl=isMe?"+ Une tâche pour moi":ani?"+ Une tâche pour "+m.nom:"+ Lui confier une tâche";
+    acts.append(el("button",{type:"button",class:"btn pp-cta mb-main",text:lbl,onclick:go(()=>{ if(isMe) openSheet({where:"perso"}); else if(ani) openSheet({text:m.nom+" : "}); else openSheet({where:id}); })}));
+    if(!isMe&&!ani){ const last=S.foyer.filter(t=>t.fait&&t.faitPar===id&&!t.prive&&!(S.mercis||[]).some(x=>x.id===t.id+"_"+me)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0))[0];
+      const mb=el("button",{type:"button",class:"btn ghost mb-merci",text:last?"🤝 Dire merci":"🤝 Rien à remercier",disabled:last?null:"",title:last?"Pour « "+last.titre+" »":null,onclick:()=>{ sendMerci(last,mb); mb.textContent="🤝 Merci envoyé"; }}); acts.append(mb); } }
+  acts.append(el("button",{type:"button",class:"btn ghost mb-prof",text:isMe?"Mon espace":ani?"Voir sa fiche":"Voir son profil",onclick:go(()=>openProfile(id))}));
+  if(acts.childElementCount===2&&!acts.querySelector(".mb-merci")) acts.classList.add("two");
+  sheet.append(el("div",{class:"pp-in"},head,list,acts)); }
 /* Bouton « Ajouter » propre à chaque rubrique (remplace le + central) */
 function nextFreeMeal(){ const t=today(), h=new Date().getHours(), slots=repasSlots();
   for(let k=0;k<14;k++){ const d=iso(new Date(t.getFullYear(),t.getMonth(),t.getDate()+k));
