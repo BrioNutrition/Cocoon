@@ -36,7 +36,7 @@ html{background:#F6F5FB;color-scheme:light dark}@media (prefers-color-scheme: da
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="15/10 18:40";</script>
+<script>window.COCOON_BUILD="15/10 18:44";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2554,13 +2554,13 @@ html.sheet-open .hub-cx{display:none}
 .prem-page.out{animation:ppBgOut .32s ease both;pointer-events:none}
 @keyframes ppBg{from{background:rgba(0,0,0,0)}}
 @keyframes ppBgOut{to{background:rgba(0,0,0,0)}}
-.pp-sheet{position:relative;width:100%;max-width:640px;margin:0 auto;height:calc(100% - env(safe-area-inset-top,0px) - 10px);display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--bg);border-radius:26px 26px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.3);animation:ppUp .32s cubic-bezier(.2,.9,.3,1) both}
+.pp-sheet{position:relative;width:100%;max-width:640px;margin:0 auto;max-height:calc(100% - env(safe-area-inset-top,0px) - 10px);display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--bg);border-radius:26px 26px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.3);animation:ppUp .32s cubic-bezier(.2,.9,.3,1) both}
 @keyframes ppUp{from{transform:translateY(100%)}to{transform:none}}
 @media (prefers-reduced-motion:reduce){.pp-sheet,.prem-page,.prem-page.out{animation:none}}
 .pp-grab{position:sticky;top:0;z-index:2;display:flex;justify-content:center;padding:10px 0 8px;cursor:grab;touch-action:none;background:linear-gradient(var(--bg) 60%,transparent)}
 .pp-grab i{width:44px;height:5px;border-radius:9px;background:color-mix(in srgb,var(--ink) 28%,transparent)}
 html.prem-open{overflow:hidden}
-.pp-in{flex:1;width:100%;max-width:560px;margin:0 auto;padding:6px 16px calc(env(safe-area-inset-bottom,0px) + 16px);display:flex;flex-direction:column;gap:12px;justify-content:space-between}
+.pp-in{flex:1;width:100%;max-width:560px;margin:0 auto;padding:6px 16px calc(env(safe-area-inset-bottom,0px) + 16px);display:flex;flex-direction:column;gap:10px;justify-content:flex-start}
 .pp-hero{display:flex;align-items:center;gap:12px;border-radius:22px;padding:14px 16px;color:#1C1B2E;background:radial-gradient(70% 90% at 0% 0%,rgba(255,255,255,.65),transparent 70%),linear-gradient(140deg,#FFE08A,#FFC2A0 52%,#FFA9C4)}
 .pp-hero h2{margin:0;font:800 23px/1.05 var(--f-display);letter-spacing:-.02em;color:#1C1B2E}
 .pp-hero p{margin:3px 0 0;font-size:13px;color:rgba(28,27,46,.72);line-height:1.3}
@@ -2571,12 +2571,12 @@ html.prem-open{overflow:hidden}
 .pp-f:last-child{grid-column:span 2}
 .pp-f i{font-style:normal;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-size:16px;flex:none}
 .pp-f span{min-width:0}.pp-f b{display:block;font-size:12.5px;line-height:1.2}.pp-f small{display:block;font-size:11px;color:var(--muted);line-height:1.25}
-.pp-plans{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.pp-plans{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .pp-plan{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;border:0;border-radius:16px;padding:12px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;box-shadow:inset 0 0 0 2px var(--line)}
 .pp-plan[aria-checked="true"]{box-shadow:inset 0 0 0 2.5px #FF9C80;background:color-mix(in srgb,#FF9C80 10%,var(--surface))}
 .pp-pn{font-size:14px}.pp-pr b{font:800 20px var(--f-display)}.pp-pr small,.pp-nt{font-size:12px;color:var(--muted)}
 .pp-plan em{position:absolute;top:-9px;right:10px;font-style:normal;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:#FFC94A;color:#1C1B2E}
-.pp-foot{display:flex;flex-direction:column;align-items:center;gap:6px}
+.pp-foot{display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:4px}
 .pp-cta{width:100%;padding:15px;font-size:16px;font-weight:800;border-radius:16px;background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB)!important;color:#1C1B2E!important;border:0}
 .pp-cta:disabled{opacity:.75}
 .pp-foot small{font-size:11.5px;color:var(--muted);text-align:center}
@@ -2599,6 +2599,7 @@ html.prem-open{overflow:hidden}
 .cf-box.on{transform:translate(-50%,-50%);opacity:1}.cf-box b{font-size:18px;display:block}.cf-box p{margin:8px 0 16px;color:var(--muted);font-size:14.5px;line-height:1.4}.cf-bt{display:flex;gap:8px;justify-content:flex-end}
 .sp-back{display:block;margin:14px auto 0;border:0;background:none;color:var(--muted);font:inherit;font-weight:700;font-size:14.5px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .sp-back[hidden]{display:none}
+@media (min-height:760px){.pp-feats{grid-template-columns:1fr;gap:6px}.pp-f:last-child{grid-column:auto}.pp-f{padding:9px 10px}.pp-f b{font-size:14px}.pp-f small{font-size:12px}.pp-f i{width:34px;height:34px}}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -7018,13 +7019,6 @@ function openPremium(){ let P=$("premPage"); if(!P){ P=el("div",{class:"prem-pag
     cta.textContent="✓ On te prévient à l'ouverture"; toast("Les abonnements ouvrent très bientôt : tu seras prévenu·e en premier, avec ton mois offert."); try{ renderPremium(); }catch(_){} }});
   sheet.append(grab,el("div",{class:"pp-in"},hero,feats,plans,el("div",{class:"pp-foot"},cta,el("small",{text:"Un seul abonnement pour tout le foyer · annulable à tout moment"}))));
   P.append(sheet);
-  /* petite démo du geste : le panneau se tasse vers le bas et une main montre le glissement (les 3 premières fois) */
-  let seen=0; try{ seen=+(localStorage.getItem("cocoon.ppHint")||0); }catch(_){}
-  const reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(seen<3&&!reduced){ try{ localStorage.setItem("cocoon.ppHint",String(seen+1)); }catch(_){}
-
-    setTimeout(()=>{ if(P.hidden) return;
-      try{ sheet.animate([{transform:"none"},{transform:"none",offset:.25},{transform:"translateY(34px)",offset:.68},{transform:"translateY(-4px)",offset:.86},{transform:"none"}],{duration:1100,easing:"cubic-bezier(.4,0,.2,1)"}); }catch(_){} },650); }
   P.tabIndex=-1; setTimeout(()=>{ try{ P.focus(); }catch(_){} },50); }
 function renderPremium(){
   const w=$("mPremium"); if(!w) return; w.innerHTML=""; if(!meId()){ w.hidden=true; return; } w.hidden=false;
