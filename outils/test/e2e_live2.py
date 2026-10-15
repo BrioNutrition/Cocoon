@@ -50,7 +50,7 @@ async def main():
     await pg.add_style_tag(content='.toast{display:none!important}')
     await pg.evaluate("scrollTo(0,0)"); await pg.screenshot(path='../lv1.png',clip={'x':0,'y':0,'width':400,'height':820})
     await pg.click('.tab[data-tab="accueil"]'); await pg.wait_for_timeout(300); print('accueil:', [t for t in (await pg.inner_text('.secretary')).split('\n') if 'courses' in t])
-    await pg.click('#bellBtn'); await pg.wait_for_timeout(400); print('cloche:', (await pg.inner_text('#npanel'))[:120].replace('\n',' | ')); await pg.keyboard.press('Escape'); await pg.wait_for_timeout(300)
+    await pg.evaluate("document.getElementById('bellBtn').click()"); await pg.wait_for_timeout(400); print('cloche:', (await pg.inner_text('#npanel'))[:120].replace('\n',' | ')); await pg.keyboard.press('Escape'); await pg.wait_for_timeout(300)
     # Repas puis hors connexion
     await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="repas"]'); await pg.wait_for_timeout(200)
     await pg.evaluate("__mock.offline=true"); await ctx.set_offline(True); await pg.wait_for_timeout(200)

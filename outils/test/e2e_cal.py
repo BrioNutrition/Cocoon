@@ -51,7 +51,7 @@ async def main():
     await pg.evaluate("document.getElementById('navAdd').click()"); await pg.fill('#quickTitle','Payer la cantine'); await pg.eval_on_selector('#qDue','(e)=>{e.value=new Date(Date.now()+864e5).toISOString().slice(0,10)}'); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(3500)
     print('cal en base:', await pg.evaluate("JSON.stringify(__mock.T.cocoon_cal.map(r=>[r.owner.slice(0,6),r.events.length,r.moi]))"))
     print('url cal:', await pg.evaluate("cocoonHost.calUrl()"))
-    await pg.click('#bellBtn'); await pg.wait_for_timeout(300); await pg.click('.np-all'); await pg.wait_for_timeout(500)
+    await pg.evaluate("document.getElementById('bellBtn').click()"); await pg.wait_for_timeout(300); await pg.click('.np-all'); await pg.wait_for_timeout(500)
     await pg.locator('#calCard').screenshot(path='../cal1.png')
     await pg.route('webcal://**',lambda r:r.abort())
     await pg.click('#calCard .btn'); await pg.wait_for_timeout(900)

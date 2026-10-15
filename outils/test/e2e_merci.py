@@ -55,7 +55,7 @@ async def main():
     mb=pg.locator('#doneList .merci-b').first; print('bouton merci:', await mb.inner_text())
     await mb.click(); await pg.wait_for_timeout(600); print('merci en base:', await pg.evaluate("JSON.stringify(__mock.T.cocoon_docs.filter(r=>r.path==='mercis').map(r=>r.id+':'+r.data.de+'->'+r.data.a))"))
     await pg.locator('#doneList .item:has-text("Faire les courses")').screenshot(path='../mc1.png')
-    await pg.evaluate("scrollTo(0,0)"); await pg.click('#bellBtn'); await pg.wait_for_timeout(400); await pg.screenshot(path='../mc2.png',clip={'x':0,'y':0,'width':400,'height':520})
+    await pg.evaluate("scrollTo(0,0)"); await pg.evaluate("document.getElementById('bellBtn').click()"); await pg.wait_for_timeout(400); await pg.screenshot(path='../mc2.png',clip={'x':0,'y':0,'width':400,'height':520})
     await pg.keyboard.press('Escape')
     print('pill:', await pg.inner_text('#cocBtn'))
     print('invite:', await pg.evaluate("cocoonHost.inviteUrl()"))
