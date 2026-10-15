@@ -36,7 +36,7 @@ html{background:#F6F5FB;color-scheme:light dark}@media (prefers-color-scheme: da
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="15/10 22:02";</script>
+<script>window.COCOON_BUILD="15/10 22:52";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2623,8 +2623,35 @@ html.prem-open{overflow:hidden}
 .mb-more{border:0;background:none;font:inherit;font-weight:700;color:var(--muted);text-align:left;padding:10px 0;cursor:pointer}
 .mb-empty{margin:0;padding:14px 0;color:var(--muted);font-size:14px}
 .mb-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}.mb-acts .mb-main{grid-column:1/-1}.mb-acts.two .mb-prof{grid-column:1/-1}
-.mb-acts .btn{width:100%;margin:0}
+.mb-acts .btn{width:100%;margin:0}.mb-acts a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
 .mb-sheet .pp-in{gap:12px}
+.kv.kv3{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto auto}
+.kv-lock{border:0;background:var(--sunk);border-radius:10px;width:34px;height:34px;font-size:15px;cursor:pointer;filter:grayscale(.2)}.kv-lock[aria-pressed="true"]{background:color-mix(in srgb,#FFC94A 30%,var(--surface))}
+.pw-card{position:relative;border-radius:24px;padding:16px;color:#fff;background:radial-gradient(90% 120% at 100% 0%,rgba(255,255,255,.18),transparent 60%),linear-gradient(135deg,var(--pw),color-mix(in srgb,var(--pw) 50%,#1C1B2E));box-shadow:0 10px 28px color-mix(in srgb,var(--pw) 35%,transparent);overflow:hidden}
+.pw-top{display:flex;align-items:center;gap:12px}.pw-top .av{flex:none;box-shadow:0 0 0 3px rgba(255,255,255,.35);font-size:21px}
+.pw-id{flex:1;min-width:0}.pw-id b{display:block;font:800 25px/1.05 var(--f-display);letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pw-id span{font-size:13px;opacity:.85}
+.pw-edit{flex:none;width:38px;height:38px;border-radius:13px;border:0;background:rgba(255,255,255,.2);color:#fff;display:grid;place-items:center;cursor:pointer}.pw-edit svg{width:18px;height:18px;display:block}
+.pw-chip{flex:none;width:34px;height:25px;border-radius:6px;background:linear-gradient(135deg,#FFE7A0,#C9A245);display:grid;place-items:center;font-size:13px}
+.pw-keys{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+.pw-keys>*{min-width:0;color:inherit;text-decoration:none}.pw-keys small{display:block;font-size:10px;letter-spacing:.07em;text-transform:uppercase;opacity:.75;font-weight:700}.pw-keys b{display:block;font-size:15.5px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pw-add{margin-top:14px;border:1.5px dashed rgba(255,255,255,.55);background:rgba(255,255,255,.1);color:#fff;border-radius:14px;padding:10px 12px;font:inherit;font-weight:700;font-size:13.5px;width:100%;text-align:left;cursor:pointer}
+.pw-bday{margin-top:12px;font-size:13px;font-weight:700;background:rgba(255,255,255,.18);border-radius:99px;padding:5px 11px;width:max-content}
+.pf{display:flex;flex-direction:column;gap:8px}
+.pf-sec{display:flex;align-items:center;justify-content:space-between;margin:10px 4px 0;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.pf-link{border:0;background:none;font:inherit;font-size:13px;font-weight:800;letter-spacing:0;text-transform:none;color:var(--ink);cursor:pointer;padding:2px 0}
+.pf-card{background:var(--surface);border-radius:18px;padding:2px 14px;box-shadow:0 2px 0 var(--shadow)}
+.pf-r{display:flex;align-items:center;gap:10px;width:100%;padding:12px 0;border:0;border-bottom:1px solid var(--line);background:none;font:inherit;color:var(--ink);text-align:left;text-decoration:none;cursor:pointer;min-width:0}.pf-card>.pf-r:last-child{border-bottom:0}
+div.pf-r{cursor:default}
+.pf-r i{font-style:normal;width:22px;text-align:center;flex:none}.pf-r .pf-l{flex:1;min-width:0;color:var(--muted);font-size:14px;text-transform:none;letter-spacing:0;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pf-r b{font-weight:700;font-size:14.5px;text-align:right;max-width:58%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pf-lk,.pf-go{flex:none;font-size:12px}
+.pf-docs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 4px;scroll-snap-type:x proximity}.pf-docs::-webkit-scrollbar{display:none}
+.pf-doc{flex:none;width:136px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:flex-start;gap:6px;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);border-radius:16px;padding:12px;font:inherit;color:var(--ink);text-align:left;cursor:pointer}
+.pf-doc b{font-size:14px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em}
+.pf-doc.add{background:none;box-shadow:none;border:2px dashed var(--line)}
+.pf-pill{font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,#3CC37A 22%,transparent);color:#2E9E5B}.pf-pill.w{background:color-mix(in srgb,#FFC94A 30%,transparent);color:#9A6A00}.pf-pill.r{background:color-mix(in srgb,#E5484D 22%,transparent);color:#C2412D}.pf-pill.n{background:var(--sunk);color:var(--muted)}
+:root[data-theme="dark"] .pf-pill{color:#7BE0A6}:root[data-theme="dark"] .pf-pill.w{color:#FFC94A}:root[data-theme="dark"] .pf-pill.r{color:#FF8A8D}:root[data-theme="dark"] .pf-pill.n{color:var(--muted)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pf-pill{color:#7BE0A6}:root:not([data-theme="light"]) .pf-pill.w{color:#FFC94A}:root:not([data-theme="light"]) .pf-pill.r{color:#FF8A8D}:root:not([data-theme="light"]) .pf-pill.n{color:var(--muted)}}
+.pf-empty{border:2px dashed var(--line);background:none;border-radius:16px;padding:13px;font:inherit;font-weight:700;font-size:14px;color:var(--muted);text-align:left;cursor:pointer}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -3032,7 +3059,7 @@ const BANNERS=[
   {id:"lagon",css:"linear-gradient(180deg,#9AD0EC,#2F6E8F)"},{id:"ardoise",css:"linear-gradient(135deg,#59606B,#2B3036)"}
 ];
 const ESPECES=["Chat","Chien","Lapin","Oiseau","Poisson","Rongeur","Autre"];
-const SUGG={adulte:["Téléphone","Pointure","Taille de vêtements","Mutuelle","Plat préféré"],enfant:["École","Classe","Maîtresse / maître","Pointure","Taille de vêtements","Activités","Médecin"],animal:["N° de puce","Vétérinaire","Croquettes","Poids","Assurance animale"]};
+const SUGG={adulte:["Téléphone","Pointure","Taille de vêtements","Médecin","Mutuelle","Allergies","Groupe sanguin","Plat préféré"],enfant:["École","Classe","Maîtresse / maître","Pointure","Taille de vêtements","Médecin","Allergies","Groupe sanguin","Activités"],animal:["N° de puce","Vétérinaire","Croquettes","Poids","Assurance animale","Garde"]};
 /* Fichiers de la version hébergée : jamais de lien permanent. On demande un lien temporaire (1 h) au moment d'afficher. */
 const SIGNED=new Map(), SIGN_Q=new Set(); let SIGN_T=0;
 try{ const c=JSON.parse(localStorage.getItem("cocoon.signed")||"{}"), now=Date.now(); for(const k in c) if(c[k]&&c[k].exp>now+60000) SIGNED.set(k,c[k]); }catch(_){}
@@ -3383,8 +3410,8 @@ function renderPetCare(m){
     el("button",{type:"button",text:"+ Croquettes aux courses",onclick:async()=>{ if(!needMe()) return; try{ await S.db.collection("courses").add({nom:croq?"Croquettes "+croq:"Croquettes pour "+m.nom,qte:null,pour:"tous",fait:false,ajoutePar:meId(),ajouteLe:Date.now()}); toast("Ajouté à la liste de courses."); }catch(e){ writeErr(e); } }}),
     el("button",{type:"button",text:"+ Autre chose",onclick:()=>go("")}));
 }
-function openProfile(id){
-  if(id===meId()){ setTab("moi"); renderHeader(); window.scrollTo({top:0,behavior:"instant"}); return; }
+function openProfile(id,force){
+  if(id===meId()&&!force){ setTab("moi"); renderHeader(); window.scrollTo({top:0,behavior:"instant"}); return; }
   if(S.tab!=="profil") S.prevTab=S.tab;
   S.profil=id;
   setTab("profil"); renderHeader(); renderProfile();
@@ -3430,6 +3457,64 @@ function renderProfile(){
     rm.hidden=!(S.isOwner&&id!==me&&!S.readOnly);
     if(!rm.hidden) rm.append(el("button",{type:"button",class:"btn ghost p-rm-btn",onclick:()=>removeFromFoyer(m)},pet?"Retirer "+m.nom+" du foyer":"Retirer "+m.nom+" du foyer"),
       el("span",{class:"p-rm-s",text:m.uid?"Son accès au foyer sera coupé et son espace perso supprimé. Ses tâches du foyer passent à tout le monde.":"Son profil sera supprimé. Ses tâches du foyer passent à tout le monde."})); }
+  renderFiche(m);
+}
+
+/* ---------- Fiche « carte d'identité » (profil) ---------- */
+const PF_KEYS={enfant:["Pointure","Taille de vêtements","Classe","École","Groupe sanguin"],adulte:["Pointure","Taille de vêtements","Groupe sanguin","Plat préféré"],animal:["Poids","N° de puce","Croquettes","Vétérinaire"]};
+const PF_SHORT={"Taille de vêtements":"Taille","N° de puce":"Puce","Maîtresse / maître":"Maîtresse","Assurance animale":"Assurance","Vétérinaire":"Véto"};
+function pfIcon(l){ l=norm(l||""); const T=[[/tel|portable|phone/,"📞"],[/pointure|chaussure/,"👟"],[/taille|vetement/,"👕"],[/ecole|college|lycee|creche/,"🏫"],[/classe/,"🎒"],[/maitre|prof|nounou/,"🧑‍🏫"],[/veto|veterin/,"🩺"],[/medecin|pediatre|docteur|dentiste/,"🩺"],[/mutuelle|secu|vitale/,"💳"],[/allerg/,"⚠️"],[/sang/,"🩸"],[/plat|mange|aliment/,"🍝"],[/activit|sport|danse|foot|musique/,"⚽"],[/puce|tatou/,"🔖"],[/croquette|patee|nourriture/,"🥣"],[/poids/,"⚖️"],[/assurance/,"🛡️"],[/garde|pension/,"🏠"],[/anniv|naiss/,"🎂"],[/mail/,"✉️"],[/adresse/,"📍"],[/code|digicode/,"🔢"]];
+  for(const [r,e] of T) if(r.test(l)) return e; return "📝"; }
+function pfInfos(m){ const pub=(m.infos||[]).filter(x=>x&&x.v).map(x=>({l:x.l||"Info",v:x.v})); const pv=(((S.prefs||{}).fichePriv||{})[m.id]||[]).filter(x=>x&&x.v).map(x=>({l:x.l||"Info",v:x.v,p:true})); return pub.concat(pv); }
+function pfIsTel(v){ const d=String(v||"").replace(/[^\d+]/g,""); return d.length>=8&&d.length<=15&&/^[\d\s+().-]+$/.test(String(v).trim()); }
+function renderFiche(m){ const id=m.id, pet=typeOf(m)==="animal", can=canEditProfile(id)&&!S.readOnly, t0=iso(today());
+  const all=pfInfos(m), prio=PF_KEYS[typeOf(m)]||PF_KEYS.adulte, keys=[];
+  for(const k of prio){ const x=all.find(i=>i.l===k&&!i.p&&String(i.v).length<=22); if(x&&keys.length<3) keys.push(x); }
+  for(const x of all){ if(keys.length>=3) break; if(!keys.includes(x)&&!x.p&&!pfIsTel(x.v)&&String(x.v).length<=12) keys.push(x); }
+  const rest=all.filter(x=>!keys.includes(x));
+  // carte
+  const h=$("pHead"); h.innerHTML="";
+  const card=el("div",{class:"pw-card"+(pet?" pet":""),style:"--pw:"+(m.c||"#7552A8")});
+  const age=ageText(m), sub=pet?[m.espece||"Animal",m.race,age].filter(Boolean).join(" · "):[typeLabel(m),age].filter(Boolean).join(" · ");
+  const top=el("div",{class:"pw-top"},avatarFor(m,52),el("div",{class:"pw-id"},el("b",{text:m.nom||"Sans nom"}),el("span",{text:sub})));
+  if(can) top.append(el("button",{type:"button",class:"pw-edit","aria-label":"Modifier la fiche "+de(m.nom),onclick:()=>openEditor(id)},(()=>{ const s=el("span"); s.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/></svg>'; return s; })()));
+  else top.append(el("span",{class:"pw-chip","aria-hidden":"true",text:pet?"🐾":""}));
+  card.append(top);
+  if(keys.length){ const k=el("div",{class:"pw-keys"}); for(const x of keys){ const kv=el("div",{},el("small",{text:PF_SHORT[x.l]||x.l}),el("b",{text:x.v})); if(pfIsTel(x.v)){ const a=el("a",{href:telHref(x.v),class:"pw-k"},...kv.childNodes); k.append(a); } else k.append(kv); } card.append(k); }
+  else if(can) card.append(el("button",{type:"button",class:"pw-add",text:pet?"+ Ajoute son poids, sa puce, ses croquettes…":"+ Ajoute sa pointure, sa taille, son école…",onclick:()=>openEditor(id)}));
+  const nb=nextBirthday(m); if(nb){ const n=daysTo(nb.date); if(n<=30) card.append(el("div",{class:"pw-bday",text:"🎂 "+(n===0?"Anniversaire aujourd'hui !":"Anniversaire "+dueLabel(nb.date))})); }
+  h.append(card);
+  // blocs de la fiche
+  let F=$("pFiche"); if(!F){ F=el("div",{id:"pFiche",class:"pf"}); $("pCare").after(F); } F.innerHTML="";
+  const secT=(t,link)=>el("div",{class:"pf-sec"},el("span",{text:t}),link||"");
+  const rowsCard=list=>{ const c=el("div",{class:"pf-card"}); for(const x of list) c.append(x); return c; };
+  const infoRow=x=>{ const tel=pfIsTel(x.v); const r=el(tel?"a":"button",tel?{class:"pf-r",href:telHref(x.v)}:{type:"button",class:"pf-r",onclick:async()=>{ try{ await navigator.clipboard.writeText(x.v); toast("« "+esc(x.v)+" » copié."); }catch(_){ toast(esc(x.l)+" : "+esc(x.v)); } }},
+      el("i",{"aria-hidden":"true",text:pfIcon(x.l)}),el("span",{class:"pf-l",text:x.l}),el("b",{text:x.v}),x.p?el("span",{class:"pf-lk",title:"Visible par toi seulement",text:"🔒"}):""); return r; };
+  // papiers (humains)
+  if(!pet){ const docs=S.docs.filter(d=>d.pour===id).sort((a,b)=>(a.expire||"9999")<(b.expire||"9999")?-1:1);
+    if(docs.length||can){ F.append(secT("Ses papiers",docs.length?el("button",{type:"button",class:"pf-link",text:"Tout voir",onclick:()=>{ S.docWho=id; setTab("documents"); }}):null));
+      const row=el("div",{class:"pf-docs"});
+      for(const d of docs.slice(0,8)){ let pill=null; if(d.expire){ const n=daysTo(d.expire); pill=n<0?el("span",{class:"pf-pill r",text:"expiré"}):n<=60?el("span",{class:"pf-pill w",text:n<=31?"dans "+n+" j":"dans "+Math.round(n/30)+" mois"}):el("span",{class:"pf-pill",text:"OK"}); }
+        row.append(el("button",{type:"button",class:"pf-doc",onclick:()=>{ S.docWho=id; setTab("documents"); }},catDot(d.cat),el("b",{text:d.titre}),pill||el("span",{class:"pf-pill n",text:"rangé"}))); }
+      if(can&&docs.length<8) row.append(el("button",{type:"button",class:"pf-doc add",onclick:()=>{ S.docWho=id; setTab("documents"); setTimeout(()=>{ try{ fabAct("documents",document.querySelector('.hub-add[data-add="documents"]')); }catch(_){} },300); }},el("b",{text:"+ Ranger un papier"}),el("span",{class:"pf-pill n",text:"photo ou PDF"})));
+      F.append(row); } }
+  // infos pratiques
+  const restRows=rest.map(infoRow);
+  if(!pet&&m.naissance&&!keys.length) {} 
+  if(!pet&&m.naissance) restRows.unshift(infoRow({l:"Anniversaire",v:JOURY.format(parse(m.naissance))}));
+  if(restRows.length||can){ F.append(secT(pet?"Infos":"Infos pratiques",can?el("button",{type:"button",class:"pf-link",text:"Modifier",onclick:()=>openEditor(id)}):null));
+    if(restRows.length) F.append(rowsCard(restRows)); else F.append(el("button",{type:"button",class:"pf-empty",text:pet?"+ Véto, croquettes, assurance, qui le garde…":"+ Médecin, allergies, mutuelle, école…",onclick:()=>openEditor(id)})); }
+  // bientôt (humains)
+  if(!pet){ const items=[];
+    for(const r of (S.rdvs||[]).filter(r=>!r.fait&&r.date&&r.date>=t0&&r.pour&&r.pour.includes(id)).sort((a,b)=>(a.date+(a.heure||""))<(b.date+(b.heure||""))?-1:1).slice(0,3)) items.push(["📅",r.titre,(r.date===t0?"aujourd'hui":dueLabel(r.date))+(r.heure?" "+heureTxt(r.heure):"")]);
+    for(const t of S.foyer.filter(t=>!t.fait&&t.pour===id&&t.echeance).sort(sortOpen).slice(0,3)) items.push(["✓",t.titre,dueLabel(t.echeance)]);
+    if(nb&&daysTo(nb.date)<=60&&daysTo(nb.date)>30) items.push(["🎂","Anniversaire",dueLabel(nb.date)]);
+    if(items.length){ F.append(secT("Bientôt")); F.append(rowsCard(items.map(([i,t,w])=>el("div",{class:"pf-r"},el("i",{"aria-hidden":"true",text:i}),el("span",{class:"pf-l",text:t}),el("b",{text:w}))))); } }
+  // masquer l'ancien profil pour les humains (la mini-fiche montre déjà les tâches)
+  for(const x of ["pStats","pPrivate","pGive"]) { const e=$(x); if(e) e.hidden=true; }
+  for(const x of ["pOpen","pDone"]) { const e=$(x); if(e&&e.parentElement) e.parentElement.hidden=!pet; }
+  $("pDocsWrap").hidden=true;
+  if(pet){ const ch=document.querySelector("#pCare .pcare-h h3"); if(ch) ch.textContent="Carnet de santé"; }
 }
 async function removeFromFoyer(m){
   if(!S.db||!S.isOwner) return;
@@ -3451,6 +3536,7 @@ function openEditor(id,type){
   const src=id?membre(id):{type:type||"enfant",c:COLORS[(membres().length+2)%COLORS.length]};
   const d=JSON.parse(JSON.stringify(src)); delete d.id;
   d.infos=Array.isArray(d.infos)?d.infos:[]; if(d.type==="humain") d.type="adulte";
+  if(id){ const pv=((S.prefs||{}).fichePriv||{})[id]; if(Array.isArray(pv)) d.infos=d.infos.concat(pv.map(x=>({l:x.l,v:x.v,p:true}))); }
   if(S.tab!=="fiche") S.editPrev=S.tab;
   S.edit={id:id||null,d,confirmDel:false,busy:false,finish:!!S.editFinish}; S.editFinish=false;
   document.querySelector(".wrap").classList.toggle("finishing",S.edit.finish); $("ficheBack").hidden=S.edit.finish;
@@ -3599,13 +3685,14 @@ function buildEditor(){
   const drawKv=()=>{ kvBox.innerHTML="";
     d.infos.forEach((x,i)=>{ const l=el("input",{type:"text",id:"fiL"+i,maxlength:"30",placeholder:"Libellé","aria-label":"Libellé"}); l.value=x.l||""; l.addEventListener("input",()=>{ x.l=l.value; refreshPreview(); });
       const v=el("input",{type:"text",id:"fiV"+i,maxlength:"80",placeholder:"Valeur","aria-label":"Valeur"}); v.value=x.v||""; v.addEventListener("input",()=>{ x.v=v.value; refreshPreview(); });
-      kvBox.append(el("div",{class:"kv"},l,v,el("button",{class:"more",type:"button","aria-label":"Retirer cette info",text:"×",onclick:()=>{ d.infos.splice(i,1); drawKv(); refreshPreview(); }}))); });
+      const lk=el("button",{class:"kv-lock",type:"button","aria-pressed":String(!!x.p),"aria-label":x.p?"Visible par moi seulement":"Visible par tout le foyer",title:x.p?"Visible par moi seulement":"Visible par tout le foyer",text:x.p?"🔒":"👁",onclick:()=>{ x.p=!x.p; drawKv(); }});
+      kvBox.append(el("div",{class:"kv kv3"},l,v,S.edit&&S.edit.self?el("span"):lk,el("button",{class:"more",type:"button","aria-label":"Retirer cette info",text:"×",onclick:()=>{ d.infos.splice(i,1); drawKv(); refreshPreview(); }}))); });
     const sg=el("div",{class:"sugg"});
     for(const s of SUGG[t]) if(!d.infos.some(x=>x.l===s)) sg.append(el("button",{type:"button",text:"+ "+s,onclick:()=>{ d.infos.push({l:s,v:""}); drawKv(); const last=$("fiV"+(d.infos.length-1)); if(last) last.focus(); }}));
     sg.append(el("button",{type:"button",text:"+ Autre info",onclick:()=>{ d.infos.push({l:"",v:""}); drawKv(); const last=$("fiL"+(d.infos.length-1)); if(last) last.focus(); }}));
     kvBox.append(sg); };
   drawKv();
-  f.append(el("div",{class:"fgroup"},el("h3",{text:"Infos pratiques"}),el("span",{class:"muted",style:"font-size:13px",text:"Tout ce qu'on cherche au mauvais moment : pointure, n° de puce, école, vétérinaire…"}),kvBox));
+  f.append(el("div",{class:"fgroup"},el("h3",{text:"Infos pratiques"}),el("span",{class:"muted",style:"font-size:13px",text:"Tout ce qu'on cherche au mauvais moment : pointure, n° de puce, école, vétérinaire… Touche 👁 pour qu'une info ne soit visible que par toi (🔒)."}),kvBox));
 
   // Apparence (sa propre fiche)
   if(self){ const cur=E.theme||curTheme(), sg=el("div",{class:"seg",role:"group","aria-label":"Apparence"});
@@ -3638,11 +3725,14 @@ async function saveProfile(){
   const E=S.edit; if(!E||E.busy) return; const d=E.d;
   d.nom=(d.nom||"").trim(); if(!d.nom){ toast("Donne un prénom ou un nom au profil."); $("fiNom").focus(); return; }
   if((E.self||(E.id&&E.id===meId()))&&(d.type||"adulte")!=="animal"&&!d.naissance){ toast("Indique ta date de naissance."); const n=$("fiNaissance"); if(n){ n.focus(); n.scrollIntoView({block:"center",behavior:"smooth"}); } return; }
-  d.infos=(d.infos||[]).filter(x=>(x.l||"").trim()||(x.v||"").trim()).map(x=>({l:(x.l||"").trim(),v:(x.v||"").trim()}));
+  const allInf=(d.infos||[]).filter(x=>(x.l||"").trim()||(x.v||"").trim()).map(x=>({l:(x.l||"").trim(),v:(x.v||"").trim(),p:!!x.p&&!E.self}));
+  const privInf=allInf.filter(x=>x.p).map(x=>({l:x.l,v:x.v}));
+  d.infos=allInf.filter(x=>!x.p).map(x=>({l:x.l,v:x.v}));
+  const savePriv=async mid=>{ if(!mid||!S.uid) return; const fp=Object.assign({},(S.prefs||{}).fichePriv||{}); const had=!!fp[mid]; if(privInf.length) fp[mid]=privInf; else delete fp[mid]; if(!had&&!privInf.length) return; S.prefs=Object.assign({},S.prefs||{},{fichePriv:fp}); try{ if(S.db) await S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs); }catch(_){} };
   for(const k of Object.keys(d)) if(d[k]===undefined) delete d[k];
   if(E.theme&&E.theme!==curTheme()){ const tv=E.theme; setTimeout(()=>setTheme(tv),0); }
   if(E.self){ await saveSelf(E); return; }
-  if(S.canEdit===false&&E.id===meId()){ E.busy=true; try{ const cur=(S.profils||[]).find(p=>p.id===S.uid); await saveOwnProfil(d,cur?cur.membre:(String(E.id).startsWith("u-")?null:E.id)); toast("Profil enregistré."); S.edit=null; setTab("moi"); renderAll(); }catch(e){ E.busy=false; writeErr(e); } return; }
+  if(S.canEdit===false&&E.id===meId()){ E.busy=true; try{ const cur=(S.profils||[]).find(p=>p.id===S.uid); await saveOwnProfil(d,cur?cur.membre:(String(E.id).startsWith("u-")?null:E.id)); await savePriv(E.id); toast("Profil enregistré."); S.edit=null; setTab("moi"); renderAll(); }catch(e){ E.busy=false; writeErr(e); } return; }
   if(!isAdmin()){ const cur=membre(E.id); d.role=cur.role||null; d.type=cur.type; }
   E.busy=true;
   try{
@@ -3650,6 +3740,7 @@ async function saveProfile(){
     if(id){ await S.db.collection("membres").doc(id).set(d); }
     else { id=slug(d.nom); const taken=new Set(membres().map(m=>m.id)); let i=2; while(taken.has(id)) id=slug(d.nom)+"-"+(i++);
       await S.db.collection("membres").doc(id).set(Object.assign({},d,{ordre:Date.now(),creePar:meId(),creeLe:Date.now()})); }
+    await savePriv(id);
     if(E.finish){ finishFlow(); return; }
     toast(E.id?"Profil enregistré.":"Profil de <b>"+esc(d.nom)+"</b> créé.");
     S.edit=null;
@@ -6295,8 +6386,9 @@ function openMemberSheet(id){ const m=membre(id); if(!m) return; const me=meId()
     acts.append(el("button",{type:"button",class:"btn pp-cta mb-main",text:lbl,onclick:go(()=>{ if(isMe) openSheet({where:"perso"}); else if(ani) openSheet({text:m.nom+" : "}); else openSheet({where:id}); })}));
     if(!isMe&&!ani){ const last=S.foyer.filter(t=>t.fait&&t.faitPar===id&&!t.prive&&!(S.mercis||[]).some(x=>x.id===t.id+"_"+me)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0))[0];
       const mb=el("button",{type:"button",class:"btn ghost mb-merci",text:last?"🤝 Dire merci":"🤝 Rien à remercier",disabled:last?null:"",title:last?"Pour « "+last.titre+" »":null,onclick:()=>{ sendMerci(last,mb); mb.textContent="🤝 Merci envoyé"; }}); acts.append(mb); } }
-  acts.append(el("button",{type:"button",class:"btn ghost mb-prof",text:isMe?"Mon espace":ani?"Voir sa fiche":"Voir son profil",onclick:go(()=>openProfile(id))}));
-  if(acts.childElementCount===2&&!acts.querySelector(".mb-merci")) acts.classList.add("two");
+  { const tl=!isMe&&pfInfos(m).find(x=>pfIsTel(x.v)); if(tl) acts.append(el("a",{class:"btn ghost mb-call",href:telHref(tl.v),text:"📞 Appeler"})); }
+  acts.append(el("button",{type:"button",class:"btn ghost mb-prof",text:isMe?"Ma fiche":ani?"Voir sa fiche":"Voir sa fiche",onclick:go(()=>openProfile(id,true))}));
+  if(acts.childElementCount%2===0) acts.classList.add("two");
   sheet.append(el("div",{class:"pp-in"},head,list,acts)); }
 /* Bouton « Ajouter » propre à chaque rubrique (remplace le + central) */
 function nextFreeMeal(){ const t=today(), h=new Date().getHours(), slots=repasSlots();
