@@ -36,7 +36,7 @@ html{background:#F6F5FB;color-scheme:light dark}@media (prefers-color-scheme: da
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 00:09";</script>
+<script>window.COCOON_BUILD="16/10 00:23";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2673,7 +2673,7 @@ div.pf-r{cursor:default}
 .wg.wide .wg-s{-webkit-line-clamp:1;max-width:calc(100% - 96px)}
 .wg-ring{position:absolute;right:12px;bottom:12px;width:46px;height:46px;border-radius:50%;background:conic-gradient(#3CC37A var(--p),var(--line) 0);display:grid;place-items:center}.wg-ring::before{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--surface)}.wg-ring b{position:relative;font-size:11.5px;font-weight:800}
 .wg-spark{position:absolute;right:12px;bottom:14px;width:90px;height:34px;color:var(--muted);--bc:var(--wc)}.wg-spark svg{width:100%;height:100%;display:block}
-.wg-edit{align-self:center;display:inline-flex;align-items:center;gap:7px;border:2px dashed var(--line);background:none;border-radius:99px;padding:9px 16px;font:inherit;font-weight:700;font-size:13.5px;color:var(--muted);cursor:pointer}
+.wg-edit{align-self:center;margin-top:12px;display:inline-flex;align-items:center;gap:7px;border:2px dashed var(--line);background:none;border-radius:99px;padding:9px 16px;font:inherit;font-weight:700;font-size:13.5px;color:var(--muted);cursor:pointer}
 .wgs-h b{display:block;font:800 23px/1.1 var(--f-display);letter-spacing:-.02em}.wgs-h span{font-size:13px;color:var(--muted)}
 .wgs-sec{margin:8px 2px 0;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .wgs-list{display:flex;flex-direction:column;gap:7px}
@@ -2687,7 +2687,7 @@ div.pf-r{cursor:default}
 .wg-sheet .pp-in{gap:10px}
 .wg,.wgs-row{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .wg-sec{display:flex;align-items:baseline;justify-content:space-between}.wg-sec small{font-size:11px;font-weight:600;letter-spacing:0;text-transform:none;opacity:.8}
-.sort-ph{opacity:.25;transform:scale(.96)}
+.sort-ph{opacity:.25;transform:scale(.96);transition:opacity .15s,transform .15s}
 .sort-ghost{transform:scale(1.04) rotate(-1.2deg);box-shadow:0 18px 40px rgba(0,0,0,.35)!important;transition:none!important;opacity:.97}
 .wg-grid.sorting .wg:not(.sort-ph){animation:wgJig .28s ease-in-out infinite alternate}
 @keyframes wgJig{from{transform:rotate(-.6deg)}to{transform:rotate(.6deg)}}
@@ -4986,25 +4986,33 @@ function wgData(k,large){ const t0=iso(today()), me=meId();
     return {h:"Anniversaire",big:best[0].id===me?"Toi":best[0].nom,small:n===0?"aujourd'hui ! 🎉":dueLabel(best[1].date)+(best[1].age?" · "+best[1].age+" ans":""),mid:best[0].id}; }
   return {h:"",big:"",small:""}; }
 function wgGo(k,D){ const w=WG[k]; if(k==="anniv"){ if(D&&D.mid) openMemberSheet(D.mid); return; } if(w.sec) S.mSec=w.sec; setTab(w.go); renderHeader(); window.scrollTo({top:0}); }
+/* Petite vibration : API Vibration (Android) ou interrupteur natif (iPhone, iOS 18+) */
+function haptic(ms){ try{ if(navigator.vibrate&&navigator.vibrate(ms||12)) return; }catch(_){}
+  try{ let l=document.getElementById("hpLbl"); if(!l){ const i=document.createElement("input"); i.type="checkbox"; i.setAttribute("switch",""); i.id="hpSw"; i.tabIndex=-1; i.setAttribute("aria-hidden","true");
+      l=document.createElement("label"); l.id="hpLbl"; l.htmlFor="hpSw"; l.setAttribute("aria-hidden","true"); l.style.cssText="position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;pointer-events:none"; i.style.cssText=l.style.cssText; document.body.append(i,l); } l.click(); }catch(_){} }
 /* Réordonner au doigt : appui long (ou poignée) puis glisser */
-function sortable(box,sel,done,o){ o=o||{}; const lp=o.lp==null?380:o.lp; let it=null,ghost=null,timer=null,sx=0,sy=0,ox=0,oy=0,active=false,raf=0,lastP=null;
+function sortable(box,sel,done,o){ o=o||{}; const lp=o.lp==null?380:o.lp; let it=null,ghost=null,timer=null,sx=0,sy=0,ox=0,oy=0,active=false,raf=0,lastP=null,swapT=0;
   const pt=e=>e.touches?e.touches[0]:e;
   const activate=()=>{ if(!it) return; active=true; const r=it.getBoundingClientRect(); ox=sx-r.left; oy=sy-r.top;
     ghost=it.cloneNode(true); ghost.classList.add("sort-ghost"); ghost.removeAttribute("id"); Object.assign(ghost.style,{position:"fixed",left:r.left+"px",top:r.top+"px",width:r.width+"px",height:r.height+"px",margin:"0",zIndex:"95",pointerEvents:"none"}); document.body.append(ghost);
-    it.classList.add("sort-ph"); box.classList.add("sorting"); try{ navigator.vibrate&&navigator.vibrate(12); }catch(_){} };
+    it.classList.add("sort-ph"); box.classList.add("sorting"); haptic(18); };
   const start=e=>{ if(e.button>0) return; const t=e.target.closest(sel); if(!t||!box.contains(t)) return; if(o.handle&&!e.target.closest(o.handle)) return;
     const p=pt(e); sx=p.clientX; sy=p.clientY; it=t; active=false; if(o.handle) e.stopPropagation();
     clearTimeout(timer); timer=setTimeout(activate,lp);
     if(!e.touches){ addEventListener("mousemove",move); addEventListener("mouseup",end); } };
   const step=()=>{ raf=0; const p=lastP; if(!p||!active) return; ghost.style.left=(p.clientX-ox)+"px"; ghost.style.top=(p.clientY-oy)+"px";
     const hit=document.elementFromPoint(p.clientX,p.clientY), over=hit&&hit.closest(sel);
-    if(over&&over!==it&&box.contains(over)){ const items=[...box.querySelectorAll(sel)], a=items.indexOf(it), b=items.indexOf(over); if(b>a) over.after(it); else over.before(it); }
+    if(over&&over!==it&&box.contains(over)&&Date.now()-swapT>180){ const items=[...box.querySelectorAll(sel)], a=items.indexOf(it), b=items.indexOf(over);
+      const before=new Map(items.map(x=>[x,x.getBoundingClientRect()]));
+      if(b>a) over.after(it); else over.before(it); swapT=Date.now(); haptic(6);
+      for(const x of items){ const r0=before.get(x), r1=x.getBoundingClientRect(), dx=r0.left-r1.left, dy=r0.top-r1.top; if(!dx&&!dy) continue;
+        try{ x.animate([{translate:dx+"px "+dy+"px"},{translate:"0 0"}],{duration:260,easing:"cubic-bezier(.2,.8,.2,1)"}); }catch(_){} } }
     if(p.clientY<70) scrollBy(0,-10); else if(p.clientY>innerHeight-110) scrollBy(0,10); };
   const move=e=>{ if(!it) return; const p=pt(e);
     if(!active){ if(Math.hypot(p.clientX-sx,p.clientY-sy)>8){ clearTimeout(timer); it=null; } return; }
     if(e.cancelable) e.preventDefault(); e.stopPropagation(); lastP={clientX:p.clientX,clientY:p.clientY}; if(!raf) raf=requestAnimationFrame(step); };
   const end=e=>{ clearTimeout(timer); removeEventListener("mousemove",move); removeEventListener("mouseup",end);
-    if(active){ if(e&&e.stopPropagation) e.stopPropagation(); ghost.remove(); it.classList.remove("sort-ph"); box.classList.remove("sorting"); box._sorted=Date.now(); const keys=[...box.querySelectorAll(sel)].map(x=>x.dataset.k); active=false; it=null; ghost=null; done(keys); return; }
+    if(active){ if(e&&e.stopPropagation) e.stopPropagation(); { const g=ghost, r=it.getBoundingClientRect(); g.style.transition="left .2s ease,top .2s ease,transform .2s ease,opacity .2s ease"; g.style.left=r.left+"px"; g.style.top=r.top+"px"; g.style.transform="none"; setTimeout(()=>g.remove(),200); } it.classList.remove("sort-ph"); box.classList.remove("sorting"); box._sorted=Date.now(); const keys=[...box.querySelectorAll(sel)].map(x=>x.dataset.k); active=false; it=null; ghost=null; done(keys); return; }
     it=null; };
   box.addEventListener("touchstart",start,{passive:true}); box.addEventListener("touchmove",move,{passive:false}); box.addEventListener("touchend",end); box.addEventListener("touchcancel",end);
   box.addEventListener("mousedown",start);
@@ -5022,7 +5030,7 @@ function renderWidgets(){ const box=$("accBudget"); if(!box) return; if(box.quer
     g.append(b); }
   sortable(g,".wg",keys=>{ const cur=wgList(); wgSave(keys.map(k=>cur.find(x=>x.k===k)).filter(Boolean)); });
   const ed=el("button",{type:"button",class:"wg-edit",onclick:openWidgetSheet},el("span",{"aria-hidden":"true",text:"✎"}),wgList().length?"Modifier l'accueil":"Ajouter des raccourcis");
-  box.append(el("div",{class:"wg-sec"},el("span",{text:"Mes raccourcis"}),wgList().length>1?el("small",{text:"maintiens pour déplacer"}):""),g,ed); }
+  box.append(el("div",{class:"wg-sec"},el("span",{text:"Mes raccourcis"}),""),g,ed); }
 function openWidgetSheet(){ const U=upSheet("wgPage","Mes raccourcis"), sheet=U.sheet; sheet.classList.add("wg-sheet"); const inn=el("div",{class:"pp-in"}); sheet.append(inn);
   const draw=()=>{ inn.innerHTML=""; const list=wgList().map(x=>({k:x.k,l:x.l?1:0}));
     inn.append(el("div",{class:"wgs-h"},el("b",{text:"Mes raccourcis"}),el("span",{text:"Ajoute ou retire des raccourcis. Pour changer l'ordre, glisse ⠿ ici, ou maintiens un widget sur l'accueil."})));
