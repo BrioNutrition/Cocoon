@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="15/10 14:42";</script>
+<script>window.COCOON_BUILD="15/10 15:02";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1970,7 +1970,7 @@ html.tour-lock,html.tour-lock body{overflow:hidden!important;overscroll-behavior
 .wk-dots i.on{background:#3CC37A;opacity:1}
 .wk-dots i.late{background:#FF7A5C;opacity:1}
 .wk-d.now .wk-dots i{background:rgba(255,255,255,.75);opacity:1}
-.wk-d.now .wk-dots i.on,.wk-d.now .wk-dots i.late{width:10px;height:10px;box-sizing:border-box;border:2px solid #fff;margin:-1.5px 0}
+.wk-d.now .wk-dots i.on,.wk-d.now .wk-dots i.late{width:8px;height:8px;border:0;box-shadow:0 0 0 2px #fff;margin:0 2px}
 .wk-d.now .wk-dots i.on{background:#2FB56C}
 .wk-d.now .wk-dots i.late{background:#E5484D}
 .wk-dots{align-items:center}
@@ -2530,8 +2530,10 @@ html.sheet-open .hub-cx{display:none}
 .tk-cat[aria-pressed="true"] .tn{color:var(--ink);font-weight:800}
 .tk-cat:active .ic{transform:scale(.92)}
 .tk-cat em{position:absolute;top:-4px;right:0;font-style:normal;font-size:10.5px;font-weight:800;min-width:19px;text-align:center;padding:1px 5px;border-radius:999px;background:#FFC94A;color:#1C1B2E;box-shadow:0 0 0 2px var(--bg)}
-.tab .nav-cxi{width:28px;height:28px;border-radius:50%;object-fit:cover;padding:2px;background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB);transition:transform .2s}
-.tab[data-tab="cocoony"][aria-selected="true"] .nav-cxi{box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px #FF9C80}
+.tab .nav-cxi{display:block;width:28px;height:28px;border-radius:50%;padding:2px;background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB);transition:transform .2s;box-sizing:border-box}
+.tab .nav-cxi>span{display:block;width:100%;height:100%;border-radius:50%;overflow:hidden;position:relative}
+.tab .nav-cxi img{position:absolute;left:50%;top:50%;width:122%;height:122%;max-width:none;transform:translate(-53%,-54%);object-fit:cover;display:block}
+.tab[data-tab="cocoony"][aria-selected="true"] .nav-cxi{padding:2.5px;background:#FF9C80}
 .view[data-view="cocoony"] .secretary.sec-chat{display:flex;flex-direction:column;min-height:320px;margin:0}
 .view[data-view="cocoony"] .sec-chat .sec-thread{flex:1;min-height:0;max-height:none!important}
 </style>
@@ -2589,7 +2591,7 @@ html.sheet-open .hub-cx{display:none}
     <button class="tab" data-tab="hub" aria-label="Foyer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="7.5" r="3.6"/><circle cx="17" cy="9" r="2.8"/><path d="M2.5 19.5c0-3.6 2.9-6.2 6.5-6.2s6.5 2.6 6.5 6.2V21h-13z"/><path d="M16.6 21v-1.5c0-1.9-.7-3.6-1.9-4.8.7-.3 1.5-.5 2.3-.5 2.7 0 4.5 2 4.5 4.6V21z"/></svg><span class="n" id="nFoyer" hidden></span><span class="tl">Foyer</span></button>
     <button class="nav-add" type="button" id="navAdd" aria-label="Ajouter" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
     <button class="tab" data-tab="budget" aria-label="Budget" hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 4H17v3H6.5a1 1 0 0 1 0-2z" opacity=".55"/><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6H18a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zm13.5 3.5a1.5 1.5 0 1 0 0 3h4.5v-3z"/></svg><span class="n" id="nBudget" hidden></span><span class="tl">Budget</span></button>
-    <button class="tab" data-tab="cocoony" id="cxBtn" aria-label="Cocoony"><img class="nav-cxi" alt="" aria-hidden="true"><span class="tl">Cocoony</span></button>
+    <button class="tab" data-tab="cocoony" id="cxBtn" aria-label="Cocoony"><span class="nav-cxi" aria-hidden="true"><span><img alt=""></span></span><span class="tl">Cocoony</span></button>
     <button class="tab" data-tab="moi" aria-label="Mon espace"><span class="nav-me" id="navMe"></span><span class="n" id="nMoi" hidden></span><span class="tl">Moi</span></button>
   </nav>
 
@@ -5462,7 +5464,7 @@ function openCx(){ if(S.tab!=="cocoony"){ try{ closeSheet(); }catch(_){} setTab(
 function closeCx(){}
 { const card=document.querySelector(".secretary.sec-chat"); if(card) $("cxView").append(card); }
 $("cxBtn").addEventListener("click",()=>setTimeout(openCx,0)); window.addEventListener("resize",()=>{ try{ cxFit(); }catch(_){} });
-{ const im=document.querySelector("#cxBtn .nav-cxi"), lg=document.querySelector(".brand-logo"); const set=()=>{ try{ const I=secIdent(); im.src=I.src||(lg&&lg.src)||""; }catch(_){ if(lg) im.src=lg.src; } }; set(); setTimeout(set,1500); }
+{ const im=document.querySelector("#cxBtn .nav-cxi img"), lg=document.querySelector(".brand-logo"); const set=()=>{ try{ const I=secIdent(); im.src=I.src||(lg&&lg.src)||""; }catch(_){ if(lg) im.src=lg.src; } }; set(); setTimeout(set,1500); }
 $("sheetBg").addEventListener("click",closeSheet);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("sheet").hidden) closeSheet(); });
 $("sgEquip").addEventListener("click",()=>{ closeSheet(); openMForm("equip"); });
