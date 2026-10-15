@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="15/10 13:34";</script>
+<script>window.COCOON_BUILD="15/10 14:18";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2482,7 +2482,7 @@ html.sheet-open .add-fab{display:none}
 .hub-add{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:8px 15px 8px 12px;font:inherit;font-weight:800;font-size:14px;color:#1C1B2E;background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB);cursor:pointer;-webkit-tap-highlight-color:transparent}
 .hub-add span{font-size:19px;line-height:1;margin-top:-2px}
 .hub-add:active{transform:scale(.96)}
-.view[data-view="hub"]{padding-bottom:140px}
+
 .hub-cx{position:fixed;left:12px;right:12px;bottom:calc(108px + env(safe-area-inset-bottom,0px));z-index:24;max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
 html.sheet-open .hub-cx{display:none}
 .hub-sug{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 2px}
@@ -2530,6 +2530,20 @@ html.sheet-open .hub-cx{display:none}
 .tk-cat[aria-pressed="true"] .tn{color:var(--ink);font-weight:800}
 .tk-cat:active .ic{transform:scale(.92)}
 .tk-cat em{position:absolute;top:-4px;right:0;font-style:normal;font-size:10.5px;font-weight:800;min-width:19px;text-align:center;padding:1px 5px;border-radius:999px;background:#FFC94A;color:#1C1B2E;box-shadow:0 0 0 2px var(--bg)}
+.nav-cx{flex:none;display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:none;padding:0 6px;font:inherit;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.nav-cx img{width:46px;height:46px;border-radius:50%;object-fit:cover;margin-top:-26px;padding:3px;background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB);box-shadow:0 0 0 4px var(--surface),0 6px 16px rgba(255,140,120,.28);transition:transform .15s ease}
+.nav-cx:active img{transform:scale(.92)}
+.nav-cx[aria-expanded="true"] .tl{color:var(--ink)}
+.cx-panel{position:fixed;left:0;right:0;top:0;height:100vh;height:100dvh;z-index:60;background:var(--bg);display:flex;flex-direction:column;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 12px);max-width:640px;margin:0 auto;animation:cxIn .26s cubic-bezier(.2,.9,.3,1) both}
+.cx-panel.out{animation:cxOut .2s ease both}
+@keyframes cxIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes cxOut{to{opacity:0;transform:translateY(24px)}}
+@media (prefers-reduced-motion:reduce){.cx-panel,.cx-panel.out{animation:none}}
+.cx-bar{display:flex;align-items:center}
+.cx-panel .secretary.sec-chat{flex:1;min-height:0;margin:0}
+.cx-panel .sec-chat .sec-thread{flex:1;min-height:0;max-height:none!important}
+html.cx-open{overflow:hidden}
+html.cx-open .tabs,html.cx-open #addMenu{visibility:hidden}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2585,6 +2599,7 @@ html.sheet-open .hub-cx{display:none}
     <button class="tab" data-tab="hub" aria-label="Foyer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="7.5" r="3.6"/><circle cx="17" cy="9" r="2.8"/><path d="M2.5 19.5c0-3.6 2.9-6.2 6.5-6.2s6.5 2.6 6.5 6.2V21h-13z"/><path d="M16.6 21v-1.5c0-1.9-.7-3.6-1.9-4.8.7-.3 1.5-.5 2.3-.5 2.7 0 4.5 2 4.5 4.6V21z"/></svg><span class="n" id="nFoyer" hidden></span><span class="tl">Foyer</span></button>
     <button class="nav-add" type="button" id="navAdd" aria-label="Ajouter" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
     <button class="tab" data-tab="budget" aria-label="Budget" hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 4H17v3H6.5a1 1 0 0 1 0-2z" opacity=".55"/><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6H18a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zm13.5 3.5a1.5 1.5 0 1 0 0 3h4.5v-3z"/></svg><span class="n" id="nBudget" hidden></span><span class="tl">Budget</span></button>
+    <button type="button" class="nav-cx" id="cxBtn" aria-label="Parler à Cocoony" aria-haspopup="dialog"><img alt="" aria-hidden="true"><span class="tl">Cocoony</span></button>
     <button class="tab" data-tab="moi" aria-label="Mon espace"><span class="nav-me" id="navMe"></span><span class="n" id="nMoi" hidden></span><span class="tl">Moi</span></button>
   </nav>
 
@@ -2602,7 +2617,7 @@ html.sheet-open .hub-cx{display:none}
         <div class="sec-ans" id="secAns" hidden aria-live="polite"></div>
       </div>
       <form class="sec-ask" id="secAsk" autocomplete="off">
-        <input type="text" id="secQ" maxlength="200" enterkeyhint="send" placeholder="Pose-moi une question…" aria-label="Poser une question au secrétaire">
+        <input type="text" id="secQ" maxlength="200" enterkeyhint="send" placeholder="Demande ou ajoute quelque chose…" aria-label="Écrire à Cocoony">
         <button type="submit" aria-label="Demander"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
       </form>
       <div class="sec-chips" id="secChips"></div>
@@ -2761,7 +2776,6 @@ html.sheet-open .hub-cx{display:none}
   <section class="view" data-view="hub" hidden>
     <div class="hub-h"><h2>Le foyer</h2></div>
     <div class="hub" id="hubGrid"></div>
-    <div class="hub-cx" id="hubCx"><div class="hub-ans" id="hubAns" hidden aria-live="polite"></div><form class="hub-ask" id="hubAsk" autocomplete="off"><span class="hub-av" id="hubAv"></span><input type="text" id="hubQ" maxlength="200" enterkeyhint="send" placeholder="Ajoute ce que tu veux…" aria-label="Demander à Cocoony d'ajouter quelque chose"><button type="submit" aria-label="Envoyer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button></form></div>
   </section>
 
   <section class="view" data-view="budget" hidden>
@@ -2838,6 +2852,7 @@ html.sheet-open .hub-cx{display:none}
 </div>
 <button type="button" class="add-fab" id="addFab" hidden></button>
 <div class="add-menu" id="addMenu" hidden role="menu"></div>
+<div class="cx-panel" id="cxPanel" hidden role="dialog" aria-modal="true" aria-label="Cocoony"><div class="cx-bar"><button type="button" class="hub-back" id="cxClose"><span aria-hidden="true">‹</span>Fermer</button></div></div>
 <div class="toast" id="toast" hidden role="status"></div>
 
 <script>
@@ -5440,16 +5455,24 @@ function hubShow(r,busy){ const b=$("hubAns"); if(!b) return; b.innerHTML=""; if
   if(r.items&&r.items.length) b.append(el("ul",{},...r.items.slice(0,6).map(x=>el("li",{text:x.t||""}))));
   if(r.actions&&r.actions.length){ const a=el("div",{class:"ha-act"}); for(const x of r.actions){ a.append(el("button",{type:"button",class:x.ghost?"g":"",text:x.l,onclick:async()=>{ try{ const res=await x.run(); if(typeof res==="string") hubShow({text:res}); else if(res&&res.text!==undefined) hubShow(res); else hubShow(null); }catch(err){ writeErr(err); } }})); } b.append(a); }
   b.append(el("button",{type:"button",class:"ha-x","aria-label":"Fermer",text:"×",onclick:()=>hubShow(null)})); }
-async function hubAsk(raw){ let v=String(raw||"").trim(); if(!v) { $("hubQ").focus(); return; } if(!needMe()) return;
+async function hubAsk(raw){ let v=String(raw||"").trim(); if(!v) { $("secQ").focus(); return; } if(!needMe()) return;
   const m=S.hubMode, phr=m==="tache"?"Ajoute "+v:m==="courses"?"Ajoute "+v+" aux courses":m==="rdv"?"Ajoute un rendez-vous "+v.replace(/^(?:un\s+)?(?:rdv|rendez-vous)\s*/i,""):m==="repas"?"On mange "+v:m==="dep"?(/€|euro/i.test(v)?"J'ai dépensé "+v:"J'ai dépensé "+v+" €"):v;
   const isQ=!m&&!/(peux|pourrais)[- ]?tu\b.*\b(ajouter|mettre|noter|rappeler|cr[ée]er)/i.test(v)&&(/\?\s*$/.test(v)||/^\s*(?:comment|quand|qui|quoi|que |qu'|où|ou |combien|est-ce|pourquoi|quel|quelle|c'est quoi|explique|aide)/i.test(v));
   const parts=v.split(/\s*[,;]\s*|\s+et\s+/).filter(Boolean), looksList=!m&&!isQ&&!/^\s*(?:ajoute|rajoute|mets|met|note|ach[eè]te)/i.test(v)&&!/(aux courses|liste)/i.test(v)&&parts.length>=2&&parts.every(x=>x.split(/\s+/).length<=3)&&!/\d/.test(v)&&!/(demain|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche|soir|midi)/i.test(v);
   let plan=isQ?null:secCreatePlan(looksList?"Ajoute "+v+" aux courses":phr); if(!plan&&!isQ&&!m) plan=secCreatePlan("Ajoute "+v);
-  if(!plan){ $("hubQ").value=""; setTab("accueil"); setTimeout(()=>{ const f=$("secAsk"); if(f) f.scrollIntoView({block:"center",behavior:"smooth"}); askSecretary(v); },120); return; }
-  hubShow({text:"Je m'en occupe…"},true); let r;
+  if(!plan){ askSecretary(v); return; }
+  await cocoLocal(v); let r;
   try{ r=await plan.run(); }catch(err){ writeErr(err); r=secA("Oups, je n'ai pas réussi."); }
-  $("hubQ").value=""; S.hubMode=null; renderHubCx(); hubShow(r); }
-$("hubAsk").addEventListener("submit",e=>{ e.preventDefault(); const i=$("hubQ"); hubAsk(i.value); });
+  S.hubMode=null; S.secAns={q:v,r}; renderSecAns(); }
+/* Panneau Cocoony */
+function openCx(){ const P=$("cxPanel"); if(!P) return; if(!P.hidden){ return; } P.hidden=false; document.documentElement.classList.add("cx-open"); $("cxBtn").setAttribute("aria-expanded","true");
+  try{ renderSecChips(); renderSecAns(); }catch(_){} requestAnimationFrame(()=>{ const t=$("secThread"); if(t) t.scrollTop=t.scrollHeight; }); }
+function closeCx(){ const P=$("cxPanel"); if(!P||P.hidden) return; P.classList.add("out"); $("cxBtn").setAttribute("aria-expanded","false"); try{ $("secQ").blur(); }catch(_){}
+  setTimeout(()=>{ P.hidden=true; P.classList.remove("out"); document.documentElement.classList.remove("cx-open"); },200); }
+{ const card=document.querySelector(".secretary.sec-chat"); if(card) $("cxPanel").append(card); }
+$("cxBtn").addEventListener("click",openCx); $("cxClose").addEventListener("click",closeCx);
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("cxPanel").hidden) closeCx(); });
+{ const im=document.querySelector("#cxBtn img"), lg=document.querySelector(".brand-logo"); const set=()=>{ try{ const I=secIdent(); im.src=I.src||(lg&&lg.src)||""; }catch(_){ if(lg) im.src=lg.src; } }; set(); setTimeout(set,1500); }
 $("sheetBg").addEventListener("click",closeSheet);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("sheet").hidden) closeSheet(); });
 $("sgEquip").addEventListener("click",()=>{ closeSheet(); openMForm("equip"); });
@@ -6062,7 +6085,7 @@ function renderSecChips(){
 }
 $("palBtn").addEventListener("click",()=>openPalette());
 setTimeout(()=>{ try{ applyPalette(); }catch(_){} },0);
-$("secAsk").addEventListener("submit",e=>{ e.preventDefault(); const i=$("secQ"), v=i.value; i.value=""; i.blur(); askSecretary(v); });
+$("secAsk").addEventListener("submit",e=>{ e.preventDefault(); const i=$("secQ"), v=i.value; i.value=""; hubAsk(v); });
 
 /* ---------- Réglages ---------- */
 const SET_IC={
@@ -6104,7 +6127,7 @@ function budgetSpark(){ const t=today(), Y=t.getFullYear(), M=t.getMonth(), dim=
   const pm=new Date(Y,M-1,1), cur=cum(Y,M,day), prev=cum(pm.getFullYear(),pm.getMonth(),dim), mx=Math.max(1,...cur,...prev);
   const pt=(a,len)=>a.map((v,i)=>((len>1?i/(dim-1):0)*200).toFixed(1)+","+(34-(v/mx)*30).toFixed(1)).join(" ");
   return '<svg viewBox="0 0 200 36" preserveAspectRatio="none" aria-hidden="true"><polyline points="'+pt(prev,dim)+'" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="1.6" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/><polyline points="'+pt(cur,day)+'" fill="none" stroke="var(--bc)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>'; }
-function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; try{ renderHubCx(); }catch(_){} const me=meId(), t0=iso(today());
+function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const me=meId(), t0=iso(today());
   const G1=el("div",{class:"hb-g2"}), G2=el("div",{class:"hb-g3"}); let G=G1;
   H.append(el("p",{class:"hb-sec",text:"Au quotidien"}),G1,el("p",{class:"hb-sec",text:"Gestion"}),G2);
   const tile=(v,ic,c,title,sub,o)=>{ o=o||{}; const b=el("div",{class:"hb-t"+(o.cls?" "+o.cls:""),role:"button",tabindex:"0","data-go":v,style:"--bc:"+c,"aria-label":title+(sub?", "+sub:"")});
@@ -6436,6 +6459,7 @@ async function cocoLocal(q){
   if(S.secAns&&S.secAns.r&&!S.secAns.busy){ S.secHist=(S.secHist||[]).concat([{q:S.secAns.q,r:S.secAns.r}]).slice(-6); }
   S.secAns={q,r:secA(""),busy:true,fresh:true}; renderSecAns(); secReadFx(); await sleep(950); S.secAns={q,r:secA(""),busy:true}; renderSecAns(); await sleep(500); }
 async function askSecretary(q){
+  try{ openCx(); }catch(_){}
   { const qq=String(q||"").trim(); const how=qq&&(secBilanQ(qq)||secContactQ(qq)||secHowTo(qq)); const plan=!how&&qq&&secCreatePlan(qq);
     if(how||plan){ await cocoLocal(qq); let r; try{ r=how||await plan.run(); }catch(e){ writeErr(e); r=secA("Oups, je n'ai pas réussi."); } S.secAns={q:qq,r}; renderSecAns(); return; } }
   q=String(q||"").trim(); if(!q) return;
@@ -6454,7 +6478,7 @@ async function askSecretary(q){
 }
 
 /* ===== Cocoony : tutoriel + création directe ===== */
-function cocoGo(tab,sel,after){ return ()=>{ if(tab==="maison") S.mSec={"#mBins":"bins","#mContacts":"contacts","#mEquip":"equip","#mMeters":"meters"}[sel]||null; setTab(tab); window.scrollTo({top:0}); if(sel) setTimeout(()=>{ const e=document.querySelector(sel); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); if(after) after(); },90); else if(after) setTimeout(after,90); }; }
+function cocoGo(tab,sel,after){ return ()=>{ try{ closeCx(); }catch(_){} if(tab==="maison") S.mSec={"#mBins":"bins","#mContacts":"contacts","#mEquip":"equip","#mMeters":"meters"}[sel]||null; setTab(tab); window.scrollTo({top:0}); if(sel) setTimeout(()=>{ const e=document.querySelector(sel); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); if(after) after(); },90); else if(after) setTimeout(after,90); }; }
 function secHowTo(raw){
   const q=" "+norm(raw).replace(/['’-]/g," ").replace(/[?!.,;:]/g," ").replace(/\s+/g," ")+" ";
   if(!/( comment | ou | explique| aide| tuto| c est quoi| a quoi sert| je fais comment| on fait comment| il faut faire quoi| que peux tu| tu sais faire| tu peux faire)/.test(q)) return null;
@@ -6489,7 +6513,7 @@ function secHowTo(raw){
   if(has("theme","sombre","clair","couleur"))
     return T("Pour changer le thème :",["Va dans Moi et touche le crayon de ton profil.","Dans Apparence, choisis Automatique, Clair ou Sombre.","Touche « Enregistrer »."],{l:"Ouvrir mon espace",ghost:true,run:cocoGo("moi")});
   if(has("tache","rappel","faire"))
-    return T("Pour ajouter une tâche :",["Va dans Foyer › Tâches et écris-la dans le champ en haut (ou écris-la-moi dans la barre du Foyer).","Écris la tâche ; tu peux ajouter la date dans la phrase, par exemple « Payer la cantine vendredi ».","Choisis « Pour moi » (privé) ou « Pour le foyer », puis « Ajouter ».","Plus rapide : écris-moi « Rappelle-moi d'appeler le plombier demain »."],{l:"Ajouter une tâche",run:()=>openSheet({})});
+    return T("Pour ajouter une tâche :",["Va dans Foyer › Tâches et écris-la dans le champ en haut (ou écris-la-moi directement).","Écris la tâche ; tu peux ajouter la date dans la phrase, par exemple « Payer la cantine vendredi ».","Choisis « Pour moi » (privé) ou « Pour le foyer », puis « Ajouter ».","Plus rapide : écris-moi « Rappelle-moi d'appeler le plombier demain »."],{l:"Ajouter une tâche",run:()=>openSheet({})});
   return null;
 }
 function cocoHours(raw){ const out=[]; for(const m of String(raw).matchAll(/(\d{1,2})\s*(?:h|:)\s*(\d{2})?/gi)){ const H=+m[1], M=+(m[2]||0); if(H<24&&M<60) out.push(String(H).padStart(2,"0")+":"+String(M).padStart(2,"0")); } return out; }
@@ -7234,9 +7258,9 @@ function bilanAuto(){
 }
 /* ===== Visite guidée après le questionnaire ===== */
 const TOUR=[
-  {sel:".secretary",t:"Voici %N",d:"Ton secrétaire du foyer. Demande-lui « le numéro du véto », « le bilan du mois », ou d'ajouter un rendez-vous, une course, une dépense…"},
+  {sel:"#cxBtn",t:"Voici %N",d:"Ton secrétaire du foyer, toujours là dans la barre du bas. Demande-lui « le numéro du véto », « le bilan du mois », ou d'ajouter un rendez-vous, une course, une dépense…"},
   {sel:"#dayCard",alt:"#rdvWrap",t:"Ta journée",d:"La semaine en un coup d'œil, et ta journée heure par heure : tâches à cocher, rendez-vous, repas, poubelles. Touche un jour pour le voir."},
-  {sel:'.tab[data-tab="hub"]',t:"Le Foyer",d:"Tout le foyer en tuiles : tâches, courses, repas, agenda, budget, papiers et maison. En bas, écris à Cocoony ce que tu veux ajouter (« pain, lait », « dentiste jeudi 15h ») : il le range au bon endroit. Bonne installation dans ton cocon !"}];
+  {sel:'.tab[data-tab="hub"]',t:"Le Foyer",d:"Tout le foyer en tuiles : tâches, courses, repas, agenda, budget, papiers et maison. Dans chaque rubrique, ajoute avec le champ en haut ou « + Ajouter ». Bonne installation dans ton cocon !"}];
 function startTour(force){
   if(!force&&((S.prefs||{}).tourVu||S.tourOn||window.__noTour)) return; if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches&&!force){}
   S.tourOn=true; let i=0; const noScroll=e=>{ if(!e.target.closest||!e.target.closest(".tour-card")) e.preventDefault(); }; document.documentElement.classList.add("tour-lock"); window.addEventListener("wheel",noScroll,{passive:false}); window.addEventListener("touchmove",noScroll,{passive:false});
