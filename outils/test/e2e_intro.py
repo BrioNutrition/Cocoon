@@ -29,7 +29,7 @@ async def main():
     await pg.fill('#fiNom','Angel'); await pg.fill('#fiNaissance','1990-05-04'); await pg.click('#fiSave'); await pg.wait_for_timeout(2600)
     await pg.add_style_tag(content='.toast{display:none!important}')
     await pg.click('#navAdd'); await pg.fill('#quickTitle','Appeler le plombier'); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(400)
-    await pg.click('.tab[data-tab="foyer"]'); await pg.click('.viewseg button[data-go="documents"] >> visible=true'); await pg.wait_for_timeout(200)
+    await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="documents"]'); await pg.wait_for_timeout(200)
     await pg.click('#papAdd'); await pg.fill('#dTitle','Bail'); await pg.set_input_files('#dFile','../tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(600)
     print('requêtes de lecture:',await pg.evaluate("__mock.calls.filter(c=>c[0]==='select').map(c=>c[1]).join(',')"))
     n=await pg.evaluate("__mock.T.cocoon_docs.map(r=>r.path+'/'+r.id.slice(0,4)+' '+(r.data.titre||r.data.nom||''))"); print('docs en base:',len(n)); print('\n'.join(n))
@@ -37,7 +37,7 @@ async def main():
     print('lien ouvrir:',await pg.evaluate("(document.querySelector('.bd-eye')||{}).href"))
     # modif à distance (Emma)
     await pg.evaluate("""(()=>{const t=__mock.T.cocoon_docs.find(r=>r.path==='taches'&&r.data.titre==='Appeler le plombier'); const r=JSON.parse(JSON.stringify(t)); r.data.titre='Appeler le plombier (Emma)'; r.updated_by='emma'; __mock.remote(r);})()""")
-    await pg.wait_for_timeout(400); await pg.click('.viewseg button[data-go="foyer"] >> visible=true'); await pg.wait_for_timeout(300)
+    await pg.wait_for_timeout(400); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="foyer"]'); await pg.wait_for_timeout(300)
     print('remote visible:', await pg.locator('text=Appeler le plombier (Emma)').count()>0)
     # suppression d'un papier → fichier supprimé
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(300)

@@ -46,7 +46,7 @@ async def main():
     await pg.click('#cxNotif [data-a="demo"]'); await pg.wait_for_timeout(500)
     print('démo:', await pg.evaluate("JSON.stringify((__mock.invites||[]).filter(x=>x[1]&&x[1].type==='demo'))"), '|', [l for l in (await pg.inner_text('#cxNotif')).split('\n') if 'Envoy' in l])
     # événements
-    await pg.click('.tab[data-tab="foyer"]'); await pg.click('.viewseg button[data-go="courses"] >> visible=true'); await pg.fill('#cNom','lait'); await pg.press('#cNom','Enter'); await pg.wait_for_timeout(400)
+    await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="courses"]'); await pg.fill('#cNom','lait'); await pg.press('#cNom','Enter'); await pg.wait_for_timeout(400)
     await pg.click('.cl-go'); await pg.wait_for_timeout(500)
     print('événement courses:', await pg.evaluate("JSON.stringify((__mock.invites||[]).filter(x=>x[1]&&x[1].type==='courses'))"))
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(300)

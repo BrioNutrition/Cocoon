@@ -37,7 +37,7 @@ async def main():
     print('fermé:', not await pg.is_visible('.cgu-bg'), '| visite lancée:', await pg.is_visible('.tour-card'))
     pr=await pg.evaluate("JSON.stringify((__mock.T.cocoon_docs.find(r=>r.path.startsWith('data/users/')&&r.id==='prefs')||{}).data||{})"); print('prefs:', pr[:160])
     print('abonnement notifs:', await pg.evaluate("(__mock.T.cocoon_push_subs||[]).length"))
-    await pg.click('.tab[data-tab="foyer"]',force=True); await pg.wait_for_timeout(200)
+    await pg.click('.tab[data-tab="hub"]',force=True); await pg.wait_for_timeout(200)
     await pg.evaluate("localStorage.setItem('foyer.tab','documents')"); await pg.reload(); await pg.wait_for_timeout(6500)
     print('rechargé pendant la visite -> visite sur l accueil:', await pg.is_visible('.tour-card'), await pg.evaluate("document.querySelector('.view:not([hidden])').dataset.view"))
     print('boutons visite:', await pg.evaluate("[...document.querySelectorAll('.tour-card button')].map(b=>b.className+':'+b.textContent)")); await pg.evaluate("(document.querySelector('.tour-card .btn.ghost')||{click(){}}).click()"); await pg.wait_for_timeout(300)

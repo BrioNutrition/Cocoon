@@ -28,7 +28,7 @@ async def main():
     await pg.click('#navAdd'); await pg.fill('#quickTitle','Arroser les plantes'); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(2000)
     await pg.wait_for_timeout(1200)
     F=await pg.evaluate("__mock.T.cocoon_foyers[0].id")
-    await pg.click('.tab[data-tab="foyer"]'); await pg.click('.viewseg button[data-go="courses"] >> visible=true'); await pg.wait_for_timeout(200)
+    await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="courses"]'); await pg.wait_for_timeout(200)
     await pg.fill('#cNom','lait, pain, tomates'); await pg.press('#cNom','Enter'); await pg.wait_for_timeout(500)
     # Emma part faire les courses (autre téléphone)
     await pg.evaluate("([F])=>__mock.remote({foyer:F,path:'coursesLive',id:'session',data:{par:'emma',depuis:Date.now(),fin:null},updated_by:'u-emma'})",[F]); await pg.wait_for_timeout(400)
@@ -47,7 +47,7 @@ async def main():
     await pg.click('.tab[data-tab="accueil"]'); await pg.wait_for_timeout(300); print('accueil:', [t for t in (await pg.inner_text('.secretary')).split('\n') if 'courses' in t])
     await pg.click('#bellBtn'); await pg.wait_for_timeout(400); print('cloche:', (await pg.inner_text('#npanel'))[:120].replace('\n',' | ')); await pg.keyboard.press('Escape'); await pg.wait_for_timeout(300)
     # Repas puis hors connexion
-    await pg.click('.tab[data-tab="foyer"]'); await pg.click('.viewseg button[data-go="repas"] >> visible=true'); await pg.wait_for_timeout(200)
+    await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="repas"]'); await pg.wait_for_timeout(200)
     await pg.evaluate("__mock.offline=true"); await ctx.set_offline(True); await pg.wait_for_timeout(200)
     await pg.locator('.r-cell.now.r-soir').click(); await pg.locator('.r-ideas button:has-text("Pizza maison")').click(); await pg.locator('.r-ed button[type=submit]').click(); await pg.wait_for_timeout(300)
     print('hors ligne -> file:', await pg.evaluate("cocoonHost.pending()"), '| plat affiché:', await pg.locator('.r-cp:has-text("Pizza maison")').count())

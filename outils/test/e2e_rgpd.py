@@ -28,7 +28,7 @@ async def main():
     await pg.fill('#fiNom','Angel'); await pg.fill('#fiNaissance','1990-05-04'); await pg.click('#fiSave'); await pg.wait_for_timeout(8000)
     await pg.add_style_tag(content='.toast{display:none!important}')
     # 1. papier avec fichier : référence « sb: » et lien temporaire à l'ouverture
-    await pg.click('.tab[data-tab="foyer"]'); await pg.click('.viewseg button[data-go="documents"] >> visible=true'); await pg.wait_for_timeout(200)
+    await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="documents"]'); await pg.wait_for_timeout(200)
     print('mention santé:', await pg.is_visible('.d-sante'))
     await pg.click('#papAdd'); await pg.fill('#dTitle','Carte identité'); await pg.set_input_files('#dFile','../tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(800)
     ref=await pg.evaluate("(__mock.T.cocoon_docs.find(r=>r.path==='documents'&&r.data.assetId)||{data:{}}).data.assetId"); print('référence enregistrée:', ref)

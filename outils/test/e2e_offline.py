@@ -46,7 +46,7 @@ async def main():
     await ctx.set_offline(False); await pg.reload()
     await pg.wait_for_function("document.querySelector('#cxIntro')===null && !document.getElementById('boot')", timeout=15000); await pg.wait_for_timeout(2500)
     print('après relance -> base:', await inbase('Tâche avant fermeture'), '| file:', await pg.evaluate("cocoonHost.pending()"), '| outbox LS:', await pg.evaluate("localStorage.getItem('cocoon.outbox')"))
-    await pg.click('.tab[data-tab="foyer"]'); await pg.wait_for_timeout(300)
+    await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.wait_for_timeout(300)
     print('toutes visibles:', [await pg.locator('text='+t).count()>0 for t in ['Tâche en ligne','Tâche hors ligne 1','Tâche avant fermeture']])
     print('errors',[e for e in errs if 'ERR_FAILED' not in e and 'INTERNET' not in e])
     await b.close()

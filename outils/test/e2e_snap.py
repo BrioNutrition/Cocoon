@@ -31,7 +31,7 @@ async def main():
     t0=_t.time(); await pg.reload()
     await pg.wait_for_function("document.querySelector('#cxIntro')===null && !document.getElementById('boot')", timeout=15000)
     print('app prête après rechargement en', round(_t.time()-t0,2),'s ; gate visible:', await pg.evaluate("(()=>{const g=document.getElementById('cxGate'); return !!g&&!g.hidden})()"))
-    await pg.click('.tab[data-tab="foyer"]'); await pg.wait_for_timeout(300)
+    await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.wait_for_timeout(300)
     print('tâche présente:', await pg.locator('text=Arroser les plantes').count()>0)
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(300)
     pg.once('dialog', lambda d: asyncio.ensure_future(d.accept()))
