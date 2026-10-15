@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="15/10 11:28";</script>
+<script>window.COCOON_BUILD="15/10 11:48";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2438,7 +2438,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 /* Foyer : bento */
 .tab[hidden]{display:none!important}
 .hub-h h2{font:800 26px/1.15 var(--f-display);margin:2px 2px 0}
-.hub{display:block}.hb-sec{margin:4px 4px 8px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.hb-g2+.hb-sec{margin-top:18px}.hb-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.hb-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.hb-g2 .hb-t{min-height:112px}.hb-g3 .hb-t{min-height:96px;padding:11px;border-radius:18px}.hb-g3 .hb-t>i{width:30px;height:30px;border-radius:10px}.hb-g3 .hb-t>i svg{width:18px;height:18px}.hb-g3 .hb-t>b{font-size:14px}.hb-g3 .hb-t>span{font-size:11.5px;-webkit-line-clamp:1}.hb-g3 .hb-t>em{top:8px;right:8px}
+.hub{display:block}.hb-sec{margin:4px 4px 8px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.hb-g2+.hb-sec{margin-top:18px}.hb-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.hb-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.hb-g2 .hb-t{min-height:112px}.hb-g2 .hb-t>i,.hb-g3 .hb-t>i{margin-bottom:0}.hb-g2 .hb-t>b,.hb-g3 .hb-t>b{margin-top:12px}.hb-g2 .hb-t>span{-webkit-line-clamp:1}.hb-g3 .hb-t{min-height:96px;padding:11px;border-radius:18px}.hb-g3 .hb-t>i{width:30px;height:30px;border-radius:10px}.hb-g3 .hb-t>i svg{width:18px;height:18px}.hb-g3 .hb-t>b{font-size:14px}.hb-g3 .hb-t>span{font-size:11.5px;-webkit-line-clamp:1}.hb-g3 .hb-t>em{top:8px;right:8px}
 .hb-t{position:relative;border-radius:20px;padding:13px;min-height:104px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;cursor:pointer;color:var(--ink);background:color-mix(in srgb,var(--bc) 22%,var(--surface));box-shadow:0 2px 0 var(--shadow);min-width:0;-webkit-tap-highlight-color:transparent;transition:transform .12s ease}
 .hb-t:active{transform:scale(.98)}
 .hb-t:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
@@ -2505,6 +2505,8 @@ html.sheet-open .hub-cx{display:none}
 .hub-ans .ha-act button.g{background:color-mix(in srgb,var(--ink) 9%,transparent);color:var(--ink)}
 .hub-ans .ha-x{position:absolute;top:6px;right:6px;width:28px;height:28px;border:0;border-radius:50%;background:none;color:var(--muted);font-size:18px;cursor:pointer}
 .hub-ans.busy .ha-txt{color:var(--muted)}
+#papAdd{display:none!important}
+.view[data-view="budget"] .b-actions{display:none!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2649,7 +2651,6 @@ html.sheet-open .hub-cx{display:none}
 
   <section class="view" data-view="repas" hidden>
     <button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button>
-    <form class="c-add qa-add" id="rQa" autocomplete="off"><input type="text" id="rQaIn" maxlength="80" placeholder="Un plat pour le prochain repas…" aria-label="Plat à prévoir au prochain repas libre" enterkeyhint="done"><button class="btn" type="submit">Ajouter</button></form>
     <div id="rBody" class="r-body"></div>
   </section>
 
@@ -4471,7 +4472,7 @@ function renderRdv(){
         el("button",{type:"button",class:"btn ghost np-sel-no",text:"Annuler",onclick:()=>{ S.rdvSelSet=new Set(); renderRdv(); }}),del)); } }
   rdvTimer(); try{ renderRdvAlert(); }catch(_){}
   if(!list.length&&!F) box.append(el("div",{class:"rdv-empty",text:day?"Aucun rendez-vous ce jour-là.":who?"Aucun rendez-vous prévu pour "+(who===me?"toi":membre(who).nom)+".":"Aucun rendez-vous prévu. Médecin, véto, garage, réunion d'école : note-les ici, tout le foyer les voit."}));
-  if(can&&!(F&&!F.id)){ const add=el("button",{type:"button",class:"rdv-add2",onclick:()=>{ S.rdvForm={pour:[who||me],date:day&&day>=iso(today())?day:""}; renderRdv(); }}), ic=el("i",{"aria-hidden":"true"});
+  if(false&&can&&!(F&&!F.id)){ const add=el("button",{type:"button",class:"rdv-add2",onclick:()=>{ S.rdvForm={pour:[who||me],date:day&&day>=iso(today())?day:""}; renderRdv(); }}), ic=el("i",{"aria-hidden":"true"});
     ic.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'; add.append(ic,"Ajouter un rendez-vous"); box.append(add); }
   w.append(box);
 }
@@ -5402,11 +5403,6 @@ async function qaTask(inp,where){ const v=inp.value.trim(); if(!v){ openSheet(wh
   if(ok!==false){ inp.value=""; } }
 $("tQa").addEventListener("submit",e=>{ e.preventDefault(); qaTask($("tQaIn"),"tous"); });
 $("pQa").addEventListener("submit",e=>{ e.preventDefault(); qaTask($("pQaIn"),"perso"); });
-$("rQa").addEventListener("submit",async e=>{ e.preventDefault(); const inp=$("rQaIn"), plat=inp.value.trim(); if(!plat){ fabAct("repas"); return; } if(!needMe()) return;
-  const [d,sl]=nextFreeMeal(), id=d+"_"+sl;
-  try{ await S.db.collection("repas").doc(id).set({date:d,slot:sl,plat:plat.slice(0,80),cuisine:null,vaisselle:null,par:meId(),le:Date.now()}); inp.value="";
-    const when={matin:"le petit-déj",midi:"le midi",soir:"le soir"}[sl]+" "+(d===iso(today())?"d'aujourd'hui":dueLabel(d));
-    toast("« "+esc(plat)+" » prévu pour "+when+"."); }catch(err){ writeErr(err); } });
 /* Barre « Dis-le à Cocoony » du Foyer */
 const HUB_SUG=[["tache","Une tâche","Ex. Payer la cantine vendredi"],["courses","Des courses","Ex. pain, lait, œufs"],["rdv","Un rendez-vous","Ex. Dentiste jeudi à 15h"],["repas","Un repas","Ex. Lasagnes ce soir"],["dep","Une dépense","Ex. 45 € de courses"]];
 function hubAv(){ const s=el("span",{class:"hub-av"}); try{ s.append(secAv()); const im=s.firstChild; if(im&&!im.getAttribute("src")){ const lg=document.querySelector(".brand-logo"); if(lg) im.src=lg.src; } }catch(_){} return s; }
@@ -5421,7 +5417,7 @@ function hubShow(r,busy){ const b=$("hubAns"); if(!b) return; b.innerHTML=""; if
   b.append(el("button",{type:"button",class:"ha-x","aria-label":"Fermer",text:"×",onclick:()=>hubShow(null)})); }
 async function hubAsk(raw){ let v=String(raw||"").trim(); if(!v) { $("hubQ").focus(); return; } if(!needMe()) return;
   const m=S.hubMode, phr=m==="tache"?"Ajoute "+v:m==="courses"?"Ajoute "+v+" aux courses":m==="rdv"?"Ajoute un rendez-vous "+v.replace(/^(?:un\s+)?(?:rdv|rendez-vous)\s*/i,""):m==="repas"?"On mange "+v:m==="dep"?(/€|euro/i.test(v)?"J'ai dépensé "+v:"J'ai dépensé "+v+" €"):v;
-  const isQ=!m&&(/\?\s*$/.test(v)||/^\s*(?:comment|quand|qui|quoi|que |qu'|où|ou |combien|est-ce|pourquoi|quel|quelle|c'est quoi|explique|aide)/i.test(v));
+  const isQ=!m&&!/(peux|pourrais)[- ]?tu\b.*\b(ajouter|mettre|noter|rappeler|cr[ée]er)/i.test(v)&&(/\?\s*$/.test(v)||/^\s*(?:comment|quand|qui|quoi|que |qu'|où|ou |combien|est-ce|pourquoi|quel|quelle|c'est quoi|explique|aide)/i.test(v));
   const parts=v.split(/\s*[,;]\s*|\s+et\s+/).filter(Boolean), looksList=!m&&!isQ&&parts.length>=2&&parts.every(x=>x.split(/\s+/).length<=3)&&!/\d/.test(v)&&!/(demain|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche|soir|midi)/i.test(v);
   let plan=isQ?null:secCreatePlan(looksList?"Ajoute "+v+" aux courses":phr); if(!plan&&!isQ&&!m) plan=secCreatePlan("Ajoute "+v);
   if(!plan){ $("hubQ").value=""; setTab("accueil"); setTimeout(()=>{ const f=$("secAsk"); if(f) f.scrollIntoView({block:"center",behavior:"smooth"}); askSecretary(v); },120); return; }
@@ -6114,7 +6110,11 @@ function fabAct(v0,anchor){ const me=meId(), v=v0||S.tab;
   if(v==="repas"){ if(!needMe()) return; const [d,sl]=nextFreeMeal(), t0=weekStartOf(today()); S.rWeek=Math.round((weekStartOf(parse(d))-t0)/(7*864e5)); S.rEdit=d+"_"+sl; renderRepas(); go(".r-ed"); setTimeout(()=>{ try{ $("rPlat").focus({preventScroll:true}); }catch(_){} },300); return; }
   if(v==="agenda"){ if(!needMe()) return; const day=S.agDay&&S.agDay>=iso(today())?S.agDay:""; S.rdvForm={pour:[S.agWho||me],date:day}; renderRdv(); go(".rdv-form"); return; }
   if(v==="documents"){ openDocForm(); return; }
-  if(v==="budget"){ openBForm("dep"); return; }
+  if(v==="budget"){ const M=$("addMenu"); if(!M.hidden){ M.hidden=true; return; } M.innerHTML="";
+    const it=(ic,t,id)=>M.append(el("button",{type:"button",role:"menuitem",onclick:()=>{ M.hidden=true; const b=$(id); if(b) b.click(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),t));
+    it("depense","Une dépense","bAddDep"); it("abonnement","Un abonnement, un prélèvement","bAddSub"); it("factures","Un crédit","bAddCr");
+    if(anchor){ const r=anchor.getBoundingClientRect(); M.style.top=Math.round(r.bottom+8)+"px"; M.style.bottom="auto"; M.style.right=Math.max(12,Math.round(innerWidth-r.right))+"px"; }
+    M.hidden=false; return; }
   if(v==="moi"){ openSheet({where:"perso"}); return; }
   if(v==="maison"){ const M=$("addMenu"); if(!M.hidden){ M.hidden=true; return; } M.innerHTML="";
     const it=(ic,t,fn)=>M.append(el("button",{type:"button",role:"menuitem",onclick:()=>{ M.hidden=true; fn(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),t));
@@ -6432,7 +6432,7 @@ function secHowTo(raw){
   if(has("papier","document","facture","contrat","passeport","carte grise","attestation","scanner","photo"))
     return T("Pour ranger un papier :",["Va dans Foyer › Papiers et touche « + Ajouter » en haut à droite.","Donne-lui un nom, par exemple « Bail » ou « Carte grise ».","Choisis la catégorie et, si besoin, la date d'expiration : je te préviendrai avant.","Ajoute la photo ou le PDF, puis touche « Ranger »."],{l:"Ranger un papier",run:cocoGo("documents",null,()=>{ try{ $("dTitle").focus(); }catch(_){} })});
   if(has("rendez","rdv"))
-    return T("Pour ajouter un rendez-vous :",["Va dans Foyer › Agenda et touche « Ajouter un rendez-vous ».","Indique quoi, la date, l'heure de début et de fin, et le lieu si tu veux.","Choisis pour qui, puis « Ajouter » : tout le foyer le voit et je le rappelle la veille.","Plus rapide : écris-moi « Ajoute un rendez-vous chez le dentiste vendredi de 14h à 15h »."],{l:"Ajouter un rendez-vous",run:()=>{ setTab("accueil"); S.rdvForm={pour:[meId()]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({block:"start",behavior:"smooth"}); },80); }});
+    return T("Pour ajouter un rendez-vous :",["Va dans Foyer › Agenda et touche « + Ajouter » en haut à droite.","Indique quoi, la date, l'heure de début et de fin, et le lieu si tu veux.","Choisis pour qui, puis « Ajouter » : tout le foyer le voit et je le rappelle la veille.","Plus rapide : écris-moi « Ajoute un rendez-vous chez le dentiste vendredi de 14h à 15h »."],{l:"Ajouter un rendez-vous",run:()=>{ setTab("accueil"); S.rdvForm={pour:[meId()]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({block:"start",behavior:"smooth"}); },80); }});
   if(has("repas","menu","manger","diner","dejeuner","vaisselle","cuisine"))
     return T("Pour prévoir les repas :",["Va dans Foyer › Repas.","Touche le moment voulu (petit-déj, midi ou soir) sur le bon jour.","Écris le plat, puis choisis qui cuisine et qui fait la vaisselle.","Plus rapide : écris-moi « Ce soir on mange des lasagnes »."],{l:"Ouvrir les repas",ghost:true,run:cocoGo("repas")});
   if(has("course","liste","caddie","magasin"))
@@ -6462,6 +6462,35 @@ function secHowTo(raw){
 function cocoHours(raw){ const out=[]; for(const m of String(raw).matchAll(/(\d{1,2})\s*(?:h|:)\s*(\d{2})?/gi)){ const H=+m[1], M=+(m[2]||0); if(H<24&&M<60) out.push(String(H).padStart(2,"0")+":"+String(M).padStart(2,"0")); } return out; }
 function cocoStrip(t){ return String(t||"").replace(/\s+/g," ").trim().replace(/^(?:(?:des|du|de la|de l'|un|une|les|le|la|l')\s+)/i,"").replace(/^./,c=>c.toUpperCase()); }
 function cocoUndo(label,del,msg){ return {l:"Annuler",ghost:true,run:async()=>{ try{ await del(); return msg||"C'est annulé."; }catch(e){ writeErr(e); return null; } }}; }
+/* Comprendre une demande de tâche en langage courant */
+function cocoTask(txt,hasVerb,body){ const me=meId(); txt=String(txt||"").replace(/[’]/g,"'").trim();
+  if(/\?\s*$/.test(txt)&&!/(peux|pourrais|peut)[- ]?(tu|vous)?\s*(m')?(ajouter|mettre|noter|cr[ée]er|rappeler)/i.test(txt)) return null;
+  if(/\b(quoi|quand|combien|pourquoi|est-ce qu'il y a)\b/i.test(txt)) return null;
+  let b=hasVerb?body:"", whereHint=null;
+  if(!hasVerb){
+    const V=/^\s*(?:(?:est-ce que\s+)?(?:tu\s+peux|peux[- ]tu|pourrais[- ]tu|tu\s+pourrais)\s+(?:m'|me\s+)?(?:ajouter|mettre|noter|cr[ée]er|rappeler(?:\s+(?:de\s+|d'))?)|(?:il\s+)?faut(?:\s+que\s+(je|j'|on|tu|nous|qu'on))?|(je|on|nous)\s+(?:dois|doit|devons|devrais|devrait|devrions|vais|va)|(?:j'ai|on a)\s+(?:besoin|oubli[ée])\s+de|(?:penser|pense)\s+[àa]|ne pas oublier\s+(?:de\s+|d')?|n'oublie(?:z)?\s+pas\s+(?:de\s+|d')?|[àa] faire\s*:)\s*/i;
+    const m=txt.match(V); if(!m) return null; b=txt.slice(m[0].length);
+    const who=(m[1]||m[2]||"").toLowerCase(); if(/^(je|j')$/.test(who)) whereHint=me; else if(/^(on|nous|qu'on)$/.test(who)) whereHint="tous";
+    if(/rappeler/i.test(m[0])) whereHint="perso"; }
+  b=b.replace(/^(?:de\s+|d')/i,"").trim();
+  // « une tâche : … », « un rappel pour … », « dans la liste des tâches »
+  b=b.replace(/^(?:(?:une?|la|ma|cette)\s+(?:nouvelle\s+|petite\s+)?(?:t[âa]che|rappel|chose|truc|mission|corv[ée]e)s?)\s*(?:[:\-–]\s*|(?:de|pour|qui\s+(?:est|consiste\s+[àa]))\s+|d'|:)?/i,"");
+  b=b.replace(/\s+(?:[àa] faire|dans (?:la liste des |mes |les )?t[âa]ches(?: perso)?|[àa] la liste(?: des t[âa]ches)?|s'il te pla[îi]t|stp|svp|merci)\s*[.!]*$/i,m=>{ if(/perso|mes t/i.test(m)) whereHint="perso"; return ""; });
+  // à qui ?
+  for(const mb of membres().slice().sort((x,y)=>(y.nom||"").length-(x.nom||"").length)){ if(!mb.nom||mb.id===me) continue; const n=reEsc(mb.nom);
+    const can=typeOf(mb)==="animal"?(isAdmin()?"concerne:"+mb.id:null):(isAdmin()?mb.id:null);
+    let r=b.match(new RegExp("^(?:[àa]\\s+)?"+n+"\\s*(?:[:,]\\s*|\\s+(?:doit|devra|va|peut|pourrait)\\s+)","i")); if(r&&can){ b=b.slice(r[0].length); whereHint=can; break; }
+    r=b.match(new RegExp("^demande(?:r)?\\s+[àa]\\s+"+n+"\\s+(?:de\\s+|d')","i")); if(r&&can){ b=b.slice(r[0].length); whereHint=can; break; }
+    r=b.match(new RegExp("\\s+(?:par|[àa])\\s+"+n+"\\s*$","i")); if(r&&can&&typeOf(mb)!=="animal"){ b=b.slice(0,r.index); whereHint=can; break; } }
+  if(/^\s*(?:moi|me)\b/i.test(b)) b=b.replace(/^\s*(?:moi|me)\s*(?:de\s+|d')?/i,"");
+  b=b.replace(/^[\s:,;\-–]+|[\s.!?,;]+$/g,"").trim(); if(!b) return null;
+  const p=parseQuick(b); let titre=String(p.titre||b).replace(/^[\s:,;\-–]+|[\s.!?,;]+$/g,"").replace(/^(?:de\s+|d')/i,"").trim();
+  // heure éventuelle : on la garde dans le titre de façon lisible
+  titre=titre.replace(/\s+[àa]\s+(\d{1,2})\s*(?:h|:)\s*(\d{2})?\b/i,(m0,h,mi)=>" à "+h+"h"+(mi||"")).trim();
+  if(!titre||titre.length<2) return null; titre=titre.charAt(0).toUpperCase()+titre.slice(1);
+  if(titre.length>120) titre=titre.slice(0,120);
+  const where=p.where||whereHint||(/^\s*rappelle/i.test(txt)?"perso":"tous");
+  return {p,titre,where}; }
 function secCreatePlan(raw){
   const me=meId(); if(!me) return null;
   const txt=String(raw||"").trim(), q=" "+norm(txt).replace(/['’]/g," ").replace(/\s+/g," ")+" ";
@@ -6480,7 +6509,7 @@ function secCreatePlan(raw){
     return {run:async()=>{ const now=Date.now(), ids=[]; let n=0; for(const a of arts){ const ref=await S.db.collection("courses").add({nom:a.nom,qte:a.qte||null,pour:"tous",fait:false,ajoutePar:me,ajouteLe:now+(n++),rayon:rayonOf({nom:a.nom})}); ids.push(ref.id); }
       return secA((arts.length>1?arts.length+" articles ajoutés":"« "+arts[0].nom+" » ajouté")+" à la liste de courses.",arts.length>1?arts.map(a=>({t:a.nom+(a.qte?" ("+a.qte+")":"")})):[],[{l:"Voir la liste",ghost:true,run:cocoGo("courses")},cocoUndo("",()=>Promise.all(ids.map(id=>S.db.collection("courses").doc(id).delete())),"Retiré de la liste.")]); }}; }
   // Rendez-vous
-  if(/( rdv | rendez vous | rendez-vous )/.test(q)&&(hasVerb||/^\s*(?:rdv|rendez-vous|j'ai (?:un )?(?:rdv|rendez-vous))/i.test(txt))){
+  if(/( rdv | rendez vous | rendez-vous )/.test(q)&&!/ prendre (?:un )?(?:rdv|rendez[- ]vous)/.test(q)&&(hasVerb||/^\s*(?:rdv|rendez-vous|j'ai (?:un )?(?:rdv|rendez-vous))/i.test(txt))){
     const hs=cocoHours(body); let rest=body.replace(/\b(?:de|à|a|vers|jusqu'à|jusqu'a|-)?\s*\d{1,2}\s*(?:h|:)\s*(?:\d{2})?/gi," ").replace(/^\s*j'ai\s+/i,"");
     const p=parseQuick(rest); let titre=cocoStrip(String(p.titre||"").replace(/^(?:(?:un|le|mon|ce)\s+)?(?:rdv|rendez-vous|rendez vous)\s*(?:(?:chez|avec|au|aux|à la|a la|pour|de|du)\s+|à l'|d')?\s*/i,"").replace(/\s+(?:de|à|a|le)\s*$/i,""))||"Rendez-vous";
     const date=p.echeance, heure=hs[0]||null; let fin=hs[1]||null;
@@ -6502,13 +6531,14 @@ function secCreatePlan(raw){
       const sl={matin:"le petit-déj",midi:"le midi",soir:"le soir"}[slot];
       return secA("C'est noté : "+plat+" "+(date===iso(today())?{matin:"ce matin",midi:"ce midi",soir:"ce soir"}[slot]:"pour "+sl+" "+dueLabel(date))+".",[],[{l:"Voir les repas",ghost:true,run:cocoGo("repas")},cocoUndo("",()=>S.db.collection("repas").doc(id).delete(),"Repas retiré.")]); }}; }
   // Tâche
-  if(hasVerb&&body){
-    const p=parseQuick(body), titre=p.titre||body, where=p.where||(/^\s*rappelle/i.test(txt)?"perso":"tous");
+  const tp=cocoTask(txt,hasVerb,body);
+  if(tp){
+    const p=tp.p, titre=tp.titre, where=tp.where;
     return {run:async()=>{ const t0=Date.now(); const ok=await addTask({titre,where,echeance:p.echeance,recur:p.recur!=null?p.recur:undefined,cat:p.cat||undefined,silent:true}); if(!ok) return secA("Je n'ai pas pu ajouter la tâche.");
       const find=()=>allTasks().filter(t=>t.titre===titre&&t.creePar===me&&(t.creeLe||0)>=t0-2000).sort((a,b)=>(b.creeLe||0)-(a.creeLe||0))[0];
       const bits=[where==="perso"?"dans ton espace perso":where==="tous"?"pour tout le foyer":where.startsWith("concerne:")?"pour "+membre(where.slice(9)).nom:"pour "+(where===me?"toi":membre(where).nom)];
-      if(p.echeance) bits.push("pour "+dueLabel(p.echeance)); if(recNorm(p.recur)) bits.push(recText(p.recur));
-      return secA("C'est noté : « "+titre+" » "+bits.join(", ")+".",[],[{l:"Voir",ghost:true,run:cocoGo(where==="perso"?"moi":"foyer")},cocoUndo("",async()=>{ const t=find(); if(!t) throw new Error("introuvable"); await (t.prive?persoCol():S.db.collection("taches")).doc(t.id).delete(); },"Tâche annulée.")]); }}; }
+      if(p.echeance){ const k=daysTo(p.echeance); bits.push(k===0?"pour aujourd'hui":k===1?"pour demain":k>1&&k<7?"pour "+WDAYS[parse(p.echeance).getDay()]:"pour le "+String(fmtDue(p.echeance)).replace(/\.$/,"")); } if(recNorm(p.recur)) bits.push(recText(p.recur));
+      return secA(("C'est noté : « "+titre+" » "+bits.join(", ")+".").replace(/\.\.$/,"."),[],[{l:"Voir",ghost:true,run:cocoGo(where==="perso"?"moi":"foyer")},cocoUndo("",async()=>{ const t=find(); if(!t) throw new Error("introuvable"); await (t.prive?persoCol():S.db.collection("taches")).doc(t.id).delete(); },"Tâche annulée.")]); }}; }
   return null;
 }
 
