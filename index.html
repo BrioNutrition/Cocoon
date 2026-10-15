@@ -35,7 +35,7 @@
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
-<script>window.COCOON_BUILD="15/10 11:48";</script>
+<script>window.COCOON_BUILD="15/10 12:09";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2437,7 +2437,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 
 /* Foyer : bento */
 .tab[hidden]{display:none!important}
-.hub-h h2{font:800 26px/1.15 var(--f-display);margin:2px 2px 0}
+.hub-h h2{font:650 34px/1 var(--f-display);letter-spacing:-.03em;margin:2px 2px 0}
 .hub{display:block}.hb-sec{margin:4px 4px 8px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.hb-g2+.hb-sec{margin-top:18px}.hb-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.hb-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.hb-g2 .hb-t{min-height:112px}.hb-g2 .hb-t>i,.hb-g3 .hb-t>i{margin-bottom:0}.hb-g2 .hb-t>b,.hb-g3 .hb-t>b{margin-top:12px}.hb-g2 .hb-t>span{-webkit-line-clamp:1}.hb-g3 .hb-t{min-height:96px;padding:11px;border-radius:18px}.hb-g3 .hb-t>i{width:30px;height:30px;border-radius:10px}.hb-g3 .hb-t>i svg{width:18px;height:18px}.hb-g3 .hb-t>b{font-size:14px}.hb-g3 .hb-t>span{font-size:11.5px;-webkit-line-clamp:1}.hb-g3 .hb-t>em{top:8px;right:8px}
 .hb-t{position:relative;border-radius:20px;padding:13px;min-height:104px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;cursor:pointer;color:var(--ink);background:color-mix(in srgb,var(--bc) 22%,var(--surface));box-shadow:0 2px 0 var(--shadow);min-width:0;-webkit-tap-highlight-color:transparent;transition:transform .12s ease}
 .hb-t:active{transform:scale(.98)}
@@ -5662,6 +5662,7 @@ function snapRec(n){ return [1,3,6,12,24].reduce((a,b)=>Math.abs(b-n)<Math.abs(a
 /* « Acheter du pain demain pour Emma » → {titre:"Acheter du pain", echeance:demain, where:"emma", cat:"courses"} */
 function parseQuick(raw){
   let s=" "+String(raw||"").replace(/[’]/g,"'")+" ";
+  s=s.replace(/\s(?:d'ici|avant|au plus tard|au plus tard pour)\s+(?=(?:demain|apr[èe]s|ce\s|cette\s|la\s+semaine|le\s|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche|\d|fin\s|d[ée]but\s|mi[- ]|dans\s))/gi," ");
   const out={titre:"",where:null,echeance:null,recur:null,recurGuess:null,cat:null};
   const R=src=>new RegExp(src+QEND,"i");
   const t0=today(), plus=n=>iso(new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+n));
@@ -5671,7 +5672,9 @@ function parseQuick(raw){
   first([
     [R("\\s(?:tous les|toutes les|chaque)\\s+(\\d+|deux|trois|quatre|cinq|six|dix|quinze)\\s+(jours?|semaines?|mois|ans?|ann[ée]es?)"),m=>{ const n=num(m[1]), u=norm(m[2]); return u.startsWith("j")?recEnc(n,"j"):u.startsWith("s")?recEnc(n,"s"):u.startsWith("m")?n:n*12; }],
     [R("\\s(?:tous les|chaque)\\s+(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)s?"),m=>{ wkday=m[1].toLowerCase(); return "1s"; }],
-    [R("\\s(?:tous les jours|chaque jour|quotidiennement)"),()=>"1j"],
+    [R("\\s(?:tous les jours|chaque jour|quotidiennement|tous les (?:soirs|matins)|chaque (?:soir|matin))"),()=>"1j"],
+    [R("\\s(?:une semaine sur deux|toutes les deux semaines|tous les quinze jours|tous les 15 jours)"),()=>recEnc(2,"s")],
+    [R("\\sun mois sur deux"),()=>2],
     [R("\\s(?:toutes les semaines|chaque semaine|une fois par semaine|hebdomadaire(?:ment)?)"),()=>"1s"],
     [R("\\s(?:tous les mois|chaque mois|une fois par mois|mensuellement)"),()=>1],
     [R("\\s(?:tous les trimestres|chaque trimestre)"),()=>3],
@@ -5680,16 +5683,21 @@ function parseQuick(raw){
   const monthIdx=w=>MONTHS.indexOf(norm(w));
   const future=(y,mo,d,explicitYear)=>{ const x=new Date(y,mo,d); if(x.getMonth()!==mo) return null; if(!explicitYear&&x<t0) x.setFullYear(x.getFullYear()+1); return iso(x); };
   first([
-    [R("\\s(?:aujourd'hui|ce soir|ce matin|cet apr[èe]s-midi|tout de suite)"),()=>plus(0)],
+    [R("\\s(?:aujourd'hui|ce soir|ce matin|ce midi|cet apr[èe]s-midi|tout de suite|dans la journ[ée]e|dans la soir[ée]e|maintenant)"),()=>plus(0)],
+    [R("\\s(?:en |[àa] la )?fin de (?:la |cette )?semaine"),()=>{ const d=t0.getDay(); return plus(d>=5||d===0?0:5-d); }],
+    [R("\\s(?:[àa] la |en )?fin (?:du|de ce) mois"),()=>iso(new Date(t0.getFullYear(),t0.getMonth()+1,0))],
+    [R("\\s(?:au |en )?d[ée]but du mois prochain"),()=>iso(new Date(t0.getFullYear(),t0.getMonth()+1,1))],
+    [R("\\s(?:[àa] la |en |au |[àa] )?(d[ée]but|fin|mi)[- ](janvier|f[ée]vrier|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|d[ée]cembre)"),m=>{ const mo=MONTHS.indexOf(norm(m[2])); if(mo<0) return null; const k=norm(m[1]); let y=t0.getFullYear(); const mk=yy=>k==="fin"?new Date(yy,mo+1,0):new Date(yy,mo,k==="mi"?15:1); let x=mk(y); if(x<t0&&!(k!=="fin"&&mo===t0.getMonth())) x=mk(y+1); if(x<t0) x=t0; return iso(x); }],
+    [R("\\sdans\\s+(?:une|1)\\s+quinzaine"),()=>plus(14)],
     [R("\\sapr[èe]s[- ]demain"),()=>plus(2)],
     [R("\\sdemain(?:\\s+(?:matin|soir|midi))?"),()=>plus(1)],
     [R("\\sdans\\s+(\\d+|un|une|deux|trois|quatre|cinq|six|sept|huit|dix|quinze)\\s+(jours?|semaines?|mois)"),m=>{ const n=num(m[1]), u=norm(m[2]); return u.startsWith("j")?plus(n):u.startsWith("s")?plus(7*n):iso(addMonths(t0,n)); }],
-    [R("\\s(?:la\\s+)?semaine prochaine"),()=>plus(7-((t0.getDay()+6)%7))],
+    [R("\\s(?:la\\s+)?semaine pro(?:chaine)?"),()=>plus(7-((t0.getDay()+6)%7))],
     [R("\\s(?:ce|le)\\s+week-?end"),()=>{ const d=t0.getDay(); return plus(d===6||d===0?0:6-d); }],
     [R("\\s(?:le\\s+)?mois prochain"),()=>iso(new Date(t0.getFullYear(),t0.getMonth()+1,1))],
     [R("\\s(?:le\\s+)?(\\d{1,2})[/.](\\d{1,2})(?:[/.](\\d{2,4}))?"),m=>{ const y=m[3]?(m[3].length===2?2000+Number(m[3]):Number(m[3])):t0.getFullYear(); return future(y,Number(m[2])-1,Number(m[1]),!!m[3]); }],
     [R("\\s(?:le\\s+)?(1er|\\d{1,2})\\s+(janvier|f[ée]vrier|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|d[ée]cembre)(?:\\s+(\\d{4}))?"),m=>{ const mo=monthIdx(m[2]); if(mo<0) return null; return future(m[3]?Number(m[3]):t0.getFullYear(),mo,m[1]==="1er"?1:Number(m[1]),!!m[3]); }],
-    [R("\\s(?:(?:ce|le)\\s+)?(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)(?:\\s+(?:prochain|matin|soir))?"),m=>{ const wd=WDAYS.indexOf(m[1].toLowerCase()); let k=(wd-t0.getDay()+7)%7; if(k===0) k=7; return plus(k); }],
+    [R("\\s(?:(?:ce|le)\\s+)?(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)(?:\\s+(?:prochain|pro|matin|soir|midi|apr[èe]s-midi))?"),m=>{ const wd=WDAYS.indexOf(m[1].toLowerCase()); let k=(wd-t0.getDay()+7)%7; if(k===0) k=7; return plus(k); }],
     [R("\\sle\\s+(1er|\\d{1,2})"),m=>{ const d=m[1]==="1er"?1:Number(m[1]); if(d<1||d>31) return null; let x=new Date(t0.getFullYear(),t0.getMonth(),d); if(x.getDate()!==d) return null; if(x<t0) x=new Date(t0.getFullYear(),t0.getMonth()+1,d); return iso(x); }]
   ],v=>out.echeance=v);
   if(!out.echeance&&wkday){ const wd=WDAYS.indexOf(wkday); let k=(wd-t0.getDay()+7)%7; if(k===0) k=7; out.echeance=plus(k); }
@@ -6468,37 +6476,64 @@ function cocoTask(txt,hasVerb,body){ const me=meId(); txt=String(txt||"").replac
   if(/\b(quoi|quand|combien|pourquoi|est-ce qu'il y a)\b/i.test(txt)) return null;
   let b=hasVerb?body:"", whereHint=null;
   if(!hasVerb){
-    const V=/^\s*(?:(?:est-ce que\s+)?(?:tu\s+peux|peux[- ]tu|pourrais[- ]tu|tu\s+pourrais)\s+(?:m'|me\s+)?(?:ajouter|mettre|noter|cr[ée]er|rappeler(?:\s+(?:de\s+|d'))?)|(?:il\s+)?faut(?:\s+que\s+(je|j'|on|tu|nous|qu'on))?|(je|on|nous)\s+(?:dois|doit|devons|devrais|devrait|devrions|vais|va)|(?:j'ai|on a)\s+(?:besoin|oubli[ée])\s+de|(?:penser|pense)\s+[àa]|ne pas oublier\s+(?:de\s+|d')?|n'oublie(?:z)?\s+pas\s+(?:de\s+|d')?|[àa] faire\s*:)\s*/i;
+    const V=/^\s*(?:(?:est-ce que\s+)?(?:tu\s+peux|peux[- ]tu|pourrais[- ]tu|tu\s+pourrais)\s+(?:m'|me\s+)?(?:ajouter|mettre|noter|cr[ée]er|rappeler(?:\s+(?:de\s+|d'))?)|(?:il\s+)?(?:faut|faudrait|faudra)(?:\s+(?:que\s+(je|j'|on|tu|nous)|qu'(on)))?|(?:ce|[çc]a)\s+serait\s+bien\s+(?:de\s+|d')|il\s+est\s+temps\s+(?:de\s+|d')|(?:je\s+voudrais|j'aimerais|on\s+voudrait)(?:\s+bien)?|rappelle[- ](nous)\s+(?:de\s+|d')|(?:n'oubliez|n'oublions)\s+pas\s+(?:de\s+|d')|(je|on|nous)\s+(?:dois|doit|devons|devrais|devrait|devrions|vais|va)|(je|on)\s+(?=(?:fais|fait|ferai|fera)\s)|(?:j'ai|on a)\s+(?:besoin|oubli[ée])\s+de|(?:penser|pense)\s+[àa]|ne pas oublier\s+(?:de\s+|d')?|n'oublie(?:z)?\s+pas\s+(?:de\s+|d')?|[àa] faire\s*:)\s*/i;
     const m=txt.match(V); if(!m) return null; b=txt.slice(m[0].length);
-    const who=(m[1]||m[2]||"").toLowerCase(); if(/^(je|j')$/.test(who)) whereHint=me; else if(/^(on|nous|qu'on)$/.test(who)) whereHint="tous";
+    if(m[1]||m[2]||m[5]) b=cocoInf(b);
+    const who=(m[1]||m[2]||m[3]||m[4]||m[5]||"").toLowerCase(); if(/^(je|j')$/.test(who)) whereHint=me; else if(/^(on|nous|qu'on)$/.test(who)) whereHint="tous";
     if(/rappeler/i.test(m[0])) whereHint="perso"; }
-  b=b.replace(/^(?:de\s+|d')/i,"").trim();
+  b=b.replace(/^(?:de\s+|d')/i,"").replace(/^que\s+(?:(je\s+dois|j'ai\s+[àa])|il\s+faut|(on\s+doit))\s+/i,(x,a,c)=>{ if(a) whereHint=me; else if(c) whereHint="tous"; return ""; }).trim();
   // « une tâche : … », « un rappel pour … », « dans la liste des tâches »
   b=b.replace(/^(?:(?:une?|la|ma|cette)\s+(?:nouvelle\s+|petite\s+)?(?:t[âa]che|rappel|chose|truc|mission|corv[ée]e)s?)\s*(?:[:\-–]\s*|(?:de|pour|qui\s+(?:est|consiste\s+[àa]))\s+|d'|:)?/i,"");
   b=b.replace(/\s+(?:[àa] faire|dans (?:la liste des |mes |les )?t[âa]ches(?: perso)?|[àa] la liste(?: des t[âa]ches)?|s'il te pla[îi]t|stp|svp|merci)\s*[.!]*$/i,m=>{ if(/perso|mes t/i.test(m)) whereHint="perso"; return ""; });
   // à qui ?
   for(const mb of membres().slice().sort((x,y)=>(y.nom||"").length-(x.nom||"").length)){ if(!mb.nom||mb.id===me) continue; const n=reEsc(mb.nom);
     const can=typeOf(mb)==="animal"?(isAdmin()?"concerne:"+mb.id:null):(isAdmin()?mb.id:null);
-    let r=b.match(new RegExp("^(?:[àa]\\s+)?"+n+"\\s*(?:[:,]\\s*|\\s+(?:doit|devra|va|peut|pourrait)\\s+)","i")); if(r&&can){ b=b.slice(r[0].length); whereHint=can; break; }
-    r=b.match(new RegExp("^demande(?:r)?\\s+[àa]\\s+"+n+"\\s+(?:de\\s+|d')","i")); if(r&&can){ b=b.slice(r[0].length); whereHint=can; break; }
+    let r=b.match(new RegExp("^(?:[àa]\\s+)?"+n+"\\s*(?:[:,]\\s*|\\s+(?:doit|devra|devrait|va|peut|pourrait|aura\\s+[àa])\\s+)","i")); if(r&&can){ b=b.slice(r[0].length); whereHint=can; break; }
+    r=b.match(new RegExp("^(?:demande(?:r)?|dis|rappelle)\\s+[àa]\\s+"+n+"\\s+(?:de\\s+|d')","i")); if(r&&can){ b=b.slice(r[0].length); whereHint=can; break; }
     r=b.match(new RegExp("\\s+(?:par|[àa])\\s+"+n+"\\s*$","i")); if(r&&can&&typeOf(mb)!=="animal"){ b=b.slice(0,r.index); whereHint=can; break; } }
   if(/^\s*(?:moi|me)\b/i.test(b)) b=b.replace(/^\s*(?:moi|me)\s*(?:de\s+|d')?/i,"");
   b=b.replace(/^[\s:,;\-–]+|[\s.!?,;]+$/g,"").trim(); if(!b) return null;
   const p=parseQuick(b); let titre=String(p.titre||b).replace(/^[\s:,;\-–]+|[\s.!?,;]+$/g,"").replace(/^(?:de\s+|d')/i,"").trim();
   // heure éventuelle : on la garde dans le titre de façon lisible
-  titre=titre.replace(/\s+[àa]\s+(\d{1,2})\s*(?:h|:)\s*(\d{2})?\b/i,(m0,h,mi)=>" à "+h+"h"+(mi||"")).trim();
+  titre=titre.replace(/\s+(?:[àa]\s+|vers\s+)?(\d{1,2})\s*(?:h|:)\s*(\d{2})?\b/i,(m0,h,mi)=>" à "+h+"h"+(mi||"")).trim();
   if(!titre||titre.length<2) return null; titre=titre.charAt(0).toUpperCase()+titre.slice(1);
   if(titre.length>120) titre=titre.slice(0,120);
   const where=p.where||whereHint||(/^\s*rappelle/i.test(txt)?"perso":"tous");
   return {p,titre,where}; }
-function secCreatePlan(raw){
+function cocoDay(d){ const k=daysTo(d); return k===0?"aujourd'hui":k===1?"demain":k>1&&k<7?WDAYS[parse(d).getDay()]:"le "+fmtDue(d); }
+const COCO_CONJ={fais:"faire",fait:"faire",fasse:"faire",ferai:"faire",fera:"faire",prenne:"prendre",prends:"prendre",prend:"prendre",aille:"aller",sorte:"sortir",sors:"sortir",sort:"sortir",appelle:"appeler",achète:"acheter",achete:"acheter",nettoie:"nettoyer",paie:"payer",mette:"mettre",mets:"mettre",met:"mettre",écrive:"écrire",lise:"lire",rende:"rendre",rends:"rendre",descende:"descendre",vide:"vider",remplisse:"remplir",finisse:"finir",choisisse:"choisir"};
+function cocoInf(t){ return String(t).replace(/^(\S+)/,w=>{ const l=w.toLowerCase(); if(COCO_CONJ[l]) return COCO_CONJ[l]; if(/(?:er|ir|re|oir)$/.test(l)) return w; if(/[^e]es$/.test(l)||/ies$/.test(l)) return w.slice(0,-1)+"r"; if(/e$/.test(l)&&l.length>3) return w+"r"; return w; }); }
+/* Phrases courantes sans verbe d'ajout : on les remet en forme */
+const COCO_INF=/^(?:\S+(?:er|ir)|faire|prendre|reprendre|mettre|remettre|[ée]crire|lire|dire|rendre|vendre|attendre|descendre|r[ée]pondre|inscrire|boire|voir|revoir|recevoir|aller|sortir|appeler|payer|r[ée]gler)$/i;
+const COCO_DATE=/\b(?:aujourd'hui|demain|apr[èe]s-demain|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche|ce soir|ce midi|ce matin|le \d{1,2}|\d{1,2}[\/.]\d{1,2}|\d{1,2}\s+(?:janv|f[ée]v|mars|avr|mai|juin|juil|ao[ûu]|sept|oct|nov|d[ée]c))/i;
+function cocoRewrite(raw){ let t=String(raw||"").replace(/[’]/g,"'").replace(/\s+/g," ").trim(); if(!t||/\?\s*$/.test(t)) return null;
+  const lead=/^(?:ajoute[rz]?|rajoute[rz]?|mets|met|note[rz]?)\s+/i; const core=t.replace(lead,"");
+  // Courses : « plus de lait », « on n'a plus de café », « il manque du beurre », « racheter des piles », « le lait est fini »
+  let m=core.match(/^(?:(?:on\s+)?n'(?:a|y\s+a)\s+plus\s+(?:de\s+|d')|il\s+n'y\s+a\s+plus\s+(?:de\s+|d')|y\s+a\s+plus\s+(?:de\s+|d')|plus\s+(?:de\s+|d')|il\s+(?:nous\s+|me\s+)?manque\s+|(?:il\s+)?faut\s+(?:racheter|reprendre)\s+|racheter\s+|reprendre\s+(?=(?:du|de la|des|de l')\s))(.+)$/i);
+  if(m&&m[1].split(/\s+/).length<=8&&!COCO_DATE.test(m[1])) return "Ajoute "+m[1]+" aux courses";
+  m=core.match(/^(?:(?:le|la|les|l')\s*)?(.{2,40}?)\s+(?:est|sont)\s+(?:fini|finie|finis|finies|termin[ée]e?s?|vide|vides|[ée]puis[ée]e?s?)$/i); if(m) return "Ajoute "+m[1]+" aux courses";
+  // Repas : « menu de ce soir : lasagnes », « ce soir : pizza », « on se fait une raclette demain soir »
+  const W="(ce soir|ce midi|ce matin|demain(?: soir| midi| matin)?|apr[èe]s-demain(?: soir| midi)?|(?:lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)(?: soir| midi)?)";
+  m=core.match(new RegExp("^(?:au\\s+)?menu\\s+(?:de\\s+|du\\s+|pour\\s+)?"+W+"\\s*[:,-]?\\s*(.+)$","i")); if(m) return "On mange "+m[2]+" "+m[1];
+  m=core.match(new RegExp("^"+W+"\\s*[:,-]\\s*(.+)$","i")); if(m&&!COCO_INF.test(norm(m[2].split(" ")[0]))) return "On mange "+m[2]+" "+m[1];
+  m=core.match(new RegExp("^(?:on\\s+se\\s+(?:fait|fera|prépare|prepare)|on\\s+(?:prépare|prepare|cuisine)|je\\s+(?:prépare|prepare|cuisine))\\s+(?:une?\\s+|des\\s+|du\\s+|de\\s+la\\s+|de\\s+l')?(.+?)\\s+(?:pour\\s+)?"+W+"$","i")); if(m) return "On mange "+m[1]+" "+m[2];
+  // Rendez-vous : « dentiste jeudi 15h », « réunion d'école le 12 à 18h30 »
+  const hasH=/\b\d{1,2}\s*h(?:\s*\d{2})?\b|\b\d{1,2}:\d{2}\b/i.test(core), w0=norm(core.split(" ")[0]||"");
+  if(hasH&&COCO_DATE.test(core)&&!/^(?:rdv|rendez)/i.test(core)&&(!COCO_INF.test(w0)||/^(?:diner|dejeuner|gouter|souper|apero)$/.test(w0))&&!/^(?:je|on|il|nous|tu|faut|pense|n'oublie|rappelle)/i.test(core)) return "Ajoute un rendez-vous "+core;
+  // Dépense : « 45 € essence », « resto 32,50€ »
+  if(/(\d+(?:[.,]\d{1,2})?)\s*(?:€|euros?)/i.test(core)&&core.split(/\s+/).length<=6&&!COCO_INF.test(w0)&&!COCO_DATE.test(core)&&!lead.test(t)) return "J'ai dépensé "+core;
+  // « Rappelle à Emma de … », « Dis à Emma de … »
+  m=core.match(/^(?:rappelle|dis|demande)\s+[àa]\s+(\S+)\s+(?:de\s+|d')(.+)$/i); if(m&&membres().some(x=>norm(x.nom||"")===norm(m[1]))) return "Ajoute à "+m[1]+": "+m[2];
+  return null; }
+function secCreatePlan(raw){ const rw=cocoRewrite(raw); if(rw){ const r=secCreatePlan0(rw); if(r) return r; } return secCreatePlan0(raw); }
+function secCreatePlan0(raw){
   const me=meId(); if(!me) return null;
   const txt=String(raw||"").trim(), q=" "+norm(txt).replace(/['’]/g," ").replace(/\s+/g," ")+" ";
   const verb=/^\s*(?:ajoute[rz]?|rajoute[rz]?|mets|met|note[rz]?|cr[ée]e[rz]?|programme[rz]?|planifie[rz]?|pr[ée]vois|rappelle[- ]moi(?:\s+(?:de\s+|d'))?|n'oublie pas(?:\s+(?:de\s+|d'))?|pense[rz]?\s+[àa]|il faut acheter|ach[eè]te[rz]?)\s+/i;
   const hasVerb=verb.test(txt), body=txt.replace(verb,"").trim().replace(/^(?:de\s+|d['’]\s*)/i,"");
   // Dépense
   const mm=txt.match(/(\d+(?:[.,]\d{1,2})?)\s*(?:€|euros?)/i);
-  if(mm&&/(depense|paye|achete|note|ajoute|coute)/.test(q)){ const cents=Math.round(parseFloat(mm[1].replace(",","."))*100); if(!(cents>0)) return null;
+  if(mm&&/(depense|paye|achete|note|ajoute|coute)/.test(q)&&!(COCO_INF.test(norm((hasVerb?body:txt).split(" ")[0]||""))&&COCO_DATE.test(txt))){ const cents=Math.round(parseFloat(mm[1].replace(",","."))*100); if(!(cents>0)) return null;
     let titre=cocoStrip(txt.replace(mm[0]," ").replace(/^\s*(?:j'ai\s+(?:d[ée]pens[ée]|pay[ée]|achet[ée])|note[rz]?|ajoute[rz]?)\s*/i,"").replace(/^(?:de |d'|pour |en |chez )/i,"").replace(/\s+(?:pour|de|d')\s*$/i,""))||"Dépense";
     const cat=/(course|leclerc|carrefour|auchan|lidl|super|marche)/.test(q)?"courses":/(essence|plein|carburant|peage|train|bus|uber)/.test(q)?"transport":/(resto|restaurant|cinema|sortie|bar)/.test(q)?"loisirs":/(veto|croquette|litiere)/.test(q)?"animaux":/(pharmacie|medecin|docteur)/.test(q)?"sante":/(loyer|edf|electricite|gaz|eau)/.test(q)?"logement":"autre";
     return {run:async()=>{ const ref=await budgetAdd(titre,cents,cat,true); return secA("C'est noté : « "+titre+" », "+money(cents)+", payé par toi, dans "+(BCAT[cat]||BCAT.autre).nom.toLowerCase()+".",[],[{l:"Voir le budget",ghost:true,run:cocoGo("budget")},cocoUndo("",()=>S.db.collection("depenses").doc(ref.id).delete(),"Dépense annulée.")]); }}; }
@@ -6520,7 +6555,7 @@ function secCreatePlan(raw){
       if(new Date(date+"T"+heure).getTime()<Date.now()) return secA("Ce moment est déjà passé : donne-moi une date et une heure à venir.",[],[{l:"Compléter le rendez-vous",run:openForm}]);
       if(fin<=heure) fin=null;
       const ref=await S.db.collection("rdv").add({titre,date,heure,heureFin:fin,lieu:null,pour:[me],par:me,le:Date.now()});
-      const dl=dueLabel(date); return secA("C'est noté : « "+titre+" » "+(dl===fmtDue(date)?"le "+dl:dl+" ("+fmtDue(date)+")")+" de "+heureTxt(heure)+(fin?" à "+heureTxt(fin):"")+". Je te le rappellerai la veille.",[],[{l:"Voir",ghost:true,run:cocoGo("accueil","#rdvWrap")},cocoUndo("",()=>S.db.collection("rdv").doc(ref.id).delete(),"Rendez-vous annulé.")]); }}; }
+      const dl=dueLabel(date); const cd=cocoDay(date); return secA("C'est noté : « "+titre+" » "+(cd.startsWith("le ")?cd:cd+" ("+fmtDue(date)+")")+" de "+heureTxt(heure)+(fin?" à "+heureTxt(fin):"")+". Je te le rappellerai la veille.",[],[{l:"Voir",ghost:true,run:cocoGo("accueil","#rdvWrap")},cocoUndo("",()=>S.db.collection("rdv").doc(ref.id).delete(),"Rendez-vous annulé.")]); }}; }
   // Repas
   if(/( on mange | au menu | repas | pour le diner | pour le dejeuner | petit dej| pour ce soir | pour le petit)/.test(q)&&(hasVerb||/ on mange /.test(q))){
     const slot=/(petit dej|petit-dej|matin|petit dejeuner)/.test(q)?"matin":/( midi|dejeuner)/.test(q)?"midi":"soir";
@@ -6529,7 +6564,7 @@ function secCreatePlan(raw){
     if(!plat) return null; if(date<iso(today())) return null;
     return {run:async()=>{ const id=date+"_"+slot; await S.db.collection("repas").doc(id).set({date,slot,plat,cuisine:null,vaisselle:null,par:me,le:Date.now()});
       const sl={matin:"le petit-déj",midi:"le midi",soir:"le soir"}[slot];
-      return secA("C'est noté : "+plat+" "+(date===iso(today())?{matin:"ce matin",midi:"ce midi",soir:"ce soir"}[slot]:"pour "+sl+" "+dueLabel(date))+".",[],[{l:"Voir les repas",ghost:true,run:cocoGo("repas")},cocoUndo("",()=>S.db.collection("repas").doc(id).delete(),"Repas retiré.")]); }}; }
+      return secA("C'est noté : "+plat+" "+(date===iso(today())?{matin:"ce matin",midi:"ce midi",soir:"ce soir"}[slot]:"pour "+cocoDay(date).replace(/^le /,"le ")+" "+{matin:"au petit-déj",midi:"midi",soir:"soir"}[slot])+".",[],[{l:"Voir les repas",ghost:true,run:cocoGo("repas")},cocoUndo("",()=>S.db.collection("repas").doc(id).delete(),"Repas retiré.")]); }}; }
   // Tâche
   const tp=cocoTask(txt,hasVerb,body);
   if(tp){
