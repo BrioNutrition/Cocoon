@@ -36,7 +36,7 @@ html{background:#F6F5FB;color-scheme:light dark}@media (prefers-color-scheme: da
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 00:23";</script>
+<script>window.COCOON_BUILD="16/10 00:41";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2687,7 +2687,7 @@ div.pf-r{cursor:default}
 .wg-sheet .pp-in{gap:10px}
 .wg,.wgs-row{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .wg-sec{display:flex;align-items:baseline;justify-content:space-between}.wg-sec small{font-size:11px;font-weight:600;letter-spacing:0;text-transform:none;opacity:.8}
-.sort-ph{opacity:.25;transform:scale(.96);transition:opacity .15s,transform .15s}
+.sort-ph{opacity:0!important;animation:none!important}
 .sort-ghost{transform:scale(1.04) rotate(-1.2deg);box-shadow:0 18px 40px rgba(0,0,0,.35)!important;transition:none!important;opacity:.97}
 .wg-grid.sorting .wg:not(.sort-ph){animation:wgJig .28s ease-in-out infinite alternate}
 @keyframes wgJig{from{transform:rotate(-.6deg)}to{transform:rotate(.6deg)}}
@@ -4960,7 +4960,7 @@ const WG={
   anniv:{t:"Anniversaires",ic:"🎂",c:"#FFC94A",go:null,d:"le prochain"}};
 const WG_DEF=[{k:"repas",l:0},{k:"semaine",l:0},{k:"budget",l:1}];
 function wgList(){ let w=(S.prefs||{}).widgets; if(!Array.isArray(w)){ try{ w=JSON.parse(localStorage.getItem("cocoon.widgets")||"null"); }catch(_){ w=null; } } if(!Array.isArray(w)) w=WG_DEF; return w.filter(x=>x&&WG[x.k]); }
-function wgSave(list){ S.prefs=Object.assign({},S.prefs||{},{widgets:list}); try{ localStorage.setItem("cocoon.widgets",JSON.stringify(list)); }catch(_){} if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); renderWidgets(); }
+function wgSave(list,quiet){ S.prefs=Object.assign({},S.prefs||{},{widgets:list}); try{ localStorage.setItem("cocoon.widgets",JSON.stringify(list)); }catch(_){} if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); if(!quiet) renderWidgets(); }
 function wgData(k,large){ const t0=iso(today()), me=meId();
   if(k==="repas"){ const h=new Date().getHours(), sl=repasSlots(); const nx=[]; for(let d=0;d<3&&nx.length<2;d++){ const dt=iso(new Date(today().getFullYear(),today().getMonth(),today().getDate()+d)); for(const x of ["matin","midi","soir"]){ if(!sl.includes(x)) continue; if(d===0&&((x==="matin"&&h>=10)||(x==="midi"&&h>=14)||(x==="soir"&&h>=21))) continue; nx.push([dt,x,repasOf(dt,x)]); if(nx.length>=2) break; } }
     const lbl=([dt,x])=>(dt===t0?(x==="soir"?"ce soir":x==="midi"?"ce midi":"ce matin"):(daysTo(dt)===1?"demain "+(x==="soir"?"soir":x==="midi"?"midi":"matin"):dueLabel(dt)+" "+x));
@@ -4971,7 +4971,7 @@ function wgData(k,large){ const t0=iso(today()), me=meId();
     const pct=prev?Math.round((E.tot-prev)/prev*100):null; let nxt=null; for(const a of (S.abos||[])){ if(a.actif===false) continue; const n=subNext(a); if(n&&daysTo(n)>=0&&(!nxt||n<nxt[1])) nxt=[a,n]; }
     return {h:"Budget · "+E.nm,big:eurR(E.tot),trend:pct,small:large&&nxt?"prochain : "+nxt[0].nom+" · "+dueLabel(nxt[1]):(pct==null?"ce mois-ci":(pct>0?"+":"")+pct+" % vs mois dernier"),spark:true}; }
   if(k==="agenda"){ const r=(S.rdvs||[]).filter(r=>!r.fait&&r.date&&r.date>=t0).sort((a,b)=>(a.date+(a.heure||""))<(b.date+(b.heure||""))?-1:1); const x=r[0];
-    return x?{h:"Prochain rendez-vous",big:x.titre,small:(x.date===t0?"aujourd'hui":dueLabel(x.date))+(x.heure?" · "+heureTxt(x.heure):"")+(x.pour&&x.pour.length===1&&membre(x.pour[0])?" · "+(x.pour[0]===me?"toi":membre(x.pour[0]).nom):"")+(large&&r[1]?" — puis "+r[1].titre:"")}:{h:"Agenda",big:"Aucun rendez-vous",small:"rien de prévu"}; }
+    return x?{h:"Rendez-vous",big:x.titre,small:(x.date===t0?"aujourd'hui":dueLabel(x.date))+(x.heure?" · "+heureTxt(x.heure):"")+(x.pour&&x.pour.length===1&&membre(x.pour[0])?" · "+(x.pour[0]===me?"toi":membre(x.pour[0]).nom):"")+(large&&r[1]?" — puis "+r[1].titre:"")}:{h:"Agenda",big:"Aucun rendez-vous",small:"rien de prévu"}; }
   if(k==="poubelles"){ let best=null; for(const b of (S.bins||[])){ const nx=binNext(b); if(nx&&(!best||nx.sortie<best[1].sortie)) best=[b,nx]; }
     if(!best) return {h:"Poubelles",big:"Aucune poubelle",small:"ajoute tes jours de collecte"}; const [b,nx]=best;
     return {h:"Poubelles",big:b.nom,dot:b.c||"#59606B",small:"à sortir "+binWhen(b,nx.sortie)+" · "+binWho(b).label}; }
@@ -5012,7 +5012,12 @@ function sortable(box,sel,done,o){ o=o||{}; const lp=o.lp==null?380:o.lp; let it
     if(!active){ if(Math.hypot(p.clientX-sx,p.clientY-sy)>8){ clearTimeout(timer); it=null; } return; }
     if(e.cancelable) e.preventDefault(); e.stopPropagation(); lastP={clientX:p.clientX,clientY:p.clientY}; if(!raf) raf=requestAnimationFrame(step); };
   const end=e=>{ clearTimeout(timer); removeEventListener("mousemove",move); removeEventListener("mouseup",end);
-    if(active){ if(e&&e.stopPropagation) e.stopPropagation(); { const g=ghost, r=it.getBoundingClientRect(); g.style.transition="left .2s ease,top .2s ease,transform .2s ease,opacity .2s ease"; g.style.left=r.left+"px"; g.style.top=r.top+"px"; g.style.transform="none"; setTimeout(()=>g.remove(),200); } it.classList.remove("sort-ph"); box.classList.remove("sorting"); box._sorted=Date.now(); const keys=[...box.querySelectorAll(sel)].map(x=>x.dataset.k); active=false; it=null; ghost=null; done(keys); return; }
+    if(active){ if(e&&e.stopPropagation) e.stopPropagation(); haptic(10);
+      const g=ghost, ph=it, r=ph.getBoundingClientRect(); box._sorted=Date.now(); active=false; it=null; ghost=null;
+      ph.getAnimations().forEach(a=>{ try{ a.finish(); }catch(_){} });
+      g.style.transition="left .18s cubic-bezier(.2,.8,.2,1),top .18s cubic-bezier(.2,.8,.2,1),transform .18s ease"; g.style.left=r.left+"px"; g.style.top=r.top+"px"; g.style.transform="none";
+      setTimeout(()=>{ ph.classList.remove("sort-ph"); box.classList.remove("sorting"); requestAnimationFrame(()=>{ g.remove(); done([...box.querySelectorAll(sel)].map(x=>x.dataset.k)); }); },190);
+      return; }
     it=null; };
   box.addEventListener("touchstart",start,{passive:true}); box.addEventListener("touchmove",move,{passive:false}); box.addEventListener("touchend",end); box.addEventListener("touchcancel",end);
   box.addEventListener("mousedown",start);
@@ -5028,7 +5033,7 @@ function renderWidgets(){ const box=$("accBudget"); if(!box) return; if(box.quer
     if(D.ring!=null){ const r=el("span",{class:"wg-ring",style:"--p:"+D.ring+"%"},el("b",{text:D.ring+"%"})); b.append(r); b.classList.add("has-ring"); }
     if(D.spark&&L){ const sp=el("span",{class:"wg-spark","aria-hidden":"true"}); sp.innerHTML=budgetSpark(); b.append(sp); }
     g.append(b); }
-  sortable(g,".wg",keys=>{ const cur=wgList(); wgSave(keys.map(k=>cur.find(x=>x.k===k)).filter(Boolean)); });
+  sortable(g,".wg",keys=>{ const cur=wgList(); wgSave(keys.map(k=>cur.find(x=>x.k===k)).filter(Boolean),true); });
   const ed=el("button",{type:"button",class:"wg-edit",onclick:openWidgetSheet},el("span",{"aria-hidden":"true",text:"✎"}),wgList().length?"Modifier l'accueil":"Ajouter des raccourcis");
   box.append(el("div",{class:"wg-sec"},el("span",{text:"Mes raccourcis"}),""),g,ed); }
 function openWidgetSheet(){ const U=upSheet("wgPage","Mes raccourcis"), sheet=U.sheet; sheet.classList.add("wg-sheet"); const inn=el("div",{class:"pp-in"}); sheet.append(inn);
