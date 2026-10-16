@@ -135,15 +135,30 @@ function buildEvening({ shared, mine, moi, today }) {
   }
   return { rdv, bins };
 }
+// Événements à préparer (anniv, travaux, vacances…) : à J-7 et la veille, avec ce qu'il reste à faire
+function buildEvents({ evs, steps, today }) {
+  const out = [], j1 = addDays(today, 1), j7 = addDays(today, 7);
+  for (const r of evs || []) {
+    const e = r.data || {}, t = String(e.titre || "").trim() || "Événement"; if (!e.debut) continue;
+    if (e.debut !== j1 && e.debut !== j7) continue;
+    const todo = (steps || []).filter((x) => x.ev === r.id && !x.fait), late = todo.filter((x) => x.date && x.date < today).length;
+    const names = todo.slice(0, 2).map((x) => x.t).filter(Boolean);
+    const rest = todo.length ? "reste " + todo.length + " étape" + (todo.length > 1 ? "s" : "") + (names.length ? " (" + names.join(", ") + (todo.length > 2 ? "…" : "") + ")" : "") + (late ? " dont " + late + " en retard" : "") : "tout est prêt ✓";
+    out.push({ j: e.debut === j1 ? 1 : 7, line: "🎉 " + (e.debut === j1 ? "Demain" : "Dans 7 jours") + " · " + t + " : " + rest });
+  }
+  return out;
+}
 function eveningPayload(ev, P) {
-  const rdv = P.rdv === false ? [] : ev.rdv, bins = P.poubelles === false ? [] : ev.bins, lines = [];
+  const rdv = P.rdv === false ? [] : ev.rdv, bins = P.poubelles === false ? [] : ev.bins, evs = P.evenements === false ? [] : (ev.evs || []), lines = [];
+  for (const e of evs.slice().sort((a, b) => a.j - b.j).slice(0, 3)) lines.push(e.line);
   for (const b of bins.slice().sort((x, y) => (x.quand === "ce soir" ? 0 : 1) - (y.quand === "ce soir" ? 0 : 1))) lines.push("🗑 " + (b.quand === "ce soir" ? "Ce soir" : "Demain matin") + " : sortir " + b.nm + (b.tour ? " (c'est ton tour)" : ""));
   for (const r of rdv.slice(0, 4)) lines.push("📅 Demain · " + r);
   if (!lines.length) return null;
-  const title = rdv.length && bins.length ? "🌙 Pour ce soir et demain" : rdv.length ? (rdv.length > 1 ? "📅 " + rdv.length + " rendez-vous demain" : "📅 Rendez-vous demain") : bins.length > 1 ? "🗑 Poubelles à sortir" : "🗑 Poubelle à sortir";
+  if (evs.length && !rdv.length && !bins.length) return { title: evs.some((e) => e.j === 1) ? "🎉 C'est demain !" : "🎉 Un événement approche", body: lines.join("\n"), url: "./#agenda", tag: "soir" };
+  const title = evs.length ? "🌙 Pour demain et la suite" : rdv.length && bins.length ? "🌙 Pour ce soir et demain" : rdv.length ? (rdv.length > 1 ? "📅 " + rdv.length + " rendez-vous demain" : "📅 Rendez-vous demain") : bins.length > 1 ? "🗑 Poubelles à sortir" : "🗑 Poubelle à sortir";
   return { title, body: lines.join("\n"), url: "./", tag: "soir" };
 }
-const PREFS0 = { matin: true, heure: "08:00", courses: true, taches: true, nuit: true, rdv: true, poubelles: true };
+const PREFS0 = { matin: true, heure: "08:00", courses: true, taches: true, nuit: true, rdv: true, poubelles: true, evenements: true };
 const prefsOf = (p) => Object.assign({}, PREFS0, p || {});
 const hm = (s) => { const m = /^(\d{1,2}):(\d{2})$/.exec(s || ""); return m ? +m[1] * 60 + +m[2] : 480; };
 // ---------- FIN CORE ----------
@@ -171,6 +186,16 @@ async function foyerDocs(foyer, path) {
   const { data } = await admin.from("cocoon_docs").select("id,data").eq("foyer", foyer).eq("path", path);
   return data || [];
 }
+// Les événements du foyer et leurs étapes (tâches, achats, rendez-vous reliés par « ev »)
+async function eventsOf(foyer) {
+  const evs = await foyerDocs(foyer, "evenements"); if (!evs.length) return { evs: [], steps: [] };
+  const [t, c, r] = await Promise.all([foyerDocs(foyer, "taches"), foyerDocs(foyer, "courses"), foyerDocs(foyer, "rdv")]);
+  const steps = [];
+  for (const x of t) if (x.data && x.data.ev) steps.push({ ev: x.data.ev, t: x.data.titre, date: x.data.echeance, fait: !!x.data.fait });
+  for (const x of c) if (x.data && x.data.ev) steps.push({ ev: x.data.ev, t: x.data.nom, date: x.data.evDate, fait: !!x.data.fait });
+  for (const x of r) if (x.data && x.data.ev) steps.push({ ev: x.data.ev, t: x.data.titre, date: x.data.date, fait: !!x.data.fait });
+  return { evs, steps };
+}
 async function membresOf(foyer) {
   const rows = await foyerDocs(foyer, "membres"), byUid = {}, noms = {};
   for (const r of rows) { const d = r.data || {}; noms[r.id] = d.nom || ""; if (d.uid) byUid[d.uid] = r.id; }
@@ -191,7 +216,7 @@ async function tick() {
   for (const k of Object.keys(users)) {
     const [uid, foyer] = k.split("|"), list = users[k], P = prefs[uid] || prefsOf(null);
     const L = localNow(list[0].tz, now), H = hm(P.heure);
-    const soir = (P.rdv || P.poubelles) && L.min >= 19 * 60 && L.min < 20 * 60;
+    const soir = (P.rdv || P.poubelles || P.evenements) && L.min >= 19 * 60 && L.min < 20 * 60;
     if (soir && (await once(uid, "soir", L.date))) {
       if (!cache[foyer]) {
         const [cal, rep, mem] = await Promise.all([
@@ -201,7 +226,10 @@ async function tick() {
       }
       const C = cache[foyer], shared = C.cal.find((r) => r.owner === "foyer"), mine = C.cal.find((r) => r.owner === uid);
       const moi = (mine && mine.moi) || C.mem.byUid[uid] || null;
-      const pl = eveningPayload(buildEvening({ shared: shared && shared.events, mine: mine && mine.events, moi, today: L.date }), P);
+      if (!C.ev) C.ev = await eventsOf(foyer);
+      const evn = buildEvening({ shared: shared && shared.events, mine: mine && mine.events, moi, today: L.date });
+      evn.evs = buildEvents({ evs: C.ev.evs, steps: C.ev.steps, today: L.date });
+      const pl = eveningPayload(evn, P);
       if (pl) sent += await deliver(list, pl);
     }
     if (!P.matin) continue;
@@ -262,7 +290,8 @@ async function event(me, body) {
       dg.hasItems ? digestPayload({ hasItems: false, lines: [] }, true) : null,
       { title: "🛒 " + autre + " part faire les courses", body: "Ajoute vite ce qui manque : ça apparaît en direct sur son téléphone.", url: "./#courses", tag: "courses" },
       { title: "📌 " + autre + " t'a confié une tâche", body: "Sortir les poubelles · aujourd'hui", url: "./", tag: "tache" },
-      eveningPayload(buildEvening({ shared: sh && sh.events, mine: mi && mi.events, moi, today: L.date }), prefsOf(null)) || { title: "🌙 Pour ce soir et demain", body: "🗑 Ce soir : sortir Recyclage (c'est ton tour)\n📅 Demain · 10h30 · Dentiste", url: "./", tag: "soir" }
+      eveningPayload(buildEvening({ shared: sh && sh.events, mine: mi && mi.events, moi, today: L.date }), prefsOf(null)) || { title: "🌙 Pour ce soir et demain", body: "🗑 Ce soir : sortir Recyclage (c'est ton tour)\n📅 Demain · 10h30 · Dentiste", url: "./", tag: "soir" },
+      { title: "🎉 C'est demain !", body: "🎉 Demain · Anniv de Patoune : reste 2 étapes (Récupérer le gâteau, Bougies)", url: "./#agenda", tag: "soir" }
     ].filter(Boolean);
     let n = 0;
     for (let i = 0; i < list.length; i++) {

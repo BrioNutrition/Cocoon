@@ -155,7 +155,8 @@
             finally { b.disabled = false; }
           });
           bindGo();
-          setTimeout(function () { var i = f.email; if (i) i.focus(); }, 60);
+          /* focus auto sur l'e-mail, sauf si on a déjà commencé à remplir (sinon le texte tapé part dans le mauvais champ) */
+          setTimeout(function () { var i = f.email; if (i && !i.value && !f.pw.value && !f.contains(document.activeElement)) i.focus(); }, 60);
           return;
         }
         if (mode === "forgot") {

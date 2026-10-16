@@ -137,7 +137,7 @@ ACCOUNT_JS = r"""
   if(!window.cocoonHost||!cocoonHost.push) return;
   cocoonHost.ready.then(function(){
     var box=document.getElementById("cxNotif"); if(!box) return;
-    var P=cocoonHost.push, D={matin:true,heure:"08:00",courses:true,taches:true,nuit:true,rdv:true,poubelles:true}, prefs=Object.assign({},D), on=false, busy=false, msg="", mt=0;
+    var P=cocoonHost.push, D={matin:true,heure:"08:00",courses:true,taches:true,nuit:true,rdv:true,poubelles:true,evenements:true}, prefs=Object.assign({},D), on=false, busy=false, msg="", mt=0;
     function esc(t){ return String(t||"").replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
     function sw(k,label,sub){ return '<label class="cx-sw"><span><b>'+label+'</b><small>'+sub+'</small></span><input type="checkbox" data-k="'+k+'"'+(prefs[k]?' checked':'')+'><i aria-hidden="true"></i></label>'; }
     function say(t){ msg=t; draw(); clearTimeout(mt); mt=setTimeout(function(){ msg=""; draw(); },3500); }
@@ -154,6 +154,7 @@ ACCOUNT_JS = r"""
         h+=sw("matin","Rappel du matin","Ta journée en une seule notification. S\'il n\'y a rien, un petit rappel pour penser à ajouter tes tâches (un jour sur deux au plus).");
         if(prefs.matin) h+='<label class="cx-row2"><span>Heure du rappel</span><select data-k="heure">'+["07:30","08:00","08:30","09:00","09:30"].map(function(v){ return '<option value="'+v+'"'+(prefs.heure===v?' selected':'')+'>'+v.replace(/^0/,"").replace(":","h")+'</option>'; }).join("")+'</select></label>';
         h+=sw("rdv","Rendez-vous de demain","La veille vers 19 h, pour ne rien oublier.");
+        h+=sw("evenements","Événements à préparer","Vers 19 h, 7 jours avant et la veille, avec ce qu\'il reste à faire.");
         h+=sw("poubelles","Poubelles à sortir","Vers 19 h, seulement si c\'est ton tour ou ta poubelle.");
         h+=sw("courses","Départ aux courses","Quand quelqu\'un part au magasin, pour ajouter ce qui manque (au plus une fois toutes les 3 h).");
         h+=sw("taches","Tâche qu\'on te confie","Seulement si elle est pour aujourd\'hui ou demain.");

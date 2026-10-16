@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 16:34";</script>
+<script>window.COCOON_BUILD="16/10 16:53";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3038,8 +3038,8 @@ button.ev-it{cursor:pointer}
 
   <!-- FOYER -->
   <section class="view" data-view="foyer" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Tâches</b><span class="hb-act"></span></div>
-    <form class="c-add qa-add" id="tQa" autocomplete="off"><input type="text" id="tQaIn" maxlength="120" placeholder="Ajouter une tâche…" aria-label="Nouvelle tâche pour le foyer" enterkeyhint="done"><button class="btn" type="submit">Ajouter</button></form>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Tâches</b><span class="hb-act"><button type="button" class="hub-add" data-add="foyer" aria-label="Ajouter une tâche"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
+    <form class="c-add qa-add" id="tQa" autocomplete="off" hidden><input type="text" id="tQaIn" maxlength="120" placeholder="Ajouter une tâche…" aria-label="Nouvelle tâche pour le foyer" enterkeyhint="done"><button class="btn" type="submit">Ajouter</button></form>
     <div class="tk-seg" id="whoFilter" role="group" aria-label="Filtrer par personne"></div>
     <div class="tk-cats" id="tiles" role="group" aria-label="Filtrer par catégorie"></div>
     <div class="list fridge" id="openList"></div>
@@ -6206,13 +6206,15 @@ function npDismiss(r){ const h=npHidden(); h.add(npKey(r)); const arr=[...h].sli
 function npItems(){ const h=npHidden(), me=meId();
   const ms=(S.mercis||[]).filter(m=>m.a===me&&m.de!==me&&Date.now()-(m.le||0)<14*864e5).map(m=>({kind:"Merci",date:iso(new Date(m.le)),titre:membre(m.de).nom+" te dit merci pour « "+(m.titre||"une tâche")+" »",cat:"maison",who:null,ref:{id:m.id},merci:true}));
   const ss=cSession(), lv=ss&&ss.par!==me?[{kind:"Courses",date:iso(today()),titre:membre(ss.par).nom+" fait les courses en ce moment",cat:"courses",who:null,ref:{id:"live"+ss.depuis},live:true}]:[];
-  return lv.concat(ms).concat(reminders().filter(r=>daysTo(r.date)<=7)).filter(r=>!h.has(npKey(r))); }
+  const evn=[]; try{ for(const ev of evAll()){ const n=daysTo(ev.debut); if(n<0||n>7) continue; const st=n===0?"j0":n===1?"j1":"j7"; const I=evItems(ev), todo=I.t.concat(I.a,I.r).filter(x=>!x.fait).length;
+    evn.push({kind:"Événement",date:ev.debut,titre:(ev.titre||evT(ev).n)+(n===0?" : c'est aujourd'hui":n===1?" : c'est demain":" dans "+n+" jours")+(todo?" · reste "+todo+" étape"+(todo>1?"s":""):" · tout est prêt"),cat:"loisirs",who:null,ref:{id:ev.id+"@"+st,ev:ev.id},evn:true,emo:evT(ev).e}); } }catch(_){}
+  return lv.concat(ms).concat(evn).concat(reminders().filter(r=>daysTo(r.date)<=7)).filter(r=>!h.has(npKey(r))); }
 function npUnseen(){ const s=npSeen(); return npItems().filter(r=>!s.has(npKey(r))).length; }
 function npMarkSeen(){ const s=npSeen(); for(const r of npItems()) s.add(npKey(r)); try{ localStorage.setItem("cocoon.seen",JSON.stringify([...s].slice(-300))); }catch(_){} renderBadges(); }
-function npIcon(r){ if(r.live){ const i=el("span",{class:"np-ic",style:"--bc:#7FD39A;font-size:19px"}); i.textContent="🛒"; return i; } if(r.merci){ const i=el("span",{class:"np-ic",style:"--bc:#FFB347;font-size:20px"}); i.textContent="🤝"; return i; } const k={Document:"documents",Maison:"entretien","Véhicule":"voiture","Prélèvement":"abonnement",Anniversaire:"loisirs",Poubelles:"poubelle","Rendez-vous":"rdv"}[r.kind]||(r.cat==="voitures"?"voiture":r.cat);
+function npIcon(r){ if(r.evn){ const i=el("span",{class:"np-ic",style:"--bc:#FF9C80;font-size:19px"}); i.textContent=r.emo||"🎉"; return i; } if(r.live){ const i=el("span",{class:"np-ic",style:"--bc:#7FD39A;font-size:19px"}); i.textContent="🛒"; return i; } if(r.merci){ const i=el("span",{class:"np-ic",style:"--bc:#FFB347;font-size:20px"}); i.textContent="🤝"; return i; } const k={Document:"documents",Maison:"entretien","Véhicule":"voiture","Prélèvement":"abonnement",Anniversaire:"loisirs",Poubelles:"poubelle","Rendez-vous":"rdv"}[r.kind]||(r.cat==="voitures"?"voiture":r.cat);
   const c=r.kind==="Document"?catOf(r.ref.cat).c:(CAT[r.cat]||CAT.maison).c;
   const i=el("span",{class:"np-ic",style:"--bc:"+c}); i.innerHTML=GI(GLY[k]?k:"autre"); return i; }
-function npGo(r){ closeNotifs(); const x=r.ref; if(r.live){ setTab("courses"); renderHeader(); window.scrollTo({top:0,behavior:"instant"}); return; } if(r.merci) return;
+function npGo(r){ closeNotifs(); const x=r.ref; if(r.evn){ setTimeout(()=>openEvent(x.ev),120); return; } if(r.live){ setTab("courses"); renderHeader(); window.scrollTo({top:0,behavior:"instant"}); return; } if(r.merci) return;
   if(r.kind==="Perso"||r.kind==="Foyer") return goTask(x);
   if(r.kind==="Document"){ S.docWho=null; S.docCat=catOf(x.cat||"documents").id||"documents"; if($("papQ")) $("papQ").value=""; return goDoc(x); }
   if(r.kind==="Anniversaire") return openProfile(x.id);
@@ -7713,6 +7715,7 @@ async function evCreate(base,steps){ const me=meId(), now=Date.now(), t0=iso(tod
   let n=0; const jobs=[];
   for(const [k,t,off] of steps){ let dt=evTplDate(base,off); if(dt<t0) dt=t0; jobs.push(evAddItem(id,k,t,dt,n++)); }
   await Promise.all(jobs);
+  try{ const W=wgList(); if(!W.some(x=>x.k==="evenement")) wgSave(W.concat([{k:"evenement",l:1}]),true); }catch(_){}
   toast("« "+esc(base.titre)+" » est prêt"+(steps.length?" : "+steps.length+" étape"+(steps.length>1?"s":"")+" sur la frise.":"."));
   evGo({v:"ev",id,tab:"frise"}); }
 function evAddItem(id,k,titre,date,n,heure){ const me=meId(), now=Date.now()+(n||0), ev=evById(id);
@@ -8240,7 +8243,8 @@ function bilanAuto(){
 window.TOUR_ALL=[
   {sel:"#members",t:"Ton foyer",d:"Chaque membre a son anneau : il se remplit en vert avec les tâches faites cette semaine. Touche un avatar pour voir sa journée et sa fiche, ou « Ajouter » pour inviter quelqu'un."},
   {sel:"#dayCard",alt:"#rdvWrap",t:"Ta journée",d:"La semaine en un coup d'œil, puis ta journée : tâches à cocher, rendez-vous, repas, poubelles. Touche un jour pour le voir."},
-  {sel:'.tab[data-tab="hub"]',t:"Le Foyer",d:"Toutes les rubriques en tuiles : tâches, courses, repas, agenda, budget, papiers et maison. Dans chacune, « + Ajouter » est en haut."},
+  {sel:'.tab[data-tab="hub"]',t:"Le Foyer",d:"Toutes les rubriques en tuiles : tâches, courses, repas, agenda, budget, papiers et maison. Dans chacune, le bouton + est en haut à droite."},
+  {sel:"#accBudget",opt:true,t:"Les événements",d:"Un anniv, des travaux, des vacances ? Dans l'Agenda, touche + puis « Un événement à préparer » : une frise se remplit avec ce qu'il faut faire, acheter et prévoir, et son compte à rebours s'affiche ici."},
   {sel:"#cxBtn",t:"Voici %N",d:"Ton assistant a son propre onglet. Écris comme tu parles : « pain, lait », « dentiste jeudi 15h », « il faut payer la cantine vendredi ». %N range tout au bon endroit."},
   {sel:'.tab[data-tab="moi"]',t:"Ton espace",d:"Ta fiche (pointure, médecin, papiers…), tes tâches perso, et les Réglages : apparence, notifications, compte."},
   {sel:"#fySwBtn",opt:true,t:"Plusieurs foyers",d:"Touche le nom de ton foyer pour passer d'un foyer à l'autre, ou en créer un nouveau."},
@@ -8676,7 +8680,7 @@ bootCheck();
   if(!window.cocoonHost||!cocoonHost.push) return;
   cocoonHost.ready.then(function(){
     var box=document.getElementById("cxNotif"); if(!box) return;
-    var P=cocoonHost.push, D={matin:true,heure:"08:00",courses:true,taches:true,nuit:true,rdv:true,poubelles:true}, prefs=Object.assign({},D), on=false, busy=false, msg="", mt=0;
+    var P=cocoonHost.push, D={matin:true,heure:"08:00",courses:true,taches:true,nuit:true,rdv:true,poubelles:true,evenements:true}, prefs=Object.assign({},D), on=false, busy=false, msg="", mt=0;
     function esc(t){ return String(t||"").replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
     function sw(k,label,sub){ return '<label class="cx-sw"><span><b>'+label+'</b><small>'+sub+'</small></span><input type="checkbox" data-k="'+k+'"'+(prefs[k]?' checked':'')+'><i aria-hidden="true"></i></label>'; }
     function say(t){ msg=t; draw(); clearTimeout(mt); mt=setTimeout(function(){ msg=""; draw(); },3500); }
@@ -8693,6 +8697,7 @@ bootCheck();
         h+=sw("matin","Rappel du matin","Ta journée en une seule notification. S\'il n\'y a rien, un petit rappel pour penser à ajouter tes tâches (un jour sur deux au plus).");
         if(prefs.matin) h+='<label class="cx-row2"><span>Heure du rappel</span><select data-k="heure">'+["07:30","08:00","08:30","09:00","09:30"].map(function(v){ return '<option value="'+v+'"'+(prefs.heure===v?' selected':'')+'>'+v.replace(/^0/,"").replace(":","h")+'</option>'; }).join("")+'</select></label>';
         h+=sw("rdv","Rendez-vous de demain","La veille vers 19 h, pour ne rien oublier.");
+        h+=sw("evenements","Événements à préparer","Vers 19 h, 7 jours avant et la veille, avec ce qu\'il reste à faire.");
         h+=sw("poubelles","Poubelles à sortir","Vers 19 h, seulement si c\'est ton tour ou ta poubelle.");
         h+=sw("courses","Départ aux courses","Quand quelqu\'un part au magasin, pour ajouter ce qui manque (au plus une fois toutes les 3 h).");
         h+=sw("taches","Tâche qu\'on te confie","Seulement si elle est pour aujourd\'hui ou demain.");
