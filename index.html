@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 10:23";</script>
+<script>window.COCOON_BUILD="16/10 10:39";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2732,6 +2732,12 @@ html:has(#boot),html:has(#boot) body{background:#13121C!important}
 #fPreview .pw-edit,#fPreview .pw-add{display:none}
 .bd-doc.bd-flash{animation:bdFlash 1.8s ease}
 @keyframes bdFlash{0%,35%{box-shadow:0 0 0 3px #FFC94A,0 8px 24px color-mix(in srgb,#FFC94A 35%,transparent)}100%{box-shadow:0 0 0 0 transparent}}
+.fy-sw{width:22px!important;height:22px!important;margin-left:2px!important;background:none!important;border-radius:0!important;color:var(--muted)!important;transform:translateY(-4px)!important}
+.fy-sw svg{width:16px!important;height:16px!important}
+#homeTitle.fy-tap{cursor:pointer;-webkit-tap-highlight-color:transparent}
+#homeTitle.fy-tap:active{opacity:.75}
+/* halo du papier : s'éteint jusqu'à l'ombre normale, sans saut */
+@keyframes bdFlash{0%,35%{box-shadow:0 0 0 3px #FFC94A,0 8px 24px color-mix(in srgb,#FFC94A 35%,transparent),0 2px 0 var(--shadow)}100%{box-shadow:0 0 0 0 color-mix(in srgb,#FFC94A 0%,transparent),0 8px 24px transparent,0 2px 0 var(--shadow)}}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -3321,7 +3327,8 @@ function renderHeader(){
   $("foyerName").textContent=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
   { const ht=$("homeTitle"); ht.innerHTML=""; const fam=(S.foyerNom||"").trim().replace(/^(la famille|famille|les)\s+/i,"");
     if(fam){ ht.append("Chez les\u00A0",el("span",{class:"fam",text:fam})); } else ht.append("Chez toi,",el("br"),"dans ton cocon");
-    if(meId()&&!S.readOnly){ const fb=el("button",{type:"button",class:"fy-sw",id:"fySwBtn","aria-label":"Changer de foyer ou en créer un","aria-haspopup":"menu","aria-expanded":"false",onclick:e=>{ e.stopPropagation(); openFoyerMenu(fb); }}); fb.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg>'; ht.append(fb); } }
+    if(meId()&&!S.readOnly){ const fb=el("button",{type:"button",class:"fy-sw",id:"fySwBtn","aria-label":"Changer de foyer ou en créer un","aria-haspopup":"menu","aria-expanded":"false",onclick:e=>{ e.stopPropagation(); openFoyerMenu(fb); }}); fb.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg>'; ht.append(fb);
+      ht.classList.add("fy-tap"); ht.onclick=e=>{ if(e.target.closest(".fy-sw")) return; e.stopPropagation(); openFoyerMenu(fb); }; } else { ht.classList.remove("fy-tap"); ht.onclick=null; } }
   const me=meId(), box=$("members"); box.innerHTML="";
   if(isAdmin()&&!S.readOnly){ const r=el("span",{class:"ring"}); r.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
     S._addStory=el("button",{type:"button",class:"story add","aria-label":"Ajouter un membre",onclick:openInvite},r,el("span",{class:"sn",text:"Ajouter"})); } else S._addStory=null;
@@ -5912,7 +5919,7 @@ async function coconTick(){ const me=meId(); if(!S.db||!me) return;
 function cocRing(st,size){ const w=size>40?6:3.6, r=size/2-w/2-.5, c=2*Math.PI*r, off=c*(1-st.prog), h=size/2;
   return '<svg viewBox="0 0 '+size+' '+size+'" width="'+size+'" height="'+size+'" aria-hidden="true"><circle cx="'+h+'" cy="'+h+'" r="'+r+'" fill="none" stroke="var(--coc-track)" stroke-width="'+w+'"/><circle cx="'+h+'" cy="'+h+'" r="'+r+'" fill="none" stroke="var(--ink)" stroke-width="'+w+'" stroke-linecap="round" stroke-dasharray="'+c.toFixed(2)+'" stroke-dashoffset="'+off.toFixed(2)+'" transform="rotate(-90 '+h+' '+h+')"/></svg>'; }
 function renderCocon(){
-  const b=$("cocBtn"); if(!b) return; if(!meId()){ b.hidden=true; return; } b.hidden=false;
+  const b=$("cocBtn"); if(!b) return; b.hidden=true; try{ closeCoc(); }catch(_){} return; /* système de niveaux retiré */
   const st=cocStats();
   b.innerHTML=""; b.setAttribute("aria-label","Niveau du foyer : "+(st.lv+1)+", "+st.name);
   const lvl=el("span",{class:"coc-lv"}); lvl.innerHTML=cocRing(st,26); lvl.append(el("b",{text:String(st.lv+1)}));
