@@ -308,7 +308,7 @@ ESB = _esbuild()
 if ESB and os.environ.get("NO_MINIFY") != "1":
     import subprocess as _sp
     def _min(code, loader):
-        args = [ESB, "--loader=" + loader, "--charset=utf8", "--log-level=error"] + (["--minify"] if loader == "css" else ["--minify-whitespace", "--minify-syntax"])
+        args = [ESB, "--loader=" + loader, "--charset=utf8", "--log-level=error"] + (["--minify"] if loader == "css" else ["--minify-whitespace", "--minify-syntax", "--minify-identifiers"])
         r = _sp.run(args, input=code.encode("utf-8"), capture_output=True)
         if r.returncode != 0: print("  (non compacté :", r.stderr.decode()[:200], ")"); return code
         out = r.stdout.decode("utf-8").strip()
