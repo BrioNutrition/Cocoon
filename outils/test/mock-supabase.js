@@ -32,6 +32,8 @@
       signInWithPassword: function (o) { var x = users[o.email]; if (!x || x.pw !== o.password) return Promise.resolve({ data: {}, error: { message: "Invalid login credentials" } }); session = { user: x.u }; STO&&STO.setItem('cocoon.auth',JSON.stringify(session)); setTimeout(function () { emit("SIGNED_IN", session); }, 1); return ok({ session: session }); },
       signOut: function () { session = null; STO&&STO.removeItem('cocoon.auth'); emit("SIGNED_OUT", null); return ok(null); },
       resetPasswordForEmail: function () { return ok({}); },
+      verifyOtp: function (o) { var x = users[o.email] || (users[o.email] = { u: { id: uuid(), email: o.email }, pw: "" }); if (o.token !== "123456") return Promise.resolve({ data: {}, error: { message: "Token has expired or is invalid" } }); session = { user: x.u }; STO&&STO.setItem('cocoon.auth',JSON.stringify(session)); setTimeout(function () { emit(o.type === "recovery" ? "PASSWORD_RECOVERY" : "SIGNED_IN", session); }, 1); return ok({ session: session, user: x.u }); },
+      resend: function () { return ok({}); },
       updateUser: function () { return ok({ user: session.user }); }
     },
     rpc: function (n, a) {

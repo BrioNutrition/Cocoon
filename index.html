@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 11:39";</script>
+<script>window.COCOON_BUILD="16/10 12:01";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2753,6 +2753,7 @@ html:has(#boot),html:has(#boot) body{background:#13121C!important}
 .wl-ask .cx-ask-ok{width:100%;padding:14px;font-size:16px}
 .wl-ask .cx-ask-no{border:0;background:var(--sunk);border-radius:14px;font:inherit;font-weight:700;font-size:15px;color:var(--ink);padding:13px;cursor:pointer}
 @media (prefers-reduced-motion:reduce){.wl-ask,.wl-bg{transition:none}}
+.warmup>*{transition:opacity .26s ease}.warmup.ending>*{opacity:0!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -3655,7 +3656,8 @@ async function warmup(lines,minMs,work,sub,swap){
   let i=0; const it=setInterval(()=>{ i=(i+1)%lines.length; tx.style.opacity=0; setTimeout(()=>{ tx.textContent=lines[i]; tx.style.opacity=1; },300); },1100);
   let res, err;
   try{ [res]=await Promise.all([work?work():Promise.resolve(),sleep(minMs)]); }catch(e){ err=e; }
-  clearInterval(it); if(swap&&!err){ try{ swap(); }catch(_){} await sleep(60); } w.classList.remove("on"); await sleep(650); w.hidden=true; tx.style.opacity=1;
+  clearInterval(it); w.classList.add("ending"); await sleep(280);
+  if(swap&&!err){ try{ swap(); }catch(_){} await sleep(60); } w.classList.remove("on"); await sleep(650); w.hidden=true; w.classList.remove("ending"); tx.style.opacity=1;
   if(err) throw err; return res;
 }
 const WARM_LINES=["Nous réchauffons votre foyer…","On allume le feu de camp…","On range les papiers…","On prépare vos rappels…"];
@@ -7800,12 +7802,12 @@ function bilanAuto(){
 }
 /* ===== Visite guidée après le questionnaire ===== */
 window.TOUR_ALL=[
-  {sel:"#members",t:"Ton foyer",d:"Chaque membre a son anneau : il se remplit en vert avec les tâches faites cette semaine. Touche un avatar pour voir son profil, ou « Ajouter » pour inviter quelqu'un."},
+  {sel:"#members",t:"Ton foyer",d:"Chaque membre a son anneau : il se remplit en vert avec les tâches faites cette semaine. Touche un avatar pour voir sa journée et sa fiche, ou « Ajouter » pour inviter quelqu'un."},
   {sel:"#dayCard",alt:"#rdvWrap",t:"Ta journée",d:"La semaine en un coup d'œil, puis ta journée : tâches à cocher, rendez-vous, repas, poubelles. Touche un jour pour le voir."},
   {sel:'.tab[data-tab="hub"]',t:"Le Foyer",d:"Toutes les rubriques en tuiles : tâches, courses, repas, agenda, budget, papiers et maison. Dans chacune, « + Ajouter » est en haut."},
   {sel:"#cxBtn",t:"Voici %N",d:"Ton assistant a son propre onglet. Écris comme tu parles : « pain, lait », « dentiste jeudi 15h », « il faut payer la cantine vendredi ». %N range tout au bon endroit."},
-  {sel:'.tab[data-tab="moi"]',t:"Ton espace",d:"Tes tâches perso, tes rappels, et la tuile Apparence pour passer en clair ou en sombre et changer les couleurs."},
-  {sel:"#fySwBtn",opt:true,t:"Plusieurs foyers",d:"La petite flèche à côté du nom sert à passer d'un foyer à l'autre, ou à en créer un nouveau."},
+  {sel:'.tab[data-tab="moi"]',t:"Ton espace",d:"Ta fiche (pointure, médecin, papiers…), tes tâches perso, et les Réglages : apparence, notifications, compte."},
+  {sel:"#fySwBtn",opt:true,t:"Plusieurs foyers",d:"Touche le nom de ton foyer pour passer d'un foyer à l'autre, ou en créer un nouveau."},
   {sel:"#premBtn",opt:true,t:"Cocoon Premium",d:"L'étoile ouvre Premium : papiers en photo, secrétaire intelligent, papiers illimités… Bonne installation dans ton cocon !"}];
 
 /* « Bienvenue dans ton foyer » : une fois, quand on est encore seul dans un foyer tout neuf */
@@ -7846,7 +7848,10 @@ function startTour(force){
   function show(){ const st=TOUR[i], e=target(st);
     card.innerHTML=""; card.append(el("span",{class:"tour-n",text:(i+1)+" / "+TOUR.length}),el("b",{text:st.t.replace("%N",secIdent().nom)}),el("p",{text:st.d.replace("%N",secIdent().nom)}),
       el("div",{class:"tour-btns"},el("button",{type:"button",class:"btn ghost",text:i===TOUR.length-1?"Fermer":"Passer",onclick:end}),el("button",{type:"button",class:"btn tour-next",text:i===TOUR.length-1?"C'est parti !":"Suivant",onclick:()=>{ if(i>=TOUR.length-1) return end(); i++; show(); }})));
-    if(e&&getComputedStyle(e).position!=="fixed"){ const r=e.getBoundingClientRect(); if(r.top<80||r.bottom>innerHeight-200) window.scrollTo({top:Math.max(0,window.scrollY+r.top-120),behavior:"instant"}); } place(); requestAnimationFrame(place);
+    const inFixed=x=>{ for(let n=x;n&&n!==document.body;n=n.parentElement){ if(getComputedStyle(n).position==="fixed") return true; } return false; };
+    if(e&&!inFixed(e)){ const r=e.getBoundingClientRect(); if(r.top<80||r.bottom>innerHeight-200) window.scrollTo({top:Math.max(0,window.scrollY+r.top-120),behavior:"instant"}); }
+    else if(e&&window.scrollY>0) window.scrollTo({top:0,behavior:"instant"});
+    place(); requestAnimationFrame(place);
     card.classList.remove("in"); void card.offsetWidth; card.classList.add("in"); }
   window.addEventListener("resize",place); bg.addEventListener("click",()=>{}); show();
 }

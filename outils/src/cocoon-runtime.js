@@ -68,7 +68,7 @@
       "#cxGate .cx-card{width:min(400px,100%);display:grid;gap:14px;text-align:center}",
       "#cxGate .cx-logo{width:84px;height:84px;margin:0 auto 2px;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,120,.18)}",
       "#cxGate h1{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;font-size:34px;letter-spacing:-.03em;margin:0}",
-      "#cxGate p{margin:0;color:#5A5876;font-size:15.5px;line-height:1.45}#cxGate h1+p{margin-top:-10px}#cxGate .cx-pw{position:relative;display:block}#cxGate .cx-pw input{width:100%;box-sizing:border-box;padding-right:52px}#cxGate .cx-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:42px;height:42px;border:0;background:none;border-radius:12px;color:#5A5876;display:grid;place-items:center;cursor:pointer;padding:0}#cxGate .cx-eye[aria-pressed='true']{color:#1C1B2E}#cxGate h1+p+form,#cxGate h1+p+.cx-inv{margin-top:8px}",
+      "#cxGate p{margin:0;color:#5A5876;font-size:15.5px;line-height:1.45}#cxGate h1+p{margin-top:-10px}#cxGate .cx-ok{width:72px;height:72px;margin:0 auto 6px;border-radius:50%;background:#3CC37A;color:#fff;display:grid;place-items:center;animation:cxOk .5s cubic-bezier(.3,1.5,.5,1) both}@keyframes cxOk{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}#cxGate .cx-code{font-size:26px!important;letter-spacing:.3em;text-align:center;font-weight:800}#cxGate .cx-pw{position:relative;display:block}#cxGate .cx-pw input{width:100%;box-sizing:border-box;padding-right:52px}#cxGate .cx-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:42px;height:42px;border:0;background:none;border-radius:12px;color:#5A5876;display:grid;place-items:center;cursor:pointer;padding:0}#cxGate .cx-eye[aria-pressed='true']{color:#1C1B2E}#cxGate h1+p+form,#cxGate h1+p+.cx-inv{margin-top:8px}",
       "#cxGate form{display:grid;gap:10px;text-align:left;margin-top:6px}",
       "#cxGate label{font-size:13px;font-weight:600;color:#5A5876;display:grid;gap:5px}",
       "#cxGate input{font:inherit;font-size:16px;padding:13px 14px;border-radius:14px;border:2px solid #E3E0F0;background:#fff;color:#1C1B2E;outline:none}",
@@ -146,7 +146,7 @@
               if (sign) {
                 var r = await sb.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: location.origin + location.pathname } });
                 if (r.error) throw r.error;
-                if (!r.data.session) { G.show("login", { t: "Compte créé ! Ouvre l'e-mail de confirmation qu'on vient de t'envoyer, puis connecte-toi ici." }); return; }
+                if (!r.data.session) { G.show("code", { email: em, type: "signup" }); return; }
               } else {
                 var r2 = await sb.auth.signInWithPassword({ email: em, password: pw });
                 if (r2.error) throw r2.error;
@@ -159,16 +159,42 @@
           return;
         }
         if (mode === "forgot") {
-          card.innerHTML = head("Mot de passe oublié", "On t'envoie un lien pour en choisir un nouveau.") +
-            '<form><label>E-mail<input type="email" name="email" autocomplete="email" required></label><div class="cx-msg" hidden></div><button class="cx-btn" type="submit">Envoyer le lien</button></form>' +
+          card.innerHTML = head("Mot de passe oublié", "On t'envoie un code par e-mail pour en choisir un nouveau, sans quitter l'app.") +
+            '<form><label>E-mail<input type="email" name="email" autocomplete="email" required></label><div class="cx-msg" hidden></div><button class="cx-btn" type="submit">Recevoir le code</button></form>' +
             '<button class="cx-link" type="button" data-go="login">Retour</button>';
           var f2 = card.querySelector("form");
           f2.addEventListener("submit", async function (e) {
             e.preventDefault(); var b = f2.querySelector("button"); b.disabled = true;
-            await SBP; var r = await sb.auth.resetPasswordForEmail(f2.email.value.trim(), { redirectTo: location.origin + location.pathname });
-            b.disabled = false; msg(r.error ? frErr(r.error) : "C'est parti : regarde ta boîte mail.", !!r.error);
+            var em2 = f2.email.value.trim(); await SBP; var r = await sb.auth.resetPasswordForEmail(em2, { redirectTo: location.origin + location.pathname });
+            b.disabled = false; if (r.error) { msg(frErr(r.error), true); return; } G.show("code", { email: em2, type: "recovery" });
           });
           bindGo(); return;
+        }
+        if (mode === "pwok") {
+          card.innerHTML = '<div class="cx-ok" aria-hidden="true"><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>' +
+            "<h1>Mot de passe enregistré</h1><p>C'est bon, il est changé. On t'emmène dans ton foyer…</p>";
+          return;
+        }
+        if (mode === "code") {
+          var cem = (extra && extra.email) || "", ctype = (extra && extra.type) || "signup";
+          card.innerHTML = head("Vérifie ta boîte mail", "On a envoyé un code à <b>" + esc(cem) + "</b>. Tape-le ici, sans quitter l'app.") +
+            '<form><label>Code reçu par e-mail<input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9 ]{6,10}" maxlength="10" required class="cx-code" placeholder="123456"></label><div class="cx-msg" hidden></div><button class="cx-btn" type="submit">Valider</button></form>' +
+            '<button class="cx-link" type="button" data-act="again">Renvoyer un code</button><button class="cx-link" type="button" data-go="' + (ctype === "recovery" ? "forgot" : "signup") + '">Changer d\'adresse</button>' +
+            '<p class="cx-legal">Tu peux aussi toucher le bouton du mail : ça marche, mais ça ouvre le navigateur.</p>';
+          var f4 = card.querySelector("form");
+          f4.addEventListener("submit", async function (e) {
+            e.preventDefault(); var b = f4.querySelector("button"); b.disabled = true; msg(""); await SBP;
+            var r = await sb.auth.verifyOtp({ email: cem, token: f4.code.value.replace(/\s/g, ""), type: ctype });
+            b.disabled = false;
+            if (r.error) { msg(frErr(r.error), true); return; }
+            if (ctype === "recovery") { G.show("newpw"); return; }
+            G.show("wait"); if (!started) afterLogin(r.data.user || (r.data.session && r.data.session.user));
+          });
+          card.querySelector('[data-act="again"]').addEventListener("click", async function (e) { var b = e.target; b.disabled = true; await SBP;
+            var r = ctype === "recovery" ? await sb.auth.resetPasswordForEmail(cem, { redirectTo: location.origin + location.pathname }) : await sb.auth.resend({ type: "signup", email: cem, options: { emailRedirectTo: location.origin + location.pathname } });
+            b.disabled = false; msg(r.error ? frErr(r.error) : "Nouveau code envoyé.", !!r.error); });
+          bindGo(); setTimeout(function () { try { f4.code.focus(); } catch (_) {} }, 80);
+          return;
         }
         if (mode === "newpw") {
           card.innerHTML = head(LS.get("cocoon.setpw") ? "Choisis ton mot de passe" : "Nouveau mot de passe", "") +
@@ -176,7 +202,9 @@
           var f3 = card.querySelector("form"); if (extra) msg(extra.t, extra.err);
           f3.addEventListener("submit", async function (e) {
             e.preventDefault(); await SBP; var r = await sb.auth.updateUser({ password: f3.pw.value });
-            if (r.error) msg(frErr(r.error), true); else { LS.del("cocoon.setpw"); G.hide(); if (!started) afterLogin(r.data.user); }
+            if (r.error) { msg(frErr(r.error), true); return; }
+            LS.del("cocoon.setpw"); var u = r.data.user; G.show("pwok");
+            setTimeout(function () { G.hide(); if (!started) afterLogin(u); }, 1600);
           });
           return;
         }
@@ -219,11 +247,19 @@
         if (inp.parentNode.classList && inp.parentNode.classList.contains("cx-pw")) return;
         var w = document.createElement("span"); w.className = "cx-pw"; inp.parentNode.insertBefore(w, inp); w.appendChild(inp);
         var b = document.createElement("button"); b.type = "button"; b.className = "cx-eye"; b.setAttribute("aria-label", "Afficher le mot de passe"); b.setAttribute("aria-pressed", "false"); b.innerHTML = EYE;
-        b.addEventListener("mousedown", function (e) { e.preventDefault(); });
-        b.addEventListener("click", function () { var show = inp.type === "password"; inp.type = show ? "text" : "password"; b.innerHTML = show ? EYE_OFF : EYE; b.setAttribute("aria-pressed", String(show)); b.setAttribute("aria-label", show ? "Masquer le mot de passe" : "Afficher le mot de passe"); try { inp.focus({ preventScroll: true }); var n = inp.value.length; inp.setSelectionRange(n, n); } catch (_) {} });
         w.appendChild(b);
       });
     }
+    /* Bascule fiable (iPhone compris) : on agit au relâcher du doigt, sans laisser le champ perdre le focus */
+    function eyeToggle(b) { var w = b.parentNode, inp = w && w.querySelector("input"); if (!inp) return;
+      var show = inp.type === "password", had = document.activeElement === inp, n = inp.value.length;
+      inp.type = show ? "text" : "password"; b.innerHTML = show ? EYE_OFF : EYE; b.setAttribute("aria-pressed", String(show)); b.setAttribute("aria-label", show ? "Masquer le mot de passe" : "Afficher le mot de passe");
+      if (had) { try { inp.blur(); inp.focus({ preventScroll: true }); inp.setSelectionRange(n, n); } catch (_) {} } }
+    var eyeT = 0;
+    card.addEventListener("touchend", function (e) { var b = e.target.closest && e.target.closest(".cx-eye"); if (!b) return; e.preventDefault(); eyeT = Date.now(); eyeToggle(b); }, { passive: false });
+    card.addEventListener("mousedown", function (e) { if (e.target.closest && e.target.closest(".cx-eye")) e.preventDefault(); });
+    card.addEventListener("click", function (e) { var b = e.target.closest && e.target.closest(".cx-eye"); if (!b) return; e.preventDefault(); if (Date.now() - eyeT < 600) return; eyeToggle(b); });
+    try { new MutationObserver(function () { addEyes(); }).observe(card, { childList: true, subtree: true }); } catch (_) {}
     var _show = G.show; G.show = function () { var r = _show.apply(G, arguments); try { addEyes(); } catch (_) {} return r; };
     function bindGo() { card.querySelectorAll("[data-go]").forEach(function (b) { b.addEventListener("click", function () { G.show(b.getAttribute("data-go")); }); });
       card.querySelectorAll("[data-priv]").forEach(function (b) { b.addEventListener("click", function () { if (typeof window.openPrivacy === "function") window.openPrivacy(); }); });
@@ -233,6 +269,7 @@
   function frErr(e) {
     var m = String((e && (e.message || e.error_description)) || e || "");
     if (/Invalid login/i.test(m)) return "E-mail ou mot de passe incorrect.";
+    if (/Token has expired|invalid.*token|otp/i.test(m)) return "Code incorrect ou expiré : vérifie-le, ou demande un nouveau code.";
     if (/Email not confirmed/i.test(m)) return "Confirme d'abord ton adresse : clique sur le lien reçu par e-mail.";
     if (/already registered|already exists/i.test(m)) return "Un compte existe déjà avec cet e-mail : connecte-toi.";
     if (/Password should be/i.test(m)) return "Le mot de passe doit faire au moins 6 caractères.";
@@ -295,12 +332,13 @@
   var DOMP = new Promise(function (r) { if (document.readyState !== "loading") r(); else document.addEventListener("DOMContentLoaded", r); });
   DOMP.then(function () {
     var urlAuth = /access_token=|type=recovery|code=/.test(location.hash + location.search);
+    if (urlAuth) { try { localStorage.setItem("foyer.tab", "accueil"); } catch (_) {} }
     if (!FROM_SNAP && !authStore.getItem("cocoon.auth") && !urlAuth && (!G || !G.mode)) gate().show(LS.get("cocoon.join") ? "signup" : "login");
   });
   Promise.all([SBP, DOMP]).then(async function () {
     sb.auth.onAuthStateChange(function (ev, session) {
-      if (ev === "PASSWORD_RECOVERY") { gate().show("newpw"); return; }
-      if (ev === "SIGNED_IN" && session && !started && G && G.mode !== "foyer" && G.mode !== "join") afterLogin(session.user);
+      if (ev === "PASSWORD_RECOVERY") { if (!G || G.mode !== "newpw") gate().show("newpw"); return; }
+      if (ev === "SIGNED_IN" && session && !started && G && G.mode !== "foyer" && G.mode !== "join" && G.mode !== "code" && G.mode !== "wait" && G.mode !== "pwok") afterLogin(session.user);
       if (ev === "SIGNED_OUT" && started && !DELETING) location.reload();
     });
     var s = await sb.auth.getSession();
