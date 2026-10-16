@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 10:09";</script>
+<script>window.COCOON_BUILD="16/10 10:23";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2730,6 +2730,8 @@ html:has(#boot),html:has(#boot) body{background:#13121C!important}
 #docPour .pchip{flex:0 0 auto;justify-content:flex-start}
 #docPour{justify-content:flex-start}
 #fPreview .pw-edit,#fPreview .pw-add{display:none}
+.bd-doc.bd-flash{animation:bdFlash 1.8s ease}
+@keyframes bdFlash{0%,35%{box-shadow:0 0 0 3px #FFC94A,0 8px 24px color-mix(in srgb,#FFC94A 35%,transparent)}100%{box-shadow:0 0 0 0 transparent}}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -3581,7 +3583,7 @@ function pfFill(F,m,o){ o=o||{}; const D=pfData(m), id=D.id, pet=D.pet, can=D.ca
     if(docs.length||can){ F.append(secT(id===meId()?"Papiers":"Ses papiers",docs.length?el("button",{type:"button",class:"pf-link",text:"Tout voir",onclick:()=>{ S.docWho=id; setTab("documents"); }}):null));
       const row=el("div",{class:"pf-docs"});
       for(const d of docs.slice(0,8)){ let pill=null; if(d.expire){ const n=daysTo(d.expire); pill=n<0?el("span",{class:"pf-pill r",text:"expiré"}):n<=60?el("span",{class:"pf-pill w",text:n<=31?"dans "+n+" j":"dans "+Math.round(n/30)+" mois"}):el("span",{class:"pf-pill",text:"OK"}); }
-        row.append(el("button",{type:"button",class:"pf-doc",onclick:()=>{ S.docWho=id; setTab("documents"); }},catDot(d.cat),el("b",{text:d.titre}),pill||el("span",{class:"pf-pill n",text:"rangé"}))); }
+        row.append(el("button",{type:"button",class:"pf-doc",onclick:()=>goDoc(d)},catDot(d.cat),el("b",{text:d.titre}),pill||el("span",{class:"pf-pill n",text:"rangé"}))); }
       if(can&&docs.length<8) row.append(el("button",{type:"button",class:"pf-doc add",onclick:()=>{ S.docWho=id; setTab("documents"); setTimeout(()=>{ try{ fabAct("documents",document.querySelector('.hub-add[data-add="documents"]')); }catch(_){} },300); }},el("b",{text:"+ Ranger un papier"}),el("span",{class:"pf-pill n",text:"photo ou PDF"})));
       F.append(row); } }
   // infos pratiques
@@ -3894,6 +3896,10 @@ function renderDocPour(){
   const opts=[["foyer","Foyer",null]].concat(membres().map(m=>[m.id,m.id===me?"Moi":m.nom,m.id]));
   for(const [v,l,id] of opts) w.append(el("button",{type:"button",class:"pchip","aria-pressed":String(S.docPour===v),onclick:()=>{ S.docPour=v; renderDocPour(); updConsent(); }},id?avatar(id,20):"",l));
 }
+/* Ouvrir Papiers directement sur un papier précis */
+function goDoc(d){ if(!d) return; S.docF=null; S.docWho=null; S.docCat=catOf(d.cat||"documents").id||"documents"; setTab("documents"); try{ renderHeader(); }catch(_){}
+  const find=k=>{ const r=document.querySelector('.view[data-view="documents"] [data-key="documents:'+d.id+'"]'); if(r){ r.scrollIntoView({block:"center",behavior:"smooth"}); r.classList.remove("bd-flash"); void r.offsetWidth; r.classList.add("bd-flash"); setTimeout(()=>r.classList.remove("bd-flash"),1900); } else if(k<10) setTimeout(()=>find(k+1),80); };
+  setTimeout(()=>find(0),60); }
 function docRow(d,showWho,noCat){
   const me=meId(), c=catOf(d.cat||"documents");
   const row=el("div",{class:"bd-doc","data-key":"documents:"+d.id,style:"--bc:"+(c.c||"#A9B4C2")});
@@ -5014,7 +5020,7 @@ function wgData(k,large){ const t0=iso(today()), me=meId();
     return {h:"Poubelles",big:b.nom,dot:b.c||"#59606B",small:"à sortir "+binWhen(b,nx.sortie)+" · "+binWho(b).label}; }
   if(k==="papiers"){ const d=S.docs.filter(d=>d.expire&&daysTo(d.expire)<=120).sort((a,b)=>a.expire<b.expire?-1:1)[0];
     if(!d) return {h:"Papiers",big:S.docs.length?"Tout est à jour":"Rien de rangé",small:S.docs.length?S.docs.length+" papier"+(S.docs.length>1?"s":"")+" rangé"+(S.docs.length>1?"s":""):"range tes papiers"};
-    const n=daysTo(d.expire); return {h:"Papiers",big:d.titre,small:(n<0?"expiré":"expire "+dueLabel(d.expire))+(d.pour&&d.pour!=="foyer"&&membre(d.pour)?" · "+membre(d.pour).nom:""),late:n<0}; }
+    const n=daysTo(d.expire); return {did:d.id,h:"Papiers",big:d.titre,small:(n<0?"expiré":"expire "+dueLabel(d.expire))+(d.pour&&d.pour!=="foyer"&&membre(d.pour)?" · "+membre(d.pour).nom:""),late:n<0}; }
   if(k==="semaine"){ const ws=weekStart(), we=ws+7*864e5; const done=S.foyer.filter(t=>t.fait&&t.faitLe>=ws).length; const todo=S.foyer.filter(t=>!t.fait&&(!t.echeance||parse(t.echeance).getTime()<we)).length; const tot=done+todo, p=tot?Math.round(done/tot*100):0;
     if(!tot) return {h:"Semaine",big:"Rien à faire",small:"aucune tâche cette semaine"};
     return {h:"Semaine",big:done+" / "+tot,small:"tâches faites"+(large&&todo?" · "+todo+" à faire":""),ring:p}; }
@@ -5022,7 +5028,7 @@ function wgData(k,large){ const t0=iso(today()), me=meId();
     if(!best) return {h:"Anniversaires",big:"Aucune date",small:"ajoute les dates de naissance"}; const n=daysTo(best[1].date);
     return {h:"Anniversaire",big:best[0].id===me?"Toi":best[0].nom,small:n===0?"aujourd'hui ! 🎉":dueLabel(best[1].date)+(best[1].age?" · "+best[1].age+" ans":""),mid:best[0].id}; }
   return {h:"",big:"",small:""}; }
-function wgGo(k,D){ const w=WG[k]; if(k==="anniv"){ if(D&&D.mid) openMemberSheet(D.mid); return; } if(w.sec) S.mSec=w.sec; setTab(w.go); renderHeader(); window.scrollTo({top:0}); }
+function wgGo(k,D){ const w=WG[k]; if(k==="papiers"&&D&&D.did){ goDoc(S.docs.find(x=>x.id===D.did)); return; } if(k==="anniv"){ if(D&&D.mid) openMemberSheet(D.mid); return; } if(w.sec) S.mSec=w.sec; setTab(w.go); renderHeader(); window.scrollTo({top:0}); }
 /* Petite vibration : API Vibration (Android) ou interrupteur natif (iPhone, iOS 18+) */
 function haptic(ms){ try{ if(navigator.vibrate&&navigator.vibrate(ms||12)) return; }catch(_){}
   try{ let l=document.getElementById("hpLbl"); if(!l){ const i=document.createElement("input"); i.type="checkbox"; i.setAttribute("switch",""); i.id="hpSw"; i.tabIndex=-1; i.setAttribute("aria-hidden","true");
@@ -6264,7 +6270,6 @@ function hl(text,words){
 }
 function flashKey(key){ setTimeout(()=>{ const e=document.querySelector('[data-key="'+key+'"]'); if(!e) return; const d=e.closest("details"); if(d) d.open=true; e.scrollIntoView({block:"center",behavior:"smooth"}); e.classList.remove("flash"); void e.offsetWidth; e.classList.add("flash"); },120); }
 function goTask(t){ S.catF=null; S.whoF=null; const me=meId(); setTab(t.prive||t.pour===me?"moi":"foyer"); flashKey((t.prive?"ptaches:":"taches:")+t.id); }
-function goDoc(d){ S.docF=null; setTab("documents"); flashKey("documents:"+d.id); }
 function openSearch(){ if(S.tab!=="recherche"){ S.searchPrev=S.tab; S.sShort=null; S.sGroup=null; try{ $("sQ").value=""; }catch(_){} } setTab("recherche"); window.scrollTo({top:0}); setTimeout(()=>{ try{ $("sQ").focus(); $("sQ").select(); }catch(_){} },60); }
 function renderSearch(){
   const box=$("sRes"); if(!box) return; box.innerHTML=""; const q=$("sQ").value, words=norm(q).trim().split(/\s+/).filter(Boolean);
