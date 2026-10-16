@@ -68,25 +68,13 @@ try:
         import numpy as _np
     except Exception:
         _np = None
-    def _splash(W, H, dark):
-        bgc = (0x13, 0x12, 0x1C) if dark else (0xF6, 0xF5, 0xFB)
-        if _np is None:
-            return _Im.new("RGB", (W, H), bgc)
-        w, h = max(1, W // 4), max(1, H // 4)
-        y, x = _np.mgrid[0:h, 0:w].astype(_np.float32)
-        img = _np.zeros((h, w, 3), _np.float32) + _np.array(bgc, _np.float32)
-        def rad(cx, cy, rx, ry, col, a):
-            d = _np.sqrt(((x - cx * w) / (rx * w)) ** 2 + ((y - cy * h) / (ry * h)) ** 2)
-            return (_np.clip(1 - d / 0.7, 0, 1) * a)[..., None], _np.array(col, _np.float32)
-        t2, c2 = rad(.7, .7, .4, .3, (0xFF, 0x9C, 0xB0), .14); img = img * (1 - t2) + c2 * t2
-        t1, c1 = rad(.5, .44, .55, .38, (0xFF, 0xC9, 0x4A), .24); img = img * (1 - t1) + c1 * t1
-        return _Im.fromarray(_np.clip(img, 0, 255).astype(_np.uint8)).resize((W, H), _Im.BICUBIC)
+    def _splash(W, H, dark=True):
+        return _Im.new("RGB", (W, H), (0x13, 0x12, 0x1C))
     os.makedirs(os.path.join(OUT, "splash"), exist_ok=True)
     for (dw, dh, r) in SPLASH_DEV:
-        for dark in (False, True):
-            name = "splash/%dx%d-%s.png" % (dw * r, dh * r, "dark" if dark else "light")
-            _splash(dw * r, dh * r, dark).save(os.path.join(OUT, name), optimize=True)
-            SPLASH_LINKS += '<link rel="apple-touch-startup-image" media="screen and (device-width: %dpx) and (device-height: %dpx) and (-webkit-device-pixel-ratio: %d) and (orientation: portrait) and (prefers-color-scheme: %s)" href="%s">\n' % (dw, dh, r, "dark" if dark else "light", name)
+        name = "splash/%dx%d.png" % (dw * r, dh * r)
+        _splash(dw * r, dh * r).save(os.path.join(OUT, name), optimize=True)
+        SPLASH_LINKS += '<link rel="apple-touch-startup-image" media="screen and (device-width: %dpx) and (device-height: %dpx) and (-webkit-device-pixel-ratio: %d) and (orientation: portrait)" href="%s">\n' % (dw, dh, r, name)
 except Exception as _e:
     print("écrans de démarrage non générés :", _e)
 
@@ -223,8 +211,8 @@ if("serviceWorker" in navigator&&location.protocol==="https:"){ var _had=!!navig
 </script>
 """
 INTRO_CSS = """<style>
-html{background:#F6F5FB;color-scheme:light dark}@media (prefers-color-scheme: dark){html:not([data-theme="light"]){background:#13121C}}html[data-theme="dark"]{background:#13121C}html[data-theme="light"]{background:#F6F5FB}
-#cxIntro{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:radial-gradient(55% 38% at 50% 44%,rgba(255,201,74,.24),transparent 70%),radial-gradient(40% 30% at 70% 70%,rgba(255,156,176,.14),transparent 70%),#F6F5FB;pointer-events:none}
+html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not(:has(#boot)):not(:has(#cxIntro)){background:#F6F5FB}}html[data-theme="light"]:not(:has(#boot)):not(:has(#cxIntro)){background:#F6F5FB}
+#cxIntro{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:#13121C!important;pointer-events:none}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) #cxIntro{background:radial-gradient(55% 38% at 50% 44%,rgba(255,201,74,.24),transparent 70%),radial-gradient(40% 30% at 70% 70%,rgba(255,156,176,.14),transparent 70%),#13121C}:root:not([data-theme="light"]) #cxIntro .cxi-name{color:#EDEBF7}:root:not([data-theme="light"]) .cx-warn,:root:not([data-theme="light"]) .cx-ask-m{color:#FFB3A6}:root:not([data-theme="light"]) .cx-ask-ic{background:#433A22;color:#FFE3A0}}:root[data-theme="dark"] #cxIntro{background:radial-gradient(55% 38% at 50% 44%,rgba(255,201,74,.24),transparent 70%),radial-gradient(40% 30% at 70% 70%,rgba(255,156,176,.14),transparent 70%),#13121C}:root[data-theme="dark"] #cxIntro .cxi-name{color:#EDEBF7}:root[data-theme="dark"] .cx-warn,:root[data-theme="dark"] .cx-ask-m{color:#FFB3A6}:root[data-theme="dark"] .cx-ask-ic{background:#433A22;color:#FFE3A0}
 #cxIntro .cxi-c{display:flex;flex-direction:column;align-items:center;gap:6px}
 #cxIntro .cxi-w{position:relative;width:132px;height:132px;margin-bottom:14px;animation:cxiFloat 5s linear .9s infinite}
@@ -233,7 +221,7 @@ html{background:#F6F5FB;color-scheme:light dark}@media (prefers-color-scheme: da
 @keyframes cxiRing{0%{opacity:.75;transform:scale(1)}100%{opacity:0;transform:scale(2.6)}}
 @keyframes cxiFloat{0%,100%{translate:0 0;rotate:0deg}25%{translate:0 -3px;rotate:2deg}50%{translate:0 -6px;rotate:0deg}75%{translate:0 -3px;rotate:-2deg}}
 #cxIntro .cxi-logo{position:relative;display:block;width:132px;height:132px;border-radius:30px;filter:drop-shadow(0 16px 30px rgba(232,118,90,.28));animation:cxiPop .9s cubic-bezier(.34,1.45,.64,1) .05s both}
-#cxIntro .cxi-name{font-family:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;font-weight:800;font-size:58px;letter-spacing:-.045em;line-height:.95;color:#1C1B2E;display:flex}
+#cxIntro .cxi-name{font-family:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;font-weight:800;font-size:58px;letter-spacing:-.045em;line-height:.95;color:#EDEBF7!important;display:flex}
 #cxIntro .cxi-name span{display:inline-block;animation:cxiRise .7s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(.32s + var(--i) * .06s)}
 @keyframes cxiPop{from{opacity:0;transform:scale(.15) rotate(-30deg)}to{opacity:1;transform:none}}
 @keyframes cxiRise{from{opacity:0;transform:translateY(22px) scale(.9)}to{opacity:1;transform:none}}
