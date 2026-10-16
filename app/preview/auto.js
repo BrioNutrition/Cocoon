@@ -9,10 +9,6 @@
   async function fill(sel, v) { const e = await until(() => { const x = $(sel); return vis(x) ? x : null; }); if (!e) return; e.focus(); e.value = v; e.dispatchEvent(new Event("input", { bubbles: true })); e.dispatchEvent(new Event("change", { bubbles: true })); e.blur(); await wait(200); }
   const next = () => click("#wzNext");
   window.__noTour = 1;
-  { const C = window.Capacitor || {}, d = document.createElement("div");
-    d.style.cssText = "position:fixed;z-index:2147483647;left:8px;right:8px;top:60px;background:#000c;color:#0f0;font:11px/1.3 monospace;padding:6px;border-radius:8px;pointer-events:none";
-    d.textContent = "diag · native=" + (C.isNativePlatform ? C.isNativePlatform() : "?") + " · registerPlugin=" + typeof C.registerPlugin + " · nativePromise=" + typeof C.nativePromise + " · plugins=" + Object.keys(C.Plugins || {}).join(",") + " · class=" + document.documentElement.className;
-    document.body.appendChild(d); setTimeout(() => d.remove(), 9000); }
   await wait(1500);
   if (!(await click("#spGo"))) return;
   await fill("#wzNom", "Nours"); await next();
@@ -33,9 +29,12 @@
   tab("hub"); await wait(5000);         // le foyer
   const ag = document.querySelector('.hb-t[data-go="agenda"]'); if (ag) ag.click(); await wait(2500);
   document.querySelectorAll(".prem-page:not([hidden])").forEach((p) => p.click()); await wait(3500);
+  window.scrollTo({ top: 260, behavior: "smooth" }); await wait(3500); window.scrollTo({ top: 0 });
+  const bk = document.querySelector('.view:not([hidden]) .hub-back'); if (bk) bk.click(); await wait(1500);
+  const pa = document.querySelector('.hb-t[data-go="documents"]'); if (pa) pa.click(); await wait(4000);
   tab("moi"); await wait(5000);
   tab("cocoony"); await wait(5000);
   tab("accueil"); await wait(3000);
-  document.documentElement.dataset.theme = "dark"; await wait(5000);
+  document.documentElement.dataset.theme = "light"; await wait(5000);
   tab("hub"); await wait(5000);
 })();

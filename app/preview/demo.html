@@ -2852,6 +2852,8 @@ button.ev-it{cursor:pointer}
 #premBtn{display:none!important}
 .bt-logo-w>i{display:none!important;animation:none!important}
 html.native-tabs #tabs{display:none!important}
+html.native-tabs .view .hub-bar{visibility:hidden}
+html.native-tabs .hub-mini{display:none!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -5159,7 +5161,7 @@ function wgData(k,large){ const t0=iso(today()), me=meId();
   return {h:"",big:"",small:""}; }
 function wgGo(k,D){ if(k==="evenement"){ if(D&&D.evid) openEvent(D.evid); else openEvents(); return; } const w=WG[k]; if(k==="papiers"&&D&&D.did){ goDoc(S.docs.find(x=>x.id===D.did)); return; } if(k==="anniv"){ if(D&&D.mid) openMemberSheet(D.mid); return; } if(w.sec) S.mSec=w.sec; setTab(w.go); renderHeader(); window.scrollTo({top:0}); }
 /* Petite vibration : API Vibration (Android) ou interrupteur natif (iPhone, iOS 18+) */
-function haptic(ms){ try{ if(navigator.vibrate&&navigator.vibrate(ms||12)) return; }catch(_){}
+function haptic(ms){ try{ if(window.__nt&&window.__nt.haptic){ window.__nt.haptic({style:(ms||12)>=12?"medium":"light"}).catch(()=>{}); return; } }catch(_){} try{ if(navigator.vibrate&&navigator.vibrate(ms||12)) return; }catch(_){}
   try{ let l=document.getElementById("hpLbl"); if(!l){ const i=document.createElement("input"); i.type="checkbox"; i.setAttribute("switch",""); i.id="hpSw"; i.tabIndex=-1; i.setAttribute("aria-hidden","true");
       l=document.createElement("label"); l.id="hpLbl"; l.htmlFor="hpSw"; l.setAttribute("aria-hidden","true"); l.style.cssText="position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;pointer-events:none"; i.style.cssText=l.style.cssText; document.body.append(i,l); } l.click(); }catch(_){} }
 /* Réordonner au doigt : appui long (ou poignée) puis glisser */
@@ -6211,16 +6213,34 @@ setTab("accueil");
   if(!NT&&C.nativePromise) NT={show:o=>C.nativePromise("NativeTabs","show",o),hide:()=>C.nativePromise("NativeTabs","hide",{}),select:o=>C.nativePromise("NativeTabs","select",o),badge:o=>C.nativePromise("NativeTabs","badge",o),
     addListener:(ev,cb)=>{ try{ C.nativeCallback("NativeTabs","addListener",{eventName:ev},d=>cb(d)); }catch(_){} return Promise.resolve({remove(){}}); }};
   if(!NT) return;
+  if(C.nativePromise&&!NT.menu) ["menu","haptic","topbar","theme"].forEach(m=>{ NT[m]=o=>C.nativePromise("NativeTabs",m,o||{}); });
+  window.__nt=NT;
   const TABS=[["accueil","Accueil","house.fill"],["hub","Foyer","person.2.fill"],["cocoony","Cocoony","sparkles"],["moi","Moi","person.crop.circle.fill"]];
   document.documentElement.classList.add("native-tabs");
-  let shown=false, sel=-1, bdg=null;
-  NT.addListener("select",e=>{ const t=TABS[e&&e.index]; if(!t) return; const b=document.querySelector('#tabs .tab[data-tab="'+t[0]+'"]'); if(b) b.click(); haptic(6); });
+  let shown=false, sel=-1, bdg=null, tbSig="", thDark=null;
+  /* l'icône de Cocoony (sa tête) pour l'onglet, en PNG */
+  const cxIcon=()=>{ try{ const im=document.querySelector(".nav-cxi"); if(!im||!im.complete||!im.naturalWidth) return null; const c=document.createElement("canvas"); c.width=c.height=84; c.getContext("2d").drawImage(im,0,0,84,84); return c.toDataURL("image/png"); }catch(_){ return null; } };
+  let cxSent=false;
+  NT.addListener("select",e=>{ const t=TABS[e&&e.index]; if(!t) return; const b=document.querySelector('#tabs .tab[data-tab="'+t[0]+'"]'); if(b) b.click(); });
+  /* barre du haut native : bulle retour, titre, boutons en verre */
+  NT.addListener("topbar",e=>{ const id=e&&e.id, bar=document.querySelector(".view:not([hidden]) .hub-bar"); if(!bar) return;
+    const el0=id==="back"?bar.querySelector(".hub-back,.pg-back"):id==="sync"?bar.querySelector(".hub-sync"):id==="add"?bar.querySelector(".hub-add"):null; if(el0) el0.click(); });
+  const safeTop=()=>{ const p=document.createElement("div"); p.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top,0px)"; document.body.append(p); const h=p.offsetHeight; p.remove(); return h; };
   const sync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!document.getElementById("boot")&&!(document.getElementById("wizard")&&!$("wizard").hidden));
     if(vis!==shown){ shown=vis; (vis?NT.show({items:TABS.map(t=>({title:t[1],icon:t[2]}))}):NT.hide()).catch(()=>{}); sel=-1; bdg=null; }
     if(!vis) return;
     const i=Math.max(0,TABS.findIndex(t=>t[0]===(S.tab==="cocoony"?"cocoony":["accueil","moi"].includes(S.tab)?S.tab:"hub")));
     if(i!==sel){ sel=i; NT.select({index:i}).catch(()=>{}); }
-    const n=$("nFoyer"), b=n&&!n.hidden?"":null; if(b!==bdg){ bdg=b; NT.badge({index:1,value:b}).catch(()=>{}); } };
+    const n=$("nFoyer"), b=n&&!n.hidden?"":null; if(b!==bdg){ bdg=b; NT.badge({index:1,value:b}).catch(()=>{}); }
+    if(!cxSent){ const ic=cxIcon(); if(ic){ cxSent=true; NT.show({items:TABS.map(t=>({title:t[1],icon:t[2],image:t[0]==="cocoony"?ic:null}))}).catch(()=>{}); sel=-1; } }
+    /* thème clair / sombre de l'app → éléments natifs assortis */
+    { const bg=getComputedStyle(document.body).backgroundColor.match(/\d+/g)||[255,255,255], dk=(+bg[0]*.3+ +bg[1]*.59+ +bg[2]*.11)<128; if(dk!==thDark){ thDark=dk; NT.theme({dark:dk}).catch(()=>{}); } }
+    /* barre du haut des rubriques */
+    { const bar=document.querySelector(".view:not([hidden]) .hub-bar"), open=document.documentElement.classList.contains("prem-open");
+      let sig="off", o={visible:false};
+      if(bar&&!open){ const t=(bar.querySelector(".hb-title")||{}).textContent||"", acts=[]; if(bar.querySelector(".hub-sync")) acts.push({id:"sync",icon:"calendar"}); if(bar.querySelector(".hub-add")) acts.push({id:"add",icon:"plus",prominent:true});
+        const r=bar.getBoundingClientRect(); o={visible:true,title:t,back:!!bar.querySelector(".hub-back,.pg-back"),actions:acts,top:Math.max(4,Math.round(r.top+scrollY-safeTop())),color:getComputedStyle(bar.querySelector(".hb-title")||bar).color}; sig=JSON.stringify(o); }
+      if(sig!==tbSig){ tbSig=sig; NT.topbar(o).catch(()=>{}); } } };
   setInterval(sync,400); document.addEventListener("visibilitychange",sync); })();
 /* Ouvrir l'app depuis une notification : « #courses », « #agenda », « #ev=ID », et les boutons « C'est fait » / « Demain » (#t-done=ID, #t-later=ID) */
 function notifAct(h,tries){ h=String(h||""); if(!h) return; tries=tries||0;
@@ -6803,15 +6823,23 @@ function nextFreeMeal(){ const t=today(), h=new Date().getHours(), slots=repasSl
   for(let k=0;k<14;k++){ const d=iso(new Date(t.getFullYear(),t.getMonth(),t.getDate()+k));
     for(const sl of ["matin","midi","soir"]){ if(!slots.includes(sl)) continue; if(k===0&&((sl==="matin"&&h>=10)||(sl==="midi"&&h>=14)||(sl==="soir"&&h>=21))) continue; if(!repasOf(d,sl)) return [d,sl]; } }
   return [iso(t),"soir"]; }
+/* Menu natif d'iOS (feuille d'actions) quand l'app tourne sur iPhone ; null si on n'est pas dans l'app */
+function nativeMenu(title,items){ const N=window.__nt; if(!N||!N.menu) return null; return N.menu({title:title||null,items}).then(r=>r&&r.id||null).catch(()=>null); }
+/* transforme un petit menu web (#addMenu) en menu natif */
+function nativeizeMenu(M,title){ if(!window.__nt) return false; const bs=[...M.querySelectorAll("button")]; if(!bs.length) return false; M.hidden=true;
+  nativeMenu(title,bs.map((b,i)=>({id:String(i),title:b.textContent.trim()}))).then(id=>{ if(id!=null&&bs[+id]) bs[+id].click(); }); return true; }
 function fabAct(v0,anchor){ const me=meId(), v=v0||S.tab;
   const go=(sel)=>setTimeout(()=>{ const e=$(sel)||document.querySelector(sel); if(e) e.scrollIntoView({block:"center",behavior:"smooth"}); },80);
   if(v==="courses"){ window.scrollTo({top:0,behavior:"smooth"}); setTimeout(()=>{ try{ $("cNom").focus(); }catch(_){} },250); return; }
   if(v==="repas"){ if(!needMe()) return; const [d,sl]=nextFreeMeal(), t0=weekStartOf(today()); S.rWeek=Math.round((weekStartOf(parse(d))-t0)/(7*864e5)); S.rEdit=d+"_"+sl; renderRepas(); go(".r-ed"); setTimeout(()=>{ try{ $("rPlat").focus({preventScroll:true}); }catch(_){} },300); return; }
-  if(v==="agenda"){ if(!needMe()) return; const day=S.agDay&&S.agDay>=iso(today())?S.agDay:""; if(!anchor||!anchor.dataset||anchor.dataset.direct!=="rdv"){ openEvents({v:"pick",day}); return; } S.rdvForm={pour:[S.agWho||me],date:day}; renderRdv(); go(".rdv-form"); return; }
+  if(v==="agenda"){ if(!needMe()) return; const day=S.agDay&&S.agDay>=iso(today())?S.agDay:""; if(!anchor||!anchor.dataset||anchor.dataset.direct!=="rdv"){ const nm=nativeMenu("Ajouter à l'agenda",[{id:"rdv",title:"Un rendez-vous",icon:"calendar"},{id:"ev",title:"Un événement à préparer",icon:"party.popper"}]);
+      if(nm){ nm.then(id=>{ if(id==="rdv") fabAct("agenda",{dataset:{direct:"rdv"}}); else if(id==="ev") openEvents({v:"new",type:"anniv",debut:day||undefined}); }); return; }
+      openEvents({v:"pick",day}); return; } S.rdvForm={pour:[S.agWho||me],date:day}; renderRdv(); go(".rdv-form"); return; }
   if(v==="documents"){ if(S.tab==="documents"&&!$("docForm").hidden){ closeDocForm(); return; } openDocForm(); return; }
   if(v==="budget"){ const M=$("addMenu"); if(!M.hidden){ M.hidden=true; return; } M.innerHTML="";
     const it=(ic,t,id)=>M.append(el("button",{type:"button",role:"menuitem",onclick:()=>{ M.hidden=true; const b=$(id); if(b) b.click(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),t));
     it("depense","Une dépense","bAddDep"); it("abonnement","Un abonnement, un prélèvement","bAddSub"); it("factures","Un crédit","bAddCr");
+    if(nativeizeMenu(M,"Ajouter au budget")) return;
     if(anchor){ const r=anchor.getBoundingClientRect(); M.style.top=Math.round(r.bottom+8)+"px"; M.style.bottom="auto"; M.style.right=Math.max(12,Math.round(innerWidth-r.right))+"px"; }
     M.hidden=false; return; }
   if(v==="moi"){ openSheet({where:"perso"}); return; }
@@ -6821,6 +6849,7 @@ function fabAct(v0,anchor){ const me=meId(), v=v0||S.tab;
     it("tel","Un contact",()=>{ S.mSec="contacts"; S.ctForm={role:"",nom:"",tel:"",note:"",c:"#C9C7DD"}; renderMaison(); window.scrollTo({top:0,behavior:"smooth"}); setTimeout(()=>{ const x=$("ctRole"); if(x) x.focus(); },200); });
     it("entretien","Un équipement",()=>openMForm("equip"));
     it("eclair","Un relevé de compteur",()=>openMForm("releve",{compteur:"elec"}));
+    if(nativeizeMenu(M,"Ajouter à la maison")) return;
     if(anchor){ const r=anchor.getBoundingClientRect(); M.style.top=Math.round(r.bottom+8)+"px"; M.style.bottom="auto"; M.style.right=Math.max(12,Math.round(innerWidth-r.right))+"px"; } else { M.style.top=""; M.style.bottom=""; M.style.right=""; }
     M.hidden=false; return; }
   openSheet(); }
@@ -7587,6 +7616,7 @@ async function openFoyerMenu(btn){ const M=$("addMenu"); if(!M) return; if(!M.hi
   let list=S.fyCache||null;
   if(H&&H.foyers&&!list){ try{ list=await Promise.race([H.foyers(),new Promise(r=>setTimeout(()=>r(null),1500))]); }catch(err){ list=null; } if(list) S.fyCache=list; if(!M.hidden&&M.dataset.k==="fy") return; }
   build(list); place(); M.hidden=false; btn.setAttribute("aria-expanded","true");
+  if(nativeizeMenu(M,"Mes foyers")){ btn.setAttribute("aria-expanded","false"); return; }
   if(H&&H.foyers&&S.fyCache){ H.foyers().then(fresh=>{ if(!fresh) return; const ch=JSON.stringify(fresh)!==JSON.stringify(S.fyCache); S.fyCache=fresh; if(ch&&!M.hidden&&M.dataset.k==="fy"){ build(fresh); place(); } }).catch(()=>{}); } }
 const PM_SHORT={"Papiers en photo":"Lus et rangés tout seuls","Secrétaire intelligent":"Cocoony répond à tout","Papiers illimités":"Plus de limite de 25","Sauvegarde du foyer":"Tout télécharger en 1 clic","Budget avancé":"Graphiques et export impôts","Plusieurs foyers":"Vacances, garde alternée…","Thèmes et icônes":"Habille Cocoon à ton goût"};
 function upSheet(id,label){ let P=$(id); if(!P){ P=el("div",{class:"prem-page",id,role:"dialog","aria-modal":"true","aria-label":label}); document.body.append(P); }
@@ -7751,7 +7781,9 @@ function evDetail(inn,V){ const ev=evById(V.id), T=evT(ev), P=evProg(ev), I=evIt
   inn.append(seg);
   const body=el("div",{class:"ev-body"+(V._anim!==V.tab?" anim":"")}); V._anim=V.tab; inn.append(body);
   ({frise:evFrise,ach:evAch,bud:evBud,pap:evPap}[V.tab]||evFrise)(body,ev,I,V); }
-function evMenu(btn,ev,V){ const old=document.querySelector(".ev-pop"); if(old){ old._close(); if(old._btn===btn) return; }
+function evMenu(btn,ev,V){ { const nm=nativeMenu(ev.titre||"Événement",[{id:"edit",title:"Modifier",icon:"pencil"},{id:"dates",title:"Changer les dates",icon:"calendar"},{id:"del",title:"Supprimer l'événement",icon:"trash",destructive:true}]);
+    if(nm){ nm.then(id=>{ if(id==="edit"||id==="dates") evGo({v:"edit",id:ev.id,back:V.tab}); else if(id==="del") nativeMenu("Supprimer « "+(ev.titre||"cet événement")+" » ? Ses dépenses et ses papiers sont gardés.",[{id:"ok",title:"Supprimer",icon:"trash",destructive:true}]).then(c=>{ if(c==="ok") evDelete(ev); }); }); return; } }
+  const old=document.querySelector(".ev-pop"); if(old){ old._close(); if(old._btn===btn) return; }
   const sheet=btn.closest(".pp-sheet"); if(!sheet) return; const pop=el("div",{class:"ev-pop",role:"menu"}); pop._btn=btn; btn.setAttribute("aria-expanded","true");
   const close=()=>{ if(pop._gone) return; pop._gone=true; btn.setAttribute("aria-expanded","false"); pop.classList.add("out"); document.removeEventListener("pointerdown",away,true); setTimeout(()=>pop.remove(),160); };
   pop._close=close; const away=e=>{ if(!pop.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)) close(); };

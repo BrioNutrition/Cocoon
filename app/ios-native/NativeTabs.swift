@@ -1,6 +1,9 @@
 
-// ===== Cocoon : barre d'onglets native d'iOS (Liquid Glass avec le SDK iOS 26) =====
+// ===== Cocoon : éléments natifs d'iOS (Liquid Glass avec le SDK iOS 26) =====
+// Barre d'onglets, barre du haut (retour, titre, boutons en verre), menus, vibrations, thème.
 // Ajouté à AppDelegate.swift par ios-native/patch.sh après « npx cap add ios ».
+let cocoonYellow = UIColor(red: 1.0, green: 0.788, blue: 0.29, alpha: 1)
+
 @objc(NativeTabsPlugin)
 public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
     public let identifier = "NativeTabsPlugin"
@@ -9,20 +12,37 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         CAPPluginMethod(name: "show", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "hide", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "select", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "badge", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "badge", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "topbar", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "menu", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "haptic", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "theme", returnType: CAPPluginReturnPromise)
     ]
     private var bar: UITabBar?
+    private var top: UIView?
 
+    // ---------- barre d'onglets ----------
+    private func image(fromDataURL s: String?) -> UIImage? {
+        guard let s = s, let comma = s.firstIndex(of: ","), let d = Data(base64Encoded: String(s[s.index(after: comma)...])), let img = UIImage(data: d) else { return nil }
+        let size = CGSize(width: 28, height: 28)
+        return UIGraphicsImageRenderer(size: size).image { _ in
+            UIBezierPath(ovalIn: CGRect(origin: .zero, size: size)).addClip()
+            img.draw(in: CGRect(origin: .zero, size: size))
+        }.withRenderingMode(.alwaysOriginal)
+    }
     @objc func show(_ call: CAPPluginCall) {
         let items = (call.options["items"] as? [[String: Any]]) ?? []
         DispatchQueue.main.async {
             guard let view = self.bridge?.viewController?.view else { call.reject("pas de vue"); return }
             let bar = self.bar ?? UITabBar()
             bar.delegate = self
+            bar.tintColor = cocoonYellow
+            let old = bar.selectedItem?.tag ?? 0
             bar.items = items.enumerated().map { (i, it) in
-                UITabBarItem(title: it["title"] as? String ?? "", image: UIImage(systemName: it["icon"] as? String ?? "circle"), tag: i)
+                let img = self.image(fromDataURL: it["image"] as? String) ?? UIImage(systemName: it["icon"] as? String ?? "circle")
+                return UITabBarItem(title: it["title"] as? String ?? "", image: img, tag: i)
             }
-            if bar.selectedItem == nil { bar.selectedItem = bar.items?.first }
+            if let items = bar.items, old < items.count { bar.selectedItem = items[old] }
             if bar.superview == nil {
                 bar.translatesAutoresizingMaskIntoConstraints = false
                 view.addSubview(bar)
@@ -50,12 +70,115 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
     @objc func badge(_ call: CAPPluginCall) {
         let i = call.getInt("index") ?? 0, v = call.getString("value")
         DispatchQueue.main.async {
-            if let items = self.bar?.items, i >= 0, i < items.count { items[i].badgeValue = v; items[i].badgeColor = UIColor(red: 1, green: 0.79, blue: 0.29, alpha: 1) }
+            if let items = self.bar?.items, i >= 0, i < items.count { items[i].badgeValue = v; items[i].badgeColor = cocoonYellow }
             call.resolve()
         }
     }
     public func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        UISelectionFeedbackGenerator().selectionChanged()
         notifyListeners("select", data: ["index": item.tag])
+    }
+
+    // ---------- barre du haut : retour, titre, boutons en verre ----------
+    private func color(_ css: String?) -> UIColor? {
+        guard let css = css else { return nil }
+        let n = css.components(separatedBy: CharacterSet(charactersIn: "0123456789.").inverted).filter { !$0.isEmpty }.compactMap { Double($0) }
+        guard n.count >= 3 else { return nil }
+        return UIColor(red: n[0] / 255, green: n[1] / 255, blue: n[2] / 255, alpha: 1)
+    }
+    private func glassButton(_ symbol: String, id: String, prominent: Bool) -> UIButton {
+        var cfg: UIButton.Configuration
+        if #available(iOS 26.0, *) { cfg = prominent ? .prominentGlass() : .glass() } else { cfg = prominent ? .filled() : .gray() }
+        cfg.image = UIImage(systemName: symbol, withConfiguration: UIImage.SymbolConfiguration(pointSize: 17, weight: .semibold))
+        cfg.cornerStyle = .capsule
+        if prominent { cfg.baseBackgroundColor = cocoonYellow; cfg.baseForegroundColor = .black }
+        let b = UIButton(configuration: cfg, primaryAction: UIAction { [weak self] _ in
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            self?.notifyListeners("topbar", data: ["id": id])
+        })
+        if prominent { b.tintColor = cocoonYellow }
+        b.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([b.widthAnchor.constraint(equalToConstant: 44), b.heightAnchor.constraint(equalToConstant: 44)])
+        return b
+    }
+    @objc func topbar(_ call: CAPPluginCall) {
+        let visible = call.getBool("visible") ?? false
+        let title = call.getString("title") ?? "", back = call.getBool("back") ?? false
+        let actions = (call.options["actions"] as? [[String: Any]]) ?? []
+        let offset = CGFloat(call.getDouble("top") ?? 6), tcol = color(call.getString("color"))
+        DispatchQueue.main.async {
+            self.top?.removeFromSuperview(); self.top = nil
+            guard visible, let view = self.bridge?.viewController?.view else { call.resolve(); return }
+            let v = UIView(); v.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(v)
+            NSLayoutConstraint.activate([
+                v.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+                v.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+                v.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: offset),
+                v.heightAnchor.constraint(equalToConstant: 44)
+            ])
+            let lbl = UILabel(); lbl.text = title; lbl.font = .systemFont(ofSize: 17, weight: .bold); lbl.textColor = tcol ?? .label
+            lbl.translatesAutoresizingMaskIntoConstraints = false
+            v.addSubview(lbl)
+            NSLayoutConstraint.activate([lbl.centerXAnchor.constraint(equalTo: v.centerXAnchor), lbl.centerYAnchor.constraint(equalTo: v.centerYAnchor)])
+            if back {
+                let b = self.glassButton("chevron.left", id: "back", prominent: false)
+                v.addSubview(b)
+                NSLayoutConstraint.activate([b.leadingAnchor.constraint(equalTo: v.leadingAnchor), b.centerYAnchor.constraint(equalTo: v.centerYAnchor)])
+            }
+            var last: UIView? = nil
+            for a in actions.reversed() {
+                let b = self.glassButton(a["icon"] as? String ?? "circle", id: a["id"] as? String ?? "", prominent: (a["prominent"] as? Bool) ?? false)
+                v.addSubview(b)
+                b.centerYAnchor.constraint(equalTo: v.centerYAnchor).isActive = true
+                if let l = last { b.trailingAnchor.constraint(equalTo: l.leadingAnchor, constant: -10).isActive = true }
+                else { b.trailingAnchor.constraint(equalTo: v.trailingAnchor).isActive = true }
+                last = b
+            }
+            self.top = v
+            call.resolve()
+        }
+    }
+
+    // ---------- menus natifs (feuille d'actions) ----------
+    @objc func menu(_ call: CAPPluginCall) {
+        let items = (call.options["items"] as? [[String: Any]]) ?? []
+        DispatchQueue.main.async {
+            guard let vc = self.bridge?.viewController else { call.resolve(["id": NSNull()]); return }
+            let ac = UIAlertController(title: call.getString("title"), message: nil, preferredStyle: .actionSheet)
+            for it in items {
+                let id = it["id"] as? String ?? ""
+                let a = UIAlertAction(title: it["title"] as? String ?? "", style: ((it["destructive"] as? Bool) ?? false) ? .destructive : .default) { _ in call.resolve(["id": id]) }
+                if let s = it["icon"] as? String, let img = UIImage(systemName: s) { a.setValue(img, forKey: "image") }
+                ac.addAction(a)
+            }
+            ac.addAction(UIAlertAction(title: "Annuler", style: .cancel) { _ in call.resolve(["id": NSNull()]) })
+            ac.view.tintColor = .label
+            if let pop = ac.popoverPresentationController {
+                pop.sourceView = vc.view
+                pop.sourceRect = CGRect(x: vc.view.bounds.midX, y: vc.view.bounds.maxY - 90, width: 1, height: 1)
+            }
+            vc.present(ac, animated: true)
+        }
+    }
+
+    // ---------- vibrations ----------
+    @objc func haptic(_ call: CAPPluginCall) {
+        let s = call.getString("style") ?? "light"
+        DispatchQueue.main.async {
+            let st: UIImpactFeedbackGenerator.FeedbackStyle = s == "medium" ? .medium : s == "rigid" ? .rigid : s == "soft" ? .soft : .light
+            UIImpactFeedbackGenerator(style: st).impactOccurred()
+            call.resolve()
+        }
+    }
+
+    // ---------- thème clair / sombre de l'app ----------
+    @objc func theme(_ call: CAPPluginCall) {
+        let dark = call.getBool("dark") ?? false
+        DispatchQueue.main.async {
+            self.bridge?.viewController?.overrideUserInterfaceStyle = dark ? .dark : .light
+            call.resolve()
+        }
     }
 }
 
