@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 16:02";</script>
+<script>window.COCOON_BUILD="16/10 16:34";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2495,7 +2495,13 @@ html.sheet-open .add-fab{display:none}
 .tabs{justify-content:space-around}
 #addFab{display:none!important}
 .qa-add{margin:2px 0 2px}
-.hub-bar{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hub-bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin-bottom:12px}
+.hb-title{font-family:"Bricolage Grotesque",system-ui;font-size:19px;font-weight:800;letter-spacing:-.01em;color:var(--ink);text-align:center;white-space:nowrap}
+.hb-act{display:flex;justify-content:flex-end;align-items:center;gap:8px}
+.hb-tx{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hub-bar .hub-sync,.hub-bar .hub-add{width:40px;height:40px;padding:0;margin:0;border-radius:50%;display:grid;place-items:center;gap:0;position:relative}
+.hub-bar .hub-sync .hs-emo{font-size:19px;margin:0}
+.hub-bar .hub-add>span[aria-hidden]{font-size:24px;margin:-2px 0 0}
 .hub-add{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:8px 15px 8px 12px;font:inherit;font-weight:800;font-size:14px;color:#1C1B2E;background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB);cursor:pointer;-webkit-tap-highlight-color:transparent}
 .hub-add span{font-size:19px;line-height:1;margin-top:-2px}
 .hub-add:active{transform:scale(.96)}
@@ -2899,6 +2905,23 @@ button.ev-it{cursor:pointer}
 .ev-delev{color:var(--late)!important;width:100%}
 .ev-delev.sure{background:color-mix(in srgb,var(--late) 14%,var(--surface))!important}
 .hs-emo{font-size:17px;line-height:1;margin-top:-1px}
+/* titres des rubriques */
+.hub-ti{margin:14px 2px 12px}
+.hub-ti h1{font-family:"Bricolage Grotesque",system-ui;font-size:32px;font-weight:800;letter-spacing:-.02em;line-height:1.05;margin:0;color:var(--ink)}
+.hub-sum{margin:4px 0 0;font-size:13.5px;color:var(--muted);min-height:1.3em}
+.hub-mini{position:fixed;left:0;right:0;top:0;z-index:60;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 8px) 16px 8px;background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);box-shadow:0 1px 0 var(--line);transform:translateY(-100%);opacity:0;transition:transform .24s cubic-bezier(.2,.9,.3,1),opacity .18s ease;pointer-events:none}
+.hub-mini.on{transform:none;opacity:1;pointer-events:auto}
+.hub-mini .hub-back{width:34px;height:34px}
+.hub-mini b{font-family:"Bricolage Grotesque",system-ui;font-size:17px;font-weight:800;letter-spacing:-.01em;position:absolute;left:50%;transform:translateX(-50%)}
+.hm-sp{flex:1}
+.hm-add{width:34px;height:34px;border-radius:50%;border:0;display:grid;place-items:center;font:inherit;font-size:21px;font-weight:800;color:#1C1B2E;background:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB);cursor:pointer;padding:0;line-height:1}
+.hm-add[hidden]{display:none}
+@media (min-width:700px){.hub-mini{padding-left:calc(50% - 300px);padding-right:calc(50% - 300px)}}
+.hub-bar .hub-sync,.hub-bar .hub-add{flex:none;width:40px!important;height:40px!important;min-width:40px;padding:0!important;box-sizing:border-box;line-height:1}
+.hub-bar .hub-sync .hs-emo{font-size:20px;line-height:1;margin:0;display:block}
+.hb-plus{display:grid!important;place-items:center;width:20px;height:20px;margin:0!important;font-size:0!important}
+.hb-plus svg,.hm-add svg{width:20px;height:20px;fill:none;stroke:#1C1B2E;stroke-width:3;stroke-linecap:round;display:block}
+.hm-add svg{width:17px;height:17px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -3015,7 +3038,7 @@ button.ev-it{cursor:pointer}
 
   <!-- FOYER -->
   <section class="view" data-view="foyer" hidden>
-    <button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Tâches</b><span class="hb-act"></span></div>
     <form class="c-add qa-add" id="tQa" autocomplete="off"><input type="text" id="tQaIn" maxlength="120" placeholder="Ajouter une tâche…" aria-label="Nouvelle tâche pour le foyer" enterkeyhint="done"><button class="btn" type="submit">Ajouter</button></form>
     <div class="tk-seg" id="whoFilter" role="group" aria-label="Filtrer par personne"></div>
     <div class="tk-cats" id="tiles" role="group" aria-label="Filtrer par catégorie"></div>
@@ -3029,7 +3052,7 @@ button.ev-it{cursor:pointer}
 
   <!-- COURSES -->
   <section class="view" data-view="courses" hidden>
-    <button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Courses</b><span class="hb-act"></span></div>
     <div id="cLive" class="c-live" hidden></div>
     <form class="c-add" id="cForm" autocomplete="off">
       <input type="text" id="cNom" maxlength="120" placeholder="Lait, pain, piles…" aria-label="Article à ajouter" enterkeyhint="done">
@@ -3041,14 +3064,14 @@ button.ev-it{cursor:pointer}
   </section>
 
   <section class="view" data-view="agenda" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><button type="button" class="hub-sync" id="agSyncBtn" aria-label="Mettre l'agenda dans mon téléphone" title="Agenda du téléphone"><span class="hs-emo" aria-hidden="true">📅</span>Synchro</button><button type="button" class="hub-add" data-add="agenda" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Agenda</b><span class="hb-act"><button type="button" class="hub-sync" id="agSyncBtn" aria-label="Mettre l'agenda dans mon téléphone" title="Agenda du téléphone"><span class="hs-emo" aria-hidden="true">📅</span><span class="hb-tx">Synchro</span></button><button type="button" class="hub-add" data-add="agenda" aria-label="Ajouter"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
     <div class="seg ag-who" id="agWho" role="group" aria-label="Pour qui"></div>
     <div class="ag-cal" id="agCal"></div>
     <div class="sub" id="rdvWrap"></div>
   </section>
 
   <section class="view" data-view="repas" hidden>
-    <button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Repas</b><span class="hb-act"></span></div>
     <div id="rBody" class="r-body"></div>
   </section>
 
@@ -3088,7 +3111,7 @@ button.ev-it{cursor:pointer}
 
   <!-- DOCUMENTS -->
   <section class="view" data-view="documents" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><button type="button" class="hub-add" data-add="documents" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Papiers</b><span class="hb-act"><button type="button" class="hub-add" data-add="documents" aria-label="Ajouter"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
     <div id="papHero"></div>
     <label class="pap-search" for="papQ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg><input type="search" id="papQ" placeholder="Chercher : bail, mutuelle, carte grise…" aria-label="Chercher un papier" autocomplete="off" enterkeyhint="search"></label>
     <button type="button" class="pap-add" id="papAdd" aria-expanded="false"><span class="pa-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v9A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.6"/></svg></span><span class="pa-t"><b>Ranger un papier</b><small>Photo, PDF, ou juste une date à ne pas oublier</small></span><span class="pa-x" aria-hidden="true">+</span></button>
@@ -3114,7 +3137,7 @@ button.ev-it{cursor:pointer}
 
   <!-- MAISON & VÉHICULES (V3) -->
   <section class="view" data-view="maison" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><button type="button" class="hub-add" data-add="maison" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Maison</b><span class="hb-act"><button type="button" class="hub-add" data-add="maison" aria-label="Ajouter"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
     <div class="m-dash" id="mDash"></div>
     <form class="b-form" id="mhForm" hidden autocomplete="off"></form>
     <div class="sub" id="mHome"></div>
@@ -3139,7 +3162,7 @@ button.ev-it{cursor:pointer}
   </section>
 
   <section class="view" data-view="budget" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><button type="button" class="hub-add" data-add="budget" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Budget</b><span class="hb-act"><button type="button" class="hub-add" data-add="budget" aria-label="Ajouter"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
     <div class="b-hero" id="bHero"></div>
     <div class="sub b-owe" id="bBalanceWrap"></div>
     <div class="b-actions">
@@ -3213,6 +3236,7 @@ button.ev-it{cursor:pointer}
 <button type="button" class="add-fab" id="addFab" hidden></button>
 <div class="add-menu" id="addMenu" hidden role="menu"></div>
 <div class="toast" id="toast" hidden role="status"></div>
+<div class="hub-mini" id="hubMini" aria-hidden="true"><button type="button" class="hub-back" tabindex="-1" aria-label="Retour au foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b id="hubMiniT"></b><span class="hm-sp"></span><button type="button" class="hm-add" id="hubMiniAdd" tabindex="-1" aria-label="Ajouter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div>
 
 <script>
 (function(){
@@ -5708,9 +5732,26 @@ function renderBadges(){
   setN("nBudget",(S.abos||[]).filter(a=>a.actif!==false&&(()=>{ const n=subNext(a); return n&&daysTo(n)<=7; })()).length);
 }
 function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; try{ renderAllNowInner(); }catch(e){ console.error(e); } if(S.flip) applyFlip(); if(!S.migDone&&!S.migT) S.migT=setTimeout(()=>{ S.migT=0; migrateFiles(); },8000); onboardGate(); if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); }
+/* Titre des rubriques : grand titre + résumé ; en défilant, il remonte dans une petite barre en haut */
+function hubSummary(v){ const t0=iso(today()), me=meId();
+  if(v==="foyer"){ const o=(S.foyer||[]).filter(t=>!t.fait), l=o.filter(t=>t.echeance&&t.echeance<t0).length; return o.length?o.length+" à faire"+(l?" · "+l+" en retard":""):"Tout est fait 🎉"; }
+  if(v==="courses"){ const n=(S.courses||[]).filter(i=>!i.fait).length; return n?n+" article"+(n>1?"s":"")+" à acheter":"La liste est vide"; }
+  if(v==="repas"){ const ws=weekStart(), we=ws+7*864e5; const n=(S.repas||[]).filter(r=>r.plat&&r.date&&parse(r.date).getTime()>=ws&&parse(r.date).getTime()<we).length; return n?n+" repas prévu"+(n>1?"s":"")+" cette semaine":"Rien de prévu cette semaine"; }
+  if(v==="agenda"){ const t=today(), off=S.agM||0, M0=new Date(t.getFullYear(),t.getMonth()+off,1); const n=(S.rdvs||[]).filter(r=>{ if(!r.date||r.fait) return false; const d=parse(r.date); return d.getMonth()===M0.getMonth()&&d.getFullYear()===M0.getFullYear(); }).length;
+    const e=(S.evs||[]).filter(x=>evEnd(x)>=t0).length; const mn=new Intl.DateTimeFormat("fr-FR",{month:"long"}).format(M0); return (n?n+" rendez-vous en "+mn:"Aucun rendez-vous en "+mn)+(e?" · "+e+" événement"+(e>1?"s":"")+" à préparer":""); }
+  if(v==="documents"){ const n=(S.docs||[]).length, z=(S.docs||[]).filter(d=>d.expire&&daysTo(d.expire)<=90).length; return n?n+" papier"+(n>1?"s":"")+" rangé"+(n>1?"s":"")+(z?" · "+z+" à renouveler":""):"Rien de rangé pour l'instant"; }
+  if(v==="budget"){ const E=monthEst(); return eurR(E.tot)+" dépensés en "+E.nm; }
+  if(v==="maison"){ return "Logement, poubelles, contacts et entretien"; }
+  return ""; }
+function renderHubTitle(){ const v=S.tab, p=document.querySelector('.hub-sum[data-sum="'+v+'"]'); if(p){ const t=hubSummary(v); if(p.textContent!==t) p.textContent=t; } hubMiniUpd(); }
+function hubMiniUpd(){ const M=$("hubMini"); if(!M) return; const ti=document.querySelector('.view:not([hidden]) .hb-title'); let on=false;
+  if(ti&&!document.documentElement.classList.contains("prem-open")){ const r=ti.getBoundingClientRect(); on=r.bottom<4; if(on){ const t=ti.textContent; if($("hubMiniT").textContent!==t) $("hubMiniT").textContent=t; const add=document.querySelector('.view:not([hidden]) .hub-add'); $("hubMiniAdd").hidden=!add; } }
+  if(M.classList.contains("on")!==on){ M.classList.toggle("on",on); M.setAttribute("aria-hidden",String(!on)); M.querySelectorAll("button").forEach(b=>b.tabIndex=on?0:-1); } }
+addEventListener("scroll",()=>{ if(!S._hmRaf) S._hmRaf=requestAnimationFrame(()=>{ S._hmRaf=0; hubMiniUpd(); }); },{passive:true});
+$("hubMiniAdd").addEventListener("click",()=>{ const add=document.querySelector('.view:not([hidden]) .hub-add'); if(add){ window.scrollTo({top:0,behavior:"smooth"}); add.click(); } });
 function renderAllNowInner(){
   const v=S.tab;
-  renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon(); renderFab(); try{ evRefresh(); }catch(e){ console.error(e); }
+  renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon(); renderFab(); try{ evRefresh(); }catch(e){ console.error(e); } try{ renderHubTitle(); }catch(e){ console.error(e); }
   if(S.pendingWizard&&meM()&&S.configLoaded){ S.pendingWizard=false; openWizard(isAdmin()&&!(S.config&&S.config.qFait)?"foyer":"perso"); }
   if(v==="accueil"){ renderToday(); renderRecap(); renderSetupCard(); renderSecretary(); renderRdvAlert(); renderWeek(); renderFridge(); renderAccBudget(); renderAccWho(); }
   else if(v==="moi"){ renderMine(); renderCars(); renderPremium(); renderSettings(); renderMoiNav(); }
@@ -8036,7 +8077,7 @@ function renderRepas(){
   nav.querySelector(".r-wk span").textContent="Du "+fmt(d0)+" au "+d6.getDate()+" "+MOIS_C(d6)+" · "+planned+" repas prévu"+(planned>1?"s":"")+" sur "+7*slots.length;
   box.append(nav);
   const opt=el("div",{class:"r-opt",role:"group","aria-label":"Repas affichés"});
-  for(const [v,l] of RSLOTS){ const on=shown.includes(v); opt.append(el("button",{type:"button",class:"r-chip r-c-"+v,"aria-pressed":String(on),onclick:()=>{ let a=on?shown.filter(x=>x!==v):shown.concat(v); if(!a.length){ toast("Garde au moins un repas affiché."); return; } a=RSLOTS.map(r=>r[0]).filter(x=>a.includes(x)); S.rSlots=a.join(","); try{ localStorage.setItem("cocoon.repasSlots",S.rSlots); }catch(_){} S.rEdit=null; renderRepas(); }},on?"✓ "+l:l)); }
+  for(const [v,l] of RSLOTS){ const on=shown.includes(v); opt.append(el("button",{type:"button",class:"r-chip r-c-"+v,"aria-pressed":String(on),onclick:()=>{ let a=on?shown.filter(x=>x!==v):shown.concat(v); if(!a.length){ toast("Garde au moins un repas affiché."); return; } a=RSLOTS.map(r=>r[0]).filter(x=>a.includes(x)); S.rSlots=a.join(","); try{ localStorage.setItem("cocoon.repasSlots",S.rSlots); }catch(_){} S.rEdit=null; renderRepas(); }},l)); }
   box.append(opt);
   // la semaine en tableau : une ligne par jour, une colonne par repas
   const JC=["LUN","MAR","MER","JEU","VEN","SAM","DIM"];
