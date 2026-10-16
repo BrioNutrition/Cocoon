@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 09:35";</script>
+<script>window.COCOON_BUILD="16/10 09:50";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -5757,7 +5757,18 @@ $("dTitle").addEventListener("input",e=>{ const v=$("dCat").value; if(v==="__new
 
 /* Onglets */
 const TABS=["accueil","moi","foyer","courses","repas","rappels","documents","budget","maison"];
-function setTab(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; const prevTab=S.tab; S.tab=name; if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["hub","foyer","documents","maison","courses","repas","agenda","budget","moi","cocoony"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({foyer:"hub",documents:"hub",maison:"hub",courses:"hub",repas:"hub",agenda:"hub",budget:"hub"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name); if(name==="agenda"&&prevTab!=="agenda") maybeAgSheet();
+/* Quitter une rubrique en plein ajout : tout revient à la normale au retour */
+function resetForms(){ try{
+  S.bForm=S.binForm=S.crForm=S.ctForm=S.mForm=S.motForm=S.objForm=S.rdvForm=null; S.rEdit=null; S.editing=null;
+  const df=$("docForm"); if(df&&!df.hidden){ df.reset(); S.dCatC=null; S.docPour="foyer"; const nc=$("dNewCat"); if(nc) nc.hidden=true; try{ fillDocCats(); updConsent(); }catch(_){} closeDocForm(); }
+  const pq=$("papQ"); if(pq&&pq.value){ pq.value=""; }
+  for(const id of ["bForm","mhForm"]){ const f=$(id); if(f){ f.hidden=true; f.innerHTML=""; } }
+  document.querySelectorAll('.hub-add[aria-expanded="true"]').forEach(b=>b.setAttribute("aria-expanded","false"));
+  const am=$("addMenu"); if(am) am.hidden=true;
+  for(const id of ["tQaIn","pQaIn"]){ const i=$(id); if(i) i.value=""; }
+  if(S.sel&&S.sel.size){ S.sel.clear(); try{ renderSelBar(); }catch(_){} }
+}catch(e){ console.warn(e); } }
+function setTab(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; const prevTab=S.tab; if(prevTab&&prevTab!==name&&!["profil","fiche"].includes(name)&&!["profil","fiche"].includes(prevTab)) resetForms(); S.tab=name; if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["hub","foyer","documents","maison","courses","repas","agenda","budget","moi","cocoony"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({foyer:"hub",documents:"hub",maison:"hub",courses:"hub",repas:"hub",agenda:"hub",budget:"hub"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name); if(name==="agenda"&&prevTab!=="agenda") maybeAgSheet();
   if(prevTab&&prevTab!==name&&!document.querySelector(".wrap.arrive")){ const v=document.querySelector('.view[data-view="'+name+'"]'); if(v){ v.classList.remove("vin"); void v.offsetWidth; v.classList.add("vin"); clearTimeout(S._vinT); S._vinT=setTimeout(()=>v.classList.remove("vin"),320); } }
   { const vs=document.querySelector('.view[data-view="'+name+'"] .viewseg'); if(vs) segAnim(vs,"viewseg"); } if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  if(prevTab&&prevTab!==name) renderAllNow(); else renderAll(); }
 $("tabs").addEventListener("click",e=>{ const b=e.target.closest(".tab"); if(b&&b.dataset.tab){ const same=S.tab===b.dataset.tab; closeSheet(); setTab(b.dataset.tab); renderHeader(); if(same) window.scrollTo({top:0,behavior:"smooth"}); } });

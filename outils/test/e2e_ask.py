@@ -20,7 +20,9 @@ async def main():
     await pg.click('#cxGate [data-go="signup"]'); await pg.fill('#cxGate input[name=email]','angel@test.fr'); await pg.fill('#cxGate input[name=pw]','secret123'); await pg.click('#cxGate .cx-btn')
     for _k in range(80):  # GATE_RETRY
       if await pg.is_visible('#cxGate [data-act="create"]'): break
-      if _k in (24,48) and await pg.is_visible('#cxGate .cx-btn'): await pg.click('#cxGate .cx-btn')
+      if _k in (12,32,52) and await pg.is_visible('#cxGate .cx-btn'):
+        if await pg.is_visible('#cxGate input[name=email]') and not (await pg.input_value('#cxGate input[name=email]')): await pg.fill('#cxGate input[name=email]','angel@test.fr'); await pg.fill('#cxGate input[name=pw]','secret123')
+        await pg.click('#cxGate .cx-btn')
       await pg.wait_for_timeout(250)
     if not await pg.is_visible('#cxGate [data-act="create"]'): print('GATEFAIL', (await pg.inner_text('#cxGate'))[:250].replace('\n',' | '), await pg.evaluate('document.title'))
     await pg.wait_for_timeout(500); await pg.click('#cxGate [data-act="create"]'); await pg.wait_for_selector('#cxGate', state='hidden'); await pg.wait_for_timeout(2500)
