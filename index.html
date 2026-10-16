@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 15:45";</script>
+<script>window.COCOON_BUILD="16/10 16:02";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2473,7 +2473,9 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .hb-ck.ok i{background:#3CC37A;border-color:#3CC37A}.hb-ck.ok span{text-decoration:line-through;opacity:.55}
 .hb-spark{width:100%;height:36px;margin-top:8px;color:var(--ink)}
 .hb-spark svg{width:100%;height:36px;display:block}
-.hub-back{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);border-radius:999px;padding:8px 14px 8px 10px;font:inherit;font-weight:800;font-size:14px;color:var(--ink);cursor:pointer;width:max-content}
+.hub-back{align-self:flex-start;flex:none;display:grid;place-items:center;width:40px;height:40px;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);border-radius:50%;padding:0;font:inherit;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s}
+.hub-back:active{transform:scale(.92)}
+.hub-back svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;margin-left:-2px}
 .hub-back span{font-size:20px;line-height:1;margin-top:-2px}
 
 /* Plus de + central : un bouton « Ajouter » par rubrique */
@@ -2764,7 +2766,6 @@ html:has(#boot),html:has(#boot) body{background:#13121C!important}
 .ev-opt:active{transform:scale(.98)}
 .ev-opt i{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-style:normal;font-size:23px}
 .ev-opt b{display:block;font-size:15.5px}.ev-opt small{font-size:12.5px;color:var(--muted)}
-.ev-opt.hot{box-shadow:0 0 0 2px color-mix(in srgb,#FF9C80 70%,transparent),0 2px 0 var(--shadow)}
 .ev-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:-2px}
 .ev-chips button{border:0;border-radius:99px;padding:7px 11px;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink);background:color-mix(in srgb,var(--ec) 22%,var(--surface));cursor:pointer}
 .ag-ev{display:flex;align-items:center;gap:12px;width:100%;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);border-radius:18px;padding:10px 12px;font:inherit;color:var(--ink);text-align:left;cursor:pointer;transition:transform .12s}
@@ -2777,7 +2778,8 @@ html:has(#boot),html:has(#boot) body{background:#13121C!important}
 .ev-in{gap:12px!important}
 .ev-top h2{font-family:"Bricolage Grotesque",system-ui;font-size:24px;font-weight:800;margin:0;letter-spacing:-.01em}
 .ev-top p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
-.ev-back{align-self:flex-start;border:0;background:none;font:inherit;font-size:14px;font-weight:700;color:var(--muted);padding:2px 0;cursor:pointer}
+.ev-back{align-self:flex-start;flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);color:var(--ink);padding:0;cursor:pointer;font-size:0}
+.ev-back svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;margin-left:-2px}
 .ev-cards{display:flex;flex-direction:column;gap:8px}
 .ev-card{display:flex;align-items:center;gap:12px;width:100%;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);border-radius:18px;padding:11px 12px;font:inherit;color:var(--ink);text-align:left;cursor:pointer;transition:transform .12s}
 .ev-card:active{transform:scale(.98)}
@@ -2801,7 +2803,8 @@ html:has(#boot),html:has(#boot) body{background:#13121C!important}
 .ev-type i{font-style:normal;font-size:22px;line-height:1.1}
 .ev-type span{font-size:10.5px;font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ev-type[aria-checked="true"]{box-shadow:0 0 0 2.5px var(--ec),0 2px 0 var(--shadow);background:color-mix(in srgb,var(--ec) 16%,var(--surface))}
-.ev-lab{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
+.ev-lab{display:flex;flex-direction:column;gap:5px;min-width:0;flex:none}
+.ev-two>.ev-lab{flex:1 1 0}
 .ev-lab>span{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-left:2px}
 .ev-inp{width:100%;min-width:0;box-sizing:border-box;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:11px 12px;font:inherit;font-size:15px;-webkit-appearance:none;appearance:none;min-height:44px}
 .ev-inp:focus{outline:none;border-color:var(--ink)}
@@ -2895,6 +2898,7 @@ button.ev-it{cursor:pointer}
 .ev-tpl .ev-it{padding:8px 0}
 .ev-delev{color:var(--late)!important;width:100%}
 .ev-delev.sure{background:color-mix(in srgb,var(--late) 14%,var(--surface))!important}
+.hs-emo{font-size:17px;line-height:1;margin-top:-1px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -3011,7 +3015,7 @@ button.ev-it{cursor:pointer}
 
   <!-- FOYER -->
   <section class="view" data-view="foyer" hidden>
-    <button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button>
+    <button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button>
     <form class="c-add qa-add" id="tQa" autocomplete="off"><input type="text" id="tQaIn" maxlength="120" placeholder="Ajouter une tâche…" aria-label="Nouvelle tâche pour le foyer" enterkeyhint="done"><button class="btn" type="submit">Ajouter</button></form>
     <div class="tk-seg" id="whoFilter" role="group" aria-label="Filtrer par personne"></div>
     <div class="tk-cats" id="tiles" role="group" aria-label="Filtrer par catégorie"></div>
@@ -3025,7 +3029,7 @@ button.ev-it{cursor:pointer}
 
   <!-- COURSES -->
   <section class="view" data-view="courses" hidden>
-    <button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button>
+    <button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button>
     <div id="cLive" class="c-live" hidden></div>
     <form class="c-add" id="cForm" autocomplete="off">
       <input type="text" id="cNom" maxlength="120" placeholder="Lait, pain, piles…" aria-label="Article à ajouter" enterkeyhint="done">
@@ -3037,14 +3041,14 @@ button.ev-it{cursor:pointer}
   </section>
 
   <section class="view" data-view="agenda" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button><button type="button" class="hub-sync" id="agSyncBtn" aria-label="Mettre l'agenda dans mon téléphone" title="Agenda du téléphone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.6"/><path d="M10.5 18.5h3"/><path d="M9 8.5h6M9 11.5h6M9 8.5v6h6v-6"/></svg>Synchro</button><button type="button" class="hub-add" data-add="agenda" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><button type="button" class="hub-sync" id="agSyncBtn" aria-label="Mettre l'agenda dans mon téléphone" title="Agenda du téléphone"><span class="hs-emo" aria-hidden="true">📅</span>Synchro</button><button type="button" class="hub-add" data-add="agenda" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
     <div class="seg ag-who" id="agWho" role="group" aria-label="Pour qui"></div>
     <div class="ag-cal" id="agCal"></div>
     <div class="sub" id="rdvWrap"></div>
   </section>
 
   <section class="view" data-view="repas" hidden>
-    <button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button>
+    <button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button>
     <div id="rBody" class="r-body"></div>
   </section>
 
@@ -3084,7 +3088,7 @@ button.ev-it{cursor:pointer}
 
   <!-- DOCUMENTS -->
   <section class="view" data-view="documents" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button><button type="button" class="hub-add" data-add="documents" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><button type="button" class="hub-add" data-add="documents" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
     <div id="papHero"></div>
     <label class="pap-search" for="papQ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg><input type="search" id="papQ" placeholder="Chercher : bail, mutuelle, carte grise…" aria-label="Chercher un papier" autocomplete="off" enterkeyhint="search"></label>
     <button type="button" class="pap-add" id="papAdd" aria-expanded="false"><span class="pa-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v9A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.6"/></svg></span><span class="pa-t"><b>Ranger un papier</b><small>Photo, PDF, ou juste une date à ne pas oublier</small></span><span class="pa-x" aria-hidden="true">+</span></button>
@@ -3110,7 +3114,7 @@ button.ev-it{cursor:pointer}
 
   <!-- MAISON & VÉHICULES (V3) -->
   <section class="view" data-view="maison" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button><button type="button" class="hub-add" data-add="maison" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><button type="button" class="hub-add" data-add="maison" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
     <div class="m-dash" id="mDash"></div>
     <form class="b-form" id="mhForm" hidden autocomplete="off"></form>
     <div class="sub" id="mHome"></div>
@@ -3135,7 +3139,7 @@ button.ev-it{cursor:pointer}
   </section>
 
   <section class="view" data-view="budget" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back"><span aria-hidden="true">‹</span>Foyer</button><button type="button" class="hub-add" data-add="budget" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><button type="button" class="hub-add" data-add="budget" aria-label="Ajouter"><span aria-hidden="true">+</span>Ajouter</button></div>
     <div class="b-hero" id="bHero"></div>
     <div class="sub b-owe" id="bBalanceWrap"></div>
     <div class="b-actions">
@@ -7617,6 +7621,7 @@ function evRender(first){ const P=$("evPage"), inn=P&&P.querySelector(".ev-in");
   if(!first&&sh) sh.scrollTop=y; }
 document.addEventListener("focusout",()=>{ setTimeout(()=>{ if(S.evDirty) evRefresh(); },120); });
 
+function evBk(fn){ const b=el("button",{type:"button",class:"ev-back","aria-label":"Retour",onclick:fn}); b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>'; return b; }
 function evPick(inn,V){ const day=V.day||"";
   inn.append(el("div",{class:"ev-top"},el("h2",{text:"Ajouter à l'agenda"})));
   const opt=(ic,bg,t,sub,fn,cls)=>el("button",{type:"button",class:"ev-opt"+(cls?" "+cls:""),onclick:fn},el("i",{"aria-hidden":"true",style:"background:"+bg,text:ic}),el("span",{},el("b",{text:t}),el("small",{text:sub})));
@@ -7634,7 +7639,7 @@ function evList(inn){ const t0=iso(today()), L=evAll(), cur=L.filter(e=>evEnd(e)
 
 function evNew(inn,V){ const T=EV_TYPES[V.type]||EV_TYPES.anniv, t0=iso(today());
   V.titre=V.titre!=null?V.titre:""; V.debut=V.debut||evAdd(t0,21); if(V.fin===undefined) V.fin=""; if(V.budget===undefined) V.budget="";
-  const back=el("button",{type:"button",class:"ev-back",onclick:()=>evGo(V.from==="pick"?{v:"pick",day:V.pickDay||""}:{v:"list"}),"aria-label":"Retour"},V.from==="pick"?"‹ Retour":"‹ Événements");
+  const back=evBk(()=>evGo(V.from==="pick"?{v:"pick",day:V.pickDay||""}:{v:"list"}));
   inn.append(back,el("div",{class:"ev-top"},el("h2",{text:"Nouvel événement"}),el("p",{text:"Un modèle prépare la frise. Décoche ce qui ne sert pas."})));
   const grid=el("div",{class:"ev-types",role:"radiogroup","aria-label":"Type d'événement"});
   for(const [k,t] of Object.entries(EV_TYPES)) grid.append(el("button",{type:"button",role:"radio","aria-checked":String(k===V.type),class:"ev-type",style:"--ec:"+t.c,onclick:()=>{ if(k===V.type) return; V.type=k; V.pick=null; evRender(false); }},el("i",{"aria-hidden":"true",text:t.e}),el("span",{text:t.n})));
@@ -7787,7 +7792,7 @@ function evPap(body,ev,I,V){ const T=evT(ev);
       else { const c=el("div",{class:"ev-list"}); for(const d of others.slice().sort((a,b)=>(b.ajouteLe||0)-(a.ajouteLe||0)).slice(0,30)) c.append(el("button",{type:"button",class:"ev-it ev-doc",onclick:async()=>{ try{ await S.db.collection("documents").doc(d.id).update({ev:ev.id}); d.ev=ev.id; V.link=false; evRender(false); }catch(e){ writeErr(e); } }},el("i",{class:"ev-di","aria-hidden":"true",text:"＋"}),el("span",{class:"ev-tt"},d.titre||"Papier",el("small",{text:catOf(d.cat||"documents").nom})))); body.append(el("div",{class:"ev-sec"},el("span",{text:"Choisis un papier"}),el("button",{type:"button",class:"ev-link",onclick:()=>{ V.link=false; evRender(false); }},"Fermer")),c); } } }
   body.append(el("div",{class:"ev-info"},el("i",{"aria-hidden":"true",text:"📁"}),el("span",{},"Ils restent aussi rangés dans ",el("b",{text:"Papiers"}),T.dcat==="maison"?" → Maison : la garantie se retrouve dans dix ans.":"."))); }
 function evEdit(inn,V){ const ev=evById(V.id); if(!ev){ evGo({v:"list"}); return; } const T=evT(ev);
-  inn.append(el("button",{type:"button",class:"ev-back",onclick:()=>evGo({v:"ev",id:ev.id,tab:V.back||"frise"})},"‹ Retour"),el("div",{class:"ev-top"},el("h2",{text:"Modifier l'événement"})));
+  inn.append(evBk(()=>evGo({v:"ev",id:ev.id,tab:V.back||"frise"})),el("div",{class:"ev-top"},el("h2",{text:"Modifier l'événement"})));
   const nm=el("input",{class:"ev-inp",type:"text",maxlength:"60",value:ev.titre||"","aria-label":"Nom"}), d1=el("input",{class:"ev-inp",type:"date",value:ev.debut||""}), d2=el("input",{class:"ev-inp",type:"date",value:ev.fin||""});
   inn.append(el("label",{class:"ev-lab"},el("span",{text:"Nom"}),nm),el("div",{class:"ev-two"},el("label",{class:"ev-lab"},el("span",{text:"Début"}),d1),el("label",{class:"ev-lab"},el("span",{text:"Fin (facultatif)"}),d2)));
   inn.append(el("p",{class:"ev-note",text:"Changer la date ne déplace pas les étapes déjà prévues."}));
