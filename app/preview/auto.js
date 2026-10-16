@@ -9,6 +9,10 @@
   async function fill(sel, v) { const e = await until(() => { const x = $(sel); return vis(x) ? x : null; }); if (!e) return; e.focus(); e.value = v; e.dispatchEvent(new Event("input", { bubbles: true })); e.dispatchEvent(new Event("change", { bubbles: true })); e.blur(); await wait(200); }
   const next = () => click("#wzNext");
   window.__noTour = 1;
+  { const C = window.Capacitor || {}, d = document.createElement("div");
+    d.style.cssText = "position:fixed;z-index:2147483647;left:8px;right:8px;top:60px;background:#000c;color:#0f0;font:11px/1.3 monospace;padding:6px;border-radius:8px;pointer-events:none";
+    d.textContent = "diag · native=" + (C.isNativePlatform ? C.isNativePlatform() : "?") + " · registerPlugin=" + typeof C.registerPlugin + " · nativePromise=" + typeof C.nativePromise + " · plugins=" + Object.keys(C.Plugins || {}).join(",") + " · class=" + document.documentElement.className;
+    document.body.appendChild(d); setTimeout(() => d.remove(), 9000); }
   await wait(1500);
   if (!(await click("#spGo"))) return;
   await fill("#wzNom", "Nours"); await next();

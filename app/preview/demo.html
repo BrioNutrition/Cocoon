@@ -6205,7 +6205,12 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeNotifs(); });
 setTab("accueil");
 
 /* ===== App iPhone (Capacitor) : la vraie barre d'onglets d'iOS remplace celle du site ===== */
-(function(){ const C=window.Capacitor; if(!C||!C.isNativePlatform||!C.isNativePlatform()||!C.registerPlugin) return; let NT; try{ NT=C.registerPlugin("NativeTabs"); }catch(_){ return; }
+(function(){ const C=window.Capacitor; if(!C||!C.isNativePlatform||!C.isNativePlatform()) return; let NT=null;
+  try{ if(C.registerPlugin) NT=C.registerPlugin("NativeTabs"); }catch(_){ NT=null; }
+  /* sans le module @capacitor/core, on parle directement au pont natif */
+  if(!NT&&C.nativePromise) NT={show:o=>C.nativePromise("NativeTabs","show",o),hide:()=>C.nativePromise("NativeTabs","hide",{}),select:o=>C.nativePromise("NativeTabs","select",o),badge:o=>C.nativePromise("NativeTabs","badge",o),
+    addListener:(ev,cb)=>{ try{ C.nativeCallback("NativeTabs","addListener",{eventName:ev},d=>cb(d)); }catch(_){} return Promise.resolve({remove(){}}); }};
+  if(!NT) return;
   const TABS=[["accueil","Accueil","house.fill"],["hub","Foyer","person.2.fill"],["cocoony","Cocoony","sparkles"],["moi","Moi","person.crop.circle.fill"]];
   document.documentElement.classList.add("native-tabs");
   let shown=false, sel=-1, bdg=null;
