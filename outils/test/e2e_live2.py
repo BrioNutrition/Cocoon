@@ -59,7 +59,7 @@ async def main():
     await pg.locator('.r-cell.now.r-soir').click(); await pg.locator('.r-ideas button:has-text("Pizza maison")').click(); await pg.locator('.r-ed button[type=submit]').click(); await pg.wait_for_timeout(300)
     print('hors ligne -> file:', await pg.evaluate("cocoonHost.pending()"), '| plat affiché:', await pg.locator('.r-cp:has-text("Pizza maison")').count())
     await pg.evaluate("__mock.offline=false"); await ctx.set_offline(False); await pg.wait_for_timeout(1500)
-    await pg.wait_for_timeout(500); await pg.locator('.r-grid').screenshot(path='../dk/70repas.png')
+    await pg.wait_for_timeout(500); await pg.locator('.r-dlist').screenshot(path='../dk/70repas.png')
     print('textes repas:', await pg.locator('.r-cell.now:not(.e)').all_inner_texts(), await pg.evaluate("JSON.stringify(__mock.T.cocoon_docs.filter(r=>r.path==='repas').map(r=>r.data))"))
     print('retour -> file:', await pg.evaluate("cocoonHost.pending()"), '| base repas:', await pg.evaluate("__mock.T.cocoon_docs.filter(r=>r.path==='repas').map(r=>r.data.plat)"), '| mozzarella en base:', await pg.evaluate("__mock.T.cocoon_docs.some(r=>r.path==='courses'&&r.data.nom==='Mozzarella')"))
     print('errors',[e for e in errs if 'ERR_' not in e])
