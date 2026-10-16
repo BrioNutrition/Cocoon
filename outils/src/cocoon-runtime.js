@@ -115,7 +115,7 @@
     function head(title, sub) {
       var invite = LS.get("cocoon.join");
       return '<img class="cx-logo" alt="" src="' + logoSrc() + '"><h1>' + esc(title) + "</h1>" + (sub ? "<p>" + sub + "</p>" : "") +
-        (invite && G.mode !== "foyer" ? '<div class="cx-inv">Tu as reçu une invitation : connecte-toi ou crée ton compte pour rejoindre le foyer.</div>' : "");
+        (invite && G.mode !== "foyer" && G.mode !== "join" ? '<div class="cx-inv">Tu as reçu une invitation : connecte-toi ou crée ton compte pour rejoindre le foyer.</div>' : "");
     }
     G = {
       mode: null,
@@ -180,6 +180,17 @@
           });
           return;
         }
+        if (mode === "join") {
+          var has = extra && extra.has;
+          card.innerHTML = head("Une invitation t'attend", "Quelqu'un t'a envoyé un lien pour rejoindre <b>son foyer</b> dans Cocoon. Tu y verras ses tâches, ses courses, son agenda et ses papiers partagés.") +
+            '<div class="cx-msg" hidden></div><button class="cx-btn" type="button" data-act="join">Rejoindre ce foyer</button>' +
+            '<button class="cx-btn alt" type="button" data-act="own">' + (has ? "Non merci, garder mon foyer" : "Non, créer mon propre foyer") + '</button>' +
+            '<button class="cx-link" type="button" data-act="out">Se déconnecter</button>';
+          card.querySelector('[data-act="join"]').addEventListener("click", function (e) { e.target.disabled = true; e.target.textContent = "On t'ajoute au foyer…"; afterLogin(ME, "join"); });
+          card.querySelector('[data-act="own"]').addEventListener("click", function () { LS.del("cocoon.join"); G.show("wait"); afterLogin(ME); });
+          card.querySelector('[data-act="out"]').addEventListener("click", function () { LS.del("cocoon.join"); logout(); });
+          return;
+        }
         if (mode === "foyer") {
           card.innerHTML = head("Ton foyer", "Crée ton foyer pour commencer. Pour rejoindre celui de quelqu'un, demande-lui son <b>lien d'invitation</b> (dans Cocoon : onglet Moi → Mon compte) et ouvre-le.") +
             '<div class="cx-msg" hidden></div><button class="cx-btn alt" type="button" data-act="create">Créer mon foyer</button>' +
@@ -232,10 +243,17 @@
   async function logout() { try { await Promise.race([PUSH.disable(), new Promise(function (r) { setTimeout(r, 2500); })]); } catch (_) {} LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer"); try { await SBP; await sb.auth.signOut(); } catch (_) {} authStore.removeItem("cocoon.auth"); location.reload(); }
 
   /* =================== Session & foyer =================== */
-  async function afterLogin(user) {
+  async function afterLogin(user, acc) {
     if (!user) return;
     ME = user;
     var join = LS.get("cocoon.join");
+    /* Un lien d'invitation ne fait plus entrer dans un foyer sans le demander */
+    if (join && acc !== "join") {
+      var jf = join.split(".")[0], mm = await sb.from("cocoon_members").select("foyer").eq("user_id", user.id);
+      var mine = (mm.data || []).map(function (x) { return x.foyer; });
+      if (mine.indexOf(jf) >= 0) { LS.del("cocoon.join"); LS.set("cocoon.foyer", jf); join = null; }
+      else { gate().show("join", { has: mine.length > 0 }); return; }
+    }
     if (join) {
       var p = join.split("."), r = await sb.rpc("cocoon_join_foyer", { f: p[0], c: p[1] || "" });
       LS.del("cocoon.join");
@@ -282,7 +300,7 @@
   Promise.all([SBP, DOMP]).then(async function () {
     sb.auth.onAuthStateChange(function (ev, session) {
       if (ev === "PASSWORD_RECOVERY") { gate().show("newpw"); return; }
-      if (ev === "SIGNED_IN" && session && !started && G && G.mode !== "foyer") afterLogin(session.user);
+      if (ev === "SIGNED_IN" && session && !started && G && G.mode !== "foyer" && G.mode !== "join") afterLogin(session.user);
       if (ev === "SIGNED_OUT" && started && !DELETING) location.reload();
     });
     var s = await sb.auth.getSession();
