@@ -36,7 +36,7 @@ html{background:#F6F5FB;color-scheme:light dark}@media (prefers-color-scheme: da
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 07:08";</script>
+<script>window.COCOON_BUILD="16/10 07:35";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -74,7 +74,7 @@ html{background:#F6F5FB;color-scheme:light dark}@media (prefers-color-scheme: da
 </head>
 <body>
 <div id="cxIntro" aria-hidden="true"><div class="cxi-c"><div class="cxi-w"><i></i><i></i><img class="cxi-logo" src="icon-192.png" alt=""></div><div class="cxi-name"><span style="--i:0">C</span><span style="--i:1">o</span><span style="--i:2">c</span><span style="--i:3">o</span><span style="--i:4">o</span><span style="--i:5">n</span></div></div></div>
-<script>(function(){var T=performance.now(),done=false;window.cxIntroOut=function(fast){if(done)return;done=true;var el=document.getElementById("cxIntro");if(!el)return;if(fast){try{el.animate([{opacity:1},{opacity:0}],{duration:280,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}return;}var wait=Math.max(0,1250-(performance.now()-T));setTimeout(function(){var c=el.querySelector(".cxi-c");try{c.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(-26px) scale(.94)"}],{duration:420,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"});el.animate([{opacity:1},{opacity:0}],{duration:460,delay:120,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}},wait);};setTimeout(function(){window.cxIntroOut();},9000);})();</script>
+<script>(function(){try{var la=localStorage.getItem("cocoon.auth")||sessionStorage.getItem("cocoon.auth");if(la&&!/[?&#](join|invite|code)=/.test(location.href)){var ce=document.getElementById("cxIntro");if(ce)ce.remove();}}catch(_){}var T=performance.now(),done=false;window.cxIntroOut=function(fast){if(done)return;done=true;var el=document.getElementById("cxIntro");if(!el)return;if(fast){try{el.animate([{opacity:1},{opacity:0}],{duration:280,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}return;}var wait=Math.max(0,1250-(performance.now()-T));setTimeout(function(){var c=el.querySelector(".cxi-c");try{c.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(-26px) scale(.94)"}],{duration:420,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"});el.animate([{opacity:1},{opacity:0}],{duration:460,delay:120,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}},wait);};setTimeout(function(){window.cxIntroOut();},9000);})();</script>
 <title>Cocoon</title>
 <script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -5024,7 +5024,8 @@ function sortable(box,sel,done,o){ o=o||{}; const lp=o.lp==null?380:o.lp; let it
   box.addEventListener("mousedown",start);
   box.addEventListener("click",e=>{ if(Date.now()-(box._sorted||0)<450){ e.stopPropagation(); e.preventDefault(); } },true);
   box.addEventListener("contextmenu",e=>{ if(it) e.preventDefault(); }); }
-function renderWidgets(){ const box=$("accBudget"); if(!box) return; if(box.querySelector(".sorting")) return; box.innerHTML=""; if(!meId()) return; box.className="wg-zone";
+function wgSig(){ try{ return JSON.stringify(wgList().map(x=>[x.k,x.l?1:0,wgData(x.k,!!x.l)]))+"|"+(document.documentElement.dataset.theme||""); }catch(_){ return String(Math.random()); } }
+function renderWidgets(){ const box=$("accBudget"); if(!box) return; if(box.querySelector(".sorting")||box._landing) return; const sig=wgSig(); if(box._sig===sig&&box.querySelector(".wg-grid")) return; box.innerHTML=""; box._sig=sig; if(!meId()) return; box.className="wg-zone";
   const g=el("div",{class:"wg-grid"});
   for(const x of wgList()){ const w=WG[x.k], L=!!x.l, D=wgData(x.k,L);
     const b=el("button",{type:"button",class:"wg"+(L?" wide":""),"data-k":x.k,style:"--wc:"+w.c,"aria-label":w.t+" : "+D.big+(D.small?", "+D.small:""),onclick:()=>wgGo(x.k,D)},
@@ -5034,7 +5035,7 @@ function renderWidgets(){ const box=$("accBudget"); if(!box) return; if(box.quer
     if(D.ring!=null){ const r=el("span",{class:"wg-ring",style:"--p:"+D.ring+"%"},el("b",{text:D.ring+"%"})); b.append(r); b.classList.add("has-ring"); }
     if(D.spark&&L){ const sp=el("span",{class:"wg-spark","aria-hidden":"true"}); sp.innerHTML=budgetSpark(); b.append(sp); }
     g.append(b); }
-  sortable(g,".wg",keys=>{ const cur=wgList(); wgSave(keys.map(k=>cur.find(x=>x.k===k)).filter(Boolean),true); });
+  sortable(g,".wg",keys=>{ const cur=wgList(); wgSave(keys.map(k=>cur.find(x=>x.k===k)).filter(Boolean),true); box._sig=wgSig(); });
   const ed=el("button",{type:"button",class:"wg-edit",onclick:openWidgetSheet},el("span",{"aria-hidden":"true",text:"✎"}),wgList().length?"Modifier l'accueil":"Ajouter des raccourcis");
   box.append(el("div",{class:"wg-sec"},el("span",{text:"Mes raccourcis"}),""),g,ed); }
 function openWidgetSheet(){ const U=upSheet("wgPage","Mes raccourcis"), sheet=U.sheet; sheet.classList.add("wg-sheet"); const inn=el("div",{class:"pp-in"}); sheet.append(inn);
@@ -8043,7 +8044,7 @@ function bootCheck(){
 /* les contours qui grossissent autour du logo s'effacent en fondu là où ils en sont */
 function ringsOut(w){ if(!w) return; w.querySelectorAll(":scope > i").forEach(i=>{ const cs=getComputedStyle(i), op=parseFloat(cs.opacity)||0, tf=cs.transform&&cs.transform!=="none"?cs.transform:"none";
   i.getAnimations().forEach(a=>a.cancel()); i.style.animation="none"; i.style.transform=tf; i.style.opacity=String(op);
-  if(op>0.01){ try{ i.animate([{opacity:op},{opacity:0}],{duration:420,easing:"ease-out",fill:"forwards"}); }catch(_){ i.style.opacity="0"; } } else i.style.opacity="0"; }); }
+  if(op>0.01){ try{ i.animate([{opacity:op},{opacity:0}],{duration:160,easing:"ease-out",fill:"forwards"}); }catch(_){ i.style.opacity="0"; } } else i.style.opacity="0"; }); }
 async function flySplash(b,logo){ try{ spBackCheck(); }catch(_){}
   const sp=$("splash"), tl=$("spLogo"), tn=sp.querySelector(".sp-name"), bn=b.querySelector(".bt-name");
   sp.getAnimations({subtree:true}).forEach(a=>a.cancel()); clearTimeout(sp._t);
