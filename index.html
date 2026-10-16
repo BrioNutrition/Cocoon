@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 12:01";</script>
+<script>window.COCOON_BUILD="16/10 12:31";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2754,6 +2754,12 @@ html:has(#boot),html:has(#boot) body{background:#13121C!important}
 .wl-ask .cx-ask-no{border:0;background:var(--sunk);border-radius:14px;font:inherit;font-weight:700;font-size:15px;color:var(--ink);padding:13px;cursor:pointer}
 @media (prefers-reduced-motion:reduce){.wl-ask,.wl-bg{transition:none}}
 .warmup>*{transition:opacity .26s ease}.warmup.ending>*{opacity:0!important}
+
+/* glisser-déposer : pas de sélection/halo/contour violet sur la tuile posée */
+.wg,.wg *,.sort-ghost,.sort-ghost *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.wg:focus,.wg:focus-visible,.sort-ghost:focus{outline:none!important}
+.wg-grid .wg::selection,.wg-grid .wg *::selection{background:transparent}
+.wg-grid.sorting .wg:active,.wg.landing:active{transform:none}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -5082,8 +5088,11 @@ function sortable(box,sel,done,o){ o=o||{}; const lp=o.lp==null?380:o.lp; let it
     if(active){ if(e&&e.stopPropagation) e.stopPropagation(); haptic(10);
       const g=ghost, ph=it, r=ph.getBoundingClientRect(); box._sorted=Date.now(); active=false; it=null; ghost=null;
       ph.getAnimations().forEach(a=>{ try{ a.finish(); }catch(_){} });
-      g.style.transition="left .18s cubic-bezier(.2,.8,.2,1),top .18s cubic-bezier(.2,.8,.2,1),transform .18s ease"; g.style.left=r.left+"px"; g.style.top=r.top+"px"; g.style.transform="none";
-      setTimeout(()=>{ ph.classList.remove("sort-ph"); box.classList.remove("sorting"); requestAnimationFrame(()=>{ g.remove(); done([...box.querySelectorAll(sel)].map(x=>x.dataset.k)); }); },190);
+      /* atterrissage en fondu : le fantôme se pose et s'efface pendant que la vraie tuile réapparaît (pas d'ombre ni de calque qui sautent) */
+      g.style.transition="left .2s cubic-bezier(.2,.8,.2,1),top .2s cubic-bezier(.2,.8,.2,1),transform .2s ease,box-shadow .24s ease,opacity .22s ease .06s"; g.style.left=r.left+"px"; g.style.top=r.top+"px"; g.style.transform="none"; g.style.setProperty("box-shadow","0 2px 0 var(--shadow)","important"); g.style.opacity="0";
+      ph.style.transition="none"; ph.style.opacity="0"; ph.classList.remove("sort-ph"); void ph.offsetWidth; ph.style.transition="opacity .22s ease .04s"; ph.style.opacity="1";
+      box.classList.remove("sorting"); try{ document.activeElement&&document.activeElement.blur&&document.activeElement.blur(); getSelection().removeAllRanges(); }catch(_){}
+      setTimeout(()=>{ g.remove(); ph.style.transition=""; ph.style.opacity=""; done([...box.querySelectorAll(sel)].map(x=>x.dataset.k)); },300);
       return; }
     it=null; };
   box.addEventListener("touchstart",start,{passive:true}); box.addEventListener("touchmove",move,{passive:false}); box.addEventListener("touchend",end); box.addEventListener("touchcancel",end);
