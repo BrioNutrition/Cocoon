@@ -2,7 +2,8 @@
 // ===== Cocoon : éléments natifs d'iOS (Liquid Glass avec le SDK iOS 26) =====
 // Barre d'onglets, barre du haut (retour, titre, boutons en verre), menus, vibrations, thème.
 // Ajouté à AppDelegate.swift par ios-native/patch.sh après « npx cap add ios ».
-let cocoonYellow = UIColor(red: 1.0, green: 0.788, blue: 0.29, alpha: 1)
+// jaune Cocoon ; un peu plus soutenu en thème clair pour rester lisible
+let cocoonYellow = UIColor { t in t.userInterfaceStyle == .dark ? UIColor(red: 1.0, green: 0.788, blue: 0.29, alpha: 1) : UIColor(red: 0.90, green: 0.62, blue: 0.0, alpha: 1) }
 
 @objc(NativeTabsPlugin)
 public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
