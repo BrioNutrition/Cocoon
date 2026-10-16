@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 15:39";</script>
+<script>window.COCOON_BUILD="16/10 15:45";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2852,7 +2852,8 @@ button.ev-it{cursor:pointer}
 .ev-seg{display:flex;gap:3px;background:color-mix(in srgb,var(--line) 70%,var(--bg));border-radius:14px;padding:4px;position:sticky;top:0;z-index:2}
 .ev-seg button{flex:1;border:0;background:none;font:inherit;font-size:13px;font-weight:700;color:var(--muted);padding:8px 0;border-radius:10px;cursor:pointer;transition:background .18s,color .18s}
 .ev-seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
-.ev-body{display:flex;flex-direction:column;gap:10px;animation:evIn .22s ease}
+.ev-body{display:flex;flex-direction:column;gap:10px}
+.ev-body.anim{animation:evIn .22s ease}
 @keyframes evIn{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
 .ev-frise{position:relative;padding-left:26px;display:flex;flex-direction:column;gap:12px}
 .ev-frise::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--line)}
@@ -7608,7 +7609,7 @@ function openEvent(id,tab){ openEvents({v:"ev",id,tab:tab||"frise"}); }
 function evGo(view){ S.evOpen=view; evRender(true); const sh=document.querySelector("#evPage .pp-sheet"); if(sh) sh.scrollTop=0; }
 function evRefresh(){ const P=$("evPage"); if(!S.evOpen) return; if(!P||P.hidden){ S.evOpen=null; return; }
   const a=document.activeElement; if(a&&P.contains(a)&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)){ S.evDirty=true; return; }
-  if(S.evOpen.v==="new"||S.evOpen.v==="edit"||S.evOpen.v==="pick") return; evRender(false); }
+  if(S.evOpen.v==="new"||S.evOpen.v==="edit"||S.evOpen.v==="pick") return; if(S.evHold) return; evRender(false); }
 function evRender(first){ const P=$("evPage"), inn=P&&P.querySelector(".ev-in"); if(!inn) return; const sh=P.querySelector(".pp-sheet"), y=sh?sh.scrollTop:0;
   const V=S.evOpen||{v:"list"}; inn.innerHTML=""; S.evDirty=false;
   if(V.v==="ev"&&!evById(V.id)){ if(S.evs) S.evOpen={v:"list"}; else return; }
@@ -7621,8 +7622,6 @@ function evPick(inn,V){ const day=V.day||"";
   const opt=(ic,bg,t,sub,fn,cls)=>el("button",{type:"button",class:"ev-opt"+(cls?" "+cls:""),onclick:fn},el("i",{"aria-hidden":"true",style:"background:"+bg,text:ic}),el("span",{},el("b",{text:t}),el("small",{text:sub})));
   inn.append(opt("📅","color-mix(in srgb,#8FB8FF 40%,var(--surface))","Un rendez-vous","Médecin, garage, réunion d'école…",()=>{ if(S.evClose) S.evClose(); setTimeout(()=>fabAct("agenda",{dataset:{direct:"rdv"}}),340); }),
     opt("🎉","color-mix(in srgb,#FF9C80 40%,var(--surface))","Un événement à préparer","Anniv, travaux, vacances : avec sa frise, ses achats et son budget",()=>evGo({v:"new",type:"anniv",debut:day||undefined,from:"pick",pickDay:day}),"hot"));
-  const ch=el("div",{class:"ev-chips"}); for(const [k,t] of Object.entries(EV_TYPES)) ch.append(el("button",{type:"button",style:"--ec:"+t.c,onclick:()=>evGo({v:"new",type:k,debut:day||undefined,from:"pick",pickDay:day})},t.e+" "+t.n));
-  inn.append(ch);
   const n=(S.evs||[]).length; if(n) inn.append(el("button",{type:"button",class:"ev-link",onclick:()=>evGo({v:"list"})},"Voir mes événements ("+n+")")); }
 function evList(inn){ const t0=iso(today()), L=evAll(), cur=L.filter(e=>evEnd(e)>=t0), past=L.filter(e=>evEnd(e)<t0).reverse();
   inn.append(el("div",{class:"ev-top"},el("h2",{text:"Événements"}),el("p",{text:"Un anniversaire, des travaux, des vacances : tout préparer au même endroit."})));
@@ -7682,7 +7681,7 @@ function evDetail(inn,V){ const ev=evById(V.id), T=evT(ev), P=evProg(ev), I=evIt
   const tabs=[["frise","⏳ Frise"],["ach","Achats"],["bud","Budget"],["pap","Papiers"]], seg=el("div",{class:"ev-seg",role:"tablist"});
   for(const [k,l] of tabs) seg.append(el("button",{type:"button",role:"tab","aria-selected":String(V.tab===k),class:V.tab===k?"on":"",onclick:()=>{ if(V.tab===k) return; V.tab=k; V.add=null; V.addOpen=false; V.open=null; V.link=false; V.budEdit=false; V.dep=null; evRender(false); }},l));
   inn.append(seg);
-  const body=el("div",{class:"ev-body"}); inn.append(body);
+  const body=el("div",{class:"ev-body"+(V._anim!==V.tab?" anim":"")}); V._anim=V.tab; inn.append(body);
   ({frise:evFrise,ach:evAch,bud:evBud,pap:evPap}[V.tab]||evFrise)(body,ev,I,V); }
 function evMenu(btn,ev,V){ const old=document.querySelector(".ev-pop"); if(old){ old._close(); if(old._btn===btn) return; }
   const sheet=btn.closest(".pp-sheet"); if(!sheet) return; const pop=el("div",{class:"ev-pop",role:"menu"}); pop._btn=btn; btn.setAttribute("aria-expanded","true");
@@ -7697,7 +7696,8 @@ async function evDelete(ev){ const I=evItems(ev);
   try{ await Promise.all([].concat(I.t.filter(o=>!o.fait).map(o=>S.db.collection("taches").doc(o.id).delete()),I.a.filter(o=>!o.fait).map(o=>S.db.collection("courses").doc(o.id).delete()),I.r.filter(o=>!o.fait).map(o=>S.db.collection("rdv").doc(o.id).delete()),
       I.d.map(o=>S.db.collection("depenses").doc(o.id).update({ev:null})),I.p.map(o=>S.db.collection("documents").doc(o.id).update({ev:null}))));
     await S.db.collection("evenements").doc(ev.id).delete(); S.evs=(S.evs||[]).filter(e=>e.id!==ev.id); toast("Événement supprimé. Ses dépenses et ses papiers sont gardés."); if(S.evClose) S.evClose(); renderAll(); }catch(e){ writeErr(e); } }
-async function evToggle(k,o){ if(!S.db||!needMe()) return; const me=meId(), f=!o.fait; o.fait=f; evRefreshSoon();
+async function evToggle(k,o,btn){ if(!S.db||!needMe()) return; const me=meId(), f=!o.fait; o.fait=f;
+  if(btn){ btn.classList.toggle("on",f); btn.setAttribute("aria-checked",String(f)); const it=btn.closest(".ev-it"); if(it) it.classList.toggle("done",f); S.evHold=Date.now(); clearTimeout(S.evHoldT); S.evHoldT=setTimeout(()=>{ S.evHold=0; evRender(false); },650); } else evRefreshSoon();
   const col=k==="a"?"courses":k==="r"?"rdv":"taches";
   try{ await S.db.collection(col).doc(o.id).update(k==="r"?{fait:f,faitPar:f?me:null,faitLe:f?Date.now():null}:{fait:f,faitPar:f?me:null,faitLe:f?Date.now():null}); if(f) haptic(8); }catch(e){ o.fait=!f; writeErr(e); evRefreshSoon(); } }
 function evRefreshSoon(){ requestAnimationFrame(()=>evRender(false)); }
@@ -7706,7 +7706,7 @@ async function evDel(k,o){ const col=k==="a"?"courses":k==="r"?"rdv":"taches"; c
 function evRow(k,o,ev,opts){ opts=opts||{}; const t0=iso(today()), V=S.evOpen, key=k+":"+o.id, open=V.open===key;
   const date=k==="a"?o.evDate:k==="r"?o.date:o.echeance;
   const row=el("div",{class:"ev-it"+(o.fait?" done":"")+(open?" open":"")});
-  row.append(el("button",{type:"button",class:"ev-ck"+(o.fait?" on":""),role:"checkbox","aria-checked":String(!!o.fait),"aria-label":(o.titre||o.nom),disabled:S.readOnly||null,onclick:()=>evToggle(k,o)}));
+  row.append(el("button",{type:"button",class:"ev-ck"+(o.fait?" on":""),role:"checkbox","aria-checked":String(!!o.fait),"aria-label":(o.titre||o.nom),disabled:S.readOnly||null,onclick:e=>evToggle(k,o,e.currentTarget)}));
   const tt=el("button",{type:"button",class:"ev-tt",onclick:()=>{ if(S.readOnly) return; V.open=open?null:key; evRender(false); }},o.titre||o.nom||"");
   row.append(tt);
   if(k==="a"&&!opts.noTag) row.append(el("em",{class:"ev-tag a",text:"🛒 achat"}));
@@ -7727,11 +7727,13 @@ function evAddForm(ev,V,kinds,def){ const f=V.add||(V.add={k:kinds[0],t:"",d:def
     const sb=fm.querySelector("button[type=submit]"); sb.disabled=true;
     try{ await evAddItem(ev.id,f.k,t,f.d||(f.k==="r"?ev.debut:null),0,f.h); haptic(8); V.add={k:f.k,t:"",d:f.d,h:""}; V.addOpen=true; evRender(false); setTimeout(()=>{ const x=$("evAddT"); if(x) x.focus(); },30); }
     catch(err){ writeErr(err); sb.disabled=false; } });
-  if(kinds.length>1){ const sg=el("div",{class:"ev-kinds"}); for(const [k,l] of [["t","Tâche"],["a","Achat"],["r","Rendez-vous"]]) if(kinds.includes(k)) sg.append(el("button",{type:"button",class:f.k===k?"on":"",onclick:()=>{ f.k=k; evRender(false); }},l)); fm.append(sg); }
-  const ti=el("input",{class:"ev-inp",id:"evAddT",type:"text",maxlength:"80",placeholder:f.k==="a"?"Ex. bougies":f.k==="r"?"Ex. passage du plombier":"Ex. réserver la salle",value:f.t,"aria-label":"Intitulé"}); ti.addEventListener("input",()=>f.t=ti.value);
+  const PH={t:"Ex. réserver la salle",a:"Ex. bougies",r:"Ex. passage du plombier"};
+  const ti=el("input",{class:"ev-inp",id:"evAddT",type:"text",maxlength:"80",placeholder:PH[f.k],value:f.t,"aria-label":"Intitulé"}); ti.addEventListener("input",()=>f.t=ti.value);
   const di=el("input",{class:"ev-inp",type:"date",value:f.d,"aria-label":"Date"}); di.addEventListener("change",()=>f.d=di.value);
-  const line=el("div",{class:"ev-two"},el("label",{class:"ev-lab"},el("span",{text:f.k==="a"?"À acheter pour le":"Date"}),di));
-  if(f.k==="r"){ const hi=el("input",{class:"ev-inp",type:"time",value:f.h,"aria-label":"Heure"}); hi.addEventListener("change",()=>f.h=hi.value); line.append(el("label",{class:"ev-lab"},el("span",{text:"Heure"}),hi)); }
+  const dl=el("span",{text:f.k==="a"?"À acheter pour le":"Date"});
+  const hi=el("input",{class:"ev-inp",type:"time",value:f.h,"aria-label":"Heure"}); hi.addEventListener("change",()=>f.h=hi.value); const hl=el("label",{class:"ev-lab"},el("span",{text:"Heure"}),hi); hl.hidden=f.k!=="r";
+  const line=el("div",{class:"ev-two"},el("label",{class:"ev-lab"},dl,di),hl);
+  if(kinds.length>1){ const sg=el("div",{class:"ev-kinds"}); for(const [k,l] of [["t","Tâche"],["a","Achat"],["r","Rendez-vous"]]) if(kinds.includes(k)) sg.append(el("button",{type:"button",class:f.k===k?"on":"","data-k":k,onclick:e=>{ f.k=k; sg.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.k===k)); ti.placeholder=PH[k]; dl.textContent=k==="a"?"À acheter pour le":"Date"; hl.hidden=k!=="r"; }},l)); fm.append(sg); }
   fm.append(ti,line,el("div",{class:"ev-fbt"},el("button",{type:"button",class:"btn ghost",onclick:()=>{ V.addOpen=false; V.add=null; evRender(false); }},"Fermer"),el("button",{type:"submit",class:"btn"},"Ajouter")));
   return fm; }
 function evFrise(body,ev,I,V){ const t0=iso(today()), T=evT(ev);

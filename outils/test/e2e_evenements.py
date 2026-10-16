@@ -37,7 +37,7 @@ async def main():
     await pg.click('.tab[data-tab="hub"]'); await pg.wait_for_timeout(500)
     await pg.click('.hb-t[data-go="agenda"]'); await pg.wait_for_timeout(900); await pg.keyboard.press('Escape'); await pg.wait_for_timeout(500)
     await pg.click('.hub-add[data-add="agenda"]'); await pg.wait_for_timeout(400)
-    await pg.click('.ev-chips button:has-text("Anniversaire")'); await pg.fill('#evNom','Anniv de Patoune'); await pg.fill('#evDeb','2030-05-10')
+    await pg.click('.ev-opt.hot'); await pg.click('.ev-type:has-text("Anniversaire")'); await pg.fill('#evNom','Anniv de Patoune'); await pg.fill('#evDeb','2030-05-10')
     await pg.click('#evCreate'); await pg.wait_for_selector('.ev-frise', timeout=8000); await pg.wait_for_timeout(1500)
     n=await pg.evaluate("document.querySelectorAll('.ev-frise .ev-it').length"); print('frise items', n); assert n==9, n
     await pg.click('.ev-seg button:has-text("Budget")'); await pg.click('.ev-add'); await pg.fill('#evDepT','Gâteau'); await pg.fill('.ev-form input[inputmode=decimal]','35'); await pg.click('.ev-form button[type=submit]'); await pg.wait_for_timeout(1200)
