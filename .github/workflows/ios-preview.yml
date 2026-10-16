@@ -8,6 +8,9 @@ on:
     branches: [main]
     paths: ["app/**", ".github/workflows/ios-preview.yml"]
 
+permissions:
+  contents: write
+
 jobs:
   apercu:
     runs-on: macos-15
@@ -22,6 +25,7 @@ jobs:
           [ -z "$X" ] && X=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
           sudo xcode-select -s "$X"
           xcodebuild -version
+          mkdir -p apercu && xcodebuild -version > apercu/xcode.txt
 
       - uses: actions/setup-node@v4
         with:
@@ -70,6 +74,17 @@ jobs:
           kill -INT $REC || true
           sleep 4
           ls -la apercu
+
+      - name: Ranger les captures dans la branche « apercu-ios »
+        if: always()
+        run: |
+          mkdir -p /tmp/ap && cp -R apercu/. /tmp/ap/ 2>/dev/null || true
+          cd /tmp/ap
+          for f in ecran-*.png; do [ -f "$f" ] && sips -Z 900 "$f" >/dev/null 2>&1 || true; done
+          git init -q -b apercu-ios
+          git config user.name "cocoon-bot"; git config user.email "cocoon-bot@users.noreply.github.com"
+          git add -A && git commit -qm "Aperçu iOS ${GITHUB_SHA::7}" || true
+          git push -q -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" apercu-ios:apercu-ios
 
       - uses: actions/upload-artifact@v4
         if: always()
