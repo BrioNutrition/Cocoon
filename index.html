@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 10:39";</script>
+<script>window.COCOON_BUILD="16/10 10:55";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2735,7 +2735,6 @@ html:has(#boot),html:has(#boot) body{background:#13121C!important}
 .fy-sw{width:22px!important;height:22px!important;margin-left:2px!important;background:none!important;border-radius:0!important;color:var(--muted)!important;transform:translateY(-4px)!important}
 .fy-sw svg{width:16px!important;height:16px!important}
 #homeTitle.fy-tap{cursor:pointer;-webkit-tap-highlight-color:transparent}
-#homeTitle.fy-tap:active{opacity:.75}
 /* halo du papier : s'éteint jusqu'à l'ombre normale, sans saut */
 @keyframes bdFlash{0%,35%{box-shadow:0 0 0 3px #FFC94A,0 8px 24px color-mix(in srgb,#FFC94A 35%,transparent),0 2px 0 var(--shadow)}100%{box-shadow:0 0 0 0 color-mix(in srgb,#FFC94A 0%,transparent),0 8px 24px transparent,0 2px 0 var(--shadow)}}
 </style>
@@ -3328,7 +3327,7 @@ function renderHeader(){
   { const ht=$("homeTitle"); ht.innerHTML=""; const fam=(S.foyerNom||"").trim().replace(/^(la famille|famille|les)\s+/i,"");
     if(fam){ ht.append("Chez les\u00A0",el("span",{class:"fam",text:fam})); } else ht.append("Chez toi,",el("br"),"dans ton cocon");
     if(meId()&&!S.readOnly){ const fb=el("button",{type:"button",class:"fy-sw",id:"fySwBtn","aria-label":"Changer de foyer ou en créer un","aria-haspopup":"menu","aria-expanded":"false",onclick:e=>{ e.stopPropagation(); openFoyerMenu(fb); }}); fb.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg>'; ht.append(fb);
-      ht.classList.add("fy-tap"); ht.onclick=e=>{ if(e.target.closest(".fy-sw")) return; e.stopPropagation(); openFoyerMenu(fb); }; } else { ht.classList.remove("fy-tap"); ht.onclick=null; } }
+      ht.classList.add("fy-tap"); if(window.cocoonHost&&cocoonHost.foyers&&!S.fyCache&&!S.fyFetch){ S.fyFetch=1; cocoonHost.foyers().then(l=>{ if(l) S.fyCache=l; }).catch(()=>{}).finally(()=>{ S.fyFetch=0; }); } ht.onclick=e=>{ if(e.target.closest(".fy-sw")) return; e.stopPropagation(); openFoyerMenu(fb); }; } else { ht.classList.remove("fy-tap"); ht.onclick=null; } }
   const me=meId(), box=$("members"); box.innerHTML="";
   if(isAdmin()&&!S.readOnly){ const r=el("span",{class:"ring"}); r.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
     S._addStory=el("button",{type:"button",class:"story add","aria-label":"Ajouter un membre",onclick:openInvite},r,el("span",{class:"sn",text:"Ajouter"})); } else S._addStory=null;
@@ -7339,14 +7338,9 @@ async function openFoyerMenu(btn){ const M=$("addMenu"); if(!M) return; if(!M.hi
   M.innerHTML=""; M.dataset.k="fy"; const H=window.cocoonHost;
   const place=()=>{ const r=btn.getBoundingClientRect(); M.style.top=Math.round(r.bottom+8)+"px"; M.style.bottom="auto"; M.style.right="auto"; M.style.left=Math.max(12,Math.min(innerWidth-272,Math.round(r.left-180)))+"px"; };
   const item=(ic,t,sub,on,fn)=>{ const b=el("button",{type:"button",role:"menuitem",class:"fy-it"+(on?" on":""),onclick:()=>{ M.hidden=true; btn.setAttribute("aria-expanded","false"); fn&&fn(); }},el("i",{"aria-hidden":"true",text:ic}),el("span",{},el("b",{text:t}),sub?el("small",{text:sub}):null)); if(on) b.append(el("em",{"aria-hidden":"true",text:"✓"})); M.append(b); };
-  M.append(el("div",{class:"fy-hd",text:"Tes foyers"}));
   const cur=(S.foyerNom||"").trim();
   const curName=cur?"Chez les "+cur.replace(/^(la famille|famille|les)\s+/i,""):"Mon foyer";
-  let list=null;
-  if(H&&H.foyers){ item("🏠",curName,"Chargement des autres foyers…",true,null); place(); M.hidden=false; btn.setAttribute("aria-expanded","true");
-    try{ list=await H.foyers(); }catch(err){ writeErr(err); list=null; }
-    if(M.hidden||M.dataset.k!=="fy") return;
-    M.innerHTML=""; M.append(el("div",{class:"fy-hd",text:"Tes foyers"})); }
+  const build=list=>{ M.innerHTML=""; M.append(el("div",{class:"fy-hd",text:"Tes foyers"}));
   const rows=list&&list.length?list:[{id:"cur",nom:cur,current:true,role:isAdmin()?"admin":"membre"}];
   rows.sort((a,b)=>(b.current?1:0)-(a.current?1:0));
   for(const f of rows){ const nm=f.current?curName:(f.nom?"Chez les "+String(f.nom).replace(/^(la famille|famille|les)\s+/i,""):"Nouveau foyer");
@@ -7355,7 +7349,11 @@ async function openFoyerMenu(btn){ const M=$("addMenu"); if(!M) return; if(!M.hi
   item("＋","Créer un nouveau foyer","maison de vacances, garde alternée…",false,()=>{ if(!H||!H.createFoyer){ toast("Disponible dans l'app installée : la démo n'a qu'un foyer."); return; }
     confirmBox("Créer un nouveau foyer ?","Tu pourras repasser d'un foyer à l'autre avec la flèche à côté du nom. Ton foyer actuel ne change pas.","Créer",async()=>{ try{ toast("Création du foyer…"); await H.createFoyer(); }catch(err){ writeErr(err); } }); });
   item("🔗","Rejoindre un foyer","ouvre le lien d'invitation reçu",false,()=>toast("Ouvre simplement le lien d'invitation qu'on t'a envoyé : il t'ajoutera à ce foyer."));
-  place(); M.hidden=false; btn.setAttribute("aria-expanded","true"); }
+  };
+  let list=S.fyCache||null;
+  if(H&&H.foyers&&!list){ try{ list=await Promise.race([H.foyers(),new Promise(r=>setTimeout(()=>r(null),1500))]); }catch(err){ list=null; } if(list) S.fyCache=list; if(!M.hidden&&M.dataset.k==="fy") return; }
+  build(list); place(); M.hidden=false; btn.setAttribute("aria-expanded","true");
+  if(H&&H.foyers&&S.fyCache){ H.foyers().then(fresh=>{ if(!fresh) return; const ch=JSON.stringify(fresh)!==JSON.stringify(S.fyCache); S.fyCache=fresh; if(ch&&!M.hidden&&M.dataset.k==="fy"){ build(fresh); place(); } }).catch(()=>{}); } }
 const PM_SHORT={"Papiers en photo":"Lus et rangés tout seuls","Secrétaire intelligent":"Cocoony répond à tout","Papiers illimités":"Plus de limite de 25","Sauvegarde du foyer":"Tout télécharger en 1 clic","Budget avancé":"Graphiques et export impôts","Plusieurs foyers":"Vacances, garde alternée…","Thèmes et icônes":"Habille Cocoon à ton goût"};
 function upSheet(id,label){ let P=$(id); if(!P){ P=el("div",{class:"prem-page",id,role:"dialog","aria-modal":"true","aria-label":label}); document.body.append(P); }
   P.innerHTML=""; P.hidden=false; P.style.background=""; document.documentElement.classList.add("prem-open");
