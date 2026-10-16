@@ -11,9 +11,9 @@ async def main():
     pg=await ctx.new_page(); errs=[]; pg.on('pageerror',lambda e:errs.append(str(e))); pg.on('console',lambda m: m.type=='error' and errs.append('console:'+m.text))
     await pg.add_init_script('window.__noTour=1')
     await pg.goto('http://localhost:8765/'); await pg.wait_for_timeout(800)
-    await pg.screenshot(path='../w1.png')
+    await pg.screenshot(path='/tmp/dk/w1.png')
     await pg.click('#cxGate [data-go="signup"]'); await pg.fill('#cxGate input[name=email]','angel@test.fr'); await pg.fill('#cxGate input[name=pw]','secret123'); await pg.click('#cxGate .cx-btn')
-    await pg.wait_for_timeout(500); await pg.screenshot(path='../w2.png')
+    await pg.wait_for_timeout(500); await pg.screenshot(path='/tmp/dk/w2.png')
     for _k in range(80):  # GATE_RETRY
       if await pg.is_visible('#cxGate [data-act="create"]'): break
       if _k in (12,32,52) and await pg.is_visible('#cxGate .cx-btn'):
@@ -22,7 +22,7 @@ async def main():
       await pg.wait_for_timeout(250)
     if not await pg.is_visible('#cxGate [data-act="create"]'): print('GATEFAIL', (await pg.inner_text('#cxGate'))[:250].replace('\n',' | '), await pg.evaluate('document.title'))
     t0=time.time(); await pg.click('#cxGate [data-act="create"]'); await pg.wait_for_selector('#cxGate', state='hidden'); print('foyer créé en', round(time.time()-t0,2),'s'); await pg.wait_for_timeout(2500)
-    await pg.screenshot(path='../w3.png')
+    await pg.screenshot(path='/tmp/dk/w3.png')
     await pg.click('#spGo'); await pg.fill('#wzNom','Nours'); await pg.click('#wzNext')
     await pg.click('.opt:has-text("En couple")'); await pg.fill('#wzPart','Emma'); await pg.click('#wzNext')
     await pg.click('.opt:has-text("Pas d")'); await pg.click('#wzNext')
@@ -35,7 +35,7 @@ async def main():
     await pg.add_style_tag(content='.toast{display:none!important}')
     await pg.evaluate("document.getElementById('navAdd').click()"); await pg.fill('#quickTitle','Appeler le plombier'); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(400)
     await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="documents"]'); await pg.wait_for_timeout(200)
-    await pg.click('.hub-add[data-add=documents]'); await pg.fill('#dTitle','Bail'); await pg.set_input_files('#dFile','../tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(600)
+    await pg.click('.hub-add[data-add=documents]'); await pg.fill('#dTitle','Bail'); await pg.set_input_files('#dFile','test/tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(600)
     print('requêtes de lecture:',await pg.evaluate("__mock.calls.filter(c=>c[0]==='select').map(c=>c[1]).join(',')"))
     n=await pg.evaluate("__mock.T.cocoon_docs.map(r=>r.path+'/'+r.id.slice(0,4)+' '+(r.data.titre||r.data.nom||''))"); print('docs en base:',len(n)); print('\n'.join(n))
     print('fichiers:',await pg.evaluate("Object.keys(__mock.files)"))
@@ -49,7 +49,7 @@ async def main():
     await pg.evaluate("window.moiOpen&&moiOpen('compte')"); await pg.wait_for_timeout(200)
     await pg.click('.ms-reg'); await pg.wait_for_timeout(250); await pg.click('.set-row:has-text("Mon compte")'); await pg.wait_for_timeout(300)
     print('compte:', (await pg.inner_text('#cxAccount')).replace('\n',' | '))
-    await pg.locator('#cxAccount').scroll_into_view_if_needed(); await pg.screenshot(path='../w4.png')
+    await pg.locator('#cxAccount').scroll_into_view_if_needed(); await pg.screenshot(path='/tmp/dk/w4.png')
     print('invite:', await pg.evaluate("cocoonHost.inviteUrl()"))
     print('errors',errs)
     await b.close()

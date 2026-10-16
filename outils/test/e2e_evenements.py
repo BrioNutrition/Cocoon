@@ -11,9 +11,9 @@ async def main():
     pg=await ctx.new_page(); errs=[]; pg.on('pageerror',lambda e:errs.append(str(e))); pg.on('console',lambda m: m.type=='error' and errs.append('console:'+m.text))
     await pg.add_init_script('window.__noTour=1')
     await pg.goto('http://localhost:8765/'); await pg.wait_for_timeout(800)
-    await pg.screenshot(path='../w1.png')
+    await pg.screenshot(path='/tmp/dk/w1.png')
     await pg.click('#cxGate [data-go="signup"]'); await pg.fill('#cxGate input[name=email]','angel@test.fr'); await pg.fill('#cxGate input[name=pw]','secret123'); await pg.click('#cxGate .cx-btn')
-    await pg.wait_for_timeout(500); await pg.screenshot(path='../w2.png')
+    await pg.wait_for_timeout(500); await pg.screenshot(path='/tmp/dk/w2.png')
     for _k in range(80):  # GATE_RETRY
       if await pg.is_visible('#cxGate [data-act="create"]'): break
       if _k in (12,32,52) and await pg.is_visible('#cxGate .cx-btn'):
@@ -22,7 +22,7 @@ async def main():
       await pg.wait_for_timeout(250)
     if not await pg.is_visible('#cxGate [data-act="create"]'): print('GATEFAIL', (await pg.inner_text('#cxGate'))[:250].replace('\n',' | '), await pg.evaluate('document.title'))
     t0=time.time(); await pg.click('#cxGate [data-act="create"]'); await pg.wait_for_selector('#cxGate', state='hidden'); print('foyer créé en', round(time.time()-t0,2),'s'); await pg.wait_for_timeout(2500)
-    await pg.screenshot(path='../w3.png')
+    await pg.screenshot(path='/tmp/dk/w3.png')
     await pg.click('#spGo'); await pg.fill('#wzNom','Nours'); await pg.click('#wzNext')
     await pg.click('.opt:has-text("En couple")'); await pg.fill('#wzPart','Emma'); await pg.click('#wzNext')
     await pg.click('.opt:has-text("Pas d")'); await pg.click('#wzNext')
@@ -47,7 +47,7 @@ async def main():
     await pg.click('.ev-seg button:has-text("Budget")'); await pg.click('.ev-add'); await pg.fill('#evDepT','Gâteau'); await pg.fill('.ev-form input[inputmode=decimal]','35'); await pg.click('.ev-form button[type=submit]'); await pg.wait_for_timeout(1200)
     t=await pg.inner_text('.ev-bud'); print('bud', t.replace('\n',' | ')); assert '35' in t
     await pg.click('.pp-grab'); await pg.wait_for_timeout(700); c=await pg.locator('.ag-ev').count(); print('agenda events',c); assert c==1
-    await pg.screenshot(path='../ev/h_list.png')
+    await pg.screenshot(path='/tmp/dk/ev/h_list.png')
     # ouvrir depuis une notification : « C'est fait » sur une tâche, puis lien vers l'événement
     await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.wait_for_timeout(600)
     key=await pg.evaluate("(document.querySelector('.item[data-key^=\"taches:\"]')||{}).dataset?.key||''"); tid=key[7:]; tt=await pg.evaluate("(document.querySelector('.item[data-key^=\"taches:\"]')||{}).textContent||''"); print('tâche',tid,tt[:40])

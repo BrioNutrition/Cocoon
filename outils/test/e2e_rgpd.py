@@ -12,9 +12,9 @@ async def main():
     pg=await ctx.new_page(); errs=[]; pg.on('pageerror',lambda e:errs.append(str(e))); pg.on('console',lambda m: m.type=='error' and errs.append('console:'+m.text))
     await pg.add_init_script('window.__noTour=1')
     await pg.goto('http://localhost:8771/'); await pg.wait_for_timeout(800)
-    await pg.screenshot(path='../w1.png')
+    await pg.screenshot(path='/tmp/dk/w1.png')
     await pg.click('#cxGate [data-go="signup"]'); await pg.fill('#cxGate input[name=email]','angel@test.fr'); await pg.fill('#cxGate input[name=pw]','secret123'); await pg.click('#cxGate .cx-btn')
-    await pg.wait_for_timeout(500); await pg.screenshot(path='../w2.png')
+    await pg.wait_for_timeout(500); await pg.screenshot(path='/tmp/dk/w2.png')
     for _k in range(80):  # GATE_RETRY
       if await pg.is_visible('#cxGate [data-act="create"]'): break
       if _k in (12,32,52) and await pg.is_visible('#cxGate .cx-btn'):
@@ -23,7 +23,7 @@ async def main():
       await pg.wait_for_timeout(250)
     if not await pg.is_visible('#cxGate [data-act="create"]'): print('GATEFAIL', (await pg.inner_text('#cxGate'))[:250].replace('\n',' | '), await pg.evaluate('document.title'))
     t0=time.time(); await pg.click('#cxGate [data-act="create"]'); await pg.wait_for_selector('#cxGate', state='hidden'); print('foyer créé en', round(time.time()-t0,2),'s'); await pg.wait_for_timeout(2500)
-    await pg.screenshot(path='../w3.png')
+    await pg.screenshot(path='/tmp/dk/w3.png')
     await pg.click('#spGo'); await pg.fill('#wzNom','Nours'); await pg.click('#wzNext')
     await pg.click('.opt:has-text("En couple")'); await pg.fill('#wzPart','Emma'); await pg.click('#wzNext')
     await pg.click('.opt:has-text("Pas d")'); await pg.click('#wzNext')
@@ -37,7 +37,7 @@ async def main():
     # 1. papier avec fichier : référence « sb: » et lien temporaire à l'ouverture
     await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="documents"]'); await pg.wait_for_timeout(200)
     print('mention santé:', await pg.is_visible('.d-sante'))
-    await pg.click('.hub-add[data-add=documents]'); await pg.fill('#dTitle','Carte identité'); await pg.set_input_files('#dFile','../tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(800)
+    await pg.click('.hub-add[data-add=documents]'); await pg.fill('#dTitle','Carte identité'); await pg.set_input_files('#dFile','test/tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(800)
     ref=await pg.evaluate("(__mock.T.cocoon_docs.find(r=>r.path==='documents'&&r.data.assetId)||{data:{}}).data.assetId"); print('référence enregistrée:', ref)
     eye=pg.locator('.bd-eye').first; print('œil = bouton:', await eye.evaluate("e=>e.tagName"))
     await eye.click(); await pg.wait_for_selector('.vw'); print('visionneuse ouverte:', await pg.is_visible('.vw'))
@@ -52,11 +52,11 @@ async def main():
     # 3. confidentialité
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(500)
     await pg.click('.ms-reg'); await pg.wait_for_timeout(250); await pg.click('.set-row:has-text("Confidentialité")'); await pg.wait_for_timeout(300); print('page confidentialité:', (await pg.inner_text('.priv'))[:80].replace('\n',' | '))
-    await pg.screenshot(path='../rgpd_priv.png'); await pg.click('.priv .sw-grab'); await pg.wait_for_timeout(200)
+    await pg.screenshot(path='/tmp/dk/rgpd_priv.png'); await pg.click('.priv .sw-grab'); await pg.wait_for_timeout(200)
     # 4. suppression du compte (seule dans le foyer → tout est effacé)
     await pg.click('.set-row:has-text("Supprimer mon compte")'); await pg.wait_for_timeout(300)
     btn=pg.locator('.del-acc .btn.danger'); print('bouton bloqué avant saisie:', await btn.is_disabled())
-    await pg.locator('.del-acc').scroll_into_view_if_needed(); await pg.screenshot(path='../rgpd_del.png')
+    await pg.locator('.del-acc').scroll_into_view_if_needed(); await pg.screenshot(path='/tmp/dk/rgpd_del.png')
     await pg.fill('.del-acc input','supprimer'); print('bouton actif après saisie:', not await btn.is_disabled())
     await pg.evaluate("document.querySelectorAll('style').forEach(s=>{ if(s.textContent.includes('.toast{display:none')) s.remove(); })"); await btn.click(); await pg.wait_for_timeout(1500); print('toast:', await pg.evaluate("(document.getElementById('toast')||{}).textContent")); print('errs:',errs[-5:]); print('acc-gone count:', await pg.evaluate("document.querySelectorAll('.acc-gone').length"), await pg.evaluate("(()=>{const g=document.querySelector('.acc-gone'); return g?getComputedStyle(g).display+' '+getComputedStyle(g).zIndex:''})()")); print('rpc calls:', await pg.evaluate("JSON.stringify(__mock.calls.filter(c=>c[0]==='rpc').slice(-3))"))
     print('écran final:', await pg.is_visible('.acc-gone'), '| rpc:', await pg.evaluate("!!__mock.deleted_me"), '| fichiers restants:', await pg.evaluate("Object.keys(__mock.files).length"), '| foyers:', await pg.evaluate("__mock.T.cocoon_foyers.length"), '| docs:', await pg.evaluate("__mock.T.cocoon_docs.length"))

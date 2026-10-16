@@ -27,7 +27,7 @@ async def main():
       try:
         await pg.wait_for_function("document.querySelector('#cxIntro')===null && !document.getElementById('boot')", timeout=15000); print('rechargement',k,await pg.evaluate("document.querySelector('.view:not([hidden])').dataset.view"),'OK en',round(time.time()-t0,2),'s | sw:', await pg.evaluate("navigator.serviceWorker.controller?'contrôlée':'non'"))
       except Exception as e:
-        print('rechargement',k,'BLOQUÉ'); await pg.screenshot(path='../stuck.png'); break
+        print('rechargement',k,'BLOQUÉ'); await pg.screenshot(path='/tmp/dk/stuck.png'); break
     print('\n'.join(errs[-25:])); print('gate:', await pg.evaluate("(()=>{const g=document.getElementById('cxGate'); return g?(!g.hidden)+' '+g.innerText.slice(0,80):'none'})()")); print('outbox', await pg.evaluate("localStorage.getItem('cocoon.outbox')"))
     await b.close()
 try: asyncio.run(main())

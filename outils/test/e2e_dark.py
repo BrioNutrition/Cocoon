@@ -12,7 +12,7 @@ async def main():
     pg=await ctx.new_page(); errs=[]; pg.on('pageerror',lambda e:errs.append(str(e)))
     await pg.add_init_script('window.__noTour=1')
     await pg.goto('http://localhost:8768/'); await pg.wait_for_timeout(1500)
-    await pg.fill('#cxGate input[name=pw]','x'); await pg.screenshot(path='../dk/50gate.png')
+    await pg.fill('#cxGate input[name=pw]','x'); await pg.screenshot(path='/tmp/dk/50gate.png')
     print('theme-color', await pg.get_attribute('#cxTc','content'))
     await pg.evaluate("document.documentElement.dataset.theme='light'"); await pg.wait_for_timeout(50); print('theme-color light', await pg.get_attribute('#cxTc','content'))
     print('errors',errs); await b.close()

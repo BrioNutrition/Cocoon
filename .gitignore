@@ -1,0 +1,7 @@
+outils/dist/
+app/node_modules/
+app/www/
+app/ios/
+app/android/
+__pycache__/
+.DS_Store

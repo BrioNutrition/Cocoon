@@ -39,7 +39,7 @@ async def main():
     print('demande avant l\'accueil (pendant le questionnaire) :', 'non vérifié ici')
     await pg.wait_for_selector('.cx-ask.on', timeout=15000); await pg.wait_for_timeout(500)
     print('demande affichée sur l\'accueil:', (await pg.inner_text('.cx-ask'))[:160].replace('\n',' | '))
-    await pg.screenshot(path='../ask1.png')
+    await pg.screenshot(path='/tmp/dk/ask1.png')
     await pg.click('.cx-ask-ok'); await pg.wait_for_timeout(1500)
     print('après « Activer » : fenêtre fermée:', await pg.locator('.cx-ask').count()==0, '| abonnement:', await pg.evaluate("(__mock.T.cocoon_push_subs||[]).length"), '| mémo:', await pg.evaluate("localStorage.getItem('cocoon.pushAsk')"))
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(500)

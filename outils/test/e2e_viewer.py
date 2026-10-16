@@ -8,7 +8,7 @@ async def main():
     await ctx.route('**/cdn.jsdelivr.net/**',lambda r:r.fulfill(body=MOCK,content_type='application/javascript'))
     await ctx.route('**/config.js',lambda r:r.fulfill(body='window.COCOON_CONFIG={url:"https://mock.supabase.co",key:"anon"};',content_type='application/javascript'))
     await ctx.route('**/fonts.g*/**',lambda r:r.abort())
-    PNG=open('../tst.png','rb').read(); PDF=open('../tst.pdf','rb').read()
+    PNG=open('test/tst.png','rb').read(); PDF=open('test/tst.pdf','rb').read()
     async def stor(r):
       u=r.request.url
       await r.fulfill(body=PDF if 'pdf' in u.lower() else PNG, content_type='application/pdf' if 'pdf' in u.lower() else 'image/png', headers={'Access-Control-Allow-Origin':'*'})
@@ -16,9 +16,9 @@ async def main():
     pg=await ctx.new_page(); errs=[]; pg.on('pageerror',lambda e:errs.append(str(e))); pg.on('console',lambda m: m.type=='error' and errs.append('console:'+m.text))
     await pg.add_init_script('window.__noTour=1')
     await pg.goto('http://localhost:8790/'); await pg.wait_for_timeout(800)
-    await pg.screenshot(path='../w1.png')
+    await pg.screenshot(path='/tmp/dk/w1.png')
     await pg.click('#cxGate [data-go="signup"]'); await pg.fill('#cxGate input[name=email]','angel@test.fr'); await pg.fill('#cxGate input[name=pw]','secret123'); await pg.click('#cxGate .cx-btn')
-    await pg.wait_for_timeout(500); await pg.screenshot(path='../w2.png')
+    await pg.wait_for_timeout(500); await pg.screenshot(path='/tmp/dk/w2.png')
     for _k in range(80):  # GATE_RETRY
       if await pg.is_visible('#cxGate [data-act="create"]'): break
       if _k in (12,32,52) and await pg.is_visible('#cxGate .cx-btn'):
@@ -27,7 +27,7 @@ async def main():
       await pg.wait_for_timeout(250)
     if not await pg.is_visible('#cxGate [data-act="create"]'): print('GATEFAIL', (await pg.inner_text('#cxGate'))[:250].replace('\n',' | '), await pg.evaluate('document.title'))
     t0=time.time(); await pg.click('#cxGate [data-act="create"]'); await pg.wait_for_selector('#cxGate', state='hidden'); print('foyer créé en', round(time.time()-t0,2),'s'); await pg.wait_for_timeout(2500)
-    await pg.screenshot(path='../w3.png')
+    await pg.screenshot(path='/tmp/dk/w3.png')
     await pg.click('#spGo'); await pg.fill('#wzNom','Nours'); await pg.click('#wzNext')
     await pg.click('.opt:has-text("En couple")'); await pg.fill('#wzPart','Emma'); await pg.click('#wzNext')
     await pg.click('.opt:has-text("Pas d")'); await pg.click('#wzNext')
@@ -41,11 +41,11 @@ async def main():
     # 1. papier avec fichier : référence « sb: » et lien temporaire à l'ouverture
     await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="documents"]'); await pg.wait_for_timeout(200)
     print('mention santé:', await pg.is_visible('.d-sante'))
-    await pg.click('.hub-add[data-add=documents]'); await pg.fill('#dTitle','Carte identité'); await pg.set_input_files('#dFile','../tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(800)
+    await pg.click('.hub-add[data-add=documents]'); await pg.fill('#dTitle','Carte identité'); await pg.set_input_files('#dFile','test/tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(800)
     ref=await pg.evaluate("(__mock.T.cocoon_docs.find(r=>r.path==='documents'&&r.data.assetId)||{data:{}}).data.assetId"); print('référence enregistrée:', ref)
     eye=pg.locator('.bd-eye').first; print('œil = bouton:', await eye.evaluate("e=>e.tagName"))
     await eye.click(); await pg.wait_for_selector('.vw img',timeout=8000); await pg.wait_for_timeout(300); print('image affichée:', await pg.evaluate("document.querySelector('.vw img').naturalWidth>0"))
-    await pg.screenshot(path='../vw_img.png')
+    await pg.screenshot(path='/tmp/dk/vw_img.png')
     cdp=await ctx.new_cdp_session(pg)
     async def touch(t,pts): await cdp.send('Input.dispatchTouchEvent',{'type':t,'touchPoints':[{'x':x,'y':y,'id':i} for i,(x,y) in enumerate(pts)]})
     await touch('touchStart',[(170,420),(230,420)])
@@ -56,14 +56,14 @@ async def main():
     w=await np.value; await w.wait_for_timeout(300); print('lien ouvert:', w.url[:120]); await w.close()
     await pg.click('.vw-bar .vw-b[aria-label="Fermer"]'); await pg.wait_for_timeout(300)
     # PDF
-    await pg.click('.hub-add[data-add=documents]'); await pg.fill('#dTitle','Bail'); await pg.set_input_files('#dFile','../tst.pdf'); await pg.click('#dSubmit'); await pg.wait_for_timeout(900)
+    await pg.click('.hub-add[data-add=documents]'); await pg.fill('#dTitle','Bail'); await pg.set_input_files('#dFile','test/tst.pdf'); await pg.click('#dSubmit'); await pg.wait_for_timeout(900)
     print('ref pdf:', await pg.evaluate("(__mock.T.cocoon_docs.find(r=>r.path==='documents'&&r.data.fichierType==='PDF')||{data:{}}).data.assetId"))
     await pg.locator('.bd-doc:has-text("Bail") .bd-eye').click(); await pg.wait_for_selector('.vw-page canvas',timeout=15000); await pg.wait_for_timeout(800)
     print('pages:', await pg.locator('.vw-page').count(), '|', await pg.inner_text('.vw-pg'))
-    await pg.screenshot(path='../vw_pdf.png')
+    await pg.screenshot(path='/tmp/dk/vw_pdf.png')
     await pg.click('.vw-zb[aria-label="Zoomer"]'); await pg.click('.vw-zb[aria-label="Zoomer"]'); await pg.wait_for_timeout(1200)
     print('zoom pdf:', await pg.inner_text('.vw-z'), '| largeur canvas:', await pg.evaluate("document.querySelector('.vw-page canvas').width"))
-    await pg.screenshot(path='../vw_pdf_zoom.png')
+    await pg.screenshot(path='/tmp/dk/vw_pdf_zoom.png')
     print('errors',[e for e in errs if 'ERR_FAILED' not in e])
     await b.close()
 try: asyncio.run(main())

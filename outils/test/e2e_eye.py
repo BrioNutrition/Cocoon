@@ -14,7 +14,7 @@ async def main():
     await pg.fill('#cxGate input[name=pw]','secret123')
     print('type:', await pg.get_attribute('#cxGate input[name=pw]','type'))
     await pg.click('#cxGate .cx-eye'); print('après œil:', await pg.get_attribute('#cxGate input[name=pw]','type'), await pg.get_attribute('#cxGate .cx-eye','aria-label'))
-    await pg.screenshot(path='../eye1.png',clip={'x':0,'y':300,'width':400,'height':260})
+    await pg.screenshot(path='/tmp/dk/eye1.png',clip={'x':0,'y':300,'width':400,'height':260})
     await pg.click('#cxGate .cx-eye'); print('re-clic:', await pg.get_attribute('#cxGate input[name=pw]','type'))
     await pg.click('#cxGate [data-go="signup"]'); print('œil sur création de compte:', await pg.locator('#cxGate .cx-eye').count())
     await pg.fill('#cxGate input[name=email]','a@test.fr'); await pg.fill('#cxGate input[name=pw]','secret123'); await pg.click('#cxGate .cx-eye'); await pg.click('#cxGate .cx-btn'); await pg.wait_for_timeout(600)
