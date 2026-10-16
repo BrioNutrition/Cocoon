@@ -39,7 +39,11 @@ async def main():
     await pg.click('.hub-add[data-add="agenda"]'); await pg.wait_for_timeout(400)
     await pg.click('.ev-opt.hot'); await pg.click('.ev-type:has-text("Anniversaire")'); await pg.fill('#evNom','Anniv de Patoune'); await pg.fill('#evDeb','2030-05-10')
     await pg.click('#evCreate'); await pg.wait_for_selector('.ev-frise', timeout=8000); await pg.wait_for_timeout(1500)
-    n=await pg.evaluate("document.querySelectorAll('.ev-frise .ev-it').length"); print('frise items', n); assert n==9, n
+    for _ in range(25):
+      n=await pg.evaluate("document.querySelectorAll('.ev-frise .ev-it').length")
+      if n==9: break
+      await pg.wait_for_timeout(200)
+    print('frise items', n); assert n==9, n
     await pg.click('.ev-seg button:has-text("Budget")'); await pg.click('.ev-add'); await pg.fill('#evDepT','Gâteau'); await pg.fill('.ev-form input[inputmode=decimal]','35'); await pg.click('.ev-form button[type=submit]'); await pg.wait_for_timeout(1200)
     t=await pg.inner_text('.ev-bud'); print('bud', t.replace('\n',' | ')); assert '35' in t
     await pg.click('.pp-grab'); await pg.wait_for_timeout(700); c=await pg.locator('.ag-ev').count(); print('agenda events',c); assert c==1
