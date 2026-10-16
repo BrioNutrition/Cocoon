@@ -42,8 +42,8 @@ async def main():
     for k in range(3):
       await pg.reload(); await pg.wait_for_timeout(5500)
       fr=await pg.evaluate("window.__fr"); bg=await pg.evaluate("window.__bootGone||0")
-      # fenêtre : 1,6 s avant la disparition de l'écran de lancement (vol + arrivée) jusqu'à 1 s après
-      w=[d for t,d in fr if bg-1600<=t<=bg+1000]
+      # fenêtre : 0,7 s avant la disparition de l'écran de lancement (vol + arrivée) jusqu'à 1 s après
+      w=[d for t,d in fr if bg-700<=t<=bg+1000]
       lt=await pg.evaluate("window.__lt"); print('  T0',await pg.evaluate('window.__bootT0||0'),'prêt à',await pg.evaluate('window.__bootReady||0'),'FCP',await pg.evaluate('(performance.getEntriesByName("first-contentful-paint")[0]||{}).startTime|0'),'| intro jusqu\'à',round(await pg.evaluate('window.__ci||0')),'| boot vu jusqu\'à', round(await pg.evaluate('window.__seen||0')),'| écran parti à',round(bg),'ms | tâches longues (début, durée) relatives:', [(t-round(bg),d) for t,d in lt if bg-2500<=t<=bg+1500])
       res.append((len(w), sum(1 for d in w if d>34), max(w) if w else 0))
     print(sys.argv[1] if len(sys.argv)>1 else 'dist', '→ images:', [r[0] for r in res], '| saccades >34ms:', [r[1] for r in res], '| pire image (ms):', [round(r[2]) for r in res])
