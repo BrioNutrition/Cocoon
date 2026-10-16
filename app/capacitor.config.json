@@ -1,0 +1,11 @@
+{
+  "appId": "fr.cocoon.app",
+  "appName": "Cocoon",
+  "webDir": "www",
+  "backgroundColor": "#13121C",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#13121C",
+    "scrollEnabled": true
+  }
+}

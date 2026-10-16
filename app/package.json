@@ -1,0 +1,17 @@
+{
+  "name": "cocoon-app",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Cocoon en app iPhone (Capacitor) : le même code que le site, avec les éléments natifs d'iOS",
+  "scripts": {
+    "www": "node prepare-www.mjs",
+    "www:preview": "PREVIEW=1 node prepare-www.mjs"
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/ios": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0"
+  }
+}

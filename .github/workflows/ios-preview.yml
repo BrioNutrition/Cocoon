@@ -1,0 +1,79 @@
+name: iOS · aperçu dans le simulateur
+
+# Fabrique l'app iPhone (Capacitor) et la lance dans un iPhone simulé, puis garde des captures et une vidéo.
+# Gratuit (dépôt public) et sans compte Apple : rien n'est signé ni publié.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["app/**", ".github/workflows/ios-preview.yml"]
+
+jobs:
+  apercu:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Choisir le Xcode le plus récent (iOS 26 = Liquid Glass)
+        run: |
+          ls -d /Applications/Xcode*.app || true
+          X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          [ -z "$X" ] && X=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
+          sudo xcode-select -s "$X"
+          xcodebuild -version
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Projet Capacitor
+        working-directory: app
+        run: |
+          npm install --no-audit --no-fund
+          PREVIEW=1 node prepare-www.mjs
+          npx cap add ios
+          bash ios-native/patch.sh
+          npx cap sync ios
+
+      - name: Compiler pour le simulateur
+        working-directory: app/ios/App
+        run: |
+          if [ -d App.xcworkspace ]; then T="-workspace App.xcworkspace"; else T="-project App.xcodeproj"; fi
+          set -o pipefail
+          xcodebuild $T -scheme App -configuration Debug -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO build | tail -60
+
+      - name: Lancer dans un iPhone simulé et capturer
+        run: |
+          DEV=$(xcrun simctl list devices available -j | python3 -c "
+          import json,sys,re
+          d=json.load(sys.stdin)['devices']
+          ks=sorted([k for k in d if 'iOS' in k], key=lambda k:[int(x) for x in re.findall(r'\d+',k.split('iOS')[-1])])
+          for k in reversed(ks):
+              ph=[x for x in d[k] if x['name'].startswith('iPhone')]
+              pro=[x for x in ph if 'Pro' in x['name'] and 'Max' not in x['name']] or ph
+              if pro: print(pro[0]['udid']); break
+          ")
+          echo "Simulateur : $DEV"
+          xcrun simctl boot "$DEV"
+          xcrun simctl bootstatus "$DEV" -b
+          xcrun simctl ui "$DEV" appearance light || true
+          APP=$(find app/ios/App/build -name "App.app" -path "*iphonesimulator*" | head -1)
+          xcrun simctl install "$DEV" "$APP"
+          mkdir -p apercu
+          xcrun simctl io "$DEV" recordVideo --codec=h264 --force apercu/video.mp4 & REC=$!
+          sleep 2
+          xcrun simctl launch "$DEV" fr.cocoon.app
+          for i in $(seq -w 1 34); do sleep 3; xcrun simctl io "$DEV" screenshot "apercu/ecran-$i.png" >/dev/null 2>&1 || true; done
+          kill -INT $REC || true
+          sleep 4
+          ls -la apercu
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apercu-ios
+          path: apercu
+          retention-days: 14
