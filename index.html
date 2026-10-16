@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 11:12";</script>
+<script>window.COCOON_BUILD="16/10 11:14";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2743,6 +2743,16 @@ html:has(#boot),html:has(#boot) body{background:#13121C!important}
 .fy-it span{justify-content:center;gap:1px}.fy-it span b,.fy-it span small{line-height:1.25}
 .fy-it em{align-self:center}
 .pf-r .pf-l{margin:0!important;display:block!important;line-height:1.3}.pf-r b{line-height:1.3}.pf-r i{line-height:1;font-size:16px;display:grid;place-items:center}
+.wl-bg{position:fixed;inset:0;z-index:2147483000;background:rgba(28,27,46,.38);opacity:0;transition:opacity .35s ease}.wl-bg.on{opacity:1}
+.wl-ask{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));width:min(440px,calc(100% - 24px));z-index:2147483001;background:var(--surface);color:var(--ink);border-radius:26px;padding:12px 20px 14px;box-shadow:0 20px 60px rgba(0,0,0,.25);display:grid;gap:10px;text-align:center;transform:translate(-50%,calc(100% + 40px));transition:transform .42s cubic-bezier(.2,.9,.3,1)}
+.wl-ask.on{transform:translate(-50%,0)}
+.wl-grab{width:40px;height:5px;border-radius:9px;background:color-mix(in srgb,var(--ink) 22%,transparent);margin:0 auto 4px}
+.wl-emo{font-size:64px;line-height:1;margin:4px 0 2px}
+.wl-ask h2{margin:0;font-size:24px;font-weight:800;letter-spacing:-.02em;font-family:var(--f-display)}
+.wl-p{margin:0 0 6px;font-size:15px;line-height:1.45;color:var(--muted)}
+.wl-ask .cx-ask-ok{width:100%;padding:14px;font-size:16px}
+.wl-ask .cx-ask-no{border:0;background:var(--sunk);border-radius:14px;font:inherit;font-weight:700;font-size:15px;color:var(--ink);padding:13px;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.wl-ask,.wl-bg{transition:none}}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -3813,7 +3823,7 @@ function buildEditor(){
   f.append(act);
   refreshPreview();
 }
-function finishFlow(res){ document.querySelector(".wrap").classList.remove("finishing"); S.edit=null; S.flow=false; setTab("accueil"); renderAll(); window.scrollTo({top:0}); requestAnimationFrame(()=>{ try{ onboardGate(); if(!S.cguOpen&&!S.tourOn&&!S.tourPending&&!needCgu()) startTour(); }catch(_){} });
+function finishFlow(res){ document.querySelector(".wrap").classList.remove("finishing"); S.edit=null; S.flow=false; setTab("accueil"); renderAll(); window.scrollTo({top:0}); requestAnimationFrame(()=>{ try{ onboardGate(); if(!S.cguOpen&&!S.tourOn&&!S.tourPending&&!needCgu()) startTour(); }catch(_){} setTimeout(()=>{ if(!S.tourOn&&!S.tourPending) maybeWelcome(); },1800); });
   toast("Bienvenue dans ton cocon !"+(res&&(res.nT||res.nP)?" "+res.nT+" rappel"+(res.nT>1?"s":"")+(res.nP?" et "+res.nP+" profil"+(res.nP>1?"s":""):"")+((res.nT+res.nP)>1?" prêts.":" prêt."):"")); }
 function closeEditor(){ if(S.edit&&S.edit.finish){ finishFlow(); return; } const back=S.editPrev&&S.editPrev!=="fiche"?S.editPrev:"accueil"; S.edit=null; document.querySelector(".wrap").classList.remove("finishing"); setTab(back); renderAll(); }
 async function saveProfile(){
@@ -7797,12 +7807,35 @@ window.TOUR_ALL=[
   {sel:'.tab[data-tab="moi"]',t:"Ton espace",d:"Tes tâches perso, tes rappels, et la tuile Apparence pour passer en clair ou en sombre et changer les couleurs."},
   {sel:"#fySwBtn",opt:true,t:"Plusieurs foyers",d:"La petite flèche à côté du nom sert à passer d'un foyer à l'autre, ou à en créer un nouveau."},
   {sel:"#premBtn",opt:true,t:"Cocoon Premium",d:"L'étoile ouvre Premium : papiers en photo, secrétaire intelligent, papiers illimités… Bonne installation dans ton cocon !"}];
+
+/* « Bienvenue dans ton foyer » : une fois, quand on est encore seul dans un foyer tout neuf */
+function maybeWelcome(){ try{
+  if(window.__noTour||S.tourOn||S.tourPending||S.cguOpen||!meId()||S.readOnly) return;
+  const key="cocoon.welcome:"+((window.cocoonHost&&cocoonHost.foyerId&&cocoonHost.foyerId())||S.foyerNom||"f");
+  try{ if(localStorage.getItem(key)) return; }catch(_){}
+  const others=humains().filter(m=>m.id!==meId()&&m.uid).length; if(others) { try{ localStorage.setItem(key,"1"); }catch(_){} return; }
+  if(document.querySelector(".cx-ask,.prem-page:not([hidden]),.tour-card")||S.tab!=="accueil"){ setTimeout(maybeWelcome,1500); return; }
+  try{ localStorage.setItem(key,"1"); }catch(_){}
+  const nom=(S.foyerNom||"").trim().replace(/^(la famille|famille|les)\s+/i,"");
+  const bg=el("div",{class:"cx-ask-bg wl-bg"}), box=el("div",{class:"cx-ask wl-ask",role:"dialog","aria-modal":"true","aria-labelledby":"wlT"});
+  box.append(el("div",{class:"wl-grab","aria-hidden":"true"}),el("div",{class:"wl-emo","aria-hidden":"true",text:"🥳"}),el("h2",{id:"wlT",text:"Bienvenue dans ton foyer"}),
+    el("p",{class:"wl-p",text:(nom?"« Chez les "+nom+" » est prêt. ":"Ton foyer est prêt. ")+"Invite maintenant ceux qui vivent avec toi pour partager les tâches, les courses, l'agenda et les papiers."}));
+  const close=()=>{ bg.classList.remove("on"); box.classList.remove("on"); setTimeout(()=>{ bg.remove(); box.remove(); document.dispatchEvent(new Event("cocoon-welcome")); },380); };
+  box.append(el("button",{type:"button",class:"btn cx-ask-ok",text:"Inviter un membre",onclick:()=>{ close(); setTimeout(()=>openInvite(),250); }}),el("button",{type:"button",class:"cx-ask-no",text:"Plus tard",onclick:close}));
+  bg.addEventListener("click",close);
+  /* glisser vers le bas pour fermer */
+  { let y0=null,dy=0; box.addEventListener("touchstart",e=>{ y0=e.touches[0].clientY; dy=0; box.style.transition="none"; },{passive:true});
+    box.addEventListener("touchmove",e=>{ if(y0==null) return; dy=Math.max(0,e.touches[0].clientY-y0); box.style.transform="translate(-50%,"+dy+"px)"; },{passive:true});
+    box.addEventListener("touchend",()=>{ if(y0==null) return; y0=null; box.style.transition=""; box.style.transform=""; if(dy>90) close(); }); }
+  document.body.append(bg,box); requestAnimationFrame(()=>{ bg.classList.add("on"); box.classList.add("on"); });
+  setTimeout(()=>{ try{ box.querySelector(".cx-ask-ok").focus({preventScroll:true}); }catch(_){} },400);
+}catch(e){ console.warn(e); } }
 function startTour(force){
   if(!force&&((S.prefs||{}).tourVu||S.tourOn||window.__noTour)) return; if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches&&!force){}
   S.tourOn=true; let i=0; const vis=e=>e&&(e.offsetParent||getComputedStyle(e).position==="fixed"); const TOUR=window.TOUR_ALL.filter(st=>!st.opt||vis(document.querySelector(st.sel))); const noScroll=e=>{ if(!e.target.closest||!e.target.closest(".tour-card")) e.preventDefault(); }; document.documentElement.classList.add("tour-lock"); window.addEventListener("wheel",noScroll,{passive:false}); window.addEventListener("touchmove",noScroll,{passive:false});
   const bg=el("div",{class:"tour-bg"}), hole=el("div",{class:"tour-hole"}), card=el("div",{class:"tour-card",role:"dialog","aria-live":"polite"});
   document.body.append(bg,hole,card);
-  const end=()=>{ bg.remove(); hole.remove(); card.remove(); S.tourOn=false; document.documentElement.classList.remove("tour-lock"); window.removeEventListener("wheel",noScroll); window.removeEventListener("touchmove",noScroll); try{ window.scrollTo({top:0,behavior:"smooth"}); }catch(_){ window.scrollTo(0,0); } window.removeEventListener("resize",place); S.prefs=Object.assign({},S.prefs||{},{tourVu:true}); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); };
+  const end=()=>{ bg.remove(); hole.remove(); card.remove(); S.tourOn=false; setTimeout(()=>maybeWelcome(),700); document.documentElement.classList.remove("tour-lock"); window.removeEventListener("wheel",noScroll); window.removeEventListener("touchmove",noScroll); try{ window.scrollTo({top:0,behavior:"smooth"}); }catch(_){ window.scrollTo(0,0); } window.removeEventListener("resize",place); S.prefs=Object.assign({},S.prefs||{},{tourVu:true}); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); };
   const target=st=>{ let e=document.querySelector(st.sel); if(!e||!e.offsetParent&&getComputedStyle(e).position!=="fixed") e=st.alt?document.querySelector(st.alt):null; return e&&(e.offsetParent||getComputedStyle(e).position==="fixed")?e:null; };
   function place(){ const st=TOUR[i], e=target(st); if(!e){ hole.style.opacity="0"; card.style.top="50%"; card.style.transform="translate(-50%,-50%)"; return; }
     const r=e.getBoundingClientRect(), pad=4, br=parseFloat(getComputedStyle(e).borderTopLeftRadius)||14; hole.style.opacity="1";
@@ -8163,7 +8196,7 @@ bootCheck();
   function mark(v){ try{ localStorage.setItem(KEY,v); }catch(_){} }
   function hid(id){ var e=document.getElementById(id); return !e||e.hidden; }
   function calm(){ return !document.getElementById("boot")&&!document.getElementById("cxIntro")&&hid("cxGate")&&hid("wizard")&&hid("splash")&&hid("reveal")&&hid("sheet")
-    &&!document.querySelector(".wrap.arrive")&&!document.querySelector(".cgu-bg,.tour-card")&&!!document.querySelector('.view[data-view="accueil"]:not([hidden])')&&document.visibilityState==="visible"; }
+    &&!document.querySelector(".wrap.arrive")&&!document.querySelector(".cgu-bg,.tour-card,.wl-ask,.prem-page:not([hidden])")&&!!document.querySelector('.view[data-view="accueil"]:not([hidden])')&&document.visibilityState==="visible"; }
   cocoonHost.ready.then(async function(){
     var P=cocoonHost.push; if(asked()||P.support()!=="ok") return;
     if(P.permission()==="denied"){ mark("bloque"); return; }

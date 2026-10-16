@@ -655,6 +655,7 @@
     /* Le créateur retire un membre du foyer (accès coupé côté serveur) */
     removeMember: async function (uid) { await LIVE; var r = await sb.rpc("cocoon_remove_member", { f: FOYER, u: uid }); if (r.error) throw new Error(/function|exist/i.test(r.error.message) ? "la protection du serveur n'est pas encore installée dans Supabase (securite.sql)" : frErr(r.error)); },
     /* Plusieurs foyers : liste, changement, création */
+    foyerId: function () { return FOYER || null; },
     foyers: async function () {
       await LIVE; var m = await sb.from("cocoon_members").select("foyer,role").eq("user_id", ME.id);
       if (m.error) throw new Error(frErr(m.error));
