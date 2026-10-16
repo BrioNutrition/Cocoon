@@ -58,6 +58,38 @@ if m:
         for size, name in [(180, "apple-touch-icon.png"), (192, "icon-192.png"), (512, "icon-512.png"), (512, "icon-maskable.png")]:
             fl.resize((size, size), Image.LANCZOS).save(os.path.join(OUT, name), optimize=True)
 
+
+# Écrans de démarrage iOS (sinon iPhone affiche un écran gris/blanc avant l'animation)
+SPLASH_DEV = [(440,956,3),(430,932,3),(428,926,3),(420,912,3),(414,896,3),(414,896,2),(414,736,3),(402,874,3),(393,852,3),(390,844,3),(375,812,3),(375,667,2),(360,780,3),(320,568,2)]
+SPLASH_LINKS = ""
+try:
+    from PIL import Image as _Im
+    try:
+        import numpy as _np
+    except Exception:
+        _np = None
+    def _splash(W, H, dark):
+        bgc = (0x13, 0x12, 0x1C) if dark else (0xF6, 0xF5, 0xFB)
+        if _np is None:
+            return _Im.new("RGB", (W, H), bgc)
+        w, h = max(1, W // 4), max(1, H // 4)
+        y, x = _np.mgrid[0:h, 0:w].astype(_np.float32)
+        img = _np.zeros((h, w, 3), _np.float32) + _np.array(bgc, _np.float32)
+        def rad(cx, cy, rx, ry, col, a):
+            d = _np.sqrt(((x - cx * w) / (rx * w)) ** 2 + ((y - cy * h) / (ry * h)) ** 2)
+            return (_np.clip(1 - d / 0.7, 0, 1) * a)[..., None], _np.array(col, _np.float32)
+        t2, c2 = rad(.7, .7, .4, .3, (0xFF, 0x9C, 0xB0), .14); img = img * (1 - t2) + c2 * t2
+        t1, c1 = rad(.5, .44, .55, .38, (0xFF, 0xC9, 0x4A), .24); img = img * (1 - t1) + c1 * t1
+        return _Im.fromarray(_np.clip(img, 0, 255).astype(_np.uint8)).resize((W, H), _Im.BICUBIC)
+    os.makedirs(os.path.join(OUT, "splash"), exist_ok=True)
+    for (dw, dh, r) in SPLASH_DEV:
+        for dark in (False, True):
+            name = "splash/%dx%d-%s.png" % (dw * r, dh * r, "dark" if dark else "light")
+            _splash(dw * r, dh * r, dark).save(os.path.join(OUT, name), optimize=True)
+            SPLASH_LINKS += '<link rel="apple-touch-startup-image" media="screen and (device-width: %dpx) and (device-height: %dpx) and (-webkit-device-pixel-ratio: %d) and (orientation: portrait) and (prefers-color-scheme: %s)" href="%s">\n' % (dw, dh, r, "dark" if dark else "light", name)
+except Exception as _e:
+    print("écrans de démarrage non générés :", _e)
+
 manifest = {
     "name": "Cocoon", "short_name": "Cocoon", "lang": "fr",
     "description": "Le carnet partagé de la maison : tâches, courses, papiers, budget.",
@@ -261,7 +293,7 @@ head = f"""<!doctype html>
 {INTRO_CSS}
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="icon" type="image/png" href="icon-192.png">
+{SPLASH_LINKS}<link rel="icon" type="image/png" href="icon-192.png">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
