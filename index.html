@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 09:50";</script>
+<script>window.COCOON_BUILD="16/10 10:09";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2658,7 +2658,7 @@ html.prem-open{overflow:hidden}
 div.pf-r{cursor:default}
 .pf-r i{font-style:normal;width:22px;text-align:center;flex:none}.pf-r .pf-l{flex:1;min-width:0;color:var(--muted);font-size:14px;text-transform:none;letter-spacing:0;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pf-r b{font-weight:700;font-size:14.5px;text-align:right;max-width:58%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pf-lk,.pf-go{flex:none;font-size:12px}
-.pf-docs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 4px;scroll-snap-type:x proximity}.pf-docs::-webkit-scrollbar{display:none}
+.pf-docs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0;padding:2px 2px 6px;scroll-snap-type:x proximity}.pf-docs::-webkit-scrollbar{display:none}
 .pf-doc{flex:none;width:136px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:flex-start;gap:6px;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);border-radius:16px;padding:12px;font:inherit;color:var(--ink);text-align:left;cursor:pointer}
 .pf-doc b{font-size:14px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em}
 .pf-doc.add{background:none;box-shadow:none;border:2px dashed var(--line)}
@@ -2727,6 +2727,9 @@ html:has(#boot),html:has(#boot) body{background:#13121C!important}
 :root[data-theme="light"] .pk>.pk-paper{background:#fff;box-shadow:0 0 0 1px #E3E0EF}
 @media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .pk>.pk-paper{background:#fff;box-shadow:0 0 0 1px #E3E0EF}}
 .hub-add span{display:inline-block;transition:transform .2s ease}.hub-add[aria-expanded="true"] span{transform:rotate(45deg)}
+#docPour .pchip{flex:0 0 auto;justify-content:flex-start}
+#docPour{justify-content:flex-start}
+#fPreview .pw-edit,#fPreview .pw-add{display:none}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -3565,7 +3568,7 @@ function pwCard(m){ const D=pfData(m), id=D.id, pet=D.pet, can=D.can, keys=D.key
   else top.append(el("span",{class:"pw-chip","aria-hidden":"true",text:pet?"🐾":""}));
   card.append(top);
   if(keys.length){ const k=el("div",{class:"pw-keys"}); for(const x of keys){ const kv=el("div",{},el("small",{text:PF_SHORT[x.l]||x.l}),el("b",{text:x.v})); if(pfIsTel(x.v)){ const a=el("a",{href:telHref(x.v),class:"pw-k"},...kv.childNodes); k.append(a); } else k.append(kv); } card.append(k); }
-  else if(can) card.append(el("button",{type:"button",class:"pw-add",text:pet?"+ Ajoute son poids, sa puce, ses croquettes…":"+ Ajoute sa pointure, sa taille, son école…",onclick:()=>openEditor(id)}));
+  else if(can) card.append(el("button",{type:"button",class:"pw-add",text:pet?"+ Ajoute son poids, sa puce, ses croquettes…":id===meId()?"+ Ajoute ta pointure, ta taille, ton médecin…":"+ Ajoute sa pointure, sa taille, son école…",onclick:()=>openEditor(id)}));
   const nb=D.nb; if(nb){ const n=daysTo(nb.date); if(n<=30) card.append(el("div",{class:"pw-bday",text:"🎂 "+(n===0?"Anniversaire aujourd'hui !":"Anniversaire "+dueLabel(nb.date))})); }
   return card; }
 function pfFill(F,m,o){ o=o||{}; const D=pfData(m), id=D.id, pet=D.pet, can=D.can, keys=D.keys, rest=D.rest, nb=D.nb, t0=iso(today()); F.innerHTML="";
@@ -3575,7 +3578,7 @@ function pfFill(F,m,o){ o=o||{}; const D=pfData(m), id=D.id, pet=D.pet, can=D.ca
       el("i",{"aria-hidden":"true",text:pfIcon(x.l)}),el("span",{class:"pf-l",text:x.l}),el("b",{text:x.v}),x.p?el("span",{class:"pf-lk",title:"Visible par toi seulement",text:"🔒"}):""); return r; };
   // papiers (humains)
   if(!pet){ const docs=S.docs.filter(d=>d.pour===id).sort((a,b)=>(a.expire||"9999")<(b.expire||"9999")?-1:1);
-    if(docs.length||can){ F.append(secT("Ses papiers",docs.length?el("button",{type:"button",class:"pf-link",text:"Tout voir",onclick:()=>{ S.docWho=id; setTab("documents"); }}):null));
+    if(docs.length||can){ F.append(secT(id===meId()?"Papiers":"Ses papiers",docs.length?el("button",{type:"button",class:"pf-link",text:"Tout voir",onclick:()=>{ S.docWho=id; setTab("documents"); }}):null));
       const row=el("div",{class:"pf-docs"});
       for(const d of docs.slice(0,8)){ let pill=null; if(d.expire){ const n=daysTo(d.expire); pill=n<0?el("span",{class:"pf-pill r",text:"expiré"}):n<=60?el("span",{class:"pf-pill w",text:n<=31?"dans "+n+" j":"dans "+Math.round(n/30)+" mois"}):el("span",{class:"pf-pill",text:"OK"}); }
         row.append(el("button",{type:"button",class:"pf-doc",onclick:()=>{ S.docWho=id; setTab("documents"); }},catDot(d.cat),el("b",{text:d.titre}),pill||el("span",{class:"pf-pill n",text:"rangé"}))); }
@@ -3641,7 +3644,7 @@ function openSelfEditor(){
   document.querySelector(".wrap").classList.add("finishing"); $("ficheBack").hidden=true;
   setTab("fiche"); buildEditor();
 }
-function refreshPreview(){ const p=$("fPreview"); p.innerHTML=""; p.append(profileCard(Object.assign({id:S.edit.id||"_new"},S.edit.d))); }
+function refreshPreview(){ const p=$("fPreview"); if(!p) return; p.innerHTML=""; const d=S.edit.d; p.append(pwCard(Object.assign({},d,{id:S.edit.id||"_new",infos:(d.infos||[]).filter(x=>x&&!x.p)}))); }
 /* Recadrage : glisser pour déplacer, pincer / molette / curseur pour zoomer. Renvoie un canvas carré (ou null si annulé). */
 function cropImage(file,o){ o=o||{}; const out=o.out||512, round=o.round!==false;
   return new Promise(res=>{ let url; try{ url=URL.createObjectURL(file); }catch(_){ res(null); return; }
@@ -3744,7 +3747,7 @@ function buildEditor(){
   const bnStatus=el("span",{class:"upl"});
   const bnIn=el("input",{type:"file",id:"fiBanniere",accept:"image/png,image/jpeg,image/webp","aria-label":"Choisir une image de bannière"});
   bnIn.addEventListener("change",async()=>{ const file=bnIn.files[0]; if(!file) return; bnStatus.textContent="Envoi de l'image…"; try{ d.banniere=await uploadImg(file,1400); refreshPreview(); buildEditor(); }catch(e){ bnStatus.textContent=""; imgErr(e); } });
-  f.append(el("div",{class:"fgroup"},el("h3",{text:"Bannière"}),bans,el("div",{class:"pick"},el("span",{class:"btn ghost filebtn"},"Utiliser une photo",bnIn),bnStatus)));
+
 
   // Couleur
   const cols=el("div",{class:"swatches"});
