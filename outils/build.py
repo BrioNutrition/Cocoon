@@ -297,6 +297,33 @@ head = f"""<!doctype html>
 {INTRO_HTML}
 """
 html = head + s + ACCOUNT_JS + "\n</body>\n</html>\n"
+
+# ---- Allègement : JS et CSS compactés (espaces, commentaires, syntaxe) avec esbuild s'il est disponible ----
+def _esbuild():
+    import shutil as _sh
+    for c in [os.environ.get("ESBUILD"), _sh.which("esbuild"), os.path.join(HERE, "node_modules", ".bin", "esbuild"), "/opt/npm-tools/node_modules/esbuild/bin/esbuild"]:
+        if c and os.path.exists(c): return c
+    return None
+ESB = _esbuild()
+if ESB and os.environ.get("NO_MINIFY") != "1":
+    import subprocess as _sp
+    def _min(code, loader):
+        args = [ESB, "--loader=" + loader, "--charset=utf8", "--log-level=error"] + (["--minify"] if loader == "css" else ["--minify-whitespace", "--minify-syntax"])
+        r = _sp.run(args, input=code.encode("utf-8"), capture_output=True)
+        if r.returncode != 0: print("  (non compacté :", r.stderr.decode()[:200], ")"); return code
+        out = r.stdout.decode("utf-8").strip()
+        return out
+    before = len(html)
+    def _js(m):
+        attrs, code = m.group(1), m.group(2)
+        if "src=" in attrs or ("type=" in attrs and "javascript" not in attrs) or len(code) < 400: return m.group(0)
+        return "<script" + attrs + ">" + _min(code, "js") + "</script>"
+    def _css(m):
+        if len(m.group(2)) < 400: return m.group(0)
+        return "<style" + m.group(1) + ">" + _min(m.group(2), "css") + "</style>"
+    html = re.sub(r"<script([^>]*)>(.*?)</script>", _js, html, flags=re.S)
+    html = re.sub(r"<style([^>]*)>(.*?)</style>", _css, html, flags=re.S)
+    print(f"  compacté : {before//1024} Ko → {len(html)//1024} Ko")
 open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(html)
 shutil.copy(os.path.join(HERE, "src", "cocoon-runtime.js"), os.path.join(OUT, "cocoon-runtime.js"))
 shutil.copy(os.path.join(HERE, "src", "sw.js"), os.path.join(OUT, "sw.js"))

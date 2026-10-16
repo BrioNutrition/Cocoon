@@ -38,7 +38,7 @@ async def main():
     print('écran conditions:', await pg.is_visible('.cgu-bg'), '| visite en même temps:', await pg.is_visible('.tour-card'))
     await pg.screenshot(path='../cgu_1.png')
     go=pg.locator('.cgu .btn.big'); print('bouton bloqué:', await go.is_disabled(), '| interrupteur notifs:', await pg.is_visible('.cgu-sw'))
-    await pg.click('.cgu .ln:has-text("conditions")'); await pg.wait_for_timeout(300); print('conditions:', (await pg.inner_text('.priv h2'))); await pg.screenshot(path='../cgu_terms.png'); await pg.click('.priv-x')
+    await pg.click('.cgu .ln:has-text("conditions")'); await pg.wait_for_timeout(300); print('conditions:', (await pg.inner_text('.priv h2'))); await pg.screenshot(path='../cgu_terms.png'); await pg.click('.priv .sw-grab')
     await pg.click('.cgu-ck'); print('bouton actif:', not await go.is_disabled()); await pg.screenshot(path='../cgu_2.png')
     await go.click(); await pg.wait_for_timeout(1500)
     print('fermé:', not await pg.is_visible('.cgu-bg'), '| visite lancée:', await pg.is_visible('.tour-card'))

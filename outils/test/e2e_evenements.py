@@ -48,6 +48,13 @@ async def main():
     t=await pg.inner_text('.ev-bud'); print('bud', t.replace('\n',' | ')); assert '35' in t
     await pg.click('.pp-grab'); await pg.wait_for_timeout(700); c=await pg.locator('.ag-ev').count(); print('agenda events',c); assert c==1
     await pg.screenshot(path='../ev/h_list.png')
+    # ouvrir depuis une notification : « C'est fait » sur une tâche, puis lien vers l'événement
+    await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.wait_for_timeout(600)
+    key=await pg.evaluate("(document.querySelector('.item[data-key^=\"taches:\"]')||{}).dataset?.key||''"); tid=key[7:]; tt=await pg.evaluate("(document.querySelector('.item[data-key^=\"taches:\"]')||{}).textContent||''"); print('tâche',tid,tt[:40])
+    assert tid
+    await pg.goto('http://localhost:8765/?n=1#t-done='+tid); await pg.wait_for_timeout(5000)
+    toast=await pg.evaluate("(document.getElementById('toast')||{}).textContent||''"); print('toast',toast); assert 'cochée' in toast or 'déjà' in toast
+    print('OK NOTIF')
     print('OK EVENEMENTS')
     print('errors',errs)
     await b.close()

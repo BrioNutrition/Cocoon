@@ -144,7 +144,7 @@ function buildEvents({ evs, steps, today }) {
     const todo = (steps || []).filter((x) => x.ev === r.id && !x.fait), late = todo.filter((x) => x.date && x.date < today).length;
     const names = todo.slice(0, 2).map((x) => x.t).filter(Boolean);
     const rest = todo.length ? "reste " + todo.length + " étape" + (todo.length > 1 ? "s" : "") + (names.length ? " (" + names.join(", ") + (todo.length > 2 ? "…" : "") + ")" : "") + (late ? " dont " + late + " en retard" : "") : "tout est prêt ✓";
-    out.push({ j: e.debut === j1 ? 1 : 7, line: "🎉 " + (e.debut === j1 ? "Demain" : "Dans 7 jours") + " · " + t + " : " + rest });
+    out.push({ id: r.id, j: e.debut === j1 ? 1 : 7, line: "🎉 " + (e.debut === j1 ? "Demain" : "Dans 7 jours") + " · " + t + " : " + rest });
   }
   return out;
 }
@@ -154,7 +154,7 @@ function eveningPayload(ev, P) {
   for (const b of bins.slice().sort((x, y) => (x.quand === "ce soir" ? 0 : 1) - (y.quand === "ce soir" ? 0 : 1))) lines.push("🗑 " + (b.quand === "ce soir" ? "Ce soir" : "Demain matin") + " : sortir " + b.nm + (b.tour ? " (c'est ton tour)" : ""));
   for (const r of rdv.slice(0, 4)) lines.push("📅 Demain · " + r);
   if (!lines.length) return null;
-  if (evs.length && !rdv.length && !bins.length) return { title: evs.some((e) => e.j === 1) ? "🎉 C'est demain !" : "🎉 Un événement approche", body: lines.join("\n"), url: "./#agenda", tag: "soir" };
+  if (evs.length && !rdv.length && !bins.length) return { title: evs.some((e) => e.j === 1) ? "🎉 C'est demain !" : "🎉 Un événement approche", body: lines.join("\n"), url: evs.length === 1 ? "./#ev=" + evs[0].id : "./#agenda", tag: "soir" };
   const title = evs.length ? "🌙 Pour demain et la suite" : rdv.length && bins.length ? "🌙 Pour ce soir et demain" : rdv.length ? (rdv.length > 1 ? "📅 " + rdv.length + " rendez-vous demain" : "📅 Rendez-vous demain") : bins.length > 1 ? "🗑 Poubelles à sortir" : "🗑 Poubelle à sortir";
   return { title, body: lines.join("\n"), url: "./", tag: "soir" };
 }
@@ -289,7 +289,7 @@ async function event(me, body) {
       digestPayload(dg, true) || digestPayload({ hasItems: false, lines: [] }, true),
       dg.hasItems ? digestPayload({ hasItems: false, lines: [] }, true) : null,
       { title: "🛒 " + autre + " part faire les courses", body: "Ajoute vite ce qui manque : ça apparaît en direct sur son téléphone.", url: "./#courses", tag: "courses" },
-      { title: "📌 " + autre + " t'a confié une tâche", body: "Sortir les poubelles · aujourd'hui", url: "./", tag: "tache" },
+      { title: "📌 " + autre + " t'a confié une tâche", body: "Sortir les poubelles · aujourd'hui", url: "./", tag: "tache", actions: [{ action: "done", title: "✓ C'est fait" }, { action: "later", title: "⏰ Demain" }], acts: { done: "./", later: "./" } },
       eveningPayload(buildEvening({ shared: sh && sh.events, mine: mi && mi.events, moi, today: L.date }), prefsOf(null)) || { title: "🌙 Pour ce soir et demain", body: "🗑 Ce soir : sortir Recyclage (c'est ton tour)\n📅 Demain · 10h30 · Dentiste", url: "./", tag: "soir" },
       { title: "🎉 C'est demain !", body: "🎉 Demain · Anniv de Patoune : reste 2 étapes (Récupérer le gâteau, Bougies)", url: "./#agenda", tag: "soir" }
     ].filter(Boolean);
@@ -319,7 +319,11 @@ async function event(me, body) {
     if (ech !== L.date && ech !== addDays(L.date, 1)) return out(200, { ok: true, sent: 0 });
     const titre = String(body.titre || "").slice(0, 120);
     if (!(await once(tuid, "tache", (body.pour || "") + ":" + titre + ":" + ech))) return out(200, { ok: true, sent: 0 });
-    const n = await deliver(to, { title: "📌 " + myName + " t'a confié une tâche", body: titre + (ech === L.date ? " · aujourd'hui" : " · demain"), url: "./", tag: "tache" });
+    const tid = String(body.id || "").replace(/[^\w-]/g, "").slice(0, 60);
+    const pl = { title: "📌 " + myName + " t'a confié une tâche", body: titre + (ech === L.date ? " · aujourd'hui" : " · demain"), url: "./", tag: "tache" };
+    // Boutons dans la notification (Android, ordinateur) : cocher ou reporter sans chercher la tâche
+    if (tid) Object.assign(pl, { actions: [{ action: "done", title: "✓ C'est fait" }, { action: "later", title: "⏰ Demain" }], acts: { done: "./#t-done=" + tid, later: "./#t-later=" + tid } });
+    const n = await deliver(to, pl);
     return out(200, { ok: true, sent: n });
   }
   return out(400, { error: "événement inconnu" });

@@ -52,7 +52,7 @@ async def main():
     # 3. confidentialité
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(500)
     await pg.click('.ms-reg'); await pg.wait_for_timeout(250); await pg.click('.set-row:has-text("Confidentialité")'); await pg.wait_for_timeout(300); print('page confidentialité:', (await pg.inner_text('.priv'))[:80].replace('\n',' | '))
-    await pg.screenshot(path='../rgpd_priv.png'); await pg.click('.priv-x'); await pg.wait_for_timeout(200)
+    await pg.screenshot(path='../rgpd_priv.png'); await pg.click('.priv .sw-grab'); await pg.wait_for_timeout(200)
     # 4. suppression du compte (seule dans le foyer → tout est effacé)
     await pg.click('.set-row:has-text("Supprimer mon compte")'); await pg.wait_for_timeout(300)
     btn=pg.locator('.del-acc .btn.danger'); print('bouton bloqué avant saisie:', await btn.is_disabled())
