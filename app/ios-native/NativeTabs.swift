@@ -86,6 +86,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         guard n.count >= 3 else { return nil }
         return UIColor(red: n[0] / 255, green: n[1] / 255, blue: n[2] / 255, alpha: 1)
     }
+    @available(iOS 15.0, *)
     private func glassButton(_ symbol: String, id: String, prominent: Bool) -> UIButton {
         var cfg: UIButton.Configuration
         if #available(iOS 26.0, *) { cfg = prominent ? .prominentGlass() : .glass() } else { cfg = prominent ? .filled() : .gray() }
@@ -108,7 +109,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         let offset = CGFloat(call.getDouble("top") ?? 6), tcol = color(call.getString("color"))
         DispatchQueue.main.async {
             self.top?.removeFromSuperview(); self.top = nil
-            guard visible, let view = self.bridge?.viewController?.view else { call.resolve(); return }
+            guard visible, #available(iOS 15.0, *), let view = self.bridge?.viewController?.view else { call.resolve(); return }
             let v = UIView(); v.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(v)
             NSLayoutConstraint.activate([
