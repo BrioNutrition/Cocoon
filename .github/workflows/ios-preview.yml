@@ -47,7 +47,7 @@ jobs:
           set -o pipefail
           xcodebuild $T -scheme App -configuration Debug -sdk iphonesimulator \
             -destination 'generic/platform=iOS Simulator' -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=NO build | tail -60
+            CODE_SIGNING_ALLOWED=NO build 2>&1 | tee /tmp/build.log | tail -60 || { mkdir -p "$GITHUB_WORKSPACE/apercu"; grep -E "error:|warning: .*deprecated" /tmp/build.log | head -80 > "$GITHUB_WORKSPACE/apercu/erreurs.txt"; tail -150 /tmp/build.log > "$GITHUB_WORKSPACE/apercu/build-fin.txt"; exit 1; }
 
       - name: Lancer dans un iPhone simulé et capturer
         run: |
