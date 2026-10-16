@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="16/10 09:03";</script>
+<script>window.COCOON_BUILD="16/10 09:35";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2720,12 +2720,13 @@ html:has(#boot),html:has(#boot) body{background:#13121C!important}
 .pk>.pk-paper{position:absolute;left:30%;right:7%;top:-16px;height:40px;z-index:2;border-radius:6px;background:#F4F2FB;box-shadow:0 1px 0 rgba(0,0,0,.08)}
 .pk>.pk-paper::before{content:"";position:absolute;left:12px;right:34%;top:8px;height:3px;border-radius:2px;background:#D6D2E6;box-shadow:0 6px 0 #E3E0EF}
 .pk>.pk-ic,.pk>b,.pk>span,.pk>em{position:relative;z-index:4}
-.pk .pk-ic{background:rgba(255,255,255,.22)}
+.pk .pk-ic{background:none!important;width:auto;height:auto;border-radius:0;place-items:start;--gbg:color-mix(in srgb,var(--bc) 42%,var(--surface))}.pk .pk-ic svg{width:28px;height:28px}
 .pk>span{color:color-mix(in srgb,var(--ink) 72%,transparent)}
 .pk>em{position:absolute;top:12px;right:12px}
 .pk:active{transform:scale(.97)}
 :root[data-theme="light"] .pk>.pk-paper{background:#fff;box-shadow:0 0 0 1px #E3E0EF}
 @media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .pk>.pk-paper{background:#fff;box-shadow:0 0 0 1px #E3E0EF}}
+.hub-add span{display:inline-block;transition:transform .2s ease}.hub-add[aria-expanded="true"] span{transform:rotate(45deg)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -5748,7 +5749,7 @@ $("docForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||
     S.docCat=catOf(doc.cat||"documents").id||"documents";
     if(doc.expire&&daysTo(doc.expire)>1){ const n=daysTo(doc.expire), dd=Math.max(1,n-60), t0=today(); const due=iso(new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+dd));
       try{ await S.db.collection("taches").add({titre:"Renouveler « "+titre+" »",cat:"documents",pour:doc.pour&&doc.pour!=="foyer"?doc.pour:"tous",concerne:null,echeance:due,recur:0,recurMsg:null,fait:false,creePar:meId(),creeLe:Date.now(),suggere:true}); }catch(_){} }
-    $("docForm").reset(); S.dCatC=null; S.docPour="foyer"; $("dNewCat").hidden=true; fillDocCats(); updConsent(); $("docForm").hidden=true; $("papAdd").setAttribute("aria-expanded","false"); toast((files.length>1?files.length+" documents rangés dans « "+esc((catNom||catOf(doc.cat).nom))+" »":catNom?"Nouvelle catégorie « "+esc(catNom)+" » créée, document rangé":"Document rangé")+(doc.expire?(daysTo(doc.expire)>1?" · rappel deux mois avant l'expiration":" · expire "+fmtDue(doc.expire)):"")+".");
+    $("docForm").reset(); S.dCatC=null; S.docPour="foyer"; $("dNewCat").hidden=true; fillDocCats(); updConsent(); closeDocForm(); toast((files.length>1?files.length+" documents rangés dans « "+esc((catNom||catOf(doc.cat).nom))+" »":catNom?"Nouvelle catégorie « "+esc(catNom)+" » créée, document rangé":"Document rangé")+(doc.expire?(daysTo(doc.expire)>1?" · rappel deux mois avant l'expiration":" · expire "+fmtDue(doc.expire)):"")+".");
   }catch(err){ if(err&&err.code==="too_large") toast("Fichier trop lourd (20 Mo max)."); else if(err&&err.code==="unsupported_type") toast("Format non pris en charge : PDF, JPG, PNG ou WebP."); else writeErr(err); }
   finally{ btn.disabled=false; btn.textContent="Ranger"; }
 });
@@ -5862,7 +5863,8 @@ $("sheetBg").addEventListener("click",closeSheet);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("sheet").hidden) closeSheet(); });
 $("sgEquip").addEventListener("click",()=>{ closeSheet(); openMForm("equip"); });
 $("searchBtn").addEventListener("click",openSearch);
-function openDocForm(){ setTab("documents"); window.scrollTo({top:0}); const f=$("docForm"); f.hidden=false; $("papAdd").setAttribute("aria-expanded","true"); setTimeout(()=>{ try{ $("dTitle").focus(); }catch(_){} },80); }
+function closeDocForm(){ const f=$("docForm"); if(f) f.hidden=true; $("papAdd").setAttribute("aria-expanded","false"); document.querySelectorAll('.hub-add[data-add="documents"]').forEach(b=>b.setAttribute("aria-expanded","false")); try{ document.activeElement&&document.activeElement.blur(); }catch(_){} }
+function openDocForm(){ setTab("documents"); window.scrollTo({top:0}); const f=$("docForm"); f.hidden=false; $("papAdd").setAttribute("aria-expanded","true"); document.querySelectorAll('.hub-add[data-add="documents"]').forEach(b=>b.setAttribute("aria-expanded","true")); setTimeout(()=>{ try{ $("dTitle").focus(); }catch(_){} },80); }
 $("sgDoc").addEventListener("click",()=>{ closeSheet(); openDocForm(); });
 
 { const bh=$("brandHome"); const goHome=()=>{ if(typeof closeNotifs==="function") closeNotifs(); closeSheet(); if(S.tab!=="accueil"){ setTab("accueil"); renderHeader(); } else window.scrollTo({top:0,behavior:"smooth"}); };
@@ -6590,7 +6592,7 @@ function fabAct(v0,anchor){ const me=meId(), v=v0||S.tab;
   if(v==="courses"){ window.scrollTo({top:0,behavior:"smooth"}); setTimeout(()=>{ try{ $("cNom").focus(); }catch(_){} },250); return; }
   if(v==="repas"){ if(!needMe()) return; const [d,sl]=nextFreeMeal(), t0=weekStartOf(today()); S.rWeek=Math.round((weekStartOf(parse(d))-t0)/(7*864e5)); S.rEdit=d+"_"+sl; renderRepas(); go(".r-ed"); setTimeout(()=>{ try{ $("rPlat").focus({preventScroll:true}); }catch(_){} },300); return; }
   if(v==="agenda"){ if(!needMe()) return; const day=S.agDay&&S.agDay>=iso(today())?S.agDay:""; S.rdvForm={pour:[S.agWho||me],date:day}; renderRdv(); go(".rdv-form"); return; }
-  if(v==="documents"){ openDocForm(); return; }
+  if(v==="documents"){ if(S.tab==="documents"&&!$("docForm").hidden){ closeDocForm(); return; } openDocForm(); return; }
   if(v==="budget"){ const M=$("addMenu"); if(!M.hidden){ M.hidden=true; return; } M.innerHTML="";
     const it=(ic,t,id)=>M.append(el("button",{type:"button",role:"menuitem",onclick:()=>{ M.hidden=true; const b=$(id); if(b) b.click(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),t));
     it("depense","Une dépense","bAddDep"); it("abonnement","Un abonnement, un prélèvement","bAddSub"); it("factures","Un crédit","bAddCr");

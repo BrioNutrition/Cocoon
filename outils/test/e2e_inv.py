@@ -14,9 +14,9 @@ async def main():
     await pg.screenshot(path='../w1.png')
     await pg.click('#cxGate [data-go="signup"]'); await pg.fill('#cxGate input[name=email]','angel@test.fr'); await pg.fill('#cxGate input[name=pw]','secret123'); await pg.click('#cxGate .cx-btn')
     await pg.wait_for_timeout(500); await pg.screenshot(path='../w2.png')
-    for _k in range(40):  # GATE_RETRY
+    for _k in range(80):  # GATE_RETRY
       if await pg.is_visible('#cxGate [data-act="create"]'): break
-      if _k==24 and await pg.is_visible('#cxGate .cx-btn'): await pg.click('#cxGate .cx-btn')
+      if _k in (24,48) and await pg.is_visible('#cxGate .cx-btn'): await pg.click('#cxGate .cx-btn')
       await pg.wait_for_timeout(250)
     if not await pg.is_visible('#cxGate [data-act="create"]'): print('GATEFAIL', (await pg.inner_text('#cxGate'))[:250].replace('\n',' | '), await pg.evaluate('document.title'))
     t0=time.time(); await pg.click('#cxGate [data-act="create"]'); await pg.wait_for_selector('#cxGate', state='hidden'); print('foyer créé en', round(time.time()-t0,2),'s'); await pg.wait_for_timeout(2500)
