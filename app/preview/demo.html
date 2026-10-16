@@ -2854,6 +2854,41 @@ button.ev-it{cursor:pointer}
 html.native-tabs #tabs{display:none!important}
 html.native-tabs .view .hub-bar{visibility:hidden}
 html.native-tabs .hub-mini{display:none!important}
+/* repas → courses */
+.ing-sheet{max-height:calc(100% - env(safe-area-inset-top,0px) - 34px)}
+.ing-in{gap:12px!important}
+.ing-top h2{font-family:"Bricolage Grotesque",system-ui;font-size:22px;font-weight:800;margin:0}
+.ing-top p{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+.ing-list{background:var(--surface);border-radius:16px;box-shadow:0 2px 0 var(--shadow);padding:2px 12px}
+.ing-it{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.ing-it:last-child{border:0}
+.ing-it.dis .ing-n{color:var(--muted)}
+.ing-ck{flex:none;width:22px;height:22px;border-radius:7px;border:2px solid var(--check,#CFCBE3);background:none;padding:0;position:relative;cursor:pointer}
+.ing-ck.on{background:var(--ok);border-color:var(--ok)}
+.ing-ck.on::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;border:solid #fff;border-width:0 2.4px 2.4px 0;transform:rotate(45deg)}
+.ing-ck:disabled{opacity:.35}
+.ing-n{flex:1;min-width:0;font-size:14.5px}
+.ing-h{flex:none;font-size:11.5px;color:var(--muted);font-weight:600}
+.ing-del{flex:none;width:28px;height:28px;border:0;background:none;color:var(--late);font-size:18px;cursor:pointer}
+.ing-add{display:flex;gap:8px}
+.ing-inp{flex:1;min-width:0;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:10px 12px;font:inherit;font-size:15px}
+.ing-link{align-self:center;border:0;background:none;font:inherit;font-size:13px;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.ing-note{margin:0;font-size:12px;color:var(--muted);text-align:center}
+.ing-go{width:100%;padding:14px;border-radius:16px;font-weight:800;font-size:15px}
+.ing-go:disabled{opacity:.5}
+.r-ing{margin-right:auto}
+.cr-card{background:linear-gradient(135deg,color-mix(in srgb,#FFC94A 26%,var(--surface)),color-mix(in srgb,#FF9C80 20%,var(--surface)));border-radius:20px;padding:13px;margin:4px 0 10px;box-shadow:0 2px 0 var(--shadow);display:flex;flex-direction:column;gap:8px}
+.cr-h{display:flex;flex-direction:column;gap:2px}
+.cr-h b{font-size:15px}
+.cr-h small{font-size:12px;color:var(--muted)}
+.cr-pl{border:0;background:none;padding:0;font:inherit;font-size:12px;color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.cr-s{margin:0;font-size:12.5px;color:var(--muted)}
+.cr-chips{display:flex;flex-wrap:wrap;gap:6px}
+.cr-chip{border:0;border-radius:99px;padding:7px 11px;font:inherit;font-size:13px;font-weight:700;background:var(--surface);color:var(--ink);box-shadow:0 1px 0 var(--shadow);cursor:pointer}
+.cr-chip.on{background:var(--ink);color:var(--bg)}
+.cr-btns{display:flex;gap:8px}
+.cr-btns .btn{flex:1}
+.cr-btns .btn:disabled{opacity:.5}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -2988,6 +3023,7 @@ html.native-tabs .hub-mini{display:none!important}
       <input type="text" id="cNom" maxlength="120" placeholder="Lait, pain, piles…" aria-label="Article à ajouter" enterkeyhint="done">
       <button class="btn" type="submit">Ajouter</button>
     </form>
+    <div id="cRepas" hidden></div>
     <div class="c-hab" id="cHab" role="group" aria-label="À racheter"></div>
     <div class="seg c-pour" id="cPour" role="group" aria-label="Pour qui"></div>
     <div id="cLists" class="c-lists"></div>
@@ -8047,7 +8083,7 @@ function renderCLive(){ const w=$("cLive"); if(!w) return; w.innerHTML=""; const
   else if(Date.now()-(ss.depuis||0)>45*60e3) w.append(el("button",{type:"button",class:"btn ghost cl-take",onclick:startShopping},"Prendre le relais"));
 }
 function renderCourses(){
-  const box=$("cLists"); if(!box) return; const me=meId();
+  const box=$("cLists"); if(!box) return; const me=meId(); try{ renderCRepas(); }catch(e){ console.error(e); }
   renderCLive(); const shop=iShop(); document.querySelector('[data-view="courses"]').classList.toggle("shopping",shop);
   if(shop&&S.tab==="courses") wake(true);
   const cp=$("cPour"); cp.innerHTML="";
@@ -8110,6 +8146,69 @@ function platsConnus(slot){ const m=new Map(); for(const [n,i] of PDEJ0) m.set(n
   return [...m.values()].sort((a,b)=>(b.n||0)-(a.n||0)||a.nom.localeCompare(b.nom)); }
 function repasSlots(){ let v=S.rSlots||null; if(!v) try{ v=localStorage.getItem("cocoon.repasSlots"); }catch(_){} const a=(v||"matin,midi,soir").split(",").filter(x=>RSLOTS.some(r=>r[0]===x)); return a.length?a:["soir"]; }
 function repasOf(date,slot){ return (S.repas||[]).find(r=>r.date===date&&r.slot===slot&&r.plat); }
+/* ===== Des repas aux courses : on ne propose que, on n'ajoute rien sans accord ===== */
+/* le placard de base : jamais proposé */
+const PLACARD=new Set(["sel","poivre","huile","huile d olive","vinaigre","farine","sucre","sucre en poudre","levure","epices","curry","cumin","paprika","thym","laurier","herbes de provence","moutarde","eau","bouillon","sel et poivre"]);
+const inPlacard=n=>PLACARD.has(cKey(parseArticle(n).nom));
+function platIng(plat){ const k=norm(plat||""); const pr=(S.plats||[]).find(p=>norm(p.nom)===k);
+  if(pr&&Array.isArray(pr.ing)&&(pr.ing.length||pr.ingPerso)) return pr.ing.slice();
+  const d=PLATS0.concat(PDEJ0).find(([n])=>norm(n)===k); return d?splitIng(d[1]).filter(x=>!inPlacard(x)):[]; }
+function platIngSave(plat,ing){ if(!S.db) return; const pr=(S.plats||[]).find(p=>norm(p.nom)===norm(plat)); const id=pr?pr.id:slug(plat)+"-"+cKey(plat).length;
+  const doc=Object.assign({},pr||{nom:plat,n:1,matin:false},{nom:(pr&&pr.nom)||plat,ing,ingPerso:true,le:Date.now()}); delete doc.id;
+  if(pr) Object.assign(pr,{ing,ingPerso:true}); else S.plats=(S.plats||[]).concat([Object.assign({id},doc)]);
+  S.db.collection("plats").doc(id).set(doc).catch(writeErr); }
+/* déjà sur la liste ? acheté il y a peu ? */
+function ingState(nom){ const k=cKey(parseArticle(nom).nom), all=S.coursesAll||S.courses||[];
+  if(all.some(i=>!i.fait&&cKey(i.nom)===k)) return {on:true};
+  const b=all.filter(i=>i.fait&&i.faitLe&&cKey(i.nom)===k&&Date.now()-i.faitLe<10*864e5).sort((a,c)=>c.faitLe-a.faitLe)[0];
+  return b?{bought:b.faitLe}:{}; }
+async function ingToCourses(names,plat){ if(!S.db||!needMe()||!names.length) return 0; const me=meId(), now=Date.now(); let n=0;
+  for(const g of names){ const a=parseArticle(g); await S.db.collection("courses").add({nom:a.nom,qte:a.qte||null,pour:"tous",fait:false,ajoutePar:me,ajouteLe:now+(n++),rayon:rayonOf({nom:a.nom}),repas:plat||null}); }
+  haptic(10); return n; }
+/* la feuille « Ingrédients » d'un plat : tout décoché, on coche ce qui manque, on peut ajouter les siens */
+function openIngSheet(plat){ const U=upSheet("ingPage","Ingrédients"), sheet=U.sheet; sheet.classList.add("ing-sheet");
+  const inn=el("div",{class:"pp-in ing-in"}); sheet.append(inn); const pick=new Set(); let edit=false;
+  const draw=()=>{ inn.innerHTML=""; const ing=platIng(plat);
+    inn.append(el("div",{class:"ing-top"},el("h2",{text:"🛒 "+plat}),el("p",{text:ing.length?"Coche seulement ce qu'il faut acheter.":"Ajoute les ingrédients de ta recette : Cocoon les retiendra pour la prochaine fois."})));
+    if(ing.length){ const L=el("div",{class:"ing-list"});
+      ing.forEach((g,i)=>{ const st=ingState(g), on=pick.has(g);
+        const row=el("div",{class:"ing-it"+(st.on?" dis":"")+(on?" sel":"")});
+        row.append(el("button",{type:"button",class:"ing-ck"+(on?" on":""),role:"checkbox","aria-checked":String(on),"aria-label":g,disabled:st.on||null,onclick:()=>{ on?pick.delete(g):pick.add(g); haptic(6); draw(); }}),
+          el("span",{class:"ing-n",text:g}),
+          st.on?el("small",{class:"ing-h",text:"déjà sur la liste"}):st.bought?el("small",{class:"ing-h",text:"acheté le "+fmtDue(iso(new Date(st.bought)))}):"");
+        if(edit) row.append(el("button",{type:"button",class:"ing-del","aria-label":"Retirer "+g+" de la recette",onclick:()=>{ const x=platIng(plat).filter((_,j)=>j!==i); pick.delete(g); platIngSave(plat,x); draw(); }},"×"));
+        L.append(row); });
+      inn.append(L); }
+    const ai=el("input",{type:"text",class:"ing-inp",maxlength:"60",placeholder:"Ajouter un ingrédient (ex. chorizo)","aria-label":"Ajouter un ingrédient"});
+    const add=()=>{ const v=ai.value.trim(); if(!v) return; const x=platIng(plat); if(!x.some(y=>cKey(y)===cKey(v))) x.push(v.charAt(0).toUpperCase()+v.slice(1)); platIngSave(plat,x); if(!ingState(v).on) pick.add(x.find(y=>cKey(y)===cKey(v))); draw(); setTimeout(()=>{ const i=inn.querySelector(".ing-inp"); if(i) i.focus(); },30); };
+    ai.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); add(); } });
+    inn.append(el("div",{class:"ing-add"},ai,el("button",{type:"button",class:"btn ghost",onclick:add},"Ajouter")));
+    if(ing.length) inn.append(el("button",{type:"button",class:"ing-link",onclick:()=>{ edit=!edit; draw(); }},edit?"Terminé":"Modifier la recette"));
+    inn.append(el("p",{class:"ing-note",text:"Sel, poivre, huile, farine, sucre et épices ne sont jamais proposés."}));
+    const n=pick.size, go=el("button",{type:"button",class:"btn ing-go",disabled:!n||null,onclick:async()=>{ go.disabled=true; const k=await ingToCourses([...pick],plat); toast(k?"🛒 "+k+" article"+(k>1?"s":"")+" ajouté"+(k>1?"s":"")+" aux courses.":"Rien d'ajouté."); U.close(); }},n?"Ajouter "+n+" article"+(n>1?"s":"")+" aux courses":"Coche ce qui manque");
+    inn.append(go); };
+  draw(); }
+/* le bilan de la semaine dans les Courses : les ingrédients des repas à venir, à vérifier avant de partir */
+function renderCRepas(){ const w=$("cRepas"); if(!w) return; const t0=iso(today()), end=iso(new Date(today().getTime()+6*864e5));
+  const meals=(S.repas||[]).filter(r=>r.plat&&r.date>=t0&&r.date<=end).sort((a,b)=>(a.date+a.slot)<(b.date+b.slot)?-1:1);
+  let seen={}; try{ seen=JSON.parse(localStorage.getItem("cocoon.ingVu")||"{}")||{}; }catch(_){}
+  const cand=[], keys=new Set(), withIng=[];
+  for(const m of meals){ const ing=platIng(m.plat); if(!ing.length) continue; let any=false;
+    for(const g of ing){ const k=cKey(parseArticle(g).nom), st=ingState(g), sk=m.date+"|"+k; if(st.on||st.bought||keys.has(k)||seen[sk]) continue; keys.add(k); cand.push({g,k,sk,plat:m.plat}); any=true; }
+    if(any) withIng.push(m); }
+  w.innerHTML=""; w.hidden=!cand.length; if(!cand.length) return;
+  S.cRepasPick=S.cRepasPick||new Set(); for(const k of [...S.cRepasPick]) if(!cand.some(c=>c.k===k)) S.cRepasPick.delete(k);
+  const P=S.cRepasPick, n=cand.filter(c=>P.has(c.k)).length;
+  const JS=d=>{ const n0=daysTo(d); return n0===0?"ce soir":n0===1?"demain":JOURS_LONGS[(parse(d).getDay()+6)%7].toLowerCase(); };
+  const card=el("div",{class:"cr-card"});
+  card.append(el("div",{class:"cr-h"},el("b",{text:"🍽 Pour les repas de la semaine"}),el("small",{},...withIng.slice(0,4).flatMap((m,i)=>[i?" · ":"",el("button",{type:"button",class:"cr-pl",onclick:()=>openIngSheet(m.plat)},m.plat+" "+JS(m.date))]))),
+    el("p",{class:"cr-s",text:"Touche ce qui te manque."}));
+  const chips=el("div",{class:"cr-chips"}); for(const c of cand.slice(0,24)) chips.append(el("button",{type:"button",class:"cr-chip"+(P.has(c.k)?" on":""),"aria-pressed":String(P.has(c.k)),title:c.plat,onclick:()=>{ P.has(c.k)?P.delete(c.k):P.add(c.k); haptic(6); renderCRepas(); }},(P.has(c.k)?"✓ ":"")+c.g));
+  card.append(chips);
+  const done=()=>{ for(const c of cand) seen[c.sk]=1; const keep={}; for(const k of Object.keys(seen)) if(k.slice(0,10)>=iso(new Date(today().getTime()-864e5))) keep[k]=1; try{ localStorage.setItem("cocoon.ingVu",JSON.stringify(keep)); }catch(_){} S.cRepasPick=new Set(); renderCRepas(); };
+  card.append(el("div",{class:"cr-btns"},el("button",{type:"button",class:"btn ghost",onclick:()=>{ done(); toast("C'est noté, tu as tout ✓"); }},"J'ai le reste"),
+    el("button",{type:"button",class:"btn",disabled:!n||null,onclick:async()=>{ const sel=cand.filter(c=>P.has(c.k)); for(const c of sel) seen[c.sk]=1; const k=await ingToCourses(sel.map(c=>c.g),null); done(); toast("🛒 "+k+" article"+(k>1?"s":"")+" ajouté"+(k>1?"s":"")+"."); }},n?"Ajouter "+n:"Ajouter")));
+  w.append(card); }
 function ingMissing(meals){ const have=new Set((S.courses||[]).filter(i=>!i.fait).map(i=>cKey(i.nom))); let n=0;
   for(const m of meals) for(const g of m.ing||[]){ const k=cKey(parseArticle(g).nom); if(!have.has(k)){ have.add(k); n++; } } return n; }
 async function repasToCourses(meals){ if(!S.db||!needMe()) return; const have=new Set((S.courses||[]).filter(i=>!i.fait).map(i=>cKey(i.nom))); const arts=[]; let dup=0;
@@ -8167,6 +8266,7 @@ function repasEditor(ds,sl,sn,m){ const me=meId(), f=el("form",{class:"r-ed",aut
     el("div",{class:"r-role"},el("span",{class:"r-role-ic","aria-hidden":"true",text:"👩‍🍳"}),el("div",{},el("b",{text:"Qui prépare le repas ?"}),el("span",{text:"Il ou elle s'occupe de cuisiner ce plat."}))),who("cuisine","Qui prépare le repas ?"),
     el("div",{class:"r-role"},el("span",{class:"r-role-ic","aria-hidden":"true",text:"🧽"}),el("div",{},el("b",{text:"Qui fait la vaisselle après ?"}),el("span",{text:"Il ou elle range et lave après le repas."}))),who("vaisselle","Qui fait la vaisselle après ?"));
   const btns=el("div",{class:"r-btns"},el("button",{type:"submit",class:"btn",text:"Enregistrer"}));
+  if(m) btns.append(el("button",{type:"button",class:"btn ghost r-ing",onclick:()=>openIngSheet(m.plat)},"🛒 Ingrédients"));
   if(m) btns.append(el("button",{type:"button",class:"btn ghost r-del",text:"Retirer",onclick:async()=>{ S.rEdit=null; try{ await S.db.collection("repas").doc(m.id).delete(); toast("Plat retiré."); }catch(e){ writeErr(e); } renderRepas(); }}));
   f.append(btns);
   f.addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||!needMe()) return; const plat=pi.value.trim().replace(/^./,c=>c.toUpperCase()); if(!plat){ pi.focus(); toast("Indique le plat."); return; }
