@@ -38,7 +38,7 @@ npm run setup:ios
 |---|---|
 | Le code web (`source/assistant-du-foyer.html`) | `bash ../outils/construire.sh` puis `npm run run:ios` (ou ▶︎ dans Xcode après `npx cap sync ios`) |
 | Le module natif (`ios-native/NativeTabs.swift`) | recopier dans `ios/App/App/AppDelegate.swift` (ou supprimer `ios/` et relancer `npm run setup:ios`), puis ▶︎ |
-| Voir les changements sans recompiler | `npm run live:ios` : l'app charge le site depuis ton Mac ; après une modif, `npm run www` puis recharge l'app |
+| Voir les changements sans recompiler | `npm run live:ios`, puis ▶︎ dans Xcode (une fois) : l'app charge le site depuis ton Mac (même Wi-Fi) et se recharge toute seule à chaque `npm run www`. Ctrl+C pour arrêter, puis ▶︎ pour réinstaller l'app sans le Mac |
 
 ## 5. Bon à savoir
 

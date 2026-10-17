@@ -13,6 +13,7 @@ pl(){ plutil -replace "$1" -string "$2" "$PL"; }
 pl NSCameraUsageDescription "Cocoon utilise l'appareil photo pour ranger tes papiers (bail, carte grise…) et ajouter des photos."
 pl NSPhotoLibraryUsageDescription "Cocoon accède à tes photos pour ranger un papier ou choisir une photo de profil."
 pl NSPhotoLibraryAddUsageDescription "Cocoon enregistre dans tes photos les papiers que tu télécharges."
+pl NSLocalNetworkUsageDescription "Cocoon se connecte à ton Mac pendant les essais (rechargement en direct)."
 pl NSCalendarsUsageDescription "Cocoon peut ajouter les rendez-vous du foyer à ton calendrier."
 /usr/libexec/PlistBuddy -c "Print :CFBundleDisplayName" "$PL" >/dev/null 2>&1 && /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName Cocoon" "$PL" || true
 echo "Info.plist : autorisations ajoutées"
