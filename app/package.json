@@ -6,7 +6,7 @@
   "scripts": {
     "www": "node prepare-www.mjs",
     "www:preview": "PREVIEW=1 node prepare-www.mjs",
-    "setup:ios": "npm install && npm run www && npx cap add ios && bash ios-native/patch.sh && npx cap sync ios",
+    "setup:ios": "npm install && npm run www && (CAPACITOR_COCOAPODS_PATH=/usr/bin/true npx cap add ios --packagemanager SPM || test -d ios/App/CapApp-SPM) && bash ios-native/patch.sh && npx cap sync ios",
     "ios": "npm run www && npx cap sync ios && npx cap open ios",
     "run:ios": "npm run www && npx cap run ios",
     "live:ios": "npm run www && node live.mjs"
