@@ -150,7 +150,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
                     v?.transform = CGAffineTransform(translationX: 0, y: -(sv.contentOffset.y + sv.adjustedContentInset.top))
                 }
             }
-            let lbl = UILabel(); lbl.text = title; lbl.font = .systemFont(ofSize: 17, weight: .bold); lbl.textColor = tcol ?? .label
+            let lbl = UILabel(); lbl.text = title; lbl.font = .systemFont(ofSize: 21, weight: .bold); lbl.textColor = tcol ?? .label
             lbl.translatesAutoresizingMaskIntoConstraints = false
             v.addSubview(lbl)
             NSLayoutConstraint.activate([lbl.centerXAnchor.constraint(equalTo: v.centerXAnchor), lbl.centerYAnchor.constraint(equalTo: v.centerYAnchor)])
