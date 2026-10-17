@@ -12,6 +12,8 @@
 [hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);-webkit-font-smoothing:antialiased}
 .wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:18px 64px}
+/* App iPhone : la page passe sous la barre de l'heure, on laisse sa place (0 sur le site) */
+.wrap{padding-top:calc(18px + env(safe-area-inset-top,0px))}
 h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
