@@ -21,6 +21,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
     ]
     private var bar: UITabBar?
     private var top: UIView?
+    private var topScroll: NSKeyValueObservation?
     // raccourci de l'icône reçu avant que la page soit prête (lancement à froid)
     static var pendingShortcut: String?
     override public func load() {
@@ -127,16 +128,28 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         let actions = (call.options["actions"] as? [[String: Any]]) ?? []
         let offset = CGFloat(call.getDouble("top") ?? 6), tcol = color(call.getString("color"))
         DispatchQueue.main.async {
-            self.top?.removeFromSuperview(); self.top = nil
+            self.top?.removeFromSuperview(); self.top = nil; self.topScroll = nil
             guard visible, #available(iOS 15.0, *), let view = self.bridge?.viewController?.view else { call.resolve(); return }
-            let v = UIView(); v.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(v)
+            // la barre défile avec la page, coupée sous la barre de l'heure ; les touches passent à la page autour
+            let clip = PassThroughView(); clip.clipsToBounds = true; clip.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(clip)
+            NSLayoutConstraint.activate([
+                clip.leadingAnchor.constraint(equalTo: view.leadingAnchor), clip.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                clip.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor), clip.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            ])
+            let v = PassThroughView(); v.translatesAutoresizingMaskIntoConstraints = false
+            clip.addSubview(v)
             NSLayoutConstraint.activate([
                 v.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
                 v.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-                v.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: offset),
+                v.topAnchor.constraint(equalTo: clip.topAnchor, constant: offset),
                 v.heightAnchor.constraint(equalToConstant: 44)
             ])
+            if let sv = self.bridge?.webView?.scrollView {
+                self.topScroll = sv.observe(\.contentOffset, options: [.initial, .new]) { [weak v] sv, _ in
+                    v?.transform = CGAffineTransform(translationX: 0, y: -(sv.contentOffset.y + sv.adjustedContentInset.top))
+                }
+            }
             let lbl = UILabel(); lbl.text = title; lbl.font = .systemFont(ofSize: 17, weight: .bold); lbl.textColor = tcol ?? .label
             lbl.translatesAutoresizingMaskIntoConstraints = false
             v.addSubview(lbl)
@@ -155,7 +168,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
                 else { b.trailingAnchor.constraint(equalTo: v.trailingAnchor).isActive = true }
                 last = b
             }
-            self.top = v
+            self.top = clip
             call.resolve()
         }
     }
@@ -199,6 +212,14 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
             self.bridge?.viewController?.overrideUserInterfaceStyle = dark ? .dark : .light
             call.resolve()
         }
+    }
+}
+
+// vue qui laisse passer les touches à ce qui est dessous, sauf sur ses boutons
+class PassThroughView: UIView {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let h = super.hitTest(point, with: event)
+        return h === self ? nil : h
     }
 }
 
