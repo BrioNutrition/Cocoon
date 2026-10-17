@@ -2895,6 +2895,8 @@ button.ev-it{cursor:pointer}
 html.native-tabs #tabs{display:none!important}
 html.native-tabs *{scrollbar-width:none}
 html.native-tabs *::-webkit-scrollbar{display:none}
+/* bandeau flouté sous l'heure et la batterie : le contenu qui défile ne passe plus dessous en clair */
+html.native-tabs body::after{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);z-index:35;pointer-events:none;background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4)}
 html.native-tabs .view .hub-bar{visibility:hidden}
 html.native-tabs .hub-mini{display:none!important}
 .ing-sheet{max-height:calc(100% - env(safe-area-inset-top,0px) - 34px)}
