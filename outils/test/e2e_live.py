@@ -56,7 +56,7 @@ async def main():
     # Repas puis hors connexion
     await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="repas"]'); await pg.wait_for_timeout(200)
     await pg.evaluate("__mock.offline=true"); await ctx.set_offline(True); await pg.wait_for_timeout(200)
-    await pg.locator('.r-cell.now.r-soir').click(); await pg.locator('.r-ideas button:has-text("Pizza maison")').click(); await pg.locator('.r-ed button[type=submit]').click(); await pg.wait_for_timeout(300)
+    await pg.locator('.r-cell.now.r-soir').click(); await pg.locator('.r-sheet .r-ideas button:has-text("Pizza maison")').click(); await pg.locator('.r-ed button[type=submit]').click(); await pg.wait_for_timeout(300)
     print('hors ligne -> file:', await pg.evaluate("cocoonHost.pending()"), '| plat affiché:', await pg.locator('.r-cp:has-text("Pizza maison")').count())
     await pg.evaluate("__mock.offline=false"); await ctx.set_offline(False); await pg.wait_for_timeout(1500)
     print('retour -> file:', await pg.evaluate("cocoonHost.pending()"), '| base repas:', await pg.evaluate("__mock.T.cocoon_docs.filter(r=>r.path==='repas').map(r=>r.data.plat)"), '| mozzarella en base:', await pg.evaluate("__mock.T.cocoon_docs.some(r=>r.path==='courses'&&r.data.nom==='Mozzarella')"))

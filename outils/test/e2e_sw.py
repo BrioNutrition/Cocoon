@@ -1,6 +1,6 @@
 import asyncio, subprocess, sys, os, time
 from playwright.async_api import async_playwright
-D=os.path.abspath('dist_sw'); MOCK=open('test/mock-supabase.js').read()
+import shutil; shutil.rmtree('dist_sw',ignore_errors=True); shutil.copytree('dist','dist_sw'); D=os.path.abspath('dist_sw'); MOCK=open('test/mock-supabase.js').read()
 srv=subprocess.Popen([sys.executable,'-m','http.server','8766','-d',D],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL); time.sleep(1)
 async def main():
   async with async_playwright() as p:
