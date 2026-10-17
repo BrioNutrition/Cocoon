@@ -3056,23 +3056,6 @@ html.native-tabs .hub-mini{display:none!important}
 .more{min-width:40px;min-height:40px;display:inline-grid;place-items:center}
 .pf-link{padding:8px 4px!important;margin:-8px -4px!important}
 @media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important} }
-
-/* Foyer en mosaïque vivante */
-.hb-bento{grid-auto-flow:dense}
-.hb-bento .hb-t.hb-w{grid-column:span 2}
-.hb-bento .hb-t.hb-row{flex-direction:row;align-items:center;min-height:64px;gap:12px}
-.hb-bento .hb-t.hb-row>i{margin-bottom:0;flex:none}
-.hb-bento .hb-t.hb-row>b{margin-top:0;flex:none}
-.hb-bento .hb-t.hb-row>span{margin-left:auto;text-align:right;-webkit-line-clamp:1}
-.hb-bento .hb-t.hb-row::after{content:"›";color:var(--muted);opacity:.6;font-size:20px;margin-left:2px}
-.hb-big{display:flex;align-items:baseline;gap:6px}
-.hb-big b{font:800 26px/1.05 var(--f-display);letter-spacing:-.02em}
-.hb-big small{font-size:12px;color:var(--muted);font-weight:600}
-.hb-x{display:flex;flex-direction:column;gap:4px;width:100%}
-.hb-list{margin:2px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px}
-.hb-list li{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hb-list li::before{content:"• "}
-.hb-dish{font-size:14px;font-weight:800;margin-top:1px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -7071,35 +7054,32 @@ function budgetSpark(){ const t=today(), Y=t.getFullYear(), M=t.getMonth(), dim=
   const pt=(a,len)=>a.map((v,i)=>((len>1?i/(dim-1):0)*200).toFixed(1)+","+(34-(v/mx)*30).toFixed(1)).join(" ");
   return '<svg viewBox="0 0 200 36" preserveAspectRatio="none" aria-hidden="true"><polyline points="'+pt(prev,dim)+'" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="1.6" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/><polyline points="'+pt(cur,day)+'" fill="none" stroke="var(--bc)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>'; }
 function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const me=meId(), t0=iso(today());
-  /* mosaïque « vivante » : chaque tuile montre l'essentiel sans l'ouvrir */
-  const G1=el("div",{class:"hb-g2 hb-bento"}); let G=G1; const G2=G1;
-  H.append(G1);
-  const big=(n,u)=>el("div",{class:"hb-big"},el("b",{text:String(n)}),u?el("small",{text:u}):"");
+  const G1=el("div",{class:"hb-g2"}), G2=el("div",{class:"hb-g2 hb-gx"}); let G=G1;
+  H.append(el("p",{class:"hb-sec",text:"Au quotidien"}),G1,el("p",{class:"hb-sec",text:"Gestion"}),G2);
   const tile=(v,ic,c,title,sub,o)=>{ o=o||{}; const b=el("div",{class:"hb-t"+(o.cls?" "+o.cls:""),role:"button",tabindex:"0","data-go":v,style:"--bc:"+c,"aria-label":title+(sub?", "+sub:"")});
     b.addEventListener("click",e=>{ if(e.target.closest(".hb-ck")) return; hubGo(v); }); b.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); hubGo(v); } });
     const ico=el("i",{"aria-hidden":"true"}); ico.innerHTML=GI(o.gly||v); b.append(ico,el("b",{text:title})); if(sub) b.append(el("span",{text:sub}));
     if(o.badge) b.append(el("em",{class:o.red?"r":"",text:String(o.badge)})); if(o.extra) b.append(o.extra); G.append(b); return b; };
   // Au quotidien : Tâches, Courses, Repas, Agenda
   const open=S.foyer.filter(t=>!t.fait).sort(sortOpen), late=open.filter(t=>t.echeance&&t.echeance<t0).length;
-  { const ul=el("ul",{class:"hb-list"}); for(const t of open.slice(0,2)) ul.append(el("li",{text:t.titre}));
-    tile("foyer","","#FFC94A","Tâches",open.length?"":"tout est fait 🎉",{gly:"taches",red:late>0,cls:"hb-w",extra:el("div",{class:"hb-x"},open.length?big(open.length,"à faire"+(late?" · "+late+" en retard":"")):"",open.length?ul:"")}); }
+  tile("foyer","","#FFC94A","Tâches",open.length?open[0].titre:"tout est fait",{gly:"taches",badge:open.length||null,red:late>0});
   // Courses, Repas
   const nc=(S.courses||[]).filter(i=>!i.fait).length;
+  tile("courses","","#7FD39A","Courses",nc?nc+" article"+(nc>1?"s":""):"liste vide",{gly:"courses",badge:nc||null});
   const h=new Date().getHours(), mealOf=sl=>(S.repas||[]).find(r=>r.date===t0&&r.slot===sl&&r.plat), ms=h<11&&mealOf("matin")?["Ce matin",mealOf("matin")]:h<15&&mealOf("midi")?["Ce midi",mealOf("midi")]:mealOf("soir")?["Ce soir",mealOf("soir")]:null;
-  tile("repas","","#FF9C80","Repas",ms?ms[0]:"rien de prévu ce soir",{gly:"repas",extra:ms?el("b",{class:"hb-dish",text:platEmoji(ms[1].plat,ms[1].slot)+" "+ms[1].plat}):null});
-  tile("courses","","#7FD39A","Courses",nc?"":"liste vide",{gly:"courses",extra:nc?big(nc,"article"+(nc>1?"s":"")):null});
+  tile("repas","","#FF9C80","Repas",ms?ms[0].toLowerCase()+" : "+ms[1].plat:"rien de prévu ce soir",{gly:"repas"});
   const nr=(S.rdvs||[]).filter(r=>!r.fait&&r.date&&r.date>=t0&&(!r.pour||!r.pour.length||r.pour.includes(me))).sort((a,b)=>(a.date+(a.heure||""))<(b.date+(b.heure||""))?-1:1)[0];
-  tile("agenda","","#8FB8FF","Agenda",nr?nr.titre+" · "+(nr.date===t0?"aujourd'hui":dueLabel(nr.date))+(nr.heure?" "+heureTxt(nr.heure):""):"aucun rendez-vous",{gly:"rdv",cls:"hb-w hb-row",badge:(S.rdvs||[]).filter(r=>!r.fait&&r.date===t0).length||null});
+  tile("agenda","","#8FB8FF","Agenda",nr?nr.titre+" · "+(nr.date===t0?"aujourd'hui":dueLabel(nr.date))+(nr.heure?" "+heureTxt(nr.heure):""):"aucun rendez-vous",{gly:"rdv",badge:(S.rdvs||[]).filter(r=>!r.fait&&r.date===t0).length||null});
   G=G2;
   const E=monthEst();
   const soonP=(S.abos||[]).filter(a=>a.actif!==false&&(()=>{ const n=subNext(a); return n&&daysTo(n)<=7; })()).length;
-  tile("budget","","#B9A8F0","Budget","en "+E.nm,{gly:"factures",badge:soonP||null,extra:big(eurR(E.tot))});
+  tile("budget","","#B9A8F0","Budget",eurR(E.tot)+" en "+E.nm,{gly:"factures",badge:soonP||null});
   const dz=S.docs.filter(d=>d.expire&&daysTo(d.expire)<=90).length;
-  tile("documents","","#FF9CB0","Papiers",(S.docs.length?S.docs.length+" rangé"+(S.docs.length>1?"s":""):"rien de rangé")+(dz?" · "+dz+" à refaire bientôt":""),{gly:"documents",badge:dz||null,red:S.docs.some(d=>d.expire&&daysTo(d.expire)<0)});
+  tile("documents","","#FF9CB0","Papiers",dz?dz+" à refaire":S.docs.length?S.docs.length+" rangé"+(S.docs.length>1?"s":""):"rien de rangé",{gly:"documents",badge:dz||null,red:S.docs.some(d=>d.expire&&daysTo(d.expire)<0)});
   // Maison
   let mt=null; for(const b of (S.bins||[])){ const nx=binNext(b); if(nx&&daysTo(iso(nx.sortie))<=1){ mt=b.nom+" "+(iso(nx.sortie)===t0?(b.veille?"ce soir":"aujourd'hui"):"demain"); break; } }
   if(!mt){ const eq=(S.equip||[]).map(x=>[x,eqNext(x)]).filter(x=>x[1]).sort((a,b)=>a[1]<b[1]?-1:1)[0]; if(eq&&daysTo(eq[1])<=45) mt="Entretien "+(eq[0].nom||"équipement").toLowerCase()+" "+dueLabel(eq[1]); }
-  tile("maison","","#7FCDB9","Maison",mt||"tout le logement",{gly:"maison",cls:"hb-w hb-row"});
+  tile("maison","","#7FCDB9","Maison",mt||"tout le logement",{gly:"maison"});
   /* Premium en grand, au-dessus du titre « Le foyer » */
   { const sec=H.closest("section"), old=sec&&sec.querySelector(".hb-pban"); if(old) old.remove();
     if(sec){ const pa=!!(S.prefs&&S.prefs.premiumInteret), ic=el("i",{"aria-hidden":"true"}); ic.innerHTML='<svg viewBox="0 -4 64 64" aria-hidden="true"><path d="M32 4c2.6 15 9 21.4 24 24-15 2.6-21.4 9-24 24-2.6-15-9-21.4-24-24 15-2.6 21.4-9 24-24z" fill="#FFE7A0"/></svg>';
