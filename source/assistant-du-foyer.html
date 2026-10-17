@@ -3056,36 +3056,6 @@ html.native-tabs .hub-mini{display:none!important}
 .more{min-width:40px;min-height:40px;display:inline-grid;place-items:center}
 .pf-link{padding:8px 4px!important;margin:-8px -4px!important}
 @media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important} }
-
-/* Tâches façon Rappels : cercle, glisser, menu, barre d'outils en verre */
-.item .check{border-radius:50%!important}
-.item.pend .check{background:#34C759!important;border-color:#34C759!important}
-.item.pend .check svg{opacity:1!important}
-.item.pend .t-title{opacity:.55;text-decoration:line-through;text-decoration-thickness:1.5px}
-html.sel-mode .item .check.sel{background:#0A84FF!important;border-color:#0A84FF!important}
-.item{touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;position:relative;z-index:1}
-.item.lift{transform:scale(1.02);box-shadow:0 14px 34px rgba(28,27,46,.18)!important;transition:transform .18s ease;z-index:3}
-.sw-under{position:absolute;z-index:0;border-radius:18px;overflow:hidden;display:flex;justify-content:space-between;align-items:stretch;background:#FF3B30}
-.sw-under.right{background:#34C759}
-.sw-under .sw-done{display:none;align-items:center;padding-left:20px;color:#fff;font-weight:800;font-size:14px}
-.sw-under.right .sw-done{display:flex}.sw-under.right .sw-acts{display:none}
-.sw-acts{display:flex;margin-left:auto}
-.sw-acts button{border:0;width:75px;color:#fff;font:inherit;font-size:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer}
-.sw-acts button small{font-size:11px;font-weight:700}
-.sw-later{background:#FF9500}.sw-del{background:#FF3B30}
-.add-menu.tmenu button{justify-content:space-between}
-.add-menu.tmenu button.danger{color:#FF3B30}
-.add-menu.tmenu i{width:auto}
-/* barre de sélection en verre (tâches) */
-html.sel-mode #selBar,#selBar:not([hidden]){border-radius:999px;padding:8px 10px;gap:8px;background:color-mix(in srgb,var(--surface) 78%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.5);border:1px solid color-mix(in srgb,var(--ink) 8%,transparent)}
-#selBar{flex-wrap:nowrap!important;justify-content:space-between}
-#selBar:not(.c-mode) #selCount{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-#selBar #selOk{flex:1;white-space:nowrap}
-#selBar .btn.ghost{flex:none!important;padding:10px 14px!important;width:auto!important}
-#selBar #selOk{background:#34C759;color:#fff;border-radius:999px;font-weight:800}
-#selBar .btn.ghost{background:color-mix(in srgb,var(--ink) 7%,transparent);color:var(--ink);border:0;border-radius:999px;min-width:44px}
-#selBar .sel-del{color:#FF3B30!important}
-#selBar button:disabled{opacity:.4}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -3382,7 +3352,6 @@ html.sel-mode #selBar,#selBar:not([hidden]){border-radius:999px;padding:8px 10px
 <div class="selbar" id="selBar" hidden role="region" aria-label="Tâches sélectionnées">
   <span id="selCount"></span>
   <button class="btn" type="button" id="selOk">Valider</button>
-  <button class="btn ghost sel-later" type="button" id="selLater" aria-label="Reporter la sélection à demain" title="Reporter à demain"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M12 13.5v4M10 15.5h4"/></svg></button>
   <button class="btn ghost" type="button" id="selCancel">Annuler</button>
   <button class="btn ghost sel-del" type="button" id="selDel" aria-label="Supprimer la sélection"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g fill="currentColor" stroke="none"><rect x="3.5" y="5" width="17" height="2.7" rx="1.35"/><path d="M9 5.2V4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 4v1.2h-2V4.4h-2v.8z"/><path fill-rule="evenodd" d="M5.5 9.2h13l-1.1 10.9a2.1 2.1 0 0 1-2.1 1.9H8.7a2.1 2.1 0 0 1-2.1-1.9zM9.9 11.6a.8.8 0 0 0-.8.8v5.6a.8.8 0 0 0 1.6 0v-5.6a.8.8 0 0 0-.8-.8zm4.2 0a.8.8 0 0 0-.8.8v5.6a.8.8 0 0 0 1.6 0v-5.6a.8.8 0 0 0-.8-.8z"/></g></svg><span id="selDelTxt"></span></button>
 </div>
@@ -3742,8 +3711,7 @@ function taskRow(t,opts={}){
   const row=el("div",{class:"item"+(t.fait?" done":""),style:"--stripe:"+(CAT[t.cat]||CAT.maison).c,"data-key":(t.prive?"ptaches:":"taches:")+t.id});
   const skey=(t.prive?"p:":"f:")+t.id, isSel=!t.fait&&S.sel.has(skey);
   if(isSel) row.classList.add("selected");
-  const pend=!t.fait&&S.pendDone&&S.pendDone.has(skey); if(pend) row.classList.add("pend");
-  const chk=el("button",{class:"check"+(isSel?" sel":"")+(isSel&&S.selJust===skey?" just":""),type:"button","aria-pressed":t.fait?null:String(isSel),"aria-label":t.fait?"Remettre « "+t.titre+" » à faire":S.selMode?(isSel?"Retirer de la sélection":"Sélectionner « "+t.titre+" »"):"Marquer « "+t.titre+" » comme faite",onclick:()=>toggleDone(t)});
+  const chk=el("button",{class:"check"+(isSel?" sel":"")+(isSel&&S.selJust===skey?" just":""),type:"button","aria-pressed":t.fait?null:String(isSel),"aria-label":t.fait?"Remettre « "+t.titre+" » à faire":(isSel?"Retirer de la sélection":"Sélectionner « "+t.titre+" »"),onclick:()=>toggleDone(t)});
   chk.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   if(S.readOnly||!meId()) chk.disabled=true;
   let first=chk;
@@ -3775,7 +3743,6 @@ function taskRow(t,opts={}){
   if(!editable||t.fait) more.hidden=true;
   if(!t.fait) row.append(more);
   if(editable&&S.editing===key) row.append(taskEditor(t,key));
-  else if(!pend) taskGestures(row,t);
   return row;
 }
 function fillList(box,tasks,empty,opts){ box.innerHTML=""; if(!tasks.length) box.append(el("div",{class:"empty"},el("strong",{text:empty[0]}),empty[1])); else for(const t of tasks) box.append(taskRow(t,opts)); }
@@ -5995,83 +5962,27 @@ async function restoreTask(t,btn){
 async function toggleDone(t){
   if(!S.db||!needMe()) return;
   const key=(t.prive?"p:":"f:")+t.id;
-  if(!t.fait){ if(!S.selMode){ quickDone(t); return; } S.sel.has(key)?S.sel.delete(key):S.sel.add(key); S.selJust=key; renderTaskViews(); S.selJust=null; renderSelBar(); return; }
+  if(!t.fait){ S.sel.has(key)?S.sel.delete(key):S.sel.add(key); S.selJust=key; renderTaskViews(); S.selJust=null; renderSelBar(); return; }
   try{ await colFor(t).doc(t.id).update({fait:false,faitPar:null,faitLe:null,nextMsg:null}); }catch(e){ writeErr(e); }
 }
-/* ---------- Gestes des tâches, à la manière de Rappels (iOS) ----------
-   toucher le cercle = fait (avec « Annuler » quelques secondes) ; glisser à droite = fait ;
-   glisser à gauche = Demain / Supprimer ; appui long = menu (natif sur iPhone) ; « Sélectionner plusieurs » = barre d'outils. */
-S.pendDone=new Map();
-function quickDone(t){ const key=(t.prive?"p:":"f:")+t.id; if(S.pendDone.has(key)) return;
-  haptic(14); S.pendDone.set(key,setTimeout(()=>{ S.pendDone.delete(key); doneTasks([t]); },2400)); renderTaskViews();
-  toastUndo("« "+esc(t.titre)+" » faite ✓",()=>{ clearTimeout(S.pendDone.get(key)); S.pendDone.delete(key); renderTaskViews(); },2400); }
-async function laterTasks(tasks){ if(!tasks.length||!S.db) return; const d=today(); d.setDate(d.getDate()+1); const dt=iso(d);
-  try{ await Promise.all(tasks.map(t=>colFor(t).doc(t.id).update({echeance:dt}))); haptic(10); toast(tasks.length>1?tasks.length+" tâches reportées à demain.":"« "+esc(tasks[0].titre)+" » reportée à demain."); }catch(e){ writeErr(e); } }
-function delTask(t){ if(!canEditTask(t)){ toast("Seuls les admins et la personne qui l'a ajoutée peuvent supprimer cette tâche."); return; }
-  const go=()=>softDelete([taskEntry(t)],"« "+esc(t.titre)+" » supprimée.");
-  const nm=nativeMenu("Supprimer « "+t.titre+" » ?",[{id:"del",title:"Supprimer",icon:"trash",destructive:true}]); if(nm){ nm.then(id=>{ if(id==="del") go(); }); return; } go(); }
-function taskMenu(t,row){ const key=(t.prive?"p:":"f:")+t.id, ed=canEditTask(t);
-  const acts=[["done","Marquer comme fait","checkmark.circle",()=>quickDone(t)]];
-  if(ed) acts.push(["later","Reporter à demain","calendar.badge.clock",()=>laterTasks([t])],["edit","Modifier","pencil",()=>{ S.editing=key; S.tdraft=null; S.confirm=null; renderTaskViews(); }]);
-  acts.push(["multi","Sélectionner plusieurs","checklist",()=>{ S.selMode=true; S.sel.add(key); renderTaskViews(); renderSelBar(); }]);
-  if(ed) acts.push(["del","Supprimer","trash",()=>delTask(t),true]);
-  haptic(16);
-  const nm=nativeMenu(t.titre,acts.map(([id,title,icon,,d])=>({id,title,icon,destructive:!!d}))); if(nm){ nm.then(id=>{ const a=acts.find(x=>x[0]===id); if(a) a[3](); }); return; }
-  let M=$("tMenu"); if(!M){ M=el("div",{class:"add-menu racc tmenu",id:"tMenu",role:"menu",hidden:true}); document.body.append(M); } M.innerHTML="";
-  const ic={done:"✓",later:"📅",edit:"✎",multi:"☑︎",del:"🗑"};
-  for(const [id,title,,fn,d] of acts) M.append(el("button",{type:"button",role:"menuitem",class:d?"danger":"",onclick:()=>{ close(); fn(); }},title,el("i",{"aria-hidden":"true",text:ic[id]})));
-  const r=row.getBoundingClientRect(), below=r.bottom+250<innerHeight;
-  M.style.left=Math.max(12,Math.min(innerWidth-232,r.left+16))+"px"; M.style.right="auto";
-  if(below){ M.style.top=Math.round(r.bottom+8)+"px"; M.style.bottom="auto"; } else { M.style.top="auto"; M.style.bottom=Math.round(innerHeight-r.top+8)+"px"; }
-  row.classList.add("lift"); M.hidden=false;
-  function close(){ M.hidden=true; row.classList.remove("lift"); document.removeEventListener("pointerdown",away,true); }
-  const away=e=>{ if(M.contains(e.target)) return; close(); };
-  setTimeout(()=>document.addEventListener("pointerdown",away,true),0); }
-function closeSwipes(except){ document.querySelectorAll(".item.sw-open").forEach(r=>{ if(r!==except&&r._swClose) r._swClose(); }); }
-function taskGestures(row,t){ if(t.fait||S.readOnly||!meId()) return;
-  let x0=0,y0=0,dx=0,mode=null,lp=0,under=null,pid=null; const OPEN=-150, ed=canEditTask(t);
-  const set=(x,anim)=>{ row.style.transition=anim?"transform .28s cubic-bezier(.2,.9,.3,1)":"none"; row.style.transform=x?"translateX("+x+"px)":""; if(under) under.classList.toggle("right",x>0); };
-  const mkUnder=()=>{ if(under) return; const P=row.parentElement; if(!P) return; if(getComputedStyle(P).position==="static") P.style.position="relative";
-    under=el("div",{class:"sw-under","aria-hidden":"true"},el("span",{class:"sw-done",text:"✓ Fait"}),el("span",{class:"sw-acts"},ed?el("button",{type:"button",class:"sw-later",tabindex:"-1",onclick:()=>{ close(); laterTasks([t]); }},"📅",el("small",{text:"Demain"})):"",ed?el("button",{type:"button",class:"sw-del",tabindex:"-1",onclick:()=>{ close(); delTask(t); }},"🗑",el("small",{text:"Supprimer"})):""));
-    under.style.top=row.offsetTop+"px"; under.style.height=row.offsetHeight+"px"; under.style.left=row.offsetLeft+"px"; under.style.width=row.offsetWidth+"px"; P.insertBefore(under,row); };
-  const close=()=>{ row.classList.remove("sw-open"); set(0,true); setTimeout(()=>{ if(!row.classList.contains("sw-open")&&under){ under.remove(); under=null; } },300); };
-  row._swClose=close;
-  row.addEventListener("pointerdown",e=>{ if(e.button>0||S.selMode||e.target.closest("button,input,textarea,select,a,.t-edit,.editor")) return; closeSwipes(row);
-    x0=e.clientX; y0=e.clientY; dx=0; mode=null; pid=e.pointerId; clearTimeout(lp);
-    lp=setTimeout(()=>{ if(mode===null){ mode="menu"; taskMenu(t,row); } },480); });
-  row.addEventListener("pointermove",e=>{ if(e.pointerId!==pid||mode==="menu"||mode==="v") return; const mx=e.clientX-x0, my=e.clientY-y0;
-    if(mode===null){ if(Math.abs(mx)<8&&Math.abs(my)<8) return; clearTimeout(lp); if(Math.abs(mx)>Math.abs(my)*1.2){ mode="h"; try{ row.setPointerCapture(pid); }catch(_){} mkUnder(); } else { mode="v"; return; } }
-    const base=row.classList.contains("sw-open")?OPEN:0; dx=Math.max(ed?-180:0,Math.min(130,base+mx)); set(dx,false); });
-  const end=e=>{ if(e.pointerId!==pid) return; clearTimeout(lp); pid=null; if(mode!=="h"){ mode=null; return; } mode=null;
-    if(dx>90){ set(0,true); quickDone(t); setTimeout(()=>{ if(under){ under.remove(); under=null; } },300); }
-    else if(dx<-60&&ed){ row.classList.add("sw-open"); set(OPEN,true); haptic(8); }
-    else close(); };
-  row.addEventListener("pointerup",end); row.addEventListener("pointercancel",end);
-  row.addEventListener("contextmenu",e=>e.preventDefault()); }
-document.addEventListener("pointerdown",e=>{ if(!e.target.closest(".item.sw-open,.sw-under")) closeSwipes(); },true);
 function renderSelBar(){
   if(S.cSel){ for(const id of [...S.cSel]) if(!(S.courses||[]).some(i=>i.id===id&&!i.fait)) S.cSel.delete(id); if(S.tab!=="courses") S.cSel.clear(); }
   if(cSelMode()){ const n=S.cSel.size; $("selBar").hidden=false; $("selBar").setAttribute("aria-label","Articles sélectionnés");
     const dl=$("selDel"); dl.classList.toggle("confirm",!!S.selDelConfirm); $("selDelTxt").textContent=S.selDelConfirm?(n>1?"Retirer les "+n+" ?":"Retirer ?"):"";
-    $("selLater").hidden=true; $("selOk").disabled=false; $("selDel").disabled=false; $("selBar").classList.add("c-mode");
     $("selCount").textContent=n+" article"+(n>1?"s":"")+" sélectionné"+(n>1?"s":""); $("selOk").textContent=n>1?"Au caddie ("+n+")":"Au caddie"; return; }
-  $("selBar").setAttribute("aria-label","Tâches sélectionnées"); $("selBar").classList.remove("c-mode");
+  $("selBar").setAttribute("aria-label","Tâches sélectionnées");
   for(const k of [...S.sel]){ const t=findTask(k); if(!t||t.fait) S.sel.delete(k); }
-  const n=S.sel.size; $("selLater").hidden=false; document.documentElement.classList.toggle("sel-mode",!!S.selMode); $("selBar").hidden=!S.selMode&&!n; if(!n){ S.selDelConfirm=false; $("selCount").textContent="Touche les tâches à choisir"; $("selOk").textContent="Choisis des tâches"; $("selOk").disabled=true; $("selLater").disabled=true; $("selDel").disabled=true; return; }
-  $("selOk").disabled=false; $("selLater").disabled=false; $("selDel").disabled=false;
+  const n=S.sel.size; $("selBar").hidden=!n; if(!n){ S.selDelConfirm=false; return; }
   const dl=$("selDel"); dl.classList.toggle("confirm",!!S.selDelConfirm); $("selDelTxt").textContent=S.selDelConfirm?(n>1?"Supprimer les "+n+" ?":"Supprimer ?"):"";
   $("selCount").textContent=n+" tâche"+(n>1?"s":"")+" sélectionnée"+(n>1?"s":"");
-  $("selOk").textContent=n>1?"✓ Faites ("+n+")":"✓ Faite";
+  $("selOk").textContent=n>1?"Valider les "+n:"Valider";
 }
 function findTask(k){ const pr=k.startsWith("p:"), id=k.slice(2); return (pr?S.perso:S.foyer).find(t=>t.id===id); }
-$("selCancel").addEventListener("click",()=>{ if(cSelMode()){ S.cSel.clear(); S.selDelConfirm=false; renderSelBar(); renderCourses(); return; } S.sel.clear(); S.selMode=false; S.selDelConfirm=false; renderSelBar(); renderTaskViews(); });
-$("selLater").addEventListener("click",()=>{ const tasks=[...S.sel].map(findTask).filter(t=>t&&!t.fait&&canEditTask(t)); S.sel.clear(); S.selMode=false; renderSelBar(); laterTasks(tasks); });
+$("selCancel").addEventListener("click",()=>{ if(cSelMode()){ S.cSel.clear(); S.selDelConfirm=false; renderSelBar(); renderCourses(); return; } S.sel.clear(); S.selDelConfirm=false; renderSelBar(); renderTaskViews(); });
 $("selDel").addEventListener("click",()=>{
   if(cSelMode()) return cSelDel();
   const tasks=[...S.sel].map(findTask).filter(Boolean), ok=tasks.filter(canEditTask), ko=tasks.length-ok.length;
-  /* sur iPhone : la confirmation native d'iOS avant de supprimer */
-  if(window.__nt&&window.__nt.menu&&!S.selDelAsked&&ok.length){ nativeMenu(ok.length>1?"Supprimer ces "+ok.length+" tâches ?":"Supprimer cette tâche ?",[{id:"del",title:"Supprimer",icon:"trash",destructive:true}]).then(id=>{ if(id==="del"){ S.selDelAsked=true; $("selDel").click(); S.selDelAsked=false; } }); return; }
-  S.sel.clear(); S.selMode=false; S.selDelConfirm=false; renderSelBar();
+  S.sel.clear(); S.selDelConfirm=false; renderSelBar();
   const keep=ko?" "+ko+" gardée"+(ko>1?"s":"")+" : seuls les admins et la personne qui l'a ajoutée peuvent la supprimer.":"";
   if(ok.length) softDelete(ok.map(taskEntry),(ok.length>1?ok.length+" tâches supprimées.":"Tâche supprimée.")+keep);
   else { toast("Seuls les admins et la personne qui l'a ajoutée peuvent supprimer "+(ko>1?"ces tâches.":"cette tâche.")); renderAllNow(); }
@@ -6079,10 +5990,7 @@ $("selDel").addEventListener("click",()=>{
 $("selOk").addEventListener("click",async()=>{
   if(cSelMode()) return cSelOk();
   const tasks=[...S.sel].map(findTask).filter(t=>t&&!t.fait); if(!tasks.length) return;
-  S.sel.clear(); S.selMode=false; renderSelBar(); await doneTasks(tasks); });
-/* valider des tâches : animation, enregistrement (répétition, tour de rôle), message */
-async function doneTasks(tasks){ if(!tasks.length) return;
-  const msgs=[];
+  const msgs=[]; S.sel.clear(); renderSelBar();
   await doneAnim(tasks);
   const me=meId(), now=Date.now(); for(const t of tasks){ t.fait=true; t.faitPar=me; t.faitLe=now; }
   renderAllNow();
@@ -6090,7 +5998,7 @@ async function doneTasks(tasks){ if(!tasks.length) return;
   catch(e){ writeErr(e); }
   const n=tasks.length;
   toast((n>1?n+" tâches validées.":"Fait. Bien joué.")+(msgs.length?" <b>"+esc(msgs[0])+"</b>"+(msgs.length>1?" (+"+(msgs.length-1)+" autre"+(msgs.length>2?"s":"")+" rappel"+(msgs.length>2?"s":"")+")":"")+" — ajouté aux rappels.":""));
-}
+});
 async function completeTask(t){ const _r=await completeTaskInner(t); coconTick(); return _r; }
 async function completeTaskInner(t){
   const col=colFor(t), ref=col.doc(t.id), me=meId();
