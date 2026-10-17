@@ -47,6 +47,6 @@ npm run setup:ios
   Supabase** (Edge Functions), jamais dans le dépôt.
 - **Publier sur l'App Store / TestFlight** : compte Apple Developer (99 €/an). La clé App Store Connect (.p8) va dans les
   **secrets GitHub**, jamais dans le dépôt.
-- **Aperçu sans Mac** : chaque push qui touche `app/` lance `.github/workflows/ios-preview.yml` (compilation + captures du
-  simulateur, publiées dans la branche `apercu-ios`).
+- **Aperçu sans Mac** (désactivé par défaut) : `.github/workflows/ios-preview.yml` ne se lance plus qu'à la main
+  (GitHub › Actions › « Run workflow ») ; captures publiées dans la branche `apercu-ios`.
 - **Android** (plus tard) : `npm i @capacitor/android && npx cap add android`. Prévoir le bouton « retour » d'Android.

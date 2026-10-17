@@ -2,11 +2,10 @@ name: iOS · aperçu dans le simulateur
 
 # Fabrique l'app iPhone (Capacitor) et la lance dans un iPhone simulé, puis garde des captures et une vidéo.
 # Gratuit (dépôt public) et sans compte Apple : rien n'est signé ni publié.
+# Plus de lancement automatique (Angel compile maintenant avec Xcode) : seulement à la main,
+# depuis l'onglet « Actions » de GitHub › « Run workflow ».
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ["app/**", ".github/workflows/ios-preview.yml"]
 
 permissions:
   contents: write
