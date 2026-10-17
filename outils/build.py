@@ -86,6 +86,10 @@ manifest = {
     "icons": [{"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
               {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
               {"src": "icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}],
+    # appui long sur l'icône (Android, ordinateur) : mêmes raccourcis que l'app iPhone
+    "shortcuts": [{"name": n, "short_name": sn, "url": "./#raccourci=" + k, "icons": [{"src": "icon-192.png", "sizes": "192x192"}]}
+                  for k, n, sn in [("tache", "Nouvelle tâche", "Tâche"), ("courses", "Ajouter aux courses", "Courses"),
+                                   ("rdv", "Un rendez-vous", "Rendez-vous"), ("cocoony", "Demander à Cocoony", "Cocoony")]],
 }
 json.dump(manifest, open(os.path.join(OUT, "manifest.webmanifest"), "w"), ensure_ascii=False, indent=2)
 

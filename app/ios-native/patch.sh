@@ -15,3 +15,16 @@ pl NSPhotoLibraryAddUsageDescription "Cocoon enregistre dans tes photos les papi
 pl NSCalendarsUsageDescription "Cocoon peut ajouter les rendez-vous du foyer à ton calendrier."
 /usr/libexec/PlistBuddy -c "Print :CFBundleDisplayName" "$PL" >/dev/null 2>&1 && /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName Cocoon" "$PL" || true
 echo "Info.plist : autorisations ajoutées"
+# Raccourcis de l'icône (appui long sur Cocoon dans l'écran d'accueil de l'iPhone)
+/usr/libexec/PlistBuddy -c "Delete :UIApplicationShortcutItems" "$PL" 2>/dev/null || true
+/usr/libexec/PlistBuddy -c "Add :UIApplicationShortcutItems array" "$PL"
+i=0
+for it in "tache|Nouvelle tâche|checkmark.circle" "courses|Ajouter aux courses|cart" "rdv|Un rendez-vous|calendar" "cocoony|Demander à Cocoony|sparkles"; do
+  IFS='|' read -r k t ic <<< "$it"
+  /usr/libexec/PlistBuddy -c "Add :UIApplicationShortcutItems:$i dict" "$PL"
+  /usr/libexec/PlistBuddy -c "Add :UIApplicationShortcutItems:$i:UIApplicationShortcutItemType string fr.cocoon.app.$k" "$PL"
+  /usr/libexec/PlistBuddy -c "Add :UIApplicationShortcutItems:$i:UIApplicationShortcutItemTitle string $t" "$PL"
+  /usr/libexec/PlistBuddy -c "Add :UIApplicationShortcutItems:$i:UIApplicationShortcutItemIconSymbolName string $ic" "$PL"
+  i=$((i+1))
+done
+echo "Info.plist : raccourcis de l'icône ajoutés"

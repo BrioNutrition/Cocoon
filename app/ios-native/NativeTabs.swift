@@ -21,6 +21,21 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
     ]
     private var bar: UITabBar?
     private var top: UIView?
+    // raccourci de l'icône reçu avant que la page soit prête (lancement à froid)
+    static var pendingShortcut: String?
+    override public func load() {
+        NotificationCenter.default.addObserver(forName: Notification.Name("CocoonShortcut"), object: nil, queue: .main) { [weak self] n in
+            if let t = n.object as? String { self?.notifyListeners("shortcut", data: ["type": t], retainUntilConsumed: true); NativeTabsPlugin.pendingShortcut = nil }
+        }
+        if let t = NativeTabsPlugin.pendingShortcut { notifyListeners("shortcut", data: ["type": t], retainUntilConsumed: true); NativeTabsPlugin.pendingShortcut = nil }
+    }
+    // appui long sur un onglet → la page affiche les raccourcis (pour l'onglet Cocoony)
+    @objc func holdTab(_ g: UILongPressGestureRecognizer) {
+        guard g.state == .began, let bar = self.bar, let n = bar.items?.count, n > 0 else { return }
+        let x = g.location(in: bar).x, i = max(0, min(n - 1, Int(x / (bar.bounds.width / CGFloat(n)))))
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        notifyListeners("hold", data: ["index": i])
+    }
 
     // ---------- barre d'onglets ----------
     private func image(fromDataURL s: String?) -> UIImage? {
@@ -45,6 +60,9 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
             }
             if let items = bar.items, old < items.count { bar.selectedItem = items[old] }
             if bar.superview == nil {
+                let lp = UILongPressGestureRecognizer(target: self, action: #selector(self.holdTab(_:)))
+                lp.minimumPressDuration = 0.45; lp.cancelsTouchesInView = true
+                bar.addGestureRecognizer(lp)
                 bar.translatesAutoresizingMaskIntoConstraints = false
                 view.addSubview(bar)
                 NSLayoutConstraint.activate([
@@ -187,5 +205,14 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
 class MainViewController: CAPBridgeViewController {
     override open func capacitorDidLoad() {
         bridge?.registerPluginInstance(NativeTabsPlugin())
+    }
+}
+
+// appui long sur l'icône de l'app (raccourcis déclarés dans Info.plist par patch.sh)
+extension AppDelegate {
+    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+        NativeTabsPlugin.pendingShortcut = shortcutItem.type
+        NotificationCenter.default.post(name: Notification.Name("CocoonShortcut"), object: shortcutItem.type)
+        completionHandler(true)
     }
 }

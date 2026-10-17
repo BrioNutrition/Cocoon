@@ -39,7 +39,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 
 ## Où on en est (17 oct. 2026)
 Fait récemment : Repas (« Ce soir » + frise + fiche en feuille), Premium (bannière en haut du Foyer + comparatif),
-feuille « Nouvelle tâche » + catégories perso, accueil (bonjour + carte du foyer), démarrage, ménage du code.
+feuille « Nouvelle tâche » + catégories perso, accueil (bonjour + carte du foyer), démarrage, ménage du code,
+raccourcis (appui long sur Cocoony ; icône iPhone via Info.plist + `#raccourci=` ; manifeste Android).
 Prochaine étape : **Capacitor / Xcode sur le Mac d'Angel** (suivre `app/XCODE.md`), puis : notifications natives (APNs),
 tâches à tour de rôle, définir le Premium, bouton « Une idée, un bug ? », passe d'accessibilité, test Android, page de présentation.
 À faire côté Angel : redéployer `cocoon-push`, coller les modèles d'e-mail, vérifier OTP à 6 chiffres.

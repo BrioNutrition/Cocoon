@@ -25,5 +25,51 @@
       "type": "image/png",
       "purpose": "maskable"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nouvelle tâche",
+      "short_name": "Tâche",
+      "url": "./#raccourci=tache",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Ajouter aux courses",
+      "short_name": "Courses",
+      "url": "./#raccourci=courses",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Un rendez-vous",
+      "short_name": "Rendez-vous",
+      "url": "./#raccourci=rdv",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Demander à Cocoony",
+      "short_name": "Cocoony",
+      "url": "./#raccourci=cocoony",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }
