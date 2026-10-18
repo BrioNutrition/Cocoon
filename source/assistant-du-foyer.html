@@ -2680,6 +2680,15 @@ div.pf-r{cursor:default}
 .bt-bg{background:#13121C!important}
 .boot .bt-name{color:#F1EFFA!important}
 html:has(#boot),html:has(#boot) body{background:#13121C!important}
+/* thème clair : l'animation d'ouverture aussi (sinon on passe brutalement du sombre au blanc) */
+html[data-theme="light"] .bt-bg{background:#F6F5FB!important}
+html[data-theme="light"] .boot .bt-name{color:#1C1B2E!important}
+html[data-theme="light"]:has(#boot),html[data-theme="light"]:has(#boot) body{background:#F6F5FB!important}
+@media (prefers-color-scheme: light){
+  html:not([data-theme="dark"]) .bt-bg{background:#F6F5FB!important}
+  html:not([data-theme="dark"]) .boot .bt-name{color:#1C1B2E!important}
+  html:not([data-theme="dark"]):has(#boot),html:not([data-theme="dark"]):has(#boot) body{background:#F6F5FB!important}
+}
 .pap-tiles{gap:30px 12px;padding-top:18px}
 .pk{background:none!important;box-shadow:none!important;isolation:isolate;border-radius:0 18px 18px 18px;min-height:118px}
 .pk>.pk-face{position:absolute;inset:0;z-index:3;border-radius:0 18px 18px 18px;background:color-mix(in srgb,var(--bc) 42%,var(--surface));box-shadow:0 2px 0 var(--shadow),inset 0 1px 0 rgba(255,255,255,.12)}

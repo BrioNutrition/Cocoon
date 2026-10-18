@@ -265,6 +265,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         DispatchQueue.main.async {
             self.bridge?.viewController?.overrideUserInterfaceStyle = dark ? .dark : .light
             // fond visible quand on tire la page au-delà du haut ou du bas : celui de la page (sinon il restait sombre en thème clair)
+            if bg != nil { UserDefaults.standard.set(call.getString("bg"), forKey: "cocoon.bg") }   // reprise dès le prochain lancement
             if let c = bg, let wv = self.bridge?.webView {
                 wv.backgroundColor = c; wv.scrollView.backgroundColor = c; self.bridge?.viewController?.view.backgroundColor = c
                 if #available(iOS 15.0, *) { wv.underPageBackgroundColor = c }
@@ -291,6 +292,13 @@ class MainViewController: CAPBridgeViewController {
         // la page rebondit en haut et en bas même quand elle est plus courte que l'écran
         webView?.scrollView.bounces = true   // Capacitor le coupe par défaut
         webView?.scrollView.alwaysBounceVertical = true
+        // dès le lancement, le fond du dernier thème utilisé (sinon sombre puis blanc d'un coup en thème clair)
+        if let css = UserDefaults.standard.string(forKey: "cocoon.bg") {
+            let n = css.components(separatedBy: CharacterSet(charactersIn: "0123456789.").inverted).compactMap { Double($0) }
+            if n.count >= 3 { let c = UIColor(red: n[0] / 255, green: n[1] / 255, blue: n[2] / 255, alpha: 1)
+                webView?.backgroundColor = c; webView?.scrollView.backgroundColor = c; view.backgroundColor = c
+                if #available(iOS 15.0, *) { webView?.underPageBackgroundColor = c } }
+        }
         // taille du texte choisie dans Réglages › Affichage : toute la page suit (comme un zoom)
         applyTextSize()
         NotificationCenter.default.addObserver(self, selector: #selector(applyTextSize), name: UIContentSizeCategory.didChangeNotification, object: nil)
