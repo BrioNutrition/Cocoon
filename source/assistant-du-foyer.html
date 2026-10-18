@@ -3665,7 +3665,7 @@ function renderHeader(){
   /* le bonjour du moment, puis le bilan du jour */
   { const me0=meId(), hh=$("homeHello"), hs=$("homeSub"), h=new Date().getHours();
     if(me0&&!S.readOnly){ const nm=(membre(me0).nom||"").split(" ")[0], g=[h<5||h>=18?"Bonsoir":"Bonjour"];
-      hh.textContent=g[0]+(nm?" "+nm+",":""); hh.hidden=false;
+      hh.textContent=g[0]+(nm?", "+nm:""); hh.hidden=false;
       hs.hidden=true; }
     else { hh.hidden=true; hs.hidden=true; } }
   const me=meId(), box=$("members"); box.innerHTML="";
