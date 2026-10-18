@@ -242,6 +242,7 @@ class MainViewController: CAPBridgeViewController {
         webView?.scrollView.showsVerticalScrollIndicator = false
         webView?.scrollView.showsHorizontalScrollIndicator = false
         // la page rebondit en haut et en bas même quand elle est plus courte que l'écran
+        webView?.scrollView.bounces = true   // Capacitor le coupe par défaut
         webView?.scrollView.alwaysBounceVertical = true
     }
 }
