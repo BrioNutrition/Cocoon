@@ -126,7 +126,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         cfg.cornerStyle = .capsule
         if prominent { cfg.baseBackgroundColor = cocoonYellow; cfg.baseForegroundColor = .black }
         let b = UIButton(configuration: cfg, primaryAction: UIAction { [weak self] _ in
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            if id != "back" { UIImpactFeedbackGenerator(style: .light).impactOccurred() }   // pas de vibration pour revenir en arrière
             self?.notifyListeners("topbar", data: ["id": id])
         })
         if prominent { b.tintColor = cocoonYellow }
