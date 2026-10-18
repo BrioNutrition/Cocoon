@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="18/10 02:45";</script>
+<script>window.COCOON_BUILD="18/10 10:54";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -664,6 +664,8 @@ button,a,input,select,textarea,label,summary,[role="button"]{touch-action:manipu
 .settings{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .set-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);text-align:left;font:inherit;width:100%;cursor:pointer}
 .set-row:first-child{border-top:0}
+.rg-out-box{margin-top:18px}
+.set-row.rg-out{justify-content:center;color:#E5484D;font-weight:700;padding:14px}
 .set-row .b-ico{width:38px;height:38px;border-radius:12px;flex:none}
 .set-row .b-ico svg{width:20px;height:20px}
 .set-row .t{flex:1;display:flex;flex-direction:column;min-width:0}
@@ -7343,6 +7345,8 @@ function renderSettings(){
   acc.append(...[...box.querySelectorAll(":scope > .set-row")].filter(b=>/Confidentialit|Conditions/.test(b.textContent)));
   w.append(el("div",{class:"ms-gl",text:"Compte"}),acc);
   if(box.childNodes.length) w.append(el("div",{class:"ms-gl",text:"Mes données"}),box);
+  /* comme dans les Réglages d'iOS : la déconnexion, en rouge, tout en bas */
+  if(window.cocoonHost&&cocoonHost.logout) w.append(el("div",{class:"settings rg-out-box"},el("button",{type:"button",class:"set-row rg-out",onclick:()=>confirmBox("Se déconnecter ?","Tu pourras te reconnecter avec ton adresse e-mail. Tes données restent dans le foyer.","Se déconnecter",()=>{ try{ cocoonHost.logout(); }catch(err){ writeErr(err); } })},"Se déconnecter")));
   w.append(el("p",{class:"version",text:"Cocoon · version 4.1"}));
 }
 
