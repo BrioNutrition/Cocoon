@@ -6557,7 +6557,7 @@ setTab("accueil");
     if(S.tab==="documents"&&S.docCat&&id==="back"){ S.docCat=null; renderDocs(); window.scrollTo({top:0,behavior:"smooth"}); return; } if(!bar){ if(id==="back"&&S.tab==="moi"&&S.moiSec) $("moiBack").click(); return; }
     const el0=id==="back"?bar.querySelector(".hub-back,.pg-back"):id==="sync"?bar.querySelector(".hub-sync"):id==="add"?bar.querySelector(".hub-add"):null; if(el0) el0.click(); });
   const safeTop=()=>{ const p=document.createElement("div"); p.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top,0px)"; document.body.append(p); const h=p.offsetHeight; p.remove(); return h; };
-  const sync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!document.getElementById("boot")&&!(document.getElementById("wizard")&&!$("wizard").hidden));
+  const sync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!(document.getElementById("boot")&&!document.getElementById("boot")._done)&&!(document.getElementById("wizard")&&!$("wizard").hidden));
     if(vis!==shown){ shown=vis; (vis?NT.show({items:TABS.map(t=>({title:t[1],icon:t[2]}))}):NT.hide()).catch(()=>{}); sel=-1; bdg=null; }
     if(!vis) return;
     /* une fiche ouverte depuis l'accueil (ou Moi) reste sous cet onglet */
@@ -9149,6 +9149,8 @@ function bootCheck(){
   if(quick){ S.bootQuick=true; b.querySelectorAll(".bt-dots,.bt-dots i").forEach(e=>{ e.style.animation="none"; }); b.classList.remove("quick"); }
   S.booted=true; try{ localStorage.setItem("cocoon.bootSeen","1"); }catch(_){}
   b._done=true; requestAnimationFrame(()=>requestAnimationFrame(bootOut));
+  /* la barre d'onglets arrive pendant que l'animation d'ouverture part (pas après) */
+  try{ window.__ntSync&&window.__ntSync(); }catch(_){}
 }
 /* les contours qui grossissent autour du logo s'effacent en fondu là où ils en sont */
 function ringsOut(w){ if(!w) return; w.querySelectorAll(":scope > i").forEach(i=>{ const cs=getComputedStyle(i), op=parseFloat(cs.opacity)||0, tf=cs.transform&&cs.transform!=="none"?cs.transform:"none";
