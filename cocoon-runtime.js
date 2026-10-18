@@ -304,7 +304,10 @@
     if (/fetch|network/i.test(m)) return "Pas de connexion internet.";
     return m || "Une erreur est survenue.";
   }
-  async function logout() { try { if (ME) LS.del(DEV2FA + ME.id); } catch (_) {} try { await Promise.race([PUSH.disable(), new Promise(function (r) { setTimeout(r, 2500); })]); } catch (_) {} LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer"); try { await SBP; await sb.auth.signOut(); } catch (_) {} authStore.removeItem("cocoon.auth"); location.reload(); }
+  async function logout() { try { if (ME) LS.del(DEV2FA + ME.id); } catch (_) {}
+    /* Face ID : la prochaine personne qui se connecte sur ce téléphone choisira à son tour */
+    try { if (window.__nt && window.__nt.faceid) window.__nt.faceid({ enabled: false, asked: false }); } catch (_) {}
+    try { await Promise.race([PUSH.disable(), new Promise(function (r) { setTimeout(r, 2500); })]); } catch (_) {} LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer"); try { await SBP; await sb.auth.signOut(); } catch (_) {} authStore.removeItem("cocoon.auth"); location.reload(); }
 
   /* =================== Session & foyer =================== */
   /* Double authentification : code par e-mail tant que cet appareil n'a pas été vérifié (oublié à la déconnexion) */

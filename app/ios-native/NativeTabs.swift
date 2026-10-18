@@ -21,7 +21,8 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         CAPPluginMethod(name: "haptic", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "theme", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "sheet", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "alert", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "alert", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "faceid", returnType: CAPPluginReturnPromise)
     ]
     private var bar: UITabBar?
     private var top: UIView?
@@ -226,6 +227,17 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         }
     }
 
+    // ---------- Face ID à l'ouverture : au choix de l'utilisateur ({enabled?, asked?} → état) ----------
+    @objc func faceid(_ call: CAPPluginCall) {
+        let d = UserDefaults.standard
+        if let e = call.getBool("enabled") { d.set(e, forKey: CocoonLockKeys.enabled) }
+        if let a = call.getBool("asked") { d.set(a, forKey: CocoonLockKeys.asked) }
+        let ctx = LAContext(), bio = ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+        let any = LAContext().canEvaluatePolicy(.deviceOwnerAuthentication, error: nil)
+        let label = bio && ctx.biometryType == .faceID ? "Face ID" : bio && ctx.biometryType == .touchID ? "Touch ID" : "Code de l'iPhone"
+        call.resolve(["enabled": d.bool(forKey: CocoonLockKeys.enabled), "asked": d.bool(forKey: CocoonLockKeys.asked), "available": any, "label": label])
+    }
+
     // ---------- vibrations ----------
     @objc func haptic(_ call: CAPPluginCall) {
         let s = call.getString("style") ?? "light"
@@ -246,7 +258,8 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
     }
 }
 
-// ---------- Face ID à l'ouverture : verrou natif au-dessus de tout (cache aussi l'app dans le sélecteur d'apps) ----------
+// ---------- Face ID à l'ouverture (si l'utilisateur l'a activé) : verrou natif au-dessus de tout (cache aussi l'app dans le sélecteur d'apps) ----------
+enum CocoonLockKeys { static let enabled = "cocoon.faceid"; static let asked = "cocoon.faceidAsked" }
 @available(iOS 15.0, *)
 final class CocoonLock {
     static let shared = CocoonLock()
@@ -254,7 +267,7 @@ final class CocoonLock {
     private var busy = false
     private var available: Bool { LAContext().canEvaluatePolicy(.deviceOwnerAuthentication, error: nil) }
     func lock(in window: UIWindow?) {
-        guard available, view == nil, let w = window else { return }
+        guard UserDefaults.standard.bool(forKey: CocoonLockKeys.enabled), available, view == nil, let w = window else { return }
         let v = UIVisualEffectView(effect: UIBlurEffect(style: .systemThickMaterialDark))
         v.frame = w.bounds; v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         let tint = UIView(frame: v.bounds); tint.autoresizingMask = [.flexibleWidth, .flexibleHeight]
