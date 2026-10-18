@@ -155,8 +155,10 @@
             finally { b.disabled = false; }
           });
           bindGo();
-          /* focus auto sur l'e-mail, sauf si on a déjà commencé à remplir (sinon le texte tapé part dans le mauvais champ) */
-          setTimeout(function () { var i = f.email; if (i && !i.value && !f.pw.value && !f.contains(document.activeElement)) i.focus(); }, 60);
+          /* focus auto sur l'e-mail, sauf si on a déjà commencé à remplir (sinon le texte tapé part dans le mauvais champ),
+             et jamais sur téléphone : le clavier s'ouvrirait tout seul (par ex. juste après « Se déconnecter ») */
+          var touch = false; try { touch = matchMedia("(pointer: coarse)").matches; } catch (_) {}
+          if (!touch) setTimeout(function () { var i = f.email; if (i && !i.value && !f.pw.value && !f.contains(document.activeElement)) i.focus(); }, 60);
           return;
         }
         if (mode === "forgot") {
