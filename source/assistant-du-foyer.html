@@ -6514,8 +6514,9 @@ setTab("accueil");
         let y=0; for(let n=bar;n;n=n.offsetParent) y+=n.offsetTop; o={visible:true,title:t,back:!!bar.querySelector(".hub-back,.pg-back"),actions:acts,top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(bar.querySelector(".hb-title")||bar).color}; sig=JSON.stringify(o); }
       if(sig!==tbSig){ tbSig=sig; NT.topbar(o).catch(()=>{}); } } };
   setInterval(sync,400); document.addEventListener("visibilitychange",sync);
-  /* dès qu'une rubrique s'ouvre, la barre native suit tout de suite (sans attendre le prochain tour de 400 ms) */
-  let syncQ=false; new MutationObserver(()=>{ if(syncQ) return; syncQ=true; requestAnimationFrame(()=>{ syncQ=false; sync(); }); }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["hidden"]}); })();
+  /* dès qu'une rubrique s'ouvre, la barre native suit (sans attendre le prochain tour de 400 ms),
+     mais seulement une fois la page dessinée (2 images plus tard) : elles apparaissent ensemble */
+  let syncQ=false; new MutationObserver(()=>{ if(syncQ) return; syncQ=true; requestAnimationFrame(()=>requestAnimationFrame(()=>{ syncQ=false; sync(); })); }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["hidden"]}); })();
 /* Ouvrir l'app depuis une notification : « #courses », « #agenda », « #ev=ID », et les boutons « C'est fait » / « Demain » (#t-done=ID, #t-later=ID) */
 /* ---------- Raccourcis : appui long sur Cocoony (site et iPhone), appui long sur l'icône de l'app (iPhone), raccourcis du manifeste (Android) ---------- */
 const RACC=[["tache","Nouvelle tâche","checkmark.circle","taches"],["courses","Ajouter aux courses","cart","courses"],["rdv","Un rendez-vous","calendar","agenda"],["repas","Prévoir un repas","fork.knife","repas"],["cocoony","Demander à Cocoony","sparkles",null]];

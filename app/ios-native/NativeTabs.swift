@@ -22,7 +22,6 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
     private var bar: UITabBar?
     private var top: UIView?
     private var topScroll: NSKeyValueObservation?
-    private var topTitle: String?
     // raccourci de l'icône reçu avant que la page soit prête (lancement à froid)
     static var pendingShortcut: String?
     override public func load() {
@@ -130,8 +129,6 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         let offset = CGFloat(call.getDouble("top") ?? 6), tcol = color(call.getString("color"))
         DispatchQueue.main.async {
             self.top?.removeFromSuperview(); self.top = nil; self.topScroll = nil
-            // nouvelle rubrique : la barre arrive en fondu avec la page (la vue web se dessine un peu après nous)
-            let fresh = !visible || title != self.topTitle; self.topTitle = visible ? title : nil
             guard visible, #available(iOS 15.0, *), let view = self.bridge?.viewController?.view else { call.resolve(); return }
             // la barre défile avec la page, coupée sous la barre de l'heure ; les touches passent à la page autour
             let clip = PassThroughView(); clip.clipsToBounds = true; clip.translatesAutoresizingMaskIntoConstraints = false
@@ -172,10 +169,6 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
                 last = b
             }
             self.top = clip
-            if fresh {
-                clip.alpha = 0
-                UIView.animate(withDuration: 0.18, delay: 0.1, options: [.curveEaseOut, .allowUserInteraction]) { clip.alpha = 1 }
-            }
             call.resolve()
         }
     }
