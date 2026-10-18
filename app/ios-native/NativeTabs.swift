@@ -142,6 +142,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         DispatchQueue.main.async {
             self.top?.removeFromSuperview(); self.top = nil; self.topScroll = nil
             guard visible, #available(iOS 15.0, *), let view = self.bridge?.viewController?.view else { call.resolve(); return }
+            let zoom = self.bridge?.webView?.pageZoom ?? 1   // la page est zoomée (taille du texte) : px de la page → points
             // la barre défile avec la page, coupée sous la barre de l'heure ; les touches passent à la page autour
             let clip = PassThroughView(); clip.clipsToBounds = true; clip.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(clip)
@@ -154,7 +155,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
             NSLayoutConstraint.activate([
                 v.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
                 v.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-                v.topAnchor.constraint(equalTo: clip.topAnchor, constant: offset),
+                v.topAnchor.constraint(equalTo: clip.topAnchor, constant: offset * zoom),
                 v.heightAnchor.constraint(equalToConstant: 44)
             ])
             if let sv = self.bridge?.webView?.scrollView {
@@ -162,7 +163,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
                     v?.transform = CGAffineTransform(translationX: 0, y: -(sv.contentOffset.y + sv.adjustedContentInset.top))
                 }
             }
-            let lbl = UILabel(); lbl.text = title; lbl.font = .systemFont(ofSize: 21, weight: .bold); lbl.textColor = tcol ?? .label
+            let lbl = UILabel(); lbl.text = title; lbl.font = UIFontMetrics(forTextStyle: .title2).scaledFont(for: .systemFont(ofSize: 21, weight: .bold), maximumPointSize: 30); lbl.adjustsFontForContentSizeCategory = true; lbl.textColor = tcol ?? .label
             lbl.translatesAutoresizingMaskIntoConstraints = false
             v.addSubview(lbl)
             NSLayoutConstraint.activate([lbl.centerXAnchor.constraint(equalTo: v.centerXAnchor), lbl.centerYAnchor.constraint(equalTo: v.centerYAnchor)])
@@ -244,6 +245,16 @@ class MainViewController: CAPBridgeViewController {
         // la page rebondit en haut et en bas même quand elle est plus courte que l'écran
         webView?.scrollView.bounces = true   // Capacitor le coupe par défaut
         webView?.scrollView.alwaysBounceVertical = true
+        // taille du texte choisie dans Réglages › Affichage : toute la page suit (comme un zoom)
+        applyTextSize()
+        NotificationCenter.default.addObserver(self, selector: #selector(applyTextSize), name: UIContentSizeCategory.didChangeNotification, object: nil)
+    }
+    @objc func applyTextSize() {
+        let z: [UIContentSizeCategory: CGFloat] = [
+            .extraSmall: 0.85, .small: 0.9, .medium: 0.95, .large: 1.0, .extraLarge: 1.08, .extraExtraLarge: 1.16, .extraExtraExtraLarge: 1.24,
+            .accessibilityMedium: 1.32, .accessibilityLarge: 1.4, .accessibilityExtraLarge: 1.48, .accessibilityExtraExtraLarge: 1.56, .accessibilityExtraExtraExtraLarge: 1.64
+        ]
+        if #available(iOS 14.0, *) { webView?.pageZoom = z[traitCollection.preferredContentSizeCategory] ?? 1.0 }
     }
 }
 

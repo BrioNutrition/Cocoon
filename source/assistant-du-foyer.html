@@ -2109,6 +2109,11 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .wk-leg i.late{background:#FF7A5C;opacity:1}
 .c-live.c-sum{flex-direction:row;align-items:center;gap:12px;padding:13px 14px}
 .c-live.c-sum .cl-t b{font-size:19px;font-family:var(--f-display);font-weight:800}
+/* icônes au trait (uic) dans les boutons, puces et titres */
+.uic{display:inline-flex;width:1.1em;height:1.1em;margin-right:.4em;vertical-align:-.18em;flex:none}
+.uic.after{margin:0 0 0 .3em;width:.95em;height:.95em;vertical-align:-.08em;opacity:.85}
+.uic svg,.wg-ic svg{width:100%;height:100%;display:block}
+.wg-ic svg{width:1em;height:1em}
 .c-live.c-sum .cl-go{align-self:center;background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB);color:#1C1B2E;border:0;border-radius:999px;padding:10px 14px;font-size:14px;box-shadow:none}
 .c-hab{display:flex;flex-wrap:wrap;gap:7px;margin-top:-4px}
 .c-hab[hidden]{display:none}
@@ -3659,8 +3664,8 @@ function renderHeader(){
       ht.classList.remove("fy-tap"); if(window.cocoonHost&&cocoonHost.foyers&&!S.fyCache&&!S.fyFetch){ S.fyFetch=1; cocoonHost.foyers().then(l=>{ if(l) S.fyCache=l; }).catch(()=>{}).finally(()=>{ S.fyFetch=0; }); } ht.onclick=null; } else { ht.classList.remove("fy-tap"); ht.onclick=null; } }
   /* le bonjour du moment, puis le bilan du jour */
   { const me0=meId(), hh=$("homeHello"), hs=$("homeSub"), h=new Date().getHours();
-    if(me0&&!S.readOnly){ const nm=(membre(me0).nom||"").split(" ")[0], g=h<5?["Bonsoir","🌙"]:h<12?["Bonjour","☀️"]:h<18?["Bonjour","🌤"]:["Bonsoir","🌙"];
-      hh.textContent=g[0]+(nm?" "+nm:"")+" "+g[1]; hh.hidden=false;
+    if(me0&&!S.readOnly){ const nm=(membre(me0).nom||"").split(" ")[0], g=h<5?["Bonsoir","moon"]:h<12?["Bonjour","sun"]:h<18?["Bonjour","sun"]:["Bonsoir","moon"];
+      hh.textContent=g[0]+(nm?" "+nm:""); hh.append(uic(g[1],true)); hh.hidden=false;
       hs.hidden=true; }
     else { hh.hidden=true; hs.hidden=true; } }
   const me=meId(), box=$("members"); box.innerHTML="";
@@ -3774,10 +3779,13 @@ function renderFoyer(){
   renderTiles();
   const wf=$("whoFilter"); wf.innerHTML="";
   { const op=S.foyer.filter(t=>!t.fait&&(!S.catF||t.cat===S.catF)), hs=humains(); const L=[{id:null,nom:"Tous",l:"Toutes les tâches"},{id:"tous",nom:"Foyer",l:"Pour tout le foyer"},...hs.filter(m=>m.id===me).concat(hs.filter(m=>m.id!==me)).map(m=>({id:m.id,nom:m.id===me?"Moi":m.nom,l:"Pour "+(m.id===me?"moi":m.nom)}))];
-    for(const w of L){ const n=op.filter(t=>!w.id||t.pour===w.id).length; wf.append(el("button",{type:"button","aria-pressed":String(S.whoF===w.id),"aria-label":w.l+" : "+n,onclick:()=>{S.whoF=w.id;renderFoyer();}},w.nom,n?el("i",{text:String(n)}):null)); } }
-  const match=t=>(!S.catF||t.cat===S.catF)&&(!S.whoF||t.pour===S.whoF);
-  const open=S.foyer.filter(t=>!t.fait&&match(t)).sort(sortOpen);
-  const done=S.foyer.filter(t=>t.fait&&match(t)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0)).slice(0,40);
+    const opP=S.perso.filter(t=>!t.fait&&(!S.catF||t.cat===S.catF));
+    for(const w of L){ const n=op.filter(t=>!w.id||t.pour===w.id).length+(w.id===me?opP.length:0); wf.append(el("button",{type:"button","aria-pressed":String(S.whoF===w.id),"aria-label":w.l+" : "+n,onclick:()=>{S.whoF=w.id;renderFoyer();}},w.nom,n?el("i",{text:String(n)}):null)); } }
+  const match=t=>(!S.catF||t.cat===S.catF)&&(!S.whoF||t.pour===S.whoF||(t.prive&&S.whoF===me));
+  /* filtre « Moi » : mes tâches perso (privées) aussi */
+  const pool=S.whoF&&S.whoF===me?S.foyer.concat(S.perso):S.foyer;
+  const open=pool.filter(t=>!t.fait&&match(t)).sort(sortOpen);
+  const done=pool.filter(t=>t.fait&&match(t)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0)).slice(0,40);
   if(!S.loaded.t){ $("openList").innerHTML=""; $("openList").append(el("div",{class:"empty",text:"Chargement des tâches du foyer…"})); }
   else fillList($("openList"),open,[S.foyer.length?"Rien à faire ici":"Aucune tâche pour le foyer",S.foyer.length?"Change de filtre ou écris une tâche dans le champ en haut.":"Ajoute la première : « Acheter filtre VMC », « Vermifuge du chat »…"]);
   const dl=$("doneList"); dl.innerHTML=""; { const h=histHead(done); if(h) dl.append(h); } for(const t of done) dl.append(taskRow(t));
@@ -3914,7 +3922,7 @@ function pwCard(m){ const D=pfData(m), id=D.id, pet=D.pet, can=D.can, keys=D.key
   card.append(top);
   if(keys.length){ const k=el("div",{class:"pw-keys"}); for(const x of keys){ const kv=el("div",{},el("small",{text:PF_SHORT[x.l]||x.l}),el("b",{text:x.v})); if(pfIsTel(x.v)){ const a=el("a",{href:telHref(x.v),class:"pw-k"},...kv.childNodes); k.append(a); } else k.append(kv); } card.append(k); }
   else if(can) card.append(el("button",{type:"button",class:"pw-add",text:pet?"+ Ajoute son poids, sa puce, ses croquettes…":id===meId()?"+ Ajoute ta pointure, ta taille, ton médecin…":"+ Ajoute sa pointure, sa taille, son école…",onclick:()=>openEditor(id)}));
-  const nb=D.nb; if(nb){ const n=daysTo(nb.date); if(n<=30) card.append(el("div",{class:"pw-bday",text:"🎂 "+(n===0?"Anniversaire aujourd'hui !":"Anniversaire "+dueLabel(nb.date))})); }
+  const nb=D.nb; if(nb){ const n=daysTo(nb.date); if(n<=30) card.append(el("div",{class:"pw-bday"},uic("cake"),n===0?"Anniversaire aujourd'hui !":"Anniversaire "+dueLabel(nb.date))); }
   return card; }
 function pfFill(F,m,o){ o=o||{}; const D=pfData(m), id=D.id, pet=D.pet, can=D.can, keys=D.keys, rest=D.rest, nb=D.nb, t0=iso(today()); F.innerHTML="";
   const secT=(t,link)=>el("div",{class:"pf-sec"},el("span",{text:t}),link||"");
@@ -5324,17 +5332,37 @@ function rythmeAuto(){
   renderSecAns();
 }
 function renderAccBudget(){ try{ renderWidgets(); }catch(e){ console.warn(e); } }
+/* Icônes au trait des boutons et titres (style iOS, remplacent les emojis) */
+const UIC={cart:'<circle cx="9" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/><path d="M2.5 3.5h2.6l2.4 11.2a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.2l1.7-7.3H6"/>',
+  heart:'<path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/>',
+  phone:'<path d="M5.2 3.5h3l1.6 4.2-2.1 1.5a11 11 0 0 0 5.1 5.1l1.5-2.1 4.2 1.6v3a2.3 2.3 0 0 1-2.5 2.3C9.4 18.6 5.4 14.6 4.9 6a2.3 2.3 0 0 1 .3-2.5z"/>',
+  repeat:'<path d="M17 2.5l3 3-3 3"/><path d="M4 11.5v-1a5 5 0 0 1 5-5h11"/><path d="M7 21.5l-3-3 3-3"/><path d="M20 12.5v1a5 5 0 0 1-5 5H4"/>',
+  home:'<path d="M3.5 10.5L12 3.5l8.5 7"/><path d="M5.5 9v11h13V9"/><path d="M10 20v-6h4v6"/>',
+  lock:'<rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/>',
+  calendar:'<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  sparkles:'<path d="M10 3.5l1.6 4.9 4.9 1.6-4.9 1.6L10 16.5l-1.6-4.9L3.5 10l4.9-1.6z"/><path d="M18 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/>',
+  cake:'<path d="M4 20.5h16"/><path d="M5.5 20.5v-7a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v7"/><path d="M5.5 15.5c1.2 1 2.4 1 3.6 0s2.4-1 3.6 0 2.4 1 3.6 0"/><path d="M12 11.5V8"/><path d="M12 5.8c-.8-.9-.6-2 0-2.8.6.8.8 1.9 0 2.8z"/>',
+  moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+  utensils:'<path d="M7 2.5v8M4.5 2.5v5a2.5 2.5 0 0 0 5 0v-5M7 10.5v11"/><path d="M17.5 21.5v-19c-2.2 1-3.5 3.4-3.5 7v4h3.5"/>',
+  euro:'<path d="M17.5 6.5a7 7 0 1 0 0 11"/><path d="M4 10h9M4 14h9"/>',
+  trash:'<path d="M4 6.5h16M9.5 6.5V4h5v2.5M6 6.5l1 14h10l1-14"/>',
+  file:'<path d="M6 2.5h8l4.5 4.5v14.5H6z"/><path d="M14 2.5V7h4.5"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  party:'<path d="M4 20.5l4.5-13 8.5 8.5z"/><path d="M14 5.5c.5-1.5 2-2 3-1.5M18.5 10c1.5-.5 2.5.5 2.5 1.5M15.5 8.5l3-3"/>'};
+const uicSvg=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(UIC[k]||"")+'</svg>';
+const uic=(k,after)=>{ const i=el("span",{class:"uic"+(after?" after":""),"aria-hidden":"true"}); i.innerHTML=uicSvg(k); return i; };
 /* ---------- Widgets de l'accueil ---------- */
 const WG={
-  repas:{t:"Repas",ic:"🍽",c:"#FF9C80",go:"repas",d:"ce soir et demain"},
-  courses:{t:"Courses",ic:"🛒",c:"#7FD39A",go:"courses",d:"le nombre d'articles et les premiers"},
-  budget:{t:"Budget",ic:"💶",c:"#B9A8F0",go:"budget",d:"dépenses du mois et tendance"},
-  agenda:{t:"Agenda",ic:"📅",c:"#8FB8FF",go:"agenda",d:"le prochain rendez-vous"},
-  poubelles:{t:"Poubelles",ic:"🗑️",c:"#E79ADB",go:"maison",sec:"bins",d:"laquelle sortir, et qui"},
-  papiers:{t:"Papiers",ic:"📄",c:"#FF9CB0",go:"documents",d:"ce qui expire bientôt"},
-  semaine:{t:"Semaine du foyer",ic:"✓",c:"#3CC37A",go:"foyer",d:"tâches faites, avec une jauge"},
-  anniv:{t:"Anniversaires",ic:"🎂",c:"#FFC94A",go:null,d:"le prochain"},
-  evenement:{t:"Événement",ic:"🎉",c:"#FF9C80",go:null,d:"le prochain, et ce qu'il reste à préparer"}};
+  repas:{t:"Repas",ic:"utensils",c:"#FF9C80",go:"repas",d:"ce soir et demain"},
+  courses:{t:"Courses",ic:"cart",c:"#7FD39A",go:"courses",d:"le nombre d'articles et les premiers"},
+  budget:{t:"Budget",ic:"euro",c:"#B9A8F0",go:"budget",d:"dépenses du mois et tendance"},
+  agenda:{t:"Agenda",ic:"calendar",c:"#8FB8FF",go:"agenda",d:"le prochain rendez-vous"},
+  poubelles:{t:"Poubelles",ic:"trash",c:"#E79ADB",go:"maison",sec:"bins",d:"laquelle sortir, et qui"},
+  papiers:{t:"Papiers",ic:"file",c:"#FF9CB0",go:"documents",d:"ce qui expire bientôt"},
+  semaine:{t:"Semaine du foyer",ic:"check",c:"#3CC37A",go:"foyer",d:"tâches faites, avec une jauge"},
+  anniv:{t:"Anniversaires",ic:"cake",c:"#FFC94A",go:null,d:"le prochain"},
+  evenement:{t:"Événement",ic:"party",c:"#FF9C80",go:null,d:"le prochain, et ce qu'il reste à préparer"}};
 const WG_DEF=[{k:"repas",l:0},{k:"semaine",l:0},{k:"budget",l:1}];
 function wgList(){ let w=(S.prefs||{}).widgets; if(!Array.isArray(w)){ try{ w=JSON.parse(localStorage.getItem("cocoon.widgets")||"null"); }catch(_){ w=null; } } if(!Array.isArray(w)) w=WG_DEF; return w.filter(x=>x&&WG[x.k]); }
 function wgSave(list,quiet){ S.prefs=Object.assign({},S.prefs||{},{widgets:list}); try{ localStorage.setItem("cocoon.widgets",JSON.stringify(list)); }catch(_){} if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); if(!quiet) renderWidgets(); }
@@ -5410,7 +5438,7 @@ function renderWidgets(){ const box=$("accBudget"); if(!box) return; if(box.quer
   const g=el("div",{class:"wg-grid"});
   for(const x of wgList()){ const w=WG[x.k], L=!!x.l, D=wgData(x.k,L);
     const b=el("button",{type:"button",class:"wg"+(L?" wide":""),"data-k":x.k,style:"--wc:"+w.c,"aria-label":w.t+" : "+D.big+(D.small?", "+D.small:""),onclick:()=>wgGo(x.k,D)},
-      el("div",{class:"wg-h"},el("i",{"aria-hidden":"true",text:w.ic}),el("span",{text:D.h})),
+      el("div",{class:"wg-h"},(()=>{ const i=el("i",{"aria-hidden":"true",class:"wg-ic"}); i.innerHTML=uicSvg(w.ic); return i; })(),el("span",{text:D.h})),
       el("b",{class:"wg-big"},D.dot?el("span",{class:"wg-dot",style:"background:"+D.dot}):"",D.big,D.trend!=null&&L?el("small",{class:"wg-tr"+(D.trend>0?" up":" down"),text:(D.trend>0?"+":"")+D.trend+" %"}):""),
       D.small?el("small",{class:"wg-s"+(D.late?" late":""),text:D.small}):"");
     if(D.ring!=null){ const r=el("span",{class:"wg-ring",style:"--p:"+D.ring+"%"},el("b",{text:D.ring+"%"})); b.append(r); b.classList.add("has-ring"); }
@@ -5425,13 +5453,13 @@ function openWidgetSheet(){ const U=upSheet("wgPage","Mes raccourcis"), sheet=U.
     const on=el("div",{class:"wgs-list"});
     list.forEach((x,i)=>{ const w=WG[x.k];
       const sz=el("div",{class:"wgs-sz",role:"group","aria-label":"Taille"},...[["Petit",0],["Large",1]].map(([t,v])=>el("button",{type:"button","aria-pressed":String(x.l===v),text:t,onclick:()=>{ list[i].l=v; wgSave(list); draw(); }})));
-      on.append(el("div",{class:"wgs-row","data-k":x.k,style:"--wc:"+w.c},el("span",{class:"wgs-grip","aria-hidden":"true",text:"⠿"}),el("i",{"aria-hidden":"true",text:w.ic}),el("div",{class:"wgs-t"},el("b",{text:w.t}),sz),
+      on.append(el("div",{class:"wgs-row","data-k":x.k,style:"--wc:"+w.c},el("span",{class:"wgs-grip","aria-hidden":"true",text:"⠿"}),(()=>{ const i=el("i",{"aria-hidden":"true",class:"wg-ic"}); i.innerHTML=uicSvg(w.ic); return i; })(),el("div",{class:"wgs-t"},el("b",{text:w.t}),sz),
         el("button",{type:"button",class:"wgs-x","aria-label":"Retirer "+w.t,text:"−",onclick:()=>{ list.splice(i,1); wgSave(list); draw(); }}))); });
     sortable(on,".wgs-row",keys=>{ wgSave(keys.map(k=>list.find(x=>x.k===k)).filter(Boolean)); draw(); },{lp:60,handle:".wgs-grip"});
     if(list.length) inn.append(el("div",{class:"wgs-sec",text:"Sur l'accueil"}),on);
     const off=Object.keys(WG).filter(k=>!list.some(x=>x.k===k));
     if(off.length){ const ad=el("div",{class:"wgs-list"}); for(const k of off){ const w=WG[k];
-        ad.append(el("button",{type:"button",class:"wgs-row add",style:"--wc:"+w.c,onclick:()=>{ list.push({k,l:0}); wgSave(list); draw(); }},el("i",{"aria-hidden":"true",text:w.ic}),el("div",{class:"wgs-t"},el("b",{text:w.t}),el("small",{text:w.d})),el("span",{class:"wgs-plus","aria-hidden":"true",text:"+"}))); }
+        ad.append(el("button",{type:"button",class:"wgs-row add",style:"--wc:"+w.c,onclick:()=>{ list.push({k,l:0}); wgSave(list); draw(); }},(()=>{ const i=el("i",{"aria-hidden":"true",class:"wg-ic"}); i.innerHTML=uicSvg(w.ic); return i; })(),el("div",{class:"wgs-t"},el("b",{text:w.t}),el("small",{text:w.d})),el("span",{class:"wgs-plus","aria-hidden":"true",text:"+"}))); }
       inn.append(el("div",{class:"wgs-sec",text:"À ajouter"}),ad); } };
   draw(); }
 function renderAccWho(){
@@ -6166,10 +6194,10 @@ function openTaskSheet(o){ o=o||{}; if(!needMe()) return; const me=meId();
   const draw=()=>{ groups.innerHTML="";
     const g=(lab,...kids)=>groups.append(el("div",{class:"tk-g",role:"group","aria-label":lab},el("div",{class:"tk-lb",text:lab}),el("div",{class:"tk-row"},...kids)));
     const W=(v,label)=>chip(st.where===v,label,()=>{ st.where=v; touched.where=1; });
-    const who=[W("tous","🏠 Le foyer"),W(me,[avatar(me,20),"Moi"])];
+    const who=[W("tous",[uic("home"),"Le foyer"]),W(me,[avatar(me,20),"Moi"])];
     if(isAdmin()) for(const h of humains()) if(h.id!==me) who.push(W(h.id,[avatar(h.id,20),h.nom]));
-    who.push(W("perso","🔒 Perso"));
-    if(isAdmin()&&humains().length>1) who.push(chip(st.where==="tour","🔄 À tour de rôle",()=>{ st.where="tour"; touched.where=1; if(!st.tour) st.tour=humains().map(h=>h.id); if(!st.rec||st.rec===0){ st.rec="1s"; st.recOther=false; } },"tk-tour"));
+    who.push(W("perso",[uic("lock"),"Perso"]));
+    if(isAdmin()&&humains().length>1) who.push(chip(st.where==="tour",[uic("repeat"),"À tour de rôle"],()=>{ st.where="tour"; touched.where=1; if(!st.tour) st.tour=humains().map(h=>h.id); if(!st.rec||st.rec===0){ st.rec="1s"; st.recOther=false; } },"tk-tour"));
     g("Pour qui",...who);
     if(st.where==="tour"){ const tr=st.tour||[], row=el("div",{class:"tk-tr"});
       row.append(el("p",{class:"tk-trh",text:tr.length>1?"Qui participe ? Le premier commence, puis chacun son tour à chaque fois que la tâche est faite.":"Choisis au moins deux personnes."}));
@@ -6177,11 +6205,11 @@ function openTaskSheet(o){ o=o||{}; if(!needMe()) return; const me=meId();
         order.append(chip(on,[avatar(h.id,20),(h.id===me?"Moi":h.nom)+(on?" · "+(k+1):"")],()=>{ const a=(st.tour||[]).slice(), j=a.indexOf(h.id); if(j>=0) a.splice(j,1); else a.push(h.id); st.tour=a; touched.where=1; })); });
       row.append(order); groups.lastChild.append(row); }
     const N=(k,label,d)=>chip(st.when===k,label,()=>{ if(st.when===k){ st.when=null; st.due=""; } else { st.when=k; st.due=d; } touched.when=1; });
-    const whenKids=[N("auj","Aujourd'hui",plus(0)),N("dem","Demain",plus(1)),N("we","Ce week-end",wkend()),chip(st.when==="date",st.when==="date"&&st.due?"📅 "+fmtDue(st.due):"📅 Date…",()=>{ st.when="date"; touched.when=1; setTimeout(()=>{ try{ dateIn.showPicker(); }catch(_){ dateIn.focus(); } },30); })];
+    const whenKids=[N("auj","Aujourd'hui",plus(0)),N("dem","Demain",plus(1)),N("we","Ce week-end",wkend()),chip(st.when==="date",[uic("calendar"),st.when==="date"&&st.due?fmtDue(st.due):"Date…"],()=>{ st.when="date"; touched.when=1; setTimeout(()=>{ try{ dateIn.showPicker(); }catch(_){ dateIn.focus(); } },30); })];
     g("Quand",...whenKids); if(st.when==="date") groups.lastChild.append(dateIn);
     const C=(id)=>{ const c=CAT[id], i=el("i",{class:"tk-ci","aria-hidden":"true"}); i.innerHTML=GI(id); const bg="color-mix(in srgb,"+c.c+" 45%,var(--surface))"; i.style.background=bg; i.style.setProperty("--gbg",bg); return chip(st.cat===id,[i,c.nom],()=>{ st.cat=st.cat===id?null:id; touched.cat=1; }); };
     const persos=Object.values(CAT).filter(c=>c.perso);
-    g("Catégorie",chip(!st.cat,"✨ Auto",()=>{ st.cat=null; touched.cat=1; }),chip(st.newCat,"＋ Nouvelle",()=>{ st.newCat=!st.newCat; if(st.newCat) setTimeout(()=>{ const x=inn.querySelector(".tk-nci"); if(x) x.focus(); },40); },"tk-new"),...persos.map(c=>C(c.id)),...CATS.map(c=>C(c.id)));
+    g("Catégorie",chip(!st.cat,[uic("sparkles"),"Auto"],()=>{ st.cat=null; touched.cat=1; }),chip(st.newCat,"＋ Nouvelle",()=>{ st.newCat=!st.newCat; if(st.newCat) setTimeout(()=>{ const x=inn.querySelector(".tk-nci"); if(x) x.focus(); },40); },"tk-new"),...persos.map(c=>C(c.id)),...CATS.map(c=>C(c.id)));
     if(st.newCat){ const nci=el("input",{type:"text",class:"tk-nci",maxlength:"24",placeholder:"Nom : Bébé, Travail, Vélo…","aria-label":"Nom de la catégorie"}); nci.value=st.ncNom||"";
       const sw=el("div",{class:"tk-sw",role:"radiogroup","aria-label":"Couleur"}); st.ncC=st.ncC||DCOLS[0];
       for(const c of DCOLS) sw.append(el("button",{type:"button",class:"tk-dot"+(st.ncC===c?" on":""),style:"--c:"+c,role:"radio","aria-checked":String(st.ncC===c),"aria-label":"Couleur",onclick:()=>{ st.ncNom=nci.value; st.ncC=c; draw(); }}));
@@ -6520,10 +6548,12 @@ setTab("accueil");
         /* position dans la page sans compter les animations d'arrivée (sinon la barre se replace une 2e fois) */
         let y=0; for(let n=bar;n;n=n.offsetParent) y+=n.offsetTop; o={visible:true,title:t,back:!!bar.querySelector(".hub-back,.pg-back"),actions:acts,top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(bar.querySelector(".hb-title")||bar).color}; sig=JSON.stringify(o); }
       if(sig!==tbSig){ tbSig=sig; NT.topbar(o).catch(()=>{}); } } };
-  setInterval(sync,400); document.addEventListener("visibilitychange",sync);
-  /* dès qu'une rubrique s'ouvre, la barre native suit (sans attendre le prochain tour de 400 ms),
+  /* filet de sécurité seulement : tout passe par la détection instantanée plus bas */
+  setInterval(sync,5000); document.addEventListener("visibilitychange",sync);
+  try{ matchMedia("(prefers-color-scheme: dark)").addEventListener("change",sync); }catch(_){}
+  /* dès qu'une rubrique s'ouvre, la barre native suit tout de suite,
      mais seulement une fois la page dessinée (2 images plus tard) : elles apparaissent ensemble */
-  let syncQ=false; new MutationObserver(()=>{ if(syncQ) return; syncQ=true; requestAnimationFrame(()=>requestAnimationFrame(()=>{ syncQ=false; sync(); })); }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["hidden","class"]}); })();
+  let syncQ=false; new MutationObserver(()=>{ if(syncQ) return; syncQ=true; requestAnimationFrame(()=>requestAnimationFrame(()=>{ syncQ=false; sync(); })); }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["hidden","class","data-theme"]}); })();
 /* Ouvrir l'app depuis une notification : « #courses », « #agenda », « #ev=ID », et les boutons « C'est fait » / « Demain » (#t-done=ID, #t-later=ID) */
 /* ---------- Raccourcis : appui long sur Cocoony (site et iPhone), appui long sur l'icône de l'app (iPhone), raccourcis du manifeste (Android) ---------- */
 const RACC=[["tache","Nouvelle tâche","checkmark.circle","taches"],["courses","Ajouter aux courses","cart","courses"],["rdv","Un rendez-vous","calendar","agenda"],["repas","Prévoir un repas","fork.knife","repas"],["cocoony","Demander à Cocoony","sparkles",null]];
@@ -7130,8 +7160,8 @@ function openMemberSheet(id){ const m=membre(id); if(!m) return; const me=meId()
     const lbl=isMe?"+ Une tâche pour moi":ani?"+ Une tâche pour "+m.nom:"+ Lui confier une tâche";
     acts.append(el("button",{type:"button",class:"btn pp-cta mb-main",text:lbl,onclick:go(()=>{ if(isMe) openSheet({where:"perso"}); else if(ani) openSheet({text:m.nom+" : "}); else openSheet({where:id}); })}));
     if(!isMe&&!ani){ const last=S.foyer.filter(t=>t.fait&&t.faitPar===id&&!t.prive&&!(S.mercis||[]).some(x=>x.id===t.id+"_"+me)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0))[0];
-      const mb=el("button",{type:"button",class:"btn ghost mb-merci",text:last?"🤝 Dire merci":"🤝 Rien à remercier",disabled:last?null:"",title:last?"Pour « "+last.titre+" »":null,onclick:()=>{ sendMerci(last,mb); mb.textContent="🤝 Merci envoyé"; }}); acts.append(mb); } }
-  { const tl=!isMe&&pfInfos(m).find(x=>pfIsTel(x.v)); if(tl) acts.append(el("a",{class:"btn ghost mb-call",href:telHref(tl.v),text:"📞 Appeler"})); }
+      const mb=el("button",{type:"button",class:"btn ghost mb-merci",text:last?"Dire merci":"Rien à remercier",disabled:last?null:"",title:last?"Pour « "+last.titre+" »":null,onclick:()=>{ sendMerci(last,mb); mb.replaceChildren(uic("heart"),"Merci envoyé"); }}); mb.prepend(uic("heart")); acts.append(mb); } }
+  { const tl=!isMe&&pfInfos(m).find(x=>pfIsTel(x.v)); if(tl) acts.append(el("a",{class:"btn ghost mb-call",href:telHref(tl.v),},uic("phone"),"Appeler")); }
   acts.append(el("button",{type:"button",class:"btn ghost mb-prof",text:isMe?"Mon profil":"Voir sa fiche",onclick:go(()=>isMe?openProfile(id):openProfile(id,true))}));
   if(acts.childElementCount%2===0) acts.classList.add("two");
   sheet.append(el("div",{class:"pp-in"},head,list,acts)); }
@@ -8074,7 +8104,7 @@ function evNew(inn,V){ const T=EV_TYPES[V.type]||EV_TYPES.anniv, t0=iso(today())
     const c=el("div",{class:"ev-list"}); tpl.forEach(([k,t,off],i)=>{ const dt=evTplDate({debut:V.debut,fin:V.fin},off), n=evDiff(dt,V.debut);
       const lab=n<0?"J"+n:n===0?(V.fin&&V.fin>V.debut?"Début":"Jour J"):(off+"").startsWith("f+")&&V.fin?"Fin":"J+"+n;
       const ck=el("button",{type:"button",class:"ev-ck"+(V.pick[i]?" on":""),role:"checkbox","aria-checked":String(!!V.pick[i]),"aria-label":t,onclick:()=>{ V.pick[i]=!V.pick[i]; paintTpl(); }});
-      c.append(el("div",{class:"ev-it"+(V.pick[i]?"":" off")},ck,el("span",{class:"ev-tt",text:t}),k!=="t"?el("em",{class:"ev-tag "+k,text:k==="a"?"🛒 achat":"📅 rdv"}):"",el("small",{class:"ev-when",text:lab}))); });
+      c.append(el("div",{class:"ev-it"+(V.pick[i]?"":" off")},ck,el("span",{class:"ev-tt",text:t}),k!=="t"?el("em",{class:"ev-tag "+k},uic(k==="a"?"cart":"calendar"),k==="a"?"achat":"rdv"):"",el("small",{class:"ev-when",text:lab}))); });
     box.append(c); }
   paintTpl(); inn.append(box);
   const go=el("button",{type:"button",class:"btn ev-cta",id:"evCreate",onclick:async()=>{ if(!S.db||!needMe()) return; const titre=(V.titre||"").trim()||T.n;
@@ -8134,8 +8164,8 @@ function evRow(k,o,ev,opts){ opts=opts||{}; const t0=iso(today()), V=S.evOpen, k
   row.append(el("button",{type:"button",class:"ev-ck"+(o.fait?" on":""),role:"checkbox","aria-checked":String(!!o.fait),"aria-label":(o.titre||o.nom),disabled:S.readOnly||null,onclick:e=>evToggle(k,o,e.currentTarget)}));
   const tt=el("button",{type:"button",class:"ev-tt",onclick:()=>{ if(S.readOnly) return; V.open=open?null:key; evRender(false); }},o.titre||o.nom||"");
   row.append(tt);
-  if(k==="a"&&!opts.noTag) row.append(el("em",{class:"ev-tag a",text:"🛒 achat"}));
-  if(k==="r") row.append(el("em",{class:"ev-tag r",text:"📅 "+(o.heure?heureTxt(o.heure):"rdv")}));
+  if(k==="a"&&!opts.noTag) row.append(el("em",{class:"ev-tag a"},uic("cart"),"achat"));
+  if(k==="r") row.append(el("em",{class:"ev-tag r"},uic("calendar"),o.heure?heureTxt(o.heure):"rdv"));
   if(k==="t"&&o.pour&&o.pour!=="tous"&&membre(o.pour)) row.append(el("em",{class:"ev-tag who",text:o.pour===meId()?"Toi":membre(o.pour).nom}));
   if(opts.when&&date) row.append(el("small",{class:"ev-when"+(!o.fait&&date<t0?" late":""),text:evRel(ev,date)}));
   const wrap=el("div",{class:"ev-row"},row);
@@ -8357,7 +8387,7 @@ function renderCLive(){ const w=$("cLive"); if(!w) return; w.innerHTML=""; const
   if(!ss){ w.hidden=!todo; w.className="c-live c-sum";
     if(todo){ const its=items.filter(i=>!i.fait), nr=new Set(its.map(rayonOf)).size, last=its.slice().sort((a,b)=>(b.ajouteLe||0)-(a.ajouteLe||0))[0];
       const sub=[nr+" rayon"+(nr>1?"s":"")]; if(last&&last.ajoutePar&&last.ajouteLe&&Date.now()-last.ajouteLe<48*3600e3) if(last.ajoutePar!==me) sub.push("ajouté par "+membre(last.ajoutePar).nom+" "+ago(last.ajouteLe));
-      w.append(el("div",{class:"cl-t"},el("b",{text:todo+" article"+(todo>1?"s":"")}),el("span",{text:sub.join(" · ")})),el("button",{type:"button",class:"btn cl-go",onclick:startShopping},"🛒 Je fais les courses")); }
+      w.append(el("div",{class:"cl-t"},el("b",{text:todo+" article"+(todo>1?"s":"")}),el("span",{text:sub.join(" · ")})),el("button",{type:"button",class:"btn cl-go",onclick:startShopping},uic("cart"),"Je fais les courses")); }
     return; }
   w.hidden=false; const mine=ss.par===me; w.className="c-live on"+(mine?" mine":"");
   const pct=tot?Math.round(done/tot*100):0;
@@ -8456,7 +8486,7 @@ async function ingToCourses(names,plat){ if(!S.db||!needMe()||!names.length) ret
 function openIngSheet(plat){ const U=upSheet("ingPage","Ingrédients"), sheet=U.sheet; sheet.classList.add("ing-sheet");
   const inn=el("div",{class:"pp-in ing-in"}); sheet.append(inn); const pick=new Set(); let edit=false;
   const draw=()=>{ inn.innerHTML=""; const ing=platIng(plat);
-    inn.append(el("div",{class:"ing-top"},el("h2",{text:"🛒 "+plat}),el("p",{text:ing.length?"Coche seulement ce qu'il faut acheter.":"Ajoute les ingrédients de ta recette : Cocoon les retiendra pour la prochaine fois."})));
+    inn.append(el("div",{class:"ing-top"},el("h2",{},uic("cart"),plat),el("p",{text:ing.length?"Coche seulement ce qu'il faut acheter.":"Ajoute les ingrédients de ta recette : Cocoon les retiendra pour la prochaine fois."})));
     if(ing.length){ const L=el("div",{class:"ing-list"});
       ing.forEach((g,i)=>{ const st=ingState(g), on=pick.has(g);
         const row=el("div",{class:"ing-it"+(st.on?" dis":"")+(on?" sel":"")});
@@ -8526,7 +8556,7 @@ function renderRepas(){
     if(hm){ const ck=nm(hm.cuisine), vs=nm(hm.vaisselle);
       hero.append(el("button",{type:"button",class:"r-hp",onclick:()=>openRepas(hd,hs)},el("span",{class:"r-he","aria-hidden":"true",text:platEmoji(hm.plat,hs)}),el("b",{text:hm.plat})));
       if(ck||vs) hero.append(el("div",{class:"r-hw"},ck?el("span",{},avatar(hm.cuisine,20),(ck==="Toi"?"Tu cuisines":ck+" cuisine")):"",vs?el("span",{},avatar(hm.vaisselle,20),(vs==="Toi"?"Toi":vs)+" : vaisselle"):""));
-      hero.append(el("div",{class:"r-hb"},el("button",{type:"button",class:"r-hbt",onclick:()=>openIngSheet(hm.plat)},"🛒 Ingrédients"),el("button",{type:"button",class:"r-hbt",onclick:()=>openRepas(hd,hs)},"✎ Changer"))); }
+      hero.append(el("div",{class:"r-hb"},el("button",{type:"button",class:"r-hbt",onclick:()=>openIngSheet(hm.plat)},uic("cart"),"Ingrédients"),el("button",{type:"button",class:"r-hbt",onclick:()=>openRepas(hd,hs)},"✎ Changer"))); }
     else { hero.append(el("button",{type:"button",class:"r-hp",onclick:()=>openRepas(hd,hs)},el("span",{class:"r-he","aria-hidden":"true",text:"🤔"}),el("b",{text:"Rien de prévu"})));
       const ids=el("div",{class:"r-hb"}); for(const p of platsConnus(hs).slice(0,3)) ids.append(el("button",{type:"button",class:"r-hbt",onclick:()=>openRepas(hd,hs,p.nom)},platEmoji(p.nom,hs)+" "+p.nom));
       ids.append(el("button",{type:"button",class:"r-hbt dk",onclick:()=>openRepas(hd,hs)},"Choisir"));
@@ -8585,7 +8615,7 @@ function repasEditor(ds,sl,sn,m,done){ const me=meId(), f=el("form",{class:"r-ed
     el("div",{class:"r-role"},el("span",{class:"r-role-ic","aria-hidden":"true",text:"👩‍🍳"}),el("div",{},el("b",{text:"Qui prépare le repas ?"}),el("span",{text:"Il ou elle s'occupe de cuisiner ce plat."}))),who("cuisine","Qui prépare le repas ?"),
     el("div",{class:"r-role"},el("span",{class:"r-role-ic","aria-hidden":"true",text:"🧽"}),el("div",{},el("b",{text:"Qui fait la vaisselle après ?"}),el("span",{text:"Il ou elle range et lave après le repas."}))),who("vaisselle","Qui fait la vaisselle après ?"));
   const btns=el("div",{class:"r-btns"},el("button",{type:"submit",class:"btn",text:"Enregistrer"}));
-  if(m) btns.append(el("button",{type:"button",class:"btn ghost r-ing",onclick:()=>{ if(done) done(); setTimeout(()=>openIngSheet(m.plat),done?340:0); }},"🛒 Ingrédients"));
+  if(m) btns.append(el("button",{type:"button",class:"btn ghost r-ing",onclick:()=>{ if(done) done(); setTimeout(()=>openIngSheet(m.plat),done?340:0); }},uic("cart"),"Ingrédients"));
   if(m) btns.append(el("button",{type:"button",class:"btn ghost r-del",text:"Retirer",onclick:async()=>{ S.rEdit=null; if(done) done(); try{ await S.db.collection("repas").doc(m.id).delete(); toast("Plat retiré."); }catch(e){ writeErr(e); } renderRepas(); }}));
   f.append(btns);
   f.addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||!needMe()) return; const plat=pi.value.trim().replace(/^./,c=>c.toUpperCase()); if(!plat){ pi.focus(); toast("Indique le plat."); return; }
