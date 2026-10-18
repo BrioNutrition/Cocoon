@@ -82,16 +82,12 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
     @objc func hide(_ call: CAPPluginCall) {
         DispatchQueue.main.async { self.bar?.isHidden = true; call.resolve() }
     }
-    // une feuille du bas est ouverte : la barre d'onglets descend sous l'écran (comme les feuilles d'iOS), puis remonte
+    // une fenêtre est ouverte (feuille, panneau…) : la page derrière ne défile plus ; la barre d'onglets reste
     @objc func sheet(_ call: CAPPluginCall) {
         let open = call.getBool("open") ?? false
         DispatchQueue.main.async {
             // la page derrière ne défile plus pendant qu'une fenêtre est ouverte (sinon le geste de fermeture la fait bouger)
             self.bridge?.webView?.scrollView.isScrollEnabled = !open
-            guard let bar = self.bar else { call.resolve(); return }
-            UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState]) {
-                bar.transform = open ? CGAffineTransform(translationX: 0, y: bar.bounds.height + 40) : .identity
-            }
             call.resolve()
         }
     }
@@ -110,7 +106,6 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         }
     }
     public func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        UISelectionFeedbackGenerator().selectionChanged()
         notifyListeners("select", data: ["index": item.tag])
     }
 
