@@ -148,8 +148,8 @@
                 if (r.error) throw r.error;
                 if (!r.data.session) { G.show("code", { email: em, type: "signup" }); return; }
               } else {
-                var r2 = await sb.auth.signInWithPassword({ email: em, password: pw });
-                if (r2.error) throw r2.error;
+                FRESH = true; var r2 = await sb.auth.signInWithPassword({ email: em, password: pw });
+                if (r2.error) { FRESH = false; throw r2.error; }
               }
             } catch (err) { msg(frErr(err), true); }
             finally { b.disabled = false; }
@@ -305,9 +305,7 @@
     return m || "Une erreur est survenue.";
   }
   async function logout() { try { if (ME) LS.del(DEV2FA + ME.id); } catch (_) {}
-    /* Face ID : la prochaine personne qui se connecte sur ce téléphone choisira à son tour */
-    try { if (window.__nt && window.__nt.faceid) window.__nt.faceid({ enabled: false, asked: false }); } catch (_) {}
-    try { await Promise.race([PUSH.disable(), new Promise(function (r) { setTimeout(r, 2500); })]); } catch (_) {} LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer"); try { await SBP; await sb.auth.signOut(); } catch (_) {} authStore.removeItem("cocoon.auth"); location.reload(); }
+ try { await Promise.race([PUSH.disable(), new Promise(function (r) { setTimeout(r, 2500); })]); } catch (_) {} LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer"); try { await SBP; await sb.auth.signOut(); } catch (_) {} authStore.removeItem("cocoon.auth"); location.reload(); }
 
   /* =================== Session & foyer =================== */
   /* Double authentification : code par e-mail tant que cet appareil n'a pas été vérifié (oublié à la déconnexion) */
@@ -317,24 +315,36 @@
     gate().show("mail2fa", { user: user, acc: acc });
     return false;
   }
-  /* App iPhone : proposer Face ID juste après la connexion, avant d'entrer (une fois ; réglable dans Moi › Réglages) */
-  async function faceIdOffer() {
+  /* App iPhone : Face ID à la connexion (après « Se connecter » seulement, pas à chaque ouverture).
+     Proposé la première fois ; ensuite demandé à chaque connexion s'il est activé (Moi › Réglages). */
+  var FRESH = false;
+  async function faceIdStep() {
     var N = window.__nt, C = window.Capacitor;
     try {
       /* le pont natif est créé par la page : on l'attend un instant si on est dans l'app */
       if (!N && C && C.isNativePlatform && C.isNativePlatform()) { for (var k = 0; k < 20 && !window.__nt; k++) await new Promise(function (r) { setTimeout(r, 100); }); N = window.__nt; }
-      if (!N || !N.faceid || !N.alert) return;
-      var st = await N.faceid({}); if (!st || !st.available || st.asked) return;
+      if (!N || !N.faceid || !N.faceidCheck || !N.alert) return true;
+      var st = await N.faceid({}); if (!st || !st.available) return true;
       var lab = st.label || "Face ID";
-      var r = await N.alert({ title: "Ouvrir Cocoon avec " + lab + " ?", message: "Ton foyer reste protégé si quelqu'un prend ton téléphone. Tu pourras changer d'avis dans Moi › Réglages.",
-        actions: [{ id: "no", title: "Plus tard", style: "cancel" }, { id: "ok", title: "Activer", style: "default" }] });
-      await N.faceid({ enabled: !!(r && r.id === "ok"), asked: true });
-    } catch (_) {}
+      if (!st.asked) {
+        var r = await N.alert({ title: "Utiliser " + lab + " à la connexion ?", message: "Après ton mot de passe, " + lab + " confirmera que c'est bien toi. Tu pourras changer d'avis dans Moi › Réglages.",
+          actions: [{ id: "no", title: "Plus tard", style: "cancel" }, { id: "ok", title: "Activer", style: "default" }] });
+        var on = !!(r && r.id === "ok"); st = await N.faceid({ enabled: on, asked: true }); if (!on) return true;
+      }
+      if (!st.enabled) return true;
+      for (;;) {
+        var c = await N.faceidCheck({ reason: "Confirme que c'est bien toi pour ouvrir Cocoon" });
+        if (c && c.ok) return true;
+        var r2 = await N.alert({ title: lab + " n'a pas abouti", message: "Pour ouvrir Cocoon, confirme que c'est bien toi.",
+          actions: [{ id: "out", title: "Se déconnecter", style: "destructive" }, { id: "again", title: "Réessayer", style: "cancel" }] });
+        if (!r2 || r2.id !== "again") { logout(); return false; }
+      }
+    } catch (_) { return true; }
   }
   async function afterLogin(user, acc) {
     if (!user) return;
     if (!mailReady(user, acc)) return;
-    await faceIdOffer();
+    if (FRESH) { FRESH = false; if (!(await faceIdStep())) return; }
     ME = user;
     var join = LS.get("cocoon.join");
     /* Un lien d'invitation ne fait plus entrer dans un foyer sans le demander */

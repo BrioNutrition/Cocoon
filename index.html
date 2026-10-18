@@ -51,7 +51,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="18/10 11:40";</script>
+<script>window.COCOON_BUILD="18/10 11:42";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -7199,9 +7199,9 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
   const rrow=(e,c,t,sub,fn)=>el("button",{type:"button",class:"set-row",onclick:fn},ico(e,c),el("span",{class:"t"},el("b",{text:t}),el("small",{text:sub})));
   const box=el("div",{class:"settings"});
   box.append(rrow("🎨","#FF9C80","Apparence","Thème clair ou sombre, couleurs, Cocoony",()=>openPalette()));
-  /* Face ID à l'ouverture (app iPhone) : au choix */
+  /* Face ID à la connexion (app iPhone) : au choix */
   if(window.__nt&&window.__nt.faceid){ const fr=rrow("🔐","#8FB8FF","Face ID","…",()=>{}); box.append(fr);
-    const upd=st=>{ const lab=st.label||"Face ID"; fr.querySelector("b").textContent=lab+" à l'ouverture"; fr.querySelector("small").textContent=st.enabled?"Activé : Cocoon s'ouvre avec "+lab:"Désactivé";
+    const upd=st=>{ const lab=st.label||"Face ID"; fr.querySelector("b").textContent=lab+" à la connexion"; fr.querySelector("small").textContent=st.enabled?"Activé : demandé quand tu te connectes":"Désactivé";
       fr.onclick=()=>{ window.__nt.faceid({enabled:!st.enabled,asked:true}).then(n=>{ upd(n); toast(lab+(n.enabled?" activé.":" désactivé.")); }).catch(()=>{}); }; };
     window.__nt.faceid({}).then(st=>{ if(!st||!st.available){ fr.remove(); return; } upd(st); }).catch(()=>fr.remove()); }
   if(window.cocoonHost&&$("cxNotif")) box.append(rrow("🔔","#E79ADB","Notifications","Rappels sur ton téléphone",()=>moiOpen("notif")));

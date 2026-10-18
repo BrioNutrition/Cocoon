@@ -7,6 +7,9 @@ import LocalAuthentication
 // jaune Cocoon ; un peu plus soutenu en thème clair pour rester lisible
 let cocoonYellow = UIColor { t in t.userInterfaceStyle == .dark ? UIColor(red: 1.0, green: 0.788, blue: 0.29, alpha: 1) : UIColor(red: 0.90, green: 0.62, blue: 0.0, alpha: 1) }
 
+// réglage « Face ID à la connexion » (choix de l'utilisateur, mémorisé sur le téléphone)
+enum CocoonLockKeys { static let enabled = "cocoon.faceid"; static let asked = "cocoon.faceidAsked" }
+
 @objc(NativeTabsPlugin)
 public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
     public let identifier = "NativeTabsPlugin"
@@ -22,7 +25,8 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         CAPPluginMethod(name: "theme", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "sheet", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "alert", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "faceid", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "faceid", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "faceidCheck", returnType: CAPPluginReturnPromise)
     ]
     private var bar: UITabBar?
     private var top: UIView?
@@ -227,7 +231,14 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         }
     }
 
-    // ---------- Face ID à l'ouverture : au choix de l'utilisateur ({enabled?, asked?} → état) ----------
+    // ---------- Face ID à la connexion : vérification ponctuelle (code de l'iPhone en secours) ----------
+    @objc func faceidCheck(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            let ctx = LAContext(); ctx.localizedCancelTitle = "Annuler"
+            ctx.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: call.getString("reason") ?? "Confirme que c'est bien toi") { ok, _ in call.resolve(["ok": ok]) }
+        }
+    }
+    // ---------- Face ID à la connexion : au choix de l'utilisateur ({enabled?, asked?} → état) ----------
     @objc func faceid(_ call: CAPPluginCall) {
         let d = UserDefaults.standard
         if let e = call.getBool("enabled") { d.set(e, forKey: CocoonLockKeys.enabled) }
@@ -258,50 +269,6 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
     }
 }
 
-// ---------- Face ID à l'ouverture (si l'utilisateur l'a activé) : verrou natif au-dessus de tout (cache aussi l'app dans le sélecteur d'apps) ----------
-enum CocoonLockKeys { static let enabled = "cocoon.faceid"; static let asked = "cocoon.faceidAsked" }
-@available(iOS 15.0, *)
-final class CocoonLock {
-    static let shared = CocoonLock()
-    private var view: UIView?
-    private var busy = false
-    private var available: Bool { LAContext().canEvaluatePolicy(.deviceOwnerAuthentication, error: nil) }
-    func lock(in window: UIWindow?) {
-        guard UserDefaults.standard.bool(forKey: CocoonLockKeys.enabled), available, view == nil, let w = window else { return }
-        let v = UIVisualEffectView(effect: UIBlurEffect(style: .systemThickMaterialDark))
-        v.frame = w.bounds; v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        let tint = UIView(frame: v.bounds); tint.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        tint.backgroundColor = UIColor(red: 0.075, green: 0.071, blue: 0.11, alpha: 0.82); v.contentView.addSubview(tint)
-        let ctx = LAContext(); _ = ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
-        let label = ctx.biometryType == .faceID ? "Déverrouiller avec Face ID" : ctx.biometryType == .touchID ? "Déverrouiller avec Touch ID" : "Déverrouiller"
-        let ic = UIImageView(image: UIImage(systemName: "lock.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 40, weight: .semibold)))
-        ic.tintColor = cocoonYellow
-        let t = UILabel(); t.text = "Cocoon est verrouillé"; t.font = .systemFont(ofSize: 22, weight: .bold); t.textColor = .white
-        var cfg = UIButton.Configuration.filled(); cfg.title = label; cfg.cornerStyle = .capsule
-        cfg.baseBackgroundColor = cocoonYellow; cfg.baseForegroundColor = .black
-        cfg.contentInsets = NSDirectionalEdgeInsets(top: 13, leading: 24, bottom: 13, trailing: 24)
-        let b = UIButton(configuration: cfg, primaryAction: UIAction { [weak self] _ in self?.unlock() })
-        let st = UIStackView(arrangedSubviews: [ic, t, b]); st.axis = .vertical; st.alignment = .center; st.spacing = 16
-        st.setCustomSpacing(28, after: t); st.translatesAutoresizingMaskIntoConstraints = false
-        v.contentView.addSubview(st)
-        NSLayoutConstraint.activate([st.centerXAnchor.constraint(equalTo: v.contentView.centerXAnchor), st.centerYAnchor.constraint(equalTo: v.contentView.centerYAnchor)])
-        w.addSubview(v); view = v
-    }
-    func unlock() {
-        guard let v = view, !busy else { return }
-        busy = true
-        let ctx = LAContext(); ctx.localizedCancelTitle = "Annuler"
-        ctx.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "Déverrouille Cocoon") { ok, _ in
-            DispatchQueue.main.async {
-                self.busy = false
-                guard ok else { return }   // annulé : le bouton reste là pour réessayer
-                if self.view === v { self.view = nil }
-                UIView.animate(withDuration: 0.25, animations: { v.alpha = 0 }) { _ in v.removeFromSuperview() }
-            }
-        }
-    }
-}
-
 // vue qui laisse passer les touches à ce qui est dessous, sauf sur ses boutons
 class PassThroughView: UIView {
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
@@ -322,15 +289,7 @@ class MainViewController: CAPBridgeViewController {
         // taille du texte choisie dans Réglages › Affichage : toute la page suit (comme un zoom)
         applyTextSize()
         NotificationCenter.default.addObserver(self, selector: #selector(applyTextSize), name: UIContentSizeCategory.didChangeNotification, object: nil)
-        // Face ID : au lancement, puis à chaque retour dans l'app
-        NotificationCenter.default.addObserver(self, selector: #selector(appActive), name: UIApplication.didBecomeActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(appBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(appForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
-    private var firstActive = true
-    @objc func appActive() { guard #available(iOS 15.0, *), firstActive else { return }; firstActive = false; CocoonLock.shared.lock(in: view.window); CocoonLock.shared.unlock() }
-    @objc func appBackground() { if #available(iOS 15.0, *) { CocoonLock.shared.lock(in: view.window) } }
-    @objc func appForeground() { if #available(iOS 15.0, *) { CocoonLock.shared.unlock() } }
     @objc func applyTextSize() {
         let z: [UIContentSizeCategory: CGFloat] = [
             .extraSmall: 0.85, .small: 0.9, .medium: 0.95, .large: 1.0, .extraLarge: 1.08, .extraExtraLarge: 1.16, .extraExtraExtraLarge: 1.24,
