@@ -6557,7 +6557,7 @@ setTab("accueil");
     if(S.tab==="documents"&&S.docCat&&id==="back"){ S.docCat=null; renderDocs(); window.scrollTo({top:0,behavior:"smooth"}); return; } if(!bar){ if(id==="back"&&S.tab==="moi"&&S.moiSec) $("moiBack").click(); return; }
     const el0=id==="back"?bar.querySelector(".hub-back,.pg-back"):id==="sync"?bar.querySelector(".hub-sync"):id==="add"?bar.querySelector(".hub-add"):null; if(el0) el0.click(); });
   const safeTop=()=>{ const p=document.createElement("div"); p.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top,0px)"; document.body.append(p); const h=p.offsetHeight; p.remove(); return h; };
-  const sync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!(document.getElementById("boot")&&!document.getElementById("boot")._done)&&!(document.getElementById("wizard")&&!$("wizard").hidden));
+  const sync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!(document.getElementById("boot")&&!document.getElementById("boot")._done)&&!window.__tabsHold&&!(document.getElementById("wizard")&&!$("wizard").hidden));
     if(vis!==shown){ shown=vis; (vis?NT.show({items:TABS.map(t=>({title:t[1],icon:t[2]}))}):NT.hide()).catch(()=>{}); sel=-1; bdg=null; }
     if(!vis) return;
     /* une fiche ouverte depuis l'accueil (ou Moi) reste sous cet onglet */
@@ -9148,9 +9148,9 @@ function bootCheck(){
   /* les petits points encore « en attente » (lancement rapide) bloquaient l'affichage de l'accueil pendant l'envol du logo */
   if(quick){ S.bootQuick=true; b.querySelectorAll(".bt-dots,.bt-dots i").forEach(e=>{ e.style.animation="none"; }); b.classList.remove("quick"); }
   S.booted=true; try{ localStorage.setItem("cocoon.bootSeen","1"); }catch(_){}
+  /* la barre d'onglets attend l'apparition de la carte « Aujourd'hui » (voir bootOut) */
+  window.__tabsHold=true; setTimeout(()=>{ if(window.__tabsHold){ window.__tabsHold=false; try{ window.__ntSync&&window.__ntSync(); }catch(_){} } },2500);
   b._done=true; requestAnimationFrame(()=>requestAnimationFrame(bootOut));
-  /* la barre d'onglets arrive pendant que l'animation d'ouverture part (pas après) */
-  try{ window.__ntSync&&window.__ntSync(); }catch(_){}
 }
 /* les contours qui grossissent autour du logo s'effacent en fondu là où ils en sont */
 function ringsOut(w){ if(!w) return; w.querySelectorAll(":scope > i").forEach(i=>{ const cs=getComputedStyle(i), op=parseFloat(cs.opacity)||0, tf=cs.transform&&cs.transform!=="none"?cs.transform:"none";
@@ -9192,6 +9192,9 @@ async function bootOut(){
   ringsOut(wrap);
   const W=document.querySelector(".wrap");
   const fly=flyLogo(logo,target,980); W.classList.add("arrive");
+  /* la barre d'onglets arrive au moment où la carte « Aujourd'hui » apparaît */
+  { const go=()=>{ if(!window.__tabsHold) return; window.__tabsHold=false; try{ window.__ntSync&&window.__ntSync(); }catch(_){} }, dc=$("dayCard");
+    if(dc&&!dc.hidden&&dc.offsetParent){ dc.addEventListener("animationstart",go,{once:true}); setTimeout(go,1600); } else setTimeout(go,580); }
   /* l'accueil se dévoile en fondu de gauche à droite pendant que le logo rejoint sa place */
   try{ const sw=W.animate([{opacity:0,clipPath:"inset(0 100% 0 0)"},{opacity:.35,clipPath:"inset(0 55% 0 0)",offset:.35},{opacity:1,clipPath:"inset(0 0% 0 0)"}],{duration:1000,delay:80,easing:"cubic-bezier(.3,.7,.25,1)",fill:"backwards"}); sw.finished.then(()=>{ try{ sw.cancel(); }catch(_){} }).catch(()=>{}); }catch(_){}
   await fly;
