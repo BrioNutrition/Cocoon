@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="18/10 12:01";</script>
+<script>window.COCOON_BUILD="18/10 12:02";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -5950,7 +5950,9 @@ function openMForm(kind,item,ctx){
   const car=["vehic","vent","km"].includes(kind), target=car?"moi":"maison";
   if(S.tab!==target) setTab(target);
   if(car) renderCars(); else renderMaison();
-  renderMForm(); setTimeout(()=>{ if(MHF.isConnected) MHF.scrollIntoView({behavior:"smooth",block:"center"}); const i=MHF.querySelector("input:not([type=checkbox]),select"); if(i&&!S.mForm.id) try{ i.focus({preventScroll:true}); }catch(_){} },80);
+  renderMForm(); setTimeout(()=>{ if(MHF.isConnected) MHF.scrollIntoView({behavior:"smooth",block:"center"}); /* pas de curseur automatique sur téléphone : iOS ouvrirait tout seul la liste de choix (ou le clavier) */
+    let touch=false; try{ touch=matchMedia("(pointer: coarse)").matches; }catch(_){}
+    const i=MHF.querySelector("input:not([type=checkbox]),select"); if(i&&!S.mForm.id&&!touch) try{ i.focus({preventScroll:true}); }catch(_){} },80);
 }
 function closeMForm(){ S.mForm=null; MHF.hidden=true; MHF.innerHTML=""; document.body.append(MHF); renderMaison(); renderCars(); }
 function renderMForm(){

@@ -5854,7 +5854,9 @@ function openMForm(kind,item,ctx){
   const car=["vehic","vent","km"].includes(kind), target=car?"moi":"maison";
   if(S.tab!==target) setTab(target);
   if(car) renderCars(); else renderMaison();
-  renderMForm(); setTimeout(()=>{ if(MHF.isConnected) MHF.scrollIntoView({behavior:"smooth",block:"center"}); const i=MHF.querySelector("input:not([type=checkbox]),select"); if(i&&!S.mForm.id) try{ i.focus({preventScroll:true}); }catch(_){} },80);
+  renderMForm(); setTimeout(()=>{ if(MHF.isConnected) MHF.scrollIntoView({behavior:"smooth",block:"center"}); /* pas de curseur automatique sur téléphone : iOS ouvrirait tout seul la liste de choix (ou le clavier) */
+    let touch=false; try{ touch=matchMedia("(pointer: coarse)").matches; }catch(_){}
+    const i=MHF.querySelector("input:not([type=checkbox]),select"); if(i&&!S.mForm.id&&!touch) try{ i.focus({preventScroll:true}); }catch(_){} },80);
 }
 function closeMForm(){ S.mForm=null; MHF.hidden=true; MHF.innerHTML=""; document.body.append(MHF); renderMaison(); renderCars(); }
 function renderMForm(){
