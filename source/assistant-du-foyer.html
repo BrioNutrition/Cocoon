@@ -2905,6 +2905,8 @@ html.native-tabs *::-webkit-scrollbar{display:none}
 /* bandeau flouté sous l'heure et la batterie : le contenu qui défile ne passe plus dessous en clair */
 html.native-tabs body::after{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);z-index:35;pointer-events:none;background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4)}
 html.native-tabs .view .hub-bar{visibility:hidden}
+html.native-tabs .ms-back{visibility:hidden;min-height:44px}
+html.native-tabs .rg-h,html.native-tabs #cxAccount>h3,html.native-tabs #cxNotif>h3{display:none}
 html.native-tabs .hub-mini{display:none!important}
 .ing-sheet{max-height:calc(100% - env(safe-area-inset-top,0px) - 34px)}
 .ing-in{gap:12px!important}
@@ -6516,7 +6518,7 @@ setTab("accueil");
   if(!NT&&C.nativePromise) NT={show:o=>C.nativePromise("NativeTabs","show",o),hide:()=>C.nativePromise("NativeTabs","hide",{}),select:o=>C.nativePromise("NativeTabs","select",o),badge:o=>C.nativePromise("NativeTabs","badge",o),
     addListener:(ev,cb)=>{ try{ C.nativeCallback("NativeTabs","addListener",{eventName:ev},d=>cb(d)); }catch(_){} return Promise.resolve({remove(){}}); }};
   if(!NT) return;
-  if(C.nativePromise&&!NT.menu) ["menu","haptic","topbar","theme","sheet"].forEach(m=>{ NT[m]=o=>C.nativePromise("NativeTabs",m,o||{}); });
+  if(C.nativePromise&&!NT.menu) ["menu","haptic","topbar","theme","sheet","alert"].forEach(m=>{ NT[m]=o=>C.nativePromise("NativeTabs",m,o||{}); });
   window.__nt=NT;
   const TABS=[["accueil","Accueil","house.fill"],["hub","Foyer","person.2.fill"],["cocoony","Cocoony","sparkles"],["moi","Moi","person.crop.circle.fill"]];
   document.documentElement.classList.add("native-tabs");
@@ -6528,7 +6530,7 @@ setTab("accueil");
   NT.addListener("shortcut",e=>{ if(e&&e.type) runRacc(String(e.type).replace(/^fr\.cocoon\.app\./,"")); });
   NT.addListener("select",e=>{ const t=TABS[e&&e.index]; if(!t) return; const b=document.querySelector('#tabs .tab[data-tab="'+t[0]+'"]'); if(b) b.click(); });
   /* barre du haut native : bulle retour, titre, boutons en verre */
-  NT.addListener("topbar",e=>{ const id=e&&e.id, bar=document.querySelector(".view:not([hidden]) .hub-bar"); if(!bar) return;
+  NT.addListener("topbar",e=>{ const id=e&&e.id, bar=document.querySelector(".view:not([hidden]) .hub-bar"); if(!bar){ if(id==="back"&&S.tab==="moi"&&S.moiSec) $("moiBack").click(); return; }
     const el0=id==="back"?bar.querySelector(".hub-back,.pg-back"):id==="sync"?bar.querySelector(".hub-sync"):id==="add"?bar.querySelector(".hub-add"):null; if(el0) el0.click(); });
   const safeTop=()=>{ const p=document.createElement("div"); p.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top,0px)"; document.body.append(p); const h=p.offsetHeight; p.remove(); return h; };
   const sync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!document.getElementById("boot")&&!(document.getElementById("wizard")&&!$("wizard").hidden));
@@ -6547,7 +6549,11 @@ setTab("accueil");
     /* barre du haut des rubriques */
     { const bar=document.querySelector(".view:not([hidden]) .hub-bar"), open=document.documentElement.classList.contains("prem-open");
       let sig="off", o={visible:false};
-      if(bar&&!open){ const t=(bar.querySelector(".hb-title")||{}).textContent||"", acts=[]; if(bar.querySelector(".hub-sync")) acts.push({id:"sync",icon:"calendar"}); if(bar.querySelector(".hub-add")) acts.push({id:"add",icon:"plus",prominent:true});
+      const mb=!bar&&S.tab==="moi"&&S.moiSec?$("moiBack"):null;
+      if(mb&&!open){ /* sous-menus de Moi : même barre native que les rubriques du foyer */
+        const MT={perso:"Mes tâches perso",confie:"Confié par le foyer",vehic:"Mes véhicules",notif:"Notifications",premium:"Cocoon Premium",compte:"Mon compte",reglages:"Réglages"};
+        let y=0; for(let n=mb;n;n=n.offsetParent) y+=n.offsetTop; o={visible:true,title:MT[S.moiSec]||"",back:true,actions:[],top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(document.body).color}; sig=JSON.stringify(o); }
+      else if(bar&&!open){ const t=(bar.querySelector(".hb-title")||{}).textContent||"", acts=[]; if(bar.querySelector(".hub-sync")) acts.push({id:"sync",icon:"calendar"}); if(bar.querySelector(".hub-add")) acts.push({id:"add",icon:"plus",prominent:true});
         /* position dans la page sans compter les animations d'arrivée (sinon la barre se replace une 2e fois) */
         let y=0; for(let n=bar;n;n=n.offsetParent) y+=n.offsetTop; o={visible:true,title:t,back:!!bar.querySelector(".hub-back,.pg-back"),actions:acts,top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(bar.querySelector(".hb-title")||bar).color}; sig=JSON.stringify(o); }
       if(sig!==tbSig){ tbSig=sig; NT.topbar(o).catch(()=>{}); } } };
@@ -7222,9 +7228,13 @@ function renderSettings(){
     box.append(el("div",{class:"set-confirm",style:"flex-direction:column;align-items:stretch"},el("span",{class:"muted",text:"Copie ce texte et colle-le dans un fichier .json pour le garder."}),ta,
       el("div",{style:"display:flex;gap:8px"},el("button",{type:"button",class:"btn",text:"Copier",onclick:async()=>{ try{ await navigator.clipboard.writeText(ta.value); toast("Copié."); }catch(_){ ta.focus(); ta.select(); toast("Sélectionne le texte et copie-le."); } }}),el("button",{type:"button",class:"btn ghost",text:"Fermer",onclick:()=>{ S.exportTxt=null; renderSettings(); }})))); }
   if(!S.readOnly){
-    box.append(row("wipe","#FF9C80","Effacer mes données perso","Tâches perso, véhicules et préférences. Le foyer n'est pas touché.",()=>{ S.setConfirm=S.setConfirm==="wipe"?null:"wipe"; renderSettings(); },"danger"));
+    box.append(row("wipe","#FF9C80","Effacer mes données perso","Tâches perso, véhicules et préférences. Le foyer n'est pas touché.",()=>{ const na=nativeAlert({title:"Effacer tes données perso ?",message:"Tâches perso, véhicules et préférences seront vidés pour de bon. Le foyer n'est pas touché.",actions:[{id:"no",title:"Annuler",style:"cancel"},{id:"ok",title:"Effacer",style:"destructive"}]});
+      if(na){ na.then(r=>{ if(r.id==="ok") wipeMine(); }); return; } S.setConfirm=S.setConfirm==="wipe"?null:"wipe"; renderSettings(); },"danger"));
     if(S.setConfirm==="wipe") box.append(el("div",{class:"set-confirm"},el("span",{text:"Ton espace perso sera vidé pour de bon. On y va ?"}),el("button",{type:"button",class:"btn ghost",text:"Non",onclick:()=>{ S.setConfirm=null; renderSettings(); }}),el("button",{type:"button",class:"btn danger",text:"Oui, effacer",onclick:wipeMine})));
-    box.append(row("quit","#E79ADB","Quitter le foyer","Ton profil reste dans le foyer mais n'est plus relié à ton compte",()=>{ S.setConfirm=S.setConfirm==="quit"?null:"quit"; renderSettings(); },"danger"));
+    box.append(row("quit","#E79ADB","Quitter le foyer","Ton profil reste dans le foyer mais n'est plus relié à ton compte",()=>{ const lastAdmin=m.role==="admin"&&admins().length<=1&&humains().some(x=>x.uid&&x.id!==m.id);
+      const na=lastAdmin?nativeAlert({title:"Tu es le seul admin",message:"Nomme quelqu'un d'autre admin (dans son profil) avant de quitter le foyer.",actions:[{id:"ok",title:"D'accord",style:"cancel"}]})
+        :nativeAlert({title:"Quitter le foyer ?",message:"Tu ne verras plus le foyer avec ce compte. Tes données perso restent dans ton espace.",actions:[{id:"no",title:"Rester",style:"cancel"},{id:"ok",title:"Quitter le foyer",style:"destructive"}]});
+      if(na){ na.then(r=>{ if(!lastAdmin&&r.id==="ok") quitFoyer(); }); return; } S.setConfirm=S.setConfirm==="quit"?null:"quit"; renderSettings(); },"danger"));
     if(S.setConfirm==="quit"){ const lastAdmin=m.role==="admin"&&admins().length<=1&&humains().some(x=>x.uid&&x.id!==m.id);
       box.append(el("div",{class:"set-confirm"},...(lastAdmin?[el("span",{text:"Tu es le seul admin : nomme quelqu'un d'autre admin (dans son profil) avant de partir."}),el("button",{type:"button",class:"btn ghost",text:"D'accord",onclick:()=>{ S.setConfirm=null; renderSettings(); }})]
         :[el("span",{text:"Tu ne verras plus le foyer avec ce compte. Tes données perso restent dans ton espace."}),el("button",{type:"button",class:"btn ghost",text:"Rester",onclick:()=>{ S.setConfirm=null; renderSettings(); }}),el("button",{type:"button",class:"btn danger",text:"Quitter le foyer",onclick:quitFoyer})]))); }
@@ -7232,7 +7242,10 @@ function renderSettings(){
   box.append(row("shield","#7FCDB9","Confidentialité","Ce qui est enregistré, qui y a accès, tes droits",openPrivacy));
   box.append(row("doc","#B9A8F0","Conditions d'utilisation","Les règles du jeu"+((S.prefs||{}).cguLe?" · acceptées le "+new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"long",year:"numeric"}).format(new Date(S.prefs.cguLe)):""),openTerms));
   if(!S.readOnly&&window.cocoonHost&&cocoonHost.deleteAccount){
-    box.append(row("bye","#E5484D","Supprimer mon compte","Ton compte, ton profil et tes données, pour de bon",()=>{ S.setConfirm=S.setConfirm==="del"?null:"del"; renderSettings(); },"danger"));
+    box.append(row("bye","#E5484D","Supprimer mon compte","Ton compte, ton profil et tes données, pour de bon",()=>{ const alone=humains().filter(x=>x.uid&&x.uid!==S.uid).length===0;
+      const na=nativeAlert({title:"Supprimer ton compte ?",message:"Ton compte, ton profil, ton espace perso et tes papiers seront effacés, sans retour possible."+(alone?" Tu es la dernière personne avec un compte : tout le foyer sera effacé aussi.":" Les autres gardent les données communes.")+"\n\nÉcris SUPPRIMER pour confirmer.",field:"SUPPRIMER",actions:[{id:"no",title:"Annuler",style:"cancel"},{id:"ok",title:"Supprimer",style:"destructive"}]});
+      if(na){ na.then(r=>{ if(r.id!=="ok") return; if(String(r.text||"").trim().toUpperCase()==="SUPPRIMER") deleteMyAccount(null); else toast("Rien n'a été supprimé : écris SUPPRIMER pour confirmer."); }); return; }
+      S.setConfirm=S.setConfirm==="del"?null:"del"; renderSettings(); },"danger"));
     if(S.setConfirm==="del"){ const alone=humains().filter(x=>x.uid&&x.uid!==S.uid).length===0;
       const inp=el("input",{type:"text",autocomplete:"off",autocapitalize:"characters",placeholder:"Écris SUPPRIMER","aria-label":"Écris SUPPRIMER pour confirmer"});
       const okTxt=v=>String(v||"").trim().toUpperCase()==="SUPPRIMER";
@@ -7948,7 +7961,12 @@ const PM_FEATS=[["📸","#FFF1C9","Papiers en photo","La date et le montant sont
  ["📊","#E3F6EA","Budget avancé","L'année en graphiques, export pour les impôts."],
  ["🏡","#FFE9DC","Plusieurs foyers","La maison, la maison de vacances, la garde alternée."],
  ["🎨","#F3E8FF","Thèmes et icônes","Habille Cocoon à ton goût."]];
-function confirmBox(t,txt,okL,fn){ const bg=el("div",{class:"cf-bg"}), box=el("div",{class:"cf-box",role:"dialog","aria-modal":"true","aria-label":t});
+/* Alerte native iOS dans l'app (null ailleurs) : {title,message,field?,actions:[{id,title,style:"cancel"|"destructive"|"default"}]} → {id,text} */
+function nativeAlert(o){ const N=window.__nt; if(!N||!N.alert) return null; return N.alert(o).then(r=>r||{}).catch(()=>({})); }
+const DANGER_RX=/supprim|effac|quitt|déconnect|retir|vider/i;
+function confirmBox(t,txt,okL,fn){
+  { const na=nativeAlert({title:t,message:txt||null,actions:[{id:"no",title:"Annuler",style:"cancel"},{id:"ok",title:okL,style:DANGER_RX.test(okL)?"destructive":"default"}]}); if(na){ na.then(r=>{ if(r.id==="ok") fn(); }); return; } }
+  const bg=el("div",{class:"cf-bg"}), box=el("div",{class:"cf-box",role:"dialog","aria-modal":"true","aria-label":t});
   const close=()=>{ bg.classList.remove("on"); box.classList.remove("on"); setTimeout(()=>{ bg.remove(); box.remove(); },200); };
   box.append(el("b",{text:t}),el("p",{text:txt}),el("div",{class:"cf-bt"},el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:close}),el("button",{type:"button",class:"btn",text:okL,onclick:()=>{ close(); fn(); }})));
   bg.onclick=close; document.body.append(bg,box); requestAnimationFrame(()=>{ bg.classList.add("on"); box.classList.add("on"); }); }

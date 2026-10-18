@@ -18,7 +18,8 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         CAPPluginMethod(name: "menu", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "haptic", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "theme", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "sheet", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "sheet", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "alert", returnType: CAPPluginReturnPromise)
     ]
     private var bar: UITabBar?
     private var top: UIView?
@@ -203,6 +204,24 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
             if let pop = ac.popoverPresentationController {
                 pop.sourceView = vc.view
                 pop.sourceRect = CGRect(x: vc.view.bounds.midX, y: vc.view.bounds.maxY - 90, width: 1, height: 1)
+            }
+            vc.present(ac, animated: true)
+        }
+    }
+
+    // ---------- alerte iOS (confirmation : Annuler + bouton rouge, champ de texte en option) ----------
+    @objc func alert(_ call: CAPPluginCall) {
+        let actions = (call.options["actions"] as? [[String: Any]]) ?? []
+        DispatchQueue.main.async {
+            guard let vc = self.bridge?.viewController else { call.resolve(["id": NSNull()]); return }
+            let ac = UIAlertController(title: call.getString("title"), message: call.getString("message"), preferredStyle: .alert)
+            if let ph = call.getString("field") { ac.addTextField { tf in tf.placeholder = ph; tf.autocapitalizationType = .allCharacters; tf.autocorrectionType = .no } }
+            for a in actions {
+                let st: UIAlertAction.Style = (a["style"] as? String) == "cancel" ? .cancel : (a["style"] as? String) == "destructive" ? .destructive : .default
+                let id = a["id"] as? String ?? ""
+                ac.addAction(UIAlertAction(title: a["title"] as? String ?? "", style: st) { _ in
+                    call.resolve(["id": id, "text": ac.textFields?.first?.text ?? ""])
+                })
             }
             vc.present(ac, animated: true)
         }
