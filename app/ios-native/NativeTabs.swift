@@ -61,6 +61,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         DispatchQueue.main.async {
             guard let view = self.bridge?.viewController?.view else { call.reject("pas de vue"); return }
             let bar = self.bar ?? UITabBar()
+            let appearing = bar.superview == nil || bar.isHidden
             bar.delegate = self
             bar.tintColor = cocoonYellow
             let old = bar.selectedItem?.tag ?? 0
@@ -83,11 +84,22 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
             }
             bar.isHidden = false
             self.bar = bar
+            // arrivée en douceur (fondu + légère montée), comme le reste de la page
+            if appearing {
+                bar.alpha = 0; bar.transform = CGAffineTransform(translationX: 0, y: 24)
+                UIView.animate(withDuration: 0.5, delay: 0.05, usingSpringWithDamping: 0.9, initialSpringVelocity: 0, options: [.allowUserInteraction]) {
+                    bar.alpha = 1; bar.transform = .identity
+                }
+            }
             call.resolve()
         }
     }
     @objc func hide(_ call: CAPPluginCall) {
-        DispatchQueue.main.async { self.bar?.isHidden = true; call.resolve() }
+        DispatchQueue.main.async {
+            guard let bar = self.bar, !bar.isHidden else { call.resolve(); return }
+            UIView.animate(withDuration: 0.25, animations: { bar.alpha = 0 }) { done in if done && bar.alpha < 0.01 { bar.isHidden = true; bar.alpha = 1 } }
+            call.resolve()
+        }
     }
     // une fenêtre est ouverte (feuille, panneau…) : la page derrière ne défile plus ; la barre d'onglets reste
     @objc func sheet(_ call: CAPPluginCall) {
