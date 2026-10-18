@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="18/10 02:43";</script>
+<script>window.COCOON_BUILD="18/10 02:44";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3125,6 +3125,7 @@ html.native-tabs .hub-mini{display:none!important}
 .tk-go{width:100%;padding:14px;font-size:15.5px;font-weight:800;border-radius:16px;margin-top:2px}
 .tk-go:disabled{opacity:.5}
 .hello{margin:2px 0 0;font:800 30px/1.05 var(--f-display);letter-spacing:-.03em}
+.hello .hello-g{font-weight:650}
 .hello-sub{margin:5px 0 0;font-size:14px;color:var(--muted);font-weight:500}
 .fy-card{margin-top:14px;border-radius:24px;padding:14px 14px 6px;background:var(--surface);box-shadow:0 2px 0 var(--shadow)}
 :root[data-theme="dark"] .fy-card{background:linear-gradient(160deg,#2A2740,#1E1D2B);box-shadow:none}
@@ -3758,7 +3759,7 @@ function renderHeader(){
   /* le bonjour du moment, puis le bilan du jour */
   { const me0=meId(), hh=$("homeHello"), hs=$("homeSub"), h=new Date().getHours();
     if(me0&&!S.readOnly){ const nm=(membre(me0).nom||"").split(" ")[0], g=[h<5||h>=18?"Bonsoir":"Bonjour"];
-      hh.textContent=g[0]+(nm?", "+nm:""); hh.hidden=false;
+      hh.replaceChildren(el("span",{class:"hello-g",text:g[0]+(nm?", ":"")}),nm||""); hh.hidden=false;
       hs.hidden=true; }
     else { hh.hidden=true; hs.hidden=true; } }
   const me=meId(), box=$("members"); box.innerHTML="";
