@@ -76,6 +76,7 @@
       "#cxGate .cx-btn{font:inherit;font-weight:700;font-size:17px;border:0;border-radius:16px;padding:15px;background:#1C1B2E;color:#fff;cursor:pointer;margin-top:4px}",
       "#cxGate .cx-btn.alt{background:linear-gradient(135deg,#FFD66B,#FFB38A,#FF9CB0);color:#1C1B2E}",
       "#cxGate .cx-btn[disabled]{opacity:.6}",
+      "#cxGate .cx-mfa{display:flex;flex-direction:column;align-items:center;gap:6px;margin:4px 0 12px}#cxGate .cx-mfa[hidden]{display:none}#cxGate a.cx-mfa-add{display:block;width:100%;text-align:center;text-decoration:none;box-sizing:border-box}#cxGate .cx-qr{width:160px;height:160px;background:#fff;border-radius:12px;padding:8px}#cxGate .cx-secret{font-family:ui-monospace,Menlo,monospace;letter-spacing:.06em;word-break:break-all;user-select:all;-webkit-user-select:all}" +
       "#cxGate .cx-legal{margin:10px 0 0;font-size:12.5px;line-height:1.45;color:#6A6886;text-align:center}#cxGate .cx-legal .cx-link{font-size:12.5px;padding:2px}" +
       "#cxGate .cx-link{font:inherit;border:0;background:none;color:#3D3A5C;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:6px;font-size:14.5px}",
       "#cxGate .cx-keep{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:inherit;cursor:pointer;margin:2px 0}",
@@ -238,6 +239,44 @@
           card.querySelector('[data-act="out"]').addEventListener("click", logout);
           return;
         }
+        if (mode === "mfaSetup" || mode === "mfa") {
+          /* Double authentification : code d'une app (Mots de passe sur iPhone, Google Authenticator…) */
+          var setup = mode === "mfaSetup", mu = extra && extra.user, macc = extra && extra.acc, fid = extra && extra.factorId;
+          card.innerHTML = head(setup ? "Double authentification" : "Code de vérification",
+            setup ? "Pour protéger le foyer, chaque compte ajoute un code de vérification. C'est à faire une seule fois." : "Ouvre ton app de codes (Mots de passe sur iPhone) et tape le code à 6 chiffres de Cocoon.") +
+            (setup ? '<div class="cx-mfa" hidden><a class="cx-btn cx-mfa-add" href="#">Ajouter dans Mots de passe</a><p class="cx-legal">Ou scanne ce QR code avec une autre app de codes :</p><img class="cx-qr" alt="QR code de configuration" width="160" height="160"><p class="cx-legal">Clé à saisir à la main : <b class="cx-secret"></b></p></div>' : "") +
+            '<form><label>' + (setup ? "Puis tape le code affiché" : "Code à 6 chiffres") + '<input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9 ]{6,7}" maxlength="7" required class="cx-code" placeholder="123456"></label><div class="cx-msg" hidden></div><button class="cx-btn" type="submit">Valider</button></form>' +
+            (setup ? "" : '<button class="cx-link" type="button" data-act="lost">Je n\'ai plus accès à mon app de codes</button>') +
+            '<button class="cx-link" type="button" data-act="out">Se déconnecter</button>';
+          var f5 = card.querySelector("form");
+          card.querySelector('[data-act="out"]').addEventListener("click", logout);
+          var lost = card.querySelector('[data-act="lost"]');
+          if (lost) lost.addEventListener("click", function () { msg("Écris au support Cocoon" + (CFG.contact ? " (" + CFG.contact + ")" : "") + " depuis ton adresse e-mail : on réinitialisera ta double authentification après vérification.", false); });
+          if (setup) (async function () {
+            try {
+              await SBP;
+              /* une configuration commencée puis abandonnée bloquerait la nouvelle : on la retire */
+              var l = await sb.auth.mfa.listFactors(), old = ((l.data && l.data.all) || []).filter(function (x) { return x.factor_type === "totp" && x.status !== "verified"; });
+              for (var i = 0; i < old.length; i++) { try { await sb.auth.mfa.unenroll({ factorId: old[i].id }); } catch (_) {} }
+              var en = await sb.auth.mfa.enroll({ factorType: "totp", issuer: "Cocoon", friendlyName: "Cocoon " + new Date().toISOString().slice(0, 16) });
+              if (en.error) throw en.error;
+              fid = en.data.id;
+              var bx = card.querySelector(".cx-mfa"); if (!bx) return; bx.hidden = false;
+              bx.querySelector(".cx-mfa-add").href = en.data.totp.uri;
+              bx.querySelector(".cx-qr").src = en.data.totp.qr_code;
+              bx.querySelector(".cx-secret").textContent = en.data.totp.secret;
+            } catch (err) { msg(frErr(err), true); }
+          })();
+          f5.addEventListener("submit", async function (e) {
+            e.preventDefault(); var b = f5.querySelector("button"), code = String(f5.code.value || "").replace(/\D/g, "");
+            if (code.length !== 6) { msg("Tape les 6 chiffres du code.", true); return; }
+            if (!fid) { msg("Un instant : la configuration n'est pas encore prête.", true); return; }
+            b.disabled = true; msg(""); await SBP;
+            try { var v = await sb.auth.mfa.challengeAndVerify({ factorId: fid, code: code }); if (v.error) throw v.error; G.show("wait"); afterLogin(mu, macc); }
+            catch (err) { b.disabled = false; msg(/invalid|code|otp/i.test(String(err && err.message)) ? "Code incorrect : vérifie-le, il change toutes les 30 secondes." : frErr(err), true); }
+          });
+          return;
+        }
         if (mode === "wait") { card.innerHTML = head("Cocoon", "Connexion…"); }
       },
       hide: function () { g.hidden = true; G.mode = null; }
@@ -283,8 +322,20 @@
   async function logout() { try { await Promise.race([PUSH.disable(), new Promise(function (r) { setTimeout(r, 2500); })]); } catch (_) {} LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer"); try { await SBP; await sb.auth.signOut(); } catch (_) {} authStore.removeItem("cocoon.auth"); location.reload(); }
 
   /* =================== Session & foyer =================== */
+  /* Double authentification obligatoire : tant que la session n'est pas « aal2 », on demande le code (ou sa configuration) */
+  async function mfaReady(user, acc) {
+    try {
+      await SBP;
+      var a = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (a.error || !a.data || a.data.currentLevel === "aal2") return true;
+      var l = await sb.auth.mfa.listFactors(), ok = (l.data && l.data.totp) || [];
+      gate().show(ok.length ? "mfa" : "mfaSetup", { user: user, acc: acc, factorId: ok[0] && ok[0].id });
+      return false;
+    } catch (_) { return true; }
+  }
   async function afterLogin(user, acc) {
     if (!user) return;
+    if (!(await mfaReady(user, acc))) return;
     ME = user;
     var join = LS.get("cocoon.join");
     /* Un lien d'invitation ne fait plus entrer dans un foyer sans le demander */
@@ -341,7 +392,7 @@
   Promise.all([SBP, DOMP]).then(async function () {
     sb.auth.onAuthStateChange(function (ev, session) {
       if (ev === "PASSWORD_RECOVERY") { if (!G || G.mode !== "newpw") gate().show("newpw"); return; }
-      if (ev === "SIGNED_IN" && session && !started && G && G.mode !== "foyer" && G.mode !== "join" && G.mode !== "code" && G.mode !== "wait" && G.mode !== "pwok") afterLogin(session.user);
+      if (ev === "SIGNED_IN" && session && !started && G && G.mode !== "foyer" && G.mode !== "join" && G.mode !== "code" && G.mode !== "wait" && G.mode !== "pwok" && G.mode !== "mfa" && G.mode !== "mfaSetup") afterLogin(session.user);
       if (ev === "SIGNED_OUT" && started && !DELETING) location.reload();
     });
     var s = await sb.auth.getSession();
