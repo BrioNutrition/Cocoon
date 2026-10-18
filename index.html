@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="18/10 02:21";</script>
+<script>window.COCOON_BUILD="18/10 02:18";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3766,7 +3766,7 @@ function renderHeader(){
     const isOpen=S.tab==="profil"&&S.profil===m.id;
     const pct=human&&(done+todo)?Math.round(done/(done+todo)*100):0;
     const ring=el("span",{class:"ring"+(human?" prog":(open?" has":"")),style:human?"--p:"+pct+"%":null},avatar(m.id));
-    const st=el("button",{type:"button",class:"story"+(isOpen?" open":""),"aria-label":m.id===me?"Mon profil":"Fiche "+de(m.nom),title:human?done+" tâche"+(done>1?"s":"")+" faite"+(done>1?"s":"")+" cette semaine":null,onclick:()=>{ if(m.id===me){ setTab("moi"); renderHeader(); } else openMemberSheet(m.id); }},
+    const st=el("button",{type:"button",class:"story"+(isOpen?" open":""),"aria-label":m.id===me?"Ma journée":"Fiche "+de(m.nom),title:human?done+" tâche"+(done>1?"s":"")+" faite"+(done>1?"s":"")+" cette semaine":null,onclick:()=>openMemberSheet(m.id)},
       ring,nameEl(m,m.id===me?"Toi":m.nom,"span"));
     st.lastChild.classList.add("sn");
     if(pending) st.append(el("span",{class:"ss",text:"invité·e"})); else if(done) st.append(el("span",{class:"ss ok",text:done+" faite"+(done>1?"s":"")})); else if(open) st.append(el("span",{class:"ss",text:open+" à faire"}));
@@ -7210,7 +7210,10 @@ function openMemberSheet(id){ const m=membre(id); if(!m) return; const me=meId()
   const row=(ic,t,when,late)=>list.append(el("div",{class:"mb-it"},el("i",{class:"mb-ic","aria-hidden":"true",text:ic}),el("span",{class:"mb-t",text:t}),when?el("small",{class:late?"late":null,text:when}):null));
   if(rdv) row("📅",rdv.titre+(rdv.lieu?" · "+rdv.lieu:""),(rdv.date===t0?"aujourd'hui":dueLabel(rdv.date))+(rdv.heure?" "+heureTxt(rdv.heure):""),false);
   for(const t of open.slice(0,rdv?3:4)) row("○",t.titre,t.echeance?dueLabel(t.echeance):null,!!(t.echeance&&t.echeance<t0));
-  if(open.length>(rdv?3:4)) list.append(el("button",{type:"button",class:"mb-more",text:"+ "+(open.length-(rdv?3:4))+" autre"+(open.length-(rdv?3:4)>1?"s":""),onclick:e=>{ /* on reste sur l'accueil : la liste se déplie dans la fiche */ e.currentTarget.remove(); for(const t of open.slice(rdv?3:4)) row("○",t.titre,t.echeance?dueLabel(t.echeance):null,!!(t.echeance&&t.echeance<t0)); }}));
+  if(open.length>(rdv?3:4)) list.append(el("button",{type:"button",class:"mb-more",text:"+ "+(open.length-(rdv?3:4))+" autre"+(open.length-(rdv?3:4)>1?"s":""),onclick:()=>{ close(); setTimeout(()=>{
+      /* la page Tâches, filtrée sur cette personne (un animal : sur la catégorie de ses tâches, ex. Animaux) */
+      if(ani){ const n={}; for(const t of open) if(t.cat) n[t.cat]=(n[t.cat]||0)+1; S.whoF=null; S.catF=Object.keys(n).sort((a,b)=>n[b]-n[a])[0]||null; } else { S.whoF=id; S.catF=null; }
+      setTab("foyer"); renderHeader(); },200); }}));
   if(!list.childNodes.length) list.append(el("p",{class:"mb-empty",text:isMe?"Rien de prévu pour toi. Profite !":ani?"Rien de prévu pour "+m.nom+".":m.nom+" n'a rien de prévu."}));
   const go=fn=>()=>{ close(); setTimeout(fn,220); };
   const acts=el("div",{class:"mb-acts"});
