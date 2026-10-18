@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="18/10 02:14";</script>
+<script>window.COCOON_BUILD="18/10 02:18";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -6396,7 +6396,10 @@ async function hubAsk(raw){ let v=String(raw||"").trim(); if(!v) { $("secQ").foc
   try{ r=await plan.run(); }catch(err){ writeErr(err); r=secA("Oups, je n'ai pas réussi."); }
   S.hubMode=null; S.secAns={q:v,r}; renderSecAns(); }
 /* Panneau Cocoony */
-function cxFit(){ const c=document.querySelector("#cxView .secretary"), n=$("tabs"); if(!c||!n||S.tab!=="cocoony") return; const top=c.getBoundingClientRect().top+window.scrollY, nt=n.getBoundingClientRect().top+window.scrollY; c.style.height=Math.max(320,Math.round(nt-top-14))+"px"; }
+function cxFit(){ const c=document.querySelector("#cxView .secretary"), n=$("tabs"); if(!c||!n||S.tab!=="cocoony") return; const top=c.getBoundingClientRect().top+window.scrollY; let nt=n.getBoundingClientRect().top+window.scrollY;
+  /* app iPhone : la barre du site est cachée, c'est celle d'iOS qui est en bas (≈ 70 px + la zone du bas de l'écran) */
+  if(!n.offsetParent){ const p=el("div",{style:"position:fixed;bottom:0;height:env(safe-area-inset-bottom,0px)"}); document.body.append(p); const sb=p.offsetHeight; p.remove(); nt=window.scrollY+innerHeight-sb-70; }
+  c.style.height=Math.max(320,Math.round(nt-top-14))+"px"; }
 function openCx(){ if(S.tab!=="cocoony"){ try{ closeSheet(); }catch(_){} setTab("cocoony"); } try{ renderSecChips(); renderSecAns(); }catch(_){} requestAnimationFrame(()=>{ cxFit(); const t=$("secThread"); if(t) t.scrollTop=t.scrollHeight; }); }
 function closeCx(){}
 { const card=document.querySelector(".secretary.sec-chat"); if(card) $("cxView").append(card); }
@@ -7207,7 +7210,10 @@ function openMemberSheet(id){ const m=membre(id); if(!m) return; const me=meId()
   const row=(ic,t,when,late)=>list.append(el("div",{class:"mb-it"},el("i",{class:"mb-ic","aria-hidden":"true",text:ic}),el("span",{class:"mb-t",text:t}),when?el("small",{class:late?"late":null,text:when}):null));
   if(rdv) row("📅",rdv.titre+(rdv.lieu?" · "+rdv.lieu:""),(rdv.date===t0?"aujourd'hui":dueLabel(rdv.date))+(rdv.heure?" "+heureTxt(rdv.heure):""),false);
   for(const t of open.slice(0,rdv?3:4)) row("○",t.titre,t.echeance?dueLabel(t.echeance):null,!!(t.echeance&&t.echeance<t0));
-  if(open.length>(rdv?3:4)) list.append(el("button",{type:"button",class:"mb-more",text:"+ "+(open.length-(rdv?3:4))+" autre"+(open.length-(rdv?3:4)>1?"s":""),onclick:()=>{ close(); setTimeout(()=>{ setTab(isMe?"moi":"foyer"); renderHeader(); },200); }}));
+  if(open.length>(rdv?3:4)) list.append(el("button",{type:"button",class:"mb-more",text:"+ "+(open.length-(rdv?3:4))+" autre"+(open.length-(rdv?3:4)>1?"s":""),onclick:()=>{ close(); setTimeout(()=>{
+      /* la page Tâches, filtrée sur cette personne (un animal : sur la catégorie de ses tâches, ex. Animaux) */
+      if(ani){ const n={}; for(const t of open) if(t.cat) n[t.cat]=(n[t.cat]||0)+1; S.whoF=null; S.catF=Object.keys(n).sort((a,b)=>n[b]-n[a])[0]||null; } else { S.whoF=id; S.catF=null; }
+      setTab("foyer"); renderHeader(); },200); }}));
   if(!list.childNodes.length) list.append(el("p",{class:"mb-empty",text:isMe?"Rien de prévu pour toi. Profite !":ani?"Rien de prévu pour "+m.nom+".":m.nom+" n'a rien de prévu."}));
   const go=fn=>()=>{ close(); setTimeout(fn,220); };
   const acts=el("div",{class:"mb-acts"});
