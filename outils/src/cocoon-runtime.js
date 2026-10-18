@@ -313,7 +313,7 @@
   /* Double authentification : code par e-mail tant que cet appareil n'a pas été vérifié (oublié à la déconnexion) */
   var DEV2FA = "cocoon.dev2fa.";
   function mailReady(user, acc) {
-    if (LS.get(DEV2FA + user.id)) return true;
+    if (!CFG.codeEmail || LS.get(DEV2FA + user.id)) return true;   /* interrupteur dans config.js */
     gate().show("mail2fa", { user: user, acc: acc });
     return false;
   }
