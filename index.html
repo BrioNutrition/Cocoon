@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="18/10 02:01";</script>
+<script>window.COCOON_BUILD="18/10 02:04";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -6575,11 +6575,11 @@ setTab("accueil");
   if(!NT&&C.nativePromise) NT={show:o=>C.nativePromise("NativeTabs","show",o),hide:()=>C.nativePromise("NativeTabs","hide",{}),select:o=>C.nativePromise("NativeTabs","select",o),badge:o=>C.nativePromise("NativeTabs","badge",o),
     addListener:(ev,cb)=>{ try{ C.nativeCallback("NativeTabs","addListener",{eventName:ev},d=>cb(d)); }catch(_){} return Promise.resolve({remove(){}}); }};
   if(!NT) return;
-  if(C.nativePromise&&!NT.menu) ["menu","haptic","topbar","theme"].forEach(m=>{ NT[m]=o=>C.nativePromise("NativeTabs",m,o||{}); });
+  if(C.nativePromise&&!NT.menu) ["menu","haptic","topbar","theme","sheet"].forEach(m=>{ NT[m]=o=>C.nativePromise("NativeTabs",m,o||{}); });
   window.__nt=NT;
   const TABS=[["accueil","Accueil","house.fill"],["hub","Foyer","person.2.fill"],["cocoony","Cocoony","sparkles"],["moi","Moi","person.crop.circle.fill"]];
   document.documentElement.classList.add("native-tabs");
-  let shown=false, sel=-1, bdg=null, tbSig="", thDark=null;
+  let shown=false, sel=-1, bdg=null, tbSig="", thDark=null, shOpen=false;
   /* l'icône de Cocoony (sa tête) pour l'onglet, en PNG */
   const cxIcon=()=>{ try{ const im=document.querySelector(".nav-cxi"); if(!im||!im.complete||!im.naturalWidth) return null; const c=document.createElement("canvas"); c.width=c.height=84; c.getContext("2d").drawImage(im,0,0,84,84); return c.toDataURL("image/png"); }catch(_){ return null; } };
   let cxSent=false;
@@ -6599,6 +6599,8 @@ setTab("accueil");
     if(!cxSent){ const ic=cxIcon(); if(ic){ cxSent=true; NT.show({items:TABS.map(t=>({title:t[1],icon:t[2],image:t[0]==="cocoony"?ic:null}))}).catch(()=>{}); sel=-1; } }
     /* thème clair / sombre de l'app → éléments natifs assortis */
     { const bg=getComputedStyle(document.body).backgroundColor.match(/\d+/g)||[255,255,255], dk=(+bg[0]*.3+ +bg[1]*.59+ +bg[2]*.11)<128; if(dk!==thDark){ thDark=dk; NT.theme({dark:dk}).catch(()=>{}); } }
+    /* feuille du bas ouverte (Nouvelle tâche…) : la barre d'onglets s'efface pour ne pas cacher son bas */
+    { const o=document.documentElement.classList.contains("prem-open")&&!document.querySelector(".prem-page.out"); if(o!==shOpen){ shOpen=o; if(NT.sheet) NT.sheet({open:o}).catch(()=>{}); } }
     /* barre du haut des rubriques */
     { const bar=document.querySelector(".view:not([hidden]) .hub-bar"), open=document.documentElement.classList.contains("prem-open");
       let sig="off", o={visible:false};
@@ -6609,7 +6611,7 @@ setTab("accueil");
   setInterval(sync,400); document.addEventListener("visibilitychange",sync);
   /* dès qu'une rubrique s'ouvre, la barre native suit (sans attendre le prochain tour de 400 ms),
      mais seulement une fois la page dessinée (2 images plus tard) : elles apparaissent ensemble */
-  let syncQ=false; new MutationObserver(()=>{ if(syncQ) return; syncQ=true; requestAnimationFrame(()=>requestAnimationFrame(()=>{ syncQ=false; sync(); })); }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["hidden"]}); })();
+  let syncQ=false; new MutationObserver(()=>{ if(syncQ) return; syncQ=true; requestAnimationFrame(()=>requestAnimationFrame(()=>{ syncQ=false; sync(); })); }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["hidden","class"]}); })();
 /* Ouvrir l'app depuis une notification : « #courses », « #agenda », « #ev=ID », et les boutons « C'est fait » / « Demain » (#t-done=ID, #t-later=ID) */
 /* ---------- Raccourcis : appui long sur Cocoony (site et iPhone), appui long sur l'icône de l'app (iPhone), raccourcis du manifeste (Android) ---------- */
 const RACC=[["tache","Nouvelle tâche","checkmark.circle","taches"],["courses","Ajouter aux courses","cart","courses"],["rdv","Un rendez-vous","calendar","agenda"],["repas","Prévoir un repas","fork.knife","repas"],["cocoony","Demander à Cocoony","sparkles",null]];

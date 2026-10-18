@@ -17,7 +17,8 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         CAPPluginMethod(name: "topbar", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "menu", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "haptic", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "theme", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "theme", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "sheet", returnType: CAPPluginReturnPromise)
     ]
     private var bar: UITabBar?
     private var top: UIView?
@@ -79,6 +80,17 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
     }
     @objc func hide(_ call: CAPPluginCall) {
         DispatchQueue.main.async { self.bar?.isHidden = true; call.resolve() }
+    }
+    // une feuille du bas est ouverte : la barre d'onglets descend sous l'écran (comme les feuilles d'iOS), puis remonte
+    @objc func sheet(_ call: CAPPluginCall) {
+        let open = call.getBool("open") ?? false
+        DispatchQueue.main.async {
+            guard let bar = self.bar else { call.resolve(); return }
+            UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState]) {
+                bar.transform = open ? CGAffineTransform(translationX: 0, y: bar.bounds.height + 40) : .identity
+            }
+            call.resolve()
+        }
     }
     @objc func select(_ call: CAPPluginCall) {
         let i = call.getInt("index") ?? 0
