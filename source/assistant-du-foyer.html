@@ -6184,28 +6184,7 @@ function resetForms(){ try{
   for(const id of ["tQaIn","pQaIn"]){ const i=$(id); if(i) i.value=""; }
   if(S.sel&&S.sel.size){ S.sel.clear(); try{ renderSelBar(); }catch(_){} }
 }catch(e){ console.warn(e); } }
-/* ---------- Changement de page façon iOS : la nouvelle page arrive de la droite, le retour la renvoie à droite ----------
-   On photographie la page actuelle (copie fixe), on change de page tout de suite (le code qui suit setTab reste synchrone),
-   puis la copie et la nouvelle page glissent ensemble. Pas d'animation entre les onglets du bas (comme sur iPhone). */
-const navDepth=t=>["accueil","hub","cocoony","moi"].includes(t)?0:["profil","fiche"].includes(t)?2:1;
-function navGhost(dir){ if(!dir||!S.booted) return null; try{ if(matchMedia("(prefers-reduced-motion: reduce)").matches) return null; }catch(_){}
-  document.querySelectorAll(".nav-ghost").forEach(g=>g.remove());
-  const w=document.querySelector(".wrap"); if(!w) return null; const c=w.cloneNode(true);
-  c.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id")); c.removeAttribute("id"); c.classList.add("nav-ghost"); c.setAttribute("aria-hidden","true");
-  c.style.cssText="position:fixed;left:0;right:0;margin:0 auto;top:"+(-scrollY)+"px;width:"+w.offsetWidth+"px;pointer-events:none;background:var(--bg);z-index:"+(dir==="pop"?26:4);
-  document.body.append(c); return {c,w}; }
-function navRun(dir,g){ const d=document.documentElement, E="cubic-bezier(.32,.72,0,1)", T=440, sh="-12px 0 32px rgba(0,0,0,.28)";
-  d.dataset.nav=dir; const ws=g.w.style; ws.position="relative"; ws.zIndex=dir==="push"?"5":"1"; ws.background="var(--bg)";
-  const end=()=>{ g.c.remove(); ws.boxShadow=""; ws.position=""; ws.zIndex=""; ws.background=""; delete d.dataset.nav; try{ window.__ntSync&&window.__ntSync(); }catch(_){} };
-  try{
-    if(dir==="push"){ g.c.animate([{transform:"none",filter:"none"},{transform:"translateX(-30%)",filter:"brightness(.82)"}],{duration:T,easing:E,fill:"forwards"});
-      g.w.style.boxShadow=sh; g.w.animate([{transform:"translateX(100%)"},{transform:"none"}],{duration:T,easing:E}).finished.then(end,end); }
-    else { g.c.style.boxShadow=sh; g.c.animate([{transform:"none"},{transform:"translateX(100%)"}],{duration:T,easing:E,fill:"forwards"});
-      g.w.animate([{transform:"translateX(-30%)",filter:"brightness(.82)"},{transform:"none",filter:"none"}],{duration:T,easing:E}).finished.then(end,end); }
-  }catch(_){ end(); } }
-function setTab(name){ const from=S.tab, a=navDepth(from), b=navDepth(name);
-  const g=navGhost(from&&from!==name&&a!==b?(b>a?"push":"pop"):null); setTabNow(name); if(g) navRun(b>a?"push":"pop",g); }
-function setTabNow(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; const prevTab=S.tab; if(prevTab&&prevTab!==name&&!["profil","fiche"].includes(name)&&!["profil","fiche"].includes(prevTab)) resetForms(); S.tab=name; if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["hub","foyer","documents","maison","courses","repas","agenda","budget","moi","cocoony"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({foyer:"hub",documents:"hub",maison:"hub",courses:"hub",repas:"hub",agenda:"hub",budget:"hub"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name); if(name==="agenda"&&prevTab!=="agenda") maybeAgSheet();
+function setTab(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; const prevTab=S.tab; if(prevTab&&prevTab!==name&&!["profil","fiche"].includes(name)&&!["profil","fiche"].includes(prevTab)) resetForms(); S.tab=name; if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["hub","foyer","documents","maison","courses","repas","agenda","budget","moi","cocoony"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({foyer:"hub",documents:"hub",maison:"hub",courses:"hub",repas:"hub",agenda:"hub",budget:"hub"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name); if(name==="agenda"&&prevTab!=="agenda") maybeAgSheet();
   if(prevTab&&prevTab!==name&&!document.querySelector(".wrap.arrive")){ const v=document.querySelector('.view[data-view="'+name+'"]'); if(v){ v.classList.remove("vin"); void v.offsetWidth; v.classList.add("vin"); clearTimeout(S._vinT); S._vinT=setTimeout(()=>v.classList.remove("vin"),320); } }
   { const vs=document.querySelector('.view[data-view="'+name+'"] .viewseg'); if(vs) segAnim(vs,"viewseg"); } if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  if(prevTab&&prevTab!==name) renderAllNow(); else renderAll(); }
 $("tabs").addEventListener("click",e=>{ const b=e.target.closest(".tab"); if(b&&b.dataset.tab){ const same=S.tab===b.dataset.tab; closeSheet(); setTab(b.dataset.tab); renderHeader(); if(same) window.scrollTo({top:0,behavior:"smooth"}); } });
@@ -6574,7 +6553,7 @@ setTab("accueil");
       /* feuilles du bas, panneaux (Apparence, notifications…), confirmations, recadrage photo */
       const o=(document.documentElement.classList.contains("prem-open")&&!document.querySelector(".prem-page.out"))||[...document.querySelectorAll(".sheet-bg,.np-bg,.crop-bg,.priv-bg,.cf-bg.on,.wl-bg.on")].some(vis); if(o!==shOpen){ shOpen=o; if(NT.sheet) NT.sheet({open:o}).catch(()=>{}); } }
     /* barre du haut des rubriques */
-    { const bar=document.querySelector(".view:not([hidden]) .hub-bar"), open=document.documentElement.classList.contains("prem-open")||!!document.documentElement.dataset.nav;
+    { const bar=document.querySelector(".view:not([hidden]) .hub-bar"), open=document.documentElement.classList.contains("prem-open");
       let sig="off", o={visible:false};
       const mb=!bar&&S.tab==="moi"&&S.moiSec?$("moiBack"):null;
       if(mb&&!open){ /* sous-menus de Moi : même barre native que les rubriques du foyer */
@@ -6585,7 +6564,6 @@ setTab("accueil");
         let y=0; for(let n=bar;n;n=n.offsetParent) y+=n.offsetTop; o={visible:true,title:t,back:!!bar.querySelector(".hub-back,.pg-back"),actions:acts,top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(bar.querySelector(".hb-title")||bar).color}; sig=JSON.stringify(o); }
       if(sig!==tbSig){ tbSig=sig; NT.topbar(o).catch(()=>{}); } } };
   /* filet de sécurité seulement : tout passe par la détection instantanée plus bas */
-  window.__ntSync=sync;
   setInterval(sync,5000); document.addEventListener("visibilitychange",sync);
   try{ matchMedia("(prefers-color-scheme: dark)").addEventListener("change",sync); }catch(_){}
   /* dès qu'une rubrique s'ouvre, la barre native suit tout de suite,
@@ -7100,8 +7078,7 @@ const SET_IC={
   user:'<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c.8-3.8 3.9-6 7.5-6s6.7 2.2 7.5 6"/>'
 };
 /* Onglet Moi : une page d'accueil (profil, Premium, tuiles « Mon espace », réglages) et des sous-pages */
-function moiOpen(sec){ const dir=sec&&!S.moiSec?"push":!sec&&S.moiSec?"pop":null, g=S.tab==="moi"?navGhost(dir):null;
-  S.moiSec=sec||null; renderMoiNav(); renderFab(); window.scrollTo({top:0,behavior:g?"instant":"smooth"}); if(g) navRun(dir,g); }
+function moiOpen(sec){ S.moiSec=sec||null; renderMoiNav(); renderFab(); window.scrollTo({top:0,behavior:"smooth"}); }
 function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'); if(!V) return; const me=meId(), m=meM(), sec=S.moiSec||null;
   const SUBS={perso:["mPersoSub","mDoneWrap"],confie:["mAssignSub"],vehic:["mCars"],notif:["cxNotif"],premium:["mPremium"],compte:["cxAccount"],reglages:["mReglages","mSettings"]};
   for(const id of ["cxNotif","cxAccount","mSettings","moiPrem"]){ const e=$(id); if(e) e.classList.add("ms-sub"); }
