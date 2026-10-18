@@ -261,9 +261,14 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
 
     // ---------- thème clair / sombre de l'app ----------
     @objc func theme(_ call: CAPPluginCall) {
-        let dark = call.getBool("dark") ?? false
+        let dark = call.getBool("dark") ?? false, bg = color(call.getString("bg"))
         DispatchQueue.main.async {
             self.bridge?.viewController?.overrideUserInterfaceStyle = dark ? .dark : .light
+            // fond visible quand on tire la page au-delà du haut ou du bas : celui de la page (sinon il restait sombre en thème clair)
+            if let c = bg, let wv = self.bridge?.webView {
+                wv.backgroundColor = c; wv.scrollView.backgroundColor = c; self.bridge?.viewController?.view.backgroundColor = c
+                if #available(iOS 15.0, *) { wv.underPageBackgroundColor = c }
+            }
             call.resolve()
         }
     }
