@@ -143,7 +143,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         let visible = call.getBool("visible") ?? false
         let title = call.getString("title") ?? "", back = call.getBool("back") ?? false
         let actions = (call.options["actions"] as? [[String: Any]]) ?? []
-        let offset = CGFloat(call.getDouble("top") ?? 6), tcol = color(call.getString("color"))
+        let dim = call.getBool("dim") ?? false, offset = CGFloat(call.getDouble("top") ?? 6), tcol = color(call.getString("color"))
         DispatchQueue.main.async {
             self.top?.removeFromSuperview(); self.top = nil; self.topScroll = nil
             guard visible, #available(iOS 15.0, *), let view = self.bridge?.viewController?.view else { call.resolve(); return }
@@ -187,6 +187,8 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
                 last = b
             }
             self.top = clip
+            // une fenêtre est ouverte par-dessus la page : la barre reste à sa place, atténuée et inactive (comme sous une feuille iOS)
+            if dim { clip.alpha = 0.3; clip.isUserInteractionEnabled = false }
             call.resolve()
         }
     }

@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="18/10 12:02";</script>
+<script>window.COCOON_BUILD="18/10 12:07";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3006,7 +3006,9 @@ html.native-tabs #tabs{display:none!important}
 /* app iPhone : la barre d'onglets d'iOS reste visible ; les fenêtres s'arrêtent au-dessus d'elle (≈ 82 pt depuis le bas) */
 html.native-tabs{--ntab:calc(env(safe-area-inset-bottom,0px) + 56px)}
 html.native-tabs .pp-in{padding-bottom:calc(var(--ntab) + 16px)}
-html.native-tabs .pal-panel{bottom:calc(var(--ntab) + 10px);max-height:calc(100vh - var(--ntab) - env(safe-area-inset-top,0px) - 24px)}
+/* les fenêtres s'arrêtent sous la barre du haut (qui reste visible, atténuée) */
+html.native-tabs .pp-sheet{max-height:calc(100% - env(safe-area-inset-top,0px) - 72px)}
+html.native-tabs .pal-panel{bottom:calc(var(--ntab) + 10px);max-height:calc(100vh - var(--ntab) - env(safe-area-inset-top,0px) - 76px)}
 html.native-tabs *{scrollbar-width:none}
 html.native-tabs *::-webkit-scrollbar{display:none}
 /* bandeau flouté sous l'heure et la batterie : le contenu qui défile ne passe plus dessous en clair */
@@ -3014,6 +3016,7 @@ html.native-tabs body::after{content:"";position:fixed;top:0;left:0;right:0;heig
 html.native-tabs .view .hub-bar{visibility:hidden}
 html.native-tabs .ms-back{visibility:hidden;min-height:44px}
 html.native-tabs .m-dash.is-sub{display:none}
+html.native-tabs .pk-back{display:none}
 html.native-tabs .rg-h,html.native-tabs #cxAccount>h3,html.native-tabs #cxNotif>h3{display:none}
 html.native-tabs .hub-mini{display:none!important}
 .ing-sheet{max-height:calc(100% - env(safe-area-inset-top,0px) - 34px)}
@@ -6646,7 +6649,8 @@ setTab("accueil");
   NT.addListener("select",e=>{ const t=TABS[e&&e.index]; if(!t) return; const b=document.querySelector('#tabs .tab[data-tab="'+t[0]+'"]'); if(b) b.click(); });
   /* barre du haut native : bulle retour, titre, boutons en verre */
   NT.addListener("topbar",e=>{ const id=e&&e.id, bar=document.querySelector(".view:not([hidden]) .hub-bar");
-    if(S.tab==="maison"&&S.mSec){ if(id==="back"){ mOpen(null); return; } if(id==="add"){ mAddIn(S.mSec); return; } } if(!bar){ if(id==="back"&&S.tab==="moi"&&S.moiSec) $("moiBack").click(); return; }
+    if(S.tab==="maison"&&S.mSec){ if(id==="back"){ mOpen(null); return; } if(id==="add"){ mAddIn(S.mSec); return; } }
+    if(S.tab==="documents"&&S.docCat&&id==="back"){ S.docCat=null; renderDocs(); window.scrollTo({top:0,behavior:"smooth"}); return; } if(!bar){ if(id==="back"&&S.tab==="moi"&&S.moiSec) $("moiBack").click(); return; }
     const el0=id==="back"?bar.querySelector(".hub-back,.pg-back"):id==="sync"?bar.querySelector(".hub-sync"):id==="add"?bar.querySelector(".hub-add"):null; if(el0) el0.click(); });
   const safeTop=()=>{ const p=document.createElement("div"); p.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top,0px)"; document.body.append(p); const h=p.offsetHeight; p.remove(); return h; };
   const sync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!document.getElementById("boot")&&!(document.getElementById("wizard")&&!$("wizard").hidden));
@@ -6665,7 +6669,7 @@ setTab("accueil");
       /* feuilles du bas, panneaux (Apparence, notifications…), confirmations, recadrage photo */
       const o=(document.documentElement.classList.contains("prem-open")&&!document.querySelector(".prem-page.out"))||[...document.querySelectorAll(".sheet-bg,.np-bg,.crop-bg,.priv-bg,.cf-bg.on,.wl-bg.on")].some(vis); if(o!==shOpen){ shOpen=o; if(NT.sheet) NT.sheet({open:o}).catch(()=>{}); } }
     /* barre du haut des rubriques */
-    { const bar=document.querySelector(".view:not([hidden]) .hub-bar"), open=document.documentElement.classList.contains("prem-open");
+    { const bar=document.querySelector(".view:not([hidden]) .hub-bar"), open=false;   /* fenêtre ouverte : la barre reste, atténuée (dim) */
       let sig="off", o={visible:false};
       const mb=!bar&&S.tab==="moi"&&S.moiSec?$("moiBack"):null;
       if(mb&&!open){ /* sous-menus de Moi : même barre native que les rubriques du foyer */
@@ -6674,9 +6678,13 @@ setTab("accueil");
       else if(bar&&!open&&S.tab==="maison"&&S.mSec){ /* sous-menu de Maison : un seul retour (vers Maison), son titre, + sauf Poubelles */
         const m=MSECS.find(x=>x[0]===S.mSec); let y=0; for(let n=bar;n;n=n.offsetParent) y+=n.offsetTop;
         o={visible:true,title:m?m[1]:"Maison",back:true,actions:S.mSec==="bins"?[]:[{id:"add",icon:"plus",prominent:true}],top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(bar.querySelector(".hb-title")||bar).color}; sig=JSON.stringify(o); }
+      else if(bar&&!open&&S.tab==="documents"&&S.docCat){ /* une catégorie de Papiers : retour vers les catégories, son nom en titre */
+        const c=catOf(S.docCat); let y=0; for(let n=bar;n;n=n.offsetParent) y+=n.offsetTop;
+        o={visible:true,title:(c&&c.nom)||"Papiers",back:true,actions:bar.querySelector(".hub-add")?[{id:"add",icon:"plus",prominent:true}]:[],top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(bar.querySelector(".hb-title")||bar).color}; sig=JSON.stringify(o); }
       else if(bar&&!open){ const t=(bar.querySelector(".hb-title")||{}).textContent||"", acts=[]; if(bar.querySelector(".hub-sync")) acts.push({id:"sync",icon:"calendar"}); if(bar.querySelector(".hub-add")) acts.push({id:"add",icon:"plus",prominent:true});
         /* position dans la page sans compter les animations d'arrivée (sinon la barre se replace une 2e fois) */
         let y=0; for(let n=bar;n;n=n.offsetParent) y+=n.offsetTop; o={visible:true,title:t,back:!!bar.querySelector(".hub-back,.pg-back"),actions:acts,top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(bar.querySelector(".hb-title")||bar).color}; sig=JSON.stringify(o); }
+      if(o.visible){ o.dim=shOpen; sig=JSON.stringify(o); }
       if(sig!==tbSig){ tbSig=sig; NT.topbar(o).catch(()=>{}); } } };
   /* filet de sécurité seulement : tout passe par la détection instantanée plus bas */
   setInterval(sync,5000); document.addEventListener("visibilitychange",sync);
@@ -7193,7 +7201,9 @@ const SET_IC={
   user:'<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c.8-3.8 3.9-6 7.5-6s6.7 2.2 7.5 6"/>'
 };
 /* Onglet Moi : une page d'accueil (profil, Premium, tuiles « Mon espace », réglages) et des sous-pages */
-function moiOpen(sec){ S.moiSec=sec||null; renderMoiNav(); renderFab(); window.scrollTo({top:0,behavior:"smooth"}); }
+/* sous-menus de Moi : un sous-menu ouvert depuis un autre (Notifications, Mon compte depuis Réglages) revient à celui-ci */
+function moiOpen(sec,back){ if(!back) S.moiParent=sec&&S.moiSec&&S.moiSec!==sec?S.moiSec:null; S.moiSec=sec||null; renderMoiNav(); renderFab(); window.scrollTo({top:0,behavior:"smooth"}); }
+function moiBackGo(){ const p=S.moiParent||null; S.moiParent=null; moiOpen(p,true); }
 function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'); if(!V) return; const me=meId(), m=meM(), sec=S.moiSec||null;
   const SUBS={perso:["mPersoSub","mDoneWrap"],confie:["mAssignSub"],vehic:["mCars"],notif:["cxNotif"],premium:["mPremium"],compte:["cxAccount"],reglages:["mReglages","mSettings"]};
   for(const id of ["cxNotif","cxAccount","mSettings","moiPrem"]){ const e=$(id); if(e) e.classList.add("ms-sub"); }
@@ -8597,7 +8607,7 @@ $("cForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||!n
   $("cNom").value="";
   try{ await addCourses(parts.map(parseArticle),{pour});
     toast(parts.length>1?parts.length+" articles ajoutés, rangés par rayon.":"Ajouté à la liste."); }catch(err){ writeErr(err); } });
-$("moiBack").addEventListener("click",()=>moiOpen(null));
+$("moiBack").addEventListener("click",moiBackGo);
 $("sgCourses").addEventListener("click",()=>{ closeSheet(); setTab("courses"); window.scrollTo({top:0}); setTimeout(()=>{ try{ $("cNom").focus(); }catch(_){} },80); });
 
 /* ---------- Repas de la semaine ---------- */
