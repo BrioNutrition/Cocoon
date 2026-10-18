@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="18/10 10:57";</script>
+<script>window.COCOON_BUILD="18/10 11:00";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -6637,8 +6637,10 @@ setTab("accueil");
     if(!cxSent){ const ic=cxIcon(); if(ic){ cxSent=true; NT.show({items:TABS.map(t=>({title:t[1],icon:t[2],image:t[0]==="cocoony"?ic:null}))}).catch(()=>{}); sel=-1; } }
     /* thème clair / sombre de l'app → éléments natifs assortis */
     { const bg=getComputedStyle(document.body).backgroundColor.match(/\d+/g)||[255,255,255], dk=(+bg[0]*.3+ +bg[1]*.59+ +bg[2]*.11)<128; if(dk!==thDark){ thDark=dk; NT.theme({dark:dk}).catch(()=>{}); } }
-    /* feuille du bas ouverte (Nouvelle tâche…) : la barre d'onglets s'efface pour ne pas cacher son bas */
-    { const o=document.documentElement.classList.contains("prem-open")&&!document.querySelector(".prem-page.out"); if(o!==shOpen){ shOpen=o; if(NT.sheet) NT.sheet({open:o}).catch(()=>{}); } }
+    /* une fenêtre est ouverte : la barre d'onglets s'efface pour ne pas cacher son bas, et la page derrière ne défile plus */
+    { const vis=e=>!e.hidden&&e.getClientRects().length>0&&getComputedStyle(e).display!=="none";
+      /* feuilles du bas, panneaux (Apparence, notifications…), confirmations, recadrage photo */
+      const o=(document.documentElement.classList.contains("prem-open")&&!document.querySelector(".prem-page.out"))||[...document.querySelectorAll(".sheet-bg,.np-bg,.crop-bg,.priv-bg,.cf-bg.on,.wl-bg.on")].some(vis); if(o!==shOpen){ shOpen=o; if(NT.sheet) NT.sheet({open:o}).catch(()=>{}); } }
     /* barre du haut des rubriques */
     { const bar=document.querySelector(".view:not([hidden]) .hub-bar"), open=document.documentElement.classList.contains("prem-open");
       let sig="off", o={visible:false};

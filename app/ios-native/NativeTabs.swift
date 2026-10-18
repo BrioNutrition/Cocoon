@@ -86,6 +86,8 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
     @objc func sheet(_ call: CAPPluginCall) {
         let open = call.getBool("open") ?? false
         DispatchQueue.main.async {
+            // la page derrière ne défile plus pendant qu'une fenêtre est ouverte (sinon le geste de fermeture la fait bouger)
+            self.bridge?.webView?.scrollView.isScrollEnabled = !open
             guard let bar = self.bar else { call.resolve(); return }
             UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState]) {
                 bar.transform = open ? CGAffineTransform(translationX: 0, y: bar.bounds.height + 40) : .identity
