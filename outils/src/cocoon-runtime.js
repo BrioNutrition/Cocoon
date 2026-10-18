@@ -317,9 +317,24 @@
     gate().show("mail2fa", { user: user, acc: acc });
     return false;
   }
+  /* App iPhone : proposer Face ID juste après la connexion, avant d'entrer (une fois ; réglable dans Moi › Réglages) */
+  async function faceIdOffer() {
+    var N = window.__nt, C = window.Capacitor;
+    try {
+      /* le pont natif est créé par la page : on l'attend un instant si on est dans l'app */
+      if (!N && C && C.isNativePlatform && C.isNativePlatform()) { for (var k = 0; k < 20 && !window.__nt; k++) await new Promise(function (r) { setTimeout(r, 100); }); N = window.__nt; }
+      if (!N || !N.faceid || !N.alert) return;
+      var st = await N.faceid({}); if (!st || !st.available || st.asked) return;
+      var lab = st.label || "Face ID";
+      var r = await N.alert({ title: "Ouvrir Cocoon avec " + lab + " ?", message: "Ton foyer reste protégé si quelqu'un prend ton téléphone. Tu pourras changer d'avis dans Moi › Réglages.",
+        actions: [{ id: "no", title: "Plus tard", style: "cancel" }, { id: "ok", title: "Activer", style: "default" }] });
+      await N.faceid({ enabled: !!(r && r.id === "ok"), asked: true });
+    } catch (_) {}
+  }
   async function afterLogin(user, acc) {
     if (!user) return;
     if (!mailReady(user, acc)) return;
+    await faceIdOffer();
     ME = user;
     var join = LS.get("cocoon.join");
     /* Un lien d'invitation ne fait plus entrer dans un foyer sans le demander */

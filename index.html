@@ -51,7 +51,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="18/10 11:38";</script>
+<script>window.COCOON_BUILD="18/10 11:40";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -6620,7 +6620,7 @@ setTab("accueil");
   window.__nt=NT;
   const TABS=[["accueil","Accueil","house.fill"],["hub","Foyer","person.2.fill"],["cocoony","Cocoony","sparkles"],["moi","Moi","person.crop.circle.fill"]];
   document.documentElement.classList.add("native-tabs");
-  let shown=false, sel=-1, bdg=null, tbSig="", thDark=null, shOpen=false, fidAsk=false;
+  let shown=false, sel=-1, bdg=null, tbSig="", thDark=null, shOpen=false;
   /* l'icône de Cocoony (sa tête) pour l'onglet, en PNG */
   const cxIcon=()=>{ try{ const im=document.querySelector(".nav-cxi"); if(!im||!im.complete||!im.naturalWidth) return null; const c=document.createElement("canvas"); c.width=c.height=84; c.getContext("2d").drawImage(im,0,0,84,84); return c.toDataURL("image/png"); }catch(_){ return null; } };
   let cxSent=false;
@@ -6634,10 +6634,6 @@ setTab("accueil");
   const sync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!document.getElementById("boot")&&!(document.getElementById("wizard")&&!$("wizard").hidden));
     if(vis!==shown){ shown=vis; (vis?NT.show({items:TABS.map(t=>({title:t[1],icon:t[2]}))}):NT.hide()).catch(()=>{}); sel=-1; bdg=null; }
     if(!vis) return;
-    /* une fois connecté : proposer Face ID (une seule fois, réglable ensuite dans Moi › Réglages) */
-    if(!fidAsk&&NT.faceid){ fidAsk=true; NT.faceid({}).then(st=>{ if(!st||!st.available||st.asked) return; const lab=st.label||"Face ID";
-      setTimeout(()=>{ const na=nativeAlert({title:"Ouvrir Cocoon avec "+lab+" ?",message:"Ton foyer reste protégé si quelqu'un prend ton téléphone. Tu pourras changer d'avis dans Moi › Réglages.",actions:[{id:"no",title:"Plus tard",style:"cancel"},{id:"ok",title:"Activer",style:"default"}]});
-        if(na) na.then(r=>{ NT.faceid({enabled:r.id==="ok",asked:true}).catch(()=>{}); if(r.id==="ok") toast(lab+" activé."); }); },1200); }).catch(()=>{}); }
     /* une fiche ouverte depuis l'accueil (ou Moi) reste sous cet onglet */
     const cur=S.tab==="profil"&&S.prevTab?S.prevTab:S.tab;
     const i=Math.max(0,TABS.findIndex(t=>t[0]===(cur==="cocoony"?"cocoony":["accueil","moi"].includes(cur)?cur:"hub")));
