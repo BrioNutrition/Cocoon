@@ -3664,8 +3664,8 @@ function renderHeader(){
       ht.classList.remove("fy-tap"); if(window.cocoonHost&&cocoonHost.foyers&&!S.fyCache&&!S.fyFetch){ S.fyFetch=1; cocoonHost.foyers().then(l=>{ if(l) S.fyCache=l; }).catch(()=>{}).finally(()=>{ S.fyFetch=0; }); } ht.onclick=null; } else { ht.classList.remove("fy-tap"); ht.onclick=null; } }
   /* le bonjour du moment, puis le bilan du jour */
   { const me0=meId(), hh=$("homeHello"), hs=$("homeSub"), h=new Date().getHours();
-    if(me0&&!S.readOnly){ const nm=(membre(me0).nom||"").split(" ")[0], g=h<5?["Bonsoir","moon"]:h<12?["Bonjour","sun"]:h<18?["Bonjour","sun"]:["Bonsoir","moon"];
-      hh.textContent=g[0]+(nm?" "+nm:""); hh.append(uic(g[1],true)); hh.hidden=false;
+    if(me0&&!S.readOnly){ const nm=(membre(me0).nom||"").split(" ")[0], g=[h<5||h>=18?"Bonsoir":"Bonjour"];
+      hh.textContent=g[0]+(nm?" "+nm+",":""); hh.hidden=false;
       hs.hidden=true; }
     else { hh.hidden=true; hs.hidden=true; } }
   const me=meId(), box=$("members"); box.innerHTML="";

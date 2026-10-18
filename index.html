@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="18/10 02:36";</script>
+<script>window.COCOON_BUILD="18/10 02:43";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3757,8 +3757,8 @@ function renderHeader(){
       ht.classList.remove("fy-tap"); if(window.cocoonHost&&cocoonHost.foyers&&!S.fyCache&&!S.fyFetch){ S.fyFetch=1; cocoonHost.foyers().then(l=>{ if(l) S.fyCache=l; }).catch(()=>{}).finally(()=>{ S.fyFetch=0; }); } ht.onclick=null; } else { ht.classList.remove("fy-tap"); ht.onclick=null; } }
   /* le bonjour du moment, puis le bilan du jour */
   { const me0=meId(), hh=$("homeHello"), hs=$("homeSub"), h=new Date().getHours();
-    if(me0&&!S.readOnly){ const nm=(membre(me0).nom||"").split(" ")[0], g=h<5?["Bonsoir","moon"]:h<12?["Bonjour","sun"]:h<18?["Bonjour","sun"]:["Bonsoir","moon"];
-      hh.textContent=g[0]+(nm?" "+nm:""); hh.append(uic(g[1],true)); hh.hidden=false;
+    if(me0&&!S.readOnly){ const nm=(membre(me0).nom||"").split(" ")[0], g=[h<5||h>=18?"Bonsoir":"Bonjour"];
+      hh.textContent=g[0]+(nm?" "+nm+",":""); hh.hidden=false;
       hs.hidden=true; }
     else { hh.hidden=true; hs.hidden=true; } }
   const me=meId(), box=$("members"); box.innerHTML="";
