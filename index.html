@@ -50,7 +50,7 @@ html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: li
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="18/10 02:04";</script>
+<script>window.COCOON_BUILD="18/10 02:07";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2200,7 +2200,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .wk-leg i.late{background:#FF7A5C;opacity:1}
 .c-live.c-sum{flex-direction:row;align-items:center;gap:12px;padding:13px 14px}
 .c-live.c-sum .cl-t b{font-size:19px;font-family:var(--f-display);font-weight:800}
-.c-live.c-sum .cl-go{background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB);color:#1C1B2E;border:0;border-radius:999px;padding:10px 14px;font-size:14px;box-shadow:none}
+.c-live.c-sum .cl-go{align-self:center;background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB);color:#1C1B2E;border:0;border-radius:999px;padding:10px 14px;font-size:14px;box-shadow:none}
 .c-hab{display:flex;flex-wrap:wrap;gap:7px;margin-top:-4px}
 .c-hab[hidden]{display:none}
 .c-hb{border:0;background:var(--surface);box-shadow:0 1px 0 var(--shadow);border-radius:999px;padding:7px 12px 7px 10px;font:inherit;font-size:13.5px;font-weight:700;color:var(--ink);display:inline-flex;align-items:center;gap:4px;cursor:pointer;transition:transform .15s ease,opacity .25s ease}
@@ -4012,7 +4012,7 @@ function pwCard(m){ const D=pfData(m), id=D.id, pet=D.pet, can=D.can, keys=D.key
 function pfFill(F,m,o){ o=o||{}; const D=pfData(m), id=D.id, pet=D.pet, can=D.can, keys=D.keys, rest=D.rest, nb=D.nb, t0=iso(today()); F.innerHTML="";
   const secT=(t,link)=>el("div",{class:"pf-sec"},el("span",{text:t}),link||"");
   const rowsCard=list=>{ const c=el("div",{class:"pf-card"}); for(const x of list) c.append(x); return c; };
-  const infoRow=x=>{ const tel=pfIsTel(x.v); const r=el(tel?"a":"button",tel?{class:"pf-r",href:telHref(x.v)}:{type:"button",class:"pf-r",onclick:async()=>{ try{ await navigator.clipboard.writeText(x.v); toast("« "+esc(x.v)+" » copié."); }catch(_){ toast(esc(x.l)+" : "+esc(x.v)); } }},
+  const infoRow=x=>{ const tel=pfIsTel(x.v); const r=el(tel?"a":x.nocopy?"div":"button",tel?{class:"pf-r",href:telHref(x.v)}:x.nocopy?{class:"pf-r"}:{type:"button",class:"pf-r",onclick:async()=>{ try{ await navigator.clipboard.writeText(x.v); toast("« "+esc(x.v)+" » copié."); }catch(_){ toast(esc(x.l)+" : "+esc(x.v)); } }},
       el("i",{"aria-hidden":"true",text:pfIcon(x.l)}),el("span",{class:"pf-l",text:x.l}),el("b",{text:x.v}),x.p?el("span",{class:"pf-lk",title:"Visible par toi seulement",text:"🔒"}):""); return r; };
   // papiers (humains)
   if(!pet){ const docs=S.docs.filter(d=>d.pour===id).sort((a,b)=>(a.expire||"9999")<(b.expire||"9999")?-1:1);
@@ -4025,7 +4025,7 @@ function pfFill(F,m,o){ o=o||{}; const D=pfData(m), id=D.id, pet=D.pet, can=D.ca
   // infos pratiques
   const restRows=rest.map(infoRow);
   if(!pet&&m.naissance&&!keys.length) {} 
-  if(!pet&&m.naissance) restRows.unshift(infoRow({l:"Anniversaire",v:JOURY.format(parse(m.naissance))}));
+  if(!pet&&m.naissance) restRows.unshift(infoRow({l:"Anniversaire",v:JOURY.format(parse(m.naissance)),nocopy:true}));
   if(restRows.length||can){ F.append(secT(pet?"Infos":"Infos pratiques",can?el("button",{type:"button",class:"pf-link",text:"Modifier",onclick:()=>openEditor(id)}):null));
     if(restRows.length) F.append(rowsCard(restRows)); else F.append(el("button",{type:"button",class:"pf-empty",text:pet?"+ Véto, croquettes, assurance, qui le garde…":"+ Médecin, allergies, mutuelle, école…",onclick:()=>openEditor(id)})); }
   // bientôt (humains)

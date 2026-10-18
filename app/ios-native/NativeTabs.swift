@@ -241,6 +241,8 @@ class MainViewController: CAPBridgeViewController {
         // pas de barre de défilement à droite (comme une app native)
         webView?.scrollView.showsVerticalScrollIndicator = false
         webView?.scrollView.showsHorizontalScrollIndicator = false
+        // la page rebondit en haut et en bas même quand elle est plus courte que l'écran
+        webView?.scrollView.alwaysBounceVertical = true
     }
 }
 
