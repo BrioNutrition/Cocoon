@@ -158,7 +158,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         let title = call.getString("title") ?? "", back = call.getBool("back") ?? false
         let actions = (call.options["actions"] as? [[String: Any]]) ?? []
         let dim = call.getBool("dim") ?? false, offset = CGFloat(call.getDouble("top") ?? 6), tcol = color(call.getString("color"))
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { UIView.performWithoutAnimation {   // apparaît d'un coup, sans hériter d'une animation en cours
             self.top?.removeFromSuperview(); self.top = nil; self.topScroll = nil
             guard visible, #available(iOS 15.0, *), let view = self.bridge?.viewController?.view else { call.resolve(); return }
             let zoom = self.bridge?.webView?.pageZoom ?? 1   // la page est zoomée (taille du texte) : px de la page → points
@@ -203,8 +203,9 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
             self.top = clip
             // une fenêtre est ouverte par-dessus la page : la barre reste à sa place, atténuée et inactive (comme sous une feuille iOS)
             if dim { clip.alpha = 0.3; clip.isUserInteractionEnabled = false }
+            view.layoutIfNeeded()
             call.resolve()
-        }
+        } }
     }
 
     // ---------- menus natifs (feuille d'actions) ----------
