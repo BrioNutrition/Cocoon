@@ -84,6 +84,8 @@
       "#cxGate .cx-msg.err{background:#FFE3DD;color:#8A2A16}",
       "#cxGate .cx-msg[hidden]{display:none}",
       "#cxGate .cx-inv{font-size:14px;padding:10px 12px;border-radius:12px;background:#E5F6EC;color:#1E5B38}",
+      "#cxGate .cx-fid{display:flex;align-items:center;justify-content:center;gap:10px;width:100%}#cxGate .cx-fid svg{width:22px;height:22px;flex:none}",
+      "#cxGate .cx-or{display:flex;align-items:center;gap:10px;color:#6A6886;font-size:13px}#cxGate .cx-or::before,#cxGate .cx-or::after{content:'';flex:1;height:1px;background:#E3E0F0}",
       (function () {
         var R = [
           ["", "background:#13121C;color:#EDEBF7"],
@@ -97,6 +99,8 @@
           [" .cx-msg", "background:#3A3020;color:#FFE3A0"],
           [" .cx-msg.err", "background:#3D2226;color:#FFB3A6"],
           [" .cx-inv", "background:#1F3A2A;color:#BFE8CD"],
+          [" .cx-or", "color:#A3A0BE"],
+          [" .cx-or::before, .cx-or::after", "background:#3A3852"],
           [" .cx-logo", "box-shadow:0 10px 30px rgba(0,0,0,.45)"]
         ];
         function blk(p) { return R.map(function (r) { return r[0].split(",").map(function (x) { return p + " #cxGate" + (x.trim() ? " " + x.trim() : ""); }).join(",") + "{" + r[1] + "}"; }).join(""); }
@@ -138,6 +142,7 @@
           var f = card.querySelector("form");
           if (extra) msg(extra.t, extra.err);
           if (extra && extra.email) f.email.value = extra.email;
+          if (!sign) faceIdButton(f);
           f.addEventListener("submit", async function (e) {
             e.preventDefault();
             var b = f.querySelector(".cx-btn"), em = f.email.value.trim(), pw = f.pw.value;
@@ -149,8 +154,8 @@
                 if (r.error) throw r.error;
                 if (!r.data.session) { G.show("code", { email: em, type: "signup" }); return; }
               } else {
-                FRESH = true; var r2 = await sb.auth.signInWithPassword({ email: em, password: pw });
-                if (r2.error) { FRESH = false; throw r2.error; }
+                var r2 = await sb.auth.signInWithPassword({ email: em, password: pw });
+                if (r2.error) throw r2.error;
               }
             } catch (err) {
               /* Supabase répond pareil pour une adresse inconnue et un mauvais mot de passe : on demande à la base si l'adresse existe
@@ -314,8 +319,20 @@
     if (/fetch|network/i.test(m)) return "Pas de connexion internet.";
     return m || "Une erreur est survenue.";
   }
-  async function logout() { try { if (ME) LS.del(DEV2FA + ME.id); } catch (_) {}
- try { await Promise.race([PUSH.disable(), new Promise(function (r) { setTimeout(r, 2500); })]); } catch (_) {} LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer"); try { await SBP; await sb.auth.signOut(); } catch (_) {} authStore.removeItem("cocoon.auth"); location.reload(); }
+  async function logout() {
+    try { await Promise.race([PUSH.disable(), new Promise(function (r) { setTimeout(r, 2500); })]); } catch (_) {}
+    LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer");
+    /* « Se connecter avec Face ID » activé : la session reste ouverte côté serveur et son jeton part dans le trousseau
+       (lisible seulement après Face ID) ; sinon déconnexion complète */
+    var quick = false;
+    try {
+      var N = await natif(), st = N && N.faceidKey ? await N.faceid({}) : null;
+      if (st && st.enabled) { await SBP; sb.auth.stopAutoRefresh(); var s = await sb.auth.getSession(), t = s.data && s.data.session && s.data.session.refresh_token;
+        if (t) { var w = await N.faceidKey({ set: t }); quick = !!(w && w.ok); } }
+    } catch (_) {}
+    if (!quick) { try { if (ME) LS.del(DEV2FA + ME.id); } catch (_) {} try { await SBP; await sb.auth.signOut(); } catch (_) {} }
+    authStore.removeItem("cocoon.auth"); location.reload();
+  }
 
   /* =================== Session & foyer =================== */
   /* Double authentification : code par e-mail tant que cet appareil n'a pas été vérifié (oublié à la déconnexion) */
@@ -325,36 +342,59 @@
     gate().show("mail2fa", { user: user, acc: acc });
     return false;
   }
-  /* App iPhone : Face ID à la connexion (après « Se connecter » seulement, pas à chaque ouverture).
-     Proposé la première fois ; ensuite demandé à chaque connexion s'il est activé (Moi › Réglages). */
-  var FRESH = false;
-  async function faceIdStep() {
-    var N = window.__nt, C = window.Capacitor;
+  /* App iPhone : « Se connecter avec Face ID ». Proposé une seule fois, dans une alerte iOS, une fois entré dans l'app
+     (réglable ensuite dans Moi › Réglages). Après une déconnexion, l'écran de connexion montre un bouton Face ID. */
+  async function natif() {
+    var C = window.Capacitor;
+    /* le pont natif est créé par la page : on l'attend un instant si on est dans l'app */
+    if (!window.__nt && C && C.isNativePlatform && C.isNativePlatform()) for (var k = 0; k < 20 && !window.__nt; k++) await new Promise(function (r) { setTimeout(r, 100); });
+    var N = window.__nt; return N && N.faceid ? N : null;
+  }
+  var FACE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M9 9v1.5M15 9v1.5M12 9v4h-1M9.5 16c1.4 1 3.6 1 5 0"/></svg>';
+  async function faceIdButton(f) {
     try {
-      /* le pont natif est créé par la page : on l'attend un instant si on est dans l'app */
-      if (!N && C && C.isNativePlatform && C.isNativePlatform()) { for (var k = 0; k < 20 && !window.__nt; k++) await new Promise(function (r) { setTimeout(r, 100); }); N = window.__nt; }
-      if (!N || !N.faceid || !N.faceidCheck || !N.alert) return true;
-      var st = await N.faceid({}); if (!st || !st.available) return true;
-      var lab = st.label || "Face ID";
-      if (!st.asked) {
-        var r = await N.alert({ title: "Utiliser " + lab + " à la connexion ?", message: "Après ton mot de passe, " + lab + " confirmera que c'est bien toi. Tu pourras changer d'avis dans Moi › Réglages.",
-          actions: [{ id: "no", title: "Plus tard", style: "cancel" }, { id: "ok", title: "Activer", style: "default" }] });
-        var on = !!(r && r.id === "ok"); st = await N.faceid({ enabled: on, asked: true }); if (!on) return true;
-      }
-      if (!st.enabled) return true;
-      for (;;) {
-        var c = await N.faceidCheck({ reason: "Confirme que c'est bien toi pour ouvrir Cocoon" });
-        if (c && c.ok) return true;
-        var r2 = await N.alert({ title: lab + " n'a pas abouti", message: "Pour ouvrir Cocoon, confirme que c'est bien toi.",
-          actions: [{ id: "out", title: "Se déconnecter", style: "destructive" }, { id: "again", title: "Réessayer", style: "cancel" }] });
-        if (!r2 || r2.id !== "again") { logout(); return false; }
-      }
-    } catch (_) { return true; }
+      var N = await natif(); if (!N || !N.faceidKey) return;
+      var st = await N.faceid({}); if (!st || !st.enabled || !st.hasKey || G.mode !== "login" || !f.isConnected) return;
+      var say = function (t, err) { var m = f.querySelector(".cx-msg"); if (!m) return; m.hidden = !t; m.textContent = t || ""; m.className = "cx-msg" + (err ? " err" : ""); };
+      var lab = st.label || "Face ID", b = document.createElement("button"), or = document.createElement("div");
+      b.type = "button"; b.className = "cx-btn cx-fid"; b.innerHTML = FACE + "<span>Se connecter avec " + lab + "</span>";
+      or.className = "cx-or"; or.textContent = "ou avec ton mot de passe";
+      f.parentNode.insertBefore(b, f); f.parentNode.insertBefore(or, f);
+      b.addEventListener("click", async function () {
+        b.disabled = true; say("");
+        try {
+          var k = await N.faceidKey({ get: true, reason: "Connecte-toi à Cocoon" });
+          if (!k || !k.value) return;
+          await SBP; LS.set("cocoon.keep", "1");
+          var r = await sb.auth.refreshSession({ refresh_token: k.value });
+          if (r.error || !r.data || !r.data.session) {
+            if (r.error && isNetErr(r.error)) { say("Pas de connexion internet.", true); return; }
+            await N.faceidKey({ del: true }); b.remove(); or.remove();
+            say("La connexion avec " + lab + " a expiré : connecte-toi avec ton mot de passe, " + lab + " sera de nouveau prêt à la prochaine déconnexion.", true); return;
+          }
+          /* le jeton vient d'être utilisé (Supabase en donne un nouveau) : on efface l'ancien du trousseau */
+          await N.faceidKey({ del: true });
+          G.show("wait"); if (!started) afterLogin(r.data.session.user);
+        } catch (e) { say(frErr(e), true); }
+        finally { b.disabled = false; }
+      });
+    } catch (_) {}
+  }
+  async function faceIdOffer() {
+    try {
+      var N = await natif(); if (!N || !N.alert || !N.faceidCheck) return;
+      var st = await N.faceid({}); if (!st || !st.available || st.asked || !/Face|Touch/.test(st.label || "")) return;
+      var lab = st.label;
+      var r = await N.alert({ title: "Se connecter avec " + lab + " ?", message: "Si tu te déconnectes, un regard suffira pour revenir, sans ton mot de passe. Tu pourras changer d'avis dans Moi › Réglages.",
+        actions: [{ id: "no", title: "Pas maintenant", style: "cancel" }, { id: "ok", title: "Activer", style: "default" }] });
+      var on = false;
+      if (r && r.id === "ok") { var c = await N.faceidCheck({ reason: "Active la connexion avec " + lab }); on = !!(c && c.ok); }
+      await N.faceid({ enabled: on, asked: true });
+    } catch (_) {}
   }
   async function afterLogin(user, acc) {
     if (!user) return;
     if (!mailReady(user, acc)) return;
-    if (FRESH) { FRESH = false; if (!(await faceIdStep())) return; }
     ME = user;
     var join = LS.get("cocoon.join");
     /* Un lien d'invitation ne fait plus entrer dans un foyer sans le demander */
@@ -384,7 +424,7 @@
     gate().hide();
     var top = function () { try { window.scrollTo({ top: 0, left: 0, behavior: "instant" }); } catch (_) { window.scrollTo(0, 0); } };
     top(); requestAnimationFrame(function () { top(); requestAnimationFrame(top); }); setTimeout(top, 400);
-    if (!started) { started = true; startRealtime(); liveResolve(); readyResolve(); saveSnapSoon(); IS_LIVE = true; run(); }
+    if (!started) { started = true; startRealtime(); liveResolve(); readyResolve(); saveSnapSoon(); IS_LIVE = true; run(); setTimeout(faceIdOffer, 1500); }
     if (LS.get("cocoon.setpw")) gate().show("newpw", { t: "Bienvenue ! Choisis un mot de passe pour te reconnecter plus tard." });
   }
   /* Charge tout le foyer en une seule requête (au lieu d'une par rubrique) */
@@ -778,6 +818,7 @@
       try { await Promise.race([PUSH.disable(), new Promise(function (ok) { setTimeout(ok, 2500); })]); } catch (_) {}
       ["cocoon.snap", "cocoon.outbox", "cocoon.foyer", "cocoon.theme", "cocoon.palette", "cocoon.bootSeen"].forEach(function (k) { LS.del(k); });
       try { await sb.auth.signOut(); } catch (_) {}
+      try { var N = await natif(); if (N && N.faceidKey) await N.faceidKey({ del: true }); } catch (_) {}
       authStore.removeItem("cocoon.auth");
       return { foyerSupprime: alone };
     },

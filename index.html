@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="21/10 22:58";</script>
+<script>window.COCOON_BUILD="21/10 23:58";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -6636,7 +6636,7 @@ setTab("accueil");
   if(!NT&&C.nativePromise) NT={show:o=>C.nativePromise("NativeTabs","show",o),hide:()=>C.nativePromise("NativeTabs","hide",{}),select:o=>C.nativePromise("NativeTabs","select",o),badge:o=>C.nativePromise("NativeTabs","badge",o),
     addListener:(ev,cb)=>{ try{ C.nativeCallback("NativeTabs","addListener",{eventName:ev},d=>cb(d)); }catch(_){} return Promise.resolve({remove(){}}); }};
   if(!NT) return;
-  if(C.nativePromise&&!NT.menu) ["menu","haptic","topbar","theme","sheet","alert","faceid"].forEach(m=>{ NT[m]=o=>C.nativePromise("NativeTabs",m,o||{}); });
+  if(C.nativePromise&&!NT.menu) ["menu","haptic","topbar","theme","sheet","alert","faceid","faceidCheck","faceidKey"].forEach(m=>{ NT[m]=o=>C.nativePromise("NativeTabs",m,o||{}); });
   window.__nt=NT;
   const TABS=[["accueil","Accueil","house.fill"],["hub","Foyer","person.2.fill"],["cocoony","Cocoony","sparkles"],["moi","Moi","person.crop.circle.fill"]];
   document.documentElement.classList.add("native-tabs");
@@ -7230,10 +7230,11 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
   const rrow=(e,c,t,sub,fn)=>el("button",{type:"button",class:"set-row",onclick:fn},ico(e,c),el("span",{class:"t"},el("b",{text:t}),el("small",{text:sub})));
   const box=el("div",{class:"settings"});
   box.append(rrow("🎨","#FF9C80","Apparence","Thème clair ou sombre, couleurs, Cocoony",()=>openPalette()));
-  /* Face ID à la connexion (app iPhone) : au choix */
+  /* Se connecter avec Face ID (app iPhone) : au choix ; l'activer demande Face ID une fois */
   if(window.__nt&&window.__nt.faceid){ const fr=rrow("🔐","#8FB8FF","Face ID","…",()=>{}); box.append(fr);
-    const upd=st=>{ const lab=st.label||"Face ID"; fr.querySelector("b").textContent=lab+" à la connexion"; fr.querySelector("small").textContent=st.enabled?"Activé : demandé quand tu te connectes":"Désactivé";
-      fr.onclick=()=>{ window.__nt.faceid({enabled:!st.enabled,asked:true}).then(n=>{ upd(n); toast(lab+(n.enabled?" activé.":" désactivé.")); }).catch(()=>{}); }; };
+    const upd=st=>{ const lab=st.label||"Face ID"; fr.querySelector("b").textContent="Se connecter avec "+lab; fr.querySelector("small").textContent=st.enabled?"Activé : après une déconnexion, un regard suffit pour revenir":"Désactivé";
+      fr.onclick=async()=>{ if(!st.enabled){ const c=await window.__nt.faceidCheck({reason:"Active la connexion avec "+lab}).catch(()=>null); if(!c||!c.ok) return; }
+        window.__nt.faceid({enabled:!st.enabled,asked:true}).then(n=>{ upd(n); toast(lab+(n.enabled?" activé.":" désactivé.")); }).catch(()=>{}); }; };
     window.__nt.faceid({}).then(st=>{ if(!st||!st.available){ fr.remove(); return; } upd(st); }).catch(()=>fr.remove()); }
   if(window.cocoonHost&&$("cxNotif")) box.append(rrow("🔔","#E79ADB","Notifications","Rappels sur ton téléphone",()=>moiOpen("notif")));
   box.append(rrow("✨","#FFC94A","Cocoon Premium",(S.prefs&&S.prefs.premiumInteret)?"Tu seras prévenu·e du lancement":"Papiers en photo, secrétaire intelligent, et plus",()=>openPremium()));

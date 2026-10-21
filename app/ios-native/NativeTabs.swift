@@ -7,8 +7,9 @@ import LocalAuthentication
 // jaune Cocoon ; un peu plus soutenu en thème clair pour rester lisible
 let cocoonYellow = UIColor { t in t.userInterfaceStyle == .dark ? UIColor(red: 1.0, green: 0.788, blue: 0.29, alpha: 1) : UIColor(red: 0.90, green: 0.62, blue: 0.0, alpha: 1) }
 
-// réglage « Face ID à la connexion » (choix de l'utilisateur, mémorisé sur le téléphone)
-enum CocoonLockKeys { static let enabled = "cocoon.faceid"; static let asked = "cocoon.faceidAsked" }
+// « Se connecter avec Face ID » (choix de l'utilisateur, mémorisé sur le téléphone) ; le jeton de reconnexion
+// est gardé dans le trousseau d'iOS, lisible seulement après Face ID (ou le code de l'iPhone)
+enum CocoonLockKeys { static let enabled = "cocoon.faceid"; static let asked = "cocoon.faceidAsked"; static let service = "fr.cocoon.app.faceid" }
 
 @objc(NativeTabsPlugin)
 public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
@@ -26,7 +27,8 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         CAPPluginMethod(name: "sheet", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "alert", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "faceid", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "faceidCheck", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "faceidCheck", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "faceidKey", returnType: CAPPluginReturnPromise)
     ]
     private var bar: UITabBar?
     private var top: UIView?
@@ -252,15 +254,47 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
             ctx.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: call.getString("reason") ?? "Confirme que c'est bien toi") { ok, _ in call.resolve(["ok": ok]) }
         }
     }
-    // ---------- Face ID à la connexion : au choix de l'utilisateur ({enabled?, asked?} → état) ----------
+    // ---------- Se connecter avec Face ID : au choix de l'utilisateur ({enabled?, asked?} → état) ----------
     @objc func faceid(_ call: CAPPluginCall) {
         let d = UserDefaults.standard
-        if let e = call.getBool("enabled") { d.set(e, forKey: CocoonLockKeys.enabled) }
+        if let e = call.getBool("enabled") { d.set(e, forKey: CocoonLockKeys.enabled); if !e { keyDelete() } }
         if let a = call.getBool("asked") { d.set(a, forKey: CocoonLockKeys.asked) }
         let ctx = LAContext(), bio = ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
         let any = LAContext().canEvaluatePolicy(.deviceOwnerAuthentication, error: nil)
         let label = bio && ctx.biometryType == .faceID ? "Face ID" : bio && ctx.biometryType == .touchID ? "Touch ID" : "Code de l'iPhone"
-        call.resolve(["enabled": d.bool(forKey: CocoonLockKeys.enabled), "asked": d.bool(forKey: CocoonLockKeys.asked), "available": any, "label": label])
+        call.resolve(["enabled": d.bool(forKey: CocoonLockKeys.enabled), "asked": d.bool(forKey: CocoonLockKeys.asked), "available": any, "label": label, "hasKey": keyExists()])
+    }
+    // ---------- jeton de reconnexion dans le trousseau : {set: "…"} | {get: true, reason} → {value} | {del: true} ----------
+    @objc func faceidKey(_ call: CAPPluginCall) {
+        if call.getBool("del") == true { keyDelete(); call.resolve(); return }
+        if let v = call.getString("set") {
+            keyDelete()
+            guard let ac = SecAccessControlCreateWithFlags(nil, kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly, .userPresence, nil) else { call.resolve(["ok": false]); return }
+            let q: [String: Any] = [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: CocoonLockKeys.service,
+                                    kSecAttrAccessControl as String: ac, kSecValueData as String: Data(v.utf8)]
+            call.resolve(["ok": SecItemAdd(q as CFDictionary, nil) == errSecSuccess]); return
+        }
+        // lecture : iOS affiche Face ID ; on reste hors du fil principal pendant l'attente
+        let reason = call.getString("reason") ?? "Connecte-toi à Cocoon"
+        DispatchQueue.global(qos: .userInitiated).async {
+            let ctx = LAContext(); ctx.localizedCancelTitle = "Annuler"; ctx.localizedReason = reason
+            let q: [String: Any] = [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: CocoonLockKeys.service,
+                                    kSecReturnData as String: true, kSecUseAuthenticationContext as String: ctx]
+            var out: CFTypeRef?
+            let st = SecItemCopyMatching(q as CFDictionary, &out)
+            if st == errSecSuccess, let d = out as? Data, let v = String(data: d, encoding: .utf8) { call.resolve(["value": v]) }
+            else { call.resolve(["cancel": st == errSecUserCanceled]) }
+        }
+    }
+    private func keyDelete() {
+        SecItemDelete([kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: CocoonLockKeys.service] as CFDictionary)
+    }
+    private func keyExists() -> Bool {
+        // sans afficher Face ID : « interaction refusée » veut dire que l'élément est là
+        let ctx = LAContext(); ctx.interactionNotAllowed = true
+        let q: [String: Any] = [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: CocoonLockKeys.service, kSecUseAuthenticationContext as String: ctx]
+        let st = SecItemCopyMatching(q as CFDictionary, nil)
+        return st == errSecSuccess || st == errSecInteractionNotAllowed
     }
 
     // ---------- vibrations ----------
