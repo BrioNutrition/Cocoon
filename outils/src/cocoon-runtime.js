@@ -63,7 +63,7 @@
     if (G) return G;
     var css = document.createElement("style");
     css.textContent = [
-      "#cxGate{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;padding:24px 18px;background:#F6F5FB;color:#1C1B2E;font-family:Fredoka,system-ui,-apple-system,sans-serif;overflow:auto}",
+      "#cxGate{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;padding:24px 18px;background:#F6F5FB;color:#1C1B2E;font-family:'Bricolage Grotesque','Avenir Next',system-ui,-apple-system,sans-serif;overflow:auto}",
       "#cxGate[hidden]{display:none!important}",
       "#cxGate .cx-card{width:min(400px,100%);display:grid;gap:14px;text-align:center}",
       "#cxGate .cx-logo{width:84px;height:84px;margin:0 auto 2px;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,120,.18)}",
