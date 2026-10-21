@@ -4323,14 +4323,14 @@ function renderDocs(){
   const icon=(c,cls)=>{ const x=el("span",{class:cls,style:"--bc:"+c.c}); if(c.perso){ x.classList.add("perso"); x.textContent=c.nom.charAt(0).toUpperCase(); } else x.innerHTML=GI(c.id==="voitures"?"voiture":c.id); return x; };
   if(S.docCat){ // une catégorie ouverte
     const c=catOf(S.docCat), ds=sortDocs(groups[S.docCat]);
-    G0.append(el("div",{class:"pk-head",style:"--bc:"+c.c},el("button",{type:"button",class:"pk-back","aria-label":"Retour aux catégories",text:"‹",onclick:()=>{ S.docCat=null; renderDocs(); window.scrollTo({top:0,behavior:"smooth"}); }}),icon(c,"pk-ic"),el("b",{text:c.nom}),el("span",{text:ds.length+" papier"+(ds.length>1?"s":"")})));
+    G0.append(el("div",{class:"pk-head",style:"--bc:"+c.c},el("button",{type:"button",class:"pk-back","aria-label":"Retour aux catégories",text:"‹",onclick:()=>{ S.docCat=null; renderDocs(); window.scrollTo(0,0); }}),icon(c,"pk-ic"),el("b",{text:c.nom}),el("span",{text:ds.length+" papier"+(ds.length>1?"s":"")})));
     for(const d of ds) G0.append(docRow(d,showWho,true)); return; }
   if(!pool.length){ G0.append(el("div",{class:"bd-none",text:"Aucun papier pour "+(S.docWho===me?"toi":ownerName(S.docWho))+" pour l'instant."})); return; }
   const urg=ds=>{ const e=ds.filter(d=>d.expire).map(d=>daysTo(d.expire)); return e.length?Math.min(...e):9999; };
   const order=Object.keys(groups).sort((a,b)=>{ const ua=urg(groups[a])<=90?urg(groups[a]):9999, ub=urg(groups[b])<=90?urg(groups[b]):9999; return ua-ub||groups[b].length-groups[a].length; });
   const grid=el("div",{class:"pap-tiles"});
   for(const cid of order){ const c=catOf(cid), ds=groups[cid], lt=ds.filter(d=>d.expire&&daysTo(d.expire)<0).length, u=urg(ds);
-    const t=el("button",{type:"button",class:"pk",style:"--bc:"+c.c,"aria-label":c.nom+", "+ds.length+" papier"+(ds.length>1?"s":""),onclick:()=>{ S.docCat=cid; renderDocs(); window.scrollTo({top:0,behavior:"smooth"}); }},el("i",{class:"pk-tab","aria-hidden":"true"}),el("i",{class:"pk-face","aria-hidden":"true"}),icon(c,"pk-ic"),el("b",{text:c.nom}),el("span",{text:ds.length+" papier"+(ds.length>1?"s":"")}));
+    const t=el("button",{type:"button",class:"pk",style:"--bc:"+c.c,"aria-label":c.nom+", "+ds.length+" papier"+(ds.length>1?"s":""),onclick:()=>{ S.docCat=cid; renderDocs(); window.scrollTo(0,0); }},el("i",{class:"pk-tab","aria-hidden":"true"}),el("i",{class:"pk-face","aria-hidden":"true"}),icon(c,"pk-ic"),el("b",{text:c.nom}),el("span",{text:ds.length+" papier"+(ds.length>1?"s":"")}));
     if(lt) t.append(el("em",{text:lt+" expiré"+(lt>1?"s":"")})); else if(u<=90) t.append(el("em",{class:u<=30?"":"soon",text:u<=60?u+" j":Math.round(u/30)+" mois"}));
     grid.append(t); }
   G0.append(grid);
@@ -5763,9 +5763,9 @@ function renderMaison(){
 }
 /* Maison : tableau de bord (ce qui compte cette semaine + 4 tuiles qui s'ouvrent) */
 const MSECS=[["bins","Poubelles","#7FD39A","poubelle"],["contacts","Contacts","#8FB8FF","tel"],["equip","Équipements","#FF9C80","entretien"],["meters","Compteurs","#FFC94A","eclair"]];
-function mOpen(sec){ S.mSec=sec||null; renderMaison(); window.scrollTo({top:0,behavior:"smooth"}); }
+function mOpen(sec){ S.mSec=sec||null; renderMaison(); window.scrollTo(0,0); }
 /* le + d'un sous-menu de Maison ajoute directement ce qu'il contient */
-function mAddIn(sec){ if(sec==="contacts"){ S.ctForm={role:"",nom:"",tel:"",note:"",c:"#C9C7DD"}; renderMaison(); window.scrollTo({top:0,behavior:"smooth"}); setTimeout(()=>{ const x=$("ctRole"); if(x) x.focus(); },200); }
+function mAddIn(sec){ if(sec==="contacts"){ S.ctForm={role:"",nom:"",tel:"",note:"",c:"#C9C7DD"}; renderMaison(); window.scrollTo(0,0); setTimeout(()=>{ const x=$("ctRole"); if(x) x.focus(); },200); }
   else if(sec==="equip") openMForm("equip"); else if(sec==="meters") openMForm("releve",{compteur:"elec"}); }
 function meterLast(){ const rs=(S.releves||[]).slice().sort((a,b)=>a.date<b.date?1:-1); return rs[0]||null; }
 function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; const sec=S.mSec||null, me=meId(), t0=iso(today());
@@ -6555,7 +6555,7 @@ setTab("accueil");
   /* barre du haut native : bulle retour, titre, boutons en verre */
   NT.addListener("topbar",e=>{ const id=e&&e.id, bar=document.querySelector(".view:not([hidden]) .hub-bar");
     if(S.tab==="maison"&&S.mSec){ if(id==="back"){ mOpen(null); return; } if(id==="add"){ mAddIn(S.mSec); return; } }
-    if(S.tab==="documents"&&S.docCat&&id==="back"){ S.docCat=null; renderDocs(); window.scrollTo({top:0,behavior:"smooth"}); return; } if(!bar){ if(id==="back"&&S.tab==="moi"&&S.moiSec) $("moiBack").click(); return; }
+    if(S.tab==="documents"&&S.docCat&&id==="back"){ S.docCat=null; renderDocs(); window.scrollTo(0,0); return; } if(!bar){ if(id==="back"&&S.tab==="moi"&&S.moiSec) $("moiBack").click(); return; }
     const el0=id==="back"?bar.querySelector(".hub-back,.pg-back"):id==="sync"?bar.querySelector(".hub-sync"):id==="add"?bar.querySelector(".hub-add"):null; if(el0) el0.click(); });
   const safeTop=()=>{ const p=document.createElement("div"); p.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top,0px)"; document.body.append(p); const h=p.offsetHeight; p.remove(); return h; };
   const sync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!(document.getElementById("boot")&&!document.getElementById("boot")._done)&&!window.__tabsHold&&!(document.getElementById("wizard")&&!$("wizard").hidden));
@@ -7248,8 +7248,8 @@ function fabAct(v0,anchor){ const me=meId(), v=v0||S.tab;
   if(v==="foyer"){ openTaskSheet(); return; }
   if(v==="maison"){ const M=$("addMenu"); if(!M.hidden){ M.hidden=true; return; } M.innerHTML="";
     const it=(ic,t,fn)=>M.append(el("button",{type:"button",role:"menuitem",onclick:()=>{ M.hidden=true; fn(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),t));
-    it("poubelle","Une poubelle",()=>{ S.mSec="bins"; renderMaison(); window.scrollTo({top:0,behavior:"smooth"}); });
-    it("tel","Un contact",()=>{ S.mSec="contacts"; S.ctForm={role:"",nom:"",tel:"",note:"",c:"#C9C7DD"}; renderMaison(); window.scrollTo({top:0,behavior:"smooth"}); setTimeout(()=>{ const x=$("ctRole"); if(x) x.focus(); },200); });
+    it("poubelle","Une poubelle",()=>{ S.mSec="bins"; renderMaison(); window.scrollTo(0,0); });
+    it("tel","Un contact",()=>{ S.mSec="contacts"; S.ctForm={role:"",nom:"",tel:"",note:"",c:"#C9C7DD"}; renderMaison(); window.scrollTo(0,0); setTimeout(()=>{ const x=$("ctRole"); if(x) x.focus(); },200); });
     it("entretien","Un équipement",()=>openMForm("equip"));
     it("eclair","Un relevé de compteur",()=>openMForm("releve",{compteur:"elec"}));
     if(nativeizeMenu(M,"Ajouter à la maison")) return;
