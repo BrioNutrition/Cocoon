@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 00:09";</script>
+<script>window.COCOON_BUILD="22/10 00:27";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -9239,10 +9239,14 @@ function bootCheck(){
   /* lancements suivants : on part dès que c'est prêt (1 s mini, le temps que le logo s'installe) ;
      les petits points n'apparaissent qu'à 2,2 s, et s'ils sont là on attend la fin de leur vague */
   if(ready&&fontsOk&&!window.__bootReady) window.__bootReady=Math.round(t);
-  const quick=b.classList.contains("quick"), minT=quick?(t<2200?1000:2500+1100*Math.max(1,Math.ceil((t-2500)/1100))):2400;
+  const quick=b.classList.contains("quick");
   /* on attend que les premiers dessins de l'accueil soient finis : sinon le logo saccade pendant son envol */
   const calm=performance.now()-(S.lastRender||0)>180||t>3000;
-  if(!ready||!fontsOk||t<minT||!calm){ setTimeout(bootCheck,40); return; }
+  if(!ready||!fontsOk||!calm){ setTimeout(bootCheck,40); return; }
+  /* fin de la vague de points en cours, calculée une seule fois quand tout est prêt
+     (recalculée à chaque passage, elle restait toujours dans le futur : l'écran ne partait jamais, par ex. après l'écran de connexion) */
+  if(b._minT==null) b._minT=quick?(t<2200?1000:2500+1100*Math.max(1,Math.ceil((t-2500)/1100))):2400;
+  if(t<b._minT){ setTimeout(bootCheck,40); return; }
   /* les petits points encore « en attente » (lancement rapide) bloquaient l'affichage de l'accueil pendant l'envol du logo */
   if(quick){ S.bootQuick=true; b.querySelectorAll(".bt-dots,.bt-dots i").forEach(e=>{ e.style.animation="none"; }); b.classList.remove("quick"); }
   S.booted=true; try{ localStorage.setItem("cocoon.bootSeen","1"); }catch(_){}

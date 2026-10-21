@@ -328,7 +328,7 @@
     function within(p, ms) { return Promise.race([p, new Promise(function (r) { setTimeout(function () { r(null); }, ms); })]); }
     var quick = false;
     try {
-      var N = await within(natif(), 2500), st = N && N.faceidKey ? await within(N.faceid({}), 2000) : null;
+      var N = (await within(natif(), 2500)) ? window.__nt : null, st = N && N.faceidKey ? await within(N.faceid({}), 2000) : null;
       if (st && st.enabled) {
         /* le jeton est lu directement dans le stockage, sans passer par supabase-js */
         var raw = authStore.getItem("cocoon.auth"), t = null; try { var o = JSON.parse(raw || "null"); t = o && (o.refresh_token || (o.currentSession && o.currentSession.refresh_token)); } catch (_) {}
@@ -356,12 +356,14 @@
     var C = window.Capacitor;
     /* le pont natif est créé par la page : on l'attend un instant si on est dans l'app */
     if (!window.__nt && C && C.isNativePlatform && C.isNativePlatform()) for (var k = 0; k < 20 && !window.__nt; k++) await new Promise(function (r) { setTimeout(r, 100); });
-    var N = window.__nt; return N && N.faceid ? N : null;
+    /* on renvoie vrai/faux et pas le module lui-même : une fonction async qui renvoie un module Capacitor
+       fait chercher « .then » au module, ce qui part vers iOS (« not implemented ») et ne répond jamais */
+    return !!(window.__nt && window.__nt.faceid);
   }
   var FACE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M9 9v1.5M15 9v1.5M12 9v4h-1M9.5 16c1.4 1 3.6 1 5 0"/></svg>';
   async function faceIdButton(f) {
     try {
-      var N = await natif(); if (!N || !N.faceidKey) return;
+      if (!(await natif())) return; var N = window.__nt; if (!N.faceidKey) return;
       var st = await N.faceid({}); if (!st || !st.enabled || !st.hasKey || G.mode !== "login" || !f.isConnected) return;
       var say = function (t, err) { var m = f.querySelector(".cx-msg"); if (!m) return; m.hidden = !t; m.textContent = t || ""; m.className = "cx-msg" + (err ? " err" : ""); };
       var lab = st.label || "Face ID", b = document.createElement("button"), or = document.createElement("div");
@@ -390,7 +392,7 @@
   }
   async function faceIdOffer() {
     try {
-      var N = await natif(); if (!N || !N.alert || !N.faceidCheck) return;
+      if (!(await natif())) return; var N = window.__nt; if (!N.alert || !N.faceidCheck) return;
       var st = await N.faceid({}); if (!st || !st.available || st.asked || !/Face|Touch/.test(st.label || "")) return;
       var lab = st.label;
       var r = await N.alert({ title: "Se connecter avec " + lab + " ?", message: "Si tu te déconnectes, un regard suffira pour revenir, sans ton mot de passe. Tu pourras changer d'avis dans Moi › Réglages.",
@@ -826,7 +828,7 @@
       try { await Promise.race([PUSH.disable(), new Promise(function (ok) { setTimeout(ok, 2500); })]); } catch (_) {}
       ["cocoon.snap", "cocoon.outbox", "cocoon.foyer", "cocoon.theme", "cocoon.palette", "cocoon.bootSeen"].forEach(function (k) { LS.del(k); });
       try { await sb.auth.signOut(); } catch (_) {}
-      try { var N = await natif(); if (N && N.faceidKey) await N.faceidKey({ del: true }); } catch (_) {}
+      try { if (await natif() && window.__nt.faceidKey) await window.__nt.faceidKey({ del: true }); } catch (_) {}
       authStore.removeItem("cocoon.auth");
       return { foyerSupprime: alone };
     },
