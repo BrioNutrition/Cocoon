@@ -137,6 +137,7 @@
             '<p class="cx-legal">' + (sign ? "En créant un compte, tu acceptes les " : "") + '<button class="cx-link cx-priv" type="button" data-terms="1">' + (sign ? "conditions d'utilisation" : "Conditions d'utilisation") + '</button>' + (sign ? " et la " : " · ") + '<button class="cx-link cx-priv" type="button" data-priv="1">' + (sign ? "politique de confidentialité" : "Confidentialité") + "</button>" + (sign ? "." : "") + "</p>";
           var f = card.querySelector("form");
           if (extra) msg(extra.t, extra.err);
+          if (extra && extra.email) f.email.value = extra.email;
           f.addEventListener("submit", async function (e) {
             e.preventDefault();
             var b = f.querySelector(".cx-btn"), em = f.email.value.trim(), pw = f.pw.value;
@@ -151,7 +152,13 @@
                 FRESH = true; var r2 = await sb.auth.signInWithPassword({ email: em, password: pw });
                 if (r2.error) { FRESH = false; throw r2.error; }
               }
-            } catch (err) { msg(frErr(err), true); }
+            } catch (err) {
+              /* Supabase répond pareil pour une adresse inconnue et un mauvais mot de passe : on demande à la base si l'adresse existe
+                 (fonction cocoon_email_exists de supabase/connexion.sql ; si elle n'est pas installée, on garde le message habituel) */
+              var none = false;
+              if (!sign && /Invalid login/i.test(String(err && err.message))) { try { var ex = await sb.rpc("cocoon_email_exists", { e: em }); none = !ex.error && ex.data === false; } catch (_) {} }
+              msg(none ? "Aucun compte avec cette adresse e-mail : crée d'abord ton compte avec « Créer un compte »." : frErr(err), true);
+            }
             finally { b.disabled = false; }
           });
           bindGo();
@@ -165,7 +172,7 @@
           card.innerHTML = head("Mot de passe oublié", "On t'envoie un code par e-mail pour en choisir un nouveau, sans quitter l'app.") +
             '<form><label>E-mail<input type="email" name="email" autocomplete="email" required></label><div class="cx-msg" hidden></div><button class="cx-btn" type="submit">Recevoir le code</button></form>' +
             '<button class="cx-link" type="button" data-go="login">Retour</button>';
-          var f2 = card.querySelector("form");
+          var f2 = card.querySelector("form"); if (extra && extra.email) f2.email.value = extra.email;
           f2.addEventListener("submit", async function (e) {
             e.preventDefault(); var b = f2.querySelector("button"); b.disabled = true;
             var em2 = f2.email.value.trim(); await SBP; var r = await sb.auth.resetPasswordForEmail(em2, { redirectTo: location.origin + location.pathname });
@@ -288,7 +295,10 @@
     card.addEventListener("click", function (e) { var b = e.target.closest && e.target.closest(".cx-eye"); if (!b) return; e.preventDefault(); if (Date.now() - eyeT < 600) return; eyeToggle(b); });
     try { new MutationObserver(function () { addEyes(); }).observe(card, { childList: true, subtree: true }); } catch (_) {}
     var _show = G.show; G.show = function () { var r = _show.apply(G, arguments); try { addEyes(); } catch (_) {} return r; };
-    function bindGo() { card.querySelectorAll("[data-go]").forEach(function (b) { b.addEventListener("click", function () { G.show(b.getAttribute("data-go")); }); });
+    function bindGo() { card.querySelectorAll("[data-go]").forEach(function (b) { b.addEventListener("click", function () {
+        /* l'adresse déjà tapée suit d'un écran à l'autre (connexion ↔ création de compte ↔ mot de passe oublié) */
+        var go = b.getAttribute("data-go"), i = card.querySelector("input[name=email]"), v = i && i.value.trim();
+        G.show(go, v && /^(login|signup|forgot)$/.test(go) ? { email: v } : undefined); }); });
       card.querySelectorAll("[data-priv]").forEach(function (b) { b.addEventListener("click", function () { if (typeof window.openPrivacy === "function") window.openPrivacy(); }); });
       card.querySelectorAll("[data-terms]").forEach(function (b) { b.addEventListener("click", function () { if (typeof window.openTerms === "function") window.openTerms(); }); }); }
     return G;
