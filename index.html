@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 00:43";</script>
+<script>window.COCOON_BUILD="22/10 00:48";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -7236,11 +7236,14 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
   const box=el("div",{class:"settings"});
   box.append(rrow("🎨","#FF9C80","Apparence","Thème clair ou sombre, couleurs, Cocoony",()=>openPalette()));
   /* Se connecter avec Face ID (app iPhone) : au choix ; l'activer demande Face ID une fois */
-  if(window.__nt&&window.__nt.faceid){ const fr=rrow("🔐","#8FB8FF","Face ID","…",()=>{}); box.append(fr);
-    const upd=st=>{ const lab=st.label||"Face ID"; fr.querySelector("b").textContent="Se connecter avec "+lab; fr.querySelector("small").textContent=st.enabled?"Activé : après une déconnexion, un regard suffit pour revenir":"Désactivé";
+  /* l'état est gardé en mémoire (S.faceSt) : la ligne est dessinée tout de suite avec son vrai texte, sinon elle changeait
+     de hauteur un instant après l'ouverture de Réglages (texte d'attente, puis réponse d'iOS) */
+  if(window.__nt&&window.__nt.faceid&&!(S.faceSt&&!S.faceSt.available)){ const fr=rrow("🔐","#8FB8FF","Se connecter avec Face ID","Désactivé",()=>{}); box.append(fr);
+    const upd=st=>{ S.faceSt=st; const lab=st.label||"Face ID"; fr.querySelector("b").textContent="Se connecter avec "+lab; fr.querySelector("small").textContent=st.enabled?"Activé : un regard suffit pour revenir":"Désactivé";
       fr.onclick=async()=>{ if(!st.enabled){ const c=await window.__nt.faceidCheck({reason:"Active la connexion avec "+lab}).catch(()=>null); if(!c||!c.ok) return; }
         window.__nt.faceid({enabled:!st.enabled,asked:true}).then(n=>{ upd(n); toast(lab+(n.enabled?" activé.":" désactivé.")); }).catch(()=>{}); }; };
-    window.__nt.faceid({}).then(st=>{ if(!st||!st.available){ fr.remove(); return; } upd(st); }).catch(()=>fr.remove()); }
+    if(S.faceSt) upd(S.faceSt);
+    window.__nt.faceid({}).then(st=>{ if(!st||!st.available){ S.faceSt={available:false}; fr.remove(); return; } if(JSON.stringify(st)!==JSON.stringify(S.faceSt)) upd(st); }).catch(()=>fr.remove()); }
   if(window.cocoonHost&&$("cxNotif")) box.append(rrow("🔔","#E79ADB","Notifications","Rappels sur ton téléphone",()=>moiOpen("notif")));
   box.append(rrow("✨","#FFC94A","Cocoon Premium",(S.prefs&&S.prefs.premiumInteret)?"Tu seras prévenu·e du lancement":"Papiers en photo, secrétaire intelligent, et plus",()=>openPremium()));
   RG.append(el("h2",{class:"rg-h",text:"Réglages"}),el("div",{class:"ms-gl",text:"Préférences"}),box); }
