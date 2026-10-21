@@ -337,6 +337,8 @@
       }
     } catch (_) {}
     if (!quick) { try { if (ME) LS.del(DEV2FA + ME.id); } catch (_) {} try { await within(SBP.then(function () { return sb.auth.signOut(); }), 3000); } catch (_) {} }
+    /* les barres natives (onglets, barre du haut) n'appartiennent pas à la page : on les retire avant de recharger */
+    try { var N2 = window.__nt; if (N2) await within(Promise.all([N2.hide ? N2.hide() : null, N2.topbar ? N2.topbar({ visible: false }) : null]), 1000); } catch (_) {}
     authStore.removeItem("cocoon.auth"); location.reload();
   }
 
