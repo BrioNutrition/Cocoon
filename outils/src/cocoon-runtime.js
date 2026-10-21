@@ -324,13 +324,19 @@
     LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer");
     /* « Se connecter avec Face ID » activé : la session reste ouverte côté serveur et son jeton part dans le trousseau
        (lisible seulement après Face ID) ; sinon déconnexion complète */
+    /* chaque étape a un délai maximal : la déconnexion ne doit jamais rester bloquée (pont natif ou verrou de supabase-js) */
+    function within(p, ms) { return Promise.race([p, new Promise(function (r) { setTimeout(function () { r(null); }, ms); })]); }
     var quick = false;
     try {
-      var N = await natif(), st = N && N.faceidKey ? await N.faceid({}) : null;
-      if (st && st.enabled) { await SBP; sb.auth.stopAutoRefresh(); var s = await sb.auth.getSession(), t = s.data && s.data.session && s.data.session.refresh_token;
-        if (t) { var w = await N.faceidKey({ set: t }); quick = !!(w && w.ok); } }
+      var N = await within(natif(), 2500), st = N && N.faceidKey ? await within(N.faceid({}), 2000) : null;
+      if (st && st.enabled) {
+        /* le jeton est lu directement dans le stockage, sans passer par supabase-js */
+        var raw = authStore.getItem("cocoon.auth"), t = null; try { var o = JSON.parse(raw || "null"); t = o && (o.refresh_token || (o.currentSession && o.currentSession.refresh_token)); } catch (_) {}
+        try { if (sb) sb.auth.stopAutoRefresh(); } catch (_) {}
+        if (t) { var w = await within(N.faceidKey({ set: t }), 2500); quick = !!(w && w.ok); }
+      }
     } catch (_) {}
-    if (!quick) { try { if (ME) LS.del(DEV2FA + ME.id); } catch (_) {} try { await SBP; await sb.auth.signOut(); } catch (_) {} }
+    if (!quick) { try { if (ME) LS.del(DEV2FA + ME.id); } catch (_) {} try { await within(SBP.then(function () { return sb.auth.signOut(); }), 3000); } catch (_) {} }
     authStore.removeItem("cocoon.auth"); location.reload();
   }
 
