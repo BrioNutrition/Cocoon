@@ -7107,7 +7107,7 @@ const SET_IC={
 };
 /* Onglet Moi : une page d'accueil (profil, Premium, tuiles « Mon espace », réglages) et des sous-pages */
 /* sous-menus de Moi : un sous-menu ouvert depuis un autre (Notifications, Mon compte depuis Réglages) revient à celui-ci */
-function moiOpen(sec,back){ if(!back) S.moiParent=sec&&S.moiSec&&S.moiSec!==sec?S.moiSec:null; S.moiSec=sec||null; renderMoiNav(); renderFab(); window.scrollTo({top:0,behavior:"smooth"}); }
+function moiOpen(sec,back){ if(!back) S.moiParent=sec&&S.moiSec&&S.moiSec!==sec?S.moiSec:null; S.moiSec=sec||null; renderMoiNav(); renderFab(); window.scrollTo(0,0); /* directement en haut, sans défilement animé */ }
 function moiBackGo(){ const p=S.moiParent||null; S.moiParent=null; moiOpen(p,true); }
 function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'); if(!V) return; const me=meId(), m=meM(), sec=S.moiSec||null;
   const SUBS={perso:["mPersoSub","mDoneWrap"],confie:["mAssignSub"],vehic:["mCars"],notif:["cxNotif"],premium:["mPremium"],compte:["cxAccount"],reglages:["mReglages","mSettings"]};
