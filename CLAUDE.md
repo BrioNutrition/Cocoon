@@ -10,7 +10,8 @@ Propriétaire : Angel (francophone : **toujours répondre en français**). Site 
 - `supabase/functions/` : fonctions Edge (`cocoon-push`, `cocoon-invite`, `cocoon-agenda`). Angel les redéploie lui-même.
 - `app/` : coquille iPhone Capacitor 7 (`fr.cocoon.app`) + module natif `app/ios-native/NativeTabs.swift`. Guide : `app/XCODE.md`.
 - Artefacts claude.ai : app https://claude.ai/artifact/Xu9LzXYTYJVDHX4aZPyFkN (publier `source/assistant-du-foyer.html`),
-  démo https://claude.ai/artifact/7tebDVh9kopPojpP9pDoVe (publier la démo générée, **jamais la modifier à la main**).
+  démo https://claude.ai/artifact/7tebDVh9kopPojpP9pDoVe (publier la démo générée, **jamais la modifier à la main**),
+  présentation https://claude.ai/artifact/Cr1ix44a4Z9B2GrJnPkX4k (publier `presentation/contenu.html` avec ses images `img/…`).
 
 ## Procédure à chaque modification
 1. Modifier `source/assistant-du-foyer.html` (correctifs en Python qui vérifient le nombre de remplacements ; pas de réécriture complète).
