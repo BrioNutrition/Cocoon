@@ -108,7 +108,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
 - À faire côté Angel : redéployer `cocoon-push`, coller les modèles d'e-mail, vérifier OTP à 6 chiffres, brancher Brevo (codeEmail).
 - Fenêtre ou feuille du bas ouverte → `html.nav-off` (`navOffNow`/`navOffWatch`) : la barre d'onglets descend hors de l'écran (sans fondu,
-  l'inverse de son arrivée) et remonte à la fermeture ; iPhone : `NT.hide` glisse vers le bas (`slidOut` dans NativeTabs.swift).
+  l'inverse de son arrivée) **en même temps** que la fenêtre monte (0,32 s, `navOffNow` immédiat → `window.__ntSync`) et remonte à la
+  fermeture ; iPhone : `NT.hide` glisse vers le bas (`slidOut` dans NativeTabs.swift).
   Après une modif de `app/ios-native/NativeTabs.swift` : sur le Mac `npm run native:ios` puis ▶︎ (le mode auto le signale).
 - Images instantanées à l'ouverture : photo de Cocoony gardée dans `cocoon.secid` (posée par un petit script avant le gros script),
   miniatures 192 px des photos de profil dans `cocoon.thumbs` (`THUMBS`, `makeThumb`, utilisées par `avatarFor`) ; effacées à la déconnexion.

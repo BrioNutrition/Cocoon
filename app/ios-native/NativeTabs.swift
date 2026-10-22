@@ -109,7 +109,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
             guard let bar = self.bar, !bar.isHidden else { call.resolve(); return }
             // une fenêtre s'ouvre : la barre descend hors de l'écran (l'inverse de son arrivée), sans fondu
             self.slidOut = true
-            UIView.animate(withDuration: 0.28, delay: 0, options: [.curveEaseIn, .beginFromCurrentState]) {
+            UIView.animate(withDuration: 0.32, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState]) {
                 bar.transform = CGAffineTransform(translationX: 0, y: bar.bounds.height + 20)
             } completion: { _ in if self.slidOut { bar.isHidden = true; bar.transform = .identity } }
             call.resolve()
