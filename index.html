@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 10:37";</script>
+<script>window.COCOON_BUILD="22/10 10:59";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3103,6 +3103,12 @@ html.native-tabs .hub-mini{display:none!important}
 .r-qi{margin:0 -16px;padding:0 16px 2px}
 .r-qi button{background:var(--surface);box-shadow:0 1px 0 var(--shadow)}
 .r-sheet .r-ed{background:none;padding:0}
+.r-hrow{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:16px;padding:8px 10px 8px 8px;box-shadow:0 1px 0 var(--shadow)}
+.r-hrow b{flex:1;font-size:15px}
+.r-hrow input,.r-hr input{font:inherit;font-weight:700;font-size:16px;border:2px solid var(--line);border-radius:12px;padding:6px 10px;background:var(--bg);color:var(--ink);min-height:44px}
+.r-hrs{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
+.r-hr{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.r-hr input:disabled{opacity:.6}
 .r-sheet .r-edh b{font-size:17px}
 .r-sheet .r-ideas button{background:var(--sunk)}
 :root[data-theme="dark"] .r-cell.r-big:not(.e) .r-be{background:rgba(255,255,255,.1)}
@@ -4519,7 +4525,7 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
   const MS={matin:[8*60,"Petit-déj","#E9A86B"],midi:[12*60+30,"Déjeuner","#6FA8DC"],soir:[19*60+30,"Dîner","#E0B21C"]};
   for(const sl of ["matin","midi","soir"]){ const m=(S.repas||[]).find(r=>r.date===t0&&r.slot===sl&&r.plat); if(!m) continue; const c=nm(m.cuisine), v=nm(m.vaisselle), bits=[];
     if(c) bits.push(c==="toi"?"tu cuisines":c+" cuisine"); if(v) bits.push(v==="toi"?"tu fais la vaisselle":v+" fait la vaisselle");
-    ev.push({m:MS[sl][0],h:hl(MS[sl][0]),t:m.plat,s:MS[sl][1]+(bits.length?" · "+bits.join(" · "):""),c:MS[sl][2],end:MS[sl][0]+60,fn:go("repas")}); }
+    const mn=Math.round(hNum(repasH(sl,m))*60); ev.push({m:mn,h:hl(mn),t:m.plat,s:MS[sl][1]+(bits.length?" · "+bits.join(" · "):""),c:MS[sl][2],end:mn+60,fn:go("repas")}); }
   for(const b of (S.bins||[])){ const nx=binNext(b,parse(t0)); if(!nx||iso(nx.sortie)!==t0) continue; const wh=binWho(b), m=b.veille?19*60+30:7*60+30;
     ev.push({m,h:hl(m),t:"Sortir "+b.nom.toLowerCase().replace(/^ordures ménagères$/,"les ordures ménagères"),s:wh.label,c:"#7FD39A",end:m+90,fn:()=>{ S.mSec="bins"; go("maison")(); }}); }
   ev.sort((a,b)=>a.m-b.m);
@@ -7405,7 +7411,7 @@ function openMemberSheet(id){ const m=membre(id); if(!m) return; const me=meId()
 /* Bouton « Ajouter » propre à chaque rubrique (remplace le + central) */
 function nextFreeMeal(){ const t=today(), h=new Date().getHours(), slots=repasSlots();
   for(let k=0;k<14;k++){ const d=iso(new Date(t.getFullYear(),t.getMonth(),t.getDate()+k));
-    for(const sl of ["matin","midi","soir"]){ if(!slots.includes(sl)) continue; if(k===0&&((sl==="matin"&&h>=10)||(sl==="midi"&&h>=14)||(sl==="soir"&&h>=21))) continue; if(!repasOf(d,sl)) return [d,sl]; } }
+    for(const sl of ["matin","midi","soir"]){ if(!slots.includes(sl)) continue; if(k===0&&repasFini(d,sl,h+new Date().getMinutes()/60)) continue; if(!repasOf(d,sl)) return [d,sl]; } }
   return [iso(t),"soir"]; }
 /* Menu natif d'iOS (feuille d'actions) quand l'app tourne sur iPhone ; null si on n'est pas dans l'app */
 function nativeMenu(title,items){ const N=window.__nt; if(!N||!N.menu) return null; return N.menu({title:title||null,items}).then(r=>r&&r.id||null).catch(()=>null); }
@@ -8757,6 +8763,12 @@ $("sgCourses").addEventListener("click",()=>{ closeSheet(); setTab("courses"); w
 const PLATS0=[["Pâtes bolognaise","Spaghetti, Bœuf haché, Sauce tomate, Oignon, Ail, Parmesan"],["Lasagnes","Feuilles de lasagne, Bœuf haché, Sauce tomate, Lait, Beurre, Farine, Emmental"],["Poulet rôti et pommes de terre","Poulet, Pommes de terre, Ail, Thym"],["Quiche lorraine","Pâte brisée, Lardons, Œufs, Crème fraîche, Emmental"],["Curry de légumes","Lait de coco, Curry, Pois chiches, Courgette, Poivron, Riz"],["Chili con carne","Bœuf haché, Haricots rouges, Tomates pelées, Oignon, Poivron, Riz"],["Saumon, riz et brocoli","Saumon, Riz, Citron, Brocoli"],["Tacos maison","Tortillas, Bœuf haché, Tomate, Salade, Cheddar, Avocat"],["Gratin dauphinois","Pommes de terre, Crème fraîche, Lait, Ail, Emmental"],["Soupe de légumes","Carottes, Poireau, Pommes de terre, Courgette, Bouillon"],["Risotto aux champignons","Riz, Champignons, Parmesan, Oignon, Bouillon, Vin blanc"],["Croque-monsieur","Pain de mie, Jambon, Emmental, Beurre"],["Pizza maison","Pâte à pizza, Sauce tomate, Mozzarella, Jambon, Champignons"],["Omelette et salade","Œufs, Salade, Fromage râpé, Tomate"],["Salade composée","Salade, Tomate, Concombre, Thon, Maïs, Œufs"]];
 const JOURS_LONGS=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
 const RSLOTS=[["matin","Petit-déj"],["midi","Midi"],["soir","Soir"]];
+/* heure des repas : celle du repas s'il en a une, sinon l'heure habituelle du foyer (foyer/config.repasH), sinon 8h, 12h30, 19h30 */
+const RH_DEF={matin:"08:00",midi:"12:30",soir:"19:30"};
+const repasH=(sl,m)=>(m&&m.heure)||((S.config&&S.config.repasH)||{})[sl]||RH_DEF[sl];
+const hNum=t=>{ const [a,b]=String(t||"0:0").split(":"); return (+a||0)+(+b||0)/60; };
+/* un repas est passé 2 h après son heure */
+const repasFini=(ds,sl,h)=>h>=hNum(repasH(sl,repasOf(ds,sl)))+2;
 const PDEJ0=[["Tartines beurre confiture","Pain, Beurre, Confiture"],["Céréales et lait","Céréales, Lait"],["Pancakes","Farine, Œufs, Lait, Sucre, Levure, Sirop d'érable"],["Porridge","Flocons d'avoine, Lait, Banane, Miel"],["Œufs brouillés et toasts","Œufs, Pain de mie, Beurre"],["Yaourt, granola et fruits","Yaourts, Granola, Fruits rouges"],["Viennoiseries","Croissants, Pains au chocolat"],["Smoothie","Banane, Fruits rouges, Yaourt, Lait"],["Pain perdu","Pain, Œufs, Lait, Sucre, Cannelle"],["Crêpes","Farine, Œufs, Lait, Sucre, Beurre"]];
 const splitIng=t=>String(t||"").split(/\s*[,;\n]\s*/).map(x=>x.trim()).filter(Boolean).slice(0,30);
 function platsConnus(slot){ const m=new Map(); for(const [n,i] of PDEJ0) m.set(norm(n),{nom:n,ing:splitIng(i),n:0,matin:true}); for(const [n,i] of PLATS0) m.set(norm(n),{nom:n,ing:splitIng(i),n:0});
@@ -8835,7 +8847,7 @@ function platEmoji(nom,sl){ const n=norm(nom||""); for(const [k,e] of PLAT_EMO) 
 /* le prochain repas à venir (selon l'heure) parmi les créneaux affichés */
 function nextMealSlot(){ const t=today(), h=new Date().getHours()+new Date().getMinutes()/60, slots=repasSlots();
   for(let k=0;k<8;k++){ const d=iso(new Date(t.getFullYear(),t.getMonth(),t.getDate()+k));
-    for(const sl of ["matin","midi","soir"]){ if(!slots.includes(sl)) continue; if(k===0&&((sl==="matin"&&h>=10)||(sl==="midi"&&h>=14)||(sl==="soir"&&h>=21.5))) continue; return [d,sl]; } }
+    for(const sl of ["matin","midi","soir"]){ if(!slots.includes(sl)) continue; if(k===0&&repasFini(d,sl,h)) continue; return [d,sl]; } }
   return [iso(t),"soir"]; }
 function mealWhen(ds,sl){ const n=daysTo(ds), sn=sl==="matin"?"petit-déj":sl; const j=JOURS_LONGS[(parse(ds).getDay()+6)%7];
   if(n===0) return sl==="matin"?"Ce matin":"Ce "+sn; if(n===1) return "Demain "+(sl==="matin"?"matin":sn); return j+" "+(sl==="matin"?"matin":sn); }
@@ -8854,7 +8866,7 @@ function renderRepas(){
   /* 1. le prochain repas, en vedette */
   if((S.rWeek||0)===0){ const [hd,hs]=nextMealSlot(), hm=repasOf(hd,hs);
     const hero=el("div",{class:"r-hero"+(hm?"":" e")});
-    hero.append(el("div",{class:"r-hk",text:mealWhen(hd,hs)}));
+    hero.append(el("div",{class:"r-hk",text:mealWhen(hd,hs)+" · "+heureTxt(repasH(hs,hm))}));
     if(hm){ const ck=nm(hm.cuisine), vs=nm(hm.vaisselle);
       hero.append(el("button",{type:"button",class:"r-hp",onclick:()=>openRepas(hd,hs)},el("span",{class:"r-he","aria-hidden":"true",text:platEmoji(hm.plat,hs)}),el("b",{text:hm.plat})));
       if(ck||vs) hero.append(el("div",{class:"r-hw"},ck?el("span",{},avatar(hm.cuisine,20),(ck==="Toi"?"Tu cuisines":ck+" cuisine")):"",vs?el("span",{},avatar(hm.vaisselle,20),(vs==="Toi"?"Toi":vs)+" : vaisselle"):""));
@@ -8882,13 +8894,13 @@ function renderRepas(){
   box.append(strip);
   /* 3. les repas du jour choisi, en grandes cartes */
   const sd=parse(sel), past=sel<t0, now=sel===t0, hr=new Date().getHours()+new Date().getMinutes()/60;
-  const slPast=sl=>past||(now&&((sl==="matin"&&hr>=10)||(sl==="midi"&&hr>=14)||(sl==="soir"&&hr>=21.5)));
+  const slPast=sl=>past||(now&&repasFini(sel,sl,hr));
   box.append(el("div",{class:"r-dayh",text:(now?"Aujourd'hui · ":sel===iso(new Date(today().getTime()+864e5))?"Demain · ":"")+JOURS_LONGS[(sd.getDay()+6)%7]+" "+sd.getDate()+" "+MOIS_C(sd)}));
   const list=el("div",{class:"r-dlist"});
   for(const [sl,sn] of slots){ const m=repasOf(sel,sl);
     const c=el("button",{type:"button",class:"r-cell r-big r-"+sl+(m?"":" e")+(now?" now":"")+(slPast(sl)?" past":""),"aria-label":sn+" : "+(m?m.plat:"ajouter un plat"),onclick:()=>openRepas(sel,sl)});
     c.append(el("span",{class:"r-be","aria-hidden":"true",text:m?platEmoji(m.plat,sl):"+"}));
-    const tx=el("span",{class:"r-bt"},el("small",{class:"r-bs",text:sn}),el("span",{class:"r-cp",text:m?m.plat:slPast(sl)?"Rien de noté":"À prévoir"}));
+    const tx=el("span",{class:"r-bt"},el("small",{class:"r-bs",text:sn+" · "+heureTxt(repasH(sl,m))}),el("span",{class:"r-cp",text:m?m.plat:slPast(sl)?"Rien de noté":"À prévoir"}));
     if(m){ const ck=nm(m.cuisine), vs=nm(m.vaisselle); const w=[ck?"👩‍🍳 "+ck:"",vs?"🧽 "+vs:""].filter(Boolean).join(" · "); if(w) tx.append(el("small",{class:"r-bw",text:w})); }
     c.append(tx); list.append(c); }
   box.append(list);
@@ -8901,10 +8913,18 @@ function renderRepas(){
   const opt=el("div",{class:"r-opt",role:"group","aria-label":"Repas affichés"});
   for(const [v,l] of RSLOTS){ const on=shown.includes(v); opt.append(el("button",{type:"button",class:"r-chip r-c-"+v,"aria-pressed":String(on),onclick:()=>{ let a=on?shown.filter(x=>x!==v):shown.concat(v); if(!a.length){ toast("Garde au moins un repas affiché."); return; } a=RSLOTS.map(r=>r[0]).filter(x=>a.includes(x)); S.rSlots=a.join(","); try{ localStorage.setItem("cocoon.repasSlots",S.rSlots); }catch(_){} renderRepas(); }},l)); }
   box.append(el("div",{class:"r-dayh",text:"Repas affichés"}),opt);
+  /* heures habituelles du foyer : modifiables par les admins, chaque repas peut avoir la sienne dans sa fiche */
+  const hrs=el("div",{class:"r-hrs"});
+  for(const [v,l] of RSLOTS){ if(!shown.includes(v)) continue; const inp=el("input",{type:"time",step:"300",id:"rH-"+v,"aria-label":"Heure habituelle : "+l.toLowerCase(),disabled:isAdmin()?null:true}); inp.value=repasH(v);
+    inp.addEventListener("change",async()=>{ if(!inp.value||!S.db) return; const rh=Object.assign({},(S.config&&S.config.repasH)||{},{[v]:inp.value}); S.config=Object.assign({},S.config||{},{repasH:rh});
+      try{ await S.db.doc("foyer/config").set(S.config); toast(l+" : "+heureTxt(inp.value)+" par défaut."); }catch(e){ writeErr(e); } renderRepas(); });
+    hrs.append(el("label",{class:"r-hr",for:"rH-"+v},el("span",{text:l}),inp)); }
+  box.append(el("div",{class:"r-dayh",text:"Heures habituelles"+(isAdmin()?"":" · réglées par l'admin")}),hrs);
 }
 const MOIS_C=d=>["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."][d.getMonth()];
 function repasEditor(ds,sl,sn,m,done){ const me=meId(), f=el("form",{class:"r-ed",autocomplete:"off"});
   const st={cuisine:m?m.cuisine||null:null,vaisselle:m?m.vaisselle||null:null};
+  const hi=el("input",{type:"time",id:"rHeure",step:"300","aria-label":"Heure du repas"}); hi.value=repasH(sl,m);
   const pi=el("input",{type:"text",id:"rPlat",maxlength:"60",autocomplete:"off",placeholder:sl==="matin"?"Tartines, porridge, pancakes…":"Lasagnes, curry, pizza…","aria-label":"Plat du "+sn.toLowerCase()}); pi.value=m?m.plat:"";
   const ideas=el("div",{class:"r-ideas"});
   const drawIdeas=()=>{ const q=norm(pi.value.trim()); ideas.innerHTML=""; const all=q?platsConnus().filter(p=>norm(p.nom).includes(q)&&norm(p.nom)!==q):m?[]:platsConnus(sl);
@@ -8914,6 +8934,7 @@ function repasEditor(ds,sl,sn,m,done){ const me=meId(), f=el("form",{class:"r-ed
     const draw=()=>{ g.innerHTML=""; for(const [v,l] of [[null,"Pas décidé"]].concat(humains().map(h=>[h.id,h.id===me?"Moi":h.nom]))) g.append(el("button",{type:"button","aria-pressed":String(st[k]===v),onclick:()=>{ st[k]=v; draw(); }},v?avatar(v,18):null,l)); }; draw(); return g; };
   const close=()=>{ S.rEdit=null; if(done) done(); renderRepas(); };
   f.append(el("div",{class:"r-edh"},el("b",{text:sn+(m?" · modifier":" · ajouter un plat")}),done?"":el("button",{type:"button",class:"r-x","aria-label":"Fermer",text:"×",onclick:close})),pi,ideas,
+    el("label",{class:"r-hrow",for:"rHeure"},el("span",{class:"r-role-ic","aria-hidden":"true",text:"🕖"}),el("b",{text:"À quelle heure ?"}),hi),
     el("div",{class:"r-role"},el("span",{class:"r-role-ic","aria-hidden":"true",text:"👩‍🍳"}),el("div",{},el("b",{text:"Qui prépare le repas ?"}),el("span",{text:"Il ou elle s'occupe de cuisiner ce plat."}))),who("cuisine","Qui prépare le repas ?"),
     el("div",{class:"r-role"},el("span",{class:"r-role-ic","aria-hidden":"true",text:"🧽"}),el("div",{},el("b",{text:"Qui fait la vaisselle après ?"}),el("span",{text:"Il ou elle range et lave après le repas."}))),who("vaisselle","Qui fait la vaisselle après ?"));
   const btns=el("div",{class:"r-btns"},el("button",{type:"submit",class:"btn",text:"Enregistrer"}));
@@ -8922,7 +8943,7 @@ function repasEditor(ds,sl,sn,m,done){ const me=meId(), f=el("form",{class:"r-ed
   f.append(btns);
   f.addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||!needMe()) return; const plat=pi.value.trim().replace(/^./,c=>c.toUpperCase()); if(!plat){ pi.focus(); toast("Indique le plat."); return; }
     const id=ds+"_"+sl; S.rEdit=null; if(done) done();
-    try{ await S.db.collection("repas").doc(id).set({date:ds,slot:sl,plat,cuisine:st.cuisine||null,vaisselle:st.vaisselle||null,par:me,le:Date.now()});
+    try{ await S.db.collection("repas").doc(id).set({date:ds,slot:sl,plat,heure:hi.value&&hi.value!==repasH(sl)?hi.value:null,cuisine:st.cuisine||null,vaisselle:st.vaisselle||null,par:me,le:Date.now()});
       const pk=slug(plat)+"-"+cKey(plat).length, prev=(S.plats||[]).find(p=>norm(p.nom)===norm(plat));
       S.db.collection("plats").doc(prev?prev.id:pk).set({nom:plat,ing:(prev&&prev.ing)||[],matin:sl==="matin"||!!(prev&&prev.matin),n:((prev&&prev.n)||0)+(m&&norm(m.plat)===norm(plat)?0:1),le:Date.now()}).catch(()=>{});
       toast("🍽 "+esc(plat)+" au menu "+(sl==="matin"?"pour le petit-déj "+(ds===iso(today())?"ce matin":JOURS_LONGS[(new Date(ds+"T12:00").getDay()+6)%7].toLowerCase()):ds===iso(today())?"ce "+(sl==="soir"?"soir":"midi"):JOURS_LONGS[(new Date(ds+"T12:00").getDay()+6)%7].toLowerCase()+" "+(sl==="soir"?"soir":"midi"))+"."); }catch(err){ writeErr(err); }

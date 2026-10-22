@@ -62,6 +62,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   (à poser par le paiement, pas encore branché).
 - Sauvegarde du foyer (Réglages › Mes données, `backupFoyer()`) : gratuit = `.json` (foyer + espace perso, sans fichiers) ;
   Premium = `.zip` (donnees.json + papiers/ + LISEZMOI.txt), écrit sans bibliothèque (`zipBlob`, fichiers stockés).
+- Heure des repas : `repasH(sl,m)` = heure du repas (`repas.heure`) sinon heure habituelle du foyer (`foyer/config.repasH`, réglée
+  par l'admin sous « Repas affichés ») sinon 8h / 12h30 / 19h30. Un repas est « passé » 2 h après son heure (`repasFini`).
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
