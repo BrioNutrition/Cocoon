@@ -37,11 +37,17 @@ tests ciblés, pas de republication à chaque micro-changement.
 (foyer, path, id) ; collections `taches`, `courses`, `rdv`, `depenses`, `documents`, `evenements`, `repas`, `plats`…
 Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `catNom/catC` sur les tâches (`syncTaskCats`).
 
-## Où on en est (17 oct. 2026)
-Fait récemment : Repas (« Ce soir » + frise + fiche en feuille), Premium (bannière en haut du Foyer + comparatif),
-feuille « Nouvelle tâche » + catégories perso, accueil (bonjour + carte du foyer), démarrage, ménage du code,
-raccourcis (appui long sur Cocoony ; icône iPhone via Info.plist + `#raccourci=` ; manifeste Android).
-Prochaine étape : **Capacitor / Xcode sur le Mac d'Angel** (suivre `app/XCODE.md`), puis : notifications natives (APNs),
-tâches à tour de rôle, définir le Premium, bouton « Une idée, un bug ? », passe d'accessibilité, test Android, page de présentation.
-À faire côté Angel : redéployer `cocoon-push`, coller les modèles d'e-mail, vérifier OTP à 6 chiffres.
-Idée en attente : Cocoony qui comprend « lasagnes demain soir » sans « on mange ».
+## Où on en est (22 oct. 2026)
+- Fait (web) : Repas (« Ce soir » + frise + fiche), Premium (bannière en haut du Foyer + comparatif), feuille « Nouvelle tâche »
+  (pastilles, catégories perso, **tâches à tour de rôle**), accueil (bonjour + carte du foyer), raccourcis (appui long Cocoony,
+  icône iPhone, manifeste Android), Cocoony plus souple (« lasagnes demain soir »), passe d'accessibilité (taille du texte,
+  contrastes, zones tactiles, animations réduites), ménage du code.
+- Fait (app iPhone, conversation du Mac d'Angel) : projet Capacitor qui tourne dans Xcode, barre d'onglets native qui arrive en
+  fondu, alertes iOS natives, Face ID à la connexion (proposé une fois, réglable), connexion revue, sous-menus sans animation.
+- Essayé puis annulé à la demande d'Angel (ne pas reproposer tel quel) : gestes façon Rappels sur les tâches (cocher direct,
+  glisser, appui long), Foyer en mosaïque « bento », changement de page façon iOS.
+- Prochaines idées : notifications natives (APNs), définir le Premium, bouton « Une idée, un bug ? », test Android,
+  page de présentation, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
+- À faire côté Angel : redéployer `cocoon-push`, coller les modèles d'e-mail, vérifier OTP à 6 chiffres, brancher Brevo (codeEmail).
+- Deux conversations peuvent travailler en parallèle (web et Mac) : toujours `git pull --rebase` avant de modifier,
+  pousser après, et republier les deux artefacts (liens plus haut) quand Angel le demande.
