@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 15:59";</script>
+<script>window.COCOON_BUILD="22/10 16:17";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3342,6 +3342,24 @@ html.native-tabs .pm-sheet{min-height:calc(100% - env(safe-area-inset-top,0px) -
 .more{min-width:40px;min-height:40px;display:inline-grid;place-items:center}
 .pf-link{padding:8px 4px!important;margin:-8px -4px!important}
 @media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important} }
+
+/* ===== harmonisation (audit du 22 oct.) ===== */
+/* 1) un jour sélectionné ou « aujourd'hui » : la même pastille dégradée partout (accueil, agenda, repas) */
+.ag-d.now,.r-sd.on{background:linear-gradient(160deg,#FFC94A,#FF9C80 60%,#E79ADB)!important;color:#1C1B2E!important;box-shadow:none!important;opacity:1}
+.r-sd.on b,.r-sd.on,.ag-d.now b{color:#1C1B2E!important}
+.r-sd.now:not(.on){box-shadow:inset 0 0 0 2px #FF9C80}
+.ag-d.sel:not(.now){box-shadow:inset 0 0 0 2px var(--ink)}
+/* 3) « Tout le foyer / Moi / … » de l'agenda : même pastille jaune que Tâches, Courses, Budget */
+.ag-who button[aria-pressed="true"]{background:var(--mark)!important;color:var(--mark-ink)!important;box-shadow:none!important}
+/* 4) titres de section dans une page : petites majuscules, le grand titre reste en haut de page */
+.view .sec-title h2{font-size:12px!important;font-weight:800!important;letter-spacing:.07em!important;text-transform:uppercase;color:var(--muted)!important;font-family:var(--f-body)!important}
+.view .sec-title{align-items:center;margin-top:4px}
+/* 7) tuiles de Maison et de Moi : sobres comme celles du Foyer (fond blanc, emoji sur un carré teinté) */
+.m-tile,.ms-tile{background:var(--surface)!important}
+.hb-t>i.emo,.m-tile>i.emo,.ms-tile>i{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-style:normal;font-size:20px;line-height:1;background:color-mix(in srgb,var(--bc) 35%,var(--surface))}
+.ms-tile>i{margin-bottom:auto}
+/* petits détails */
+.sec-chips{flex-wrap:wrap;overflow-x:visible}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -5422,7 +5440,7 @@ function renderRdv(){
         el("button",{type:"button",class:"btn np-sel-ok",text:"C'est fait ("+n+")",onclick:()=>rdvAct(ids,"fait")}),
         el("button",{type:"button",class:"btn ghost np-sel-no",text:"Annuler",onclick:()=>{ S.rdvSelSet=new Set(); renderRdv(); }}),del)); } }
   rdvTimer(); try{ renderRdvAlert(); }catch(_){}
-  if(!list.length&&!F&&!box.querySelector(".ag-ev")) box.append(el("div",{class:"rdv-empty",text:day?"Aucun rendez-vous ce jour-là.":who?"Aucun rendez-vous prévu pour "+(who===me?"toi":membre(who).nom)+".":"Aucun rendez-vous prévu. Médecin, véto, garage, réunion d'école : note-les ici, tout le foyer les voit."}));
+  if(!list.length&&!F&&!box.querySelector(".ag-ev")) box.append(el("div",{class:"empty"},el("strong",{text:day?"Rien ce jour-là":"Aucun rendez-vous"}),day?"Aucun rendez-vous ni événement ce jour-là.":who?"Rien de prévu pour "+(who===me?"toi":membre(who).nom)+" pour l'instant.":"Médecin, véto, garage, réunion d'école : note-les ici, tout le foyer les voit."));
   if(false&&can&&!(F&&!F.id)){ const add=el("button",{type:"button",class:"rdv-add2",onclick:()=>{ S.rdvForm={pour:[who||me],date:day&&day>=iso(today())?day:""}; renderRdv(); }}), ic=el("i",{"aria-hidden":"true"});
     ic.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'; add.append(ic,"Ajouter un rendez-vous"); box.append(add); }
   w.append(box);
@@ -5821,7 +5839,7 @@ function renderBudget(){
       bw.append(el("div",{class:"sec-title"},el("h2",{text:"Qui doit quoi"})),box); } }
   bw.hidden=!bw.childNodes.length;
   // catégories (volet)
-  renderBudgetCats(month,tot,mois); $("bCatMois").textContent=mois;
+  renderBudgetCats(month,tot,mois); $("bCatMois").textContent="";
   // récurrent (volet)
   const crN=(S.credits||[]).length;
   $("bSubsTotal").textContent=subs.length||crN?(subs.length?money(subTot)+" / mois":"")+(crN?(subs.length?" · ":"")+crN+" crédit"+(crN>1?"s":""):""):"";
@@ -6075,6 +6093,7 @@ function renderMaison(){
 }
 /* Maison : tableau de bord (ce qui compte cette semaine + 4 tuiles qui s'ouvrent) */
 const MSECS=[["bins","Poubelles","#7FD39A","poubelle"],["contacts","Contacts","#8FB8FF","tel"],["equip","Équipements","#FF9C80","entretien"],["meters","Compteurs","#FFC94A","eclair"],["garde","Fiche baby-sitter","#E79ADB","enfants"],["vac","Vacances","#7CCFE0","loisirs"]];
+const MSEC_EMO={bins:"🗑️",contacts:"📞",equip:"🔧",meters:"⚡",garde:"🧸",vac:"🏖️"};
 function mOpen(sec){ S.mSec=sec||null; renderMaison(); topNow(); }
 /* le + d'un sous-menu de Maison ajoute directement ce qu'il contient */
 function mAddIn(sec){ if(sec==="contacts"){ S.ctForm={role:"",nom:"",tel:"",note:"",c:"#C9C7DD"}; renderMaison(); topNow(); setTimeout(()=>{ const x=$("ctRole"); if(x) x.focus(); },200); }
@@ -6181,7 +6200,7 @@ function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; co
     garde:["À partager : enfants, animaux, consignes",null],
     vac:[vacOn()?"En vacances jusqu'au "+fmtDue(S.vac.fin):S.vac&&S.vac.debut>iso(today())?"Départ "+dueLabel(S.vac.debut):"Pause des rappels, liste avant de partir",vacOn()?"🏖":null]};
   for(const [k,n,c,ic] of MSECS){ const [sub,badge]=info[k];
-    const t=el("button",{type:"button",class:"m-tile",style:"--bc:"+c,"aria-label":n+", "+sub,onclick:()=>k==="garde"?openGarde():k==="vac"?openVac():mOpen(k)},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),el("b",{text:n}),el("span",{text:sub}));
+    const t=el("button",{type:"button",class:"m-tile",style:"--bc:"+c,"aria-label":n+", "+sub,onclick:()=>k==="garde"?openGarde():k==="vac"?openVac():mOpen(k)},el("i",{"aria-hidden":"true",class:"emo",text:MSEC_EMO[k]||"✨"}),el("b",{text:n}),el("span",{text:sub}));
     if(badge) t.append(el("em",{text:badge})); T.append(t); }
 }
 function renderCars(){
@@ -7618,12 +7637,13 @@ function budgetSpark(){ const t=today(), Y=t.getFullYear(), M=t.getMonth(), dim=
   const pm=new Date(Y,M-1,1), cur=cum(Y,M,day), prev=cum(pm.getFullYear(),pm.getMonth(),dim), mx=Math.max(1,...cur,...prev);
   const pt=(a,len)=>a.map((v,i)=>((len>1?i/(dim-1):0)*200).toFixed(1)+","+(34-(v/mx)*30).toFixed(1)).join(" ");
   return '<svg viewBox="0 0 200 36" preserveAspectRatio="none" aria-hidden="true"><polyline points="'+pt(prev,dim)+'" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="1.6" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/><polyline points="'+pt(cur,day)+'" fill="none" stroke="var(--bc)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>'; }
+const HUB_EMO={foyer:"✅",courses:"🛒",repas:"🍽️",agenda:"📅",budget:"💶",documents:"📄",maison:"🏠"};
 function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const me=meId(), t0=iso(today());
   const G1=el("div",{class:"hb-g2"}), G2=el("div",{class:"hb-g2 hb-gx"}); let G=G1;
   H.append(el("p",{class:"hb-sec",text:"Au quotidien"}),G1,el("p",{class:"hb-sec",text:"Gestion"}),G2);
   const tile=(v,ic,c,title,sub,o)=>{ o=o||{}; const b=el("div",{class:"hb-t"+(o.cls?" "+o.cls:""),role:"button",tabindex:"0","data-go":v,style:"--bc:"+c,"aria-label":title+(sub?", "+sub:"")});
     b.addEventListener("click",e=>{ if(e.target.closest(".hb-ck")) return; hubGo(v); }); b.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); hubGo(v); } });
-    const ico=el("i",{"aria-hidden":"true"}); ico.innerHTML=GI(o.gly||v); b.append(ico,el("b",{text:title})); if(sub) b.append(el("span",{text:sub}));
+    const ico=el("i",{"aria-hidden":"true",class:"emo",text:HUB_EMO[v]||"✨"}); b.append(ico,el("b",{text:title})); if(sub) b.append(el("span",{text:sub}));
     if(o.badge) b.append(el("em",{class:o.red?"r":"",text:String(o.badge)})); if(o.extra) b.append(o.extra); G.append(b); return b; };
   // Au quotidien : Tâches, Courses, Repas, Agenda
   const open=S.foyer.filter(t=>!t.fait).sort(sortOpen), late=open.filter(t=>t.echeance&&t.echeance<t0).length;
