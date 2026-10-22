@@ -46,7 +46,9 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   fondu, alertes iOS natives, Face ID à la connexion (proposé une fois, réglable), connexion revue, sous-menus sans animation.
 - Essayé puis annulé à la demande d'Angel (ne pas reproposer tel quel) : gestes façon Rappels sur les tâches (cocher direct,
   glisser, appui long), Foyer en mosaïque « bento », changement de page façon iOS.
-- Prochaines idées : notifications natives (APNs), définir le Premium, bouton « Une idée, un bug ? », test Android,
+- Fait : bouton « Une idée, un bug ? » (Moi + Réglages, `openRetour()`) → collection `retours` ; pour lire :
+  `select foyer, data, updated_at from cocoon_docs where path='retours' order by updated_at desc;`
+- Prochaines idées : notifications natives (APNs), définir le Premium, test Android,
   page de présentation, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
 - À faire côté Angel : redéployer `cocoon-push`, coller les modèles d'e-mail, vérifier OTP à 6 chiffres, brancher Brevo (codeEmail).
 - Deux conversations peuvent travailler en parallèle (web et Mac) : toujours `git pull --rebase` avant de modifier,

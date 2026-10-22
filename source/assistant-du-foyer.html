@@ -2621,6 +2621,15 @@ div.pf-r{cursor:default}
 .ms-reg b{display:block;font-size:15.5px}
 .ms-reg small{color:var(--muted);font-size:12.5px}
 .ms-reg u{text-decoration:none;color:var(--muted);font-size:22px}
+.rt-h b{display:block;font-size:20px}.rt-h span{color:var(--muted);font-size:14px}
+.rt-k{display:flex;gap:8px;flex-wrap:wrap}
+.rt-k button{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px;min-height:44px;font-weight:600;cursor:pointer}
+.rt-k button[aria-checked=true]{border-color:#FF9C80;background:color-mix(in srgb,#FF9C80 10%,var(--surface))}
+.rt-in textarea{min-height:130px;font-size:16px}
+.rt-ph{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--muted);font-size:14px;cursor:pointer}
+.rt-ph input{position:absolute;opacity:0;width:1px;height:1px}
+.rt-ph b{color:var(--ink);border:2px dashed var(--line);border-radius:12px;padding:8px 12px}
+.rt-in small.rt-nb{color:var(--muted);font-size:12.5px;text-align:center}
 .rg-ic{font-size:17px;display:grid;place-items:center}
 .rg-h{margin:4px 2px 2px;font:800 26px/1.1 var(--f-display);letter-spacing:-.02em}
 #moiFiche{margin-top:2px}
@@ -7132,7 +7141,8 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
     tile("vehic","🚗","#7FD39A","Mes véhicules",v0?(v0.nom||"Véhicule")+(vNext?" · "+vNext[0]+" "+MOIS.format(parse(vNext[1])):""):"ajouter une voiture",null),
     window.cocoonHost&&$("cxNotif")?tile("notif","🔔","#E79ADB","Notifications","rappels sur ton téléphone",null):tile("perso","✓","#B9A8F0","Tâches réalisées","ton historique",null));
   const reg=el("button",{type:"button",class:"ms-reg",onclick:()=>moiOpen("reglages")},el("i",{"aria-hidden":"true",text:"⚙️"}),el("span",{},el("b",{text:"Réglages"}),el("small",{text:"apparence, compte, confidentialité, mes données"})),el("u",{"aria-hidden":"true",text:"›"}));
-  T.append(el("div",{class:"ms-gl",text:"Mon espace"+(late?" · "+late+" en retard":"")}),g,reg);
+  const idea=el("button",{type:"button",class:"ms-reg",onclick:()=>openRetour()},el("i",{"aria-hidden":"true",text:"💡"}),el("span",{},el("b",{text:"Une idée, un bug ?"}),el("small",{text:"dis-nous ce qui manque ou ce qui coince"})),el("u",{"aria-hidden":"true",text:"›"}));
+  T.append(el("div",{class:"ms-gl",text:"Mon espace"+(late?" · "+late+" en retard":"")}),g,reg,idea);
   // sous-page Réglages
   let RG=$("mReglages"); if(!RG){ RG=el("div",{id:"mReglages",class:"sub ms-sub"}); $("mSettings").before(RG); } RG.innerHTML="";
   const ico=(e,c)=>el("span",{class:"b-ico rg-ic",style:"--stripe:"+c,text:e});
@@ -7150,6 +7160,7 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
     window.__nt.faceid({}).then(st=>{ if(!st||!st.available){ S.faceSt={available:false}; fr.remove(); return; } if(JSON.stringify(st)!==JSON.stringify(S.faceSt)) upd(st); }).catch(()=>fr.remove()); }
   if(window.cocoonHost&&$("cxNotif")) box.append(rrow("🔔","#E79ADB","Notifications","Rappels sur ton téléphone",()=>moiOpen("notif")));
   box.append(rrow("✨","#FFC94A","Cocoon Premium",(S.prefs&&S.prefs.premiumInteret)?"Tu seras prévenu·e du lancement":"Papiers en photo, secrétaire intelligent, et plus",()=>openPremium()));
+  box.append(rrow("💡","#7FD39A","Une idée, un bug ?","Dis-nous ce qui manque ou ce qui coince",()=>openRetour()));
   RG.append(el("h2",{class:"rg-h",text:"Réglages"}),el("div",{class:"ms-gl",text:"Préférences"}),box); }
 /* Foyer : toutes les rubriques en tuiles (bento) */
 function hubGo(v){ if(v==="premium"){ openPremium(); return; } if(v==="evenements"){ const n=(S.evs||[]).filter(e=>evEnd(e)>=iso(today())); if(n.length===1) openEvent(n[0].id); else openEvents(); return; } if(v==="maison") S.mSec=null; setTab(v); window.scrollTo({top:0}); }
@@ -8062,6 +8073,25 @@ function upSheet(id,label,onClose){ let P=$(id); if(!P){ P=el("div",{class:"prem
     sc.addEventListener("pointerdown",e=>{ if(e.pointerType==="touch"||e.target.closest("button")) return; start(e); const mm=ev=>move(ev), uu=()=>{ end(); removeEventListener("pointermove",mm); removeEventListener("pointerup",uu); }; addEventListener("pointermove",mm); addEventListener("pointerup",uu); }); }
   sheet.append(grab); P.append(sheet); P.tabIndex=-1; setTimeout(()=>{ try{ P.focus(); }catch(_){} },50);
   return {P,sheet,close}; }
+/* « Une idée, un bug ? » : le message est rangé dans la collection « retours » du foyer (cocoon_docs, path = retours).
+   Pour tout lire : select foyer, data, updated_at from cocoon_docs where path='retours' order by updated_at desc; */
+function openRetour(){ if(!needMe()) return; const U=upSheet("retPage","Une idée, un bug ?"), sheet=U.sheet; sheet.classList.add("rt-sheet");
+  const inn=el("div",{class:"pp-in rt-in"}); sheet.append(inn); let kind="idee", file=null;
+  const K=[["idee","💡 Une idée"],["bug","🐞 Un bug"],["autre","💬 Autre"]];
+  const ks=el("div",{class:"rt-k",role:"radiogroup","aria-label":"C'est plutôt"},...K.map(([k,t])=>el("button",{type:"button",role:"radio","aria-checked":String(k===kind),text:t,onclick:e=>{ kind=k; ks.querySelectorAll("button").forEach(b=>b.setAttribute("aria-checked",String(b===e.currentTarget))); ta.placeholder=PH[k]; }})));
+  const PH={idee:"Ce qui te manque, ce qui te ferait gagner du temps…",bug:"Ce que tu faisais, ce qui s'est passé, ce que tu attendais…",autre:"Ton message"};
+  const ta=el("textarea",{"aria-label":"Ton message",placeholder:PH.idee,maxlength:"2000"});
+  const fi=el("input",{type:"file",accept:"image/*"}), fl=el("b",{text:"📎 Ajouter une capture"});
+  fi.addEventListener("change",()=>{ file=fi.files&&fi.files[0]||null; fl.textContent=file?"✓ "+file.name.slice(0,28):"📎 Ajouter une capture"; });
+  const ph=el("label",{class:"rt-ph"},fi,fl,el("span",{text:"facultatif"}));
+  const send=el("button",{type:"button",class:"btn pp-cta",text:"Envoyer",onclick:async()=>{ const texte=ta.value.trim(); if(!texte){ toast("Écris quelques mots avant d'envoyer."); ta.focus(); return; }
+    send.disabled=true; send.textContent="Envoi…";
+    const d={type:kind,texte,par:meId(),le:Date.now(),onglet:S.tab||null,app:window.__nt?"iphone":(matchMedia("(display-mode: standalone)").matches?"pwa":"web"),ecran:innerWidth+"×"+innerHeight,ua:String(navigator.userAgent||"").slice(0,240),assetId:null};
+    try{ if(file&&S.assets){ const up=await S.assets.upload(file,file.type?{type:file.type}:undefined); d.assetId=up.id; }
+      await S.db.collection("retours").add(d); haptic(12); U.close(); toast(kind==="bug"?"Merci ! On regarde ce bug au plus vite.":"Merci, c'est bien reçu !"); }
+    catch(e){ send.disabled=false; send.textContent="Envoyer"; writeErr(e); } }});
+  inn.append(el("div",{class:"rt-h"},el("b",{text:"Une idée, un bug ?"}),el("span",{text:"Ton avis fait grandir Cocoon. On lit tout."})),ks,ta,ph,send,el("small",{class:"rt-nb",text:"On joint le type d'appareil pour mieux comprendre. Rien d'autre."}));
+  setTimeout(()=>{ try{ ta.focus(); }catch(_){} },350); }
 function openPremium(){ const U=upSheet("premPage","Cocoon Premium"), P=U.P, sheet=U.sheet, close=U.close;
   const asked=!!(S.prefs&&S.prefs.premiumInteret); S.premPlan=S.premPlan||"an";
   const star=el("span",{class:"pp-star","aria-hidden":"true"}); star.innerHTML='<svg viewBox="0 -4 64 64" aria-hidden="true"><defs><linearGradient id="pmStarBig" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFBEA"/><stop offset=".55" stop-color="#FFE7A0"/><stop offset="1" stop-color="#FFC94A"/></linearGradient></defs><path d="M32 4c2.6 15 9 21.4 24 24-15 2.6-21.4 9-24 24-2.6-15-9-21.4-24-24 15-2.6 21.4-9 24-24z" fill="url(#pmStarBig)"/></svg>';
