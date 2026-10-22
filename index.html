@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 17:13";</script>
+<script>window.COCOON_BUILD="22/10 17:17";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2749,6 +2749,13 @@ div.pf-r{cursor:default}
 .wg-ring{position:absolute;right:12px;bottom:12px;width:46px;height:46px;border-radius:50%;background:conic-gradient(#3CC37A var(--p),var(--line) 0);display:grid;place-items:center}
 .wg-ring::before{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--surface)}
 .wg-ring b{position:relative;font-size:11.5px;font-weight:800}
+@property --rp{syntax:"<percentage>";inherits:false;initial-value:0%}
+.wg-ring.emo{width:50px;height:50px;background:conic-gradient(from 0deg,var(--rc) var(--rp),color-mix(in srgb,var(--rc) 22%,var(--line)) 0)}
+.wg-ring.emo::before{inset:6px;background:color-mix(in srgb,var(--rc) 18%,var(--surface))}
+.wg-ring.emo i{position:relative;font-style:normal;font-size:20px;line-height:1}
+.wg-ring.emo i.emo-img img{width:22px;height:auto;display:block;transition:transform .3s}
+.wg-ring.emo.anim{animation:ringRp .9s cubic-bezier(.3,.8,.3,1) .15s backwards}
+@keyframes ringRp{from{--rp:0%}}
 .wg-spark{position:absolute;right:12px;bottom:14px;width:90px;height:34px;color:var(--muted);--bc:var(--wc)}
 .wg-spark svg{width:100%;height:100%;display:block}
 .wg-edit{align-self:center;margin-top:12px;display:inline-flex;align-items:center;gap:7px;border:2px dashed var(--line);background:none;border-radius:99px;padding:9px 16px;font:inherit;font-weight:700;font-size:13.5px;color:var(--muted);cursor:pointer}
@@ -2867,7 +2874,16 @@ html[data-theme="light"]:has(#boot),html[data-theme="light"]:has(#boot) body{bac
 .ev-ct small{font-size:12.5px;color:var(--muted)}
 .ev-ring{position:relative;display:inline-grid;place-items:center;flex:none}
 .ev-ring svg{position:absolute;inset:0;width:100%;height:100%}
-.ev-ring i{font-style:normal;font-size:20px;line-height:1}
+.ev-ring i{position:relative;font-style:normal;font-size:20px;line-height:1}
+.ev-ring i.emo-img,.wg-ring i.emo-img{line-height:0}
+.ev-ring i.emo-img img{width:calc(var(--rs,1)*22px);height:auto;display:block;transition:transform .3s}
+.ev-ring.full i.emo-img img,.wg-ring.full i.emo-img img{transform:scale(1.14)}
+.ev-ring.anim .ev-rp{animation:ringIn .9s cubic-bezier(.3,.8,.3,1) .15s backwards}
+@keyframes ringIn{from{stroke-dashoffset:var(--c0)}}
+.ring-ok{position:absolute;right:-3px;bottom:-3px;width:19px;height:19px;border-radius:50%;background:#2FB36B;border:2px solid var(--surface);display:grid;place-items:center;box-sizing:border-box}
+.ring-ok svg{width:11px;height:11px;position:static}
+.ev-ring.anim .ring-ok,.wg-ring.anim .ring-ok{animation:ringOk .45s cubic-bezier(.2,1.5,.4,1) 1s backwards}
+@keyframes ringOk{from{transform:scale(0)}}
 .ev-j{flex:none;font-family:"Bricolage Grotesque",system-ui;font-weight:800;font-size:15px;padding:6px 9px;border-radius:12px;background:color-mix(in srgb,var(--ec) 32%,var(--surface));color:var(--ink);white-space:nowrap}
 .ev-j.off{background:var(--line);color:var(--muted);font-size:12px}
 .ev-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:26px 14px;background:var(--surface);border-radius:20px;box-shadow:0 2px 0 var(--shadow)}
@@ -5735,7 +5751,7 @@ function wgData(k,large){ const t0=iso(today()), me=meId();
     if(!best) return {h:"Anniversaires",big:"Aucune date",small:"ajoute les dates de naissance"}; const n=daysTo(best[1].date);
     return {h:"Anniversaire",big:best[0].id===me?"Toi":best[0].nom,small:n===0?"aujourd'hui ! 🎉":dueLabel(best[1].date)+(best[1].age?" · "+best[1].age+" ans":""),mid:best[0].id}; }
   if(k==="evenement"){ const ev=evNext(); if(!ev) return {h:"Événement",big:"Rien de prévu",small:"anniv, travaux, vacances…"}; const P=evProg(ev);
-    return {h:evJ(ev),big:ev.titre||evT(ev).n,small:P.tot?P.done+"/"+P.tot+" prêts"+(large?" · "+evDates(ev):""):evDates(ev),ring:P.tot?P.p:null,evid:ev.id}; }
+    return {h:evJ(ev),big:ev.titre||evT(ev).n,small:P.tot?P.done+"/"+P.tot+" prêts"+(P.p<100?" · "+P.p+" %":"")+(large?" · "+evDates(ev):""):evDates(ev),ring:P.tot?P.p:null,ringE:evT(ev).e,ringC:evT(ev).c,evid:ev.id}; }
   return {h:"",big:"",small:""}; }
 function wgGo(k,D){ if(k==="evenement"){ if(D&&D.evid) openEvent(D.evid); else openEvents(); return; } const w=WG[k]; if(k==="papiers"&&D&&D.did){ goDoc(S.docs.find(x=>x.id===D.did)); return; } if(k==="anniv"){ if(D&&D.mid) openMemberSheet(D.mid); return; } if(w.sec) S.mSec=w.sec; setTab(w.go); renderHeader(); window.scrollTo({top:0}); }
 /* Petite vibration : API Vibration (Android) ou interrupteur natif (iPhone, iOS 18+) */
@@ -5786,7 +5802,10 @@ function renderWidgets(){ const box=$("accBudget"); if(!box) return; if(box.quer
       el("div",{class:"wg-h"},(()=>{ const i=el("i",{"aria-hidden":"true",class:"wg-ic"}); i.innerHTML=uicSvg(w.ic); return i; })(),el("span",{text:D.h})),
       el("b",{class:"wg-big"},D.dot?el("span",{class:"wg-dot",style:"background:"+D.dot}):"",D.big,D.trend!=null&&L?el("small",{class:"wg-tr"+(D.trend>0?" up":" down"),text:(D.trend>0?"+":"")+D.trend+" %"}):""),
       D.small?el("small",{class:"wg-s"+(D.late?" late":""),text:D.small}):el("small",{class:"wg-s","aria-hidden":"true",text:"\u00a0"}));
-    if(D.ring!=null){ const r=el("span",{class:"wg-ring",style:"--p:"+D.ring+"%"},el("b",{text:D.ring+"%"})); b.append(r); b.classList.add("has-ring"); }
+    if(D.ring!=null&&D.ringE){ /* événement : son emoji au centre, anneau à sa couleur, pastille ✓ à 100 % */
+      const r=el("span",{class:"wg-ring emo"+(D.ring>=100?" full":"")+(ringNew("w"+D.evid,D.ring)?" anim":""),style:"--rp:"+D.ring+"%;--rc:"+D.ringC},emoIco(D.ringE));
+      if(D.ring>=100){ const k=el("span",{class:"ring-ok"}); k.innerHTML=RING_OK; r.append(k); } b.append(r); b.classList.add("has-ring"); }
+    else if(D.ring!=null){ const r=el("span",{class:"wg-ring",style:"--p:"+D.ring+"%"},el("b",{text:D.ring+"%"})); b.append(r); b.classList.add("has-ring"); }
     if(D.spark&&L){ const sp=el("span",{class:"wg-spark","aria-hidden":"true"}); sp.innerHTML=budgetSpark(); b.append(sp); }
     g.append(b); }
   sortable(g,".wg",keys=>{ const cur=wgList(); wgSave(keys.map(k=>cur.find(x=>x.k===k)).filter(Boolean),true); box._sig=wgSig(); });
@@ -8696,9 +8715,13 @@ function evDates(ev){ const a=parse(ev.debut), F=new Intl.DateTimeFormat("fr-FR"
 /* un achat d'événement n'arrive dans la liste de courses que 3 jours avant sa date */
 function evCourses(all){ const lim=iso(new Date(today().getTime()+3*864e5)); return (all||[]).filter(i=>!(i.ev&&!i.fait&&i.evDate&&i.evDate>lim)); }
 function evNext(){ const t0=iso(today()); return evAll().filter(e=>evEnd(e)>=t0)[0]||null; }
-function evRing(ev,size){ const T=evT(ev), P=evProg(ev), r=size/2-4, C=2*Math.PI*r; const w=el("span",{class:"ev-ring",style:"width:"+size+"px;height:"+size+"px;--ec:"+T.c});
-  w.innerHTML='<svg viewBox="0 0 '+size+' '+size+'" aria-hidden="true"><circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="var(--line)" stroke-width="5"/><circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="'+T.c+'" stroke-width="5" stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-P.p/100)).toFixed(1)+'" transform="rotate(-90 '+size/2+' '+size/2+')"/></svg>';
-  w.append(el("i",{"aria-hidden":"true",text:T.e})); return w; }
+// Anneaux d'avancement : le remplissage s'anime la première fois qu'on voit un anneau (ou quand son % change), pas à chaque rendu
+const RING_OK='<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.6 6.3l2.2 2.2 4.6-4.9" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function ringNew(k,p){ const m=S.ringSeen||(S.ringSeen={}); if(m[k]===p) return false; m[k]=p; return !(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches); }
+function evRing(ev,size){ const T=evT(ev), P=evProg(ev), h=size/2, r=h-4, C=2*Math.PI*r, full=P.tot&&P.p>=100;
+  const w=el("span",{class:"ev-ring"+(full?" full":"")+(ringNew("e"+ev.id+"/"+size,P.p)?" anim":""),style:"width:"+size+"px;height:"+size+"px;--ec:"+T.c+";--c0:"+C.toFixed(1)});
+  w.innerHTML='<svg viewBox="0 0 '+size+' '+size+'" aria-hidden="true"><circle cx="'+h+'" cy="'+h+'" r="'+(r-3)+'" style="fill:color-mix(in srgb,'+T.c+' 18%,var(--surface))"/><circle cx="'+h+'" cy="'+h+'" r="'+r+'" fill="none" style="stroke:color-mix(in srgb,'+T.c+' 22%,var(--line))" stroke-width="6"/><circle class="ev-rp" cx="'+h+'" cy="'+h+'" r="'+r+'" fill="none" stroke="'+T.c+'" stroke-width="6" stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-P.p/100)).toFixed(1)+'" transform="rotate(-90 '+h+' '+h+')"/></svg>';
+  w.append(emoIco(T.e)); if(full){ const k=el("span",{class:"ring-ok"}); k.innerHTML=RING_OK; w.append(k); } return w; }
 function evPill(ev){ const j=evJ(ev); return el("span",{class:"ev-j"+(j==="Terminé"?" off":""),style:"--ec:"+evT(ev).c,text:j}); }
 
 /* La feuille : liste → création → détail (onglets) → réglages, dans le même panneau */
