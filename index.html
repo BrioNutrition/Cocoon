@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 21:35";</script>
+<script>window.COCOON_BUILD="22/10 21:43";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3287,6 +3287,42 @@ html.native-tabs .hub-mini{display:none!important}
 .pm-sheet.pm-tight .pp-cr.pp-ch{padding:8px 14px 6px}
 .pm-sheet.pm-tight .pp-plan{padding:12px 14px}
 .pm-sheet.pm-tight .pp-cta{padding:13px}
+/* ===== Cocoon Plus : deux affiches (Essentiel en haut, Plus en dessous) ===== */
+.px-sheet{background:#EEEDF4!important;color:#55526C}
+.px-sheet .pp-grab{background:none;position:absolute;left:0;right:0;top:env(safe-area-inset-top,0px)}
+.px{min-height:100%;display:flex;flex-direction:column}
+.px1{position:relative;padding:34px 20px 22px;flex:none}
+.px2{position:relative;flex:1;display:flex;flex-direction:column;padding:22px 20px calc(env(safe-area-inset-bottom,0px) + 20px);color:#fff;
+  background:radial-gradient(120% 80% at 100% 0%,#FFD66B 0%,transparent 55%),linear-gradient(160deg,#FF9C80,#E2629B 60%,#8C5BD6)}
+html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
+.px-tag{align-self:flex-start;display:inline-block;font-size:12px;font-weight:800;letter-spacing:.08em;padding:4px 10px;border-radius:99px;background:#DCDAE6;color:#625F7E}
+.px2 .px-tag{background:#fff;color:#C2417E}
+.px h2{margin:8px 0 6px;font:800 30px/1 var(--f-display);letter-spacing:-.02em}
+.px1 h2{color:#3D3A55}.px2 h2{color:#fff}
+.px-l{margin:0;font-size:14px;line-height:1.6}
+.px-cat1{position:absolute;right:18px;top:34px;width:70px;height:70px;border-radius:22px;filter:grayscale(.85) opacity(.7)}
+.px-zz{position:absolute;right:16px;top:14px;font-weight:800;color:#9C99B3;letter-spacing:.1em}
+.px-st{position:absolute;right:22px;top:22px;font-weight:900;font-size:13px;background:#FFE14D;color:#1C1B2E;padding:6px 10px;border-radius:12px;transform:rotate(-8deg);box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.px-g{margin-top:12px;display:flex;flex-direction:column;gap:7px;width:min(100%,300px);position:relative;z-index:1}
+.px-r{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.18);border-radius:14px;padding:8px 10px}
+.px-e{flex:none;width:24px;height:24px;display:grid;place-items:center}
+.px-e i.emo-img,.px-e i{font-style:normal;line-height:0;font-size:18px}
+.px-e i.emo-img img{width:20px;height:20px;display:block}
+.px-coc img{width:24px;height:24px;border-radius:7px;display:block}
+.px-r span{font-weight:700;font-size:14px;flex:1;min-width:0}
+.px-r s{font-size:12px;opacity:.78;font-weight:700;text-align:right;max-width:58px;line-height:1.1}
+.px-r i[aria-hidden]{font-style:normal;opacity:.8}
+.px-r em{font-style:normal;font-weight:900;background:#fff;color:#C2417E;border-radius:99px;min-width:36px;text-align:center;padding:2px 8px;font-size:15px}
+.px-cat2{position:absolute;right:-4px;bottom:calc(100% + 10px);width:92px;height:92px;border-radius:28px;transform:rotate(-10deg);box-shadow:0 14px 30px rgba(0,0,0,.25)}
+.px-foot{margin-top:auto;padding-top:18px;display:flex;flex-direction:column;gap:8px;position:relative;z-index:1}
+.px-cta{width:100%;border:0;background:#fff;color:#C2417E;padding:15px;border-radius:16px;font:900 16px var(--f-body,inherit);box-shadow:0 5px 0 rgba(0,0,0,.18);cursor:pointer}
+.px-cta:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.px-cta:disabled{opacity:.85}
+.px-foot small{text-align:center;font-size:11.5px;color:rgba(255,255,255,.85)}
+.pm-tight .px1{padding:30px 20px 14px}.pm-tight .px h2{font-size:26px}.pm-tight .px2{padding-top:16px}.pm-tight .px-g{gap:5px}.pm-tight .px-r{padding:6px 10px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .px-sheet{background:#24233A!important;color:#A3A0BE}:root:not([data-theme="light"]) .px1 h2{color:#EDEBF7}:root:not([data-theme="light"]) .px-tag{background:#34324F;color:#C9C6E0}}
+:root[data-theme="dark"] .px-sheet{background:#24233A!important;color:#A3A0BE}:root[data-theme="dark"] .px1 h2{color:#EDEBF7}:root[data-theme="dark"] .px1 .px-tag{background:#34324F;color:#C9C6E0}
+
 .pm-sheet .pp-cmpin{gap:16px!important;padding-top:4px}
 .pm-sheet .pp-cmph{text-align:center;display:flex;flex-direction:column;align-items:center}
 .pm-sheet .pp-star{width:76px;height:76px;border-radius:24px;margin:2px 0 8px}
@@ -8682,32 +8718,40 @@ function openRetour(){ if(!needMe()) return; const U=upSheet("retPage","Une idé
     catch(e){ send.disabled=false; send.textContent="Envoyer"; writeErr(e); } }});
   inn.append(el("div",{class:"rt-h"},el("b",{text:"Une idée, un bug ?"}),el("span",{text:"Ton avis fait grandir Cocoon. On lit tout."})),ks,ta,ph,send,el("small",{class:"rt-nb",text:"On joint le type d'appareil pour mieux comprendre. Rien d'autre."}));
   setTimeout(()=>{ try{ ta.focus(); }catch(_){} },350); }
-function openPremium(){ const U=upSheet("premPage","Cocoon Plus"), P=U.P, sheet=U.sheet, close=U.close;
+function openPremium(){ const U=upSheet("premPage","Cocoon Plus"), sheet=U.sheet;
+  /* deux affiches : Cocoon Essentiel (calme, gris, Cocoony qui dort) puis Cocoon Plus (dégradé, « Avant → Après ») */
   const asked=!!(S.prefs&&S.prefs.premiumInteret); S.premPlan=S.premPlan||"an";
-  const star=el("span",{class:"pp-star","aria-hidden":"true"}); star.innerHTML='<svg viewBox="0 -4 64 64" aria-hidden="true"><defs><linearGradient id="pmStarBig" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFBEA"/><stop offset=".55" stop-color="#FFE7A0"/><stop offset="1" stop-color="#FFC94A"/></linearGradient></defs><path d="M32 4c2.6 15 9 21.4 24 24-15 2.6-21.4 9-24 24-2.6-15-9-21.4-24-24 15-2.6 21.4-9 24-24z" fill="url(#pmStarBig)"/></svg>';
-  sheet.classList.add("pm-sheet");
-  const hero=el("div",{class:"pp-cmph"},star,el("h2",{text:"Passe à Cocoon Plus"}),el("p",{text:"Tout ce que tu as déjà, et en plus :"}));
-  const feats=el("div",{class:"pp-cmp",role:"table","aria-label":"Cocoon Essentiel et Cocoon Plus"});
-  feats.append(el("div",{class:"pp-cr pp-ch",role:"row"},el("span",{role:"columnheader"}),el("span",{role:"columnheader",text:"Essentiel"}),el("span",{role:"columnheader",class:"pp-cp",text:"Plus"})));
-  for(const [ic,,t] of PM_FEATS){ const g=PM_FREE[t]||"—";
-    feats.append(el("div",{class:"pp-cr",role:"row",title:PM_SHORT[t]||""},el("span",{role:"cell",class:"pp-cn"},el("i",{"aria-hidden":"true",text:ic}),t),el("span",{role:"cell",class:"pp-cg","aria-label":g==="—"?"non":g,text:g}),el("span",{role:"cell",class:"pp-cy","aria-label":"oui",text:"✓"}))); }
-  const plans=el("div",{class:"pp-plans",role:"radiogroup","aria-label":"Formule"});
-  const plan=(k,t,price,per,note)=>{ const b=el("button",{type:"button",class:"pp-plan",role:"radio","aria-checked":String(S.premPlan===k),onclick:()=>{ S.premPlan=k; plans.querySelectorAll(".pp-plan").forEach(x=>x.setAttribute("aria-checked",String(x===b))); }},
-      el("b",{class:"pp-pn",text:t}),el("span",{class:"pp-pr"},el("b",{text:price}),el("small",{text:per})),el("small",{class:"pp-nt",text:note}));
-    if(k==="an") b.append(el("em",{text:"2 mois offerts"})); return b; };
-  plans.append(plan("an","Annuel",PM_PRIX.an,"/an","soit "+PM_PRIX.anMois+"/mois"),plan("mois","Mensuel",PM_PRIX.mois,"/mois","sans engagement"));
-  const cta=el("button",{type:"button",class:"btn pp-cta",text:asked?"✓ On te prévient à l'ouverture":"Essayer 1 mois gratuit",disabled:asked||null,onclick:async()=>{ cta.disabled=true;
+  const lg=(document.querySelector(".brand-logo")||{}).src||"";
+  sheet.classList.add("pm-sheet","px-sheet");
+  const p1=el("div",{class:"px1"},el("span",{class:"px-tag",text:"COCOON ESSENTIEL"}),el("h2",{},"Le quotidien,",el("br"),"bien rangé"),
+    el("p",{class:"px-l",text:PM_LIM.photos+" photos · "+PM_LIM.questions+" questions · "+PM_LIM.docs+" papiers / mois"}),
+    lg?el("img",{class:"px-cat1",src:lg,alt:""}):"",el("span",{class:"px-zz","aria-hidden":"true",text:"z z"}));
+  const row=(ic,t,avant,apres,lab)=>el("div",{class:"px-r",role:"listitem","aria-label":t+" : "+lab},
+    typeof ic==="string"?el("b",{class:"px-e","aria-hidden":"true"},emoIco(ic)):ic,el("span",{text:t}),el("s",{"aria-hidden":"true",text:avant}),el("i",{"aria-hidden":"true",text:"→"}),el("em",{"aria-hidden":"true",text:apres}));
+  const coc=el("b",{class:"px-e px-coc","aria-hidden":"true"}); if(lg) coc.append(el("img",{src:lg,alt:""}));
+  const list=el("div",{class:"px-g",role:"list","aria-label":"Ce que Cocoon Plus ajoute"},
+    row("📸","Photos lues",String(PM_LIM.photos),"∞","sans limite au lieu de "+PM_LIM.photos+" par mois"),
+    row(coc,"Cocoony malin",String(PM_LIM.questions),"∞","sans limite au lieu de "+PM_LIM.questions+" questions par mois"),
+    row("📄","Papiers",String(PM_LIM.docs),"∞","illimités au lieu de "+PM_LIM.docs),
+    row("💾","Sauvegarde","sans fichiers","✓","photos et PDF compris"),
+    row("🏡","Foyers","1","2+","plusieurs foyers"));
+  const cta=el("button",{type:"button",class:"px-cta",text:asked?"✓ On te prévient à l'ouverture":"Passer à Plus · 1 mois offert",disabled:asked||null,onclick:async()=>{ cta.disabled=true;
     S.prefs=Object.assign({},S.prefs||{},{premiumInteret:Date.now(),premiumPlan:S.premPlan});
     try{ if(S.db&&S.uid) await S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs); }catch(e){ writeErr(e); }
     cta.textContent="✓ On te prévient à l'ouverture"; toast("Les abonnements ouvrent très bientôt : tu seras prévenu·e en premier, avec ton mois offert."); try{ renderPremium(); }catch(_){} }});
-  sheet.append(el("div",{class:"pp-in pp-cmpin"},hero,feats,el("p",{class:"pp-free",text:"Toujours gratuit : tâches, courses, repas, agenda, budget et ses graphiques, maison, événements, thèmes."}),plans,el("div",{class:"pp-foot"},cta,el("small",{text:"Un seul abonnement pour tout le foyer · annulable à tout moment"}))));
+  const p2=el("div",{class:"px2"},el("span",{class:"px-tag",text:"COCOON PLUS"}),el("h2",{},"Ton foyer",el("br"),"en mode turbo"),list,
+    el("span",{class:"px-st","aria-hidden":"true",text:"ILLIMITÉ !"}),
+    el("div",{class:"px-foot"},lg?el("img",{class:"px-cat2",src:lg,alt:""}):"",cta,el("small",{text:"puis "+PM_PRIX.an+"/an ou "+PM_PRIX.mois+"/mois · pour tout le foyer"})));
+  sheet.append(el("div",{class:"px"},p1,p2));
   pmFit(sheet); }
 /* Fait tenir la fenêtre Cocoon Plus dans l'écran : d'abord on resserre (pm-tight), puis on réduit l'ensemble juste ce qu'il faut */
-function pmFit(sheet){ const go=()=>{ if(!sheet.isConnected) return removeEventListener("resize",go); const inn=sheet.querySelector(".pp-cmpin"); if(!inn) return;
-    inn.style.zoom=""; sheet.classList.remove("pm-tight");
+function pmFit(sheet){ const go=()=>{ if(!sheet.isConnected) return removeEventListener("resize",go); const inn=sheet.querySelector(".px")||sheet.querySelector(".pp-cmpin"); if(!inn) return;
+    inn.style.zoom=""; inn.style.minHeight=""; sheet.classList.remove("pm-tight");
     const room=()=>sheet.clientHeight-(inn.getBoundingClientRect().top-sheet.getBoundingClientRect().top);
     const need=()=>inn.scrollHeight;
-    if(need()>room()+1){ sheet.classList.add("pm-tight"); if(need()>room()+1) inn.style.zoom=String(Math.max(.72,(room()-2)/need())); } };
+    if(need()>room()+1){ sheet.classList.add("pm-tight"); if(need()>room()+1){ const z=Math.max(.72,(room()-2)/need()); inn.style.zoom=String(z); if(inn.classList.contains("px")) inn.style.minHeight="calc(100% / "+z+")"; } }
+    /* Cocoony (grand) seulement s'il ne cache pas la liste */
+    const cat=sheet.querySelector(".px-cat2"), g=sheet.querySelector(".px-g"); if(cat&&g){ cat.style.display=""; if(cat.getBoundingClientRect().top<g.getBoundingClientRect().bottom+4) cat.style.display="none"; } };
   requestAnimationFrame(go); setTimeout(go,350); addEventListener("resize",go); }
 /* ---------- Événements : un anniversaire, des travaux, des vacances… ----------
    L'événement ne stocke que son titre, ses dates et son budget. Tout le reste (tâches, achats, rendez-vous,
