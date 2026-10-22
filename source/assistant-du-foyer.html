@@ -2797,6 +2797,8 @@ html[data-theme="light"]:has(#boot),html[data-theme="light"]:has(#boot) body{bac
 .ev-inp.sm{padding:8px 10px;font-size:14px;min-height:38px;border-radius:12px}
 .ev-two{display:flex;gap:10px}
 .ev-sec{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:2px 2px 6px;width:100%;border:0;background:none;font-family:inherit;padding:0}
+/* frise : le titre de chaque étape est centré sur son point (point de 15 px en haut du bloc) */
+.ev-node>.ev-sec{margin-top:0;min-height:15px;line-height:15px}
 .ev-list{background:var(--surface);border-radius:16px;box-shadow:0 2px 0 var(--shadow);padding:2px 12px;display:flex;flex-direction:column}
 .ev-row+.ev-row,.ev-list>.ev-it+.ev-it{border-top:1px solid var(--line)}
 .ev-it{display:flex;align-items:center;gap:10px;padding:9px 0;min-height:24px;width:100%;font:inherit;color:var(--ink);text-align:left;border:0;background:none}
@@ -3097,6 +3099,7 @@ html.native-tabs .hub-mini{display:none!important}
 .stk-ok{min-height:40px;padding:8px 12px}
 .ag-d{position:relative}.ag-cake{position:absolute;top:1px;right:2px;font-style:normal;font-size:11px;line-height:1}
 .st-del{color:var(--late)!important}
+.ev-tap{cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 .pr-in{gap:12px!important}
 .pr-card{background:var(--surface);border-radius:20px;padding:14px;box-shadow:0 2px 0 var(--shadow);display:flex;flex-direction:column;gap:10px}
 .pr-card.soon{box-shadow:inset 0 0 0 2.5px #FFC94A,0 2px 0 var(--shadow)}
@@ -8615,8 +8618,9 @@ function evNew(inn,V){ const T=EV_TYPES[V.type]||EV_TYPES.anniv, t0=iso(today())
     box.append(el("div",{class:"ev-sec"},el("span",{text:"Le modèle prépare"}),el("span",{text:V.pick.filter(Boolean).length+"/"+tpl.length})));
     const c=el("div",{class:"ev-list"}); tpl.forEach(([k,t,off],i)=>{ const dt=evTplDate({debut:V.debut,fin:V.fin},off), n=evDiff(dt,V.debut);
       const lab=n<0?"J"+n:n===0?(V.fin&&V.fin>V.debut?"Début":"Jour J"):(off+"").startsWith("f+")&&V.fin?"Fin":"J+"+n;
-      const ck=el("button",{type:"button",class:"ev-ck"+(V.pick[i]?" on":""),role:"checkbox","aria-checked":String(!!V.pick[i]),"aria-label":t,onclick:()=>{ V.pick[i]=!V.pick[i]; paintTpl(); }});
-      c.append(el("div",{class:"ev-it"+(V.pick[i]?"":" off")},ck,el("span",{class:"ev-tt",text:t}),k!=="t"?el("em",{class:"ev-tag "+k},uic(k==="a"?"cart":"calendar"),k==="a"?"achat":"rdv"):"",el("small",{class:"ev-when",text:lab}))); });
+      const ck=el("button",{type:"button",class:"ev-ck"+(V.pick[i]?" on":""),role:"checkbox","aria-checked":String(!!V.pick[i]),"aria-label":t});
+      /* toute la ligne coche / décoche (la case reste le bouton pour le clavier et les lecteurs d'écran) */
+      c.append(el("div",{class:"ev-it ev-tap"+(V.pick[i]?"":" off"),onclick:()=>{ V.pick[i]=!V.pick[i]; haptic(5); paintTpl(); }},ck,el("span",{class:"ev-tt",text:t}),k!=="t"?el("em",{class:"ev-tag "+k},uic(k==="a"?"cart":"calendar"),k==="a"?"achat":"rdv"):"",el("small",{class:"ev-when",text:lab}))); });
     box.append(c); }
   paintTpl(); inn.append(box);
   const go=el("button",{type:"button",class:"btn ev-cta",id:"evCreate",onclick:async()=>{ if(!S.db||!needMe()) return; const titre=(V.titre||"").trim()||T.n;
@@ -8710,7 +8714,8 @@ function evFrise(body,ev,I,V){ const t0=iso(today()), T=evT(ev);
   const fr=el("div",{class:"ev-frise",style:"--ec:"+T.c});
   const node=(cls,lab,sub,items,opts)=>{ const g=el("div",{class:"ev-node "+cls}); g.append(el("span",{class:"ev-dot","aria-hidden":"true"},cls.includes("jj")?el("i",{text:T.e}):""),el("div",{class:"ev-sec"},el("span",{text:lab}),sub?el("span",{text:sub}):""));
     const c=el("div",{class:"ev-list"}); for(const [k,o] of items) c.append(evRow(k,o,ev,opts)); g.append(c); fr.append(g); };
-  if(done.length){ if(V.showDone||done.length<=3) node("ok","Fait",done.length+" ✓",done,{when:true}); else { const g=el("div",{class:"ev-node ok"},el("span",{class:"ev-dot"}),el("button",{type:"button",class:"ev-sec ev-more-done",onclick:()=>{ V.showDone=true; evRender(false); }},el("span",{text:"Fait"}),el("span",{text:done.length+" ✓ · voir"}))); fr.append(g); } }
+  /* les étapes faites restent affichées ; le titre donne leur nombre */
+  if(done.length) node("ok",done.length+" réalisée"+(done.length>1?"s":""),"",done,{when:true});
   const groups=[]; for(const x of todo){ const d=x[2]||""; let g=groups[groups.length-1]; const key=d?evRel(ev,d)+"|"+d:"none"; if(!g||g.key!==key) groups.push(g={key,d,items:[]}); g.items.push(x); }
   let first=true;
   for(const g of groups){ if(!g.d){ node("nodate","Sans date","",g.items); continue; }
