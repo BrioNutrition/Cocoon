@@ -31,6 +31,7 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
         CAPPluginMethod(name: "faceidKey", returnType: CAPPluginReturnPromise)
     ]
     private var bar: UITabBar?
+    private var slidOut = false   // barre descendue pendant qu'une fenêtre est ouverte
     private var top: UIView?
     private var topScroll: NSKeyValueObservation?
     // raccourci de l'icône reçu avant que la page soit prête (lancement à froid)
@@ -87,7 +88,14 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
             bar.isHidden = false
             self.bar = bar
             // arrivée en douceur (fondu + légère montée), comme le reste de la page
-            if appearing {
+            if self.slidOut {
+                // retour après une fenêtre : elle remonte du bas
+                self.slidOut = false
+                bar.alpha = 1; if appearing { bar.transform = CGAffineTransform(translationX: 0, y: bar.bounds.height + 20) }
+                UIView.animate(withDuration: 0.45, delay: 0, usingSpringWithDamping: 0.85, initialSpringVelocity: 0, options: [.allowUserInteraction, .beginFromCurrentState]) {
+                    bar.transform = .identity
+                }
+            } else if appearing {
                 bar.alpha = 0; bar.transform = CGAffineTransform(translationX: 0, y: 24)
                 UIView.animate(withDuration: 0.5, delay: 0.05, usingSpringWithDamping: 0.9, initialSpringVelocity: 0, options: [.allowUserInteraction]) {
                     bar.alpha = 1; bar.transform = .identity
@@ -99,7 +107,11 @@ public class NativeTabsPlugin: CAPPlugin, CAPBridgedPlugin, UITabBarDelegate {
     @objc func hide(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
             guard let bar = self.bar, !bar.isHidden else { call.resolve(); return }
-            UIView.animate(withDuration: 0.25, animations: { bar.alpha = 0 }) { done in if done && bar.alpha < 0.01 { bar.isHidden = true; bar.alpha = 1 } }
+            // une fenêtre s'ouvre : la barre descend hors de l'écran (l'inverse de son arrivée), sans fondu
+            self.slidOut = true
+            UIView.animate(withDuration: 0.28, delay: 0, options: [.curveEaseIn, .beginFromCurrentState]) {
+                bar.transform = CGAffineTransform(translationX: 0, y: bar.bounds.height + 20)
+            } completion: { _ in if self.slidOut { bar.isHidden = true; bar.transform = .identity } }
             call.resolve()
         }
     }

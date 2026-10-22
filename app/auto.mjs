@@ -14,6 +14,8 @@ const tick = () => {
     if (sh("git rev-parse origin/main") === avant) return;
     sh("git merge -q --ff-only origin/main");
     console.log("⬇︎ nouvelle version :", sh("git log --oneline -1"));
+    if (sh("git diff --name-only " + avant + " HEAD").split("\n").some(f => f.startsWith("app/ios-native/")))
+      console.log("⚠︎ le code natif a changé : lance « npm run native:ios » dans un autre Terminal, puis ▶︎ dans Xcode.");
     sh(process.execPath + " prepare-www.mjs"); warned = false;
   } catch (e) {
     if (!warned) console.log("⚠︎ mise à jour impossible (modifications locales ? autre branche ?) :", String(e.stderr || e.message).split("\n")[0]);

@@ -2465,8 +2465,8 @@ html.sheet-open .add-fab{display:none}
 .pp-grab i{width:44px;height:5px;border-radius:9px;background:color-mix(in srgb,var(--ink) 28%,transparent)}
 html.prem-open{overflow:hidden}
 /* fenêtre plein écran (Cocoon Plus, événements, rendez-vous…) : la barre d'onglets s'efface, et revient à la fermeture */
-.tabs{transition:translate .28s cubic-bezier(.4,0,.2,1),opacity .2s}
-html.prem-open:not(:has(.prem-page.out)) .tabs{translate:0 calc(100% + 40px);opacity:0;pointer-events:none}
+.tabs{transition:translate .45s cubic-bezier(.2,1.25,.4,1)}
+html.nav-off .tabs{translate:0 140%;transition:translate .3s cubic-bezier(.5,0,.75,0);pointer-events:none}
 html.native-tabs.prem-open .pp-in{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 16px)}
 html.native-tabs.prem-open .pp-sheet:not(.pm-sheet){max-height:calc(100% - env(safe-area-inset-top,0px) - 10px)}
 html.native-tabs.prem-open .px2{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 20px)}
@@ -7002,7 +7002,7 @@ setTab("accueil");
     if(S.tab==="documents"&&S.docCat&&id==="back"){ S.docCat=null; renderDocs(); topNow(); return; } if(!bar){ if(id==="back"&&S.tab==="moi"&&S.moiSec) $("moiBack").click(); return; }
     const el0=id==="back"?bar.querySelector(".hub-back,.pg-back"):id==="sync"?bar.querySelector(".hub-sync"):id==="add"?bar.querySelector(".hub-add"):null; if(el0) el0.click(); });
   const safeTop=()=>{ const p=document.createElement("div"); p.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top,0px)"; document.body.append(p); const h=p.offsetHeight; p.remove(); return h; };
-  const sync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!(document.getElementById("boot")&&!document.getElementById("boot")._done)&&!window.__tabsHold&&!(document.getElementById("wizard")&&!$("wizard").hidden)&&!(document.documentElement.classList.contains("prem-open")&&!document.querySelector(".prem-page.out")));
+  const sync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!(document.getElementById("boot")&&!document.getElementById("boot")._done)&&!window.__tabsHold&&!(document.getElementById("wizard")&&!$("wizard").hidden)&&!document.documentElement.classList.contains("nav-off"));
     if(vis!==shown){ shown=vis; if(vis) cxSent=false; (vis?NT.show({items:TABS.map(t=>({title:t[1],icon:t[2]}))}):NT.hide()).catch(()=>{}); sel=-1; bdg=null; }
     if(!vis){ if(tbSig!=="off"){ tbSig="off"; NT.topbar({visible:false}).catch(()=>{}); } return; }
     /* une fiche ouverte depuis l'accueil (ou Moi) reste sous cet onglet */
@@ -7040,7 +7040,7 @@ setTab("accueil");
   try{ matchMedia("(prefers-color-scheme: dark)").addEventListener("change",sync); }catch(_){}
   /* dès qu'une rubrique s'ouvre, la barre native suit tout de suite,
      mais seulement une fois la page dessinée (2 images plus tard) : elles apparaissent ensemble */
-  let syncQ=false; new MutationObserver(()=>{ if(syncQ) return; syncQ=true; requestAnimationFrame(()=>requestAnimationFrame(()=>{ syncQ=false; sync(); })); }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["hidden","class","data-theme"]}); })();
+  let syncQ=false; navOffWatch(); new MutationObserver(()=>{ if(syncQ) return; syncQ=true; requestAnimationFrame(()=>requestAnimationFrame(()=>{ syncQ=false; sync(); })); }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["hidden","class","data-theme"]}); })();
 /* Ouvrir l'app depuis une notification : « #courses », « #agenda », « #ev=ID », et les boutons « C'est fait » / « Demain » (#t-done=ID, #t-later=ID) */
 /* ---------- Raccourcis : appui long sur Cocoony (site et iPhone), appui long sur l'icône de l'app (iPhone), raccourcis du manifeste (Android) ---------- */
 const RACC=[["tache","Nouvelle tâche","checkmark.circle","taches"],["courses","Ajouter aux courses","cart","courses"],["rdv","Un rendez-vous","calendar","agenda"],["repas","Prévoir un repas","fork.knife","repas"],["cocoony","Demander à Cocoony","sparkles",null]];
@@ -8591,6 +8591,16 @@ async function openFoyerMenu(btn){ const M=$("addMenu"); if(!M) return; if(!M.hi
   if(H&&H.foyers&&S.fyCache){ H.foyers().then(fresh=>{ if(!fresh) return; const ch=JSON.stringify(fresh)!==JSON.stringify(S.fyCache); S.fyCache=fresh; if(ch&&!M.hidden&&M.dataset.k==="fy"){ build(fresh); place(); } }).catch(()=>{}); } }
 const PM_FREE={"Papiers en photo":"5 / mois","Cocoony intelligent":"20 / mois","Papiers illimités":"25 max","Sauvegarde du foyer":"sans fichiers","Plusieurs foyers":"1"};
 const PM_SHORT={"Papiers en photo":"Lus et rangés tout seuls","Cocoony intelligent":"Cocoony répond à tout","Papiers illimités":"Plus de limite de 25","Sauvegarde du foyer":"Tout télécharger en 1 clic","Plusieurs foyers":"Vacances, garde alternée…"};
+/* Une fenêtre ou une feuille du bas est ouverte → html.nav-off : la barre d'onglets descend pour laisser la place
+   (l'inverse de son arrivée), et remonte à la fermeture. Sur iPhone, la barre native suit (sync → NT.hide). */
+function navOffNow(){ const vis=e=>!e.hidden&&e.getClientRects().length>0&&getComputedStyle(e).display!=="none";
+  const on=(document.documentElement.classList.contains("prem-open")&&!document.querySelector(".prem-page.out"))||[...document.querySelectorAll(".sheet-bg,.np-bg,.crop-bg,.priv-bg,.cf-bg.on,.wl-bg.on")].some(vis);
+  document.documentElement.classList.toggle("nav-off",on); }
+let NAVOFF_W=false;
+function navOffWatch(){ if(NAVOFF_W) return; NAVOFF_W=true; let q=false; const go=()=>{ if(q) return; q=true; requestAnimationFrame(()=>{ q=false; navOffNow(); }); };
+  new MutationObserver(go).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["hidden","class"]});
+  new MutationObserver(go).observe(document.documentElement,{attributes:true,attributeFilter:["class"]}); go(); }
+if(document.body) navOffWatch(); else document.addEventListener("DOMContentLoaded",navOffWatch);
 function upSheet(id,label,onClose){ let P=$(id); if(!P){ P=el("div",{class:"prem-page",id,role:"dialog","aria-modal":"true","aria-label":label}); document.body.append(P); }
   P.innerHTML=""; P.hidden=false; P.style.background=""; document.documentElement.classList.add("prem-open");
   const sheet=el("div",{class:"pp-sheet"}), grab=el("div",{class:"pp-grab",role:"button","aria-label":"Fermer",tabindex:"0"},el("i"));

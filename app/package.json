@@ -10,7 +10,8 @@
     "ios": "npm run www && npx cap sync ios && npx cap open ios",
     "run:ios": "npm run www && npx cap run ios",
     "live:ios": "npm run www && node live.mjs",
-    "auto:ios": "npm run www && node auto.mjs"
+    "auto:ios": "npm run www && node auto.mjs",
+    "native:ios": "bash ios-native/update.sh"
   },
   "dependencies": {
     "@capacitor/core": "^7.0.0",
