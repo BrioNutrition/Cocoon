@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 11:07";</script>
+<script>window.COCOON_BUILD="22/10 11:11";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3127,6 +3127,16 @@ html.native-tabs .hub-mini{display:none!important}
 .pp-cg{color:var(--muted);font-size:12.5px}
 .pp-cy{color:#2F9E5B;font-weight:800;font-size:15px}
 .pp-cmpin{gap:12px!important}
+.st-card{background:var(--surface);border-radius:22px;box-shadow:0 2px 0 var(--shadow);padding:16px;display:flex;flex-direction:column;gap:10px;margin:4px 0 8px}
+.st-h{display:flex;align-items:center;gap:12px}.st-h b{display:block;font-size:16px}.st-h small{color:var(--muted);font-size:12.5px}
+.st-n{display:inline-flex;align-items:center;gap:2px;padding:8px 12px;border-radius:16px;background:color-mix(in srgb,#FFC94A 40%,var(--surface));font-size:20px;flex:none}
+.st-n b{font:800 26px/1 var(--f-display)!important}
+.st-goal{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:700}.st-goal small{color:var(--muted);font-weight:600}
+.st-bar{background:var(--sunk)!important}
+.st-nb{margin:0;font-size:13px;color:var(--muted)}
+.st-pend{display:flex;align-items:center;gap:8px}.st-pend span{flex:1;min-width:0;font-size:14.5px}.st-pend .btn{min-height:40px;padding:8px 12px}
+.st-set summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--muted);padding:4px 0}
+.st-set[open]{display:flex;flex-direction:column;gap:8px}
 .r-frigo{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:20px;padding:12px 14px;margin:2px 0 4px;background:var(--surface);box-shadow:0 2px 0 var(--shadow);font:inherit;color:var(--ink);text-align:left;cursor:pointer}
 .r-frigo>span:first-child{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:22px;background:color-mix(in srgb,#8FB8FF 35%,var(--surface));flex:none}
 .r-frigo>span:nth-child(2){flex:1;min-width:0}.r-frigo b{display:block;font-size:15.5px}.r-frigo small{color:var(--muted);font-size:12.5px}
@@ -4064,6 +4074,7 @@ function renderProfile(){
   st.append(stat(month,pet?"fait ces 30 derniers jours":"fait"+(month>1?"es":"e")+" ces 30 derniers jours"));
   if(!pet) st.append(stat(added,"ajoutée"+(added>1?"s":"")+" au foyer"));
   const late=open.filter(t=>t.echeance&&daysTo(t.echeance)<0).length; if(late){ const x=stat(late,"en retard"); x.classList.add("dark"); st.append(x); }
+  { let sc=$("pStars"); if(!sc){ sc=el("div",{id:"pStars"}); $("pPrivate").before(sc); } sc.innerHTML=""; if(typeOf(m)==="enfant") sc.append(starCard(m)); }
   const pv=$("pPrivate"); pv.hidden=pet; pv.innerHTML=""; if(!pet){ pv.append(lockTag("")); pv.append("Ses tâches perso restent privées : tu ne vois ici que ce qui concerne le foyer."); }
   { const g=$("pGive"); g.textContent="+ Confier une tâche à "+m.nom; g.hidden=pet||S.readOnly||!me||!isAdmin(); }
   $("pOpenTitle").textContent=pet?"Rendez-vous et à prévoir":"À faire pour "+m.nom;
@@ -6288,7 +6299,39 @@ $("selOk").addEventListener("click",async()=>{
   const n=tasks.length;
   toast((n>1?n+" tâches validées.":"Fait. Bien joué.")+(msgs.length?" <b>"+esc(msgs[0])+"</b>"+(msgs.length>1?" (+"+(msgs.length-1)+" autre"+(msgs.length>2?"s":"")+" rappel"+(msgs.length>2?"s":"")+")":"")+" — ajouté aux rappels.":""));
 });
-async function completeTask(t){ const _r=await completeTaskInner(t); coconTick(); return _r; }
+async function completeTask(t){ const _r=await completeTaskInner(t); coconTick(); starEarn(t); return _r; }
+/* ---------- Étoiles des enfants ----------
+   Une tâche du foyer faite pour un enfant (pour = l'enfant) rapporte une étoile (collection etoiles). Cochée par un adulte : acquise ;
+   cochée par l'enfant lui-même (son compte) : « à valider » par un parent. Récompense par enfant dans recompenses/<id> :
+   {nom, objectif, utilisees} ; solde = étoiles validées - utilisees. */
+const kidOf=id=>{ const m=id&&membres().find(x=>x.id===id); return m&&typeOf(m)==="enfant"?m:null; };
+function starEarn(t){ try{ if(!t||t.prive||!S.db) return; const k=kidOf(t.pour); if(!k) return; const me=meId();
+  S.db.collection("etoiles").add({enfant:k.id,tache:t.titre||"Une tâche",n:1,le:Date.now(),par:me,ok:me!==k.id}).catch(()=>{});
+  if(me!==k.id) toast("⭐ Une étoile pour "+esc(k.nom)+" !"); }catch(_){ } }
+function starInfo(id){ const all=(S.etoiles||[]).filter(e=>e.enfant===id), ok=all.filter(e=>e.ok).reduce((a,e)=>a+(e.n||1),0);
+  const R=(S.recomp||[]).find(r=>r.id===id)||{}, used=R.utilisees||0;
+  return {solde:Math.max(0,ok-used),total:ok,attente:all.filter(e=>!e.ok).sort((a,b)=>(a.le||0)-(b.le||0)),nom:R.nom||"",obj:R.objectif||0}; }
+function starCard(m,onChange){ const done=()=>{ if(onChange) setTimeout(onChange,450); }; const me=meId(), adult=!!meM()&&typeOf(meM())==="adulte", I=starInfo(m.id), R=(S.recomp||[]).find(r=>r.id===m.id)||{};
+  const box=el("div",{class:"st-card"});
+  box.append(el("div",{class:"st-h"},el("span",{class:"st-n"},el("b",{text:String(I.solde)}),"⭐"),el("div",{},el("b",{text:me===m.id?"Mes étoiles":"Les étoiles de "+m.nom}),el("small",{text:"1 étoile par tâche faite"+(I.total?" · "+I.total+" gagnée"+(I.total>1?"s":"")+" en tout":"")}))));
+  if(I.obj&&I.nom){ const got=I.solde>=I.obj;
+    box.append(el("div",{class:"st-goal"},el("span",{text:(got?"🎉 ":"🎁 ")+I.nom}),el("small",{text:got?"Récompense gagnée !":Math.min(I.solde,I.obj)+" / "+I.obj+" étoiles"})),
+      el("div",{class:"pq-bar st-bar"},el("span",{style:"width:"+Math.min(100,Math.round(I.solde/I.obj*100))+"%"})));
+    if(got&&adult) box.append(el("button",{type:"button",class:"btn st-give",text:"Récompense donnée ("+I.obj+" étoiles)",onclick:async()=>{ try{ await S.db.collection("recompenses").doc(m.id).set({nom:R.nom,objectif:R.objectif,utilisees:(R.utilisees||0)+I.obj,donneeLe:Date.now()}); confetti(innerWidth/2,innerHeight/3); toast("Bravo "+esc(m.nom)+" !"); done(); }catch(e){ writeErr(e); } }})); }
+  else box.append(el("p",{class:"st-nb",text:adult?"Choisis une récompense à atteindre, par exemple « Ciné » pour 20 étoiles.":"Demande à un parent de choisir ta récompense."}));
+  if(I.attente.length){ box.append(el("div",{class:"ms-gl",text:"À valider ("+I.attente.length+")"}));
+    for(const e of I.attente.slice(0,6)){ const r=el("div",{class:"st-pend"},el("span",{text:e.tache}));
+      if(adult) r.append(el("button",{type:"button",class:"btn",text:"Valider",onclick:()=>{ S.db.collection("etoiles").doc(e.id).update({ok:true,validePar:me}).catch(writeErr); done(); }}),
+        el("button",{type:"button",class:"btn ghost","aria-label":"Refuser",text:"✕",onclick:()=>{ S.db.collection("etoiles").doc(e.id).delete().catch(writeErr); done(); }}));
+      else r.append(el("small",{text:"en attente"}));
+      box.append(r); } }
+  if(adult){ const nm=el("input",{type:"text",id:"stNom-"+m.id,maxlength:"40",placeholder:"Ciné, glace, soirée pyjama…"}), ob=el("input",{type:"number",id:"stObj-"+m.id,min:"1",max:"500",inputmode:"numeric",placeholder:"20"}); nm.value=R.nom||""; ob.value=R.objectif||"";
+    const f=el("details",{class:"st-set"},el("summary",{text:I.nom?"Changer la récompense":"Choisir une récompense"}),
+      el("div",{class:"frow"},el("label",{class:"field",for:"stNom-"+m.id},"Récompense",nm),el("label",{class:"field",for:"stObj-"+m.id},"Nombre d'étoiles",ob)),
+      el("button",{type:"button",class:"btn",text:"Enregistrer",onclick:async()=>{ const n=nm.value.trim(), o=Math.max(1,Math.min(500,parseInt(ob.value,10)||0)); if(!n||!o){ toast("Indique la récompense et le nombre d'étoiles."); return; }
+        try{ await S.db.collection("recompenses").doc(m.id).set({nom:n,objectif:o,utilisees:R.utilisees||0}); toast("🎁 "+esc(n)+" pour "+o+" étoiles."); done(); }catch(e){ writeErr(e); } }}));
+    box.append(f); }
+  return box; }
 async function completeTaskInner(t){
   const col=colFor(t), ref=col.doc(t.id), me=meId();
   {
@@ -7401,6 +7444,7 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
     window.cocoonHost&&$("cxNotif")?tile("notif","🔔","#E79ADB","Notifications","rappels sur ton téléphone",null):tile("perso","✓","#B9A8F0","Tâches réalisées","ton historique",null));
   const reg=el("button",{type:"button",class:"ms-reg",onclick:()=>moiOpen("reglages")},el("i",{"aria-hidden":"true",text:"⚙️"}),el("span",{},el("b",{text:"Réglages"}),el("small",{text:"apparence, compte, confidentialité, mes données"})),el("u",{"aria-hidden":"true",text:"›"}));
   T.append(el("div",{class:"ms-gl",text:"Mon espace"+(late?" · "+late+" en retard":"")}),g,reg);
+  if(typeOf(m)==="enfant") T.append(el("div",{class:"ms-gl",text:"Mes étoiles"}),starCard(m));
   // sous-page Réglages
   let RG=$("mReglages"); if(!RG){ RG=el("div",{id:"mReglages",class:"sub ms-sub"}); $("mSettings").before(RG); } RG.innerHTML="";
   const ico=(e,c)=>el("span",{class:"b-ico rg-ic",style:"--stripe:"+c,text:e});
@@ -7490,7 +7534,8 @@ function openMemberSheet(id){ const m=membre(id); if(!m) return; const me=meId()
   { const tl=!isMe&&pfInfos(m).find(x=>pfIsTel(x.v)); if(tl) acts.append(el("a",{class:"btn ghost mb-call",href:telHref(tl.v),},uic("phone"),"Appeler")); }
   acts.append(el("button",{type:"button",class:"btn ghost mb-prof",text:isMe?"Mon profil":"Voir sa fiche",onclick:go(()=>isMe?openProfile(id):openProfile(id,true))}));
   if(acts.childElementCount%2===0) acts.classList.add("two");
-  sheet.append(el("div",{class:"pp-in"},head,list,acts)); }
+  const sc=el("div"); if(typeOf(m)==="enfant"){ const draw=()=>{ if(!sc.isConnected&&sc.childElementCount) return; sc.replaceChildren(starCard(m,draw)); }; draw(); }
+  sheet.append(el("div",{class:"pp-in"},head,sc,list,acts)); }
 /* Bouton « Ajouter » propre à chaque rubrique (remplace le + central) */
 function nextFreeMeal(noMatin){ const t=today(), h=new Date().getHours(), slots=repasSlots().filter(x=>!(noMatin&&x==="matin"));
   for(let k=0;k<14;k++){ const d=iso(new Date(t.getFullYear(),t.getMonth(),t.getDate()+k));
@@ -9506,6 +9551,8 @@ async function autoClaimLegacy(){
   db.collection("mercis").onSnapshot(s=>{ S.mercis=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("credits").onSnapshot(s=>{ S.credits=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"credits"); renderAll(); },()=>{});
   db.collection("fiches").onSnapshot(s=>{ const d=s.docs.find(x=>x.id==="garde"); S.garde=d?{data:d.data()}:null; },()=>{});
+  db.collection("etoiles").onSnapshot(s=>{ S.etoiles=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
+  db.collection("recompenses").onSnapshot(s=>{ S.recomp=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("abonnements").onSnapshot(s=>{ S.abos=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"abonnements"); renderAll(); },()=>{});
   db.collection("documents").onSnapshot(s=>{ S.docs=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"documents"); S.loaded.d=true; renderAll(); },()=>{ S.loaded.d=true; renderAll(); });
 })();

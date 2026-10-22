@@ -72,6 +72,9 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   des parents (infos de profil), contacts cochés, 15/18/17/112.
 - « Avec ce qu'il y a dans le frigo » (Repas, `openFrigo()`) : 3 idées de plats ; Cocoony intelligent si dispo (compte comme une
   question), sinon `frigoLocal()` sur les plats connus. « Au menu » vise le prochain midi/soir libre, « Ajouter aux courses » le manquant.
+- Étoiles des enfants : `starEarn(t)` (appelé par `completeTask`) ajoute 1 étoile dans `etoiles` quand une tâche « pour » un enfant
+  est faite ; cochée par l'enfant lui-même = à valider par un adulte. Récompense par enfant dans `recompenses/<id>`
+  {nom, objectif, utilisees}. Carte `starCard(m)` : feuille de l'enfant (accueil), sa fiche profil, et Moi s'il a un compte.
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
