@@ -3095,7 +3095,8 @@ html.native-tabs .hub-mini{display:none!important}
 .stk-n{flex:1;min-width:0}.stk-n b{display:block;font-size:15px}.stk-n small{font-size:12.5px;color:var(--muted)}
 .stk-d.soon{color:var(--soon);font-weight:700}.stk-d.late{color:var(--late);font-weight:700}
 .stk-ok{min-height:40px;padding:8px 12px}
-#agProches{margin-bottom:10px}
+.ag-d{position:relative}.ag-cake{position:absolute;top:1px;right:2px;font-style:normal;font-size:11px;line-height:1}
+.st-del{color:var(--late)!important}
 .pr-in{gap:12px!important}
 .pr-card{background:var(--surface);border-radius:20px;padding:14px;box-shadow:0 2px 0 var(--shadow);display:flex;flex-direction:column;gap:10px}
 .pr-card.soon{box-shadow:inset 0 0 0 2.5px #FFC94A,0 2px 0 var(--shadow)}
@@ -5324,8 +5325,6 @@ function renderRdv(){
   w.append(box);
 }
 function renderAgenda(){ const W=$("agWho"), C=$("agCal"); if(!W||!C) return; W.innerHTML=""; C.innerHTML=""; const me=meId();
-  { let P=$("agProches"); if(!P){ P=el("div",{id:"agProches"}); C.before(P); } P.innerHTML=""; const nx=prochesTries()[0];
-    P.append(el("button",{type:"button",class:"r-frigo",onclick:()=>openProches()},el("span",{"aria-hidden":"true",text:"🎂"}),el("span",{},el("b",{text:"Anniversaires des proches"}),el("small",{text:nx?nx.p.nom+" "+(nx.j===0?"aujourd'hui":nx.j===1?"demain":"dans "+nx.j+" jours")+(nx.age?" · "+nx.age+" ans":""):"Grands-parents, cousins, amis : rappel et idées cadeaux"})),el("u",{"aria-hidden":"true",text:"›"}))); }
   const ms=membres(); if(S.agWho&&!ms.some(m=>m.id===S.agWho)) S.agWho=null;
   W.append(el("button",{type:"button","aria-pressed":String(!S.agWho),onclick:()=>{ S.agWho=null; renderAgenda(); renderRdv(); }},"Tout le foyer"));
   for(const m of ms) W.append(el("button",{type:"button","aria-pressed":String(S.agWho===m.id),onclick:()=>{ S.agWho=S.agWho===m.id?null:m.id; renderAgenda(); renderRdv(); }},avatar(m.id,18),m.id===me?"Moi":m.nom));
@@ -5342,6 +5341,7 @@ function renderAgenda(){ const W=$("agWho"), C=$("agCal"); if(!W||!C) return; W.
   for(let d=1;d<=dim;d++){ const k=iso(new Date(Y,Mo,d)), ev=by[k]||[], has=ev.some(r=>!r.fait), past=k<td;
     const b=el("button",{type:"button",class:"ag-d"+(k===td?" now":"")+(k===S.agDay?" sel":"")+(past?" past":"")+(ev.length?" has":""),"aria-label":d+" "+mn+(ev.length?", "+ev.length+" rendez-vous":""),"aria-pressed":String(k===S.agDay),onclick:()=>{ S.agDay=S.agDay===k?null:k; renderAgenda(); renderRdv(); }},el("b",{text:String(d)}));
     { const E=evAll().filter(e=>e.debut<=k&&evEnd(e)>=k&&(!S.agWho||true))[0]; if(E){ const st=E.debut===k, en=evEnd(E)===k; b.append(el("i",{class:"ag-evb"+(st?" st":"")+(en?" en":""),style:"background:"+evT(E).c,"aria-hidden":"true"})); b.setAttribute("aria-label",b.getAttribute("aria-label")+", "+(E.titre||evT(E).n)); } }
+    { const pr=(S.proches||[]).filter(p=>p.jour===k.slice(5)); if(pr.length){ b.append(el("i",{class:"ag-cake","aria-hidden":"true",text:"🎂"})); b.setAttribute("aria-label",b.getAttribute("aria-label")+", anniversaire "+pr.map(p=>de(p.nom)).join(", ")); } }
     if(ev.length){ const dots=el("span",{class:"ag-dots"}); for(const r of ev.slice(0,3)) dots.append(el("i",{class:r.fait?"f":"",style:"background:"+((r.pour&&r.pour[0]&&membre(r.pour[0]).c)||"#8FB8FF")})); b.append(dots); }
     g.append(b); }
   C.append(g);
@@ -5385,7 +5385,8 @@ function rdvFormEl(){
     { const when=new Date(F.date+"T"+F.heure); if(when.getTime()<Date.now()){ toast(F.heure&&F.date===iso(today())?"Cette heure est déjà passée : choisis une heure ou une date à venir.":"Cette date est déjà passée : choisis une date à venir."); (F.heure&&F.date===iso(today())?he:da).focus(); return; } }
     const doc={titre:F.titre.trim(),date:F.date,heure:F.heure||null,heureFin:F.heureFin||null,lieu:(F.lieu||"").trim()||null,pour:(F.pour||[]).slice()};
     try{ if(F.id) await S.db.collection("rdv").doc(F.id).update(doc); else await S.db.collection("rdv").add(Object.assign(doc,{par:meId(),le:Date.now()}));
-      S.rdvForm=null; toast(F.id?"Rendez-vous modifié.":"Rendez-vous ajouté : rappel la veille."); renderRdv(); }catch(err){ writeErr(err); } });
+      S.rdvForm=null; toast(F.id?"Rendez-vous modifié.":"Rendez-vous ajouté : rappel la veille."); renderRdv();
+      { const an=!F.id&&annivNom(doc.titre); if(an) setTimeout(()=>openAnniv({nom:an,date:doc.date}),500); } }catch(err){ writeErr(err); } });
   setTimeout(()=>{ const x=$("rdvTitre"); if(x&&!F.id&&!F.titre) x.focus(); },40);
   return f;
 }
@@ -6040,35 +6041,34 @@ function openVac(){ if(!needMe()) return; const U=upSheet("vacPage","Vacances"),
 function procheNext(p){ if(!p||!/^\d{2}-\d{2}$/.test(p.jour||"")) return null; const [m,d]=p.jour.split("-").map(Number), t=today();
   let x=new Date(t.getFullYear(),m-1,d); if(x<t) x=new Date(t.getFullYear()+1,m-1,d); return {date:iso(x),j:daysTo(iso(x)),age:p.annee?x.getFullYear()-p.annee:null}; }
 function prochesTries(){ return (S.proches||[]).map(p=>Object.assign({p},procheNext(p)||{})).filter(x=>x.date).sort((a,b)=>a.j-b.j); }
-function openProches(focusId){ if(!needMe()) return; const U=upSheet("prochesPage","Anniversaires des proches"), inn=el("div",{class:"pp-in pr-in"}); U.sheet.append(inn);
-  let form=null;
+/* « Anniversaire de Mamie » dans l'agenda → on propose : le rappeler chaque année (proches), idées cadeaux, préparer la fête */
+function annivNom(t){ const m=String(t||"").trim().match(/^(?:🎂\s*)?anniv(?:ersaire)?s?\b\s*(?:de\s+|d['’]\s*|du\s+|des\s+|pour\s+|:\s*)?(.+)$/i); if(!m) return null;
+  const n=m[1].replace(/[!.?\s]+$/,"").trim(); return n&&n.length<=40?n.replace(/^./,c=>c.toUpperCase()):null; }
+function openAnniv(o){ if(!needMe()) return; const p0=o.p||(S.proches||[]).find(x=>norm(x.nom)===norm(o.nom||""))||null;
+  const nom=p0?p0.nom:o.nom, date=o.date||(p0&&procheNext(p0)||{}).date||iso(today()), nx=p0?procheNext(p0):null;
+  const U=upSheet("annivPage","Anniversaire "+de(nom)), inn=el("div",{class:"pp-in pr-in"}); U.sheet.append(inn);
+  let ideas=p0?(p0.idees||[]).slice():[], yearly=true;
+  const savePr=async()=>{ if(p0){ await S.db.collection("proches").doc(p0.id).update({idees:ideas}); p0.idees=ideas.slice(); } };
   const draw=()=>{ inn.innerHTML="";
-    inn.append(el("div",{class:"gd-h"},el("b",{text:"Anniversaires des proches"}),el("span",{text:"Cocoon te prévient une semaine avant, avec tes idées de cadeaux."})));
-    const L=prochesTries();
-    for(const x of L){ const p=x.p, card=el("div",{class:"pr-card"+(x.j<=7?" soon":""),"data-id":p.id});
-      card.append(el("div",{class:"pr-top"},el("span",{class:"pr-d"},el("b",{text:String(parse(x.date).getDate())}),el("small",{text:MOIS_C(parse(x.date))})),
-        el("div",{class:"pr-t"},el("b",{text:p.nom}),el("small",{text:[p.lien,x.j===0?"🎉 aujourd'hui !":x.j===1?"demain":"dans "+x.j+" jours",x.age?x.age+" ans":""].filter(Boolean).join(" · ")})),
-        el("button",{type:"button",class:"pr-x","aria-label":"Retirer "+p.nom,text:"×",onclick:()=>confirmBox("Retirer "+p.nom+" ?","Son anniversaire et ses idées cadeaux seront effacés.","Retirer",async()=>{ try{ await S.db.collection("proches").doc(p.id).delete(); setTimeout(draw,300); }catch(e){ writeErr(e); } })})));
-      const ideas=el("div",{class:"pr-ideas"});
-      for(const [i,idee] of (p.idees||[]).entries()) ideas.append(el("div",{class:"pr-idea"},el("span",{text:"🎁 "+idee}),
-        el("button",{type:"button",class:"pr-a",text:"Aux courses",onclick:async e=>{ try{ await S.db.collection("courses").add({nom:idee,qte:null,pour:"tous",fait:false,ajoutePar:meId(),ajouteLe:Date.now(),note:"Cadeau pour "+p.nom}); e.currentTarget.textContent="✓ Ajouté"; e.currentTarget.disabled=true; }catch(err){ writeErr(err); } }}),
-        el("button",{type:"button",class:"pr-a",text:"Dépense",onclick:()=>{ U.close(); setTimeout(()=>{ openBForm("dep"); const d=S.bForm&&S.bForm.d; if(d){ d.titre="Cadeau "+p.nom+" : "+idee; d.cat="loisirs"; renderBForm(); } },340); }}),
-        el("button",{type:"button",class:"pr-x sm","aria-label":"Retirer l'idée "+idee,text:"×",onclick:async()=>{ const id2=(p.idees||[]).filter((_,k)=>k!==i); try{ await S.db.collection("proches").doc(p.id).update({idees:id2}); p.idees=id2; draw(); }catch(e){ writeErr(e); } }})));
-      const ii=el("input",{type:"text",placeholder:"Une idée de cadeau…","aria-label":"Idée de cadeau pour "+p.nom,maxlength:"80"});
-      const addI=async()=>{ const v=ii.value.trim(); if(!v) return; const id2=(p.idees||[]).concat(v); try{ await S.db.collection("proches").doc(p.id).update({idees:id2}); p.idees=id2; draw(); }catch(e){ writeErr(e); } };
-      ii.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); addI(); } });
-      ideas.append(el("div",{class:"pr-add"},ii,el("button",{type:"button",class:"btn ghost",text:"Ajouter",onclick:addI})));
-      card.append(ideas); inn.append(card); }
-    if(!L.length&&!form) inn.append(el("p",{class:"gd-nb",text:"Ajoute les anniversaires de ta famille et de tes amis : Cocoon te les rappelle une semaine avant."}));
-    if(form){ const nm=el("input",{type:"text",id:"prNom",maxlength:"40",placeholder:"Mamie Jeanne, Lucas…"}), li=el("input",{type:"text",id:"prLien",maxlength:"30",placeholder:"Grand-mère, cousin, amie…"});
-      const dt=el("input",{type:"date",id:"prDate"}), sansAn=el("input",{type:"checkbox",id:"prSansAn"});
-      inn.append(el("div",{class:"st-add pr-form"},el("label",{class:"field",for:"prNom"},"Prénom ou surnom",nm),el("label",{class:"field",for:"prLien"},"Qui c'est (facultatif)",li),el("label",{class:"field",for:"prDate"},"Date de naissance",dt),
-        el("label",{class:"mf-check",for:"prSansAn"},sansAn,"Je ne connais pas l'année"),
-        el("div",{class:"frow"},el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>{ form=null; draw(); }}),el("button",{type:"button",class:"btn",text:"Enregistrer",onclick:async()=>{ const n=nm.value.trim(); if(!n||!dt.value){ toast("Indique le prénom et la date."); return; }
-          try{ await S.db.collection("proches").add({nom:n,lien:li.value.trim()||null,jour:dt.value.slice(5),annee:sansAn.checked?null:Number(dt.value.slice(0,4)),idees:[],par:meId(),le:Date.now()}); form=null; setTimeout(draw,300); toast("🎂 "+esc(n)+" ajouté·e."); }catch(e){ writeErr(e); } }}))));
-      setTimeout(()=>{ try{ nm.focus({preventScroll:true}); }catch(_){} },60); }
-    else inn.append(el("button",{type:"button",class:"btn pp-cta",text:"+ Ajouter un anniversaire",onclick:()=>{ form={}; draw(); }}));
-    if(focusId) setTimeout(()=>{ const c=inn.querySelector('[data-id="'+CSS.escape(focusId)+'"]'); if(c) c.scrollIntoView({block:"center"}); focusId=null; },60); };
+    inn.append(el("div",{class:"vac-hero",style:"background:linear-gradient(135deg,color-mix(in srgb,#E79ADB 40%,var(--surface)),color-mix(in srgb,#FFC94A 35%,var(--surface)))"},el("span",{"aria-hidden":"true",text:"🎂"}),
+      el("div",{},el("b",{text:"Anniversaire "+de(nom)}),el("small",{text:new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(parse(date))+(nx&&nx.age?" · "+nx.age+" ans":"")}))));
+    if(!p0){ const b=el("button",{type:"button",class:"gd-ck"+(yearly?" on":""),role:"checkbox","aria-checked":String(yearly),onclick:()=>{ yearly=!yearly; draw(); }},el("i",{"aria-hidden":"true"}),el("span",{},el("b",{text:"Le rappeler chaque année"}),el("small",{text:"Cocoon te prévient une semaine avant, avec tes idées de cadeaux."})));
+      inn.append(el("div",{class:"gd-g"},b)); }
+    inn.append(el("div",{class:"ms-gl",text:"Idées de cadeaux"}));
+    const box=el("div",{class:"pr-ideas"});
+    ideas.forEach((idee,i)=>box.append(el("div",{class:"pr-idea"},el("span",{text:"🎁 "+idee}),
+      el("button",{type:"button",class:"pr-a",text:"Aux courses",onclick:async e=>{ try{ await S.db.collection("courses").add({nom:idee,qte:null,pour:"tous",fait:false,ajoutePar:meId(),ajouteLe:Date.now(),note:"Cadeau pour "+nom}); e.currentTarget.textContent="✓ Ajouté"; e.currentTarget.disabled=true; }catch(err){ writeErr(err); } }}),
+      el("button",{type:"button",class:"pr-a",text:"Dépense",onclick:()=>{ U.close(); setTimeout(()=>{ openBForm("dep"); const d=S.bForm&&S.bForm.d; if(d){ d.titre="Cadeau "+nom+" : "+idee; d.cat="loisirs"; renderBForm(); } },340); }}),
+      el("button",{type:"button",class:"pr-x sm","aria-label":"Retirer l'idée "+idee,text:"×",onclick:async()=>{ ideas=ideas.filter((_,k)=>k!==i); try{ await savePr(); }catch(e){ writeErr(e); } draw(); }}))));
+    const ii=el("input",{type:"text",placeholder:"Un plaid, un livre…","aria-label":"Idée de cadeau",maxlength:"80"});
+    const addI=async()=>{ const v=ii.value.trim(); if(!v) return; ideas.push(v); try{ await savePr(); }catch(e){ writeErr(e); } draw(); setTimeout(()=>{ const x=inn.querySelector(".pr-add input"); if(x) x.focus(); },30); };
+    ii.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); addI(); } });
+    box.append(el("div",{class:"pr-add"},ii,el("button",{type:"button",class:"btn ghost",text:"Ajouter",onclick:addI}))); inn.append(box);
+    inn.append(el("button",{type:"button",class:"btn ghost",text:"🎉 Préparer la fête",onclick:()=>{ U.close(); setTimeout(()=>openEvents({v:"new",type:"anniv",debut:date}),340); }}));
+    inn.append(el("button",{type:"button",class:"btn pp-cta",text:p0?"Fermer":"C'est noté",onclick:async()=>{
+      if(!p0&&yearly){ try{ await S.db.collection("proches").add({nom,lien:null,jour:date.slice(5),annee:null,idees:ideas,par:meId(),le:Date.now()}); toast("🎂 Rappel chaque année, une semaine avant."); }catch(e){ writeErr(e); } }
+      U.close(); }}));
+    if(p0) inn.append(el("button",{type:"button",class:"btn ghost st-del",text:"Ne plus rappeler cet anniversaire",onclick:()=>confirmBox("Ne plus rappeler ?","L'anniversaire "+de(nom)+" et ses idées de cadeaux seront effacés.","Effacer",async()=>{ try{ await S.db.collection("proches").doc(p0.id).delete(); U.close(); }catch(e){ writeErr(e); } })})); };
   draw(); }
 function meterLast(){ const rs=(S.releves||[]).slice().sort((a,b)=>a.date<b.date?1:-1); return rs[0]||null; }
 function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; const sec=S.mSec||null, me=meId(), t0=iso(today());
@@ -6824,7 +6824,7 @@ function npIcon(r){ if(r.evn){ const i=el("span",{class:"np-ic",style:"--bc:#FF9
 function npGo(r){ closeNotifs(); const x=r.ref; if(r.evn){ setTimeout(()=>openEvent(x.ev),120); return; } if(r.live){ setTab("courses"); renderHeader(); window.scrollTo({top:0,behavior:"instant"}); return; } if(r.merci) return;
   if(r.kind==="Perso"||r.kind==="Foyer") return goTask(x);
   if(r.kind==="Document"){ S.docWho=null; S.docCat=catOf(x.cat||"documents").id||"documents"; if($("papQ")) $("papQ").value=""; return goDoc(x); }
-  if(r.kind==="Anniversaire"){ if(x.proche){ setTimeout(()=>openProches(x.id),120); return; } return openProfile(x.id); }
+  if(r.kind==="Anniversaire"){ if(x.proche){ const p=(S.proches||[]).find(q=>q.id===x.id); if(p) setTimeout(()=>openAnniv({p}),120); return; } return openProfile(x.id); }
   if(r.kind==="Réserves"){ S.stockLieu=x.lieu; setTimeout(openStock,120); return; }
   if(r.kind==="Prélèvement"||r.kind==="Budget"){ setTab("budget"); window.scrollTo({top:0}); return; }
   if(r.kind==="Rendez-vous"){ S.agDay=null; setTab("agenda"); return; }
