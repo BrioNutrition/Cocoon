@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 21:22";</script>
+<script>window.COCOON_BUILD="22/10 21:31";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3730,6 +3730,9 @@ html.native-tabs .hub-mini{display:none!important}
 <div class="toast" id="toast" hidden role="status"></div>
 <div class="hub-mini" id="hubMini" aria-hidden="true"><button type="button" class="hub-back" tabindex="-1" aria-label="Retour au foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b id="hubMiniT"></b><span class="hm-sp"></span><button type="button" class="hm-add" id="hubMiniAdd" tabindex="-1" aria-label="Ajouter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div>
 
+<script>/* Cocoony visible dès l'ouverture : sa photo (gardée sur l'appareil, cf. applySecIdent) ou le logo, posée avant le gros script */
+(function(){var src="";try{src=(JSON.parse(localStorage.getItem("cocoon.secid")||"{}").src)||"";}catch(e){}var l=document.querySelector(".brand-logo");if(!src&&l)src=l.src;if(!src)return;
+document.querySelectorAll(".nav-cxi,#secBig,.sec-av").forEach(function(i){if(!i.getAttribute("src"))i.src=src;});})();</script>
 <script>
 (function(){
 "use strict";
@@ -3927,7 +3930,15 @@ const LOCKSVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 const DOGSVG='<svg viewBox="0 0 24 24" fill="#fff"><path d="M5 4c-1.5 0-3 2-3 5 0 1.6 1 2.4 2 2.6V15c0 3.3 3.6 6 8 6s8-2.7 8-6v-3.4c1-.2 2-1 2-2.6 0-3-1.5-5-3-5-1.4 0-2.6 1.3-3.2 2.6A9 9 0 0 0 12 6.2c-1.4 0-2.7.2-3.8.4C7.6 5.3 6.4 4 5 4z"/><circle cx="9" cy="12.5" r="1.1" fill="#0003"/><circle cx="15" cy="12.5" r="1.1" fill="#0003"/><ellipse cx="12" cy="16" rx="1.8" ry="1.2" fill="#0003"/></svg>';
 const PAWSVG='<svg viewBox="0 0 24 24" fill="#fff"><ellipse cx="12" cy="16" rx="5" ry="4"/><circle cx="6" cy="10" r="2"/><circle cx="10" cy="6.5" r="2"/><circle cx="14" cy="6.5" r="2"/><circle cx="18" cy="10" r="2"/></svg>';
 function petSvg(e){ return e==="Chien"?DOGSVG:(!e||e==="Chat")?CATSVG:PAWSVG; }
-function avatarFor(m,size,cls){ const a=el("span",{class:"av"+(cls?" "+cls:""),style:"background:"+(m.c||"#888")+(size?";width:"+size+"px;height:"+size+"px;font-size:"+Math.round(size*.45)+"px":""),"aria-hidden":"true"}); const u=imgUrl(m.photo); if(u) a.append(el("img",{src:u,alt:""})); else if(typeOf(m)==="animal") a.innerHTML=petSvg(m.espece); else a.textContent=(m.nom||"?").slice(0,1).toUpperCase(); return a; }
+/* Photos de profil : une miniature (192 px) gardée sur l'appareil s'affiche tout de suite, sans attendre le lien temporaire
+   ni le téléchargement ; elle est refaite quand la photo change (nouvelle référence). Effacées à la déconnexion. */
+const THUMBS=(()=>{ try{ return JSON.parse(localStorage.getItem("cocoon.thumbs")||"{}")||{}; }catch(_){ return {}; } })(), THUMB_Q=new Set();
+let THUMB_SAVE=0; const saveThumbs=()=>{ clearTimeout(THUMB_SAVE); THUMB_SAVE=setTimeout(()=>{ try{ const ks=Object.keys(THUMBS); if(ks.length>60) for(const k of ks.slice(0,ks.length-60)) delete THUMBS[k]; localStorage.setItem("cocoon.thumbs",JSON.stringify(THUMBS)); }catch(_){} },400); };
+async function makeThumb(ref,url){ if(!ref||THUMBS[ref]||THUMB_Q.has(ref)||/^data:/.test(ref)) return; THUMB_Q.add(ref);
+  try{ const r=await fetch(url); if(!r.ok) throw 0; const bm=await createImageBitmap(await r.blob()); const N=192, k=Math.max(N/bm.width,N/bm.height), w=bm.width*k, h=bm.height*k;
+    const c=document.createElement("canvas"); c.width=c.height=N; c.getContext("2d").drawImage(bm,(N-w)/2,(N-h)/2,w,h); THUMBS[ref]=c.toDataURL("image/jpeg",.82); saveThumbs(); }catch(_){} THUMB_Q.delete(ref); }
+function avatarFor(m,size,cls){ const a=el("span",{class:"av"+(cls?" "+cls:""),style:"background:"+(m.c||"#888")+(size?";width:"+size+"px;height:"+size+"px;font-size:"+Math.round(size*.45)+"px":""),"aria-hidden":"true"});
+  const th=m.photo&&THUMBS[m.photo], u=th||imgUrl(m.photo); if(u&&!th&&m.photo) makeThumb(m.photo,u); if(u) a.append(el("img",{src:u,alt:"",decoding:"sync"})); else if(typeOf(m)==="animal") a.innerHTML=petSvg(m.espece); else a.textContent=(m.nom||"?").slice(0,1).toUpperCase(); return a; }
 function avatar(id,size){ return avatarFor(membre(id),size); }
 function paintBanner(node,m){ const p=BANNERS.find(b=>"preset:"+b.id===m.banniere); const u=!p&&imgUrl(m.banniere); node.style.setProperty("--mc",m.c||"#888"); node.classList.toggle("plain",!p&&!u); node.classList.toggle("rich",!!(p||u)); node.style.background=p?p.css:u?"center/cover no-repeat url(\""+u+"\")":""; return !!(p||u); }
 function profileCard(m,actions){
@@ -8345,7 +8356,9 @@ function emoSrc(e,a,b){ return "data:image/svg+xml,"+encodeURIComponent('<svg xm
 function secIdent(over){ const p=Object.assign({},S.prefs||{},S.secIdLocal||{},over||{}); const lg=document.querySelector(".brand-logo");
   let src=lg?lg.src:""; if(p.secPhoto){ if(String(p.secPhoto).startsWith("emo:")){ const e=SEC_EMO[parseInt(p.secPhoto.slice(4),10)]; if(e) src=emoSrc(...e); } else src=p.secPhoto; }
   return {nom:String(p.secNom||"").trim()||"Cocoony",src}; }
-function applySecIdent(over){ const I=secIdent(over); { const nv=document.querySelector("#cxBtn .nav-cxi"), lg=document.querySelector(".brand-logo"); if(nv){ const src=I.src||(lg&&lg.src)||""; if(src&&nv.getAttribute("src")!==src) nv.src=src; } } const n=document.querySelector(".sec-name"); if(n) n.textContent=I.nom;
+function applySecIdent(over){ const I=secIdent(over);
+  /* gardée sur l'appareil pour l'afficher tout de suite à la prochaine ouverture (essais de « Personnaliser » exclus) */
+  if(!over) try{ const lg=document.querySelector(".brand-logo"); localStorage.setItem("cocoon.secid",JSON.stringify({src:I.src&&!(lg&&I.src===lg.src)&&I.src.length<200000?I.src:""})); }catch(_){} { const nv=document.querySelector("#cxBtn .nav-cxi"), lg=document.querySelector(".brand-logo"); if(nv){ const src=I.src||(lg&&lg.src)||""; if(src&&nv.getAttribute("src")!==src) nv.src=src; } } const n=document.querySelector(".sec-name"); if(n) n.textContent=I.nom;
   const g=$("secBig"); if(g&&I.src) g.src=I.src; document.querySelectorAll(".sec-av").forEach(im=>{ if(I.src) im.src=I.src; }); return I; }
 function openPalette(){ const was={pal:palGet(),theme:curTheme(),sec:{secNom:(secIdent().nom),secPhoto:(Object.assign({},S.prefs||{},S.secIdLocal||{})).secPhoto||null}}, cur={pal:Object.assign({},was.pal),theme:was.theme,sec:Object.assign({},was.sec)};
   /* même feuille que Premium (montée depuis le bas, poignée, glisser pour fermer) ; fermée sans « Enregistrer » : on annule les essais */

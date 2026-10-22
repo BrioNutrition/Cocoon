@@ -321,7 +321,7 @@
   }
   async function logout() {
     try { await Promise.race([PUSH.disable(), new Promise(function (r) { setTimeout(r, 2500); })]); } catch (_) {}
-    LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer");
+    LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer"); LS.del("cocoon.thumbs"); LS.del("cocoon.secid");
     /* « Se connecter avec Face ID » activé : la session reste ouverte côté serveur et son jeton part dans le trousseau
        (lisible seulement après Face ID) ; sinon déconnexion complète */
     /* chaque étape a un délai maximal : la déconnexion ne doit jamais rester bloquée (pont natif ou verrou de supabase-js) */
