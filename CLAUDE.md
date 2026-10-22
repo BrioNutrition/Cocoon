@@ -94,7 +94,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - Anniversaires : **rien dans les rendez-vous ni de menu à part** (demandé par Angel) ; tout est dans l'événement « Anniversaire »
   (`evAnnivCard`, onglet Frise) : idées de cadeaux (`evenements.idees`, « Aux achats » = achat de l'événement) et « Le rappeler chaque
   année » (`evenements.annuel`, coché par défaut) → rappel 7 j avant la date suivante, « Préparer celui du … » recrée l'événement.
-- Événements : toute la ligne du modèle coche/décoche ; les étapes faites restent dépliées (« N réalisées »).
+- Événements : toute la ligne du modèle coche/décoche ; les étapes faites restent dépliées (« N réalisées ») ; sous « Créer avec le
+  modèle … », lien « Continuer sans utiliser le modèle » (`#evCreateSans`) qui crée l'événement sans aucune étape.
   Anneaux d'avancement (`evRing`, raccourci `.wg-ring.emo`) : emoji du type au centre (`emoIco`), anneau à la couleur du type sur
   fond teinté, % dans la ligne du bas, pastille verte ✓ à 100 % ; anneau des raccourcis centré en hauteur, plus gros (60 px, 56 en court) et décalé vers la gauche sur les longs ; remplissage animé seulement la 1re fois ou si le % change (`ringNew`).
 - Rendez-vous : formulaire dans une feuille du bas façon « Nouvel événement » (`openRdvSheet()`, ouverte dès que `S.rdvForm`

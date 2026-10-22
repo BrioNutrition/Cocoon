@@ -2807,6 +2807,9 @@ html[data-theme="light"]:has(#boot),html[data-theme="light"]:has(#boot) body{bac
 .ev-empty b{font-size:16px}
 .ev-empty span{font-size:13.5px;color:var(--muted);max-width:300px}
 .ev-cta{width:100%;padding:14px;border-radius:16px;font-weight:800;font-size:15px}
+.ev-sans{display:block;width:100%;margin-top:6px;min-height:44px;border:0;background:none;color:var(--muted);font:700 14.5px var(--f-body);text-decoration:underline;text-underline-offset:3px;cursor:pointer;border-radius:12px}
+.ev-sans:active{color:var(--ink)}
+.ev-sans:disabled{opacity:.5}
 .ev-past summary{cursor:pointer;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:6px 2px;list-style:none}
 .ev-past summary::-webkit-details-marker{display:none}
 .ev-past .ev-card{opacity:.75}
@@ -8816,11 +8819,14 @@ function evNew(inn,V){ const T=EV_TYPES[V.type]||EV_TYPES.anniv, t0=iso(today())
       c.append(el("div",{class:"ev-it ev-tap"+(V.pick[i]?"":" off"),onclick:()=>{ V.pick[i]=!V.pick[i]; haptic(5); paintTpl(); }},ck,el("span",{class:"ev-tt",text:t}),k!=="t"?el("em",{class:"ev-tag "+k},uic(k==="a"?"cart":"calendar"),k==="a"?"achat":"rdv"):"",el("small",{class:"ev-when",text:lab}))); });
     box.append(c); }
   paintTpl(); inn.append(box);
-  const go=el("button",{type:"button",class:"btn ev-cta",id:"evCreate",onclick:async()=>{ if(!S.db||!needMe()) return; const titre=(V.titre||"").trim()||T.n;
-      if(!V.debut){ toast("Choisis une date."); return; } go.disabled=true; go.textContent="Préparation…";
-      try{ await evCreate(Object.assign({titre,type:V.type,debut:V.debut,fin:V.fin&&V.fin>V.debut?V.fin:null,budget:parseMoney(V.budget)},V.type==="anniv"?{idees:V.idees||[],annuel:V.annuel!==false}:{}),tpl.filter((_,i)=>V.pick[i])); }
-      catch(e){ writeErr(e); go.disabled=false; go.textContent="Créer l'événement"; } }},tpl.length?"Créer avec le modèle "+T.n:"Créer l'événement");
-  inn.append(go); }
+  /* sans=true : l'événement est créé vide, sans les étapes du modèle (bouton « Continuer sans utiliser le modèle ») */
+  const create=async(btn,sans)=>{ if(!S.db||!needMe()) return; const titre=(V.titre||"").trim()||T.n;
+      if(!V.debut){ toast("Choisis une date."); return; } const lab=btn.textContent; go.disabled=true; if(alt) alt.disabled=true; btn.textContent="Préparation…";
+      try{ await evCreate(Object.assign({titre,type:V.type,debut:V.debut,fin:V.fin&&V.fin>V.debut?V.fin:null,budget:parseMoney(V.budget)},V.type==="anniv"?{idees:V.idees||[],annuel:V.annuel!==false}:{}),sans?[]:tpl.filter((_,i)=>V.pick[i])); }
+      catch(e){ writeErr(e); go.disabled=false; if(alt) alt.disabled=false; btn.textContent=lab; } };
+  const go=el("button",{type:"button",class:"btn ev-cta",id:"evCreate",onclick:()=>create(go,false)},tpl.length?"Créer avec le modèle "+T.n:"Créer l'événement");
+  const alt=tpl.length?el("button",{type:"button",class:"ev-sans",id:"evCreateSans",onclick:()=>create(alt,true)},"Continuer sans utiliser le modèle"):null;
+  inn.append(go); if(alt) inn.append(alt); }
 async function evCreate(base,steps,o){ const me=meId(), now=Date.now(), t0=iso(today());
   const ref=await S.db.collection("evenements").add(Object.assign({},base,{creePar:me,creeLe:now})); const id=ref.id;
   S.evs=(S.evs||[]).filter(e=>e.id!==id).concat([Object.assign({id},base,{creePar:me,creeLe:now})]);
