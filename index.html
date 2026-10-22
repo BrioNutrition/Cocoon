@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 22:53";</script>
+<script>window.COCOON_BUILD="22/10 22:56";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3298,7 +3298,6 @@ html.native-tabs .hub-mini{display:none!important}
 .pm-sheet.pm-tight .pp-cta{padding:13px}
 /* ===== Foyer « de nuit » (choisi par Angel) : tuiles éclairées par un halo de leur couleur, pastilles dorées.
    Fond et tuiles aux couleurs habituelles du thème (clair comme sombre) ; seul le halo s'ajoute. ===== */
-.hub-sub{margin:2px 2px 0;font-size:13px;color:var(--muted)}
 html.foyer-nuit .hb-t{overflow:hidden;isolation:isolate}
 /* halo peint dans le fond de la tuile (pas de calque flouté) : il reste fixe pendant les animations de page */
 html.foyer-nuit .hb-t{background:radial-gradient(70% 75% at 100% 100%,color-mix(in srgb,var(--bc) 34%,transparent),transparent 100%),var(--surface)}
@@ -7800,10 +7799,6 @@ function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const
   if(!mt){ const eq=(S.equip||[]).map(x=>[x,eqNext(x)]).filter(x=>x[1]).sort((a,b)=>a[1]<b[1]?-1:1)[0]; if(eq&&daysTo(eq[1])<=45) mt="Entretien "+(eq[0].nom||"équipement").toLowerCase()+" "+dueLabel(eq[1]); }
   tile("maison","","#7FCDB9","Maison",mt||"tout le logement",{gly:"maison"});
   { const ev=evNext(), j=ev?daysTo(ev.debut):null; tile("evenements","","#E79ADB","Événements",ev?(ev.titre||evT(ev).n)+(j===0?" · aujourd'hui":j>0&&j<=30?" · dans "+j+" j":""):"anniv, travaux, vacances…"); }
-  /* sous-titre sous « Le foyer » : chez qui, et la date */
-  { const hh=H.closest("section")&&H.closest("section").querySelector(".hub-h"); if(hh){ let sb=hh.querySelector(".hub-sub"); if(!sb){ sb=el("p",{class:"hub-sub"}); hh.append(sb); }
-      const fam=(S.foyerNom||"").trim().replace(/^(la famille|famille|les)\s+/i,""), d=today().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
-      sb.textContent=(fam?"Chez les "+fam+" · ":"")+d; } }
   /* Cocoon Plus en grand, au-dessus du titre « Le foyer » */
   { const sec=H.closest("section"), old=sec&&sec.querySelector(".hb-pban"); if(old) old.remove();
     if(sec){ const pa=!!(S.prefs&&S.prefs.premiumInteret), ic=el("i",{"aria-hidden":"true"}); ic.innerHTML='<svg viewBox="0 -4 64 64" aria-hidden="true"><path d="M32 4c2.6 15 9 21.4 24 24-15 2.6-21.4 9-24 24-2.6-15-9-21.4-24-24 15-2.6 21.4-9 24-24z" fill="#FFE7A0"/></svg>';

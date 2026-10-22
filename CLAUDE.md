@@ -52,7 +52,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   `select foyer, data, updated_at from cocoon_docs where path='retours' order by updated_at desc;`
 - **Foyer de nuit** (choisi par Angel, maquette C) : sur l'onglet Foyer, `html.foyer-nuit` (posée par `setTab`). Fond et tuiles
   aux **couleurs habituelles du thème** (`var(--bg)`/`var(--surface)`, demandé par Angel : pas de fond de nuit à part), tuiles
-  éclairées par un halo de leur couleur (dégradé dans le fond de `.hb-t`, fixe : pas de calque flouté), pastilles dorées, sous-titre « Chez les … · date » (`.hub-sub`),
+  éclairées par un halo de leur couleur (dégradé dans le fond de `.hb-t`, fixe : pas de calque flouté), pastilles dorées, pas de sous-titre sous « Le foyer » (retiré par Angel),
   tuile Événements (`HUB_EMO.evenements`). Tuiles-boutons à ombre dure : proposées puis écartées.
 - Tuiles du Foyer : essayé puis annulé (Angel préfère l'actuel, ne pas reproposer tel quel) : « pastel » (tuile à sa couleur),
   « carte postale » (bandeau de couleur en haut), « liste groupée » (lignes façon Réglages).
