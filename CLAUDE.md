@@ -98,6 +98,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   Raccourcis courts du Foyer : contenu collé au titre (`.wg .wg-big{margin-top:0}`).
 - Bannière Premium du Foyer : Cocoony (`.hb-cat`, image du personnage) monte du bas puis se penche vers « Cocoon Premium » en
   boucle douce ; `S.pbanT` mémorise le début pour ne pas rejouer l'entrée à chaque rendu (classe `seen` après 1,6 s).
+  Le Cocoony d'origine y est un dessin vectoriel en couches (`cySVG()`) animé par `cyAnim(svg,t)` (Web Animations, boucle 6 s :
+  yeux qui s'ouvrent et regardent « Premium », clignement, oreille qui frémit, mèche, moustaches, nez) ; avatar perso = son image.
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
