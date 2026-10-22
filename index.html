@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 14:03";</script>
+<script>window.COCOON_BUILD="22/10 14:05";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3109,6 +3109,11 @@ html.native-tabs .hub-mini{display:none!important}
 .r-hrs{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
 .r-hr{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--muted)}
 .r-hr>span{padding-left:2px}
+/* heure et horloge centrées ensemble dans la case (Chrome : champ + icône ; Safari / iPhone : la valeur) */
+.r-hr input,.r-hrow input{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center}
+.r-hr input::-webkit-datetime-edit,.r-hrow input::-webkit-datetime-edit{flex:0 0 auto;padding:0}
+.r-hr input::-webkit-calendar-picker-indicator,.r-hrow input::-webkit-calendar-picker-indicator{margin:0 0 0 8px;padding:0}
+.r-hr input::-webkit-date-and-time-value,.r-hrow input::-webkit-date-and-time-value{text-align:center}
 .r-hr input:disabled{opacity:.6}
 .r-sheet .r-edh b{font-size:17px}
 .r-sheet .r-ideas button{background:var(--sunk)}

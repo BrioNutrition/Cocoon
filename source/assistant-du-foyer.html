@@ -3015,6 +3015,11 @@ html.native-tabs .hub-mini{display:none!important}
 .r-hrs{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px}
 .r-hr{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--muted)}
 .r-hr>span{padding-left:2px}
+/* heure et horloge centrées ensemble dans la case (Chrome : champ + icône ; Safari / iPhone : la valeur) */
+.r-hr input,.r-hrow input{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center}
+.r-hr input::-webkit-datetime-edit,.r-hrow input::-webkit-datetime-edit{flex:0 0 auto;padding:0}
+.r-hr input::-webkit-calendar-picker-indicator,.r-hrow input::-webkit-calendar-picker-indicator{margin:0 0 0 8px;padding:0}
+.r-hr input::-webkit-date-and-time-value,.r-hrow input::-webkit-date-and-time-value{text-align:center}
 .r-hr input:disabled{opacity:.6}
 .r-sheet .r-edh b{font-size:17px}
 .r-sheet .r-ideas button{background:var(--sunk)}
