@@ -51,7 +51,12 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   `select foyer, data, updated_at from cocoon_docs where path='retours' order by updated_at desc;`
 - Tuiles du Foyer : essayé puis annulé (Angel préfère l'actuel, ne pas reproposer tel quel) : « pastel » (tuile à sa couleur),
   « carte postale » (bandeau de couleur en haut), « liste groupée » (lignes façon Réglages).
-- Prochaines idées : notifications natives (APNs), définir le Premium, test Android,
+- Premium défini (formule « Cocoony au centre ») : 3,99 €/mois ou 39,99 €/an (2 mois offerts), 1 mois d'essai, un abonnement
+  pour tout le foyer. Premium = photos de papiers et Cocoony intelligent sans limite, papiers illimités, sauvegarde, plusieurs
+  foyers. Gratuit = tout le reste (budget et graphiques, thèmes compris) + 5 photos et 20 questions à Cocoony par mois, 25 papiers.
+  Prix dans `PM_PRIX`, avantages dans `PM_FEATS`/`PM_FREE`. Limites affichées seulement : rien n'est bloqué tant que le paiement
+  (App Store, ex. RevenueCat) n'est pas branché. Fenêtre Premium presque plein écran (`.pm-sheet`).
+- Prochaines idées : notifications natives (APNs), paiement Premium, test Android,
   page de présentation, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
 - À faire côté Angel : redéployer `cocoon-push`, coller les modèles d'e-mail, vérifier OTP à 6 chiffres, brancher Brevo (codeEmail).
 - Deux conversations peuvent travailler en parallèle (web et Mac) : toujours `git pull --rebase` avant de modifier,

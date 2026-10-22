@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 09:43";</script>
+<script>window.COCOON_BUILD="22/10 09:53";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3121,6 +3121,22 @@ html.native-tabs .hub-mini{display:none!important}
 .pp-cg{color:var(--muted);font-size:12.5px}
 .pp-cy{color:#2F9E5B;font-weight:800;font-size:15px}
 .pp-cmpin{gap:12px!important}
+/* fenêtre Premium : presque tout l'écran */
+.pm-sheet{min-height:calc(100% - env(safe-area-inset-top,0px) - 10px)}
+html.native-tabs .pm-sheet{min-height:calc(100% - env(safe-area-inset-top,0px) - 72px)}
+.pm-sheet .pp-cmpin{gap:16px!important;padding-top:4px}
+.pm-sheet .pp-cmph{text-align:center;display:flex;flex-direction:column;align-items:center}
+.pm-sheet .pp-star{width:76px;height:76px;border-radius:24px;margin:2px 0 8px}
+.pm-sheet .pp-star svg{width:50px;height:50px}
+.pm-sheet .pp-pr b{font-size:24px}
+.pm-sheet .pp-cmph h2{font-size:32px}
+.pm-sheet .pp-cmph p{font-size:15px}
+.pm-sheet .pp-cr{grid-template-columns:minmax(0,1fr) 78px 74px;padding:13px 14px;font-size:15px}
+.pm-sheet .pp-cr.pp-ch{padding:11px 14px 8px;font-size:11px}
+.pm-sheet .pp-cn i{font-size:18px}
+.pm-sheet .pp-cg{font-size:13px}
+.pp-free{margin:-4px 4px 0;font-size:13px;color:var(--muted);text-align:center;line-height:1.4}
+.pm-sheet .pp-plan{padding:16px 14px}
 .tk-in{gap:12px!important}
 .tk-h{margin:0;font:800 22px/1.1 var(--f-display);letter-spacing:-.02em}
 .tk-ti{width:100%;box-sizing:border-box;font:inherit;font-size:16px;padding:13px 14px;border-radius:14px;border:2px solid var(--line);background:var(--surface);color:var(--ink)}
@@ -4519,7 +4535,6 @@ function premiumTip(){ if(!meId()||(S.prefs&&S.prefs.premiumInteret)) return nul
   const nd=(S.docs||[]).length, nf=(S.docs||[]).filter(d=>d.assetId).length;
   if(nd>=20) return "Tu as déjà "+nd+" papiers rangés. Avec Premium, plus de limite (25 en gratuit), photos et PDF compris.";
   if(nf>=2) return "Tu ranges souvent des papiers en photo. Avec Premium, je lis la photo et je remplis tout : titre, date, montant.";
-  if((S.depenses||[]).length>=15) return "Ton budget prend forme. Avec Premium, tu vois toute l'année en graphiques et tu exportes pour les impôts.";
   return null; }
 function renderSecretary(){
   { const sd=$("secDay"); if(sd) sd.textContent="Aujourd'hui"; }
@@ -7226,7 +7241,7 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
   const P=$("moiPrem"), T=$("moiTiles"); if(!P||!T) return; P.innerHTML=""; T.innerHTML="";
   if(!m) return;
   // Premium : une ligne discrète (dans Réglages)
-  P.append(el("button",{type:"button",class:"ms-prem",onclick:()=>openPremium()},el("i",{"aria-hidden":"true",text:"✨"}),el("span",{},el("b",{text:"Cocoon Premium"}),el("small",{text:(S.prefs&&S.prefs.premiumInteret)?"Tu seras prévenu·e du lancement":"Papiers en photo, secrétaire intelligent, et plus"})),el("u",{text:"Découvrir"})));
+  P.append(el("button",{type:"button",class:"ms-prem",onclick:()=>openPremium()},el("i",{"aria-hidden":"true",text:"✨"}),el("span",{},el("b",{text:"Cocoon Premium"}),el("small",{text:(S.prefs&&S.prefs.premiumInteret)?"Tu seras prévenu·e du lancement":"Papiers en photo, Cocoony intelligent, et plus"})),el("u",{text:"Découvrir"})));
   // Mon espace : tuiles
   const perso=S.perso.filter(t=>!t.fait), conf=S.foyer.filter(t=>!t.fait&&t.pour===me), late=perso.concat(conf).filter(t=>t.echeance&&daysTo(t.echeance)<0).length;
   const vs=S.vehic||[], v0=vs[0], vNext=v0?[v0.ctProchain?["CT",v0.ctProchain]:null].filter(Boolean)[0]:null;
@@ -7254,7 +7269,7 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
     if(S.faceSt) upd(S.faceSt);
     window.__nt.faceid({}).then(st=>{ if(!st||!st.available){ S.faceSt={available:false}; fr.remove(); return; } if(JSON.stringify(st)!==JSON.stringify(S.faceSt)) upd(st); }).catch(()=>fr.remove()); }
   if(window.cocoonHost&&$("cxNotif")) box.append(rrow("🔔","#E79ADB","Notifications","Rappels sur ton téléphone",()=>moiOpen("notif")));
-  box.append(rrow("✨","#FFC94A","Cocoon Premium",(S.prefs&&S.prefs.premiumInteret)?"Tu seras prévenu·e du lancement":"Papiers en photo, secrétaire intelligent, et plus",()=>openPremium()));
+  box.append(rrow("✨","#FFC94A","Cocoon Premium",(S.prefs&&S.prefs.premiumInteret)?"Tu seras prévenu·e du lancement":"Papiers en photo, Cocoony intelligent, et plus",()=>openPremium()));
   RG.append(el("h2",{class:"rg-h",text:"Réglages"}),el("div",{class:"ms-gl",text:"Préférences"}),box); }
 /* Foyer : toutes les rubriques en tuiles (bento) */
 function hubGo(v){ if(v==="premium"){ openPremium(); return; } if(v==="evenements"){ const n=(S.evs||[]).filter(e=>evEnd(e)>=iso(today())); if(n.length===1) openEvent(n[0].id); else openEvents(); return; } if(v==="maison") S.mSec=null; setTab(v); window.scrollTo({top:0}); }
@@ -8111,13 +8126,13 @@ function setTheme(v){ applyTheme(v); S.prefs=Object.assign({},S.prefs||{},{theme
 try{ const t=localStorage.getItem("cocoon.theme"); if(t==="light"||t==="dark") applyTheme(t); }catch(_){}
 
 /* ---------- Cocoon Premium (aperçu, paiement pas encore branché) ---------- */
-const PM_FEATS=[["📸","#FFF1C9","Papiers en photo","La date et le montant sont lus, le papier est rangé avec son rappel."],
- ["💬","#FFE3EC","Secrétaire intelligent","« Quand expire mon passeport ? » Il répond et ajoute des tâches pour toi."],
+const PM_FEATS=[["📸","#FFF1C9","Papiers en photo","Prends la photo : titre, date et montant sont lus, le papier est rangé avec son rappel."],
+ ["💬","#FFE3EC","Cocoony intelligent","« Quand expire mon passeport ? » Il répond, et ajoute les tâches pour toi."],
  ["♾️","#ECE7FF","Papiers illimités","Plus de limite (25 en gratuit), photos et PDF compris."],
  ["💾","#E4EEFF","Sauvegarde du foyer","Tout ton foyer téléchargeable en un clic, fichiers compris."],
- ["📊","#E3F6EA","Budget avancé","L'année en graphiques, export pour les impôts."],
- ["🏡","#FFE9DC","Plusieurs foyers","La maison, la maison de vacances, la garde alternée."],
- ["🎨","#F3E8FF","Thèmes et icônes","Habille Cocoon à ton goût."]];
+ ["🏡","#FFE9DC","Plusieurs foyers","La maison, la maison de vacances, la garde alternée."]];
+/* tarifs : un abonnement pour tout le foyer, 1 mois offert ; l'année = 10 mois payés */
+const PM_PRIX={mois:"3,99 €",an:"39,99 €",anMois:"3,33 €"};
 /* Alerte native iOS dans l'app (null ailleurs) : {title,message,field?,actions:[{id,title,style:"cancel"|"destructive"|"default"}]} → {id,text} */
 function nativeAlert(o){ const N=window.__nt; if(!N||!N.alert) return null; return N.alert(o).then(r=>r||{}).catch(()=>({})); }
 const DANGER_RX=/supprim|effac|quitt|déconnect|retir|vider/i;
@@ -8149,8 +8164,8 @@ async function openFoyerMenu(btn){ const M=$("addMenu"); if(!M) return; if(!M.hi
   build(list); place(); M.hidden=false; btn.setAttribute("aria-expanded","true");
   if(nativeizeMenu(M,"Mes foyers")){ btn.setAttribute("aria-expanded","false"); return; }
   if(H&&H.foyers&&S.fyCache){ H.foyers().then(fresh=>{ if(!fresh) return; const ch=JSON.stringify(fresh)!==JSON.stringify(S.fyCache); S.fyCache=fresh; if(ch&&!M.hidden&&M.dataset.k==="fy"){ build(fresh); place(); } }).catch(()=>{}); } }
-const PM_FREE={"Papiers en photo":"—","Secrétaire intelligent":"basique","Papiers illimités":"25 max","Sauvegarde du foyer":"—","Budget avancé":"simple","Plusieurs foyers":"1","Thèmes et icônes":"—"};
-const PM_SHORT={"Papiers en photo":"Lus et rangés tout seuls","Secrétaire intelligent":"Cocoony répond à tout","Papiers illimités":"Plus de limite de 25","Sauvegarde du foyer":"Tout télécharger en 1 clic","Budget avancé":"Graphiques et export impôts","Plusieurs foyers":"Vacances, garde alternée…","Thèmes et icônes":"Habille Cocoon à ton goût"};
+const PM_FREE={"Papiers en photo":"5 / mois","Cocoony intelligent":"20 / mois","Papiers illimités":"25 max","Sauvegarde du foyer":"—","Plusieurs foyers":"1"};
+const PM_SHORT={"Papiers en photo":"Lus et rangés tout seuls","Cocoony intelligent":"Cocoony répond à tout","Papiers illimités":"Plus de limite de 25","Sauvegarde du foyer":"Tout télécharger en 1 clic","Plusieurs foyers":"Vacances, garde alternée…"};
 function upSheet(id,label,onClose){ let P=$(id); if(!P){ P=el("div",{class:"prem-page",id,role:"dialog","aria-modal":"true","aria-label":label}); document.body.append(P); }
   P.innerHTML=""; P.hidden=false; P.style.background=""; document.documentElement.classList.add("prem-open");
   const sheet=el("div",{class:"pp-sheet"}), grab=el("div",{class:"pp-grab",role:"button","aria-label":"Fermer",tabindex:"0"},el("i"));
@@ -8191,7 +8206,8 @@ function openRetour(){ if(!needMe()) return; const U=upSheet("retPage","Une idé
 function openPremium(){ const U=upSheet("premPage","Cocoon Premium"), P=U.P, sheet=U.sheet, close=U.close;
   const asked=!!(S.prefs&&S.prefs.premiumInteret); S.premPlan=S.premPlan||"an";
   const star=el("span",{class:"pp-star","aria-hidden":"true"}); star.innerHTML='<svg viewBox="0 -4 64 64" aria-hidden="true"><defs><linearGradient id="pmStarBig" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFBEA"/><stop offset=".55" stop-color="#FFE7A0"/><stop offset="1" stop-color="#FFC94A"/></linearGradient></defs><path d="M32 4c2.6 15 9 21.4 24 24-15 2.6-21.4 9-24 24-2.6-15-9-21.4-24-24 15-2.6 21.4-9 24-24z" fill="url(#pmStarBig)"/></svg>';
-  const hero=el("div",{class:"pp-cmph"},el("h2",{text:"Passe à Premium"}),el("p",{text:"Tout ce que tu as déjà, et en plus :"}));
+  sheet.classList.add("pm-sheet");
+  const hero=el("div",{class:"pp-cmph"},star,el("h2",{text:"Passe à Premium"}),el("p",{text:"Tout ce que tu as déjà, et en plus :"}));
   const feats=el("div",{class:"pp-cmp",role:"table","aria-label":"Gratuit et Premium"});
   feats.append(el("div",{class:"pp-cr pp-ch",role:"row"},el("span",{role:"columnheader"}),el("span",{role:"columnheader",text:"Gratuit"}),el("span",{role:"columnheader",class:"pp-cp",text:"Premium"})));
   for(const [ic,,t] of PM_FEATS){ const g=PM_FREE[t]||"—";
@@ -8200,12 +8216,12 @@ function openPremium(){ const U=upSheet("premPage","Cocoon Premium"), P=U.P, she
   const plan=(k,t,price,per,note)=>{ const b=el("button",{type:"button",class:"pp-plan",role:"radio","aria-checked":String(S.premPlan===k),onclick:()=>{ S.premPlan=k; plans.querySelectorAll(".pp-plan").forEach(x=>x.setAttribute("aria-checked",String(x===b))); }},
       el("b",{class:"pp-pn",text:t}),el("span",{class:"pp-pr"},el("b",{text:price}),el("small",{text:per})),el("small",{class:"pp-nt",text:note}));
     if(k==="an") b.append(el("em",{text:"2 mois offerts"})); return b; };
-  plans.append(plan("an","Annuel","29,99 €","/an","soit 2,50 €/mois"),plan("mois","Mensuel","2,99 €","/mois","sans engagement"));
+  plans.append(plan("an","Annuel",PM_PRIX.an,"/an","soit "+PM_PRIX.anMois+"/mois"),plan("mois","Mensuel",PM_PRIX.mois,"/mois","sans engagement"));
   const cta=el("button",{type:"button",class:"btn pp-cta",text:asked?"✓ On te prévient à l'ouverture":"Essayer 1 mois gratuit",disabled:asked||null,onclick:async()=>{ cta.disabled=true;
     S.prefs=Object.assign({},S.prefs||{},{premiumInteret:Date.now(),premiumPlan:S.premPlan});
     try{ if(S.db&&S.uid) await S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs); }catch(e){ writeErr(e); }
     cta.textContent="✓ On te prévient à l'ouverture"; toast("Les abonnements ouvrent très bientôt : tu seras prévenu·e en premier, avec ton mois offert."); try{ renderPremium(); }catch(_){} }});
-  sheet.append(el("div",{class:"pp-in pp-cmpin"},hero,feats,plans,el("div",{class:"pp-foot"},cta,el("small",{text:"Un seul abonnement pour tout le foyer · annulable à tout moment"}))));
+  sheet.append(el("div",{class:"pp-in pp-cmpin"},hero,feats,el("p",{class:"pp-free",text:"Toujours gratuit : tâches, courses, repas, agenda, budget et ses graphiques, maison, événements, thèmes."}),plans,el("div",{class:"pp-foot"},cta,el("small",{text:"Un seul abonnement pour tout le foyer · annulable à tout moment"}))));
   }
 /* ---------- Événements : un anniversaire, des travaux, des vacances… ----------
    L'événement ne stocke que son titre, ses dates et son budget. Tout le reste (tâches, achats, rendez-vous,
@@ -8481,7 +8497,7 @@ function renderPremium(){
         S.prefs=Object.assign({},S.prefs||{},{premiumInteret:Date.now()});
         try{ if(S.db&&S.uid) await S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs); toast("C'est noté : on te prévient dès que Premium est disponible."); }catch(e){ writeErr(e); }
         renderPremium(); }},asked?"✓ On te prévient au lancement":"Me prévenir du lancement"),
-      el("div",{class:"pm-price"},el("b",{text:"2,99 €"}),"/mois pour tout le foyer · 1 mois offert")));
+      el("div",{class:"pm-price"},el("b",{text:PM_PRIX.mois}),"/mois pour tout le foyer · 1 mois offert")));
   w.append(card);
 }
 
@@ -8947,7 +8963,7 @@ window.TOUR_ALL=[
   {sel:"#cxBtn",t:"Voici %N",d:"Ton assistant a son propre onglet. Écris comme tu parles : « pain, lait », « dentiste jeudi 15h », « il faut payer la cantine vendredi ». %N range tout au bon endroit."},
   {sel:'.tab[data-tab="moi"]',t:"Ton espace",d:"Ta fiche (pointure, médecin, papiers…), tes tâches perso, et les Réglages : apparence, notifications, compte."},
   {sel:"#fySwBtn",opt:true,t:"Plusieurs foyers",d:"Touche le nom de ton foyer pour passer d'un foyer à l'autre, ou en créer un nouveau."},
-  {sel:"#premBtn",opt:true,t:"Cocoon Premium",d:"L'étoile ouvre Premium : papiers en photo, secrétaire intelligent, papiers illimités… Bonne installation dans ton cocon !"}];
+  {sel:"#premBtn",opt:true,t:"Cocoon Premium",d:"L'étoile ouvre Premium : papiers en photo, Cocoony intelligent, papiers illimités… Bonne installation dans ton cocon !"}];
 
 /* « Bienvenue dans ton foyer » : une fois, quand on est encore seul dans un foyer tout neuf */
 function maybeWelcome(){ try{
