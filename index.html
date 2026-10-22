@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 12:25";</script>
+<script>window.COCOON_BUILD="22/10 12:30";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -8930,8 +8930,9 @@ function frigoLocal(have){ const H=have.map(x=>cKey(parseArticle(x).nom));
   return platsConnus().filter(p=>!p.matin).map(p=>{ const ing=(p.ing&&p.ing.length?p.ing:platIng(p.nom)).filter(g=>!inPlacard(g)); const ok=ing.filter(has); return {nom:p.nom,ok:ok.length,manque:ing.filter(g=>!has(g)),tot:ing.length}; })
     .filter(x=>x.ok>0).sort((a,b)=>b.ok/b.tot-a.ok/a.tot||b.ok-a.ok).slice(0,3).map(x=>({nom:x.nom,manque:x.manque,note:x.ok+" ingrédient"+(x.ok>1?"s":"")+" sur "+x.tot+" déjà là"})); }
 function openFrigo(){ if(!needMe()) return; const U=upSheet("frigoPage","Avec ce qu'il y a dans le frigo"), inn=el("div",{class:"pp-in fr-in"}); U.sheet.classList.add("ing-sheet"); U.sheet.append(inn);
-  let have=[]; try{ have=JSON.parse(localStorage.getItem("cocoon.frigo")||"[]"); }catch(_){}
-  const keep=()=>{ try{ localStorage.setItem("cocoon.frigo",JSON.stringify(have)); }catch(_){} };
+  /* la liste repart vide à chaque ouverture (rien n'est gardé quand on quitte) */
+  let have=[]; try{ localStorage.removeItem("cocoon.frigo"); }catch(_){}
+  const keep=()=>{};
   const chips=el("div",{class:"fr-chips"}), res=el("div",{class:"fr-res"});
   const draw=()=>{ chips.innerHTML=""; for(const g of have) chips.append(el("button",{type:"button",class:"fr-chip","aria-label":"Retirer "+g,onclick:()=>{ have=have.filter(x=>x!==g); keep(); draw(); }},g,el("i",{"aria-hidden":"true",text:"×"}))); go.disabled=!have.length; };
   const inp=el("input",{type:"text",id:"frIn",placeholder:"Poulet, courgettes, riz, crème…",autocomplete:"off","aria-label":"Ce qu'il y a dans le frigo"});
