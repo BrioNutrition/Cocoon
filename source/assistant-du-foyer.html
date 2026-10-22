@@ -4056,7 +4056,7 @@ function pfFill(F,m,o){ o=o||{}; const D=pfData(m), id=D.id, pet=D.pet, can=D.ca
   const restRows=rest.map(infoRow);
   if(!pet&&m.naissance&&!keys.length) {} 
   if(!pet&&m.naissance) restRows.unshift(infoRow({l:"Anniversaire",v:JOURY.format(parse(m.naissance)),nocopy:true}));
-  if(restRows.length||can){ F.append(secT(pet?"Infos":"Infos pratiques",can?el("button",{type:"button",class:"pf-link",text:"Modifier",onclick:()=>openEditor(id)}):null));
+  if(restRows.length||can){ F.append(secT(pet?"Infos":"Infos pratiques",null));
     if(restRows.length) F.append(rowsCard(restRows)); else F.append(el("button",{type:"button",class:"pf-empty",text:pet?"+ Véto, croquettes, assurance, qui le garde…":"+ Médecin, allergies, mutuelle, école…",onclick:()=>openEditor(id)})); }
   // bientôt (humains)
   if(!pet&&o.soon){ const items=[];
