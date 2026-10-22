@@ -80,6 +80,9 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   rappel 45 j avant la fin, vue « Garanties » (`S.docCat="__gar"`) qui réunit papiers et équipements de Maison (`garantieFin`).
 - Plafonds par catégorie : existaient déjà (« Objectifs », `foyer/config.objectifs`, barres à 80 %/100 %). Ajouté : message quand
   une dépense fait passer 80 % ou 100 % (`catSpent`), et notification dans la cloche (kind « Budget », une par palier et par mois).
+- Mode vacances : Maison › tuile « Vacances » (`openVac()`, `vacances/actuel` {debut, fin}). `enVac(d)` : `binNext` saute les sorties
+  de poubelles pendant l'absence ; au départ, les tâches récurrentes de la période passent au lendemain du retour, et la liste
+  « avant de partir » (`VAC_LIST`) devient des tâches pour la veille (`vacances:true`). Lien vers la fiche baby-sitter.
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).

@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 14:40";</script>
+<script>window.COCOON_BUILD="22/10 14:42";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3199,6 +3199,10 @@ html.native-tabs .hub-mini{display:none!important}
 .gd-nb{margin:0;font-size:12.5px;color:var(--muted);line-height:1.4}
 .gd-b{display:flex;gap:8px;flex-wrap:wrap}.gd-b .btn{flex:1 1 auto;min-height:48px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 .gd-out{width:100%;font-size:13px}
+.vac-in{gap:12px!important}
+.vac-hero{display:flex;align-items:center;gap:14px;padding:16px;border-radius:20px;background:linear-gradient(135deg,color-mix(in srgb,#7CCFE0 45%,var(--surface)),color-mix(in srgb,#FFC94A 35%,var(--surface)))}
+.vac-hero>span{font-size:34px}.vac-hero b{display:block;font:800 20px/1.1 var(--f-display)}.vac-hero small{font-size:13.5px;color:color-mix(in srgb,var(--ink) 75%,transparent)}
+.vac-in>.btn{min-height:48px}
 /* tuile « limite gratuite » */
 .pq{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:22px;color:#1C1B2E;background:radial-gradient(90% 120% at 100% 0%,#FFE3EC 0%,transparent 60%),linear-gradient(135deg,#FFF6DC,#FFE6D9);box-shadow:0 2px 0 rgba(255,156,128,.35);margin-bottom:12px}
 .pq-h{display:flex;align-items:center;gap:12px}
@@ -6019,7 +6023,7 @@ function renderMaison(){
   renderMDash();
 }
 /* Maison : tableau de bord (ce qui compte cette semaine + 4 tuiles qui s'ouvrent) */
-const MSECS=[["bins","Poubelles","#7FD39A","poubelle"],["contacts","Contacts","#8FB8FF","tel"],["equip","Équipements","#FF9C80","entretien"],["meters","Compteurs","#FFC94A","eclair"],["garde","Fiche baby-sitter","#E79ADB","enfants"]];
+const MSECS=[["bins","Poubelles","#7FD39A","poubelle"],["contacts","Contacts","#8FB8FF","tel"],["equip","Équipements","#FF9C80","entretien"],["meters","Compteurs","#FFC94A","eclair"],["garde","Fiche baby-sitter","#E79ADB","enfants"],["vac","Vacances","#7CCFE0","loisirs"]];
 function mOpen(sec){ S.mSec=sec||null; renderMaison(); topNow(); }
 /* le + d'un sous-menu de Maison ajoute directement ce qu'il contient */
 function mAddIn(sec){ if(sec==="contacts"){ S.ctForm={role:"",nom:"",tel:"",note:"",c:"#C9C7DD"}; renderMaison(); topNow(); setTimeout(()=>{ const x=$("ctRole"); if(x) x.focus(); },200); }
@@ -6062,6 +6066,38 @@ function openGarde(){ if(!needMe()) return; const U=upSheet("gardePage","Fiche b
   const out=el("textarea",{class:"gd-out",readonly:true,rows:"3",hidden:true,"aria-label":"Lien de la fiche"});
   inn.append(el("div",{class:"gd-b"},share,el("a",{class:"btn ghost",href:"#",onclick:async e=>{ e.preventDefault(); const u=await gardeLien(G); const a=el("a",{href:u,target:"_blank",rel:"noopener"}); document.body.append(a); a.click(); a.remove(); }},"Voir la fiche")),out,
     el("small",{class:"gd-nb",text:"La fiche voyage dans le lien : rien n'est mis en ligne ailleurs. Toute personne qui a le lien peut la lire, envoie-le seulement à qui garde."})); }
+/* ---------- Mode vacances ----------
+   vacances/actuel = {debut, fin, par}. Pendant l'absence : aucune sortie de poubelles (binNext saute ces dates). Au départ, les
+   tâches qui reviennent et tombent pendant l'absence sont décalées au lendemain du retour ; une liste « avant de partir » devient
+   des tâches pour la veille du départ. */
+const enVac=d=>!!(S.vac&&S.vac.debut&&S.vac.fin&&d>=S.vac.debut&&d<=S.vac.fin);
+const vacOn=()=>enVac(iso(today()));
+const VAC_LIST=[["Vider le frigo des produits frais",1],["Sortir les poubelles",1],["Fermer l'arrivée d'eau",1],["Débrancher les appareils (box, télé…)",1],["Mettre le chauffage en hors-gel",0],["Faire arroser les plantes",0],["Prévenir un voisin",0],["Faire suivre ou garder le courrier",0],["Confier les clés",0],["Préparer les médicaments",0]];
+function openVac(){ if(!needMe()) return; const U=upSheet("vacPage","Vacances"), inn=el("div",{class:"pp-in vac-in"}); U.sheet.append(inn);
+  const V=S.vac||{}, t1=iso(new Date(today().getTime()+864e5));
+  if(V.debut&&V.fin&&V.fin>=iso(today())){ const on=vacOn();
+    inn.append(el("div",{class:"vac-hero"},el("span",{"aria-hidden":"true",text:"🏖"}),el("div",{},el("b",{text:on?"Bonnes vacances !":"Vacances prévues"}),el("small",{text:"Du "+fmtDue(V.debut)+" au "+fmtDue(V.fin)+(on?" · retour "+dueLabel(V.fin):"")}))),
+      el("p",{class:"gd-nb",text:"Pendant l'absence, pas de rappel de poubelles. Les tâches qui reviennent ont été décalées après le retour."}),
+      el("button",{type:"button",class:"btn ghost",text:"🧸 Envoyer la fiche baby-sitter",onclick:()=>{ U.close(); setTimeout(openGarde,340); }}),
+      el("button",{type:"button",class:"btn pp-cta",text:on?"On est rentrés !":"Annuler ces vacances",onclick:async()=>{ try{ await S.db.collection("vacances").doc("actuel").delete(); S.vac=null; U.close(); toast(on?"Bon retour à la maison !":"Vacances annulées."); renderAll(); }catch(e){ writeErr(e); } }}));
+    return; }
+  const di=el("input",{type:"date",id:"vacD",min:iso(today())}), fi=el("input",{type:"date",id:"vacF",min:iso(today())}); di.value=t1; fi.value=iso(new Date(today().getTime()+8*864e5));
+  const pick=new Set(VAC_LIST.filter(x=>x[1]).map(x=>x[0])), list=el("div",{class:"gd-g"});
+  for(const [t] of VAC_LIST){ let on=pick.has(t); const b=el("button",{type:"button",class:"gd-ck"+(on?" on":""),role:"checkbox","aria-checked":String(on),onclick:()=>{ on=!on; on?pick.add(t):pick.delete(t); b.classList.toggle("on",on); b.setAttribute("aria-checked",String(on)); }},el("i",{"aria-hidden":"true"}),el("span",{},el("b",{text:t}))); list.append(b); }
+  const nbRec=()=>S.foyer.filter(t=>!t.fait&&t.recur&&t.echeance&&t.echeance>=di.value&&t.echeance<=fi.value).length;
+  const recTxt=el("small",{class:"gd-nb"}); const upd=()=>{ const n=nbRec(); recTxt.textContent=n?n+" tâche"+(n>1?"s":"")+" qui revien"+(n>1?"nent":"t")+" pendant l'absence ser"+(n>1?"ont":"a")+" décalée"+(n>1?"s":"")+" au lendemain du retour.":"Aucune tâche qui revient pendant ces dates."; };
+  di.addEventListener("change",()=>{ if(fi.value<di.value) fi.value=di.value; upd(); }); fi.addEventListener("change",upd); upd();
+  inn.append(el("div",{class:"gd-h"},el("b",{text:"On part en vacances"}),el("span",{text:"Cocoon met le foyer en pause et prépare le départ."})),
+    el("div",{class:"frow"},el("label",{class:"field",for:"vacD"},"Départ",di),el("label",{class:"field",for:"vacF"},"Retour",fi)),recTxt,
+    el("div",{class:"ms-gl",text:"Avant de partir"}),list,el("p",{class:"gd-nb",text:"Les éléments cochés deviennent des tâches pour la veille du départ."}),
+    el("button",{type:"button",class:"btn pp-cta",text:"Partir en vacances",onclick:async e=>{ const debut=di.value, fin=fi.value; if(!debut||!fin||fin<debut){ toast("Choisis la date de départ et celle du retour."); return; }
+      const b=e.currentTarget; b.disabled=true; const me=meId(), now=Date.now(), veille=iso(new Date(parse(debut).getTime()-864e5)), apres=iso(new Date(parse(fin).getTime()+864e5));
+      try{ await S.db.collection("vacances").doc("actuel").set({debut,fin,par:me,le:now}); S.vac={debut,fin,par:me};
+        let dec=0; for(const t of S.foyer.filter(t=>!t.fait&&t.recur&&t.echeance&&t.echeance>=debut&&t.echeance<=fin)){ await S.db.collection("taches").doc(t.id).update({echeance:apres}); dec++; }
+        let k=0; for(const t of pick) await S.db.collection("taches").add({titre:t,cat:"maison",pour:"tous",echeance:veille<iso(today())?iso(today()):veille,fait:false,creePar:me,creeLe:now+(k++),vacances:true});
+        U.close(); toast("🏖 Vacances notées"+(dec?" · "+dec+" tâche"+(dec>1?"s":"")+" décalée"+(dec>1?"s":""):"")+(k?" · "+k+" chose"+(k>1?"s":"")+" à faire avant de partir":"")+"."); renderAll(); }
+      catch(err){ b.disabled=false; writeErr(err); } }}),
+    el("button",{type:"button",class:"btn ghost",text:"🧸 Préparer la fiche baby-sitter",onclick:()=>{ U.close(); setTimeout(openGarde,340); }})); }
 function meterLast(){ const rs=(S.releves||[]).slice().sort((a,b)=>a.date<b.date?1:-1); return rs[0]||null; }
 function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; const sec=S.mSec||null, me=meId(), t0=iso(today());
   D.innerHTML=""; T.innerHTML="";
@@ -6091,9 +6127,10 @@ function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; co
     contacts:[cts.length?cts.length+" numéro"+(cts.length>1?"s":""):"Plombier, médecin, proprio…",null],
     equip:[eqs.length?eqs.slice(0,2).map(x=>x.nom||(EQ[x.type]||EQ.autre).nom).join(", ")+(eqs.length>2?"…":""):"Chaudière, VMC…",eqSoon?eqSoon+" bientôt":null],
     meters:[L?"dernier relevé "+ago(parse(L.date).getTime()):"Électricité, eau, gaz",L&&daysTo(L.date)<-30?"relevé":null],
-    garde:["À partager : enfants, animaux, consignes",null]};
+    garde:["À partager : enfants, animaux, consignes",null],
+    vac:[vacOn()?"En vacances jusqu'au "+fmtDue(S.vac.fin):S.vac&&S.vac.debut>iso(today())?"Départ "+dueLabel(S.vac.debut):"Pause des rappels, liste avant de partir",vacOn()?"🏖":null]};
   for(const [k,n,c,ic] of MSECS){ const [sub,badge]=info[k];
-    const t=el("button",{type:"button",class:"m-tile",style:"--bc:"+c,"aria-label":n+", "+sub,onclick:()=>k==="garde"?openGarde():mOpen(k)},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),el("b",{text:n}),el("span",{text:sub}));
+    const t=el("button",{type:"button",class:"m-tile",style:"--bc:"+c,"aria-label":n+", "+sub,onclick:()=>k==="garde"?openGarde():k==="vac"?openVac():mOpen(k)},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),el("b",{text:n}),el("span",{text:sub}));
     if(badge) t.append(el("em",{text:badge})); T.append(t); }
 }
 function renderCars(){
@@ -9195,7 +9232,7 @@ function binNext(b,from){
   for(let k=0;k<70;k++){ const c=new Date(start.getFullYear(),start.getMonth(),start.getDate()+k); if(!(b.jours||[]).includes(c.getDay())) continue;
     if(fq>1){ const w=Math.round((weekStartOf(c)-weekStartOf(ref))/(7*864e5)); if(((w%fq)+fq)%fq!==0) continue; }
     const s=b.veille?new Date(c.getFullYear(),c.getMonth(),c.getDate()-1):c;
-    if(s<start) continue; if(b.derniere&&iso(s)<=b.derniere) continue;
+    if(s<start) continue; if(b.derniere&&iso(s)<=b.derniere) continue; if(enVac(iso(s))) continue;
     return {sortie:s,collecte:c}; }
   return null;
 }
@@ -9624,6 +9661,7 @@ async function autoClaimLegacy(){
   db.collection("fiches").onSnapshot(s=>{ const d=s.docs.find(x=>x.id==="garde"); S.garde=d?{data:d.data()}:null; },()=>{});
   db.collection("etoiles").onSnapshot(s=>{ S.etoiles=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("recompenses").onSnapshot(s=>{ S.recomp=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
+  db.collection("vacances").onSnapshot(s=>{ const d=s.docs.find(x=>x.id==="actuel"); S.vac=d?d.data():null; renderAll(); },()=>{});
   db.collection("abonnements").onSnapshot(s=>{ S.abos=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"abonnements"); renderAll(); },()=>{});
   db.collection("documents").onSnapshot(s=>{ S.docs=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"documents"); S.loaded.d=true; renderAll(); },()=>{ S.loaded.d=true; renderAll(); });
 })();
