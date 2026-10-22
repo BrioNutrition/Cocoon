@@ -50,6 +50,9 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   glisser, appui long), Foyer en mosaïque « bento », changement de page façon iOS.
 - Fait : bouton « Une idée, un bug ? » (tout en bas des Réglages, `openRetour()`) → collection `retours` ; pour lire :
   `select foyer, data, updated_at from cocoon_docs where path='retours' order by updated_at desc;`
+- **Foyer de nuit** (choisi par Angel, maquette C) : sur l'onglet Foyer, `html.foyer-nuit` (posée par `setTab`) → fond #17162A, tuiles
+  sombres éclairées par un halo de leur couleur (`.hb-t::before`), pastilles dorées, sous-titre « Chez les … · date » (`.hub-sub`),
+  tuile Événements (`HUB_EMO.evenements`). Tuiles-boutons à ombre dure : proposées puis écartées.
 - Tuiles du Foyer : essayé puis annulé (Angel préfère l'actuel, ne pas reproposer tel quel) : « pastel » (tuile à sa couleur),
   « carte postale » (bandeau de couleur en haut), « liste groupée » (lignes façon Réglages).
 - **Noms des formules** (choisis par Angel) : gratuit = **Cocoon Essentiel**, payant = **Cocoon Plus** (le mot « Premium » ne doit plus
