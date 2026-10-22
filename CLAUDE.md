@@ -85,6 +85,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   « avant de partir » (`VAC_LIST`) devient des tâches pour la veille (`vacances:true`). Lien vers la fiche baby-sitter.
 - Réserves (Repas › « Frigo, congélateur, placard », `openStock()`, collection `stock` {nom, lieu, dlc}) : rappel 2 j avant (7 j
   congélateur), « Consommé » retire, « Une idée avec ce qui périme bientôt » ouvre le frigo prérempli (`openFrigo(pre)`).
+- Anniversaires des proches (Agenda › « Anniversaires des proches », `openProches()`, collection `proches` {nom, lien, jour "MM-JJ",
+  annee|null, idees[]}) : rappel 7 j avant dans la cloche (kind « Anniversaire », `ref.proche`), idées cadeaux → courses ou dépense Loisirs.
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).

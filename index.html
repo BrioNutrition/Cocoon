@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 14:44";</script>
+<script>window.COCOON_BUILD="22/10 14:47";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3189,6 +3189,22 @@ html.native-tabs .hub-mini{display:none!important}
 .stk-n{flex:1;min-width:0}.stk-n b{display:block;font-size:15px}.stk-n small{font-size:12.5px;color:var(--muted)}
 .stk-d.soon{color:var(--soon);font-weight:700}.stk-d.late{color:var(--late);font-weight:700}
 .stk-ok{min-height:40px;padding:8px 12px}
+#agProches{margin-bottom:10px}
+.pr-in{gap:12px!important}
+.pr-card{background:var(--surface);border-radius:20px;padding:14px;box-shadow:0 2px 0 var(--shadow);display:flex;flex-direction:column;gap:10px}
+.pr-card.soon{box-shadow:inset 0 0 0 2.5px #FFC94A,0 2px 0 var(--shadow)}
+.pr-top{display:flex;align-items:center;gap:12px}
+.pr-d{width:48px;height:52px;border-radius:14px;background:color-mix(in srgb,#E79ADB 30%,var(--surface));display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none}
+.pr-d b{font:800 20px/1 var(--f-display)}.pr-d small{font-size:11px;font-weight:700;color:color-mix(in srgb,var(--ink) 70%,transparent)}
+.pr-t{flex:1;min-width:0}.pr-t b{display:block;font-size:16px}.pr-t small{font-size:13px;color:var(--muted)}
+.pr-x{border:0;background:none;color:var(--muted);font-size:20px;min-width:36px;min-height:36px;cursor:pointer}.pr-x.sm{font-size:16px;min-width:30px;min-height:30px}
+.pr-ideas{display:flex;flex-direction:column;gap:6px}
+.pr-idea{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;background:var(--sunk);border-radius:12px;padding:6px 4px 6px 10px}
+.pr-idea span{flex:1 1 auto;min-width:0;font-size:14px;overflow-wrap:anywhere}
+.pr-idea .pr-a{flex:none}
+.pr-a{border:0;border-radius:999px;padding:6px 10px;font:inherit;font-size:12.5px;font-weight:700;background:var(--surface);color:var(--ink);cursor:pointer;min-height:32px}
+.pr-add{display:flex;gap:6px}.pr-add input{flex:1;min-width:0;font-size:15px;min-height:40px}.pr-add .btn{min-height:40px;padding:8px 12px}
+.pr-form .frow{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pr-form .frow .btn{min-height:46px}
 .fr-busy{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:rgba(20,18,30,.18);-webkit-backdrop-filter:blur(10px) saturate(1.1);backdrop-filter:blur(10px) saturate(1.1);opacity:0;transition:opacity .2s ease}
 .fr-busy.on{opacity:1}
 .fr-bc{display:flex;flex-direction:column;align-items:center;gap:10px;padding:22px 26px;border-radius:24px;background:var(--surface);color:var(--ink);box-shadow:0 18px 40px rgba(0,0,0,.18)}
@@ -4482,6 +4498,7 @@ function reminders(){
     if(v.assuranceEcheance&&daysTo(v.assuranceEcheance)<=45) out.push({kind:"Véhicule",date:v.assuranceEcheance,titre:"Échéance assurance : "+(v.nom||"véhicule"),cat:"voitures",who:null,ref:v});
     const rn=revNext(v); if(rn&&daysTo(rn.date)<=45) out.push({kind:"Véhicule",date:rn.date,titre:"Révision : "+(v.nom||"véhicule"),cat:"voitures",who:null,ref:v}); }
   for(const a of (S.abos||[])) if(a.actif!==false&&a.rappel!==false){ const n=subNext(a); if(n&&daysTo(n)<=14) out.push({kind:"Prélèvement",date:n,titre:a.nom+" · "+money(a.montant),cat:"factures",who:a.payePar||null,ref:a}); }
+  for(const x of prochesTries()) if(x.j<=7) out.push({kind:"Anniversaire",date:x.date,titre:"Anniversaire "+de(x.p.nom)+(x.age?" ("+x.age+" ans)":"")+((x.p.idees||[]).length?" · "+(x.p.idees.length)+" idée"+(x.p.idees.length>1?"s":"")+" cadeau":""),cat:"loisirs",who:null,ref:{id:x.p.id,proche:true}});
   for(const m of membres()){ const nb=nextBirthday(m); if(nb&&daysTo(nb.date)<=60) out.push({kind:"Anniversaire",date:nb.date,titre:"Anniversaire "+de(m.nom)+" ("+nb.age+(typeOf(m)==="animal"&&nb.age<2?" an":" ans")+")",cat:typeOf(m)==="animal"?"animaux":"maison",who:null,ref:m}); }
   for(const b of (S.bins||[])){ const nx=binNext(b); if(nx&&daysTo(iso(nx.sortie))<=1){ const w=binWho(b); out.push({kind:"Poubelles",date:iso(nx.sortie),titre:"Sortir : "+b.nom+(b.veille?" (le soir)":""),cat:"maison",who:w.ids.length===1?w.ids[0]:null,ref:b}); } }
   for(const r of (S.rdvs||[])) if(r.date&&!r.fait&&daysTo(r.date)>=0&&daysTo(r.date)<=31) out.push({kind:"Rendez-vous",date:r.date,titre:r.titre+(r.heure?" · "+heureTxt(r.heure):"")+(r.lieu?" · "+r.lieu:""),cat:"rdv",who:(r.pour||[]).length===1?r.pour[0]:null,ref:r});
@@ -5403,6 +5420,8 @@ function renderRdv(){
   w.append(box);
 }
 function renderAgenda(){ const W=$("agWho"), C=$("agCal"); if(!W||!C) return; W.innerHTML=""; C.innerHTML=""; const me=meId();
+  { let P=$("agProches"); if(!P){ P=el("div",{id:"agProches"}); C.before(P); } P.innerHTML=""; const nx=prochesTries()[0];
+    P.append(el("button",{type:"button",class:"r-frigo",onclick:()=>openProches()},el("span",{"aria-hidden":"true",text:"🎂"}),el("span",{},el("b",{text:"Anniversaires des proches"}),el("small",{text:nx?nx.p.nom+" "+(nx.j===0?"aujourd'hui":nx.j===1?"demain":"dans "+nx.j+" jours")+(nx.age?" · "+nx.age+" ans":""):"Grands-parents, cousins, amis : rappel et idées cadeaux"})),el("u",{"aria-hidden":"true",text:"›"}))); }
   const ms=membres(); if(S.agWho&&!ms.some(m=>m.id===S.agWho)) S.agWho=null;
   W.append(el("button",{type:"button","aria-pressed":String(!S.agWho),onclick:()=>{ S.agWho=null; renderAgenda(); renderRdv(); }},"Tout le foyer"));
   for(const m of ms) W.append(el("button",{type:"button","aria-pressed":String(S.agWho===m.id),onclick:()=>{ S.agWho=S.agWho===m.id?null:m.id; renderAgenda(); renderRdv(); }},avatar(m.id,18),m.id===me?"Moi":m.nom));
@@ -6111,6 +6130,42 @@ function openVac(){ if(!needMe()) return; const U=upSheet("vacPage","Vacances"),
         U.close(); toast("🏖 Vacances notées"+(dec?" · "+dec+" tâche"+(dec>1?"s":"")+" décalée"+(dec>1?"s":""):"")+(k?" · "+k+" chose"+(k>1?"s":"")+" à faire avant de partir":"")+"."); renderAll(); }
       catch(err){ b.disabled=false; writeErr(err); } }}),
     el("button",{type:"button",class:"btn ghost",text:"🧸 Préparer la fiche baby-sitter",onclick:()=>{ U.close(); setTimeout(openGarde,340); }})); }
+/* ---------- Anniversaires des proches (hors foyer) ----------
+   collection proches {nom, lien, jour:"MM-JJ", annee:nombre|null, idees:[texte]}. Rappel 7 jours avant (et le jour même),
+   idées cadeaux par personne : « aux courses » ajoute l'idée à la liste, « dépense » ouvre une dépense « Cadeau … » en Loisirs. */
+function procheNext(p){ if(!p||!/^\d{2}-\d{2}$/.test(p.jour||"")) return null; const [m,d]=p.jour.split("-").map(Number), t=today();
+  let x=new Date(t.getFullYear(),m-1,d); if(x<t) x=new Date(t.getFullYear()+1,m-1,d); return {date:iso(x),j:daysTo(iso(x)),age:p.annee?x.getFullYear()-p.annee:null}; }
+function prochesTries(){ return (S.proches||[]).map(p=>Object.assign({p},procheNext(p)||{})).filter(x=>x.date).sort((a,b)=>a.j-b.j); }
+function openProches(focusId){ if(!needMe()) return; const U=upSheet("prochesPage","Anniversaires des proches"), inn=el("div",{class:"pp-in pr-in"}); U.sheet.append(inn);
+  let form=null;
+  const draw=()=>{ inn.innerHTML="";
+    inn.append(el("div",{class:"gd-h"},el("b",{text:"Anniversaires des proches"}),el("span",{text:"Cocoon te prévient une semaine avant, avec tes idées de cadeaux."})));
+    const L=prochesTries();
+    for(const x of L){ const p=x.p, card=el("div",{class:"pr-card"+(x.j<=7?" soon":""),"data-id":p.id});
+      card.append(el("div",{class:"pr-top"},el("span",{class:"pr-d"},el("b",{text:String(parse(x.date).getDate())}),el("small",{text:MOIS_C(parse(x.date))})),
+        el("div",{class:"pr-t"},el("b",{text:p.nom}),el("small",{text:[p.lien,x.j===0?"🎉 aujourd'hui !":x.j===1?"demain":"dans "+x.j+" jours",x.age?x.age+" ans":""].filter(Boolean).join(" · ")})),
+        el("button",{type:"button",class:"pr-x","aria-label":"Retirer "+p.nom,text:"×",onclick:()=>confirmBox("Retirer "+p.nom+" ?","Son anniversaire et ses idées cadeaux seront effacés.","Retirer",async()=>{ try{ await S.db.collection("proches").doc(p.id).delete(); setTimeout(draw,300); }catch(e){ writeErr(e); } })})));
+      const ideas=el("div",{class:"pr-ideas"});
+      for(const [i,idee] of (p.idees||[]).entries()) ideas.append(el("div",{class:"pr-idea"},el("span",{text:"🎁 "+idee}),
+        el("button",{type:"button",class:"pr-a",text:"Aux courses",onclick:async e=>{ try{ await S.db.collection("courses").add({nom:idee,qte:null,pour:"tous",fait:false,ajoutePar:meId(),ajouteLe:Date.now(),note:"Cadeau pour "+p.nom}); e.currentTarget.textContent="✓ Ajouté"; e.currentTarget.disabled=true; }catch(err){ writeErr(err); } }}),
+        el("button",{type:"button",class:"pr-a",text:"Dépense",onclick:()=>{ U.close(); setTimeout(()=>{ openBForm("dep"); const d=S.bForm&&S.bForm.d; if(d){ d.titre="Cadeau "+p.nom+" : "+idee; d.cat="loisirs"; renderBForm(); } },340); }}),
+        el("button",{type:"button",class:"pr-x sm","aria-label":"Retirer l'idée "+idee,text:"×",onclick:async()=>{ const id2=(p.idees||[]).filter((_,k)=>k!==i); try{ await S.db.collection("proches").doc(p.id).update({idees:id2}); p.idees=id2; draw(); }catch(e){ writeErr(e); } }})));
+      const ii=el("input",{type:"text",placeholder:"Une idée de cadeau…","aria-label":"Idée de cadeau pour "+p.nom,maxlength:"80"});
+      const addI=async()=>{ const v=ii.value.trim(); if(!v) return; const id2=(p.idees||[]).concat(v); try{ await S.db.collection("proches").doc(p.id).update({idees:id2}); p.idees=id2; draw(); }catch(e){ writeErr(e); } };
+      ii.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); addI(); } });
+      ideas.append(el("div",{class:"pr-add"},ii,el("button",{type:"button",class:"btn ghost",text:"Ajouter",onclick:addI})));
+      card.append(ideas); inn.append(card); }
+    if(!L.length&&!form) inn.append(el("p",{class:"gd-nb",text:"Ajoute les anniversaires de ta famille et de tes amis : Cocoon te les rappelle une semaine avant."}));
+    if(form){ const nm=el("input",{type:"text",id:"prNom",maxlength:"40",placeholder:"Mamie Jeanne, Lucas…"}), li=el("input",{type:"text",id:"prLien",maxlength:"30",placeholder:"Grand-mère, cousin, amie…"});
+      const dt=el("input",{type:"date",id:"prDate"}), sansAn=el("input",{type:"checkbox",id:"prSansAn"});
+      inn.append(el("div",{class:"st-add pr-form"},el("label",{class:"field",for:"prNom"},"Prénom ou surnom",nm),el("label",{class:"field",for:"prLien"},"Qui c'est (facultatif)",li),el("label",{class:"field",for:"prDate"},"Date de naissance",dt),
+        el("label",{class:"mf-check",for:"prSansAn"},sansAn,"Je ne connais pas l'année"),
+        el("div",{class:"frow"},el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>{ form=null; draw(); }}),el("button",{type:"button",class:"btn",text:"Enregistrer",onclick:async()=>{ const n=nm.value.trim(); if(!n||!dt.value){ toast("Indique le prénom et la date."); return; }
+          try{ await S.db.collection("proches").add({nom:n,lien:li.value.trim()||null,jour:dt.value.slice(5),annee:sansAn.checked?null:Number(dt.value.slice(0,4)),idees:[],par:meId(),le:Date.now()}); form=null; setTimeout(draw,300); toast("🎂 "+esc(n)+" ajouté·e."); }catch(e){ writeErr(e); } }}))));
+      setTimeout(()=>{ try{ nm.focus({preventScroll:true}); }catch(_){} },60); }
+    else inn.append(el("button",{type:"button",class:"btn pp-cta",text:"+ Ajouter un anniversaire",onclick:()=>{ form={}; draw(); }}));
+    if(focusId) setTimeout(()=>{ const c=inn.querySelector('[data-id="'+CSS.escape(focusId)+'"]'); if(c) c.scrollIntoView({block:"center"}); focusId=null; },60); };
+  draw(); }
 function meterLast(){ const rs=(S.releves||[]).slice().sort((a,b)=>a.date<b.date?1:-1); return rs[0]||null; }
 function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; const sec=S.mSec||null, me=meId(), t0=iso(today());
   D.innerHTML=""; T.innerHTML="";
@@ -6865,7 +6920,7 @@ function npIcon(r){ if(r.evn){ const i=el("span",{class:"np-ic",style:"--bc:#FF9
 function npGo(r){ closeNotifs(); const x=r.ref; if(r.evn){ setTimeout(()=>openEvent(x.ev),120); return; } if(r.live){ setTab("courses"); renderHeader(); window.scrollTo({top:0,behavior:"instant"}); return; } if(r.merci) return;
   if(r.kind==="Perso"||r.kind==="Foyer") return goTask(x);
   if(r.kind==="Document"){ S.docWho=null; S.docCat=catOf(x.cat||"documents").id||"documents"; if($("papQ")) $("papQ").value=""; return goDoc(x); }
-  if(r.kind==="Anniversaire") return openProfile(x.id);
+  if(r.kind==="Anniversaire"){ if(x.proche){ setTimeout(()=>openProches(x.id),120); return; } return openProfile(x.id); }
   if(r.kind==="Réserves"){ S.stockLieu=x.lieu; setTimeout(openStock,120); return; }
   if(r.kind==="Prélèvement"||r.kind==="Budget"){ setTab("budget"); window.scrollTo({top:0}); return; }
   if(r.kind==="Rendez-vous"){ S.agDay=null; setTab("agenda"); return; }
@@ -9706,6 +9761,7 @@ async function autoClaimLegacy(){
   db.collection("recompenses").onSnapshot(s=>{ S.recomp=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("vacances").onSnapshot(s=>{ const d=s.docs.find(x=>x.id==="actuel"); S.vac=d?d.data():null; renderAll(); },()=>{});
   db.collection("stock").onSnapshot(s=>{ S.stock=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
+  db.collection("proches").onSnapshot(s=>{ S.proches=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("abonnements").onSnapshot(s=>{ S.abos=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"abonnements"); renderAll(); },()=>{});
   db.collection("documents").onSnapshot(s=>{ S.docs=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"documents"); S.loaded.d=true; renderAll(); },()=>{ S.loaded.d=true; renderAll(); });
 })();
