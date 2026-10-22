@@ -90,7 +90,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   année » (`evenements.annuel`, coché par défaut) → rappel 7 j avant la date suivante, « Préparer celui du … » recrée l'événement.
 - Événements : toute la ligne du modèle coche/décoche ; les étapes faites restent dépliées (« N réalisées »).
   Anneaux d'avancement (`evRing`, raccourci `.wg-ring.emo`) : emoji du type au centre (`emoIco`), anneau à la couleur du type sur
-  fond teinté, % dans la ligne du bas, pastille verte ✓ à 100 % ; anneau des raccourcis centré en hauteur ; remplissage animé seulement la 1re fois ou si le % change (`ringNew`).
+  fond teinté, % dans la ligne du bas, pastille verte ✓ à 100 % ; anneau des raccourcis centré en hauteur, plus gros (60 px, 56 en court) et décalé vers la gauche sur les longs ; remplissage animé seulement la 1re fois ou si le % change (`ringNew`).
 - Rendez-vous : formulaire dans une feuille du bas façon « Nouvel événement » (`openRdvSheet()`, ouverte dès que `S.rdvForm`
   est posé puis `renderRdv()`), grille de types `RDV_TYPES` qui remplit le titre, mêmes champs `ev-inp` / bouton `ev-cta`.
 - Harmonisation visuelle (audit du 22 oct., bloc CSS « harmonisation » en fin de feuille principale) : jour choisi / aujourd'hui =

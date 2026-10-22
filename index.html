@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 18:18";</script>
+<script>window.COCOON_BUILD="22/10 18:25";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2738,7 +2738,11 @@ div.pf-r{cursor:default}
 .wg-h span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .wg-big{display:flex;align-items:center;gap:7px;margin-top:auto;padding-top:8px;font:800 19px/1.15 var(--f-display);letter-spacing:-.01em;max-width:100%;overflow:hidden}
 .wg:not(.wide) .wg-big{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;white-space:normal}
-.wg.has-ring .wg-big,.wg.has-ring .wg-s{max-width:calc(100% - 52px)}
+.wg.has-ring .wg-big,.wg.has-ring .wg-s{max-width:calc(100% - 60px)}
+.wg.wide.has-ring .wg-big,.wg.wide.has-ring .wg-s{max-width:calc(100% - 100px)}
+.wg.wide .wg-ring{right:30px}
+.wg:not(.wide) .wg-ring{right:10px}
+.wg:not(.wide) .wg-ring.emo{width:56px;height:56px}
 .wg-dot{width:12px;height:12px;border-radius:50%;flex:none;box-shadow:0 0 0 2px color-mix(in srgb,var(--ink) 12%,transparent)}
 .wg-tr{font:700 12.5px/1 var(--f-body,inherit);padding:3px 7px;border-radius:99px}
 .wg-tr.down{color:#2E9E5B;background:color-mix(in srgb,#3CC37A 18%,transparent)}
@@ -2746,14 +2750,14 @@ div.pf-r{cursor:default}
 .wg-s{font-size:12.5px;color:var(--muted);line-height:1.3;max-width:100%;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .wg-s.late{color:var(--late);font-weight:700}
 .wg.wide .wg-s{-webkit-line-clamp:1;max-width:calc(100% - 96px)}
-.wg-ring{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;background:conic-gradient(#3CC37A var(--p),var(--line) 0);display:grid;place-items:center}
-.wg-ring::before{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--surface)}
-.wg-ring b{position:relative;font-size:11.5px;font-weight:800}
+.wg-ring{position:absolute;right:22px;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;background:conic-gradient(#3CC37A var(--p),var(--line) 0);display:grid;place-items:center}
+.wg-ring::before{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--surface)}
+.wg-ring b{position:relative;font-size:13px;font-weight:800}
 @property --rp{syntax:"<percentage>";inherits:false;initial-value:0%}
-.wg-ring.emo{width:50px;height:50px;background:conic-gradient(from 0deg,var(--rc) var(--rp),color-mix(in srgb,var(--rc) 22%,var(--line)) 0)}
-.wg-ring.emo::before{inset:6px;background:color-mix(in srgb,var(--rc) 18%,var(--surface))}
+.wg-ring.emo{width:60px;height:60px;background:conic-gradient(from 0deg,var(--rc) var(--rp),color-mix(in srgb,var(--rc) 22%,var(--line)) 0)}
+.wg-ring.emo::before{inset:7px;background:color-mix(in srgb,var(--rc) 18%,var(--surface))}
 .wg-ring.emo i{position:relative;font-style:normal;font-size:20px;line-height:1}
-.wg-ring.emo i.emo-img img{width:22px;height:auto;display:block;transition:transform .3s}
+.wg-ring.emo i.emo-img img{width:27px;height:auto;display:block;transition:transform .3s}
 .wg-ring.emo.anim{animation:ringRp .9s cubic-bezier(.3,.8,.3,1) .15s backwards}
 @keyframes ringRp{from{--rp:0%}}
 .wg-spark{position:absolute;right:12px;bottom:14px;width:90px;height:34px;color:var(--muted);--bc:var(--wc)}
