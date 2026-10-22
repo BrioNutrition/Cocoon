@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 21:43";</script>
+<script>window.COCOON_BUILD="22/10 21:46";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2558,6 +2558,12 @@ html.sheet-open .add-fab{display:none}
 .pp-grab{top:0;z-index:2;display:flex;justify-content:center;padding:10px 0 8px;cursor:grab;touch-action:none;background:linear-gradient(var(--bg) 60%,transparent)}
 .pp-grab i{width:44px;height:5px;border-radius:9px;background:color-mix(in srgb,var(--ink) 28%,transparent)}
 html.prem-open{overflow:hidden}
+/* fenêtre plein écran (Cocoon Plus, événements, rendez-vous…) : la barre d'onglets s'efface, et revient à la fermeture */
+.tabs{transition:translate .28s cubic-bezier(.4,0,.2,1),opacity .2s}
+html.prem-open:not(:has(.prem-page.out)) .tabs{translate:0 calc(100% + 40px);opacity:0;pointer-events:none}
+html.native-tabs.prem-open .pp-in{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 16px)}
+html.native-tabs.prem-open .pp-sheet:not(.pm-sheet){max-height:calc(100% - env(safe-area-inset-top,0px) - 10px)}
+html.native-tabs.prem-open .px2{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 20px)}
 .pp-in{flex:1;width:100%;max-width:560px;margin:0 auto;padding:6px 16px calc(env(safe-area-inset-bottom,0px) + 16px);display:flex;flex-direction:column;gap:10px;justify-content:flex-start}
 .pp-hero{display:flex;align-items:center;gap:12px;border-radius:22px;padding:14px 16px;color:#1C1B2E;background:radial-gradient(70% 90% at 0% 0%,rgba(255,255,255,.65),transparent 70%),linear-gradient(140deg,#FFE08A,#FFC2A0 52%,#FFA9C4)}
 .pp-hero h2{margin:0;font:800 23px/1.05 var(--f-display);letter-spacing:-.02em;color:#1C1B2E}
@@ -7092,8 +7098,8 @@ setTab("accueil");
     if(S.tab==="documents"&&S.docCat&&id==="back"){ S.docCat=null; renderDocs(); topNow(); return; } if(!bar){ if(id==="back"&&S.tab==="moi"&&S.moiSec) $("moiBack").click(); return; }
     const el0=id==="back"?bar.querySelector(".hub-back,.pg-back"):id==="sync"?bar.querySelector(".hub-sync"):id==="add"?bar.querySelector(".hub-add"):null; if(el0) el0.click(); });
   const safeTop=()=>{ const p=document.createElement("div"); p.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top,0px)"; document.body.append(p); const h=p.offsetHeight; p.remove(); return h; };
-  const sync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!(document.getElementById("boot")&&!document.getElementById("boot")._done)&&!window.__tabsHold&&!(document.getElementById("wizard")&&!$("wizard").hidden));
-    if(vis!==shown){ shown=vis; (vis?NT.show({items:TABS.map(t=>({title:t[1],icon:t[2]}))}):NT.hide()).catch(()=>{}); sel=-1; bdg=null; }
+  const sync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!(document.getElementById("boot")&&!document.getElementById("boot")._done)&&!window.__tabsHold&&!(document.getElementById("wizard")&&!$("wizard").hidden)&&!(document.documentElement.classList.contains("prem-open")&&!document.querySelector(".prem-page.out")));
+    if(vis!==shown){ shown=vis; if(vis) cxSent=false; (vis?NT.show({items:TABS.map(t=>({title:t[1],icon:t[2]}))}):NT.hide()).catch(()=>{}); sel=-1; bdg=null; }
     if(!vis){ if(tbSig!=="off"){ tbSig="off"; NT.topbar({visible:false}).catch(()=>{}); } return; }
     /* une fiche ouverte depuis l'accueil (ou Moi) reste sous cet onglet */
     const cur=S.tab==="profil"&&S.prevTab?S.prevTab:S.tab;
