@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 22:56";</script>
+<script>window.COCOON_BUILD="22/10 23:07";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -6713,7 +6713,7 @@ function docIsSante(){ const pour=S.docPour||"foyer", m=pour!=="foyer"?membre(po
 function updConsent(){ const box=$("dConsent"); if(!box) return; const h=docIsSante(); box.hidden=!h; if(!h) $("dConsentCk").checked=false;
   const pour=S.docPour||"foyer"; $("dConsentWho").textContent=pour==="foyer"?"tout le foyer":"tout le foyer (rangé dans le classeur de "+(pour===meId()?"toi":membre(pour).nom)+")"; }
 ["dTitle","dNote","dCatNom"].forEach(id=>{ const x=$(id); if(x) x.addEventListener("input",updConsent); }); $("dCat").addEventListener("change",updConsent);
-$("papAdd").addEventListener("click",()=>{ const f=$("docForm"), open=f.hidden; if(open&&!pmCan("docs")) return; f.hidden=!open; $("papAdd").setAttribute("aria-expanded",String(open)); if(open){ setTimeout(()=>{ $("dTitle").focus(); },60); } });
+$("papAdd").addEventListener("click",()=>{ if(!$("docForm").hidden){ closeDocForm(); return; } openDocAdd(); });
 $("papQ").addEventListener("input",()=>renderDocs());
 $("docForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||!needMe()) return; const titre=$("dTitle").value.trim(); if(!titre) return;
   updConsent(); const sante=!$("dConsent").hidden;
@@ -6928,7 +6928,22 @@ $("sgEquip").addEventListener("click",()=>{ closeSheet(); openMForm("equip"); })
 $("searchBtn").addEventListener("click",openSearch);
 function closeDocForm(){ S.docEv=null; const f=$("docForm"); if(f) f.hidden=true; $("papAdd").setAttribute("aria-expanded","false"); document.querySelectorAll('.hub-add[data-add="documents"]').forEach(b=>b.setAttribute("aria-expanded","false")); try{ document.activeElement&&document.activeElement.blur(); }catch(_){} }
 function openDocForm(){ if(!pmCan("docs")){ setTab("documents"); return; } setTab("documents"); window.scrollTo({top:0}); const f=$("docForm"); f.hidden=false; $("papAdd").setAttribute("aria-expanded","true"); document.querySelectorAll('.hub-add[data-add="documents"]').forEach(b=>b.setAttribute("aria-expanded","true")); setTimeout(()=>{ try{ $("dTitle").focus(); }catch(_){} },80); }
-$("sgDoc").addEventListener("click",()=>{ closeSheet(); openDocForm(); });
+$("sgDoc").addEventListener("click",()=>{ closeSheet(); openDocAdd(); });
+/* « + » des Papiers : un menu comme « Ajouter à l'agenda » (photo lue par Cocoony, fichier, à la main, facture avec garantie) */
+function openDocAdd(){ if(!needMe()) return; if(!pmCan("docs")){ setTab("documents"); return; }
+  const U=upSheet("docAddPage","Ajouter un papier"); U.sheet.classList.add("ev-sheet");
+  const inn=el("div",{class:"pp-in ev-in"}); U.sheet.append(inn);
+  inn.append(el("div",{class:"ev-top"},el("h2",{text:"Ajouter un papier"})));
+  const ai=secOn()&&S.sampleLimits&&S.sampleLimits.images;
+  const pick=(capture,lire)=>{ const f=$("dFile"); if(capture) f.setAttribute("capture","environment"); else f.removeAttribute("capture");
+    f.setAttribute("accept",capture?"image/*":"application/pdf,image/png,image/jpeg,image/webp");
+    if(lire&&ai) f.addEventListener("change",()=>{ setTimeout(()=>{ const b=$("dAI"); if(b&&!b.hidden) readDocAI(); },50); },{once:true});
+    f.click(); };
+  const opt=(id,ic,bg,t,sub,fn,cls)=>el("button",{type:"button",id,class:"ev-opt"+(cls?" "+cls:""),onclick:()=>{ U.close(); openDocForm(); fn(); }},el("i",{"aria-hidden":"true",style:"background:"+bg,text:ic}),el("span",{},el("b",{text:t}),el("small",{text:sub})));
+  inn.append(opt("docAddPhoto","📸","color-mix(in srgb,#FF9CB0 40%,var(--surface))","Prendre en photo",ai?"Cocoony lit le papier et remplit la fiche":"La photo est rangée avec sa fiche",()=>pick(true,true),"hot"),
+    opt("docAddFile","📎","color-mix(in srgb,#8FB8FF 40%,var(--surface))","Importer un fichier","Un PDF ou une photo déjà sur le téléphone",()=>pick(false,true)),
+    opt("docAddMain","✍️","color-mix(in srgb,#FFC94A 40%,var(--surface))","Remplir à la main","Nom, catégorie, date d'expiration",()=>{}),
+    opt("docAddGar","🛡️","color-mix(in srgb,#7FD39A 40%,var(--surface))","Une facture d'achat","Pour garder sa garantie et être prévenu avant la fin",()=>{ const g=$("dGarBox"); if(g) g.open=true; })); }
 
 { const bh=$("brandHome"); const goHome=()=>{ if(typeof closeNotifs==="function") closeNotifs(); closeSheet(); if(S.tab!=="accueil"){ setTab("accueil"); renderHeader(); } else window.scrollTo({top:0,behavior:"smooth"}); };
   bh.addEventListener("click",goHome); bh.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); goHome(); } }); }
@@ -7798,7 +7813,6 @@ function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const
   let mt=null; for(const b of (S.bins||[])){ const nx=binNext(b); if(nx&&daysTo(iso(nx.sortie))<=1){ mt=b.nom+" "+(iso(nx.sortie)===t0?(b.veille?"ce soir":"aujourd'hui"):"demain"); break; } }
   if(!mt){ const eq=(S.equip||[]).map(x=>[x,eqNext(x)]).filter(x=>x[1]).sort((a,b)=>a[1]<b[1]?-1:1)[0]; if(eq&&daysTo(eq[1])<=45) mt="Entretien "+(eq[0].nom||"équipement").toLowerCase()+" "+dueLabel(eq[1]); }
   tile("maison","","#7FCDB9","Maison",mt||"tout le logement",{gly:"maison"});
-  { const ev=evNext(), j=ev?daysTo(ev.debut):null; tile("evenements","","#E79ADB","Événements",ev?(ev.titre||evT(ev).n)+(j===0?" · aujourd'hui":j>0&&j<=30?" · dans "+j+" j":""):"anniv, travaux, vacances…"); }
   /* Cocoon Plus en grand, au-dessus du titre « Le foyer » */
   { const sec=H.closest("section"), old=sec&&sec.querySelector(".hb-pban"); if(old) old.remove();
     if(sec){ const pa=!!(S.prefs&&S.prefs.premiumInteret), ic=el("i",{"aria-hidden":"true"}); ic.innerHTML='<svg viewBox="0 -4 64 64" aria-hidden="true"><path d="M32 4c2.6 15 9 21.4 24 24-15 2.6-21.4 9-24 24-2.6-15-9-21.4-24-24 15-2.6 21.4-9 24-24z" fill="#FFE7A0"/></svg>';
@@ -7864,10 +7878,9 @@ function fabAct(v0,anchor){ const me=meId(), v=v0||S.tab;
   const go=(sel)=>setTimeout(()=>{ const e=$(sel)||document.querySelector(sel); if(e) e.scrollIntoView({block:"center",behavior:"smooth"}); },80);
   if(v==="courses"){ window.scrollTo({top:0,behavior:"smooth"}); setTimeout(()=>{ try{ $("cNom").focus(); }catch(_){} },250); return; }
   if(v==="repas"){ if(!needMe()) return; const [d,sl]=nextFreeMeal(), t0=weekStartOf(today()); S.rWeek=Math.round((weekStartOf(parse(d))-t0)/(7*864e5)); S.rDay=d; setTab("repas"); renderRepas(); openRepas(d,sl); return; }
-  if(v==="agenda"){ if(!needMe()) return; const day=S.agDay&&S.agDay>=iso(today())?S.agDay:""; if(!anchor||!anchor.dataset||anchor.dataset.direct!=="rdv"){ const nm=nativeMenu("Ajouter à l'agenda",[{id:"rdv",title:"Un rendez-vous",icon:"calendar"},{id:"ev",title:"Un événement à préparer",icon:"party.popper"}]);
-      if(nm){ nm.then(id=>{ if(id==="rdv") fabAct("agenda",{dataset:{direct:"rdv"}}); else if(id==="ev") openEvents({v:"new",type:"anniv",debut:day||undefined}); }); return; }
-      openEvents({v:"pick",day}); return; } S.rdvForm={pour:[S.agWho||me],date:day}; renderRdv(); return; }
-  if(v==="documents"){ if(S.tab==="documents"&&!$("docForm").hidden){ closeDocForm(); return; } openDocForm(); return; }
+  if(v==="agenda"){ if(!needMe()) return; const day=S.agDay&&S.agDay>=iso(today())?S.agDay:""; if(!anchor||!anchor.dataset||anchor.dataset.direct!=="rdv"){ /* menu de l'app (immédiat) plutôt que la feuille d'actions iOS, qui
+      attendait la fin de sa propre animation avant d'ouvrir le formulaire */ openEvents({v:"pick",day}); return; } S.rdvForm={pour:[S.agWho||me],date:day}; renderRdv(); return; }
+  if(v==="documents"){ if(S.tab==="documents"&&!$("docForm").hidden){ closeDocForm(); return; } openDocAdd(); return; }
   if(v==="budget"){ const M=$("addMenu"); if(!M.hidden){ M.hidden=true; return; } M.innerHTML="";
     const it=(ic,t,id)=>M.append(el("button",{type:"button",role:"menuitem",onclick:()=>{ M.hidden=true; const b=$(id); if(b) b.click(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),t));
     it("depense","Une dépense","bAddDep");

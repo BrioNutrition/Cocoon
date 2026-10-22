@@ -37,7 +37,7 @@ async def main():
     await pg.add_style_tag(content='.toast{display:none!important}')
     await pg.evaluate("document.getElementById('navAdd').click()"); await pg.fill('#quickTitle','Appeler le plombier'); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(400)
     await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="documents"]'); await pg.wait_for_timeout(200)
-    await pg.click('.hub-add[data-add=documents]'); await pg.fill('#dTitle','Bail'); await pg.set_input_files('#dFile','test/tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(600)
+    await pg.click('.hub-add[data-add=documents]'); await pg.click('#docAddMain'); await pg.fill('#dTitle','Bail'); await pg.set_input_files('#dFile','test/tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(600)
     print('requêtes de lecture:',await pg.evaluate("__mock.calls.filter(c=>c[0]==='select').map(c=>c[1]).join(',')"))
     n=await pg.evaluate("__mock.T.cocoon_docs.map(r=>r.path+'/'+r.id.slice(0,4)+' '+(r.data.titre||r.data.nom||''))"); print('docs en base:',len(n)); print('\n'.join(n))
     print('fichiers:',await pg.evaluate("Object.keys(__mock.files)"))

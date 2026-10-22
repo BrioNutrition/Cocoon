@@ -52,8 +52,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   `select foyer, data, updated_at from cocoon_docs where path='retours' order by updated_at desc;`
 - **Foyer de nuit** (choisi par Angel, maquette C) : sur l'onglet Foyer, `html.foyer-nuit` (posée par `setTab`). Fond et tuiles
   aux **couleurs habituelles du thème** (`var(--bg)`/`var(--surface)`, demandé par Angel : pas de fond de nuit à part), tuiles
-  éclairées par un halo de leur couleur (dégradé dans le fond de `.hb-t`, fixe : pas de calque flouté), pastilles dorées, pas de sous-titre sous « Le foyer » (retiré par Angel),
-  tuile Événements (`HUB_EMO.evenements`). Tuiles-boutons à ombre dure : proposées puis écartées.
+  éclairées par un halo de leur couleur (dégradé dans le fond de `.hb-t`, fixe : pas de calque flouté), pastilles dorées, pas de sous-titre sous « Le foyer » (retiré par Angel). Pas de tuile Événements dans le Foyer (retirée par Angel). Tuiles-boutons à ombre dure : proposées puis écartées.
 - Tuiles du Foyer : essayé puis annulé (Angel préfère l'actuel, ne pas reproposer tel quel) : « pastel » (tuile à sa couleur),
   « carte postale » (bandeau de couleur en haut), « liste groupée » (lignes façon Réglages).
 - **Noms des formules** (choisis par Angel) : gratuit = **Cocoon Essentiel**, payant = **Cocoon Plus** (le mot « Premium » ne doit plus
@@ -98,6 +97,9 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   modèle … », lien « Continuer sans utiliser le modèle » (`#evCreateSans`) qui crée l'événement sans aucune étape.
   Anneaux d'avancement (`evRing`, raccourci `.wg-ring.emo`) : emoji du type au centre (`emoIco`), anneau à la couleur du type sur
   fond teinté, % dans la ligne du bas, pastille verte ✓ à 100 % ; anneau des raccourcis centré en hauteur, plus gros (60 px, 56 en court) et décalé vers la gauche sur les longs ; remplissage animé seulement la 1re fois ou si le % change (`ringNew`).
+- « + » de l'Agenda : toujours le menu de l'app « Ajouter à l'agenda » (`evPick`), plus la feuille d'actions iOS (elle attendait sa propre
+  animation, d'où la lenteur). « + » des Papiers : menu `openDocAdd()` (« Ajouter un papier » : photo lue par Cocoony, fichier, à la main,
+  facture avec garantie ; boutons `#docAddPhoto/File/Main/Gar`, les tests cliquent `#docAddMain`).
 - Rendez-vous : formulaire dans une feuille du bas façon « Nouvel événement » (`openRdvSheet()`, ouverte dès que `S.rdvForm`
   est posé puis `renderRdv()`), grille de types `RDV_TYPES` qui remplit le titre, mêmes champs `ev-inp` / bouton `ev-cta`.
 - Harmonisation visuelle (audit du 22 oct., bloc CSS « harmonisation » en fin de feuille principale) : jour choisi / aujourd'hui =
