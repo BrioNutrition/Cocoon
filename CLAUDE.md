@@ -85,10 +85,10 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   « avant de partir » (`VAC_LIST`) devient des tâches pour la veille (`vacances:true`). Lien vers la fiche baby-sitter.
 - Réserves (Repas › « Frigo, congélateur, placard », `openStock()`, collection `stock` {nom, lieu, dlc}) : rappel 2 j avant (7 j
   congélateur), « Consommé » retire, « Une idée avec ce qui périme bientôt » ouvre le frigo prérempli (`openFrigo(pre)`).
-- Anniversaires des proches : **pas de menu** (demandé par Angel). Un rendez-vous dont le titre est « Anniversaire de X » / « anniv X »
-  (`annivNom`) ouvre `openAnniv()` : le rappeler chaque année (collection `proches` {nom, jour "MM-JJ", annee, idees[]}), idées cadeaux
-  → courses ou dépense Loisirs, « Préparer la fête » (événement anniversaire). Rappel 7 j avant dans la cloche, 🎂 sur le jour
-  dans le calendrier de l'Agenda.
+- Anniversaires : **rien dans les rendez-vous ni de menu à part** (demandé par Angel) ; tout est dans l'événement « Anniversaire »
+  (`evAnnivCard`, onglet Frise) : idées de cadeaux (`evenements.idees`, « Aux achats » = achat de l'événement) et « Le rappeler chaque
+  année » (`evenements.annuel`, coché par défaut) → rappel 7 j avant la date suivante, « Préparer celui du … » recrée l'événement.
+- Événements : toute la ligne du modèle coche/décoche ; les étapes faites restent dépliées (« N réalisées »).
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).

@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 15:35";</script>
+<script>window.COCOON_BUILD="22/10 15:38";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3191,8 +3191,8 @@ html.native-tabs .hub-mini{display:none!important}
 .stk-n{flex:1;min-width:0}.stk-n b{display:block;font-size:15px}.stk-n small{font-size:12.5px;color:var(--muted)}
 .stk-d.soon{color:var(--soon);font-weight:700}.stk-d.late{color:var(--late);font-weight:700}
 .stk-ok{min-height:40px;padding:8px 12px}
-.ag-d{position:relative}.ag-cake{position:absolute;top:1px;right:2px;font-style:normal;font-size:11px;line-height:1}
 .st-del{color:var(--late)!important}
+.ev-anniv{display:flex;flex-direction:column;gap:10px;margin:2px 0 12px}
 .ev-tap{cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 .pr-in{gap:12px!important}
 .pr-card{background:var(--surface);border-radius:20px;padding:14px;box-shadow:0 2px 0 var(--shadow);display:flex;flex-direction:column;gap:10px}
@@ -4494,6 +4494,8 @@ function reminders(){
   const me=meId(), out=[];
   for(const t of allTasks()) if(!t.fait&&t.echeance) out.push({kind:t.prive?"Perso":"Foyer",date:t.echeance,titre:t.titre,cat:t.cat,who:!t.prive&&t.pour!=="tous"?t.pour:null,ref:t,mine:t.prive||t.pour===me});
   for(const x of (S.stock||[])){ const j=stockJ(x); if(j!=null&&j<=stockAlerte(x)) out.push({kind:"Réserves",date:x.dlc,titre:"À consommer : "+x.nom+" ("+(STOCK_L.find(l=>l[0]===x.lieu)||STOCK_L[0])[1].toLowerCase()+")",cat:"courses",who:null,ref:x}); }
+  for(const ev of (S.evs||[])) if(ev.type==="anniv"&&ev.annuel&&ev.debut<iso(today())){ const nx=evAnnivNext(ev);
+    if(nx&&daysTo(nx)<=7&&!(S.evs||[]).some(e=>e.type==="anniv"&&e.debut===nx)) out.push({kind:"Anniversaire",date:nx,titre:(ev.titre||"Anniversaire")+((ev.idees||[]).length?" · "+ev.idees.length+" idée"+(ev.idees.length>1?"s":"")+" cadeau":""),cat:"loisirs",who:null,ref:{id:ev.id,evAnniv:true}}); }
   for(const d of S.docs){ if(d.expire) out.push({kind:"Document",date:d.expire,titre:d.titre+" expire",cat:d.cat,who:null,ref:d});
     if(d.garantieFin&&daysTo(d.garantieFin)>=0&&daysTo(d.garantieFin)<=45) out.push({kind:"Document",date:d.garantieFin,titre:"Fin de garantie : "+d.titre,cat:d.cat,who:null,ref:d}); }
   for(const x of (S.equip||[])){ const n=eqNext(x); if(n&&daysTo(n)<=60) out.push({kind:"Maison",date:n,titre:"Entretien : "+(x.nom||"équipement"),cat:"entretien",who:null,ref:x});
@@ -4502,7 +4504,6 @@ function reminders(){
     if(v.assuranceEcheance&&daysTo(v.assuranceEcheance)<=45) out.push({kind:"Véhicule",date:v.assuranceEcheance,titre:"Échéance assurance : "+(v.nom||"véhicule"),cat:"voitures",who:null,ref:v});
     const rn=revNext(v); if(rn&&daysTo(rn.date)<=45) out.push({kind:"Véhicule",date:rn.date,titre:"Révision : "+(v.nom||"véhicule"),cat:"voitures",who:null,ref:v}); }
   for(const a of (S.abos||[])) if(a.actif!==false&&a.rappel!==false){ const n=subNext(a); if(n&&daysTo(n)<=14) out.push({kind:"Prélèvement",date:n,titre:a.nom+" · "+money(a.montant),cat:"factures",who:a.payePar||null,ref:a}); }
-  for(const x of prochesTries()) if(x.j<=7) out.push({kind:"Anniversaire",date:x.date,titre:"Anniversaire "+de(x.p.nom)+(x.age?" ("+x.age+" ans)":"")+((x.p.idees||[]).length?" · "+(x.p.idees.length)+" idée"+(x.p.idees.length>1?"s":"")+" cadeau":""),cat:"loisirs",who:null,ref:{id:x.p.id,proche:true}});
   for(const m of membres()){ const nb=nextBirthday(m); if(nb&&daysTo(nb.date)<=60) out.push({kind:"Anniversaire",date:nb.date,titre:"Anniversaire "+de(m.nom)+" ("+nb.age+(typeOf(m)==="animal"&&nb.age<2?" an":" ans")+")",cat:typeOf(m)==="animal"?"animaux":"maison",who:null,ref:m}); }
   for(const b of (S.bins||[])){ const nx=binNext(b); if(nx&&daysTo(iso(nx.sortie))<=1){ const w=binWho(b); out.push({kind:"Poubelles",date:iso(nx.sortie),titre:"Sortir : "+b.nom+(b.veille?" (le soir)":""),cat:"maison",who:w.ids.length===1?w.ids[0]:null,ref:b}); } }
   for(const r of (S.rdvs||[])) if(r.date&&!r.fait&&daysTo(r.date)>=0&&daysTo(r.date)<=31) out.push({kind:"Rendez-vous",date:r.date,titre:r.titre+(r.heure?" · "+heureTxt(r.heure):"")+(r.lieu?" · "+r.lieu:""),cat:"rdv",who:(r.pour||[]).length===1?r.pour[0]:null,ref:r});
@@ -5440,7 +5441,6 @@ function renderAgenda(){ const W=$("agWho"), C=$("agCal"); if(!W||!C) return; W.
   for(let d=1;d<=dim;d++){ const k=iso(new Date(Y,Mo,d)), ev=by[k]||[], has=ev.some(r=>!r.fait), past=k<td;
     const b=el("button",{type:"button",class:"ag-d"+(k===td?" now":"")+(k===S.agDay?" sel":"")+(past?" past":"")+(ev.length?" has":""),"aria-label":d+" "+mn+(ev.length?", "+ev.length+" rendez-vous":""),"aria-pressed":String(k===S.agDay),onclick:()=>{ S.agDay=S.agDay===k?null:k; renderAgenda(); renderRdv(); }},el("b",{text:String(d)}));
     { const E=evAll().filter(e=>e.debut<=k&&evEnd(e)>=k&&(!S.agWho||true))[0]; if(E){ const st=E.debut===k, en=evEnd(E)===k; b.append(el("i",{class:"ag-evb"+(st?" st":"")+(en?" en":""),style:"background:"+evT(E).c,"aria-hidden":"true"})); b.setAttribute("aria-label",b.getAttribute("aria-label")+", "+(E.titre||evT(E).n)); } }
-    { const pr=(S.proches||[]).filter(p=>p.jour===k.slice(5)); if(pr.length){ b.append(el("i",{class:"ag-cake","aria-hidden":"true",text:"🎂"})); b.setAttribute("aria-label",b.getAttribute("aria-label")+", anniversaire "+pr.map(p=>de(p.nom)).join(", ")); } }
     if(ev.length){ const dots=el("span",{class:"ag-dots"}); for(const r of ev.slice(0,3)) dots.append(el("i",{class:r.fait?"f":"",style:"background:"+((r.pour&&r.pour[0]&&membre(r.pour[0]).c)||"#8FB8FF")})); b.append(dots); }
     g.append(b); }
   C.append(g);
@@ -5484,8 +5484,7 @@ function rdvFormEl(){
     { const when=new Date(F.date+"T"+F.heure); if(when.getTime()<Date.now()){ toast(F.heure&&F.date===iso(today())?"Cette heure est déjà passée : choisis une heure ou une date à venir.":"Cette date est déjà passée : choisis une date à venir."); (F.heure&&F.date===iso(today())?he:da).focus(); return; } }
     const doc={titre:F.titre.trim(),date:F.date,heure:F.heure||null,heureFin:F.heureFin||null,lieu:(F.lieu||"").trim()||null,pour:(F.pour||[]).slice()};
     try{ if(F.id) await S.db.collection("rdv").doc(F.id).update(doc); else await S.db.collection("rdv").add(Object.assign(doc,{par:meId(),le:Date.now()}));
-      S.rdvForm=null; toast(F.id?"Rendez-vous modifié.":"Rendez-vous ajouté : rappel la veille."); renderRdv();
-      { const an=!F.id&&annivNom(doc.titre); if(an) setTimeout(()=>openAnniv({nom:an,date:doc.date}),500); } }catch(err){ writeErr(err); } });
+      S.rdvForm=null; toast(F.id?"Rendez-vous modifié.":"Rendez-vous ajouté : rappel la veille."); renderRdv(); }catch(err){ writeErr(err); } });
   setTimeout(()=>{ const x=$("rdvTitre"); if(x&&!F.id&&!F.titre) x.focus(); },40);
   return f;
 }
@@ -6134,41 +6133,6 @@ function openVac(){ if(!needMe()) return; const U=upSheet("vacPage","Vacances"),
         U.close(); toast("🏖 Vacances notées"+(dec?" · "+dec+" tâche"+(dec>1?"s":"")+" décalée"+(dec>1?"s":""):"")+(k?" · "+k+" chose"+(k>1?"s":"")+" à faire avant de partir":"")+"."); renderAll(); }
       catch(err){ b.disabled=false; writeErr(err); } }}),
     el("button",{type:"button",class:"btn ghost",text:"🧸 Préparer la fiche baby-sitter",onclick:()=>{ U.close(); setTimeout(openGarde,340); }})); }
-/* ---------- Anniversaires des proches (hors foyer) ----------
-   collection proches {nom, lien, jour:"MM-JJ", annee:nombre|null, idees:[texte]}. Rappel 7 jours avant (et le jour même),
-   idées cadeaux par personne : « aux courses » ajoute l'idée à la liste, « dépense » ouvre une dépense « Cadeau … » en Loisirs. */
-function procheNext(p){ if(!p||!/^\d{2}-\d{2}$/.test(p.jour||"")) return null; const [m,d]=p.jour.split("-").map(Number), t=today();
-  let x=new Date(t.getFullYear(),m-1,d); if(x<t) x=new Date(t.getFullYear()+1,m-1,d); return {date:iso(x),j:daysTo(iso(x)),age:p.annee?x.getFullYear()-p.annee:null}; }
-function prochesTries(){ return (S.proches||[]).map(p=>Object.assign({p},procheNext(p)||{})).filter(x=>x.date).sort((a,b)=>a.j-b.j); }
-/* « Anniversaire de Mamie » dans l'agenda → on propose : le rappeler chaque année (proches), idées cadeaux, préparer la fête */
-function annivNom(t){ const m=String(t||"").trim().match(/^(?:🎂\s*)?anniv(?:ersaire)?s?\b\s*(?:de\s+|d['’]\s*|du\s+|des\s+|pour\s+|:\s*)?(.+)$/i); if(!m) return null;
-  const n=m[1].replace(/[!.?\s]+$/,"").trim(); return n&&n.length<=40?n.replace(/^./,c=>c.toUpperCase()):null; }
-function openAnniv(o){ if(!needMe()) return; const p0=o.p||(S.proches||[]).find(x=>norm(x.nom)===norm(o.nom||""))||null;
-  const nom=p0?p0.nom:o.nom, date=o.date||(p0&&procheNext(p0)||{}).date||iso(today()), nx=p0?procheNext(p0):null;
-  const U=upSheet("annivPage","Anniversaire "+de(nom)), inn=el("div",{class:"pp-in pr-in"}); U.sheet.append(inn);
-  let ideas=p0?(p0.idees||[]).slice():[], yearly=true;
-  const savePr=async()=>{ if(p0){ await S.db.collection("proches").doc(p0.id).update({idees:ideas}); p0.idees=ideas.slice(); } };
-  const draw=()=>{ inn.innerHTML="";
-    inn.append(el("div",{class:"vac-hero",style:"background:linear-gradient(135deg,color-mix(in srgb,#E79ADB 40%,var(--surface)),color-mix(in srgb,#FFC94A 35%,var(--surface)))"},el("span",{"aria-hidden":"true",text:"🎂"}),
-      el("div",{},el("b",{text:"Anniversaire "+de(nom)}),el("small",{text:new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(parse(date))+(nx&&nx.age?" · "+nx.age+" ans":"")}))));
-    if(!p0){ const b=el("button",{type:"button",class:"gd-ck"+(yearly?" on":""),role:"checkbox","aria-checked":String(yearly),onclick:()=>{ yearly=!yearly; draw(); }},el("i",{"aria-hidden":"true"}),el("span",{},el("b",{text:"Le rappeler chaque année"}),el("small",{text:"Cocoon te prévient une semaine avant, avec tes idées de cadeaux."})));
-      inn.append(el("div",{class:"gd-g"},b)); }
-    inn.append(el("div",{class:"ms-gl",text:"Idées de cadeaux"}));
-    const box=el("div",{class:"pr-ideas"});
-    ideas.forEach((idee,i)=>box.append(el("div",{class:"pr-idea"},el("span",{text:"🎁 "+idee}),
-      el("button",{type:"button",class:"pr-a",text:"Aux courses",onclick:async e=>{ try{ await S.db.collection("courses").add({nom:idee,qte:null,pour:"tous",fait:false,ajoutePar:meId(),ajouteLe:Date.now(),note:"Cadeau pour "+nom}); e.currentTarget.textContent="✓ Ajouté"; e.currentTarget.disabled=true; }catch(err){ writeErr(err); } }}),
-      el("button",{type:"button",class:"pr-a",text:"Dépense",onclick:()=>{ U.close(); setTimeout(()=>{ openBForm("dep"); const d=S.bForm&&S.bForm.d; if(d){ d.titre="Cadeau "+nom+" : "+idee; d.cat="loisirs"; renderBForm(); } },340); }}),
-      el("button",{type:"button",class:"pr-x sm","aria-label":"Retirer l'idée "+idee,text:"×",onclick:async()=>{ ideas=ideas.filter((_,k)=>k!==i); try{ await savePr(); }catch(e){ writeErr(e); } draw(); }}))));
-    const ii=el("input",{type:"text",placeholder:"Un plaid, un livre…","aria-label":"Idée de cadeau",maxlength:"80"});
-    const addI=async()=>{ const v=ii.value.trim(); if(!v) return; ideas.push(v); try{ await savePr(); }catch(e){ writeErr(e); } draw(); setTimeout(()=>{ const x=inn.querySelector(".pr-add input"); if(x) x.focus(); },30); };
-    ii.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); addI(); } });
-    box.append(el("div",{class:"pr-add"},ii,el("button",{type:"button",class:"btn ghost",text:"Ajouter",onclick:addI}))); inn.append(box);
-    inn.append(el("button",{type:"button",class:"btn ghost",text:"🎉 Préparer la fête",onclick:()=>{ U.close(); setTimeout(()=>openEvents({v:"new",type:"anniv",debut:date}),340); }}));
-    inn.append(el("button",{type:"button",class:"btn pp-cta",text:p0?"Fermer":"C'est noté",onclick:async()=>{
-      if(!p0&&yearly){ try{ await S.db.collection("proches").add({nom,lien:null,jour:date.slice(5),annee:null,idees:ideas,par:meId(),le:Date.now()}); toast("🎂 Rappel chaque année, une semaine avant."); }catch(e){ writeErr(e); } }
-      U.close(); }}));
-    if(p0) inn.append(el("button",{type:"button",class:"btn ghost st-del",text:"Ne plus rappeler cet anniversaire",onclick:()=>confirmBox("Ne plus rappeler ?","L'anniversaire "+de(nom)+" et ses idées de cadeaux seront effacés.","Effacer",async()=>{ try{ await S.db.collection("proches").doc(p0.id).delete(); U.close(); }catch(e){ writeErr(e); } })})); };
-  draw(); }
 function meterLast(){ const rs=(S.releves||[]).slice().sort((a,b)=>a.date<b.date?1:-1); return rs[0]||null; }
 function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; const sec=S.mSec||null, me=meId(), t0=iso(today());
   D.innerHTML=""; T.innerHTML="";
@@ -6923,7 +6887,7 @@ function npIcon(r){ if(r.evn){ const i=el("span",{class:"np-ic",style:"--bc:#FF9
 function npGo(r){ closeNotifs(); const x=r.ref; if(r.evn){ setTimeout(()=>openEvent(x.ev),120); return; } if(r.live){ setTab("courses"); renderHeader(); window.scrollTo({top:0,behavior:"instant"}); return; } if(r.merci) return;
   if(r.kind==="Perso"||r.kind==="Foyer") return goTask(x);
   if(r.kind==="Document"){ S.docWho=null; S.docCat=catOf(x.cat||"documents").id||"documents"; if($("papQ")) $("papQ").value=""; return goDoc(x); }
-  if(r.kind==="Anniversaire"){ if(x.proche){ const p=(S.proches||[]).find(q=>q.id===x.id); if(p) setTimeout(()=>openAnniv({p}),120); return; } return openProfile(x.id); }
+  if(r.kind==="Anniversaire"){ if(x.evAnniv){ setTimeout(()=>openEvent(x.id),120); return; } return openProfile(x.id); }
   if(r.kind==="Réserves"){ S.stockLieu=x.lieu; setTimeout(openStock,120); return; }
   if(r.kind==="Prélèvement"||r.kind==="Budget"){ setTab("budget"); window.scrollTo({top:0}); return; }
   if(r.kind==="Rendez-vous"){ S.agDay=null; setTab("agenda"); return; }
@@ -8721,7 +8685,7 @@ function evNew(inn,V){ const T=EV_TYPES[V.type]||EV_TYPES.anniv, t0=iso(today())
   paintTpl(); inn.append(box);
   const go=el("button",{type:"button",class:"btn ev-cta",id:"evCreate",onclick:async()=>{ if(!S.db||!needMe()) return; const titre=(V.titre||"").trim()||T.n;
       if(!V.debut){ toast("Choisis une date."); return; } go.disabled=true; go.textContent="Préparation…";
-      try{ await evCreate({titre,type:V.type,debut:V.debut,fin:V.fin&&V.fin>V.debut?V.fin:null,budget:parseMoney(V.budget)},tpl.filter((_,i)=>V.pick[i])); }
+      try{ await evCreate(Object.assign({titre,type:V.type,debut:V.debut,fin:V.fin&&V.fin>V.debut?V.fin:null,budget:parseMoney(V.budget)},V.type==="anniv"?{idees:V.idees||[],annuel:V.annuel!==false}:{}),tpl.filter((_,i)=>V.pick[i])); }
       catch(e){ writeErr(e); go.disabled=false; go.textContent="Créer l'événement"; } }},tpl.length?"Créer avec le modèle "+T.n:"Créer l'événement");
   inn.append(go); }
 async function evCreate(base,steps,o){ const me=meId(), now=Date.now(), t0=iso(today());
@@ -8746,6 +8710,7 @@ function evDetail(inn,V){ const ev=evById(V.id), T=evT(ev), P=evProg(ev), I=evIt
   const tabs=[["frise","⏳ Frise"],["ach","Achats"],["bud","Budget"],["pap","Papiers"]], seg=el("div",{class:"ev-seg",role:"tablist"});
   for(const [k,l] of tabs) seg.append(el("button",{type:"button",role:"tab","aria-selected":String(V.tab===k),class:V.tab===k?"on":"",onclick:()=>{ if(V.tab===k) return; V.tab=k; V.add=null; V.addOpen=false; V.open=null; V.link=false; V.budEdit=false; V.dep=null; evRender(false); }},l));
   inn.append(seg);
+  if(ev.type==="anniv"&&V.tab==="frise") inn.append(evAnnivCard(ev));
   const body=el("div",{class:"ev-body"+(V._anim!==V.tab?" anim":"")}); V._anim=V.tab; inn.append(body);
   ({frise:evFrise,ach:evAch,bud:evBud,pap:evPap}[V.tab]||evFrise)(body,ev,I,V); }
 function evMenu(btn,ev,V){ { const nm=nativeMenu(ev.titre||"Événement",[{id:"edit",title:"Modifier",icon:"pencil"},{id:"dates",title:"Changer les dates",icon:"calendar"},{id:"del",title:"Supprimer l'événement",icon:"trash",destructive:true}]);
@@ -8787,6 +8752,25 @@ function evRow(k,o,ev,opts){ opts=opts||{}; const t0=iso(today()), V=S.evOpen, k
     const ed=el("div",{class:"ev-edit"},el("span",{text:"Date"}),di,el("button",{type:"button",class:"btn ghost evx-del",onclick:()=>{ V.open=null; evDel(k,o); }},"Retirer"));
     wrap.append(ed); }
   return wrap; }
+/* Événement Anniversaire : idées de cadeaux (ev.idees) qui passent dans les achats de l'événement, et « Le rappeler chaque année »
+   (ev.annuel) : une fois la date passée, Cocoon prévient 7 jours avant la prochaine et propose de le préparer à nouveau. */
+const evAnnivNext=ev=>{ if(!ev||!ev.debut) return null; const t=today(), [y,m,d]=ev.debut.split("-").map(Number); let x=new Date(t.getFullYear(),m-1,d); if(x<t) x=new Date(t.getFullYear()+1,m-1,d); return iso(x); };
+function evAnnivCard(ev){ const box=el("div",{class:"ev-anniv"}), ideas=(ev.idees||[]).slice(), ro=S.readOnly;
+  const save=async f=>{ try{ Object.assign(ev,f); await S.db.collection("evenements").doc(ev.id).update(f); }catch(e){ writeErr(e); } evRender(false); };
+  const passe=ev.debut<iso(today()), nx=evAnnivNext(ev);
+  if(passe&&ev.annuel) box.append(el("button",{type:"button",class:"btn pp-cta",text:"🎂 Préparer celui du "+fmtDue(nx),onclick:()=>openEvents({v:"new",type:"anniv",debut:nx,titre:ev.titre,idees:ideas,annuel:true})}));
+  const rep1=el("button",{type:"button",class:"gd-ck"+(ev.annuel?" on":""),role:"checkbox","aria-checked":String(!!ev.annuel),disabled:ro||null,onclick:()=>save({annuel:!ev.annuel})},el("i",{"aria-hidden":"true"}),el("span",{},el("b",{text:"Le rappeler chaque année"}),el("small",{text:"Cocoon te prévient une semaine avant, avec tes idées de cadeaux."})));
+  box.append(el("div",{class:"gd-g"},rep1));
+  box.append(el("div",{class:"ev-sec"},el("span",{text:"🎁 Idées de cadeaux"}),ideas.length?el("span",{text:String(ideas.length)}):""));
+  const L=el("div",{class:"pr-ideas"});
+  ideas.forEach((idee,i)=>L.append(el("div",{class:"pr-idea"},el("span",{text:idee}),
+    ro?"":el("button",{type:"button",class:"pr-a",text:"Aux achats",onclick:async e=>{ const b=e.currentTarget; b.disabled=true; try{ await evAddItem(ev.id,"a",idee,evAdd(ev.debut,-7)<iso(today())?iso(today()):evAdd(ev.debut,-7)); b.textContent="✓ Ajouté"; }catch(err){ writeErr(err); b.disabled=false; } }}),
+    ro?"":el("button",{type:"button",class:"pr-x sm","aria-label":"Retirer l'idée "+idee,text:"×",onclick:()=>save({idees:ideas.filter((_,k)=>k!==i)})}))));
+  if(!ro){ const ii=el("input",{type:"text",placeholder:"Un plaid, un livre…","aria-label":"Idée de cadeau",maxlength:"80"});
+    const add=()=>{ const v=ii.value.trim(); if(v) save({idees:ideas.concat(v)}); };
+    ii.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); add(); } });
+    L.append(el("div",{class:"pr-add"},ii,el("button",{type:"button",class:"btn ghost",text:"Ajouter",onclick:add}))); }
+  box.append(L); return box; }
 function evRel(ev,date){ const n=evDiff(date,ev.debut); if(n<0) return "J"+n; if(n===0) return ev.fin&&ev.fin>ev.debut?"Début":"Jour J"; if(ev.fin&&date<=ev.fin) return date===ev.fin?"Fin":"Pendant"; return "J+"+n; }
 function evAddForm(ev,V,kinds,def){ const f=V.add||(V.add={k:kinds[0],t:"",d:def||"",h:""});
   if(!V.addOpen) return el("button",{type:"button",class:"ev-add",onclick:()=>{ V.addOpen=true; evRender(false); setTimeout(()=>{ const x=$("evAddT"); if(x) x.focus(); },40); }},kinds.length>1?"+ Ajouter une étape":kinds[0]==="a"?"+ Ajouter un achat":"+ Ajouter");
@@ -9766,7 +9750,6 @@ async function autoClaimLegacy(){
   db.collection("recompenses").onSnapshot(s=>{ S.recomp=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("vacances").onSnapshot(s=>{ const d=s.docs.find(x=>x.id==="actuel"); S.vac=d?d.data():null; renderAll(); },()=>{});
   db.collection("stock").onSnapshot(s=>{ S.stock=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
-  db.collection("proches").onSnapshot(s=>{ S.proches=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("abonnements").onSnapshot(s=>{ S.abos=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"abonnements"); renderAll(); },()=>{});
   db.collection("documents").onSnapshot(s=>{ S.docs=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"documents"); S.loaded.d=true; renderAll(); },()=>{ S.loaded.d=true; renderAll(); });
 })();
