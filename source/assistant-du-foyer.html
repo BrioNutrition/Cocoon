@@ -3203,7 +3203,7 @@ html.native-tabs .hub-mini{display:none!important}
 .pm-sheet.pm-tight .pp-plan{padding:12px 14px}
 .pm-sheet.pm-tight .pp-cta{padding:13px}
 /* ===== Foyer « de nuit » (choisi par Angel) : tuiles éclairées par un halo de leur couleur, pastilles dorées.
-   Thème clair : fond clair, tuiles blanches au halo doux. Thème sombre : fond de nuit, tuiles sombres. ===== */
+   Fond et tuiles aux couleurs habituelles du thème (clair comme sombre) ; seul le halo s'ajoute. ===== */
 .hub-sub{margin:2px 2px 0;font-size:13px;color:var(--muted)}
 html.foyer-nuit .hb-t{overflow:hidden;isolation:isolate}
 /* halo peint dans le fond de la tuile (pas de calque flouté) : il reste fixe pendant les animations de page */
@@ -3213,24 +3213,9 @@ html.foyer-nuit .hb-t>em.r{background:#FF6B6B;color:#fff}
 /* bulle du compteur : hauteur fixe, chiffre centré au pixel (la police met les chiffres un peu haut) */
 .hb-t>em{box-sizing:border-box;height:22px;min-width:22px;padding:1.5px 6px 0;display:inline-flex;align-items:center;justify-content:center;line-height:1;font-variant-numeric:tabular-nums}
 html.foyer-nuit .hb-t:focus-visible{outline:2px solid #FFC94A;outline-offset:2px}
-:root[data-theme="dark"].foyer-nuit,:root[data-theme="dark"].foyer-nuit body{background:#17162A}
-:root[data-theme="dark"].foyer-nuit .view[data-view="hub"],:root[data-theme="dark"].foyer-nuit .hub-h h2{color:#fff}
-:root[data-theme="dark"].foyer-nuit .hub-sub,:root[data-theme="dark"].foyer-nuit .hb-sec,:root[data-theme="dark"].foyer-nuit .hb-t>span{color:#A3A0BE}
-:root[data-theme="dark"].foyer-nuit .hb-t{background:radial-gradient(70% 75% at 100% 100%,color-mix(in srgb,var(--bc) 45%,transparent),transparent 100%),#22213A;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-:root[data-theme="dark"].foyer-nuit .hb-t>i.emo{background:color-mix(in srgb,var(--bc) 22%,#22213A)}
-:root[data-theme="dark"].foyer-nuit .hub-mini{background:color-mix(in srgb,#17162A 82%,transparent);color:#fff}
-:root[data-theme="dark"].foyer-nuit .tabs{background:#22213A;border-color:#2C2A45;color:#8E8BAA}
-:root[data-theme="dark"].foyer-nuit .tabs .tab[aria-selected="true"]{color:#FFD66B}
-@media (prefers-color-scheme:dark){
-:root:not([data-theme="light"]).foyer-nuit,:root:not([data-theme="light"]).foyer-nuit body{background:#17162A}
-:root:not([data-theme="light"]).foyer-nuit .view[data-view="hub"],:root:not([data-theme="light"]).foyer-nuit .hub-h h2{color:#fff}
-:root:not([data-theme="light"]).foyer-nuit .hub-sub,:root:not([data-theme="light"]).foyer-nuit .hb-sec,:root:not([data-theme="light"]).foyer-nuit .hb-t>span{color:#A3A0BE}
-:root:not([data-theme="light"]).foyer-nuit .hb-t{background:radial-gradient(70% 75% at 100% 100%,color-mix(in srgb,var(--bc) 45%,transparent),transparent 100%),#22213A;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-:root:not([data-theme="light"]).foyer-nuit .hb-t>i.emo{background:color-mix(in srgb,var(--bc) 22%,#22213A)}
-:root:not([data-theme="light"]).foyer-nuit .hub-mini{background:color-mix(in srgb,#17162A 82%,transparent);color:#fff}
-:root:not([data-theme="light"]).foyer-nuit .tabs{background:#22213A;border-color:#2C2A45;color:#8E8BAA}
-:root:not([data-theme="light"]).foyer-nuit .tabs .tab[aria-selected="true"]{color:#FFD66B}
-}
+/* thème sombre : fond et tuiles aux couleurs habituelles du thème (var(--bg) / var(--surface)), halo un peu plus marqué */
+:root[data-theme="dark"].foyer-nuit .hb-t{background:radial-gradient(70% 75% at 100% 100%,color-mix(in srgb,var(--bc) 42%,transparent),transparent 100%),var(--surface);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]).foyer-nuit .hb-t{background:radial-gradient(70% 75% at 100% 100%,color-mix(in srgb,var(--bc) 42%,transparent),transparent 100%),var(--surface);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}}
 
 /* ===== Cocoon Plus : deux affiches (Essentiel en haut, Plus en dessous) ===== */
 .px-sheet{background:#EEEDF4!important;color:#55526C}
