@@ -3064,6 +3064,16 @@ html.native-tabs .hub-mini{display:none!important}
 .fr-card b{font-size:17px}.fr-card small{color:var(--muted);font-size:13px}.fr-m{font-size:14px}
 .fr-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}.fr-acts .btn{flex:1 1 auto;min-height:44px}
 .fr-nb{margin:0;font-size:12.5px;color:var(--muted)}
+.fr-busy{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:rgba(20,18,30,.18);-webkit-backdrop-filter:blur(10px) saturate(1.1);backdrop-filter:blur(10px) saturate(1.1);opacity:0;transition:opacity .2s ease}
+.fr-busy.on{opacity:1}
+.fr-bc{display:flex;flex-direction:column;align-items:center;gap:10px;padding:22px 26px;border-radius:24px;background:var(--surface);color:var(--ink);box-shadow:0 18px 40px rgba(0,0,0,.18)}
+.fr-bc img,.fr-be{width:64px;height:64px;border-radius:20px;object-fit:cover;display:grid;place-items:center;font-size:36px;animation:frHop 1s ease-in-out infinite}
+.fr-bc b{font-size:15.5px}
+.fr-bc .dots{display:flex;gap:6px}.fr-bc .dots i{width:8px;height:8px;border-radius:50%;background:#FF9C80;animation:frDot 1s ease-in-out infinite}
+.fr-bc .dots i:nth-child(2){animation-delay:.15s;background:#FFC94A}.fr-bc .dots i:nth-child(3){animation-delay:.3s;background:#E79ADB}
+@keyframes frHop{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
+@keyframes frDot{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-6px);opacity:1}}
+@media (prefers-reduced-motion:reduce){.fr-bc img,.fr-be,.fr-bc .dots i{animation:none}}
 .gd-in{gap:12px!important}
 .gd-h b{display:block;font:800 22px/1.1 var(--f-display)}.gd-h span{display:block;margin-top:4px;font-size:14px;color:var(--muted)}
 .gd-g{display:flex;flex-direction:column;background:var(--surface);border-radius:18px;box-shadow:0 1px 0 var(--shadow);overflow:hidden}
@@ -8834,12 +8844,17 @@ function openFrigo(){ if(!needMe()) return; const U=upSheet("frigoPage","Avec ce
   /* suggestions : ce qui a été acheté ces 10 derniers jours */
   const recent=[...new Set((S.coursesAll||S.courses||[]).filter(i=>i.fait&&i.faitLe&&Date.now()-i.faitLe<10*864e5).map(i=>parseArticle(i.nom).nom))].slice(0,12);
   const sug=el("div",{class:"fr-sug"}); for(const r of recent) sug.append(el("button",{type:"button",text:"+ "+r,onclick:e=>{ if(!have.some(h=>norm(h)===norm(r))){ have.push(r); keep(); draw(); } e.currentTarget.remove(); }}));
-  const go=el("button",{type:"button",class:"btn pp-cta",text:"Trouver 3 idées",onclick:async()=>{ add(); if(!have.length) return; go.disabled=true; go.textContent="Cocoony cherche…"; res.innerHTML="";
+  /* pendant la recherche : la fenêtre reste ouverte, floutée, avec Cocoony qui cherche (au moins 0,9 s pour qu'on le voie) */
+  const busy=()=>{ let src=""; try{ src=(secIdent()||{}).src||""; }catch(_){}
+    const o=el("div",{class:"fr-busy",role:"status","aria-live":"polite"},el("div",{class:"fr-bc"},src?el("img",{src,alt:""}):el("span",{class:"fr-be",text:"🍳"}),el("b",{text:"Cocoony cherche des idées…"}),el("span",{class:"dots","aria-hidden":"true"},el("i"),el("i"),el("i"))));
+    document.body.append(o); requestAnimationFrame(()=>o.classList.add("on")); const t0=Date.now();
+    return async()=>{ const w=900-(Date.now()-t0); if(w>0) await sleep(w); o.classList.remove("on"); setTimeout(()=>o.remove(),220); }; };
+  const go=el("button",{type:"button",class:"btn pp-cta",text:"Trouver 3 idées",onclick:async()=>{ add(); if(!have.length) return; go.disabled=true; const done=busy();
     let ideas=null, ia=false;
     if(secOn()&&pmLeft("questions")>0){ try{ const r=await S.sample.json("Un foyer français a ceci dans son frigo et ses placards : "+have.join(", ")+". Propose 3 plats simples du quotidien à cuisiner ce soir en utilisant surtout ces ingrédients. Réponds uniquement avec un tableau JSON de 3 objets : [{\"nom\": nom court du plat, \"temps\": durée totale en minutes (nombre), \"manque\": [ingrédients indispensables à acheter, sans sel, poivre, huile, épices], \"astuce\": une phrase courte}]",{modelTier:"quick",cache:false});
         if(Array.isArray(r)&&r.length){ ideas=r.slice(0,3).map(x=>({nom:String(x.nom||"").slice(0,60),manque:(Array.isArray(x.manque)?x.manque:[]).map(String).slice(0,8),note:[x.temps?x.temps+" min":"",x.astuce||""].filter(Boolean).join(" · ")})).filter(x=>x.nom); ia=true; pmUse("questions"); } }catch(_){ ideas=null; } }
     if(!ideas||!ideas.length) ideas=frigoLocal(have);
-    go.disabled=false; go.textContent="Trouver d'autres idées";
+    await done(); res.innerHTML=""; go.disabled=false; go.textContent="Trouver d'autres idées";
     if(!ideas.length){ res.append(el("p",{class:"fr-nb",text:"Aucun plat connu avec ces ingrédients. Ajoute-en quelques-uns de plus"+(secOn()?".":", ou utilise Cocoony intelligent dans claude.ai.")})); return; }
     const [fd,fs]=nextFreeMeal(true);
     for(const x of ideas){ const card=el("div",{class:"fr-card"},el("b",{},platEmoji(x.nom,"soir")+" "+x.nom),x.note?el("small",{text:x.note}):null,
