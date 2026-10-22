@@ -3203,15 +3203,15 @@ html.native-tabs .hub-mini{display:none!important}
    Thème clair : fond clair, tuiles blanches au halo doux. Thème sombre : fond de nuit, tuiles sombres. ===== */
 .hub-sub{margin:2px 2px 0;font-size:13px;color:var(--muted)}
 html.foyer-nuit .hb-t{overflow:hidden;isolation:isolate}
-html.foyer-nuit .hb-t::before{content:"";position:absolute;right:-22px;bottom:-32px;width:96px;height:96px;border-radius:50%;background:var(--bc);filter:blur(28px);opacity:.38;z-index:-1;pointer-events:none}
+/* halo peint dans le fond de la tuile (pas de calque flouté) : il reste fixe pendant les animations de page */
+html.foyer-nuit .hb-t{background:radial-gradient(70% 75% at 100% 100%,color-mix(in srgb,var(--bc) 34%,transparent),transparent 100%),var(--surface)}
 html.foyer-nuit .hb-t>em{background:linear-gradient(135deg,#FFD66B,#FF9C80);color:#1C1B2E}
 html.foyer-nuit .hb-t>em.r{background:#FF6B6B;color:#fff}
 html.foyer-nuit .hb-t:focus-visible{outline:2px solid #FFC94A;outline-offset:2px}
 :root[data-theme="dark"].foyer-nuit,:root[data-theme="dark"].foyer-nuit body{background:#17162A}
 :root[data-theme="dark"].foyer-nuit .view[data-view="hub"],:root[data-theme="dark"].foyer-nuit .hub-h h2{color:#fff}
 :root[data-theme="dark"].foyer-nuit .hub-sub,:root[data-theme="dark"].foyer-nuit .hb-sec,:root[data-theme="dark"].foyer-nuit .hb-t>span{color:#A3A0BE}
-:root[data-theme="dark"].foyer-nuit .hb-t{background:#22213A;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-:root[data-theme="dark"].foyer-nuit .hb-t::before{opacity:.55}
+:root[data-theme="dark"].foyer-nuit .hb-t{background:radial-gradient(70% 75% at 100% 100%,color-mix(in srgb,var(--bc) 45%,transparent),transparent 100%),#22213A;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
 :root[data-theme="dark"].foyer-nuit .hb-t>i.emo{background:color-mix(in srgb,var(--bc) 22%,#22213A)}
 :root[data-theme="dark"].foyer-nuit .hub-mini{background:color-mix(in srgb,#17162A 82%,transparent);color:#fff}
 :root[data-theme="dark"].foyer-nuit .tabs{background:#22213A;border-color:#2C2A45;color:#8E8BAA}
@@ -3220,8 +3220,7 @@ html.foyer-nuit .hb-t:focus-visible{outline:2px solid #FFC94A;outline-offset:2px
 :root:not([data-theme="light"]).foyer-nuit,:root:not([data-theme="light"]).foyer-nuit body{background:#17162A}
 :root:not([data-theme="light"]).foyer-nuit .view[data-view="hub"],:root:not([data-theme="light"]).foyer-nuit .hub-h h2{color:#fff}
 :root:not([data-theme="light"]).foyer-nuit .hub-sub,:root:not([data-theme="light"]).foyer-nuit .hb-sec,:root:not([data-theme="light"]).foyer-nuit .hb-t>span{color:#A3A0BE}
-:root:not([data-theme="light"]).foyer-nuit .hb-t{background:#22213A;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-:root:not([data-theme="light"]).foyer-nuit .hb-t::before{opacity:.55}
+:root:not([data-theme="light"]).foyer-nuit .hb-t{background:radial-gradient(70% 75% at 100% 100%,color-mix(in srgb,var(--bc) 45%,transparent),transparent 100%),#22213A;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
 :root:not([data-theme="light"]).foyer-nuit .hb-t>i.emo{background:color-mix(in srgb,var(--bc) 22%,#22213A)}
 :root:not([data-theme="light"]).foyer-nuit .hub-mini{background:color-mix(in srgb,#17162A 82%,transparent);color:#fff}
 :root:not([data-theme="light"]).foyer-nuit .tabs{background:#22213A;border-color:#2C2A45;color:#8E8BAA}
