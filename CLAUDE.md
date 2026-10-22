@@ -94,7 +94,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - Harmonisation visuelle (audit du 22 oct., bloc CSS « harmonisation » en fin de feuille principale) : jour choisi / aujourd'hui =
   pastille dégradée partout ; sélecteurs de personne = pastille jaune ; titres de section dans une page = petites majuscules ;
   tuiles Foyer, Maison et Moi = fond blanc + **emoji en couleur** sur carré teinté (Angel préfère les emojis aux icônes dessinées) ;
-  écrans vides = titre en gras + phrase. Emojis des tuiles : police emoji forcée + `line-height:36px` (centrage iPhone).
+  écrans vides = titre en gras + phrase. Emojis des tuiles : `emoIco(e)` dessine l’emoji sur un canevas, le recadre sur ses pixels et l’affiche en image (centrage exact sur toutes les polices ; repli en texte).
   Raccourcis courts du Foyer : contenu collé au titre (`.wg .wg-big{margin-top:0}`).
 - Bannière Premium du Foyer : Cocoony (`.hb-cat`, image du personnage) monte du bas puis se penche vers « Cocoon Premium » en
   boucle douce ; `S.pbanT` mémorise le début pour ne pas rejouer l'entrée à chaque rendu (classe `seen` après 1,6 s).

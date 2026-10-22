@@ -3264,6 +3264,8 @@ html.native-tabs .pm-sheet{min-height:calc(100% - env(safe-area-inset-top,0px) -
 .m-tile,.ms-tile{background:var(--surface)!important}
 .hb-t>i.emo,.m-tile>i.emo,.ms-tile>i{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-style:normal;font-size:20px;line-height:1;background:color-mix(in srgb,var(--bc) 35%,var(--surface))}
 .ms-tile>i{margin-bottom:auto}
+.hb-t>i.emo-img,.m-tile>i.emo-img,.ms-tile>i.emo-img{line-height:0;padding:0}
+.hb-t>i.emo-img img,.m-tile>i.emo-img img,.ms-tile>i.emo-img img{width:22px;height:22px;display:block;object-fit:contain}
 /* petits détails */
 .sec-chips{flex-wrap:wrap;overflow-x:visible}
 /* emojis des carrés : la police d'emojis d'abord, sinon iOS les aligne sur la ligne de base de Bricolage (décalés) */
@@ -6117,7 +6119,7 @@ function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; co
     garde:["À partager : enfants, animaux, consignes",null],
     vac:[vacOn()?"En vacances jusqu'au "+fmtDue(S.vac.fin):S.vac&&S.vac.debut>iso(today())?"Départ "+dueLabel(S.vac.debut):"Pause des rappels, liste avant de partir",vacOn()?"🏖":null]};
   for(const [k,n,c,ic] of MSECS){ const [sub,badge]=info[k];
-    const t=el("button",{type:"button",class:"m-tile",style:"--bc:"+c,"aria-label":n+", "+sub,onclick:()=>k==="garde"?openGarde():k==="vac"?openVac():mOpen(k)},el("i",{"aria-hidden":"true",class:"emo",text:MSEC_EMO[k]||"✨"}),el("b",{text:n}),el("span",{text:sub}));
+    const t=el("button",{type:"button",class:"m-tile",style:"--bc:"+c,"aria-label":n+", "+sub,onclick:()=>k==="garde"?openGarde():k==="vac"?openVac():mOpen(k)},emoIco(MSEC_EMO[k]||"✨"),el("b",{text:n}),el("span",{text:sub}));
     if(badge) t.append(el("em",{text:badge})); T.append(t); }
 }
 function renderCars(){
@@ -7520,7 +7522,7 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
   // Mon espace : tuiles
   const perso=S.perso.filter(t=>!t.fait), conf=S.foyer.filter(t=>!t.fait&&t.pour===me), late=perso.concat(conf).filter(t=>t.echeance&&daysTo(t.echeance)<0).length;
   const vs=S.vehic||[], v0=vs[0], vNext=v0?[v0.ctProchain?["CT",v0.ctProchain]:null].filter(Boolean)[0]:null;
-  const tile=(k,ic,c,t,sub,badge,fn)=>{ const b=el("button",{type:"button",class:"ms-tile",style:"--bc:"+c,onclick:fn||(()=>moiOpen(k))},el("i",{"aria-hidden":"true",text:ic}),el("b",{text:t}),el("span",{text:sub})); if(badge) b.append(el("em",{text:badge})); return b; };
+  const tile=(k,ic,c,t,sub,badge,fn)=>{ const b=el("button",{type:"button",class:"ms-tile",style:"--bc:"+c,onclick:fn||(()=>moiOpen(k))},emoIco(ic,"ms-emo"),el("b",{text:t}),el("span",{text:sub})); if(badge) b.append(el("em",{text:badge})); return b; };
   const g=el("div",{class:"ms-tiles"},
     tile("perso","🔒","#FFC94A","Mes tâches perso",perso.length?perso.length+" à faire":"visibles par toi seul",perso.length?String(perso.length):null),
     tile("confie","📌","#8FB8FF","Confié par le foyer",conf.length?conf.length+" à faire":"rien pour l'instant",conf.length?String(conf.length):null),
@@ -7554,13 +7556,28 @@ function budgetSpark(){ const t=today(), Y=t.getFullYear(), M=t.getMonth(), dim=
   const pm=new Date(Y,M-1,1), cur=cum(Y,M,day), prev=cum(pm.getFullYear(),pm.getMonth(),dim), mx=Math.max(1,...cur,...prev);
   const pt=(a,len)=>a.map((v,i)=>((len>1?i/(dim-1):0)*200).toFixed(1)+","+(34-(v/mx)*30).toFixed(1)).join(" ");
   return '<svg viewBox="0 0 200 36" preserveAspectRatio="none" aria-hidden="true"><polyline points="'+pt(prev,dim)+'" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="1.6" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/><polyline points="'+pt(cur,day)+'" fill="none" stroke="var(--bc)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>'; }
+// Emoji des tuiles : dessiné une fois sur un canevas puis recadré sur ses pixels réels, pour être pile au centre de son carré
+// quelle que soit la police emoji (iPhone, Windows, Android n'ont pas les mêmes marges). Repli : l'emoji en texte.
+const EMO_IMG={};
+function emoSrcC(e){
+  if(e in EMO_IMG) return EMO_IMG[e]; let u="";
+  try{ const N=160,c=document.createElement("canvas"); c.width=c.height=N; const x=c.getContext("2d",{willReadFrequently:true});
+    x.font='96px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; x.textAlign="center"; x.textBaseline="middle"; x.fillText(e,N/2,N/2);
+    const d=x.getImageData(0,0,N,N).data; let l=N,t=N,r=-1,b=-1;
+    for(let y=0;y<N;y++) for(let k=0;k<N;k++) if(d[(y*N+k)*4+3]>8){ if(k<l)l=k; if(k>r)r=k; if(y<t)t=y; if(y>b)b=y; }
+    if(r>=l&&b>=t){ const w=r-l+1,h=b-t+1,S=Math.max(w,h)+4,o=document.createElement("canvas"); o.width=o.height=S;
+      o.getContext("2d").drawImage(c,l,t,w,h,(S-w)/2,(S-h)/2,w,h); u=o.toDataURL(); } }catch(_){}
+  return EMO_IMG[e]=u;
+}
+function emoIco(e,cls){ const i=el("i",{"aria-hidden":"true",class:cls||"emo"}), u=emoSrcC(e);
+  if(u){ i.classList.add("emo-img"); i.append(el("img",{src:u,alt:""})); } else i.textContent=e; return i; }
 const HUB_EMO={foyer:"✅",courses:"🛒",repas:"🍽️",agenda:"📅",budget:"💶",documents:"📄",maison:"🏠"};
 function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const me=meId(), t0=iso(today());
   const G1=el("div",{class:"hb-g2"}), G2=el("div",{class:"hb-g2 hb-gx"}); let G=G1;
   H.append(el("p",{class:"hb-sec",text:"Au quotidien"}),G1,el("p",{class:"hb-sec",text:"Gestion"}),G2);
   const tile=(v,ic,c,title,sub,o)=>{ o=o||{}; const b=el("div",{class:"hb-t"+(o.cls?" "+o.cls:""),role:"button",tabindex:"0","data-go":v,style:"--bc:"+c,"aria-label":title+(sub?", "+sub:"")});
     b.addEventListener("click",e=>{ if(e.target.closest(".hb-ck")) return; hubGo(v); }); b.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); hubGo(v); } });
-    const ico=el("i",{"aria-hidden":"true",class:"emo",text:HUB_EMO[v]||"✨"}); b.append(ico,el("b",{text:title})); if(sub) b.append(el("span",{text:sub}));
+    const ico=emoIco(HUB_EMO[v]||"✨"); b.append(ico,el("b",{text:title})); if(sub) b.append(el("span",{text:sub}));
     if(o.badge) b.append(el("em",{class:o.red?"r":"",text:String(o.badge)})); if(o.extra) b.append(o.extra); G.append(b); return b; };
   // Au quotidien : Tâches, Courses, Repas, Agenda
   const open=S.foyer.filter(t=>!t.fait).sort(sortOpen), late=open.filter(t=>t.echeance&&t.echeance<t0).length;
