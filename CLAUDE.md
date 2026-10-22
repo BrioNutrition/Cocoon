@@ -49,6 +49,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   glisser, appui long), Foyer en mosaïque « bento », changement de page façon iOS.
 - Fait : bouton « Une idée, un bug ? » (tout en bas des Réglages, `openRetour()`) → collection `retours` ; pour lire :
   `select foyer, data, updated_at from cocoon_docs where path='retours' order by updated_at desc;`
+- Fait : tuiles du Foyer « pastel » (la tuile prend sa couleur `--bc`, icône sur carré clair) ; essayées et écartées :
+  « carte postale » (bandeau de couleur en haut) et « liste groupée » (lignes façon Réglages).
 - Prochaines idées : notifications natives (APNs), définir le Premium, test Android,
   page de présentation, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
 - À faire côté Angel : redéployer `cocoon-push`, coller les modèles d'e-mail, vérifier OTP à 6 chiffres, brancher Brevo (codeEmail).
