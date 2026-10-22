@@ -1,0 +1,260 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>Cocoon</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Cocoon range le foyer : tâches à tour de rôle, courses, repas, agenda, budget, papiers et maison, au même endroit pour toute la famille.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,500..700&display=swap">
+<style>
+/* Page de présentation de Cocoon : mêmes couleurs et polices que l'app (source/assistant-du-foyer.html).
+   Mise en page : accroche + téléphones, puis rubriques en grille, Cocoony, tarifs, confidentialité. */
+:root{
+  --bg:#F6F5FB;--surface:#FFFFFF;--sunk:#ECEAF5;--ink:#1C1B2E;--muted:#625F7E;--line:#E4E2F0;--shadow:#E4E2F0;
+  --hero:#1C1B2E;--hero-ink:#FFFFFF;--mark:#FFC94A;--mark-ink:#1C1B2E;--ok:#2E9E5B;
+  --c-jaune:#FFC94A;--c-corail:#FF9C80;--c-rose:#E79ADB;--c-bleu:#8FB8FF;--c-vert:#7FD39A;--c-lilas:#B9A8F0;--c-menthe:#7FCDB9;--c-framboise:#FF9CB0;
+  --grad:linear-gradient(135deg,#FFC94A,#FF9C80 55%,#E79ADB);
+  --tint:45%;
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-mot:"Fredoka","Bricolage Grotesque",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#13121C;--surface:#1E1D2B;--sunk:#262536;--ink:#EDEBF7;--muted:#A3A0BE;--line:#3A3852;--shadow:#0B0A12;
+  --hero:#2A2840;--hero-ink:#FFFFFF;--ok:#6FD39A;--tint:22%;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#13121C;--surface:#1E1D2B;--sunk:#262536;--ink:#EDEBF7;--muted:#A3A0BE;--line:#3A3852;--shadow:#0B0A12;
+  --hero:#2A2840;--hero-ink:#FFFFFF;--ok:#6FD39A;--tint:22%;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-display);-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;font-family:var(--f-display);font-weight:800;letter-spacing:-.02em;text-wrap:balance}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:8px}
+.w{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+section{padding-block:56px}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.lead{font-size:18px;color:var(--muted);max-width:56ch}
+
+/* barre du haut */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:18px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand img{width:40px;height:40px;border-radius:12px}
+.brand b{font:700 28px/1 var(--f-mot);font-variation-settings:"wdth" 115;letter-spacing:-.01em}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:12px 20px;border-radius:16px;font:700 16px/1 var(--f-display);text-decoration:none;border:0;cursor:pointer;transition:transform .12s ease}
+.btn:active{transform:scale(.97)}
+.btn.go{background:var(--grad);color:#1C1B2E;box-shadow:0 10px 24px rgba(255,156,128,.35)}
+.btn.ghost{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 2px var(--line)}
+.top .btn{min-height:42px;padding:10px 16px;font-size:15px}
+
+/* accroche */
+.hero{display:grid;grid-template-columns:minmax(0,1fr);gap:40px;align-items:center;padding-block:24px 56px}
+@media (min-width:880px){.hero{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}}
+.hero h1{font-size:clamp(44px,8vw,76px);line-height:.98;letter-spacing:-.035em}
+.hero h1 .fam{background:var(--mark);color:var(--mark-ink);border-radius:14px;padding:0 .12em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.hero .lead{margin-top:18px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.soon{margin-top:14px;font-size:13.5px;color:var(--muted)}
+.phones{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:0;padding-block:8px 20px}
+.phone{width:min(46%,240px);border-radius:34px;padding:7px;background:#1C1B2E;box-shadow:0 30px 60px rgba(28,27,46,.28);flex:none}
+.phone img{display:block;width:100%;height:auto;border-radius:28px;aspect-ratio:390/844;object-fit:cover;object-position:top}
+.phone.a{transform:rotate(-5deg) translateY(10px);margin-right:-22px;z-index:1}
+.phone.b{transform:rotate(4deg);z-index:2}
+@media (prefers-reduced-motion:no-preference){
+  .phone.a{animation:flotte 7s ease-in-out infinite}
+  .phone.b{animation:flotte 7s ease-in-out -3.5s infinite}
+  @keyframes flotte{50%{translate:0 -8px}}
+}
+
+/* rubriques */
+.sec-h{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.sec-h h2{font-size:clamp(30px,5vw,44px);line-height:1.05}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.f{background:var(--surface);border-radius:22px;padding:18px;box-shadow:0 2px 0 var(--shadow);display:flex;flex-direction:column;gap:8px;min-width:0}
+.f i{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-style:normal;font-size:22px;background:color-mix(in srgb,var(--c) var(--tint),var(--surface))}
+.f h3{font-size:19px;margin-top:4px}
+.f p{font-size:14.5px;color:var(--muted)}
+@media (max-width:560px){.f{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:14px;row-gap:2px;padding:16px}.f i{grid-row:span 2}.f h3{margin:0;font-size:17.5px}.hero{gap:20px}}
+
+/* Cocoony */
+.coco{background:var(--hero);color:var(--hero-ink);border-radius:32px;padding:32px clamp(18px,4vw,44px);display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:center}
+@media (min-width:880px){.coco{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.coco .eyebrow{color:var(--mark)}
+.coco h2{font-size:clamp(30px,5vw,44px);line-height:1.05;margin-top:8px}
+.coco .lead{color:rgba(255,255,255,.78);margin-top:14px}
+.chat{display:flex;flex-direction:column;gap:10px}
+.bub{max-width:86%;padding:12px 16px;border-radius:20px;font-size:15.5px;line-height:1.4}
+.bub.me{align-self:flex-end;background:var(--grad);color:#1C1B2E;font-weight:600;border-bottom-right-radius:6px}
+.bub.co{align-self:flex-start;background:rgba(255,255,255,.1);border-bottom-left-radius:6px}
+.bub.co b{color:var(--mark)}
+.who{display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.7)}
+.who img{width:28px;height:28px;border-radius:9px}
+
+/* écrans */
+.shots{display:flex;gap:18px;overflow-x:auto;padding:6px 2px 18px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.shot{flex:0 0 min(70%,260px);scroll-snap-align:start;display:flex;flex-direction:column;gap:10px;margin:0}
+.shot .phone{width:100%}
+.shot figcaption{font-size:14px;color:var(--muted);text-align:center}
+
+/* tarifs */
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;align-items:stretch}
+.plan{background:var(--surface);border-radius:26px;padding:24px;box-shadow:0 2px 0 var(--shadow);display:flex;flex-direction:column;gap:14px;min-width:0;position:relative}
+.plan.pm{box-shadow:inset 0 0 0 2.5px var(--c-corail),0 14px 34px rgba(255,156,128,.18)}
+.plan .tag{position:absolute;top:-12px;right:18px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;background:var(--mark);color:var(--mark-ink)}
+.plan h3{font-size:22px}
+.price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.price b{font-size:40px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.price span{color:var(--muted);font-size:15px}
+.plan ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;font-size:15px}
+.plan li{display:flex;gap:10px;align-items:flex-start}
+.plan li::before{content:"";flex:none;width:18px;height:18px;margin-top:3px;border-radius:6px;background:var(--ok) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+.plan .note{font-size:13.5px;color:var(--muted);margin-top:auto}
+
+/* confidentialité */
+.trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.t{border-radius:22px;padding:18px;background:color-mix(in srgb,var(--c) var(--tint),var(--surface));display:flex;flex-direction:column;gap:6px}
+.t b{font-size:17px}
+.t p{font-size:14.5px;color:color-mix(in srgb,var(--ink) 75%,transparent)}
+
+/* fin */
+.end{text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px}
+.end img{width:84px;height:84px;border-radius:24px;transform:rotate(-6deg);box-shadow:0 8px 0 var(--mark)}
+.end h2{font-size:clamp(32px,6vw,52px);line-height:1.02}
+footer{padding-block:28px 40px;font-size:13.5px;color:var(--muted);text-align:center}
+</style>
+
+<header class="w top">
+  <a class="brand" href="https://brionutrition.github.io/Cocoon/"><img src="img/cocoon.png" alt=""><b>Cocoon</b></a>
+  <a class="btn ghost" href="https://brionutrition.github.io/Cocoon/">Se connecter</a>
+</header>
+
+<main>
+  <div class="w hero">
+    <div>
+      <p class="eyebrow">L'appli du foyer</p>
+      <h1 style="margin-top:12px">Ton foyer, <span class="fam">enfin serein.</span></h1>
+      <p class="lead">Tâches, courses, repas, agenda, budget et papiers, rangés au même endroit. Seul·e ou à plusieurs, animaux compris : chacun voit ce qu'il a à faire, et plus personne ne tient tout dans sa tête.</p>
+      <div class="cta">
+        <a class="btn go" href="https://brionutrition.github.io/Cocoon/">Créer mon foyer, c'est gratuit</a>
+        <a class="btn ghost" href="#rubriques">Voir ce que ça fait</a>
+      </div>
+      <p class="soon">Fonctionne dans le navigateur et s'installe sur l'écran d'accueil. App iPhone bientôt sur l'App Store.</p>
+    </div>
+    <div class="phones" aria-hidden="true">
+      <div class="phone a"><img src="img/accueil.jpg" alt=""></div>
+      <div class="phone b"><img src="img/foyer.jpg" alt=""></div>
+    </div>
+  </div>
+
+  <section id="rubriques">
+    <div class="w">
+      <div class="sec-h">
+        <p class="eyebrow">Tout le foyer, une seule appli</p>
+        <h2>Ce qui encombrait le frigo, la tête et les groupes de discussion.</h2>
+      </div>
+      <div class="grid">
+        <article class="f" style="--c:var(--c-jaune)"><i aria-hidden="true">✅</i><h3>Tâches à tour de rôle</h3><p>Les poubelles une semaine sur deux, l'aspirateur chacun son tour : Cocoon sait à qui c'est, et le rappelle.</p></article>
+        <article class="f" style="--c:var(--c-vert)"><i aria-hidden="true">🛒</i><h3>Courses par rayon</h3><p>La liste se range toute seule dans l'ordre du magasin : fruits et légumes, frais, épicerie…</p></article>
+        <article class="f" style="--c:var(--c-corail)"><i aria-hidden="true">🍽️</i><h3>Repas de la semaine</h3><p>« Ce soir » en un coup d'œil, la semaine en frise, et les ingrédients qui partent aux courses.</p></article>
+        <article class="f" style="--c:var(--c-bleu)"><i aria-hidden="true">📅</i><h3>Agenda partagé</h3><p>Les rendez-vous de chacun, et le tout dans le calendrier de ton téléphone.</p></article>
+        <article class="f" style="--c:var(--c-lilas)"><i aria-hidden="true">💶</i><h3>Budget et « qui doit quoi »</h3><p>Dépenses partagées, abonnements, et les comptes entre vous faits sans calculatrice.</p></article>
+        <article class="f" style="--c:var(--c-framboise)"><i aria-hidden="true">📄</i><h3>Papiers rangés</h3><p>Passeport, carte grise, assurance : un rappel 60 jours avant la date d'expiration.</p></article>
+        <article class="f" style="--c:var(--c-menthe)"><i aria-hidden="true">🏠</i><h3>Maison</h3><p>Le jour des poubelles, l'entretien de la chaudière, les véhicules et leur contrôle technique.</p></article>
+        <article class="f" style="--c:var(--c-rose)"><i aria-hidden="true">🎂</i><h3>Événements</h3><p>Anniversaire, travaux, déménagement : la liste des choses à prévoir est déjà prête, date par date.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="w">
+      <div class="coco">
+        <div>
+          <p class="eyebrow">Cocoony</p>
+          <h2>Un secrétaire du foyer à qui on parle normalement.</h2>
+          <p class="lead">Écris comme tu parles : Cocoony range au bon endroit, te dit ce qui est prévu et ce qui est en retard, et fait le récap de la semaine.</p>
+        </div>
+        <div class="chat" aria-label="Exemple de conversation avec Cocoony">
+          <p class="who" style="justify-content:flex-end">Exemple</p>
+          <div class="bub me">lasagnes demain soir</div>
+          <div class="who"><img src="img/cocoon.png" alt="">Cocoony</div>
+          <div class="bub co">C'est noté : <b>lasagnes</b> au dîner de demain. J'ajoute les ingrédients aux courses ?</div>
+          <div class="bub me">quand expire mon passeport ?</div>
+          <div class="bub co">Le <b>3 mars 2027</b>. Je te le rappelle en janvier pour avoir le temps de prendre rendez-vous.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Captures d'écran">
+    <div class="w">
+      <div class="sec-h">
+        <p class="eyebrow">En vrai</p>
+        <h2>Pensée pour le téléphone, du premier au dernier écran.</h2>
+      </div>
+      <div class="shots">
+        <figure class="shot"><div class="phone"><img src="img/accueil.jpg" alt="Accueil de Cocoon : bonjour, membres du foyer, la semaine et les raccourcis" loading="lazy"></div><figcaption>L'accueil : ta journée et ton foyer</figcaption></figure>
+        <figure class="shot"><div class="phone"><img src="img/foyer.jpg" alt="Le foyer : tâches, courses, repas, agenda, budget, papiers, maison" loading="lazy"></div><figcaption>Le foyer : toutes les rubriques</figcaption></figure>
+        <figure class="shot"><div class="phone"><img src="img/cocoony.jpg" alt="Cocoony fait le point sur le foyer" loading="lazy"></div><figcaption>Cocoony : le point en une phrase</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="tarifs">
+    <div class="w">
+      <div class="sec-h">
+        <p class="eyebrow">Tarifs</p>
+        <h2>Gratuit pour l'essentiel. Premium pour aller plus loin.</h2>
+        <p class="lead">Un seul abonnement pour tout le foyer, sans engagement.</p>
+      </div>
+      <div class="plans">
+        <div class="plan">
+          <h3>Gratuit</h3>
+          <div class="price"><b>0 €</b><span>pour toujours</span></div>
+          <ul>
+            <li>Tâches, courses, repas, agenda, maison, événements</li>
+            <li>Budget partagé et ses graphiques</li>
+            <li>Thèmes et couleurs</li>
+            <li>25 papiers, 5 papiers lus en photo par mois</li>
+            <li>20 questions à Cocoony par mois</li>
+          </ul>
+        </div>
+        <div class="plan pm">
+          <span class="tag">1 mois offert</span>
+          <h3>Premium</h3>
+          <div class="price"><b>3,99 €</b><span>par mois, ou 39,99 € par an (2 mois offerts)</span></div>
+          <ul>
+            <li>Papiers lus en photo sans limite : titre, date, montant</li>
+            <li>Cocoony intelligent sans limite</li>
+            <li>Papiers illimités, photos et PDF compris</li>
+            <li>Sauvegarde de tout le foyer en un clic</li>
+            <li>Plusieurs foyers : vacances, garde alternée</li>
+          </ul>
+          <p class="note">Les abonnements ouvrent bientôt.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="w">
+      <div class="sec-h">
+        <p class="eyebrow">Tes données</p>
+        <h2>Ton foyer reste chez toi.</h2>
+      </div>
+      <div class="trust">
+        <div class="t" style="--c:var(--c-bleu)"><b>Sur invitation</b><p>Seules les personnes que tu invites rejoignent ton foyer et voient ce qu'il contient.</p></div>
+        <div class="t" style="--c:var(--c-jaune)"><b>Tâches perso privées</b><p>Ce que tu ranges dans ton espace perso n'est visible que par toi.</p></div>
+        <div class="t" style="--c:var(--c-vert)"><b>Tout effaçable</b><p>Tes données perso ou ton compte entier s'effacent à tout moment, depuis les Réglages.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="w end">
+      <img src="img/cocoon.png" alt="">
+      <h2>Prêt à t'installer dans ton cocon ?</h2>
+      <p class="lead">Crée ton foyer en deux minutes, puis invite les autres avec un simple lien.</p>
+      <a class="btn go" href="https://brionutrition.github.io/Cocoon/">Créer mon foyer</a>
+    </div>
+  </section>
+</main>
+
+<footer class="w">Cocoon · l'appli du foyer</footer>
+</body></html>

@@ -4,5 +4,7 @@
 set -e; cd "$(dirname "$0")"
 rm -rf dist && python3 build.py ../source/assistant-du-foyer.html dist/
 for f in index.html sw.js cocoon-runtime.js manifest.webmanifest; do cp dist/$f ../$f; done
+# page de présentation : presentation/contenu.html (sans en-tête, publiable tel quel en artefact) → presentation/index.html
+{ echo '<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>'; cat ../presentation/contenu.html; echo '</body></html>'; } > ../presentation/index.html
 if [ "$1" = "demo" ]; then python3 demo/make_demo.py ../source/assistant-du-foyer.html /tmp/demo-foyer.html; fi
 echo "OK : site reconstruit"

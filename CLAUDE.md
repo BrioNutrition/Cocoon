@@ -56,8 +56,9 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   foyers. Gratuit = tout le reste (budget et graphiques, thèmes compris) + 5 photos et 20 questions à Cocoony par mois, 25 papiers.
   Prix dans `PM_PRIX`, avantages dans `PM_FEATS`/`PM_FREE`. Limites affichées seulement : rien n'est bloqué tant que le paiement
   (App Store, ex. RevenueCat) n'est pas branché. Fenêtre Premium presque plein écran (`.pm-sheet`).
-- Prochaines idées : notifications natives (APNs), paiement Premium, test Android,
-  page de présentation, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
+- Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
+  → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
+- Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
 - À faire côté Angel : redéployer `cocoon-push`, coller les modèles d'e-mail, vérifier OTP à 6 chiffres, brancher Brevo (codeEmail).
 - Deux conversations peuvent travailler en parallèle (web et Mac) : toujours `git pull --rebase` avant de modifier,
   pousser après, et republier les deux artefacts (liens plus haut) à chaque modification.
