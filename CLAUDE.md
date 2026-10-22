@@ -52,6 +52,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   `select foyer, data, updated_at from cocoon_docs where path='retours' order by updated_at desc;`
 - Tuiles du Foyer : essayé puis annulé (Angel préfère l'actuel, ne pas reproposer tel quel) : « pastel » (tuile à sa couleur),
   « carte postale » (bandeau de couleur en haut), « liste groupée » (lignes façon Réglages).
+- **Noms des formules** (choisis par Angel) : gratuit = **Cocoon Essentiel**, payant = **Cocoon Plus** (le mot « Premium » ne doit plus
+  apparaître à l'écran ; le code garde ses noms internes `pm*`, `openPremium`, `premium`).
 - Premium défini (formule « Cocoony au centre ») : 3,99 €/mois ou 39,99 €/an (2 mois offerts), 1 mois d'essai, un abonnement
   pour tout le foyer. Premium = photos de papiers et Cocoony intelligent sans limite, papiers illimités, sauvegarde, plusieurs
   foyers. Gratuit = tout le reste (budget et graphiques, thèmes compris) + 5 photos et 20 questions à Cocoony par mois, 25 papiers.
