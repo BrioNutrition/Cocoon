@@ -7141,8 +7141,7 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
     tile("vehic","🚗","#7FD39A","Mes véhicules",v0?(v0.nom||"Véhicule")+(vNext?" · "+vNext[0]+" "+MOIS.format(parse(vNext[1])):""):"ajouter une voiture",null),
     window.cocoonHost&&$("cxNotif")?tile("notif","🔔","#E79ADB","Notifications","rappels sur ton téléphone",null):tile("perso","✓","#B9A8F0","Tâches réalisées","ton historique",null));
   const reg=el("button",{type:"button",class:"ms-reg",onclick:()=>moiOpen("reglages")},el("i",{"aria-hidden":"true",text:"⚙️"}),el("span",{},el("b",{text:"Réglages"}),el("small",{text:"apparence, compte, confidentialité, mes données"})),el("u",{"aria-hidden":"true",text:"›"}));
-  const idea=el("button",{type:"button",class:"ms-reg",onclick:()=>openRetour()},el("i",{"aria-hidden":"true",text:"💡"}),el("span",{},el("b",{text:"Une idée, un bug ?"}),el("small",{text:"dis-nous ce qui manque ou ce qui coince"})),el("u",{"aria-hidden":"true",text:"›"}));
-  T.append(el("div",{class:"ms-gl",text:"Mon espace"+(late?" · "+late+" en retard":"")}),g,reg,idea);
+  T.append(el("div",{class:"ms-gl",text:"Mon espace"+(late?" · "+late+" en retard":"")}),g,reg);
   // sous-page Réglages
   let RG=$("mReglages"); if(!RG){ RG=el("div",{id:"mReglages",class:"sub ms-sub"}); $("mSettings").before(RG); } RG.innerHTML="";
   const ico=(e,c)=>el("span",{class:"b-ico rg-ic",style:"--stripe:"+c,text:e});
@@ -7160,7 +7159,6 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
     window.__nt.faceid({}).then(st=>{ if(!st||!st.available){ S.faceSt={available:false}; fr.remove(); return; } if(JSON.stringify(st)!==JSON.stringify(S.faceSt)) upd(st); }).catch(()=>fr.remove()); }
   if(window.cocoonHost&&$("cxNotif")) box.append(rrow("🔔","#E79ADB","Notifications","Rappels sur ton téléphone",()=>moiOpen("notif")));
   box.append(rrow("✨","#FFC94A","Cocoon Premium",(S.prefs&&S.prefs.premiumInteret)?"Tu seras prévenu·e du lancement":"Papiers en photo, secrétaire intelligent, et plus",()=>openPremium()));
-  box.append(rrow("💡","#7FD39A","Une idée, un bug ?","Dis-nous ce qui manque ou ce qui coince",()=>openRetour()));
   RG.append(el("h2",{class:"rg-h",text:"Réglages"}),el("div",{class:"ms-gl",text:"Préférences"}),box); }
 /* Foyer : toutes les rubriques en tuiles (bento) */
 function hubGo(v){ if(v==="premium"){ openPremium(); return; } if(v==="evenements"){ const n=(S.evs||[]).filter(e=>evEnd(e)>=iso(today())); if(n.length===1) openEvent(n[0].id); else openEvents(); return; } if(v==="maison") S.mSec=null; setTab(v); window.scrollTo({top:0}); }
@@ -7327,6 +7325,8 @@ function renderSettings(){
   if(box.childNodes.length) w.append(el("div",{class:"ms-gl",text:"Mes données"}),box);
   /* comme dans les Réglages d'iOS : la déconnexion, en rouge, tout en bas */
   if(window.cocoonHost&&cocoonHost.logout) w.append(el("div",{class:"settings rg-out-box"},el("button",{type:"button",class:"set-row rg-out",onclick:()=>confirmBox("Se déconnecter ?","Tu pourras te reconnecter avec ton adresse e-mail. Tes données restent dans le foyer.","Se déconnecter",()=>{ try{ cocoonHost.logout(); }catch(err){ writeErr(err); } })},"Se déconnecter")));
+  /* « Une idée, un bug ? » : tout en bas des Réglages */
+  w.append(el("div",{class:"settings rg-out-box"},el("button",{type:"button",class:"set-row",onclick:()=>openRetour()},el("span",{class:"b-ico rg-ic",style:"--stripe:#7FD39A",text:"💡"}),el("span",{class:"t"},el("b",{text:"Une idée, un bug ?"}),el("small",{text:"Dis-nous ce qui manque ou ce qui coince"})))));
   w.append(el("p",{class:"version",text:"Cocoon · version 4.1"}));
 }
 
