@@ -5815,10 +5815,15 @@ async function saveBForm(e){
     if(d.splitMode==="pct"&&parts.length>1){ const PC=(S.config&&S.config.partage&&S.config.partage.pct)||{}; const pc={}; for(const id of parts) pc[id]=PC[id]||0; doc.parts=Object.values(pc).some(v=>v>0)?pctParts(d.montant,pc):null; } else
     if(d.splitMode==="perso"&&parts.length>1){ const pp={}; for(const id of parts) pp[id]=(d.parts||{})[id]||0; const tot=Object.values(pp).reduce((a,v)=>a+v,0);
       if(Math.abs(tot-d.montant)>1){ toast("La répartition ("+money(tot)+") doit faire "+money(d.montant)+"."); return; } doc.parts=pp; } else doc.parts=null;
+    const objC=((S.config&&S.config.objectifs)||{})[doc.cat], avant=objC&&!asSub&&!B.id?(catSpent(doc.cat)):null;
     if(B.id) await col.doc(B.id).update(Object.assign(doc,{modifiePar:me,modifieLe:Date.now()}));
     else await col.add(Object.assign(doc,{creePar:me,creeLe:Date.now()}));
     const r=e.submitter?e.submitter.getBoundingClientRect():null; if(r&&!B.id) confetti(r.left+r.width/2,r.top);
     toast(B.id?"Modifié.":recur?"Dépense récurrente ajoutée : "+money(doc.montant)+" "+(FREQ[doc.freq]||FREQ.mensuel).l+".":dep?"Dépense ajoutée : "+money(doc.montant)+".":"Abonnement ajouté : "+money(doc.montant)+" "+(FREQ[doc.freq]||FREQ.mensuel).l+".");
+    /* plafond de la catégorie : prévenir quand cette dépense fait passer 80 % ou 100 % */
+    if(avant!=null&&doc.date&&doc.date.slice(0,7)===iso(today()).slice(0,7)){ const apres=avant+doc.montant, nmC=(BCAT[doc.cat]||BCAT.autre).nom;
+      if(avant<objC&&apres>=objC) setTimeout(()=>toast("⚠️ "+nmC+" : plafond du mois dépassé ("+money(apres)+" sur "+money(objC)+")."),1600);
+      else if(avant<objC*.8&&apres>=objC*.8) setTimeout(()=>toast("👀 "+nmC+" : "+Math.round(apres/objC*100)+" % du plafond du mois ("+money(apres)+" sur "+money(objC)+")."),1600); }
     closeBForm(); renderBudget();
   }catch(err){ writeErr(err); }
 }
@@ -6694,7 +6699,7 @@ function merciPop(x,y){ if(window.matchMedia&&matchMedia("(prefers-reduced-motio
   b.animate([{transform:"translate(-50%,-50%) scale(.4) rotate(-20deg)",opacity:0},{transform:"translate(-50%,-90%) scale(1.25) rotate(8deg)",opacity:1,offset:.35},{transform:"translate(-50%,-170%) scale(1) rotate(0)",opacity:0}],{duration:900,easing:"cubic-bezier(.3,.8,.4,1)"}).onfinish=()=>b.remove(); }
 
 /* ---- Panneau de notifications (cloche) ---- */
-function npKey(r){ return r.kind+":"+((r.ref&&r.ref.id)||r.titre)+":"+r.date; }
+function npKey(r){ return r.key||r.kind+":"+((r.ref&&r.ref.id)||r.titre)+":"+r.date; }
 function npSeen(){ if(!S.npSeen){ let a=[]; try{ a=JSON.parse(localStorage.getItem("cocoon.seen")||"[]"); }catch(_){} S.npSeen=new Set(Array.isArray(a)?a:[]); } return S.npSeen; }
 function npHidden(){ if(!S.npHide){ let a=(S.prefs&&S.prefs.notifMasquees)||null; if(!a){ try{ a=JSON.parse(localStorage.getItem("cocoon.hide")||"[]"); }catch(_){ a=[]; } } S.npHide=new Set(Array.isArray(a)?a:[]); } return S.npHide; }
 function npDismiss(r){ const h=npHidden(); h.add(npKey(r)); const arr=[...h].slice(-200); try{ localStorage.setItem("cocoon.hide",JSON.stringify(arr)); }catch(_){}
@@ -6704,7 +6709,8 @@ function npItems(){ const h=npHidden(), me=meId();
   const ss=cSession(), lv=ss&&ss.par!==me?[{kind:"Courses",date:iso(today()),titre:membre(ss.par).nom+" fait les courses en ce moment",cat:"courses",who:null,ref:{id:"live"+ss.depuis},live:true}]:[];
   const evn=[]; try{ for(const ev of evAll()){ const n=daysTo(ev.debut); if(n<0||n>7) continue; const st=n===0?"j0":n===1?"j1":"j7"; const I=evItems(ev), todo=I.t.concat(I.a,I.r).filter(x=>!x.fait).length;
     evn.push({kind:"Événement",date:ev.debut,titre:(ev.titre||evT(ev).n)+(n===0?" : c'est aujourd'hui":n===1?" : c'est demain":" dans "+n+" jours")+(todo?" · reste "+todo+" étape"+(todo>1?"s":""):" · tout est prêt"),cat:"loisirs",who:null,ref:{id:ev.id+"@"+st,ev:ev.id},evn:true,emo:evT(ev).e}); } }catch(_){}
-  return lv.concat(ms).concat(evn).concat(reminders().filter(r=>daysTo(r.date)<=7)).filter(r=>!h.has(npKey(r))); }
+  const bud=objAlerts().map(a=>{ const over=a.v>=a.g, nmC=(BCAT[a.c]||BCAT.autre).nom; return {kind:"Budget",date:iso(today()),key:"Budget:plafond-"+a.c+(over?"-100":"-80")+":"+iso(today()).slice(0,7),titre:nmC+(over?" : plafond du mois dépassé":" : "+Math.round(a.v/a.g*100)+" % du plafond du mois")+" ("+money(a.v)+" sur "+money(a.g)+")",cat:"maison",who:null,ref:{id:"plafond-"+a.c+(over?"-100":"-80")}}; });
+  return lv.concat(ms).concat(evn).concat(bud).concat(reminders().filter(r=>daysTo(r.date)<=7)).filter(r=>!h.has(npKey(r))); }
 function npUnseen(){ const s=npSeen(); return npItems().filter(r=>!s.has(npKey(r))).length; }
 function npMarkSeen(){ const s=npSeen(); for(const r of npItems()) s.add(npKey(r)); try{ localStorage.setItem("cocoon.seen",JSON.stringify([...s].slice(-300))); }catch(_){} renderBadges(); }
 function npIcon(r){ if(r.evn){ const i=el("span",{class:"np-ic",style:"--bc:#FF9C80;font-size:19px"}); i.textContent=r.emo||"🎉"; return i; } if(r.live){ const i=el("span",{class:"np-ic",style:"--bc:#7FD39A;font-size:19px"}); i.textContent="🛒"; return i; } if(r.merci){ const i=el("span",{class:"np-ic",style:"--bc:#FFB347;font-size:20px"}); i.textContent="🤝"; return i; } const k={Document:"documents",Maison:"entretien","Véhicule":"voiture","Prélèvement":"abonnement",Anniversaire:"loisirs",Poubelles:"poubelle","Rendez-vous":"rdv"}[r.kind]||(r.cat==="voitures"?"voiture":r.cat);
@@ -6714,7 +6720,7 @@ function npGo(r){ closeNotifs(); const x=r.ref; if(r.evn){ setTimeout(()=>openEv
   if(r.kind==="Perso"||r.kind==="Foyer") return goTask(x);
   if(r.kind==="Document"){ S.docWho=null; S.docCat=catOf(x.cat||"documents").id||"documents"; if($("papQ")) $("papQ").value=""; return goDoc(x); }
   if(r.kind==="Anniversaire") return openProfile(x.id);
-  if(r.kind==="Prélèvement"){ setTab("budget"); window.scrollTo({top:0}); return; }
+  if(r.kind==="Prélèvement"||r.kind==="Budget"){ setTab("budget"); window.scrollTo({top:0}); return; }
   if(r.kind==="Rendez-vous"){ S.agDay=null; setTab("agenda"); return; }
   S.mSec={Poubelles:"bins",Contacts:"contacts",Contact:"contacts",Maison:"equip"}[r.kind]||null;
   setTab("maison"); window.scrollTo({top:0});
@@ -9394,6 +9400,8 @@ function renderCalCard(){
 /* ---------- Récap du lundi ---------- */
 function weekKey(d){ return iso(new Date(weekStartOf(d||today()))); }
 function dismissRecap(){ S.recapHide=true; renderRecap(); if(S.db&&S.uid){ S.prefs=Object.assign({},S.prefs||{},{recapVu:weekKey()}); S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); } }
+/* dépensé ce mois-ci dans une catégorie (hors remboursements) */
+function catSpent(c){ const ms=new Date(today().getFullYear(),today().getMonth(),1).getTime(); let v=0; for(const d of (S.depenses||[])){ if(d.type==="rembt"||!d.date) continue; if(parse(d.date).getTime()>=ms&&(d.cat||"autre")===c) v+=d.montant; } return v; }
 function objAlerts(){ const obj=(S.config&&S.config.objectifs)||{}; if(!Object.keys(obj).length) return [];
   const ms=new Date(today().getFullYear(),today().getMonth(),1).getTime(), by={};
   for(const d of S.depenses){ if(d.type==="rembt") continue; if(parse(d.date).getTime()>=ms) by[d.cat||"autre"]=(by[d.cat||"autre"]||0)+d.montant; }

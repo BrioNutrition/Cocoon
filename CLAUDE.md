@@ -78,6 +78,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - Garanties : dans le formulaire Papiers, bloc « Facture d'un achat ? » (`dAchat`, `dGar`, raccourcis 1/2/3/5 ans) →
   `documents.achat` / `documents.garantieFin` ; la lecture photo remplit l'achat (+2 ans par défaut). Pastille sur le papier,
   rappel 45 j avant la fin, vue « Garanties » (`S.docCat="__gar"`) qui réunit papiers et équipements de Maison (`garantieFin`).
+- Plafonds par catégorie : existaient déjà (« Objectifs », `foyer/config.objectifs`, barres à 80 %/100 %). Ajouté : message quand
+  une dépense fait passer 80 % ou 100 % (`catSpent`), et notification dans la cloche (kind « Budget », une par palier et par mois).
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
