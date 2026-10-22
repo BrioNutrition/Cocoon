@@ -3027,6 +3027,23 @@ html.native-tabs .hub-mini{display:none!important}
 .pp-cg{color:var(--muted);font-size:12.5px}
 .pp-cy{color:#2F9E5B;font-weight:800;font-size:15px}
 .pp-cmpin{gap:12px!important}
+/* tuile « limite gratuite » */
+.pq{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:22px;color:#1C1B2E;background:radial-gradient(90% 120% at 100% 0%,#FFE3EC 0%,transparent 60%),linear-gradient(135deg,#FFF6DC,#FFE6D9);box-shadow:0 2px 0 rgba(255,156,128,.35);margin-bottom:12px}
+.pq-h{display:flex;align-items:center;gap:12px}
+.pq-h>i{width:42px;height:42px;border-radius:14px;background:#1C1B2E;display:grid;place-items:center;flex:none}
+.pq-h>i svg{width:26px;height:26px}
+.pq-h b{display:block;font:800 16.5px/1.2 var(--f-display)}
+.pq-h small{font-size:12.5px;color:rgba(28,27,46,.7)}
+.pq p{margin:0;font-size:14px;line-height:1.4;color:rgba(28,27,46,.82)}
+.pq-bar{height:8px;border-radius:99px;background:rgba(28,27,46,.1);overflow:hidden}
+.pq-bar span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#FFC94A,#FF9C80 60%,#E79ADB)}
+.pq.full .pq-bar span{background:#FF9C80}
+.pq-b{display:flex;gap:8px;flex-wrap:wrap}
+.pq-b .btn{flex:1 1 auto;min-height:44px}
+.pq-go{background:#1C1B2E!important;color:#fff!important}
+.pq .btn.ghost{background:rgba(255,255,255,.6)!important;color:#1C1B2E!important;border-color:transparent!important}
+.pq.big{padding:20px;margin:6px 0 4px}
+.pq.big .pq-h b{font-size:20px}
 /* fenêtre Premium : presque tout l'écran */
 .pm-sheet{min-height:calc(100% - env(safe-area-inset-top,0px) - 10px)}
 html.native-tabs .pm-sheet{min-height:calc(100% - env(safe-area-inset-top,0px) - 72px)}
@@ -4326,6 +4343,7 @@ function renderDocs(){
   if(owners.length>1){ f.append(el("button",{type:"button","aria-pressed":String(!S.docWho),text:"Tout le foyer",onclick:()=>{ S.docWho=null; renderDocs(); }}));
     for(const o of owners) f.append(el("button",{type:"button","aria-pressed":String(S.docWho===o),onclick:()=>{ S.docWho=S.docWho===o?null:o; renderDocs(); }},o!=="foyer"?avatar(o,18):"",ownerName(o))); }
   const H=$("papHero"), G0=$("docGrid"); G0.innerHTML=""; G0.className="pap-frise"; H.innerHTML=""; H.className="";
+  { let Q=$("papQuota"); if(!Q){ Q=el("div",{id:"papQuota"}); H.before(Q); } Q.innerHTML=""; Q.hidden=pmActif()||!S.loaded.d||pmUsed("docs")<PM_LIM.docs-3; if(!Q.hidden) Q.append(pmLimitCard("docs")); }
   if(!S.loaded.d){ H.hidden=true; G0.append(el("div",{class:"empty",text:"Chargement des documents…"})); return; }
   const pool=S.docs.filter(d=>!S.docWho||(d.pour||"foyer")===S.docWho);
   // résumé
@@ -6185,11 +6203,12 @@ function docIsSante(){ const pour=S.docPour||"foyer", m=pour!=="foyer"?membre(po
 function updConsent(){ const box=$("dConsent"); if(!box) return; const h=docIsSante(); box.hidden=!h; if(!h) $("dConsentCk").checked=false;
   const pour=S.docPour||"foyer"; $("dConsentWho").textContent=pour==="foyer"?"tout le foyer":"tout le foyer (rangé dans le classeur de "+(pour===meId()?"toi":membre(pour).nom)+")"; }
 ["dTitle","dNote","dCatNom"].forEach(id=>{ const x=$(id); if(x) x.addEventListener("input",updConsent); }); $("dCat").addEventListener("change",updConsent);
-$("papAdd").addEventListener("click",()=>{ const f=$("docForm"), open=f.hidden; f.hidden=!open; $("papAdd").setAttribute("aria-expanded",String(open)); if(open){ setTimeout(()=>{ $("dTitle").focus(); },60); } });
+$("papAdd").addEventListener("click",()=>{ const f=$("docForm"), open=f.hidden; if(open&&!pmCan("docs")) return; f.hidden=!open; $("papAdd").setAttribute("aria-expanded",String(open)); if(open){ setTimeout(()=>{ $("dTitle").focus(); },60); } });
 $("papQ").addEventListener("input",()=>renderDocs());
 $("docForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||!needMe()) return; const titre=$("dTitle").value.trim(); if(!titre) return;
   updConsent(); const sante=!$("dConsent").hidden;
   if(sante&&!$("dConsentCk").checked){ const b=$("dConsent"); b.classList.remove("need"); void b.offsetWidth; b.classList.add("need"); b.scrollIntoView({behavior:"smooth",block:"center"}); toast("Coche la case pour accepter de garder ce papier de santé, ou ne l'ajoute pas."); return; }
+  if(!pmCan("docs",Math.max(1,$("dFile").files.length))) return;
   const btn=$("dSubmit"); btn.disabled=true; btn.textContent="Envoi…";
   let cat=$("dCat").value, catNom=null, catC=null;
   if(cat==="__new"){ const nm=$("dCatNom").value.trim(); if(!nm){ toast("Donne un nom à ta nouvelle catégorie."); $("dCatNom").focus(); btn.disabled=false; btn.textContent="Ranger"; return; }
@@ -6397,7 +6416,7 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("sheet").hidden
 $("sgEquip").addEventListener("click",()=>{ closeSheet(); openMForm("equip"); });
 $("searchBtn").addEventListener("click",openSearch);
 function closeDocForm(){ S.docEv=null; const f=$("docForm"); if(f) f.hidden=true; $("papAdd").setAttribute("aria-expanded","false"); document.querySelectorAll('.hub-add[data-add="documents"]').forEach(b=>b.setAttribute("aria-expanded","false")); try{ document.activeElement&&document.activeElement.blur(); }catch(_){} }
-function openDocForm(){ setTab("documents"); window.scrollTo({top:0}); const f=$("docForm"); f.hidden=false; $("papAdd").setAttribute("aria-expanded","true"); document.querySelectorAll('.hub-add[data-add="documents"]').forEach(b=>b.setAttribute("aria-expanded","true")); setTimeout(()=>{ try{ $("dTitle").focus(); }catch(_){} },80); }
+function openDocForm(){ if(!pmCan("docs")){ setTab("documents"); return; } setTab("documents"); window.scrollTo({top:0}); const f=$("docForm"); f.hidden=false; $("papAdd").setAttribute("aria-expanded","true"); document.querySelectorAll('.hub-add[data-add="documents"]').forEach(b=>b.setAttribute("aria-expanded","true")); setTimeout(()=>{ try{ $("dTitle").focus(); }catch(_){} },80); }
 $("sgDoc").addEventListener("click",()=>{ closeSheet(); openDocForm(); });
 
 { const bh=$("brandHome"); const goHome=()=>{ if(typeof closeNotifs==="function") closeNotifs(); closeSheet(); if(S.tab!=="accueil"){ setTab("accueil"); renderHeader(); } else window.scrollTo({top:0,behavior:"smooth"}); };
@@ -7590,7 +7609,9 @@ async function askSecretary(q){
   S.secAns={q,r:secA(""),busy:true,fresh:true}; renderSecAns(); secReadFx();
   await sleep(950); S.secAns.fresh=false;
   let r;
-  if(secOn()) r=await secClaude(q);
+  if(secOn()&&pmLeft("questions")<=0){ S.secAns={q,r:secA(""),busy:true}; renderSecAns(); try{ r=await Secretary.ask(q); }catch(_){ r=secA("Oups, je n'ai pas réussi à répondre."); }
+    r.note="Tes "+PM_LIM.questions+" questions du mois à Cocoony intelligent sont utilisées : je réponds en mode simple."; if(!S.pqSeen){ S.pqSeen=1; setTimeout(()=>pmLimitPop("questions"),900); } }
+  else if(secOn()){ r=await secClaude(q); if(r&&r.claude) pmUse("questions"); }
   else { S.secAns={q,r:secA(""),busy:true}; renderSecAns(); try{ r=await Secretary.ask(q); }catch(_){ r=secA("Oups, je n'ai pas réussi à répondre."); } await sleep(600); }
   S.secAns={q,r}; renderSecAns();
 }
@@ -7882,7 +7903,7 @@ function renderDocAI(){
   const f=$("dFile").files[0]; btn.hidden=!(f&&/^image\//.test(f.type));
 }
 async function readDocAI(){
-  const f=$("dFile").files[0], btn=$("dAI"); if(!f||!secOn()) return;
+  const f=$("dFile").files[0], btn=$("dAI"); if(!f||!secOn()) return; if(!pmCan("photos")) return;
   btn.disabled=true; btn.textContent="Lecture du papier…";
   try{
     const r=await S.sample.json("Voici la photo d'un papier administratif d'un foyer français. Extrais-en les infos pour le ranger. Réponds uniquement avec un objet JSON : {\"titre\": nom court du document (ex. « Assurance habitation MAIF »), \"categorie\": un parmi "+CATS.map(c=>'"'+c.id+'"').join(", ")+", \"expire\": date d'expiration, d'échéance ou de renouvellement au format AAAA-MM-JJ ou null, \"note\": infos utiles en une ou deux lignes (organisme, n° de contrat ou de client, montant, contact) ou null}. N'invente rien : mets null si une info n'est pas lisible.",{images:f,modelTier:"default",cache:false});
@@ -7891,7 +7912,7 @@ async function readDocAI(){
       if(CAT[r.categorie]) $("dCat").value=r.categorie;
       if(/^\d{4}-\d{2}-\d{2}$/.test(String(r.expire||""))) $("dExp").value=r.expire;
       if(r.note&&!$("dNote").value.trim()) $("dNote").value=String(r.note).slice(0,300);
-      toast("Le secrétaire a rempli la fiche : vérifie puis touche Ranger.");
+      toast("Le secrétaire a rempli la fiche : vérifie puis touche Ranger."); pmUse("photos");
     }
   }catch(e){ const c=e&&e.code; if(["not_granted","sampling_disabled","not_declared","capability_disabled"].includes(c)){ S.sampleOff=true; } toast(c==="image_rejected"?"Cette image n'a pas pu être lue.":c==="rate_limited"?"Trop de demandes, réessaie dans un moment.":c==="not_granted"?"Claude n'est pas autorisé sur cette page.":"Je n'ai pas réussi à lire ce papier."); }
   finally{ btn.disabled=false; btn.textContent="Lire avec le secrétaire"; renderDocAI(); }
@@ -8037,6 +8058,31 @@ const PM_FEATS=[["📸","#FFF1C9","Papiers en photo","Prends la photo : titre, d
  ["🏡","#FFE9DC","Plusieurs foyers","La maison, la maison de vacances, la garde alternée."]];
 /* tarifs : un abonnement pour tout le foyer, 1 mois offert ; l'année = 10 mois payés */
 const PM_PRIX={mois:"3,99 €",an:"39,99 €",anMois:"3,33 €"};
+/* Limites de la version gratuite. Le foyer est Premium quand sa config porte premium:true (à poser par le paiement).
+   Papiers : compte du foyer ; photos lues et questions à Cocoony intelligent : compteur du mois, par personne (prefs). */
+const PM_LIM={docs:25,photos:5,questions:20};
+const pmActif=()=>!!(S.config&&S.config.premium);
+const pmMois=()=>iso(today()).slice(0,7);
+function pmUsed(k){ if(k==="docs") return (S.docs||[]).length; const q=(S.prefs&&S.prefs.quota)||{}; return q.mois===pmMois()?(q[k]||0):0; }
+const pmLeft=k=>pmActif()?Infinity:Math.max(0,PM_LIM[k]-pmUsed(k));
+async function pmUse(k){ if(pmActif()) return; const q=Object.assign({},(S.prefs&&S.prefs.quota)||{}); if(q.mois!==pmMois()){ q.mois=pmMois(); q.photos=0; q.questions=0; }
+  q[k]=(q[k]||0)+1; S.prefs=Object.assign({},S.prefs||{},{quota:q}); try{ if(S.db&&S.uid) await S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs); }catch(_){} }
+/* tuile « limite gratuite atteinte » (ou presque) : dans le menu concerné, et en grand quand on essaie d'aller plus loin */
+function pmLimitCard(k,o){ o=o||{}; const used=pmUsed(k), lim=PM_LIM[k], full=used>=lim, nm=new Intl.DateTimeFormat("fr-FR",{month:"long"}).format(new Date(today().getFullYear(),today().getMonth()+1,1));
+  const T={docs:full?["Tes "+lim+" papiers gratuits sont rangés","Pour en ranger d'autres, passe à Premium : papiers illimités, photos et PDF compris."]:["Plus que "+(lim-used)+" papier"+(lim-used>1?"s":"")+" gratuit"+(lim-used>1?"s":""),"La version gratuite range jusqu'à "+lim+" papiers. Premium n'a pas de limite."],
+    photos:["Tes "+lim+" lectures de photo du mois sont utilisées","Elles reviennent le 1er "+nm+". Avec Premium, chaque photo est lue sans limite. Tu peux toujours remplir la fiche toi-même."],
+    questions:["Tes "+lim+" questions du mois à Cocoony sont utilisées","Elles reviennent le 1er "+nm+". D'ici là, Cocoony répond en mode simple et ajoute toujours tes tâches, repas et courses. Avec Premium, sans limite."]}[k];
+  const U={docs:"papiers",photos:"photos lues",questions:"questions"}[k];
+  const star=el("i",{"aria-hidden":"true"}); star.innerHTML='<svg viewBox="0 -4 64 64"><path d="M32 4c2.6 15 9 21.4 24 24-15 2.6-21.4 9-24 24-2.6-15-9-21.4-24-24 15-2.6 21.4-9 24-24z" fill="#FFE7A0"/></svg>';
+  const bar=el("div",{class:"pq-bar",role:"img","aria-label":Math.min(used,lim)+" "+U+" sur "+lim},el("span",{style:"width:"+Math.min(100,Math.round(used/lim*100))+"%"}));
+  return el("div",{class:"pq"+(full?" full":"")+(o.big?" big":""),role:"status"},
+    el("div",{class:"pq-h"},star,el("div",{},el("b",{text:T[0]}),el("small",{text:Math.min(used,lim)+" / "+lim+" "+U+(k==="docs"?"":" ce mois-ci")}))),
+    bar,el("p",{text:T[1]}),
+    el("div",{class:"pq-b"},el("button",{type:"button",class:"btn pq-go",text:"Passer à Premium",onclick:()=>{ if(o.close) o.close(); openPremium(); }}),
+      o.close?el("button",{type:"button",class:"btn ghost",text:"Plus tard",onclick:o.close}):null)); }
+function pmLimitPop(k){ const U=upSheet("pqPage","Limite gratuite atteinte"); U.sheet.append(el("div",{class:"pp-in"},pmLimitCard(k,{big:true,close:U.close}))); haptic(12); }
+/* vrai si on peut continuer ; sinon la tuile s'ouvre */
+function pmCan(k,n){ if(pmLeft(k)>=(n||1)) return true; pmLimitPop(k); return false; }
 /* Alerte native iOS dans l'app (null ailleurs) : {title,message,field?,actions:[{id,title,style:"cancel"|"destructive"|"default"}]} → {id,text} */
 function nativeAlert(o){ const N=window.__nt; if(!N||!N.alert) return null; return N.alert(o).then(r=>r||{}).catch(()=>({})); }
 const DANGER_RX=/supprim|effac|quitt|déconnect|retir|vider/i;
