@@ -3098,6 +3098,8 @@ html.native-tabs .hub-mini{display:none!important}
 .stk-d.soon{color:var(--soon);font-weight:700}.stk-d.late{color:var(--late);font-weight:700}
 .stk-ok{min-height:40px;padding:8px 12px}
 .st-del{color:var(--late)!important}
+.rdv-in{gap:12px!important}
+.rdv-in .pchips{flex-wrap:wrap}
 .ev-anniv{display:flex;flex-direction:column;gap:10px;margin:2px 0 12px}
 .ev-tap{cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 .pr-in{gap:12px!important}
@@ -5302,11 +5304,11 @@ function renderRdv(){
   { const dl=day?new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(parse(day)):null;
     w.append(el("div",{class:"sec-title"},el("h2",{text:day?dl.charAt(0).toUpperCase()+dl.slice(1):"À venir"}),day?el("button",{type:"button",class:"btn ghost ag-all",text:"Tout voir",onclick:()=>{ S.agDay=null; renderAgenda(); renderRdv(); }}):el("span",{class:"muted",style:"font-size:13px",text:list.length?list.length+" rendez-vous":""}))); }
   const box=el("div",{class:"rdv-list"});
-  if(F&&!F.id) box.append(rdvFormEl());
+  /* le formulaire s'ouvre dans une feuille du bas, comme « Nouvel événement » */
+  if(F){ const pg=$("rdvPage"); if(!pg||pg.hidden) setTimeout(openRdvSheet,0); }
   { const t0=iso(today()); const evs=evAll().filter(e=>day?(e.debut<=day&&evEnd(e)>=day):evEnd(e)>=t0);
     for(const ev of evs){ const P=evProg(ev), T=evT(ev); box.append(el("button",{type:"button",class:"ag-ev",style:"--ec:"+T.c,onclick:()=>openEvent(ev.id),"aria-label":(ev.titre||T.n)+", "+evJ(ev)},evRing(ev,44),el("span",{class:"ev-ct"},el("b",{text:ev.titre||T.n}),el("small",{text:evDates(ev)+(P.tot?" · "+P.done+"/"+P.tot+" prêts":"")})),evPill(ev))); } }
   for(const x of list){
-    if(F&&F.id&&x.r&&x.r.id===F.id){ box.append(rdvFormEl()); continue; }
     const d=parse(x.date), n=daysTo(x.date);
     const stt=x.r?rdvState(x.r):"", when=n===0?"Aujourd'hui":n===1?"Demain":n<0?RDV_FMT.w.format(d).replace(/^./,c=>c.toUpperCase()):RDV_FMT.w.format(d).replace(/^./,c=>c.toUpperCase());
     const hTxt=x.heure?heureTxt(x.heure)+(x.r&&x.r.heureFin?"\u2060–\u2060"+heureTxt(x.r.heureFin):""):"";
@@ -5368,31 +5370,40 @@ function renderRdvAlert(){ try{ renderEvAlert(); }catch(_){} const w=$("rdvAlert
   w.hidden=false; w.className="rdv-alert"+(on?" on":"");
   w.append(el("button",{type:"button",onclick:()=>{ S.agDay=soon.date; setTab("agenda"); window.scrollTo({top:0}); }},el("i",{"aria-hidden":"true",text:"📅"}),
     el("span",{},el("b",{text:soon.titre+(on?" · en cours":mins<60?" dans "+mins+" min":" à "+heureTxt(soon.heure))}),el("small",{text:[soon.lieu,on&&soon.heureFin?"jusqu'à "+heureTxt(soon.heureFin):null].filter(Boolean).join(" · ")||"Rendez-vous"})),el("u",{"aria-hidden":"true",text:"›"}))); }
-function rdvFormEl(){
-  const F=S.rdvForm, f=el("form",{class:"rdv-form",autocomplete:"off"}), fld=(l,i)=>el("label",{class:"field"},l,i);
-  const ti=el("input",{type:"text",id:"rdvTitre",maxlength:"80",placeholder:"Dentiste, véto pour Moka, garage…"}); ti.value=F.titre||""; ti.addEventListener("input",()=>F.titre=ti.value);
-  const da=el("input",{type:"date",id:"rdvDate",required:true}); da.value=F.date||""; da.addEventListener("input",()=>F.date=da.value);
-  const he=el("input",{type:"time",id:"rdvHeure"}); he.value=F.heure||""; const hf=el("input",{type:"time",id:"rdvFin"}); hf.value=F.heureFin||"";
+/* types de rendez-vous : même grille que les événements ; un type remplit le titre s'il est vide */
+const RDV_TYPES=[["Médecin","🩺","#8FB8FF"],["Dentiste","🦷","#7FCDB9"],["Véto","🐾","#7FD39A"],["Garage","🚗","#FFC94A"],["École","🏫","#B9A8F0"],["Coiffeur","✂️","#E79ADB"],["Travail","💼","#FF9C80"],["Autre","✨","#C9C7DD"]];
+function openRdvSheet(){ const F=S.rdvForm; if(!F) return;
+  const U=upSheet("rdvPage",F.id?"Modifier le rendez-vous":"Nouveau rendez-vous",()=>{ S.rdvForm=null; }); U.sheet.classList.add("ev-sheet");
+  const inn=el("div",{class:"pp-in ev-in rdv-in"}); U.sheet.append(inn);
+  inn.append(el("div",{class:"ev-top"},el("h2",{text:F.id?"Modifier le rendez-vous":"Nouveau rendez-vous"}),el("p",{text:"Il s'affiche dans l'agenda de chacun, avec un rappel la veille."})));
+  const ti=el("input",{class:"ev-inp",type:"text",id:"rdvTitre",maxlength:"80",placeholder:"Dentiste, véto pour Moka, garage…","aria-label":"Quoi"}); ti.value=F.titre||""; ti.addEventListener("input",()=>{ F.titre=ti.value; paintT(); });
+  const grid=el("div",{class:"ev-types",role:"radiogroup","aria-label":"Type de rendez-vous"});
+  const paintT=()=>{ grid.innerHTML=""; const cur=(F.titre||"").trim();
+    for(const [t,e,c] of RDV_TYPES){ const on=!!cur&&norm(cur).startsWith(norm(t)); grid.append(el("button",{type:"button",role:"radio","aria-checked":String(on),class:"ev-type",style:"--ec:"+c,onclick:()=>{ if(t==="Autre"){ ti.focus(); return; } if(!cur||RDV_TYPES.some(x=>norm(cur)===norm(x[0]))){ F.titre=t; ti.value=t; } paintT(); ti.focus(); }},el("i",{"aria-hidden":"true",text:e}),el("span",{text:t}))); } };
+  paintT();
+  const da=el("input",{class:"ev-inp",type:"date",id:"rdvDate",required:true,"aria-label":"Date"}); da.value=F.date||""; da.addEventListener("input",()=>F.date=da.value);
+  const he=el("input",{class:"ev-inp",type:"time",id:"rdvHeure","aria-label":"Début"}); he.value=F.heure||""; const hf=el("input",{class:"ev-inp",type:"time",id:"rdvFin","aria-label":"Fin"}); hf.value=F.heureFin||"";
   he.addEventListener("input",()=>{ const old=F.heure; F.heure=he.value; if(F.heure&&(!F.heureFin||(old&&F.heureFin<=F.heure))){ const [H,M]=F.heure.split(":").map(Number), t=Math.min(23*60+59,H*60+M+60); F.heureFin=String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0"); hf.value=F.heureFin; } });
   hf.addEventListener("input",()=>F.heureFin=hf.value);
-  const li=el("input",{type:"text",id:"rdvLieu",maxlength:"80",placeholder:"Adresse, cabinet… (facultatif)"}); li.value=F.lieu||""; li.addEventListener("input",()=>F.lieu=li.value);
+  const li=el("input",{class:"ev-inp",type:"text",id:"rdvLieu",maxlength:"80",placeholder:"Adresse, cabinet… (facultatif)","aria-label":"Où"}); li.value=F.lieu||""; li.addEventListener("input",()=>F.lieu=li.value);
   const who=el("div",{class:"pchips"});
-  for(const m of membres()){ const on=(F.pour||[]).includes(m.id); who.append(el("button",{type:"button",class:"pchip","aria-pressed":String(on),onclick:()=>{ F.pour=on?F.pour.filter(x=>x!==m.id):(F.pour||[]).concat(m.id); renderRdv(); }},avatar(m.id,20),m.id===meId()?"Moi":m.nom)); }
-  const bt=el("div",{class:"mot-btns"},el("button",{type:"submit",class:"btn",text:F.id?"Enregistrer":"Ajouter"}),el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>{ S.rdvForm=null; renderRdv(); }}));
-  if(F.id){ const item=(S.rdvs||[]).find(x=>x.id===F.id); if(item) bt.append(el("span",{style:"flex:1"}),el("button",{type:"button",class:"btn ghost",style:"color:var(--late)",text:"Supprimer",onclick:()=>{ S.rdvForm=null; softDelete([{key:"rdv:"+item.id,arr:"rdvs",item,run:()=>S.db.collection("rdv").doc(item.id).delete()}],"Rendez-vous « "+esc(item.titre||"")+" » supprimé."); }})); }
-  f.append(el("h3",{text:F.id?"Modifier le rendez-vous":"Nouveau rendez-vous"}),fld("Quoi",ti),el("div",{class:"frow"},fld("Date",da),fld("Début *",he),fld("Fin *",hf)),fld("Où",li),el("div",{class:"field"},"Pour qui",who),bt);
-  f.addEventListener("submit",async e=>{ e.preventDefault(); if(!needMe()) return;
+  const paintW=()=>{ who.innerHTML=""; for(const m of membres()){ const on=(F.pour||[]).includes(m.id); who.append(el("button",{type:"button",class:"pchip","aria-pressed":String(on),onclick:()=>{ F.pour=on?F.pour.filter(x=>x!==m.id):(F.pour||[]).concat(m.id); paintW(); }},avatar(m.id,20),m.id===meId()?"Moi":m.nom)); } };
+  paintW();
+  const lab=(t,i)=>el("label",{class:"ev-lab"},el("span",{text:t}),i);
+  inn.append(grid,lab("Quoi",ti),lab("Date",da),el("div",{class:"ev-two"},lab("Début",he),lab("Fin",hf)),lab("Où",li),el("div",{class:"ev-lab"},el("span",{text:"Pour qui"}),who));
+  const go=el("button",{type:"button",class:"btn ev-cta",id:"rdvGo",text:F.id?"Enregistrer":"Ajouter le rendez-vous",onclick:async()=>{ if(!needMe()) return;
     if(!(F.titre||"").trim()){ toast("Indique le rendez-vous."); ti.focus(); return; } if(!F.date){ toast("Choisis la date."); da.focus(); return; }
     if(!F.heure){ toast("Indique l'heure du rendez-vous."); he.focus(); return; }
     if(!F.heureFin){ toast("Indique l'heure de fin du rendez-vous."); hf.focus(); return; }
     if(F.heureFin<=F.heure){ toast("L'heure de fin doit être après l'heure de début."); hf.focus(); return; }
     { const when=new Date(F.date+"T"+F.heure); if(when.getTime()<Date.now()){ toast(F.heure&&F.date===iso(today())?"Cette heure est déjà passée : choisis une heure ou une date à venir.":"Cette date est déjà passée : choisis une date à venir."); (F.heure&&F.date===iso(today())?he:da).focus(); return; } }
     const doc={titre:F.titre.trim(),date:F.date,heure:F.heure||null,heureFin:F.heureFin||null,lieu:(F.lieu||"").trim()||null,pour:(F.pour||[]).slice()};
+    go.disabled=true;
     try{ if(F.id) await S.db.collection("rdv").doc(F.id).update(doc); else await S.db.collection("rdv").add(Object.assign(doc,{par:meId(),le:Date.now()}));
-      S.rdvForm=null; toast(F.id?"Rendez-vous modifié.":"Rendez-vous ajouté : rappel la veille."); renderRdv(); }catch(err){ writeErr(err); } });
-  setTimeout(()=>{ const x=$("rdvTitre"); if(x&&!F.id&&!F.titre) x.focus(); },40);
-  return f;
-}
+      S.rdvForm=null; U.close(); toast(F.id?"Rendez-vous modifié.":"Rendez-vous ajouté : rappel la veille."); S.agDay=doc.date; renderAgenda(); renderRdv(); }catch(err){ go.disabled=false; writeErr(err); } }});
+  inn.append(go);
+  if(F.id){ const item=(S.rdvs||[]).find(x=>x.id===F.id); if(item) inn.append(el("button",{type:"button",class:"btn ghost st-del",text:"Supprimer le rendez-vous",onclick:()=>{ S.rdvForm=null; U.close(); softDelete([{key:"rdv:"+item.id,arr:"rdvs",item,run:()=>S.db.collection("rdv").doc(item.id).delete()}],"Rendez-vous supprimé."); }})); }
+  if(!F.id&&!F.titre) setTimeout(()=>{ let touch=false; try{ touch=matchMedia("(pointer: coarse)").matches; }catch(_){} if(!touch) try{ ti.focus({preventScroll:true}); }catch(_){} },360); }
 function segAnim(box,key){
   const run=()=>{ const on=box.querySelector('button[aria-pressed="true"]'); if(!on||!on.offsetWidth) return;
     let pill=box.querySelector(":scope > .seg-pill"); if(!pill){ pill=el("span",{class:"seg-pill","aria-hidden":"true"}); box.prepend(pill); }
@@ -7594,7 +7605,7 @@ function fabAct(v0,anchor){ const me=meId(), v=v0||S.tab;
   if(v==="repas"){ if(!needMe()) return; const [d,sl]=nextFreeMeal(), t0=weekStartOf(today()); S.rWeek=Math.round((weekStartOf(parse(d))-t0)/(7*864e5)); S.rDay=d; setTab("repas"); renderRepas(); openRepas(d,sl); return; }
   if(v==="agenda"){ if(!needMe()) return; const day=S.agDay&&S.agDay>=iso(today())?S.agDay:""; if(!anchor||!anchor.dataset||anchor.dataset.direct!=="rdv"){ const nm=nativeMenu("Ajouter à l'agenda",[{id:"rdv",title:"Un rendez-vous",icon:"calendar"},{id:"ev",title:"Un événement à préparer",icon:"party.popper"}]);
       if(nm){ nm.then(id=>{ if(id==="rdv") fabAct("agenda",{dataset:{direct:"rdv"}}); else if(id==="ev") openEvents({v:"new",type:"anniv",debut:day||undefined}); }); return; }
-      openEvents({v:"pick",day}); return; } S.rdvForm={pour:[S.agWho||me],date:day}; renderRdv(); go(".rdv-form"); return; }
+      openEvents({v:"pick",day}); return; } S.rdvForm={pour:[S.agWho||me],date:day}; renderRdv(); return; }
   if(v==="documents"){ if(S.tab==="documents"&&!$("docForm").hidden){ closeDocForm(); return; } openDocForm(); return; }
   if(v==="budget"){ const M=$("addMenu"); if(!M.hidden){ M.hidden=true; return; } M.innerHTML="";
     const it=(ic,t,id)=>M.append(el("button",{type:"button",role:"menuitem",onclick:()=>{ M.hidden=true; const b=$(id); if(b) b.click(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),t));
