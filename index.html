@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 15:38";</script>
+<script>window.COCOON_BUILD="22/10 15:40";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -5188,7 +5188,8 @@ function renderWeek(){
   const fr=el("div",{class:"wk-frise",role:"tablist","aria-label":"Jours de la semaine"}), L=["L","M","M","J","V","S","D"];
   for(let i=0;i<7;i++){ const d=new Date(ws); d.setDate(d.getDate()+i); const k=iso(d);
     const ts=all.filter(t=>t.echeance===k||(k===td&&!t.fait&&t.echeance&&t.echeance<td)), dn=ts.filter(t=>t.fait).length;
-    const dots=el("span",{class:"wk-dots"}); ts.slice(0,5).forEach((t,j)=>dots.append(el("i",{class:j<dn?"on":(t.echeance<td&&!t.fait?"late":"")})));
+    /* un seul point par jour : rouge s'il reste du retard, gris s'il reste à faire, vert si tout est fait */
+    const dots=el("span",{class:"wk-dots"}); if(ts.length){ const late=ts.some(t=>!t.fait&&t.echeance<td); dots.append(el("i",{class:late?"late":dn===ts.length?"on":""})); }
     const b=el("button",{type:"button",role:"tab",class:"wk-d"+(k===td?" now":"")+(k===S.wkDay?" sel":"")+(k<td?" past":""),"aria-selected":String(k===S.wkDay),"aria-label":new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric"}).format(d)+", "+ts.length+" tâche"+(ts.length>1?"s":""),onclick:()=>{ S.wkDay=k; renderWeek(); renderToday(); }},el("span",{class:"wk-dl",text:L[i]}),el("b",{text:String(d.getDate())}),dots);
     fr.append(b); }
   w.append(fr);
