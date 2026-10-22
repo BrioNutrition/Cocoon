@@ -64,6 +64,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   Premium = `.zip` (donnees.json + papiers/ + LISEZMOI.txt), écrit sans bibliothèque (`zipBlob`, fichiers stockés).
 - Heure des repas : `repasH(sl,m)` = heure du repas (`repas.heure`) sinon heure habituelle du foyer (`foyer/config.repasH`, réglée
   par l'admin sous « Repas affichés ») sinon 8h / 12h30 / 19h30. Un repas est « passé » 2 h après son heure (`repasFini`).
+- Ticket de caisse en photo : Budget › + › « Un ticket de caisse (photo) » (`scanTicket()`, visible seulement si Cocoony intelligent
+  lit les images) → fiche dépense remplie (enseigne, date, total, catégorie) à vérifier ; compte comme une photo lue.
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).

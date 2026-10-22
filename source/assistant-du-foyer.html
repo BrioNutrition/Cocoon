@@ -5736,6 +5736,23 @@ function delBItem(){ const B=S.bForm; if(!B||!B.id) return; const dep=B.kind==="
   softDelete([{key:col+":"+item.id,arr,item,run:()=>S.db.collection(col).doc(item.id).delete()}],(dep?"Dépense":"Abonnement")+" « "+esc(item.titre||item.nom||"")+" » supprimé"+(dep?"e":"")+"."); }
 $("bForm").addEventListener("submit",saveBForm);
 $("bAddDep").addEventListener("click",()=>openBForm("dep"));
+/* Ticket de caisse en photo : Cocoony lit magasin, date, total et catégorie, puis la fiche « dépense » s'ouvre remplie, à vérifier.
+   Compte comme une photo lue (5 par mois en gratuit). */
+const ticketOk=()=>secOn()&&!!(S.sampleLimits&&S.sampleLimits.images);
+function scanTicket(){ if(!needMe()) return; if(!ticketOk()){ toast("La lecture des tickets a besoin de Cocoony intelligent."); return; } if(!pmCan("photos")) return;
+  const fi=el("input",{type:"file",accept:"image/*",capture:"environment",style:"position:fixed;left:-9999px"}); document.body.append(fi);
+  fi.addEventListener("change",async()=>{ const f=fi.files&&fi.files[0]; fi.remove(); if(!f) return; toast("Lecture du ticket…");
+    try{ const r=await S.sample.json("Voici la photo d'un ticket de caisse ou d'une facture en France. Réponds uniquement avec un objet JSON : {\"magasin\": nom court de l'enseigne (ex. « Carrefour », « Boulangerie Paul »), \"date\": date d'achat au format AAAA-MM-JJ ou null, \"total\": montant total payé en euros (nombre, ex. 42.37), \"categorie\": un parmi "+BCATS.map(c=>'"'+c.id+'"').join(", ")+"}. Si ce n'est pas un ticket, réponds {\"total\": null}.",{images:f,modelTier:"default",cache:false});
+      const tot=r&&Number(String(r.total).replace(",","."));
+      if(!tot||!isFinite(tot)||tot<=0){ toast("Je n'ai pas trouvé de total sur cette photo : essaie avec le ticket bien à plat."); return; }
+      pmUse("photos"); openBForm("dep"); const d=S.bForm&&S.bForm.d; if(!d) return;
+      d.titre=String(r.magasin||"Ticket de caisse").slice(0,60); d.montant=Math.round(tot*100);
+      if(/^\d{4}-\d{2}-\d{2}$/.test(String(r.date||""))&&r.date<=iso(today())) d.date=r.date;
+      if(BCATS.some(c=>c.id===r.categorie)) d.cat=r.categorie;
+      renderBForm(); toast("Ticket lu : vérifie puis enregistre."); }
+    catch(e){ const c=e&&e.code; if(["not_granted","sampling_disabled","not_declared","capability_disabled"].includes(c)) S.sampleOff=true;
+      toast(c==="image_rejected"?"Cette photo n'a pas pu être lue.":c==="rate_limited"?"Trop de demandes, réessaie dans un moment.":"Le ticket n'a pas pu être lu."); } });
+  fi.click(); }
 $("bAddSub").addEventListener("click",()=>openBForm("sub"));
 $("bAddCr").addEventListener("click",()=>{ const me=meId(); if(!me){ needMe(); return; } if(S.readOnly) return; closeBForm(); S.crForm={titulaires:[me],type:"autre"}; renderBudget(); $("bVolRec").open=true; setTimeout(()=>{ const w=$("bCreditsWrap"); if(w) w.scrollIntoView({behavior:"smooth",block:"start"}); const i=$("crNom"); if(i) i.focus({preventScroll:true}); },60); });
 $("sgDep").addEventListener("click",()=>{ closeSheet(); openBForm("dep"); });
@@ -7336,7 +7353,9 @@ function fabAct(v0,anchor){ const me=meId(), v=v0||S.tab;
   if(v==="documents"){ if(S.tab==="documents"&&!$("docForm").hidden){ closeDocForm(); return; } openDocForm(); return; }
   if(v==="budget"){ const M=$("addMenu"); if(!M.hidden){ M.hidden=true; return; } M.innerHTML="";
     const it=(ic,t,id)=>M.append(el("button",{type:"button",role:"menuitem",onclick:()=>{ M.hidden=true; const b=$(id); if(b) b.click(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),t));
-    it("depense","Une dépense","bAddDep"); it("abonnement","Un abonnement, un prélèvement","bAddSub"); it("factures","Un crédit","bAddCr");
+    it("depense","Une dépense","bAddDep");
+    if(ticketOk()) M.append(el("button",{type:"button",role:"menuitem",onclick:()=>{ M.hidden=true; scanTicket(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI("courses"); return i; })(),"Un ticket de caisse (photo)"));
+    it("abonnement","Un abonnement, un prélèvement","bAddSub"); it("factures","Un crédit","bAddCr");
     if(nativeizeMenu(M,"Ajouter au budget")) return;
     if(anchor){ const r=anchor.getBoundingClientRect(); M.style.top=Math.round(r.bottom+8)+"px"; M.style.bottom="auto"; M.style.right=Math.max(12,Math.round(innerWidth-r.right))+"px"; }
     M.hidden=false; return; }
