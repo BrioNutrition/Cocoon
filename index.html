@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 22:18";</script>
+<script>window.COCOON_BUILD="22/10 22:34";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3301,6 +3301,8 @@ html.foyer-nuit .hb-t{overflow:hidden;isolation:isolate}
 html.foyer-nuit .hb-t{background:radial-gradient(70% 75% at 100% 100%,color-mix(in srgb,var(--bc) 34%,transparent),transparent 100%),var(--surface)}
 html.foyer-nuit .hb-t>em{background:linear-gradient(135deg,#FFD66B,#FF9C80);color:#1C1B2E}
 html.foyer-nuit .hb-t>em.r{background:#FF6B6B;color:#fff}
+/* bulle du compteur : hauteur fixe, chiffre centré au pixel (la police met les chiffres un peu haut) */
+.hb-t>em{box-sizing:border-box;height:22px;min-width:22px;padding:1.5px 6px 0;display:inline-flex;align-items:center;justify-content:center;line-height:1;font-variant-numeric:tabular-nums}
 html.foyer-nuit .hb-t:focus-visible{outline:2px solid #FFC94A;outline-offset:2px}
 :root[data-theme="dark"].foyer-nuit,:root[data-theme="dark"].foyer-nuit body{background:#17162A}
 :root[data-theme="dark"].foyer-nuit .view[data-view="hub"],:root[data-theme="dark"].foyer-nuit .hub-h h2{color:#fff}
