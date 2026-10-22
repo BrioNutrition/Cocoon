@@ -66,6 +66,10 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   par l'admin sous « Repas affichés ») sinon 8h / 12h30 / 19h30. Un repas est « passé » 2 h après son heure (`repasFini`).
 - Ticket de caisse en photo : Budget › + › « Un ticket de caisse (photo) » (`scanTicket()`, visible seulement si Cocoony intelligent
   lit les images) → fiche dépense remplie (enseigne, date, total, catégorie) à vérifier ; compte comme une photo lue.
+- Fiche baby-sitter : Maison › tuile « Fiche baby-sitter » (`openGarde()`, données dans `fiches/garde`). « Partager le lien »
+  → https://brionutrition.github.io/Cocoon/fiche/#… : page statique `fiche/index.html` (à modifier à la main), tout le contenu
+  est dans le lien (JSON compressé deflate-raw, base64url), rien n'est mis en ligne. Infos publiques des profils, téléphones
+  des parents (infos de profil), contacts cochés, 15/18/17/112.
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Fiche baby-sitter · Cocoon</title>
+<link rel="icon" href="../icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&display=swap">
+<style>
+/* Fiche baby-sitter partagée depuis Cocoon (Maison › Fiche baby-sitter). Le contenu arrive dans le lien (#z… compressé, #j… brut) :
+   rien n'est chargé depuis un serveur. Mêmes couleurs et police que l'app. */
+:root{--bg:#F6F5FB;--surface:#FFFFFF;--ink:#1C1B2E;--muted:#625F7E;--line:#E4E2F0;--shadow:#E4E2F0;--mark:#FFC94A;--late:#C2412D;--late-bg:#FFE1D8;--tint:40%;
+  --f:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#13121C;--surface:#1E1D2B;--ink:#EDEBF7;--muted:#A3A0BE;--line:#3A3852;--shadow:#0B0A12;--late:#FF9C80;--late-bg:#3D1F18;--tint:22%;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--f);-webkit-font-smoothing:antialiased}
+main{max-width:640px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(40px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
+h1,h2{margin:0;font-weight:800;letter-spacing:-.02em}
+h1{font-size:30px;line-height:1.05}
+h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:10px 4px 0}
+.top{display:flex;align-items:center;gap:12px}
+.top img{width:46px;height:46px;border-radius:14px;flex:none}
+.top p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.card{background:var(--surface);border-radius:20px;box-shadow:0 2px 0 var(--shadow);padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.kid{border-left:8px solid color-mix(in srgb,var(--c) 70%,transparent)}
+.kid b{font-size:20px}
+.kid .sub{color:var(--muted);font-size:14px}
+.infos{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;margin-top:4px}
+.info{display:flex;gap:10px;justify-content:space-between;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--c) var(--tint),var(--surface));font-size:15px}
+.info span{color:color-mix(in srgb,var(--ink) 70%,transparent)}
+.info strong{text-align:right;overflow-wrap:anywhere}
+.info.warn{background:var(--late-bg);color:var(--late)}
+.info.warn span{color:inherit}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0;padding-top:0}
+.row div{flex:1;min-width:0}
+.row small{display:block;color:var(--muted);font-size:13px}
+.call{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 14px;border-radius:14px;background:var(--ink);color:var(--bg);font-weight:700;text-decoration:none;white-space:nowrap}
+.urg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.urg a{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px;border-radius:16px;background:var(--late-bg);color:var(--late);text-decoration:none;font-weight:700}
+.urg a b{font-size:26px;line-height:1}
+.urg a span{font-size:13px}
+.txt{white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+.wifi{flex-direction:column;align-items:stretch;gap:8px}
+.copy{align-self:flex-start;min-height:40px;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}
+.empty{text-align:center;padding:40px 16px;color:var(--muted)}
+footer{text-align:center;color:var(--muted);font-size:13px;margin-top:8px}
+footer a{color:inherit}
+</style>
+</head>
+<body>
+<main id="app"><p class="empty">Ouverture de la fiche…</p></main>
+<script>
+(async () => {
+  const app = document.getElementById("app");
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const tel = t => { const d = String(t || "").replace(/[^\d+]/g, ""); return d ? "tel:" + d : null; };
+  const fail = m => { app.innerHTML = '<div class="empty"><h1>Fiche introuvable</h1><p>' + m + "</p></div>"; };
+  const h = location.hash.slice(1);
+  if (!h || h.length < 3) { fail("Ce lien est incomplet. Demande à la famille de te renvoyer le lien de sa fiche depuis l'app Cocoon."); return; }
+  let d;
+  try {
+    const b = atob(h.slice(1).replace(/-/g, "+").replace(/_/g, "/"));
+    let bytes = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) bytes[i] = b.charCodeAt(i);
+    if (h[0] === "z") bytes = new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());
+    d = JSON.parse(new TextDecoder().decode(bytes));
+  } catch (_) { fail("Ce lien est abîmé ou incomplet. Copie-le en entier, ou demande à la famille de le renvoyer."); return; }
+  const foyer = d.f ? "Chez les " + String(d.f).replace(/^(la famille|famille|les)\s+/i, "") : "La maison";
+  document.title = "Fiche baby-sitter · " + foyer;
+  const COL = { enfant: "#FFC94A", animal: "#7FD39A" }, ICO = { enfant: "🧒", animal: "🐾" };
+  let H = '<div class="top"><img src="../icon-192.png" alt=""><div><h1>' + esc(foyer) + "</h1><p>Fiche baby-sitter" + (d.d ? " · mise à jour le " + esc(new Date(d.d + "T12:00").toLocaleDateString("fr-FR", { day: "numeric", month: "long" })) : "") + "</p></div></div>";
+  if ((d.k || []).length) {
+    H += "<h2>Qui garder</h2>";
+    for (const k of d.k) {
+      const infos = (k.i || []).map(([l, v]) => '<div class="info' + (/allerg|m[ée]dic|traitement|asthme|diab/i.test(l + " " + v) ? " warn" : "") + '"><span>' + esc(l) + "</span><strong>" + (tel(v) && /\d{8,}/.test(String(v).replace(/\D/g, "")) ? '<a href="' + tel(v) + '">' + esc(v) + "</a>" : esc(v)) + "</strong></div>").join("");
+      H += '<section class="card kid" style="--c:' + (COL[k.t] || "#B9A8F0") + '"><b>' + (ICO[k.t] || "") + " " + esc(k.n) + '</b><span class="sub">' + esc([k.e, k.a].filter(Boolean).join(" · ")) + "</span>" + (infos ? '<div class="infos">' + infos + "</div>" : "") + "</section>";
+    }
+  }
+  if (d.c) H += '<h2>Consignes</h2><section class="card"><p class="txt">' + esc(d.c) + "</p></section>";
+  if ((d.p || []).length) {
+    H += '<h2>Qui appeler</h2><section class="card">' + d.p.map(([n, r, t]) => '<div class="row"><div><b>' + esc(n) + "</b>" + (r ? "<small>" + esc(r) + "</small>" : "") + "</div>" + (tel(t) ? '<a class="call" href="' + tel(t) + '">' + esc(t) + "</a>" : "") + "</div>").join("") + "</section>";
+  }
+  H += '<h2>Urgences</h2><div class="urg"><a href="tel:15"><b>15</b><span>SAMU</span></a><a href="tel:18"><b>18</b><span>Pompiers</span></a><a href="tel:17"><b>17</b><span>Police</span></a><a href="tel:112"><b>112</b><span>Urgences, depuis un portable</span></a></div>';
+  if (d.a || d.w) {
+    H += '<h2>La maison</h2><section class="card">';
+    if (d.a) H += '<div class="row"><div><small>Adresse</small><b>' + esc(d.a) + "</b></div></div>";
+    if (d.w) H += '<div class="row wifi"><div><small>Wi-Fi</small><b>' + esc(d.w[0] || "Réseau") + "</b>" + (d.w[1] ? '<small>Mot de passe : <strong id="pw">' + esc(d.w[1]) + "</strong></small>" : "") + "</div>" + (d.w[1] ? '<button class="copy" id="cp" type="button">Copier le mot de passe</button>' : "") + "</div>";
+    H += "</section>";
+  }
+  if (d.n) H += '<h2>Bon à savoir</h2><section class="card"><p class="txt">' + esc(d.n) + "</p></section>";
+  H += '<footer>Fiche préparée avec <a href="../presentation/">Cocoon</a>, l\'appli du foyer.</footer>';
+  app.innerHTML = H;
+  const cp = document.getElementById("cp");
+  if (cp) cp.onclick = async () => { try { await navigator.clipboard.writeText(d.w[1]); cp.textContent = "Copié ✓"; } catch (_) { const r = document.createRange(); r.selectNodeContents(document.getElementById("pw")); getSelection().removeAllRanges(); getSelection().addRange(r); } };
+})();
+</script>
+</body>
+</html>

@@ -3033,6 +3033,18 @@ html.native-tabs .hub-mini{display:none!important}
 .pp-cg{color:var(--muted);font-size:12.5px}
 .pp-cy{color:#2F9E5B;font-weight:800;font-size:15px}
 .pp-cmpin{gap:12px!important}
+.gd-in{gap:12px!important}
+.gd-h b{display:block;font:800 22px/1.1 var(--f-display)}.gd-h span{display:block;margin-top:4px;font-size:14px;color:var(--muted)}
+.gd-g{display:flex;flex-direction:column;background:var(--surface);border-radius:18px;box-shadow:0 1px 0 var(--shadow);overflow:hidden}
+.gd-ck{display:flex;align-items:center;gap:12px;border:0;border-top:1px solid var(--line);background:none;padding:12px 14px;font:inherit;color:var(--ink);text-align:left;cursor:pointer;min-height:52px}
+.gd-ck:first-child{border-top:0}
+.gd-ck i{width:24px;height:24px;border-radius:8px;border:2px solid var(--check);flex:none;display:grid;place-items:center}
+.gd-ck.on i{background:var(--ok);border-color:var(--ok)}
+.gd-ck.on i::after{content:"✓";color:#fff;font-style:normal;font-weight:800;font-size:14px}
+.gd-ck b{display:block;font-size:15px}.gd-ck small{color:var(--muted);font-size:12.5px}
+.gd-nb{margin:0;font-size:12.5px;color:var(--muted);line-height:1.4}
+.gd-b{display:flex;gap:8px;flex-wrap:wrap}.gd-b .btn{flex:1 1 auto;min-height:48px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.gd-out{width:100%;font-size:13px}
 /* tuile « limite gratuite » */
 .pq{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:22px;color:#1C1B2E;background:radial-gradient(90% 120% at 100% 0%,#FFE3EC 0%,transparent 60%),linear-gradient(135deg,#FFF6DC,#FFE6D9);box-shadow:0 2px 0 rgba(255,156,128,.35);margin-bottom:12px}
 .pq-h{display:flex;align-items:center;gap:12px}
@@ -5828,11 +5840,49 @@ function renderMaison(){
   renderMDash();
 }
 /* Maison : tableau de bord (ce qui compte cette semaine + 4 tuiles qui s'ouvrent) */
-const MSECS=[["bins","Poubelles","#7FD39A","poubelle"],["contacts","Contacts","#8FB8FF","tel"],["equip","Équipements","#FF9C80","entretien"],["meters","Compteurs","#FFC94A","eclair"]];
+const MSECS=[["bins","Poubelles","#7FD39A","poubelle"],["contacts","Contacts","#8FB8FF","tel"],["equip","Équipements","#FF9C80","entretien"],["meters","Compteurs","#FFC94A","eclair"],["garde","Fiche baby-sitter","#E79ADB","enfants"]];
 function mOpen(sec){ S.mSec=sec||null; renderMaison(); topNow(); }
 /* le + d'un sous-menu de Maison ajoute directement ce qu'il contient */
 function mAddIn(sec){ if(sec==="contacts"){ S.ctForm={role:"",nom:"",tel:"",note:"",c:"#C9C7DD"}; renderMaison(); topNow(); setTimeout(()=>{ const x=$("ctRole"); if(x) x.focus(); },200); }
   else if(sec==="equip") openMForm("equip"); else if(sec==="meters") openMForm("releve",{compteur:"elec"}); }
+/* ---------- Fiche baby-sitter ----------
+   Une fiche pour la personne qui garde les enfants ou les animaux : qui garder (âge, infos publiques des profils), contacts,
+   adresse, Wi-Fi, consignes. Rangée dans fiches/garde ; partagée par un lien vers fiche/ (page à part, sans compte) :
+   tout le contenu voyage dans le lien (#…, compressé), rien n'est mis en ligne ailleurs. */
+const GARDE_URL="https://brionutrition.github.io/Cocoon/fiche/";
+async function gardeLien(G){ const kids=membres().filter(m=>typeOf(m)!=="adulte"&&(G.qui||{})[m.id]!==false);
+  const par=humains().filter(m=>typeOf(m)==="adulte").map(m=>{ const t=(m.infos||[]).find(x=>x&&pfIsTel(x.v)); return t?[m.nom,"Parent",t.v]:null; }).filter(Boolean);
+  const cts=(S.contacts||[]).filter(c=>c.tel&&(G.cts||{})[c.id]).map(c=>[c.nom||c.role||"Contact",c.nom?c.role||"":"",c.tel]);
+  const d={v:1,f:S.foyerNom||"",a:G.adresse||"",w:G.wifiNom||G.wifiMdp?[G.wifiNom||"",G.wifiMdp||""]:null,c:G.consignes||"",n:G.notes||"",
+    k:kids.map(m=>({n:m.nom,t:typeOf(m),e:typeOf(m)==="animal"?(m.espece||"Animal"):"",a:ageText(m)||"",i:(m.infos||[]).filter(x=>x&&x.v).map(x=>[x.l||"Info",x.v])})),
+    p:par.concat(cts),d:iso(today())};
+  const raw=new TextEncoder().encode(JSON.stringify(d)); let bytes=raw, pre="j";
+  try{ if(window.CompressionStream){ const cs=new Blob([raw]).stream().pipeThrough(new CompressionStream("deflate-raw")); bytes=new Uint8Array(await new Response(cs).arrayBuffer()); pre="z"; } }catch(_){ bytes=raw; pre="j"; }
+  let b=""; for(let i=0;i<bytes.length;i++) b+=String.fromCharCode(bytes[i]);
+  return GARDE_URL+"#"+pre+btoa(b).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+function openGarde(){ if(!needMe()) return; const U=upSheet("gardePage","Fiche baby-sitter"), inn=el("div",{class:"pp-in gd-in"}); U.sheet.append(inn);
+  const G=Object.assign({qui:{},cts:{}},((S.garde||{}).data)||{});
+  const save=()=>{ if(!S.db) return; clearTimeout(save._t); save._t=setTimeout(()=>S.db.collection("fiches").doc("garde").set(G).catch(writeErr),500); };
+  const txt=(id,lab,k,ph,area)=>{ const i=el(area?"textarea":"input",area?{id,rows:"4",placeholder:ph}:{type:"text",id,placeholder:ph,autocomplete:"off"}); i.value=G[k]||""; i.addEventListener("input",()=>{ G[k]=i.value; save(); }); return el("label",{class:"field",for:id},lab,i); };
+  const kids=membres().filter(m=>typeOf(m)!=="adulte"), cts=(S.contacts||[]).filter(c=>c.tel);
+  const ck=(on,lab,sub,fn)=>{ const b=el("button",{type:"button",class:"gd-ck"+(on?" on":""),role:"checkbox","aria-checked":String(on),onclick:()=>{ on=!on; b.classList.toggle("on",on); b.setAttribute("aria-checked",String(on)); fn(on); save(); }},el("i",{"aria-hidden":"true"}),el("span",{},el("b",{text:lab}),sub?el("small",{text:sub}):null)); return b; };
+  inn.append(el("div",{class:"gd-h"},el("b",{text:"Fiche baby-sitter"}),el("span",{text:"Tout ce qu'il faut savoir pour garder les enfants ou les animaux. Remplis une fois, partage le lien quand quelqu'un vient."})));
+  if(kids.length){ const g=el("div",{class:"gd-g"}); for(const m of kids) g.append(ck(G.qui[m.id]!==false,m.nom,[typeOf(m)==="animal"?m.espece||"Animal":"",ageText(m),(m.infos||[]).filter(x=>x&&x.v).length?"ses infos de profil":""].filter(Boolean).join(" · "),on=>{ G.qui[m.id]=on; }));
+    inn.append(el("div",{class:"ms-gl",text:"Qui garder"}),g); }
+  else inn.append(el("p",{class:"gd-nb",text:"Ajoute les enfants et les animaux dans le Foyer : leurs âges et infos (allergies, école, véto…) apparaîtront ici."}));
+  if(cts.length){ const g=el("div",{class:"gd-g"}); for(const c of cts) g.append(ck(!!G.cts[c.id],c.nom||c.role,[c.nom?c.role:"",telFmt(c.tel)].filter(Boolean).join(" · "),on=>{ G.cts[c.id]=on; }));
+    inn.append(el("div",{class:"ms-gl",text:"Contacts à joindre"}),g); }
+  inn.append(el("p",{class:"gd-nb",text:"Les téléphones des parents (renseignés dans leur profil) et les numéros d'urgence (15, 18, 17, 112) sont ajoutés tout seuls."}));
+  inn.append(el("div",{class:"ms-gl",text:"La maison"}),txt("gdAdr","Adresse","adresse","12 rue des Lilas, 2e étage, code 4512B"),
+    el("div",{class:"frow"},txt("gdWn","Wi-Fi : réseau","wifiNom","Livebox-1234"),txt("gdWp","Wi-Fi : mot de passe","wifiMdp","")),
+    el("div",{class:"ms-gl",text:"Consignes"}),txt("gdC","Coucher, repas, écrans, habitudes…","consignes","Bain à 19h, dodo à 20h30 avec le doudou lapin. Pas d'écran après le dîner.",true),
+    txt("gdN","Autres infos (animaux, clés, voisins…)","notes","Croquettes : 1 dose le soir. La clé de secours est chez Mme Martin, au 3e.",true));
+  const share=el("button",{type:"button",class:"btn pp-cta",text:"Partager le lien",onclick:async()=>{ const url=await gardeLien(G);
+    try{ if(navigator.share){ await navigator.share({title:"Fiche baby-sitter"+(S.foyerNom?" · "+S.foyerNom:""),url}); return; } }catch(e){ if(e&&e.name==="AbortError") return; }
+    try{ await navigator.clipboard.writeText(url); toast("Lien copié : envoie-le par SMS ou WhatsApp."); }catch(_){ out.hidden=false; out.value=url; out.focus(); out.select(); toast("Copie le lien affiché."); } }});
+  const out=el("textarea",{class:"gd-out",readonly:true,rows:"3",hidden:true,"aria-label":"Lien de la fiche"});
+  inn.append(el("div",{class:"gd-b"},share,el("a",{class:"btn ghost",href:"#",onclick:async e=>{ e.preventDefault(); const u=await gardeLien(G); const a=el("a",{href:u,target:"_blank",rel:"noopener"}); document.body.append(a); a.click(); a.remove(); }},"Voir la fiche")),out,
+    el("small",{class:"gd-nb",text:"La fiche voyage dans le lien : rien n'est mis en ligne ailleurs. Toute personne qui a le lien peut la lire, envoie-le seulement à qui garde."})); }
 function meterLast(){ const rs=(S.releves||[]).slice().sort((a,b)=>a.date<b.date?1:-1); return rs[0]||null; }
 function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; const sec=S.mSec||null, me=meId(), t0=iso(today());
   D.innerHTML=""; T.innerHTML="";
@@ -5861,9 +5911,10 @@ function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; co
   const info={bins:[bins.length?bins.length+" bac"+(bins.length>1?"s":"")+(days.length?" · "+days.map(d=>JOURS_COURTS[d]).join(" "):""):"Qui les sort, et quand",null],
     contacts:[cts.length?cts.length+" numéro"+(cts.length>1?"s":""):"Plombier, médecin, proprio…",null],
     equip:[eqs.length?eqs.slice(0,2).map(x=>x.nom||(EQ[x.type]||EQ.autre).nom).join(", ")+(eqs.length>2?"…":""):"Chaudière, VMC…",eqSoon?eqSoon+" bientôt":null],
-    meters:[L?"dernier relevé "+ago(parse(L.date).getTime()):"Électricité, eau, gaz",L&&daysTo(L.date)<-30?"relevé":null]};
+    meters:[L?"dernier relevé "+ago(parse(L.date).getTime()):"Électricité, eau, gaz",L&&daysTo(L.date)<-30?"relevé":null],
+    garde:["À partager : enfants, animaux, consignes",null]};
   for(const [k,n,c,ic] of MSECS){ const [sub,badge]=info[k];
-    const t=el("button",{type:"button",class:"m-tile",style:"--bc:"+c,"aria-label":n+", "+sub,onclick:()=>mOpen(k)},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),el("b",{text:n}),el("span",{text:sub}));
+    const t=el("button",{type:"button",class:"m-tile",style:"--bc:"+c,"aria-label":n+", "+sub,onclick:()=>k==="garde"?openGarde():mOpen(k)},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),el("b",{text:n}),el("span",{text:sub}));
     if(badge) t.append(el("em",{text:badge})); T.append(t); }
 }
 function renderCars(){
@@ -9307,6 +9358,7 @@ async function autoClaimLegacy(){
   db.collection("cocon").onSnapshot(s=>{ S.cocon=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("mercis").onSnapshot(s=>{ S.mercis=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("credits").onSnapshot(s=>{ S.credits=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"credits"); renderAll(); },()=>{});
+  db.collection("fiches").onSnapshot(s=>{ const d=s.docs.find(x=>x.id==="garde"); S.garde=d?{data:d.data()}:null; },()=>{});
   db.collection("abonnements").onSnapshot(s=>{ S.abos=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"abonnements"); renderAll(); },()=>{});
   db.collection("documents").onSnapshot(s=>{ S.docs=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"documents"); S.loaded.d=true; renderAll(); },()=>{ S.loaded.d=true; renderAll(); });
 })();
