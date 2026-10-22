@@ -20,7 +20,8 @@ Propriétaire : Angel (francophone : **toujours répondre en français**). Site 
    (`bash outils/test/run_e2e.sh`, ~9 min, 23 tests) une fois par lot. Captures : une petite, pas de planches.
 5. Commit (fin de message : lignes `Co-Authored-By` / `Claude-Session` données par la session), puis
    `git fetch -q origin main; git rebase -q origin/main && git push -q origin HEAD:main`.
-6. Publier les deux artefacts (avec leur `url`) seulement à la fin d'un lot ou quand Angel dit « publie ».
+6. Publier les deux artefacts (avec leur `url`) **à chaque modification**, sans attendre (demandé par Angel le 22 oct. :
+   « on supprimera si tu as fait n'importe quoi »).
 
 ## Sécurité (non négociable)
 La clé privée VAPID, les clés Supabase service-role/secret, la clé SMTP Brevo, la clé APNs et la clé App Store Connect (.p8)
@@ -29,7 +30,7 @@ clés de publication Apple → secrets GitHub. `config.js` ne contient que l'URL
 
 ## Économie (demandé par Angel)
 Grouper les demandes, 2–3 propositions en texte plutôt que 5 maquettes (maquettes seulement si le design compte),
-tests ciblés, pas de republication à chaque micro-changement.
+tests ciblés.
 
 ## Repères dans le code source
 `el()` crée un élément ; `S` = état global ; `setTab()` ; `renderAllNow()` ; `upSheet(id,label)` → feuille du bas `{P,sheet,close}` ;
@@ -52,4 +53,4 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   page de présentation, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
 - À faire côté Angel : redéployer `cocoon-push`, coller les modèles d'e-mail, vérifier OTP à 6 chiffres, brancher Brevo (codeEmail).
 - Deux conversations peuvent travailler en parallèle (web et Mac) : toujours `git pull --rebase` avant de modifier,
-  pousser après, et republier les deux artefacts (liens plus haut) quand Angel le demande.
+  pousser après, et republier les deux artefacts (liens plus haut) à chaque modification.
