@@ -3039,6 +3039,19 @@ html.native-tabs .hub-mini{display:none!important}
 .pp-cg{color:var(--muted);font-size:12.5px}
 .pp-cy{color:#2F9E5B;font-weight:800;font-size:15px}
 .pp-cmpin{gap:12px!important}
+.d-gar{background:var(--sunk);border-radius:14px;padding:10px 12px}
+.d-gar summary{cursor:pointer;font-weight:700;font-size:14px;list-style-position:inside}
+.d-gar[open] summary{margin-bottom:8px}
+.d-garq{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.d-garq button{border:0;border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;font-weight:700;background:var(--surface);color:var(--ink);cursor:pointer;min-height:36px}
+.due.gar{background:color-mix(in srgb,#7FCDB9 30%,var(--surface));color:var(--ink)}
+.due.gar.soon{background:var(--soon-bg);color:var(--soon)}
+.due.gar.off{background:var(--sunk);color:var(--muted)}
+.gar-tile{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:18px;padding:12px 14px;margin-bottom:10px;background:var(--surface);box-shadow:0 2px 0 var(--shadow);font:inherit;color:var(--ink);text-align:left;cursor:pointer}
+.gar-tile>span:first-child{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:20px;background:color-mix(in srgb,#7FCDB9 35%,var(--surface));flex:none}
+.gar-tile>span:nth-child(2){flex:1;min-width:0}.gar-tile b{display:block;font-size:15.5px}.gar-tile small{color:var(--muted);font-size:12.5px}
+.gar-tile u{text-decoration:none;color:var(--muted);font-size:22px}
+.gar-eq{width:100%;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--ink)}
 .st-card{background:var(--surface);border-radius:22px;box-shadow:0 2px 0 var(--shadow);padding:16px;display:flex;flex-direction:column;gap:10px;margin:4px 0 8px}
 .st-h{display:flex;align-items:center;gap:12px}.st-h b{display:block;font-size:16px}.st-h small{color:var(--muted);font-size:12.5px}
 .st-n{display:inline-flex;align-items:center;gap:2px;padding:8px 12px;border-radius:16px;background:color-mix(in srgb,#FFC94A 40%,var(--surface));font-size:20px;flex:none}
@@ -3402,6 +3415,10 @@ html.native-tabs .pm-sheet{min-height:calc(100% - env(safe-area-inset-top,0px) -
         <label for="dCat">Catégorie<select id="dCat"></select></label>
         <label for="dExp">Expire / à renouveler le<input type="date" id="dExp"></label>
       </div>
+      <details class="d-gar" id="dGarBox"><summary>🛡 Facture d'un achat ? Ajouter la garantie</summary>
+        <div class="opts"><label for="dAchat">Acheté le<input type="date" id="dAchat"></label><label for="dGar">Garantie jusqu'au<input type="date" id="dGar"></label></div>
+        <div class="d-garq" id="dGarQ" role="group" aria-label="Durée de garantie"></div>
+      </details>
       <div class="newcat" id="dNewCat" hidden><input type="text" id="dCatNom" maxlength="28" placeholder="Nom de la catégorie : Santé, Impôts, Travail…" aria-label="Nom de la nouvelle catégorie"><div class="nc-sw" id="dCatCol" role="radiogroup" aria-label="Couleur du classeur"></div></div>
       <div class="field" id="docPourWrap">Classeur de<div class="pchips" id="docPour"></div></div>
       <textarea id="dNote" placeholder="Note : n° de contrat, où est l'original, qui contacter…" aria-label="Note"></textarea>
@@ -4344,7 +4361,8 @@ function renderTaskViews(){ const v=S.tab; if(v==="moi") renderMine(); else if(v
 function reminders(){
   const me=meId(), out=[];
   for(const t of allTasks()) if(!t.fait&&t.echeance) out.push({kind:t.prive?"Perso":"Foyer",date:t.echeance,titre:t.titre,cat:t.cat,who:!t.prive&&t.pour!=="tous"?t.pour:null,ref:t,mine:t.prive||t.pour===me});
-  for(const d of S.docs) if(d.expire) out.push({kind:"Document",date:d.expire,titre:d.titre+" expire",cat:d.cat,who:null,ref:d});
+  for(const d of S.docs){ if(d.expire) out.push({kind:"Document",date:d.expire,titre:d.titre+" expire",cat:d.cat,who:null,ref:d});
+    if(d.garantieFin&&daysTo(d.garantieFin)>=0&&daysTo(d.garantieFin)<=45) out.push({kind:"Document",date:d.garantieFin,titre:"Fin de garantie : "+d.titre,cat:d.cat,who:null,ref:d}); }
   for(const x of (S.equip||[])){ const n=eqNext(x); if(n&&daysTo(n)<=60) out.push({kind:"Maison",date:n,titre:"Entretien : "+(x.nom||"équipement"),cat:"entretien",who:null,ref:x});
     if(x.garantieFin&&daysTo(x.garantieFin)>=0&&daysTo(x.garantieFin)<=60) out.push({kind:"Maison",date:x.garantieFin,titre:"Fin de garantie : "+(x.nom||"équipement"),cat:"entretien",who:null,ref:x}); }
   for(const v of (S.vehic||[])){ if(v.ctProchain&&daysTo(v.ctProchain)<=60) out.push({kind:"Véhicule",date:v.ctProchain,titre:"Contrôle technique : "+(v.nom||"véhicule"),cat:"voitures",who:null,ref:v});
@@ -4390,6 +4408,7 @@ function docRow(d,showWho,noCat){
   const meta=el("div",{class:"bd-meta"},noCat?null:el("span",{class:"pf-cat",text:c.nom}));
   if(showWho){ const o=d.pour||"foyer"; meta.append(o==="foyer"?el("span",{class:"pf-who",text:"Foyer"}):el("span",{class:"pf-who"},avatar(o,16),o===me?"Moi":membre(o).nom)); }
   if(d.expire){ const n=daysTo(d.expire); meta.append(el("span",{class:"due"+(n<0?" late":n<=30?" soon":""),text:(n<0?"Expiré · ":"Expire ")+fmtDue(d.expire)})); }
+  if(d.garantieFin){ const n=daysTo(d.garantieFin); meta.append(el("span",{class:"due gar"+(n<0?" off":n<=60?" soon":""),text:n<0?"🛡 Garantie terminée":"🛡 Garantie jusqu'au "+fmtDue(d.garantieFin)})); }
   const body=el("div",{class:"bd-db"},el("b",{text:d.titre}),d.note?el("p",{text:d.note}):"",meta);
   row.append(ft,body);
   if(d.expire){ const n=daysTo(d.expire); if(n<=90) row.append(el("span",{class:"pf-days"+(n<0||n<=30?"":" soon"),text:n<0?"expiré":n===0?"aujourd'hui":n<=60?n+" j":Math.round(n/30)+" mois"})); }
@@ -4428,6 +4447,15 @@ function renderDocs(){
     if(!hits.length) G0.append(el("div",{class:"bd-none",text:"Aucun papier ne correspond à « "+$("papQ").value.trim()+" »."}));
     for(const d of hits) G0.append(docRow(d,showWho)); return; }
   // regroupement par catégorie
+  /* Garanties : toutes les factures avec garantie + les équipements de Maison, de la plus proche de la fin à la plus lointaine */
+  const gars=pool.filter(d=>d.garantieFin).map(d=>({d,fin:d.garantieFin})).concat(S.docWho?[]:(S.equip||[]).filter(x=>x.garantieFin).map(x=>({eq:x,fin:x.garantieFin})));
+  if(S.docCat==="__gar"){ const on=gars.filter(g=>daysTo(g.fin)>=0).sort((a,b)=>a.fin<b.fin?-1:1), off=gars.filter(g=>daysTo(g.fin)<0).sort((a,b)=>a.fin<b.fin?1:-1);
+    G0.append(el("div",{class:"pk-head",style:"--bc:#7FCDB9"},el("button",{type:"button",class:"pk-back","aria-label":"Retour aux catégories",text:"‹",onclick:()=>{ S.docCat=null; renderDocs(); topNow(); }}),el("span",{class:"pk-ic",style:"--bc:#7FCDB9;font-size:18px;display:grid;place-items:center",text:"🛡"}),el("b",{text:"Garanties"}),el("span",{text:on.length+" en cours"})));
+    const eqRow=x=>{ const n=daysTo(x.garantieFin); return el("button",{type:"button",class:"bd-doc gar-eq",style:"--bc:#FF9C80",onclick:()=>{ S.mSec="equip"; setTab("maison"); topNow(); }},el("span",{class:"bd-ft",text:"🔧"}),el("div",{class:"bd-db"},el("b",{text:x.nom||"Équipement"}),el("div",{class:"bd-meta"},el("span",{class:"pf-cat",text:"Équipement de la maison"}),el("span",{class:"due gar"+(n<0?" off":n<=60?" soon":""),text:n<0?"🛡 Garantie terminée":"🛡 Garantie jusqu'au "+fmtDue(x.garantieFin)})))); };
+    if(!gars.length) G0.append(el("div",{class:"bd-none",text:"Aucune garantie pour l'instant. En rangeant la facture d'un achat, ouvre « Facture d'un achat ? » pour noter sa garantie : Cocoon te prévient avant la fin."}));
+    for(const g of on) G0.append(g.d?docRow(g.d,showWho):eqRow(g.eq));
+    if(off.length){ G0.append(el("div",{class:"pf-l"},"Terminées",el("em",{text:"· "+off.length}))); for(const g of off) G0.append(g.d?docRow(g.d,showWho):eqRow(g.eq)); }
+    return; }
   const groups={}; for(const d of pool){ const c=catOf(d.cat||"documents").id||"documents"; (groups[c]=groups[c]||[]).push(d); }
   if(S.docCat&&!groups[S.docCat]) S.docCat=null;
   const icon=(c,cls)=>{ const x=el("span",{class:cls,style:"--bc:"+c.c}); if(c.perso){ x.classList.add("perso"); x.textContent=c.nom.charAt(0).toUpperCase(); } else x.innerHTML=GI(c.id==="voitures"?"voiture":c.id); return x; };
@@ -4443,6 +4471,8 @@ function renderDocs(){
     const t=el("button",{type:"button",class:"pk",style:"--bc:"+c.c,"aria-label":c.nom+", "+ds.length+" papier"+(ds.length>1?"s":""),onclick:()=>{ S.docCat=cid; renderDocs(); topNow(); }},el("i",{class:"pk-tab","aria-hidden":"true"}),el("i",{class:"pk-face","aria-hidden":"true"}),icon(c,"pk-ic"),el("b",{text:c.nom}),el("span",{text:ds.length+" papier"+(ds.length>1?"s":"")}));
     if(lt) t.append(el("em",{text:lt+" expiré"+(lt>1?"s":"")})); else if(u<=90) t.append(el("em",{class:u<=30?"":"soon",text:u<=60?u+" j":Math.round(u/30)+" mois"}));
     grid.append(t); }
+  if(gars.length){ const on=gars.filter(g=>daysTo(g.fin)>=0), soon=on.filter(g=>daysTo(g.fin)<=60).length;
+    G0.append(el("button",{type:"button",class:"gar-tile",onclick:()=>{ S.docCat="__gar"; renderDocs(); topNow(); }},el("span",{"aria-hidden":"true",text:"🛡"}),el("span",{},el("b",{text:"Garanties"}),el("small",{text:on.length+" en cours"+(soon?" · "+soon+" bientôt finie"+(soon>1?"s":""):"")})),el("u",{"aria-hidden":"true",text:"›"}))); }
   G0.append(grid);
 }
 function renderFeed(){
@@ -6369,7 +6399,8 @@ $("docForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||
     const ex=Object.values(CAT).concat(Object.values(docCustom())).find(c=>c.nom.toLowerCase()===nm.toLowerCase());
     if(ex) cat=ex.id; else { cat="c-"+nm.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,24)+"-"+Date.now().toString(36).slice(-4); catNom=nm; catC=S.dCatC||DCOLS[0]; } }
   else if(!CAT[cat]){ const cc=docCustom()[cat]; if(cc){ catNom=cc.nom; catC=cc.c; } }
-  const doc={titre,pour:S.docPour||"foyer",cat,catNom,catC,expire:$("dExp").value||null,note:$("dNote").value.trim()||null,ajoutePar:meId(),ajouteLe:Date.now(),assetId:null,fichierType:null}; const evBack=S.docEv&&evById(S.docEv)?S.docEv:null; if(evBack) doc.ev=evBack;
+  const doc={titre,pour:S.docPour||"foyer",cat,catNom,catC,expire:$("dExp").value||null,note:$("dNote").value.trim()||null,ajoutePar:meId(),ajouteLe:Date.now(),assetId:null,fichierType:null};
+  if($("dGar").value){ doc.garantieFin=$("dGar").value; doc.achat=$("dAchat").value||null; } const evBack=S.docEv&&evById(S.docEv)?S.docEv:null; if(evBack) doc.ev=evBack;
   if(sante) doc.sante={accordPar:meId(),accordLe:Date.now()};
   try{
     const files=[...$("dFile").files];
@@ -8106,19 +8137,23 @@ async function readDocAI(){
   const f=$("dFile").files[0], btn=$("dAI"); if(!f||!secOn()) return; if(!pmCan("photos")) return;
   btn.disabled=true; btn.textContent="Lecture du papier…";
   try{
-    const r=await S.sample.json("Voici la photo d'un papier administratif d'un foyer français. Extrais-en les infos pour le ranger. Réponds uniquement avec un objet JSON : {\"titre\": nom court du document (ex. « Assurance habitation MAIF »), \"categorie\": un parmi "+CATS.map(c=>'"'+c.id+'"').join(", ")+", \"expire\": date d'expiration, d'échéance ou de renouvellement au format AAAA-MM-JJ ou null, \"note\": infos utiles en une ou deux lignes (organisme, n° de contrat ou de client, montant, contact) ou null}. N'invente rien : mets null si une info n'est pas lisible.",{images:f,modelTier:"default",cache:false});
+    const r=await S.sample.json("Voici la photo d'un papier administratif d'un foyer français. Extrais-en les infos pour le ranger. Réponds uniquement avec un objet JSON : {\"titre\": nom court du document (ex. « Assurance habitation MAIF »), \"categorie\": un parmi "+CATS.map(c=>'"'+c.id+'"').join(", ")+", \"expire\": date d'expiration, d'échéance ou de renouvellement au format AAAA-MM-JJ ou null, \"note\": infos utiles en une ou deux lignes (organisme, n° de contrat ou de client, montant, contact) ou null, \"achat\": si c'est la facture ou le ticket d'achat d'un objet (appareil, meuble, vélo…), sa date d'achat au format AAAA-MM-JJ, sinon null, \"garantie_ans\": durée de garantie en années si elle est indiquée, sinon null}. N'invente rien : mets null si une info n'est pas lisible.",{images:f,modelTier:"default",cache:false});
     if(r&&typeof r==="object"){
       if(r.titre&&!$("dTitle").value.trim()) $("dTitle").value=String(r.titre).slice(0,80);
       if(CAT[r.categorie]) $("dCat").value=r.categorie;
       if(/^\d{4}-\d{2}-\d{2}$/.test(String(r.expire||""))) $("dExp").value=r.expire;
       if(r.note&&!$("dNote").value.trim()) $("dNote").value=String(r.note).slice(0,300);
+      if(/^\d{4}-\d{2}-\d{2}$/.test(String(r.achat||""))){ $("dGarBox").open=true; $("dAchat").value=r.achat; const ga=Number(r.garantie_ans); $("dGar").value=garFrom(r.achat,ga>0&&ga<=10?ga:2); }
       toast("Le secrétaire a rempli la fiche : vérifie puis touche Ranger."); pmUse("photos");
     }
   }catch(e){ const c=e&&e.code; if(["not_granted","sampling_disabled","not_declared","capability_disabled"].includes(c)){ S.sampleOff=true; } toast(c==="image_rejected"?"Cette image n'a pas pu être lue.":c==="rate_limited"?"Trop de demandes, réessaie dans un moment.":c==="not_granted"?"Claude n'est pas autorisé sur cette page.":"Je n'ai pas réussi à lire ce papier."); }
   finally{ btn.disabled=false; btn.textContent="Lire avec le secrétaire"; renderDocAI(); }
 }
 $("dFile").addEventListener("change",renderDocAI);
-$("docForm").addEventListener("reset",()=>setTimeout(renderDocAI,0));
+$("docForm").addEventListener("reset",()=>setTimeout(()=>{ renderDocAI(); $("dGarBox").open=false; },0));
+/* garantie : 2 ans (garantie légale en France), 3 ou 5 ans à partir de la date d'achat (ou d'aujourd'hui) */
+const garFrom=(achat,ans)=>iso(addMonths(achat?parse(achat):today(),12*ans));
+for(const a of [1,2,3,5]) $("dGarQ").append(el("button",{type:"button",text:a+" an"+(a>1?"s":"")+(a===2?" (légale)":""),onclick:()=>{ if(!$("dAchat").value) $("dAchat").value=iso(today()); $("dGar").value=garFrom($("dAchat").value,a); }}));
 
 { const lg=document.querySelector(".brand-logo"); if(lg) document.documentElement.style.setProperty("--logo-url",'url("'+lg.src+'")'); }
 /* ===== Grande entrée : fin du profil → arrivée dans l'app ===== */

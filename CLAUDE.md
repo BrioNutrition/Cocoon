@@ -75,6 +75,9 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - Étoiles des enfants : `starEarn(t)` (appelé par `completeTask`) ajoute 1 étoile dans `etoiles` quand une tâche « pour » un enfant
   est faite ; cochée par l'enfant lui-même = à valider par un adulte. Récompense par enfant dans `recompenses/<id>`
   {nom, objectif, utilisees}. Carte `starCard(m)` : feuille de l'enfant (accueil), sa fiche profil, et Moi s'il a un compte.
+- Garanties : dans le formulaire Papiers, bloc « Facture d'un achat ? » (`dAchat`, `dGar`, raccourcis 1/2/3/5 ans) →
+  `documents.achat` / `documents.garantieFin` ; la lecture photo remplit l'achat (+2 ans par défaut). Pastille sur le papier,
+  rappel 45 j avant la fin, vue « Garanties » (`S.docCat="__gar"`) qui réunit papiers et équipements de Maison (`garantieFin`).
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
