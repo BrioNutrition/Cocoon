@@ -3181,8 +3181,18 @@ html.native-tabs .hub-mini{display:none!important}
 .pq.big{padding:20px;margin:6px 0 4px}
 .pq.big .pq-h b{font-size:20px}
 /* fenêtre Premium : presque tout l'écran */
-.pm-sheet{min-height:calc(100% - env(safe-area-inset-top,0px) - 10px)}
-html.native-tabs .pm-sheet{min-height:calc(100% - env(safe-area-inset-top,0px) - 72px)}
+/* Premium : toute la page, sans défilement (le contenu se resserre puis se réduit pour tenir dans l'écran, cf. pmFit) */
+.pm-sheet,html.native-tabs .pm-sheet{height:100%;min-height:0;max-height:100%!important;border-radius:0!important;padding-top:env(safe-area-inset-top,0px)}
+.pm-sheet .pp-cmpin{justify-content:space-between}
+.pm-sheet.pm-tight .pp-cmpin{gap:10px!important}
+.pm-sheet.pm-tight .pp-star{width:58px;height:58px;border-radius:19px;margin:0 0 4px}
+.pm-sheet.pm-tight .pp-star svg{width:38px;height:38px}
+.pm-sheet.pm-tight .pp-cmph h2{font-size:27px}
+.pm-sheet.pm-tight .pp-cmph p{font-size:14px}
+.pm-sheet.pm-tight .pp-cr{padding:9px 14px}
+.pm-sheet.pm-tight .pp-cr.pp-ch{padding:8px 14px 6px}
+.pm-sheet.pm-tight .pp-plan{padding:12px 14px}
+.pm-sheet.pm-tight .pp-cta{padding:13px}
 .pm-sheet .pp-cmpin{gap:16px!important;padding-top:4px}
 .pm-sheet .pp-cmph{text-align:center;display:flex;flex-direction:column;align-items:center}
 .pm-sheet .pp-star{width:76px;height:76px;border-radius:24px;margin:2px 0 8px}
@@ -8582,7 +8592,14 @@ function openPremium(){ const U=upSheet("premPage","Cocoon Premium"), P=U.P, she
     try{ if(S.db&&S.uid) await S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs); }catch(e){ writeErr(e); }
     cta.textContent="✓ On te prévient à l'ouverture"; toast("Les abonnements ouvrent très bientôt : tu seras prévenu·e en premier, avec ton mois offert."); try{ renderPremium(); }catch(_){} }});
   sheet.append(el("div",{class:"pp-in pp-cmpin"},hero,feats,el("p",{class:"pp-free",text:"Toujours gratuit : tâches, courses, repas, agenda, budget et ses graphiques, maison, événements, thèmes."}),plans,el("div",{class:"pp-foot"},cta,el("small",{text:"Un seul abonnement pour tout le foyer · annulable à tout moment"}))));
-  }
+  pmFit(sheet); }
+/* Fait tenir la fenêtre Premium dans l'écran : d'abord on resserre (pm-tight), puis on réduit l'ensemble juste ce qu'il faut */
+function pmFit(sheet){ const go=()=>{ if(!sheet.isConnected) return removeEventListener("resize",go); const inn=sheet.querySelector(".pp-cmpin"); if(!inn) return;
+    inn.style.zoom=""; sheet.classList.remove("pm-tight");
+    const room=()=>sheet.clientHeight-(inn.getBoundingClientRect().top-sheet.getBoundingClientRect().top);
+    const need=()=>inn.scrollHeight;
+    if(need()>room()+1){ sheet.classList.add("pm-tight"); if(need()>room()+1) inn.style.zoom=String(Math.max(.72,(room()-2)/need())); } };
+  requestAnimationFrame(go); setTimeout(go,350); addEventListener("resize",go); }
 /* ---------- Événements : un anniversaire, des travaux, des vacances… ----------
    L'événement ne stocke que son titre, ses dates et son budget. Tout le reste (tâches, achats, rendez-vous,
    dépenses, papiers) vit à sa place habituelle avec un champ « ev » qui le relie : rien n'est saisi deux fois. */

@@ -55,7 +55,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - Premium défini (formule « Cocoony au centre ») : 3,99 €/mois ou 39,99 €/an (2 mois offerts), 1 mois d'essai, un abonnement
   pour tout le foyer. Premium = photos de papiers et Cocoony intelligent sans limite, papiers illimités, sauvegarde, plusieurs
   foyers. Gratuit = tout le reste (budget et graphiques, thèmes compris) + 5 photos et 20 questions à Cocoony par mois, 25 papiers.
-  Prix dans `PM_PRIX`, avantages dans `PM_FEATS`/`PM_FREE`. Fenêtre Premium presque plein écran (`.pm-sheet`).
+  Prix dans `PM_PRIX`, avantages dans `PM_FEATS`/`PM_FREE`. Fenêtre Premium plein écran sans défilement (`.pm-sheet`, `pmFit` : resserre puis réduit pour tenir).
   Limites **appliquées** (demandé par Angel) : `PM_LIM`, `pmCan(k)` bloque et ouvre la tuile `pmLimitPop(k)` ; tuile aussi en haut
   de Papiers dès 22 papiers. Papiers = compte du foyer ; photos lues et questions à Cocoony intelligent = compteur du mois dans
   les prefs de chacun (`pmUse`). Le mode simple de Cocoony reste illimité. Foyer Premium si `foyer/config.premium` est vrai
