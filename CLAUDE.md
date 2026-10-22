@@ -60,6 +60,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   de Papiers dès 22 papiers. Papiers = compte du foyer ; photos lues et questions à Cocoony intelligent = compteur du mois dans
   les prefs de chacun (`pmUse`). Le mode simple de Cocoony reste illimité. Foyer Premium si `foyer/config.premium` est vrai
   (à poser par le paiement, pas encore branché).
+- Sauvegarde du foyer (Réglages › Mes données, `backupFoyer()`) : gratuit = `.json` (foyer + espace perso, sans fichiers) ;
+  Premium = `.zip` (donnees.json + papiers/ + LISEZMOI.txt), écrit sans bibliothèque (`zipBlob`, fichiers stockés).
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
