@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="22/10 11:11";</script>
+<script>window.COCOON_BUILD="22/10 11:40";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3136,7 +3136,13 @@ html.native-tabs .hub-mini{display:none!important}
 .st-nb{margin:0;font-size:13px;color:var(--muted)}
 .st-pend{display:flex;align-items:center;gap:8px}.st-pend span{flex:1;min-width:0;font-size:14.5px}.st-pend .btn{min-height:40px;padding:8px 12px}
 .st-set summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--muted);padding:4px 0}
-.st-set[open]{display:flex;flex-direction:column;gap:8px}
+.st-set[open]{display:flex;flex-direction:column;gap:12px}
+.st-set .frow{display:grid;grid-template-columns:minmax(0,1fr) 112px;gap:10px;align-items:end}
+.st-set input{width:100%;box-sizing:border-box;font:inherit;font-size:16px;padding:11px 12px;min-height:46px;border:2px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink)}
+.st-set input[type=number]{text-align:center;font-weight:700;-moz-appearance:textfield}
+.st-set input::-webkit-outer-spin-button,.st-set input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.st-set .frow{margin-top:10px}
+.st-set>.btn{display:block;width:100%;min-height:48px;margin-top:16px}
 .r-frigo{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:20px;padding:12px 14px;margin:2px 0 4px;background:var(--surface);box-shadow:0 2px 0 var(--shadow);font:inherit;color:var(--ink);text-align:left;cursor:pointer}
 .r-frigo>span:first-child{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:22px;background:color-mix(in srgb,#8FB8FF 35%,var(--surface));flex:none}
 .r-frigo>span:nth-child(2){flex:1;min-width:0}.r-frigo b{display:block;font-size:15.5px}.r-frigo small{color:var(--muted);font-size:12.5px}
@@ -6325,7 +6331,7 @@ function starCard(m,onChange){ const done=()=>{ if(onChange) setTimeout(onChange
         el("button",{type:"button",class:"btn ghost","aria-label":"Refuser",text:"✕",onclick:()=>{ S.db.collection("etoiles").doc(e.id).delete().catch(writeErr); done(); }}));
       else r.append(el("small",{text:"en attente"}));
       box.append(r); } }
-  if(adult){ const nm=el("input",{type:"text",id:"stNom-"+m.id,maxlength:"40",placeholder:"Ciné, glace, soirée pyjama…"}), ob=el("input",{type:"number",id:"stObj-"+m.id,min:"1",max:"500",inputmode:"numeric",placeholder:"20"}); nm.value=R.nom||""; ob.value=R.objectif||"";
+  if(adult){ const nm=el("input",{type:"text",id:"stNom-"+m.id,maxlength:"40",placeholder:"Ciné, glace…"}), ob=el("input",{type:"number",id:"stObj-"+m.id,min:"1",max:"500",inputmode:"numeric",placeholder:"20"}); nm.value=R.nom||""; ob.value=R.objectif||"";
     const f=el("details",{class:"st-set"},el("summary",{text:I.nom?"Changer la récompense":"Choisir une récompense"}),
       el("div",{class:"frow"},el("label",{class:"field",for:"stNom-"+m.id},"Récompense",nm),el("label",{class:"field",for:"stObj-"+m.id},"Nombre d'étoiles",ob)),
       el("button",{type:"button",class:"btn",text:"Enregistrer",onclick:async()=>{ const n=nm.value.trim(), o=Math.max(1,Math.min(500,parseInt(ob.value,10)||0)); if(!n||!o){ toast("Indique la récompense et le nombre d'étoiles."); return; }
