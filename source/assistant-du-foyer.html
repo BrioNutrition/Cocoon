@@ -3083,6 +3083,18 @@ html.native-tabs .hub-mini{display:none!important}
 .fr-card b{font-size:17px}.fr-card small{color:var(--muted);font-size:13px}.fr-m{font-size:14px}
 .fr-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}.fr-acts .btn{flex:1 1 auto;min-height:44px}
 .fr-nb{margin:0;font-size:12.5px;color:var(--muted)}
+.r-fbadge{font-style:normal;min-width:24px;text-align:center;padding:2px 8px;border-radius:999px;background:#FF9C80;color:#1C1B2E;font-weight:800;font-size:13px}
+.st-in{gap:12px!important}
+.st-seg{align-self:stretch;display:flex;flex-wrap:nowrap}.st-seg button{flex:1 1 auto;flex-direction:row;justify-content:center;min-height:40px;white-space:nowrap;padding:6px 8px;font-size:13px;gap:4px}
+.st-add{display:flex;flex-direction:column;gap:8px;background:var(--surface);border-radius:18px;padding:12px;box-shadow:0 1px 0 var(--shadow)}
+.st-add input{width:100%;box-sizing:border-box;font:inherit;font-size:16px;min-height:44px}
+.st-add .d-garq{margin:0}.st-add .d-garq button{background:var(--sunk)}
+.st-add>.btn{min-height:46px}
+.stk-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--line)}
+.stk-row:first-child{border-top:0}
+.stk-n{flex:1;min-width:0}.stk-n b{display:block;font-size:15px}.stk-n small{font-size:12.5px;color:var(--muted)}
+.stk-d.soon{color:var(--soon);font-weight:700}.stk-d.late{color:var(--late);font-weight:700}
+.stk-ok{min-height:40px;padding:8px 12px}
 .fr-busy{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:rgba(20,18,30,.18);-webkit-backdrop-filter:blur(10px) saturate(1.1);backdrop-filter:blur(10px) saturate(1.1);opacity:0;transition:opacity .2s ease}
 .fr-busy.on{opacity:1}
 .fr-bc{display:flex;flex-direction:column;align-items:center;gap:10px;padding:22px 26px;border-radius:24px;background:var(--surface);color:var(--ink);box-shadow:0 18px 40px rgba(0,0,0,.18)}
@@ -4365,6 +4377,7 @@ function renderTaskViews(){ const v=S.tab; if(v==="moi") renderMine(); else if(v
 function reminders(){
   const me=meId(), out=[];
   for(const t of allTasks()) if(!t.fait&&t.echeance) out.push({kind:t.prive?"Perso":"Foyer",date:t.echeance,titre:t.titre,cat:t.cat,who:!t.prive&&t.pour!=="tous"?t.pour:null,ref:t,mine:t.prive||t.pour===me});
+  for(const x of (S.stock||[])){ const j=stockJ(x); if(j!=null&&j<=stockAlerte(x)) out.push({kind:"Réserves",date:x.dlc,titre:"À consommer : "+x.nom+" ("+(STOCK_L.find(l=>l[0]===x.lieu)||STOCK_L[0])[1].toLowerCase()+")",cat:"courses",who:null,ref:x}); }
   for(const d of S.docs){ if(d.expire) out.push({kind:"Document",date:d.expire,titre:d.titre+" expire",cat:d.cat,who:null,ref:d});
     if(d.garantieFin&&daysTo(d.garantieFin)>=0&&daysTo(d.garantieFin)<=45) out.push({kind:"Document",date:d.garantieFin,titre:"Fin de garantie : "+d.titre,cat:d.cat,who:null,ref:d}); }
   for(const x of (S.equip||[])){ const n=eqNext(x); if(n&&daysTo(n)<=60) out.push({kind:"Maison",date:n,titre:"Entretien : "+(x.nom||"équipement"),cat:"entretien",who:null,ref:x});
@@ -6757,6 +6770,7 @@ function npGo(r){ closeNotifs(); const x=r.ref; if(r.evn){ setTimeout(()=>openEv
   if(r.kind==="Perso"||r.kind==="Foyer") return goTask(x);
   if(r.kind==="Document"){ S.docWho=null; S.docCat=catOf(x.cat||"documents").id||"documents"; if($("papQ")) $("papQ").value=""; return goDoc(x); }
   if(r.kind==="Anniversaire") return openProfile(x.id);
+  if(r.kind==="Réserves"){ S.stockLieu=x.lieu; setTimeout(openStock,120); return; }
   if(r.kind==="Prélèvement"||r.kind==="Budget"){ setTab("budget"); window.scrollTo({top:0}); return; }
   if(r.kind==="Rendez-vous"){ S.agDay=null; setTab("agenda"); return; }
   S.mSec={Poubelles:"bins",Contacts:"contacts",Contact:"contacts",Maison:"equip"}[r.kind]||null;
@@ -8917,9 +8931,9 @@ function frigoLocal(have){ const H=have.map(x=>cKey(parseArticle(x).nom));
   const has=g=>{ const k=cKey(parseArticle(g).nom); return H.some(h=>h&&(k.includes(h)||h.includes(k))); };
   return platsConnus().filter(p=>!p.matin).map(p=>{ const ing=(p.ing&&p.ing.length?p.ing:platIng(p.nom)).filter(g=>!inPlacard(g)); const ok=ing.filter(has); return {nom:p.nom,ok:ok.length,manque:ing.filter(g=>!has(g)),tot:ing.length}; })
     .filter(x=>x.ok>0).sort((a,b)=>b.ok/b.tot-a.ok/a.tot||b.ok-a.ok).slice(0,3).map(x=>({nom:x.nom,manque:x.manque,note:x.ok+" ingrédient"+(x.ok>1?"s":"")+" sur "+x.tot+" déjà là"})); }
-function openFrigo(){ if(!needMe()) return; const U=upSheet("frigoPage","Avec ce qu'il y a dans le frigo"), inn=el("div",{class:"pp-in fr-in"}); U.sheet.classList.add("ing-sheet"); U.sheet.append(inn);
+function openFrigo(pre){ if(!needMe()) return; const U=upSheet("frigoPage","Avec ce qu'il y a dans le frigo"), inn=el("div",{class:"pp-in fr-in"}); U.sheet.classList.add("ing-sheet"); U.sheet.append(inn);
   /* la liste repart vide à chaque ouverture (rien n'est gardé quand on quitte) */
-  let have=[]; try{ localStorage.removeItem("cocoon.frigo"); }catch(_){}
+  let have=Array.isArray(pre)?pre.slice():[]; try{ localStorage.removeItem("cocoon.frigo"); }catch(_){}
   const keep=()=>{};
   const chips=el("div",{class:"fr-chips"}), res=el("div",{class:"fr-res"});
   const draw=()=>{ chips.innerHTML=""; for(const g of have) chips.append(el("button",{type:"button",class:"fr-chip","aria-label":"Retirer "+g,onclick:()=>{ have=have.filter(x=>x!==g); keep(); draw(); }},g,el("i",{"aria-hidden":"true",text:"×"}))); go.disabled=!have.length; };
@@ -8927,7 +8941,8 @@ function openFrigo(){ if(!needMe()) return; const U=upSheet("frigoPage","Avec ce
   const add=()=>{ const v=inp.value.split(/[,;\n]/).map(x=>x.trim()).filter(Boolean); for(const x of v) if(!have.some(h=>norm(h)===norm(x))) have.push(x.replace(/^./,c=>c.toUpperCase())); inp.value=""; keep(); draw(); };
   inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); add(); } });
   /* suggestions : ce qui a été acheté ces 10 derniers jours */
-  const recent=[...new Set((S.coursesAll||S.courses||[]).filter(i=>i.fait&&i.faitLe&&Date.now()-i.faitLe<10*864e5).map(i=>parseArticle(i.nom).nom))].slice(0,12);
+  const res0=(S.stock||[]).slice().sort((a,b)=>(a.dlc||"9999")<(b.dlc||"9999")?-1:1).map(x=>x.nom);
+  const recent=[...new Set(res0.concat((S.coursesAll||S.courses||[]).filter(i=>i.fait&&i.faitLe&&Date.now()-i.faitLe<10*864e5).map(i=>parseArticle(i.nom).nom)))].filter(x=>!have.some(h=>norm(h)===norm(x))).slice(0,14);
   const sug=el("div",{class:"fr-sug"}); for(const r of recent) sug.append(el("button",{type:"button",text:"+ "+r,onclick:e=>{ if(!have.some(h=>norm(h)===norm(r))){ have.push(r); keep(); draw(); } e.currentTarget.remove(); }}));
   /* pendant la recherche : la fenêtre reste ouverte, floutée, avec Cocoony qui cherche (au moins 0,9 s pour qu'on le voie) */
   const busy=()=>{ let src=""; try{ src=(secIdent()||{}).src||""; }catch(_){}
@@ -8949,8 +8964,34 @@ function openFrigo(){ if(!needMe()) return; const U=upSheet("frigoPage","Avec ce
       card.append(acts); res.append(card); }
     if(!ia) res.append(el("p",{class:"fr-nb",text:"Idées tirées des plats que Cocoon connaît."})); }});
   inn.append(el("div",{class:"gd-h"},el("b",{text:"Qu'est-ce qu'on mange ?"}),el("span",{text:"Note ce qu'il reste, Cocoony propose 3 plats."})),
-    el("div",{class:"fr-add"},inp,el("button",{type:"button",class:"btn",text:"Ajouter",onclick:add})),chips,recent.length?el("div",{class:"ms-gl",text:"Acheté ces derniers jours"}):"",recent.length?sug:"",go,res);
+    el("div",{class:"fr-add"},inp,el("button",{type:"button",class:"btn",text:"Ajouter",onclick:add})),chips,recent.length?el("div",{class:"ms-gl",text:res0.length?"Dans tes réserves et tes derniers achats":"Acheté ces derniers jours"}):"",recent.length?sug:"",go,res);
   draw(); setTimeout(()=>{ try{ inp.focus({preventScroll:true}); }catch(_){} },360); }
+/* ---------- Réserves : frigo, congélateur, placard ----------
+   collection stock {nom, lieu: frigo|congel|placard, dlc: AAAA-MM-JJ|null}. Rappel avant la date (2 j frigo/placard, 7 j congélateur),
+   et proposées en premier dans « Qu'est-ce qu'on mange ? ». « Consommé » retire le produit. */
+const STOCK_L=[["frigo","Frigo","🧊"],["congel","Congélateur","❄️"],["placard","Placard","🥫"]];
+const stockJ=x=>x&&x.dlc?daysTo(x.dlc):null;
+const stockAlerte=x=>x&&x.lieu==="congel"?7:2;
+function openStock(){ if(!needMe()) return; const U=upSheet("stockPage","Frigo, congélateur, placard"), inn=el("div",{class:"pp-in st-in"}); U.sheet.classList.add("ing-sheet"); U.sheet.append(inn);
+  let lieu=S.stockLieu||"frigo";
+  const draw=()=>{ inn.innerHTML=""; S.stockLieu=lieu;
+    const seg=el("div",{class:"seg st-seg",role:"group","aria-label":"Où"}); for(const [k,l,e] of STOCK_L){ const n=(S.stock||[]).filter(x=>x.lieu===k).length; seg.append(el("button",{type:"button","aria-pressed":String(lieu===k),onclick:()=>{ lieu=k; draw(); }},e+" "+l+(n?" · "+n:""))); }
+    const nm=el("input",{type:"text",id:"stkNom",placeholder:lieu==="congel"?"Steaks hachés, petits pois…":lieu==="placard"?"Pâtes, conserve de thon…":"Yaourts, jambon, crème…",autocomplete:"off","aria-label":"Produit"});
+    const dl=el("input",{type:"date",id:"stkDlc","aria-label":"À consommer avant le"});
+    const q=el("div",{class:"d-garq"}); for(const [l,j] of (lieu==="congel"?[["1 mois",30],["3 mois",91],["6 mois",182]]:lieu==="placard"?[["1 mois",30],["6 mois",182],["1 an",365]]:[["Demain",1],["3 jours",3],["1 semaine",7]])) q.append(el("button",{type:"button",text:l,onclick:()=>{ dl.value=iso(new Date(today().getTime()+j*864e5)); }}));
+    const add=async()=>{ const n=nm.value.trim(); if(!n){ nm.focus(); return; } try{ await S.db.collection("stock").add({nom:n.replace(/^./,c=>c.toUpperCase()),lieu,dlc:dl.value||null,par:meId(),le:Date.now()}); haptic(8); setTimeout(draw,300); }catch(e){ writeErr(e); } };
+    nm.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); add(); } });
+    inn.append(el("div",{class:"gd-h"},el("b",{text:"Mes réserves"}),el("span",{text:"Ce qui est rangé, et ce qu'il faut manger en premier."})),seg,
+      el("div",{class:"st-add"},nm,el("label",{class:"field",for:"stkDlc"},"À consommer avant le",dl),q,el("button",{type:"button",class:"btn",text:"Ajouter",onclick:add})));
+    const L=(S.stock||[]).filter(x=>x.lieu===lieu).sort((a,b)=>(a.dlc||"9999")<(b.dlc||"9999")?-1:1), list=el("div",{class:"gd-g"});
+    for(const x of L){ const j=stockJ(x), cls=j==null?"":j<0?" late":j<=stockAlerte(x)?" soon":"";
+      list.append(el("div",{class:"stk-row"},el("span",{class:"stk-n"},el("b",{text:x.nom}),j!=null?el("small",{class:"stk-d"+cls,text:j<0?"date passée":j===0?"aujourd'hui":j===1?"demain":"avant le "+fmtDue(x.dlc)}):el("small",{text:"sans date"})),
+        el("button",{type:"button",class:"btn ghost stk-ok",text:"Consommé",onclick:async()=>{ try{ await S.db.collection("stock").doc(x.id).delete(); haptic(8); setTimeout(draw,250); }catch(e){ writeErr(e); } }}))); }
+    if(!L.length) list.append(el("p",{class:"gd-nb",style:"padding:14px",text:"Rien de noté ici pour l'instant."}));
+    inn.append(list);
+    const soon=(S.stock||[]).filter(x=>stockJ(x)!=null&&stockJ(x)<=stockAlerte(x));
+    if(soon.length) inn.append(el("button",{type:"button",class:"btn pp-cta",text:"🍳 Une idée avec ce qui périme bientôt",onclick:()=>{ U.close(); setTimeout(()=>openFrigo(soon.map(x=>x.nom)),340); }})); };
+  draw(); }
 function repasOf(date,slot){ return (S.repas||[]).find(r=>r.date===date&&r.slot===slot&&r.plat); }
 /* ===== Des repas aux courses : on ne propose que, on n'ajoute rien sans accord ===== */
 /* le placard de base : jamais proposé */
@@ -9052,6 +9093,8 @@ function renderRepas(){
       hero.append(ids); }
     box.append(hero); }
   box.append(el("button",{type:"button",class:"r-frigo",onclick:()=>openFrigo()},el("span",{"aria-hidden":"true",text:"🧊"}),el("span",{},el("b",{text:"Avec ce qu'il y a dans le frigo"}),el("small",{text:"3 idées de plats, et ce qui manque part aux courses"})),el("u",{"aria-hidden":"true",text:"›"})));
+  { const st=S.stock||[], bt=st.filter(x=>stockJ(x)!=null&&stockJ(x)<=stockAlerte(x)).length;
+    box.append(el("button",{type:"button",class:"r-frigo",onclick:()=>openStock()},el("span",{"aria-hidden":"true",text:"🥫"}),el("span",{},el("b",{text:"Frigo, congélateur, placard"}),el("small",{text:st.length?st.length+" produit"+(st.length>1?"s":"")+(bt?" · "+bt+" à consommer vite":""):"Note ce que tu ranges, Cocoon prévient avant que ça périme"})),bt?el("em",{class:"r-fbadge",text:String(bt)}):el("u",{"aria-hidden":"true",text:"›"}))); }
   /* 2. la frise de la semaine */
   let planned=0; for(let k=0;k<7;k++){ const ds=iso(new Date(ws+k*864e5)); for(const [sl] of slots) if(repasOf(ds,sl)) planned++; }
   const lbl=(S.rWeek||0)===0?"Cette semaine":S.rWeek===1?"La semaine prochaine":S.rWeek===-1?"La semaine dernière":"Du "+d0.getDate()+" "+MOIS_C(d0)+" au "+d6.getDate()+" "+MOIS_C(d6);
@@ -9566,6 +9609,7 @@ async function autoClaimLegacy(){
   db.collection("etoiles").onSnapshot(s=>{ S.etoiles=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("recompenses").onSnapshot(s=>{ S.recomp=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("vacances").onSnapshot(s=>{ const d=s.docs.find(x=>x.id==="actuel"); S.vac=d?d.data():null; renderAll(); },()=>{});
+  db.collection("stock").onSnapshot(s=>{ S.stock=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("abonnements").onSnapshot(s=>{ S.abos=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"abonnements"); renderAll(); },()=>{});
   db.collection("documents").onSnapshot(s=>{ S.docs=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"documents"); S.loaded.d=true; renderAll(); },()=>{ S.loaded.d=true; renderAll(); });
 })();
