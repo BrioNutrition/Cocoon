@@ -7040,7 +7040,7 @@ setTab("accueil");
   try{ matchMedia("(prefers-color-scheme: dark)").addEventListener("change",sync); }catch(_){}
   /* dès qu'une rubrique s'ouvre, la barre native suit tout de suite,
      mais seulement une fois la page dessinée (2 images plus tard) : elles apparaissent ensemble */
-  let syncQ=false; navOffWatch(); new MutationObserver(()=>{ if(syncQ) return; syncQ=true; requestAnimationFrame(()=>requestAnimationFrame(()=>{ syncQ=false; sync(); })); }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["hidden","class","data-theme"]}); })();
+  let syncQ=false; new MutationObserver(()=>{ if(syncQ) return; syncQ=true; requestAnimationFrame(()=>requestAnimationFrame(()=>{ syncQ=false; sync(); })); }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["hidden","class","data-theme"]}); })();
 /* Ouvrir l'app depuis une notification : « #courses », « #agenda », « #ev=ID », et les boutons « C'est fait » / « Demain » (#t-done=ID, #t-later=ID) */
 /* ---------- Raccourcis : appui long sur Cocoony (site et iPhone), appui long sur l'icône de l'app (iPhone), raccourcis du manifeste (Android) ---------- */
 const RACC=[["tache","Nouvelle tâche","checkmark.circle","taches"],["courses","Ajouter aux courses","cart","courses"],["rdv","Un rendez-vous","calendar","agenda"],["repas","Prévoir un repas","fork.knife","repas"],["cocoony","Demander à Cocoony","sparkles",null]];
@@ -8596,7 +8596,7 @@ const PM_SHORT={"Papiers en photo":"Lus et rangés tout seuls","Cocoony intellig
 function navOffNow(){ const vis=e=>!e.hidden&&e.getClientRects().length>0&&getComputedStyle(e).display!=="none";
   const on=(document.documentElement.classList.contains("prem-open")&&!document.querySelector(".prem-page.out"))||[...document.querySelectorAll(".sheet-bg,.np-bg,.crop-bg,.priv-bg,.cf-bg.on,.wl-bg.on")].some(vis);
   document.documentElement.classList.toggle("nav-off",on); }
-let NAVOFF_W=false;
+var NAVOFF_W=false;   /* var : navOffWatch peut être appelée avant cette ligne */
 function navOffWatch(){ if(NAVOFF_W) return; NAVOFF_W=true; let q=false; const go=()=>{ if(q) return; q=true; requestAnimationFrame(()=>{ q=false; navOffNow(); }); };
   new MutationObserver(go).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:["hidden","class"]});
   new MutationObserver(go).observe(document.documentElement,{attributes:true,attributeFilter:["class"]}); go(); }
