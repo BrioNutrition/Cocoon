@@ -70,6 +70,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   → https://brionutrition.github.io/Cocoon/fiche/#… : page statique `fiche/index.html` (à modifier à la main), tout le contenu
   est dans le lien (JSON compressé deflate-raw, base64url), rien n'est mis en ligne. Infos publiques des profils, téléphones
   des parents (infos de profil), contacts cochés, 15/18/17/112.
+- « Avec ce qu'il y a dans le frigo » (Repas, `openFrigo()`) : 3 idées de plats ; Cocoony intelligent si dispo (compte comme une
+  question), sinon `frigoLocal()` sur les plats connus. « Au menu » vise le prochain midi/soir libre, « Ajouter aux courses » le manquant.
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).

@@ -3033,6 +3033,21 @@ html.native-tabs .hub-mini{display:none!important}
 .pp-cg{color:var(--muted);font-size:12.5px}
 .pp-cy{color:#2F9E5B;font-weight:800;font-size:15px}
 .pp-cmpin{gap:12px!important}
+.r-frigo{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:20px;padding:12px 14px;margin:2px 0 4px;background:var(--surface);box-shadow:0 2px 0 var(--shadow);font:inherit;color:var(--ink);text-align:left;cursor:pointer}
+.r-frigo>span:first-child{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:22px;background:color-mix(in srgb,#8FB8FF 35%,var(--surface));flex:none}
+.r-frigo>span:nth-child(2){flex:1;min-width:0}.r-frigo b{display:block;font-size:15.5px}.r-frigo small{color:var(--muted);font-size:12.5px}
+.r-frigo u{text-decoration:none;color:var(--muted);font-size:22px}
+.fr-in{gap:12px!important}
+.fr-add{display:flex;gap:8px}.fr-add input{flex:1;min-width:0;font-size:16px;min-height:46px}
+.fr-chips,.fr-sug{display:flex;flex-wrap:wrap;gap:6px}
+.fr-chip{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:8px 12px;font:inherit;font-weight:700;font-size:14px;background:var(--mark);color:var(--mark-ink);cursor:pointer;min-height:38px}
+.fr-chip i{font-style:normal;opacity:.6}
+.fr-sug button{border:2px dashed var(--check);background:none;border-radius:999px;padding:6px 11px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+.fr-res{display:flex;flex-direction:column;gap:10px}
+.fr-card{background:var(--surface);border-radius:18px;padding:14px;box-shadow:0 2px 0 var(--shadow);display:flex;flex-direction:column;gap:6px}
+.fr-card b{font-size:17px}.fr-card small{color:var(--muted);font-size:13px}.fr-m{font-size:14px}
+.fr-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}.fr-acts .btn{flex:1 1 auto;min-height:44px}
+.fr-nb{margin:0;font-size:12.5px;color:var(--muted)}
 .gd-in{gap:12px!important}
 .gd-h b{display:block;font:800 22px/1.1 var(--f-display)}.gd-h span{display:block;margin-top:4px;font-size:14px;color:var(--muted)}
 .gd-g{display:flex;flex-direction:column;background:var(--surface);border-radius:18px;box-shadow:0 1px 0 var(--shadow);overflow:hidden}
@@ -7381,9 +7396,10 @@ function openMemberSheet(id){ const m=membre(id); if(!m) return; const me=meId()
   if(acts.childElementCount%2===0) acts.classList.add("two");
   sheet.append(el("div",{class:"pp-in"},head,list,acts)); }
 /* Bouton « Ajouter » propre à chaque rubrique (remplace le + central) */
-function nextFreeMeal(){ const t=today(), h=new Date().getHours(), slots=repasSlots();
+function nextFreeMeal(noMatin){ const t=today(), h=new Date().getHours(), slots=repasSlots().filter(x=>!(noMatin&&x==="matin"));
   for(let k=0;k<14;k++){ const d=iso(new Date(t.getFullYear(),t.getMonth(),t.getDate()+k));
     for(const sl of ["matin","midi","soir"]){ if(!slots.includes(sl)) continue; if(k===0&&repasFini(d,sl,h+new Date().getMinutes()/60)) continue; if(!repasOf(d,sl)) return [d,sl]; } }
+  if(noMatin&&!slots.length) return nextFreeMeal();
   return [iso(t),"soir"]; }
 /* Menu natif d'iOS (feuille d'actions) quand l'app tourne sur iPhone ; null si on n'est pas dans l'app */
 function nativeMenu(title,items){ const N=window.__nt; if(!N||!N.menu) return null; return N.menu({title:title||null,items}).then(r=>r&&r.id||null).catch(()=>null); }
@@ -8750,6 +8766,40 @@ function platsConnus(slot){ const m=new Map(); for(const [n,i] of PDEJ0) m.set(n
   if(slot) return [...m.values()].filter(p=>slot==="matin"?p.matin:!p.matin).sort((a,b)=>(b.n||0)-(a.n||0)||a.nom.localeCompare(b.nom));
   return [...m.values()].sort((a,b)=>(b.n||0)-(a.n||0)||a.nom.localeCompare(b.nom)); }
 function repasSlots(){ let v=S.rSlots||null; if(!v) try{ v=localStorage.getItem("cocoon.repasSlots"); }catch(_){} const a=(v||"matin,midi,soir").split(",").filter(x=>RSLOTS.some(r=>r[0]===x)); return a.length?a:["soir"]; }
+/* « Avec ce qu'il y a dans le frigo » : on liste ce qu'on a, 3 idées de plats. Cocoony intelligent si disponible (compte comme une
+   question), sinon les plats connus de l'app classés par ingrédients déjà là. */
+function frigoLocal(have){ const H=have.map(x=>cKey(parseArticle(x).nom));
+  const has=g=>{ const k=cKey(parseArticle(g).nom); return H.some(h=>h&&(k.includes(h)||h.includes(k))); };
+  return platsConnus().filter(p=>!p.matin).map(p=>{ const ing=(p.ing&&p.ing.length?p.ing:platIng(p.nom)).filter(g=>!inPlacard(g)); const ok=ing.filter(has); return {nom:p.nom,ok:ok.length,manque:ing.filter(g=>!has(g)),tot:ing.length}; })
+    .filter(x=>x.ok>0).sort((a,b)=>b.ok/b.tot-a.ok/a.tot||b.ok-a.ok).slice(0,3).map(x=>({nom:x.nom,manque:x.manque,note:x.ok+" ingrédient"+(x.ok>1?"s":"")+" sur "+x.tot+" déjà là"})); }
+function openFrigo(){ if(!needMe()) return; const U=upSheet("frigoPage","Avec ce qu'il y a dans le frigo"), inn=el("div",{class:"pp-in fr-in"}); U.sheet.classList.add("ing-sheet"); U.sheet.append(inn);
+  let have=[]; try{ have=JSON.parse(localStorage.getItem("cocoon.frigo")||"[]"); }catch(_){}
+  const keep=()=>{ try{ localStorage.setItem("cocoon.frigo",JSON.stringify(have)); }catch(_){} };
+  const chips=el("div",{class:"fr-chips"}), res=el("div",{class:"fr-res"});
+  const draw=()=>{ chips.innerHTML=""; for(const g of have) chips.append(el("button",{type:"button",class:"fr-chip","aria-label":"Retirer "+g,onclick:()=>{ have=have.filter(x=>x!==g); keep(); draw(); }},g,el("i",{"aria-hidden":"true",text:"×"}))); go.disabled=!have.length; };
+  const inp=el("input",{type:"text",id:"frIn",placeholder:"Poulet, courgettes, riz, crème…",autocomplete:"off","aria-label":"Ce qu'il y a dans le frigo"});
+  const add=()=>{ const v=inp.value.split(/[,;\n]/).map(x=>x.trim()).filter(Boolean); for(const x of v) if(!have.some(h=>norm(h)===norm(x))) have.push(x.replace(/^./,c=>c.toUpperCase())); inp.value=""; keep(); draw(); };
+  inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); add(); } });
+  /* suggestions : ce qui a été acheté ces 10 derniers jours */
+  const recent=[...new Set((S.coursesAll||S.courses||[]).filter(i=>i.fait&&i.faitLe&&Date.now()-i.faitLe<10*864e5).map(i=>parseArticle(i.nom).nom))].slice(0,12);
+  const sug=el("div",{class:"fr-sug"}); for(const r of recent) sug.append(el("button",{type:"button",text:"+ "+r,onclick:e=>{ if(!have.some(h=>norm(h)===norm(r))){ have.push(r); keep(); draw(); } e.currentTarget.remove(); }}));
+  const go=el("button",{type:"button",class:"btn pp-cta",text:"Trouver 3 idées",onclick:async()=>{ add(); if(!have.length) return; go.disabled=true; go.textContent="Cocoony cherche…"; res.innerHTML="";
+    let ideas=null, ia=false;
+    if(secOn()&&pmLeft("questions")>0){ try{ const r=await S.sample.json("Un foyer français a ceci dans son frigo et ses placards : "+have.join(", ")+". Propose 3 plats simples du quotidien à cuisiner ce soir en utilisant surtout ces ingrédients. Réponds uniquement avec un tableau JSON de 3 objets : [{\"nom\": nom court du plat, \"temps\": durée totale en minutes (nombre), \"manque\": [ingrédients indispensables à acheter, sans sel, poivre, huile, épices], \"astuce\": une phrase courte}]",{modelTier:"quick",cache:false});
+        if(Array.isArray(r)&&r.length){ ideas=r.slice(0,3).map(x=>({nom:String(x.nom||"").slice(0,60),manque:(Array.isArray(x.manque)?x.manque:[]).map(String).slice(0,8),note:[x.temps?x.temps+" min":"",x.astuce||""].filter(Boolean).join(" · ")})).filter(x=>x.nom); ia=true; pmUse("questions"); } }catch(_){ ideas=null; } }
+    if(!ideas||!ideas.length) ideas=frigoLocal(have);
+    go.disabled=false; go.textContent="Trouver d'autres idées";
+    if(!ideas.length){ res.append(el("p",{class:"fr-nb",text:"Aucun plat connu avec ces ingrédients. Ajoute-en quelques-uns de plus"+(secOn()?".":", ou utilise Cocoony intelligent dans claude.ai.")})); return; }
+    const [fd,fs]=nextFreeMeal(true);
+    for(const x of ideas){ const card=el("div",{class:"fr-card"},el("b",{},platEmoji(x.nom,"soir")+" "+x.nom),x.note?el("small",{text:x.note}):null,
+        el("span",{class:"fr-m",text:x.manque.length?"À acheter : "+x.manque.join(", "):"Tu as tout ce qu'il faut."}));
+      const acts=el("div",{class:"fr-acts"},el("button",{type:"button",class:"btn",text:"Au menu · "+mealWhen(fd,fs).toLowerCase(),onclick:()=>{ U.close(); setTimeout(()=>openRepas(fd,fs,x.nom),340); }}));
+      if(x.manque.length) acts.append(el("button",{type:"button",class:"btn ghost",text:"Ajouter aux courses",onclick:async e=>{ const b=e.currentTarget; b.disabled=true; const n=await ingToCourses(x.manque.filter(g=>!ingState(g).on),x.nom); b.textContent=n?"✓ "+n+" ajouté"+(n>1?"s":""):"Déjà sur la liste"; }}));
+      card.append(acts); res.append(card); }
+    if(!ia) res.append(el("p",{class:"fr-nb",text:"Idées tirées des plats que Cocoon connaît."})); }});
+  inn.append(el("div",{class:"gd-h"},el("b",{text:"Qu'est-ce qu'on mange ?"}),el("span",{text:"Note ce qu'il reste, Cocoony propose 3 plats."})),
+    el("div",{class:"fr-add"},inp,el("button",{type:"button",class:"btn",text:"Ajouter",onclick:add})),chips,recent.length?el("div",{class:"ms-gl",text:"Acheté ces derniers jours"}):"",recent.length?sug:"",go,res);
+  draw(); setTimeout(()=>{ try{ inp.focus({preventScroll:true}); }catch(_){} },360); }
 function repasOf(date,slot){ return (S.repas||[]).find(r=>r.date===date&&r.slot===slot&&r.plat); }
 /* ===== Des repas aux courses : on ne propose que, on n'ajoute rien sans accord ===== */
 /* le placard de base : jamais proposé */
@@ -8850,6 +8900,7 @@ function renderRepas(){
       ids.append(el("button",{type:"button",class:"r-hbt dk",onclick:()=>openRepas(hd,hs)},"Choisir"));
       hero.append(ids); }
     box.append(hero); }
+  box.append(el("button",{type:"button",class:"r-frigo",onclick:()=>openFrigo()},el("span",{"aria-hidden":"true",text:"🧊"}),el("span",{},el("b",{text:"Avec ce qu'il y a dans le frigo"}),el("small",{text:"3 idées de plats, et ce qui manque part aux courses"})),el("u",{"aria-hidden":"true",text:"›"})));
   /* 2. la frise de la semaine */
   let planned=0; for(let k=0;k<7;k++){ const ds=iso(new Date(ws+k*864e5)); for(const [sl] of slots) if(repasOf(ds,sl)) planned++; }
   const lbl=(S.rWeek||0)===0?"Cette semaine":S.rWeek===1?"La semaine prochaine":S.rWeek===-1?"La semaine dernière":"Du "+d0.getDate()+" "+MOIS_C(d0)+" au "+d6.getDate()+" "+MOIS_C(d6);
