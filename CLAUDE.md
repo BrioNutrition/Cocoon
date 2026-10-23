@@ -149,7 +149,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   qu'avant (buildPlan/applyPlan inchangés sauf soins décochés `a.petOff` et photo `a.petPhoto`). 1 plaque de porte « Chez les … » (`wqNom`) ;
   2 compteurs Adultes (1–2) / Enfants / Colocataires + prénoms dessous (`wqMenage`, boutons `#wqAdP`, `#wqKidP`, `#wqColP`) ; 3 fiche animal
   (photo, nom `#wqPet0`, espèce, soins en interrupteurs + date du dernier, `#wqPetAdd`, « Pas d'animal » : juste un contour jaune quand choisi, pas de rond, idem « Aucun véhicule ») ; 4 liste façon Réglages qui se
-  déplie (`wqRow`, `W.open`) ; 5 une ligne par bac + « Je ferai ça plus tard » (`#wqLater`) ; 6 garage (`#wqVvoiture`…, « Aucun véhicule ») ;
+  déplie (`wqRow`, `W.open`), équipements rangés par pièce (`EQUIP_G`, rappels pour chacun dans buildPlan) + « Autre chose ? »
+  (`#wqEqAdd`, `a.equipPerso` → équipements de Maison, groupe du récap) ; 5 une ligne par bac + « Je ferai ça plus tard » (`#wqLater`) ; 6 garage (`#wqVvoiture`…, « Aucun véhicule ») ;
   7 total « Chaque mois » qui monte ; 8 partage **seulement s'il y a un 2e adulte** (`wzAdults`), moitié-moitié par défaut (« Garder
   moitié-moitié ») ; **papiers retirés** ; 10 « Ce qui m'énerve le plus, c'est… » (phrases `WQ_PRIO`, `.opt.wq-phr`) ; 11 groupes repliés
   avec un interrupteur par groupe (`wqPlan`, `#wqG-…`, `P.partageOff`). Sans partage réglé (foyer créé seul puis membre ajouté), rien n'est
