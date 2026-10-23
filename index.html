@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="23/10 16:55";</script>
+<script>window.COCOON_BUILD="23/10 21:37";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -6450,6 +6450,14 @@ function renderBadges(){
   if(urgent&&!S.bellRung){ S.bellRung=true; const b=$("bellBtn"); b.classList.add("ring"); setTimeout(()=>b.classList.remove("ring"),2600); }
   setN("nBudget",(S.abos||[]).filter(a=>a.actif!==false&&(()=>{ const n=subNext(a); return n&&daysTo(n)<=7; })()).length);
 }
+/* Compte retenu pour l'écran après déconnexion (B, choisi par Angel) : nom, couleur, miniature, foyer et maître du foyer.
+   L'adresse e-mail est ajoutée par cocoon-runtime.js au moment de la déconnexion ; « Changer de compte » l'efface. */
+let LAST_SIG="";
+function saveLast(){ const m=meM&&meM(); if(!m||!S.foyerNom&&!membres().length) return;
+  const ad=admins(), chef=m.role==="admin"?m:(ad[0]||null), fam=(S.foyerNom||"").trim().replace(/^(la famille|famille|les)\s+/i,"");
+  const o={nom:m.nom||"",c:m.c||"#2C6E8F",photo:(m.photo&&THUMBS[m.photo])||"",admin:m.role==="admin",chef:chef?chef.nom:"",foyer:fam};
+  const sig=JSON.stringify(o); if(sig===LAST_SIG) return; LAST_SIG=sig;
+  try{ const old=JSON.parse(localStorage.getItem("cocoon.last")||"{}"); localStorage.setItem("cocoon.last",JSON.stringify(Object.assign({},old,o))); }catch(_){} }
 function renderAllNow(){ const _y=window.scrollY, _tab=S.tab, _b=document.body; const _h=_b.style.minHeight; _b.style.minHeight=document.documentElement.scrollHeight+"px"; try{ renderAllNowInner(); }catch(e){ console.error(e); } if(S.flip) applyFlip(); if(!S.migDone&&!S.migT) S.migT=setTimeout(()=>{ S.migT=0; migrateFiles(); },8000); onboardGate(); if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); _b.style.minHeight=_h; if(S.tab===_tab&&Math.abs(window.scrollY-_y)>1) window.scrollTo({top:_y,behavior:"instant"}); S.lastRender=performance.now(); }
 /* Titre des rubriques : grand titre + résumé ; en défilant, il remonte dans une petite barre en haut */
 function hubSummary(v){ const t0=iso(today()), me=meId();
@@ -6470,7 +6478,7 @@ addEventListener("scroll",()=>{ if(!S._hmRaf) S._hmRaf=requestAnimationFrame(()=
 $("hubMiniAdd").addEventListener("click",()=>{ const add=document.querySelector('.view:not([hidden]) .hub-add'); if(add){ window.scrollTo({top:0,behavior:"smooth"}); add.click(); } });
 /* catégories de tâches créées par le foyer : on les retrouve dans les tâches elles-mêmes (nom + couleur) */
 function syncTaskCats(){ for(const t of allTasks()) if(t.cat&&!CAT[t.cat]&&t.catNom) CAT[t.cat]={id:t.cat,nom:t.catNom,c:t.catC||"#A9B4C2",perso:true}; }
-function renderAllNowInner(){ try{ syncTaskCats(); }catch(_){}
+function renderAllNowInner(){ try{ syncTaskCats(); }catch(_){} try{ saveLast(); }catch(_){}
   const v=S.tab;
   renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon(); renderFab(); try{ evRefresh(); }catch(e){ console.error(e); } try{ renderHubTitle(); }catch(e){ console.error(e); }
   if(S.pendingWizard&&meM()&&S.configLoaded){ S.pendingWizard=false; openWizard(isAdmin()&&!(S.config&&S.config.qFait)?"foyer":"perso"); }

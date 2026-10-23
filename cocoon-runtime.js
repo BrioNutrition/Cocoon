@@ -86,6 +86,19 @@
       "#cxGate .cx-inv{font-size:14px;padding:10px 12px;border-radius:12px;background:#E5F6EC;color:#1E5B38}",
       "#cxGate .cx-fid{display:flex;align-items:center;justify-content:center;gap:10px;width:100%}#cxGate .cx-fid svg{width:22px;height:22px;flex:none}",
       "#cxGate .cx-or{display:flex;align-items:center;gap:10px;color:#6A6886;font-size:13px}#cxGate .cx-or::before,#cxGate .cx-or::after{content:'';flex:1;height:1px;background:#E3E0F0}",
+      /* « Content de te revoir » (après une déconnexion) : affiche dégradée, Cocoony en grand, rectangle blanc du compte en bas */
+      "#cxGate.cx-back{background:radial-gradient(120% 70% at 100% 0%,#FFD66B 0%,transparent 55%),linear-gradient(165deg,#FF9C80,#E2629B 55%,#8C5BD6)!important;color:#fff;padding:0;place-items:stretch}",
+      "#cxGate.cx-back .cx-card{width:100%;min-height:100%;max-width:none;display:flex;flex-direction:column;align-items:center;gap:0;padding:calc(env(safe-area-inset-top,0px) + 48px) 16px calc(env(safe-area-inset-bottom,0px) + 18px);box-sizing:border-box}",
+      "#cxGate .cx-bcat{width:140px;height:140px;border-radius:42px;transform:rotate(-8deg);box-shadow:0 18px 40px rgba(0,0,0,.25)}",
+      "#cxGate .cx-wm{margin-top:22px;font-family:Fredoka,'Bricolage Grotesque',sans-serif;font-weight:700;font-variation-settings:'wdth' 115;font-size:40px;letter-spacing:-.01em;line-height:1}",
+      "#cxGate.cx-back .cx-tag{margin-top:8px;color:rgba(255,255,255,.92);font-size:16px}",
+      "#cxGate .cx-sheet{margin-top:auto;width:min(440px,100%);background:#fff;color:#1C1B2E;border-radius:30px;padding:18px;display:grid;gap:12px;text-align:left;box-shadow:0 18px 50px rgba(60,20,60,.25)}",
+      "#cxGate .cx-who{display:flex;align-items:center;gap:14px;padding:2px 2px 14px;border-bottom:1px solid #EEECF5}",
+      "#cxGate .cx-av{width:52px;height:52px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:800;font-size:22px;color:#fff;background:var(--c,#2C6E8F);box-shadow:0 0 0 3px #fff,0 0 0 5px #FFC94A;overflow:hidden}#cxGate .cx-av img{width:100%;height:100%;object-fit:cover}",
+      "#cxGate .cx-who b{display:block;font-size:19px}#cxGate .cx-who small{display:block;color:#625F7E;font-size:13.5px;margin-top:1px}",
+      "#cxGate .cx-sheet form{margin:0}#cxGate .cx-sheet .cx-mail{display:none}",
+      "#cxGate .cx-sheet .cx-fid{background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB);color:#1C1B2E;margin:0}",
+      "#cxGate .cx-sheet .cx-links{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}",
       (function () {
         var R = [
           ["", "background:#13121C;color:#EDEBF7"],
@@ -101,7 +114,11 @@
           [" .cx-inv", "background:#1F3A2A;color:#BFE8CD"],
           [" .cx-or", "color:#A3A0BE"],
           [" .cx-or::before, .cx-or::after", "background:#3A3852"],
-          [" .cx-logo", "box-shadow:0 10px 30px rgba(0,0,0,.45)"]
+          [" .cx-logo", "box-shadow:0 10px 30px rgba(0,0,0,.45)"],
+          [" .cx-sheet", "background:#1E1D2B;color:#EDEBF7"],
+          [" .cx-who", "border-color:#3A3852"],
+          [" .cx-who small", "color:#A3A0BE"],
+          [" .cx-av", "box-shadow:0 0 0 3px #1E1D2B,0 0 0 5px #FFC94A"]
         ];
         function blk(p) { return R.map(function (r) { return r[0].split(",").map(function (x) { return p + " #cxGate" + (x.trim() ? " " + x.trim() : ""); }).join(",") + "{" + r[1] + "}"; }).join(""); }
         return "@media (prefers-color-scheme: dark){" + blk(':root:not([data-theme="light"])') + "}" + blk(':root[data-theme="dark"]');
@@ -129,7 +146,27 @@
           card.innerHTML = head("Cocoon", "L'app n'est pas encore reliée à sa base de données. Renseigne l'adresse et la clé Supabase dans <b>config.js</b>.");
           return;
         }
-        if (mode === "login" || mode === "signup") {
+        /* après une déconnexion : « Content de te revoir » avec le compte retenu (sauf « Changer de compte » → extra.plain) */
+        var last = null; try { last = JSON.parse(LS.get("cocoon.last") || "null"); } catch (_) {}
+        var back = mode === "login" && !(extra && extra.plain) && last && last.email;
+        g.classList.toggle("cx-back", !!back);
+        if (back) {
+          var sub = last.admin ? "Maître du foyer" + (last.foyer ? " · Chez les " + esc(last.foyer) : "") : (last.foyer ? "Chez les " + esc(last.foyer) : "") + (last.chef ? " · foyer de " + esc(last.chef) + " 👑" : "");
+          card.innerHTML = '<img class="cx-bcat" alt="" src="' + logoSrc() + '"><div class="cx-wm">Cocoon</div><p class="cx-tag">Ton cocon t\'attend.</p>' +
+            '<div class="cx-sheet"><div class="cx-who"><span class="cx-av" style="--c:' + esc(last.c || "#2C6E8F") + '">' + (last.photo ? '<img alt="" src="' + esc(last.photo) + '">' : esc((last.nom || last.email || "?").slice(0, 1).toUpperCase())) + '</span>' +
+            '<span style="flex:1;min-width:0"><b>' + esc(last.nom || last.email) + (last.admin ? " 👑" : "") + "</b><small>" + (sub || esc(last.email)) + "</small></span></div>" +
+            '<form autocomplete="on"><label class="cx-mail">E-mail<input type="email" name="email" autocomplete="email" value="' + esc(last.email) + '"></label>' +
+            '<label>Mot de passe<input type="password" name="pw" minlength="6" autocomplete="current-password" required></label>' +
+            '<div class="cx-msg" hidden></div><button class="cx-btn" type="submit">Se connecter</button></form>' +
+            '<div class="cx-links"><button class="cx-link" type="button" data-go="forgot">Mot de passe oublié</button><button class="cx-link cx-switch" type="button">Changer de compte</button></div></div>';
+          card.querySelector(".cx-switch").addEventListener("click", async function () {
+            LS.del("cocoon.last"); try { if (await natif() && window.__nt.faceidKey) await window.__nt.faceidKey({ del: true }); } catch (_) {}
+            G.show("login", { plain: true });
+          });
+        }
+        if ((mode === "login" || mode === "signup") && back) {
+          var sign = false; LS.set("cocoon.keep", "1");
+        } else if (mode === "login" || mode === "signup") {
           var sign = mode === "signup";
           card.innerHTML = head(sign ? "Créer mon compte" : "Bienvenue sur Cocoon", sign ? "Un compte par personne : chacun a son espace perso dans le foyer." : "Le carnet partagé de la maison.") +
             '<form autocomplete="on"><label>E-mail<input type="email" name="email" autocomplete="email" required inputmode="email"></label>' +
@@ -139,6 +176,8 @@
             '<button class="cx-link" type="button" data-go="' + (sign ? "login" : "signup") + '">' + (sign ? "J'ai déjà un compte" : "Pas encore de compte ? Créer un compte") + "</button>" +
             (sign ? "" : '<button class="cx-link" type="button" data-go="forgot">Mot de passe oublié</button>') +
             '<p class="cx-legal">' + (sign ? "En créant un compte, tu acceptes les " : "") + '<button class="cx-link cx-priv" type="button" data-terms="1">' + (sign ? "conditions d'utilisation" : "Conditions d'utilisation") + '</button>' + (sign ? " et la " : " · ") + '<button class="cx-link cx-priv" type="button" data-priv="1">' + (sign ? "politique de confidentialité" : "Confidentialité") + "</button>" + (sign ? "." : "") + "</p>";
+        }
+        if (mode === "login" || mode === "signup") {
           var f = card.querySelector("form");
           if (extra) msg(extra.t, extra.err);
           if (extra && extra.email) f.email.value = extra.email;
@@ -321,6 +360,7 @@
   }
   async function logout() {
     try { await Promise.race([PUSH.disable(), new Promise(function (r) { setTimeout(r, 2500); })]); } catch (_) {}
+    try { var L0 = JSON.parse(LS.get("cocoon.last") || "{}"); if (ME && ME.email) { L0.email = ME.email; L0.uid = ME.id; LS.set("cocoon.last", JSON.stringify(L0)); } } catch (_) {}
     LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer"); LS.del("cocoon.thumbs"); LS.del("cocoon.secid");
     /* « Se connecter avec Face ID » activé : la session reste ouverte côté serveur et son jeton part dans le trousseau
        (lisible seulement après Face ID) ; sinon déconnexion complète */
@@ -826,7 +866,7 @@
       var r = await sb.rpc("cocoon_delete_me");
       if (r.error) { DELETING = false; throw new Error(/function|exist/i.test(r.error.message) ? "la suppression de compte n'est pas encore installée dans Supabase (script securite.sql)" : frErr(r.error)); }
       try { await Promise.race([PUSH.disable(), new Promise(function (ok) { setTimeout(ok, 2500); })]); } catch (_) {}
-      ["cocoon.snap", "cocoon.outbox", "cocoon.foyer", "cocoon.theme", "cocoon.palette", "cocoon.bootSeen"].forEach(function (k) { LS.del(k); });
+      ["cocoon.snap", "cocoon.outbox", "cocoon.foyer", "cocoon.theme", "cocoon.palette", "cocoon.bootSeen", "cocoon.last", "cocoon.thumbs", "cocoon.secid"].forEach(function (k) { LS.del(k); });
       try { await sb.auth.signOut(); } catch (_) {}
       try { if (await natif() && window.__nt.faceidKey) await window.__nt.faceidKey({ del: true }); } catch (_) {}
       authStore.removeItem("cocoon.auth");
