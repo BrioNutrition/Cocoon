@@ -158,6 +158,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   partagé par défaut : formulaire de dépense vide et `budgetAdd` suit `foyer/config.partage` (sinon dépense à soi).
 - **Fiche profil** (« Crée ton profil » / « Personnalise ton profil », choix A d'Angel) : formulaire à gauche, carte d'aperçu en hauteur à droite,
   collante en défilant (`refreshPreview` → `.fp-card`, grille sur `section[data-view="fiche"]`, 128 px sur téléphone, 260 px dès 760 px).
+  Pas de titre « Profil » (barre cachée pendant l'inscription). Apparence Automatique/Clair/Sombre : appliquée dès le clic (`E.theme0` = l'ancienne),
+  validée par Enregistrer/Terminer (`E.themeOk`), remise comme avant si on quitte sans enregistrer (`closeEditor`) ; boutons l'un sous l'autre en colonne étroite.
 - Images instantanées à l'ouverture : photo de Cocoony gardée dans `cocoon.secid` (posée par un petit script avant le gros script),
   miniatures 192 px des photos de profil dans `cocoon.thumbs` (`THUMBS`, `makeThumb`, utilisées par `avatarFor`) ; effacées à la déconnexion.
 - App iPhone à jour toute seule : `cd app && npm run auto:ios` (`app/auto.mjs`) sur le Mac d'Angel → récupère `main` toutes les 30 s et

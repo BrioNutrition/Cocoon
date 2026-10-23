@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="23/10 23:26";</script>
+<script>window.COCOON_BUILD="23/10 23:35";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2893,6 +2893,12 @@ html[data-theme="light"]:has(#boot),html[data-theme="light"]:has(#boot) body{bac
 /* fiche profil : formulaire à gauche, carte d'aperçu à droite (collante) */
 section[data-view="fiche"]:not([hidden]){display:grid!important;grid-template-columns:minmax(0,1fr) 128px;column-gap:12px;align-items:start}
 section[data-view="fiche"] > .hub-bar{grid-column:1/-1}
+.wrap.finishing section[data-view="fiche"] > .hub-bar{display:none!important}
+/* Apparence (Automatique / Clair / Sombre) dans la colonne étroite : boutons qui passent à la ligne au lieu de se chevaucher */
+#ficheForm .seg[aria-label="Apparence"]{display:grid!important;grid-auto-flow:row!important;grid-template-columns:repeat(auto-fit,minmax(96px,1fr))!important;gap:4px;height:auto!important}
+#ficheForm .seg[aria-label="Apparence"] button{min-width:0;white-space:nowrap;justify-content:center;text-align:center;padding:9px 8px}
+.wrap.finishing section[data-view="fiche"]:not([hidden]){padding-top:4px}
+.wrap.finishing section[data-view="fiche"] > #fPreview{top:calc(env(safe-area-inset-top,0px) + 16px)}
 section[data-view="fiche"] > #ficheForm{grid-column:1;grid-row:2;min-width:0}
 section[data-view="fiche"] > #fPreview{grid-column:2;grid-row:2;position:sticky;top:calc(env(safe-area-inset-top,0px) + 72px);margin:0!important}
 .fp-card{border-radius:20px;overflow:hidden;background:var(--surface);border:1px solid var(--line);text-align:center;display:grid;justify-items:center;padding-bottom:10px;box-shadow:0 12px 30px rgba(0,0,0,.25)}
@@ -3712,7 +3718,7 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
 
   <!-- FICHE : créer / personnaliser un profil -->
   <section class="view" data-view="fiche" hidden>
-    <div class="hub-bar pg-bar"><button type="button" class="pg-back" id="ficheBack" aria-label="Annuler"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title" id="ficheTitle">Profil</b><span class="hb-act"></span></div>
+    <div class="hub-bar pg-bar"><button type="button" class="pg-back" id="ficheBack" aria-label="Annuler"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title" id="ficheTitle"></b><span class="hb-act"></span></div>
     <div id="fPreview"></div>
     <form class="fiche" id="ficheForm" autocomplete="off"></form>
   </section>
@@ -4635,7 +4641,7 @@ function buildEditor(){
 
   // Apparence (sa propre fiche)
   if(self){ const cur=E.theme||curTheme(), sg=el("div",{class:"seg",role:"group","aria-label":"Apparence"});
-    for(const [v,l] of [["auto","Automatique"],["light","Clair"],["dark","Sombre"]]) sg.append(el("button",{type:"button","aria-pressed":String(cur===v),text:l,onclick:()=>{ E.theme=v; buildEditor(); }}));
+    for(const [v,l] of [["auto","Automatique"],["light","Clair"],["dark","Sombre"]]) sg.append(el("button",{type:"button","aria-pressed":String(cur===v),text:l,onclick:()=>{ if(E.theme0==null) E.theme0=curTheme(); E.theme=v; applyTheme(v); buildEditor(); }}));
     f.append(el("div",{class:"fgroup"},el("h3",{text:"Apparence"}),el("span",{class:"muted",style:"font-size:13px",text:"Automatique suit le réglage de ton téléphone. Le mode sombre tamise les couleurs le soir."}),sg)); }
   // Rôle
   if(admin&&t==="adulte"){
@@ -4659,7 +4665,9 @@ function buildEditor(){
 }
 function finishFlow(res){ document.querySelector(".wrap").classList.remove("finishing"); S.edit=null; S.flow=false; setTab("accueil"); renderAll(); window.scrollTo({top:0}); requestAnimationFrame(()=>{ try{ onboardGate(); if(!S.cguOpen&&!S.tourOn&&!S.tourPending&&!needCgu()) startTour(); }catch(_){} setTimeout(()=>{ if(!S.tourOn&&!S.tourPending) maybeWelcome(); },1800); });
   toast("Bienvenue dans ton cocon !"+(res&&(res.nT||res.nP)?" "+res.nT+" rappel"+(res.nT>1?"s":"")+(res.nP?" et "+res.nP+" profil"+(res.nP>1?"s":""):"")+((res.nT+res.nP)>1?" prêts.":" prêt."):"")); }
-function closeEditor(){ if(S.edit&&S.edit.finish){ finishFlow(); return; } const back=S.editPrev&&S.editPrev!=="fiche"?S.editPrev:"accueil"; S.edit=null; document.querySelector(".wrap").classList.remove("finishing"); setTab(back); renderAll(); }
+function closeEditor(){ if(S.edit&&S.edit.finish){ finishFlow(); return; }
+  /* apparence essayée sans enregistrer : on remet l'ancienne */
+  if(S.edit&&S.edit.theme0!=null&&!S.edit.themeOk) applyTheme(S.edit.theme0); const back=S.editPrev&&S.editPrev!=="fiche"?S.editPrev:"accueil"; S.edit=null; document.querySelector(".wrap").classList.remove("finishing"); setTab(back); renderAll(); }
 async function saveProfile(){
   const E=S.edit; if(!E||E.busy) return; const d=E.d;
   d.nom=(d.nom||"").trim(); if(!d.nom){ toast("Donne un prénom ou un nom au profil."); $("fiNom").focus(); return; }
@@ -4669,7 +4677,7 @@ async function saveProfile(){
   d.infos=allInf.filter(x=>!x.p).map(x=>({l:x.l,v:x.v}));
   const savePriv=async mid=>{ if(!mid||!S.uid) return; const fp=Object.assign({},(S.prefs||{}).fichePriv||{}); const had=!!fp[mid]; if(privInf.length) fp[mid]=privInf; else delete fp[mid]; if(!had&&!privInf.length) return; S.prefs=Object.assign({},S.prefs||{},{fichePriv:fp}); try{ if(S.db) await S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs); }catch(_){} };
   for(const k of Object.keys(d)) if(d[k]===undefined) delete d[k];
-  if(E.theme&&E.theme!==curTheme()){ const tv=E.theme; setTimeout(()=>setTheme(tv),0); }
+  if(E.theme){ const tv=E.theme; E.themeOk=true; setTimeout(()=>setTheme(tv),0); }
   if(E.self){ await saveSelf(E); return; }
   if(S.canEdit===false&&E.id===meId()){ E.busy=true; try{ const cur=(S.profils||[]).find(p=>p.id===S.uid); await saveOwnProfil(d,cur?cur.membre:(String(E.id).startsWith("u-")?null:E.id)); await savePriv(E.id); toast("Profil enregistré."); S.edit=null; setTab("moi"); renderAll(); }catch(e){ E.busy=false; writeErr(e); } return; }
   if(!isAdmin()){ const cur=membre(E.id); d.role=cur.role||null; d.type=cur.type; }
