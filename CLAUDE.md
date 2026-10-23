@@ -120,8 +120,9 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
   Refonte du 23 oct. : haut de page en « affiche dégradée » (comme l'App Store, Cocoony en coin, pastille « Bientôt sur l'App Store »),
   carrousel de 7 écrans, tarifs en « deux affiches » comme dans l'app. Téléphones fixes façon iPhone Pro Max (`.phone > .fr > .scr`, cadre titane,
-  Dynamic Island, unités `cqw`), bandeau du haut à angles droits, pas de « L'appli du foyer ». Rubriques = paquet de cartes
-  `shuffleCardSlider()` (glisser, flèches ‹ ›, clavier ←/→). Images `presentation/img/*.jpg` = captures de
+  Dynamic Island, unités `cqw`), bandeau du haut à angles droits, pas de « L'appli du foyer ». Rubriques = bande sombre façon « card shuffle » (modèle
+  envoyé par Angel) : titre coloré + texte à gauche qui suivent la carte, flèches en bas, grandes cartes verticales (écrans `img/c-*.jpg`)
+  empilées vers la droite ; `shuffleCardSlider({deck,prev,next,title,text,num})` (glisser, flèches ‹ ›, clavier ←/→). Images `presentation/img/*.jpg` = captures de
   `outils/appstore/raw/` réduites à 600 px de large.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
 - À faire côté Angel : redéployer `cocoon-push`, coller les modèles d'e-mail, vérifier OTP à 6 chiffres, brancher Brevo (codeEmail).

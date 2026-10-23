@@ -27,7 +27,7 @@ async def main():
     async def shot(n,w=1500,on=1): await pg.wait_for_timeout(w); await pg.evaluate('window.scrollTo(0,0)'); await pg.wait_for_timeout(300); await pg.evaluate('__ios(%d)'%on); await pg.wait_for_timeout(200); await pg.screenshot(path=OUT+'/'+n+'.png')
     await tab('accueil'); await shot('01-accueil',2500,0)
     await tab('hub'); await shot('02-foyer',2500)
-    for go,n in [('foyer','03-taches'),('courses','04-courses'),('repas','05-repas'),('agenda','06-agenda'),('budget','07-budget'),('documents','08-papiers')]:
+    for go,n in [('foyer','03-taches'),('courses','04-courses'),('repas','05-repas'),('agenda','06-agenda'),('budget','07-budget'),('documents','08-papiers'),('maison','11-maison')]:
       await tab('hub'); await pg.wait_for_timeout(600); await pg.evaluate("document.querySelector('.hb-t[data-go=%s]').click()"%go); await shot(n,1800)
     await tab('cocoony'); await shot('09-cocoony',2500,2)
     await tab('hub'); await pg.wait_for_timeout(600); await pg.evaluate("document.querySelector('.hb-pban').click()"); await shot('10-plus',1500)
