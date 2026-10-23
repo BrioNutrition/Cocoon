@@ -5,12 +5,16 @@ D=os.path.dirname(os.path.abspath(__file__)); OUTD=os.path.abspath(D+'/../../app
 LOGO=D+'/logo.png'
 CSS='''<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
 <style>*{box-sizing:border-box}html,body{margin:0;width:440px;height:956px;overflow:hidden;font-family:"Bricolage Grotesque",system-ui;color:#1C1B2E}
-.phone{position:absolute;border-radius:58px;background:#1C1B2E;padding:11px;box-shadow:0 30px 60px rgba(28,27,46,.28)}
-.phone .scr{position:relative;height:100%;border-radius:48px;overflow:hidden;background:#F6F5FB;padding-top:54px}
-.phone .scr::before{content:"9:41";position:absolute;left:34px;top:18px;font-weight:700;font-size:15px}
-.phone .scr::after{content:"";position:absolute;right:30px;top:22px;width:26px;height:12px;border-radius:4px;border:2px solid #1C1B2E;opacity:.8}
+.phone{position:absolute;container-type:inline-size}
+.phone .fr{position:relative;border-radius:17cqw;padding:2.6cqw;background:linear-gradient(140deg,#8E8A86 0%,#4B4846 18%,#2C2A29 50%,#55524F 82%,#9A9590 100%);
+  box-shadow:inset 0 0 0 .5cqw #1B1A19,inset 0 0 0 .9cqw #6F6B67,0 30px 60px rgba(28,27,46,.30)}
+.phone .fr::before,.phone .fr::after{content:"";position:absolute;width:1.1cqw;border-radius:1cqw;background:linear-gradient(90deg,#3A3836,#77726E)}
+.phone .fr::before{left:-.9cqw;top:19%;height:7%;box-shadow:0 13cqw 0 #5A5653,0 26cqw 0 #5A5653}
+.phone .fr::after{right:-.9cqw;top:27%;height:15%}
+.phone .scr{position:relative;border-radius:14.5cqw;overflow:hidden;background:#F6F5FB;padding-top:11cqw}
+.phone .scr::before{content:"9:41";position:absolute;left:9cqw;top:3.6cqw;font:700 4.1cqw/1 -apple-system,"SF Pro Text","Bricolage Grotesque",sans-serif;color:#1C1B2E}
+.phone .scr::after{content:"";position:absolute;left:50%;top:2.6cqw;width:29cqw;height:8.4cqw;margin-left:-14.5cqw;border-radius:9cqw;background:#050507}
 .phone img.s{display:block;width:100%;height:auto}
-.phone::after{content:"";position:absolute;left:50%;top:22px;width:96px;height:28px;margin-left:-48px;border-radius:20px;background:#0B0A12}
 h1{margin:0;font-weight:800;letter-spacing:-.03em;line-height:1.02}
 .hl{background:#FFC94A;padding:0 8px;border-radius:10px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 .st{position:absolute;font-weight:900;font-size:15px;background:#FFE14D;color:#1C1B2E;padding:7px 12px;border-radius:13px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
@@ -21,8 +25,8 @@ def A(img,title,rot=-3,cat="left"):  # affiche dégradée
 <div style="position:absolute;left:30px;right:30px;top:58px;color:#fff">
 <div style="display:flex;align-items:center;gap:10px"><img src="file://{LOGO}" style="width:40px;height:40px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.18)"><span style="font-family:Fredoka,sans-serif;font-weight:700;font-variation-settings:'wdth' 115;font-size:30px;letter-spacing:-.01em">Cocoon</span></div>
 <h1 style="font-size:42px;margin-top:18px">{title}</h1></div>
-<div class="phone" style="left:44px;right:44px;top:262px;height:760px;transform:rotate({rot}deg)"><div class="scr"><img class="s" src="file://{D}/raw/{img}.png"></div></div>
-<img src="file://{LOGO}" style="position:absolute;{cpos};bottom:46px;width:92px;height:92px;border-radius:28px;transform:rotate({-12 if cat=='left' else 12}deg);box-shadow:0 14px 30px rgba(0,0,0,.25)"></body>'''
+<div class="phone" style="left:66px;width:308px;top:250px;transform:rotate({rot}deg)"><div class="fr"><div class="scr"><img class="s" src="file://{D}/raw/{img}.png"></div></div></div>
+<img src="file://{LOGO}" style="position:absolute;right:26px;top:34px;width:74px;height:74px;border-radius:23px;transform:rotate({-10 if cat=='left' else 10}deg);box-shadow:0 12px 26px rgba(0,0,0,.22)"></body>'''
 def B(img,title,sub):  # clair épuré
   return f'''<body style="background:#F6F5FB">
 <div style="position:absolute;left:32px;right:32px;top:70px;text-align:center"><h1 style="font-size:40px">{title}</h1><p style="margin:12px 0 0;font-size:17px;color:#625F7E">{sub}</p></div>

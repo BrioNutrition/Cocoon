@@ -22,13 +22,14 @@ async def main():
     print('seed', await pg.evaluate('window.__seeded||window.__seedErr'))
     await pg.add_style_tag(content='.demo-bar{display:none!important}')
     await pg.evaluate("document.documentElement.dataset.theme='light'")
+    await pg.add_script_tag(path=HERE+'/ios.js')   # habillage iPhone : barre d'onglets Liquid Glass, boutons ronds en verre
     tab=lambda t: pg.evaluate("document.querySelector('#tabs .tab[data-tab=%s]').click()"%t)
-    async def shot(n,w=1500): await pg.wait_for_timeout(w); await pg.evaluate('window.scrollTo(0,0)'); await pg.wait_for_timeout(300); await pg.screenshot(path=OUT+'/'+n+'.png')
-    await tab('accueil'); await shot('01-accueil',2500)
+    async def shot(n,w=1500,on=1): await pg.wait_for_timeout(w); await pg.evaluate('window.scrollTo(0,0)'); await pg.wait_for_timeout(300); await pg.evaluate('__ios(%d)'%on); await pg.wait_for_timeout(200); await pg.screenshot(path=OUT+'/'+n+'.png')
+    await tab('accueil'); await shot('01-accueil',2500,0)
     await tab('hub'); await shot('02-foyer',2500)
     for go,n in [('foyer','03-taches'),('courses','04-courses'),('repas','05-repas'),('agenda','06-agenda'),('budget','07-budget'),('documents','08-papiers')]:
       await tab('hub'); await pg.wait_for_timeout(600); await pg.evaluate("document.querySelector('.hb-t[data-go=%s]').click()"%go); await shot(n,1800)
-    await tab('cocoony'); await shot('09-cocoony',2500)
+    await tab('cocoony'); await shot('09-cocoony',2500,2)
     await tab('hub'); await pg.wait_for_timeout(600); await pg.evaluate("document.querySelector('.hb-pban').click()"); await shot('10-plus',1500)
     await pg.keyboard.press('Escape'); await pg.wait_for_timeout(600)
     print(errs[:3])
