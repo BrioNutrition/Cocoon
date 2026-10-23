@@ -123,7 +123,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   Dynamic Island, unités `cqw`), bandeau du haut à angles droits, pas de « L'appli du foyer ». Rubriques = bande sombre façon « card shuffle » (modèle
   envoyé par Angel) : titre coloré + texte à gauche qui suivent la carte, flèches en bas, grandes cartes verticales (écrans `img/c-*.jpg`)
   en éventail (pivot sous le paquet) ; la carte balayée sort à gauche (sortie courte, glisser limité à ~150 px avec résistance) puis repasse derrière toutes les autres ;
-  flèches fixes (`fit()` réserve la hauteur du titre et du texte les plus longs) ; `shuffleCardSlider({deck,prev,next,title,text,num})` (glisser, flèches ‹ ›, clavier ←/→). Images `presentation/img/*.jpg` = captures de
+  flèches fixes (`fit()` réserve la hauteur du titre et du texte les plus longs) et en verre Liquid Glass ; passage de carte = une seule
+  animation Web Animations (sortie, changement de plan via z-index dans les clés, rangement) ; images des cartes 960 px (nettes) ; `shuffleCardSlider({deck,prev,next,title,text,num})` (glisser, flèches ‹ ›, clavier ←/→). Images `presentation/img/*.jpg` = captures de
   `outils/appstore/raw/` réduites à 600 px de large.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
 - À faire côté Angel : redéployer `cocoon-push`, coller les modèles d'e-mail, vérifier OTP à 6 chiffres, brancher Brevo (codeEmail).
