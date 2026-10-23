@@ -174,7 +174,7 @@ details.done-list .list{margin-top:8px}
 .lockline{font-size:12.5px;color:var(--muted);display:flex;gap:6px;align-items:center}
 .crown{display:inline-block;margin-right:.25em;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;font-style:normal;font-weight:400;line-height:1}
 .wrap.gated > :not(#onboard):not(.demo-bar):not(#splash){display:none!important}
-.wrap.finishing > :not([data-view="fiche"]):not(.demo-bar){display:none!important}
+.wrap.finishing > :not([data-view="fiche"]){display:none!important}
 .sp-logo{width:72px;height:72px;border-radius:22px;background:var(--hero);display:grid;place-items:center;transform:rotate(-6deg);box-shadow:0 8px 0 var(--mark)}
 .sp-logo svg{width:40px;height:40px}
 .splash h1{line-height:.95}
@@ -2803,10 +2803,16 @@ section[data-view="fiche"] > .hub-bar{grid-column:1/-1}
 /* Apparence (Automatique / Clair / Sombre) dans la colonne étroite : boutons qui passent à la ligne au lieu de se chevaucher */
 #ficheForm .seg[aria-label="Apparence"]{display:grid!important;grid-auto-flow:row!important;grid-template-columns:repeat(auto-fit,minmax(96px,1fr))!important;gap:4px;height:auto!important}
 #ficheForm .seg[aria-label="Apparence"] button{min-width:0;white-space:nowrap;justify-content:center;text-align:center;padding:9px 8px}
-.wrap.finishing section[data-view="fiche"]:not([hidden]){padding-top:4px}
+.wrap.finishing section[data-view="fiche"]:not([hidden]){padding-top:0!important;margin-top:0!important;row-gap:0!important}
+#ficheForm input,#ficheForm select,#ficheForm textarea{max-width:100%;min-width:0;box-sizing:border-box}
+#fHead .fi-head{display:flex;flex-direction:column;gap:6px;margin:0 2px 14px;padding:0;background:none;border:0}
+#fHead .fi-head h3{margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em;font-family:var(--f-display)}
+#fHead .fi-head .muted{font-size:14.5px!important;line-height:1.4}
+#fHead:empty{display:none}
 .wrap.finishing section[data-view="fiche"] > #fPreview{top:calc(env(safe-area-inset-top,0px) + 16px)}
-section[data-view="fiche"] > #ficheForm{grid-column:1;grid-row:2;min-width:0}
-section[data-view="fiche"] > #fPreview{grid-column:2;grid-row:2;position:sticky;top:calc(env(safe-area-inset-top,0px) + 72px);margin:0!important}
+section[data-view="fiche"] > #fHead{grid-column:1/-1;grid-row:2;min-width:0}
+section[data-view="fiche"] > #ficheForm{grid-column:1;grid-row:3;min-width:0}
+section[data-view="fiche"] > #fPreview{grid-column:2;grid-row:3;position:sticky;top:calc(env(safe-area-inset-top,0px) + 72px);margin:0!important}
 .fp-card{border-radius:20px;overflow:hidden;background:var(--surface);border:1px solid var(--line);text-align:center;display:grid;justify-items:center;padding-bottom:10px;box-shadow:0 12px 30px rgba(0,0,0,.25)}
 .wrap.finishing .fp-card{background:var(--au-glass);border-color:var(--au-line);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
 .fp-ban{width:100%;height:66px;background-size:cover}
@@ -3623,6 +3629,7 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
   <!-- FICHE : créer / personnaliser un profil -->
   <section class="view" data-view="fiche" hidden>
     <div class="hub-bar pg-bar"><button type="button" class="pg-back" id="ficheBack" aria-label="Annuler"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title" id="ficheTitle"></b><span class="hb-act"></span></div>
+    <div id="fHead"></div>
     <div id="fPreview"></div>
     <form class="fiche" id="ficheForm" autocomplete="off"></form>
   </section>
@@ -4466,7 +4473,8 @@ function buildEditor(){
   const bind=(input,key,after)=>{ input.addEventListener("input",()=>{ d[key]=input.value; refreshPreview(); if(after) after(); }); return input; };
 
   // Titre
-  if(E.finish) f.append(el("div",{class:"fgroup"},el("span",{class:"step-tag",style:"align-self:flex-start",text:E.self?"Étape 2 sur 2 · Ton profil":"Ton profil"}),
+  if(!E.finish) f.append(el("div",{class:"fgroup fi-head"},el("h3",{text:E.id&&E.id===meId()?"Ton profil":E.id?"Profil "+de(membre(E.id).nom||""):"Nouveau profil"})));
+  if(E.finish) f.append(el("div",{class:"fgroup fi-head"},el("span",{class:"step-tag",style:"align-self:flex-start",text:E.self?"Étape 2 sur 2 · Ton profil":"Ton profil"}),
     el("h3",{style:"font-size:26px;font-weight:800;letter-spacing:-.02em",text:E.self?"Crée ton profil":"Personnalise ton profil"}),el("span",{class:"muted",style:"font-size:14px",text:E.self?(membres().length?"Ton prénom, ta photo, ta bannière, ta couleur. Il est relié à ton compte : tu ne le feras qu'une fois.":"Tu seras l'admin de ton foyer. Prénom, photo, bannière, couleur : tout reste modifiable plus tard."):"Photo, bannière, couleur, infos pratiques. Tout reste modifiable plus tard."})));
   if(E.self){
     const free=humains().filter(m=>!m.uid&&(m.invite||typeOf(m)==="adulte"));
@@ -4565,6 +4573,8 @@ function buildEditor(){
     act.append(dz);
   }
   f.append(act);
+  /* en-tête (étape, titre, phrase) sur toute la largeur, au-dessus du formulaire et de la carte */
+  const fh=$("fHead"); if(fh){ fh.innerHTML=""; const h=f.querySelector(".fi-head"); if(h) fh.append(h); }
   refreshPreview();
 }
 function finishFlow(res){ document.querySelector(".wrap").classList.remove("finishing"); S.edit=null; S.flow=false; setTab("accueil"); renderAll(); window.scrollTo({top:0}); requestAnimationFrame(()=>{ try{ onboardGate(); if(!S.cguOpen&&!S.tourOn&&!S.tourPending&&!needCgu()) startTour(); }catch(_){} setTimeout(()=>{ if(!S.tourOn&&!S.tourPending) maybeWelcome(); },1800); });
@@ -6560,7 +6570,7 @@ function hubSummary(v){ const t0=iso(today()), me=meId();
   return ""; }
 function renderHubTitle(){ const v=S.tab, p=document.querySelector('.hub-sum[data-sum="'+v+'"]'); if(p){ const t=hubSummary(v); if(p.textContent!==t) p.textContent=t; } hubMiniUpd(); }
 function hubMiniUpd(){ const M=$("hubMini"); if(!M) return; const ti=document.querySelector('.view:not([hidden]) .hb-title'); let on=false;
-  if(ti&&!document.documentElement.classList.contains("prem-open")){ const r=ti.getBoundingClientRect(); on=r.bottom<4; if(on){ const t=ti.textContent; if($("hubMiniT").textContent!==t) $("hubMiniT").textContent=t; const add=document.querySelector('.view:not([hidden]) .hub-add'); $("hubMiniAdd").hidden=!add; } }
+  if(ti&&ti.offsetParent&&ti.textContent.trim()&&!document.documentElement.classList.contains("prem-open")){ const r=ti.getBoundingClientRect(); on=r.bottom<4; if(on){ const t=ti.textContent; if($("hubMiniT").textContent!==t) $("hubMiniT").textContent=t; const add=document.querySelector('.view:not([hidden]) .hub-add'); $("hubMiniAdd").hidden=!add; } }
   if(M.classList.contains("on")!==on){ M.classList.toggle("on",on); M.setAttribute("aria-hidden",String(!on)); M.querySelectorAll("button").forEach(b=>b.tabIndex=on?0:-1); } }
 addEventListener("scroll",()=>{ if(!S._hmRaf) S._hmRaf=requestAnimationFrame(()=>{ S._hmRaf=0; hubMiniUpd(); }); },{passive:true});
 $("hubMiniAdd").addEventListener("click",()=>{ const add=document.querySelector('.view:not([hidden]) .hub-add'); if(add){ window.scrollTo({top:0,behavior:"smooth"}); add.click(); } });

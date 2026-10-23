@@ -158,7 +158,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   partagé par défaut : formulaire de dépense vide et `budgetAdd` suit `foyer/config.partage` (sinon dépense à soi).
 - **Fiche profil** (« Crée ton profil » / « Personnalise ton profil », choix A d'Angel) : formulaire à gauche, carte d'aperçu en hauteur à droite,
   collante en défilant (`refreshPreview` → `.fp-card`, grille sur `section[data-view="fiche"]`, 128 px sur téléphone, 260 px dès 760 px).
-  Pas de titre « Profil » (barre cachée pendant l'inscription). Apparence Automatique/Clair/Sombre : appliquée dès le clic (`E.theme0` = l'ancienne),
+  En-tête (étape, titre, phrase ; « Ton profil » hors inscription) déplacé dans `#fHead`, sur toute la largeur au-dessus des deux colonnes.
+  Pas de titre « Profil » ; pendant l'inscription : pas de barre, pas de retour (la mini-barre `hubMini` ignore un titre vide), pas de bande « Démo ». Apparence Automatique/Clair/Sombre : appliquée dès le clic (`E.theme0` = l'ancienne),
   validée par Enregistrer/Terminer (`E.themeOk`), remise comme avant si on quitte sans enregistrer (`closeEditor`) ; boutons l'un sous l'autre en colonne étroite.
 - Images instantanées à l'ouverture : photo de Cocoony gardée dans `cocoon.secid` (posée par un petit script avant le gros script),
   miniatures 192 px des photos de profil dans `cocoon.thumbs` (`THUMBS`, `makeThumb`, utilisées par `avatarFor`) ; effacées à la déconnexion.
