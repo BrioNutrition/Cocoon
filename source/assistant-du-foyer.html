@@ -1800,6 +1800,7 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .wq-chev{color:var(--au-sub);font-size:20px;transition:transform .2s}.wq-row[aria-expanded="true"] .wq-chev{transform:rotate(90deg)}
 .wq-panel{padding:4px 14px 14px;display:grid;gap:10px}
 .wq-foot{font-size:12.5px!important}
+.wq-autre{display:grid;gap:10px;padding:12px;border-radius:18px;background:var(--au-glass);border:1px solid var(--au-line)}.wq-autre-h{display:flex;gap:8px;align-items:center}.wq-autre-h input{flex:1;min-width:0}
 .wq-eq{display:grid;gap:14px}.wq-eqg{display:grid;gap:8px}.wq-eqt{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--au-sub)}
 .wq-eq .pchips{display:flex!important;flex-wrap:wrap;gap:7px;background:none!important;padding:0!important;border:0!important}
 .wizard .wq-eq .pchip{flex:none!important;width:auto!important;min-height:36px;padding:7px 13px!important;border-radius:999px!important;border:1px solid var(--au-line)!important;background:var(--au-glass)!important;font-size:13.5px;font-weight:600;color:var(--ink)!important}
@@ -1817,6 +1818,9 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .wq-phrases{display:flex;flex-wrap:wrap;gap:8px}
 .wizard .opt.wq-phr{min-height:0!important;flex-direction:row!important;padding:12px 16px!important;border-radius:999px!important;font-size:15px;width:auto}
 .wizard .opt.wq-phr[aria-pressed="true"]{background:#FFC94A!important;color:#1C1B2E!important;border-color:#FFC94A!important}
+/* même épaisseur de contour choisi ou non, sans effet d'enfoncement : rien ne bouge quand on touche une réponse */
+.wizard .opt,.wizard .opt:not([aria-pressed="true"]),.wizard .opt[aria-pressed="true"]{border-width:1.5px!important}
+.wizard .opt.wq-phr,.wizard .opt.wq-phr:active{transform:none!important;box-shadow:none!important;transition:background .15s,color .15s,border-color .15s!important}
 .wq-part b{font-size:20px}
 .wq-ri.off .wq-lt,.wq-ri.off .wq-emo,.wq-ri.off .wq-val{opacity:.45}
 
@@ -4986,6 +4990,7 @@ function buildPlan(mode,a){
   for(const [n,c] of BIN_PRESETS){ const B=(a.bins||{})[n]; if(B&&B.jours&&B.jours.length) bins.push({nom:n,c,jours:B.jours.slice().sort(),freq:B.freq||1,ref:(B.freq||1)>1?wzBinRef(B.jours,B.week):null,on:true}); }
   for(const [n,c,fq] of wzAbos()){ const A=(a.abos||{})[n]; const m=A&&A.on?parseMoney(A.montant):null; if(m) abos.push({nom:n==="Streaming (Netflix, Spotify…)"?"Streaming":n,cat:c,freq:fq,montant:m,debut:wzDayOfMonth(A.jour),on:true}); }
   if(a.statut==="proprio"){ const m=parseMoney(a.foncier); if(m) abos.push({nom:"Taxe foncière",cat:"logement",freq:"mensuel",montant:m,debut:wzDayOfMonth(15),on:true}); }
+  for(const x of (a.abosPerso||[])){ const n=(x.nom||"").trim(), m=parseMoney(x.montant); if(n&&m) abos.push({nom:n.slice(0,40),cat:"autre",freq:"mensuel",montant:m,debut:wzDayOfMonth(x.jour),on:true}); }
   if(abos.length) add("factures",1);
   for(const [k,l,who] of PAPIERS){ const P=(a.papiers||{})[k]; if(!(P&&P.on&&P.date)) continue;
     docs.push({titre:k==="bail"?"Bail du logement":l,expire:P.date,pour:who,on:true});
@@ -5125,8 +5130,8 @@ function wqPoubelles({W,a,box,key,rerender}){
 function wqGarage({W,a,box,key,rerender}){
   wqH(box,"Ton garage","Touche une place pour y garer tes véhicules : on suivra contrôle technique, révisions et assurance.");
   const V=a.vehicules.filter(x=>x!=="aucun"), g=el("div",{class:"wq-scene wq-garage"});
-  for(const [v,e,l] of [["voiture","🚗","Voiture"],["moto","🛵","Moto ou scooter"],["velo","🚲","Vélo électrique"]]){ const on=V.includes(v);
-    g.append(el("button",{type:"button",class:"wq-place","aria-pressed":String(on),id:"wqV"+v,onclick:()=>{ a.vehicules=toggleIn(a.vehicules,v,"aucun"); W.plan=null; rerender(); }},el("span",{class:"wq-pe","aria-hidden":"true",text:e}),el("b",{text:l}),el("small",{text:on?"Garé ✓":"Toucher pour garer"}))); }
+  for(const [v,e,l,f] of [["voiture","🚗","Voiture",1],["moto","🛵","Moto ou scooter",1],["velo","🚲","Vélo électrique",0]]){ const on=V.includes(v);
+    g.append(el("button",{type:"button",class:"wq-place","aria-pressed":String(on),id:"wqV"+v,onclick:()=>{ a.vehicules=toggleIn(a.vehicules,v,"aucun"); W.plan=null; rerender(); }},el("span",{class:"wq-pe","aria-hidden":"true",text:e}),el("b",{text:l}),el("small",{text:on?(f?"Garée ✓":"Garé ✓"):"Toucher pour garer"}))); }
   box.append(g);
   if(!V.length) box.append(el("div",{class:"wq-none"},optButton("Aucun véhicule",FI.aucun||"",a.vehicules.includes("aucun"),()=>{ a.vehicules=a.vehicules.includes("aucun")?[]:["aucun"]; W.plan=null; rerender(); })));
   /* contrôle technique facultatif : voiture (4 ans puis tous les 2 ans), moto ou scooter (5 ans puis tous les 3 ans, depuis 2024) */
@@ -5202,7 +5207,9 @@ function renderWizard(){
     box.append(el("h1",{text:"Tes charges fixes"}),el("p",{class:"help",text:"Touche ce que tu paies régulièrement : on l'ajoute au Budget avec un rappel avant chaque prélèvement."}));
     a.abos=a.abos||{};
     const tot=el("b",{class:"wq-big"}), totN=el("small",{}), totBox=el("div",{class:"wq-total"},el("small",{text:"Chaque mois"}),tot,totN);
-    const upTot=()=>{ let t=0,n=0; for(const [nm,c0,fq] of wzAbos()){ const A=a.abos[nm]; if(!A||!A.on) continue; n++; t+=(parseMoney(A.montant)||0)*((FREQ[fq]||FREQ.mensuel).perMonth||1); } tot.textContent=money(Math.round(t)); totN.textContent=n?n+" prélèvement"+(n>1?"s":"")+" au Budget":"Rien pour l'instant"; totBox.classList.toggle("on",t>0); };
+    a.abosPerso=a.abosPerso||[];
+    const upTot=()=>{ let t=0,n=0; for(const [nm,c0,fq] of wzAbos()){ const A=a.abos[nm]; if(!A||!A.on) continue; n++; t+=(parseMoney(A.montant)||0)*((FREQ[fq]||FREQ.mensuel).perMonth||1); }
+      for(const x of a.abosPerso){ const m=parseMoney(x.montant); if((x.nom||"").trim()&&m){ n++; t+=m; } } tot.textContent=money(Math.round(t)); totN.textContent=n?n+" prélèvement"+(n>1?"s":"")+" au Budget":"Rien pour l'instant"; totBox.classList.toggle("on",t>0); };
     box.append(totBox);
     const g=el("div",{class:"wz-abos"});
     for(const [n,c,fq] of wzAbos()){ if(n==="Loyer"&&a.statut==="proprio") continue; if(n==="Assurance auto"&&!(a.vehicules||[]).some(v=>v==="voiture"||v==="moto")) continue;
@@ -5214,7 +5221,17 @@ function renderWizard(){
         const jr=el("input",{type:"number",min:"1",max:"28",inputmode:"numeric",id:"wzJr-"+slug(n),placeholder:"5"}); jr.value=A.jour; jr.addEventListener("input",()=>{ A.jour=jr.value; W.plan=null; });
         row.append(el("div",{class:"wz-abo-in"},wzField("Montant",am,"wzAm-"+slug(n)),wzField("Jour du prélèvement",jr,"wzJr-"+slug(n)))); }
       g.append(row); }
-    box.append(g); upTot();
+    box.append(g);
+    /* « Autre » : ce qui n'est pas dans la liste (crèche, cantine, crédit…) */
+    const og=el("div",{class:"wz-mates wq-autres"}); og.append(el("span",{class:"label",text:"Autre"}));
+    a.abosPerso.forEach((x,i)=>{ const nm=el("input",{type:"text",id:"wqAbN"+i,maxlength:"40",placeholder:"Crèche, cantine, crédit…","aria-label":"Nom de la charge"}); nm.value=x.nom||"";
+      nm.addEventListener("input",()=>{ x.nom=nm.value; W.plan=null; wzRefresh(key,a); upTot(); });
+      const am=el("input",{type:"text",inputmode:"decimal",id:"wqAbM"+i,placeholder:"0,00 €","aria-label":"Montant par mois"}); am.value=x.montant||""; am.addEventListener("input",()=>{ x.montant=am.value; W.plan=null; wzRefresh(key,a); upTot(); });
+      const jr=el("input",{type:"number",min:"1",max:"28",inputmode:"numeric",id:"wqAbJ"+i,placeholder:"5","aria-label":"Jour du prélèvement"}); jr.value=x.jour||"5"; jr.addEventListener("input",()=>{ x.jour=jr.value; W.plan=null; });
+      og.append(el("div",{class:"wq-autre"},el("div",{class:"wq-autre-h"},nm,el("button",{type:"button",class:"mate-x","aria-label":"Retirer cette charge",text:"×",onclick:()=>{ a.abosPerso.splice(i,1); W.plan=null; rerender(); }})),
+        el("div",{class:"wz-abo-in",style:"padding:0"},wzField("Montant par mois",am,"wqAbM"+i),wzField("Jour du prélèvement",jr,"wqAbJ"+i)))); });
+    og.append(el("button",{type:"button",class:"wq-add",id:"wqAbAdd",onclick:()=>{ a.abosPerso.push({nom:"",montant:"",jour:"5"}); W.plan=null; rerender(); setTimeout(()=>{ const x=$("wqAbN"+(a.abosPerso.length-1)); if(x) x.focus(); },40); }},el("span",{"aria-hidden":"true",text:"＋"}),"Ajouter une autre charge"));
+    box.append(og); upTot();
   }
   const nav=el("div",{class:"wz-nav"});
   
@@ -5231,7 +5248,8 @@ function wzNeed(key,a){
     if(a.menage.includes("coloc")&&!(a.colocs||[]).some(c=>(c.nom||"").trim())) return "Indique le prénom d'au moins un coloc";
     if(a.menage.includes("coloc")&&(a.colocs||[]).some(c=>(c.email||"").trim()&&!MAILOK(c.email))) return "Vérifie l'e-mail de tes colocs";
     if(a.menage.includes("enfants")&&!splitNames(a.enfants).length) return "Indique le prénom des enfants"; return null; }
-  if(key==="abonnements"){ for(const [n,A] of Object.entries(a.abos||{})) if(A.on&&!parseMoney(A.montant)) return "Indique le montant : "+n; return null; }
+  if(key==="abonnements"){ for(const [n,A] of Object.entries(a.abos||{})) if(A.on&&!parseMoney(A.montant)) return "Indique le montant : "+n;
+    for(const x of (a.abosPerso||[])) if((x.nom||"").trim()&&!parseMoney(x.montant)) return "Indique le montant : "+x.nom.trim(); return null; }
   if(key==="partage"){ if(a.partageMode==="prorata"){ const t=Object.entries(a.pct||{}).filter(([p])=>p==="__moi"||wzAdults(a).includes(p)).reduce((s,[,v])=>s+(parseInt(v,10)||0),0); if(t!==100) return "Le total doit faire 100 %"; } return null; }
   if(key==="papiers"){ for(const [k,P] of Object.entries(a.papiers||{})) if(P.on&&!P.date) return "Indique la date d'expiration"; return null; }
   if(key==="animaux"){ if(!a.animaux.length) return "Choisis au moins une réponse";

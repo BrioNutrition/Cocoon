@@ -152,8 +152,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   déplie (`wqRow`, `W.open`), équipements rangés par pièce (`EQUIP_G`, rappels pour chacun dans buildPlan) + « Autre chose ? »
   (`#wqEqAdd`, `a.equipPerso` → équipements de Maison, groupe du récap) ; 5 une ligne par bac + « Je ferai ça plus tard » (`#wqLater`) ; 6 garage (`#wqVvoiture`…, « Aucun véhicule »),
   contrôle technique facultatif en une colonne pour la voiture et pour la moto/scooter (`a.motoCT`/`a.motoMec`, CT moto à 5 ans puis tous les 3 ans) ;
-  7 total « Chaque mois » qui monte ; 8 partage **seulement s'il y a un 2e adulte** (`wzAdults`), moitié-moitié par défaut (« Garder
-  moitié-moitié ») ; **papiers retirés** ; 10 « Ce qui m'énerve le plus, c'est… » (phrases `WQ_PRIO`, `.opt.wq-phr`) ; 11 groupes repliés
+  7 total « Chaque mois » qui monte + section « Autre » (`a.abosPerso`, `#wqAbAdd`, catégorie budget « autre ») ; 8 partage **seulement s'il y a un 2e adulte** (`wzAdults`), moitié-moitié par défaut (« Garder
+  moitié-moitié ») ; **papiers retirés** ; 10 « Ce qui m'énerve le plus, c'est… » (phrases `WQ_PRIO`, `.opt.wq-phr` ; contour 1,5 px choisi ou non et pas d'enfoncement : rien ne bouge) ; 11 groupes repliés
   avec un interrupteur par groupe (`wqPlan`, `#wqG-…`, `P.partageOff`). Sans partage réglé (foyer créé seul puis membre ajouté), rien n'est
   partagé par défaut : formulaire de dépense vide et `budgetAdd` suit `foyer/config.partage` (sinon dépense à soi).
 - Images instantanées à l'ouverture : photo de Cocoony gardée dans `cocoon.secid` (posée par un petit script avant le gros script),
