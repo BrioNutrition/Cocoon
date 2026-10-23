@@ -4976,7 +4976,9 @@ function buildPlan(mode,a){
   const V=a.vehicules.filter(x=>x!=="aucun");
   if(V.length) add("voitures",2);
   if(V.includes("voiture")){ const ct=a.voitureCT?wzNext(a.voitureCT,24):(a.voitureMec&&wzAge(a.voitureMec)<4?Math.max(1,Math.round((addMonths(parse(a.voitureMec),48)-today())/864e5)):null); T("Contrôle technique de la voiture","voitures",24,"Prochain contrôle technique",ct||60); T("Révision et vidange de la voiture","voitures",12,"Prochaine révision recommandée",90); T("Vérifier l'échéance de l'assurance auto","factures",12,"Prochaine vérification",30); add("factures",1); }
-  if(V.includes("moto")) T("Révision de la moto","voitures",12,"Prochaine révision recommandée",90);
+  if(V.includes("moto")){ T("Révision de la moto","voitures",12,"Prochaine révision recommandée",90);
+    const mct=a.motoCT?wzNext(a.motoCT,36):(a.motoMec&&wzAge(a.motoMec)<5?Math.max(1,Math.round((addMonths(parse(a.motoMec),60)-today())/864e5)):null);
+    if(mct) T("Contrôle technique de la moto","voitures",36,"Prochain contrôle technique",mct); }
   if(V.includes("velo")) T("Révision du vélo électrique","voitures",12,"Prochaine révision recommandée",120);
   if(a.prio.includes("factures")) T("Faire le point sur les abonnements","factures",12,"Prochain point recommandé",30);
   if(a.prio.includes("papiers")){ add("documents",1); T("Ranger les papiers importants dans l'app","documents",0,null,7); }
@@ -5127,9 +5129,12 @@ function wqGarage({W,a,box,key,rerender}){
     g.append(el("button",{type:"button",class:"wq-place","aria-pressed":String(on),id:"wqV"+v,onclick:()=>{ a.vehicules=toggleIn(a.vehicules,v,"aucun"); W.plan=null; rerender(); }},el("span",{class:"wq-pe","aria-hidden":"true",text:e}),el("b",{text:l}),el("small",{text:on?"Garé ✓":"Toucher pour garer"}))); }
   box.append(g);
   if(!V.length) box.append(el("div",{class:"wq-none"},optButton("Aucun véhicule",FI.aucun||"",a.vehicules.includes("aucun"),()=>{ a.vehicules=a.vehicules.includes("aucun")?[]:["aucun"]; W.plan=null; rerender(); })));
-  if(V.includes("voiture")){ const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"Ta voiture (facultatif) : pour caler le contrôle technique"}));
-    grp.append(el("div",{class:"wz-soin"},wzField("Dernier contrôle technique",wzDate("wzCT",a.voitureCT,v=>{ a.voitureCT=v; W.plan=null; }),"wzCT"),wzField("Ou mise en circulation (si moins de 4 ans)",wzDate("wzMec",a.voitureMec,v=>{ a.voitureMec=v; W.plan=null; }),"wzMec")));
-    box.append(grp); } }
+  /* contrôle technique facultatif : voiture (4 ans puis tous les 2 ans), moto ou scooter (5 ans puis tous les 3 ans, depuis 2024) */
+  const ct=(lab,ctK,mecK,ans,idC,idM)=>{ const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:lab}));
+    grp.append(el("div",{class:"wz-soin one"},wzField("Dernier contrôle technique",wzDate(idC,a[ctK],v=>{ a[ctK]=v; W.plan=null; }),idC),wzField("Ou mise en circulation (si moins de "+ans+" ans)",wzDate(idM,a[mecK],v=>{ a[mecK]=v; W.plan=null; }),idM)));
+    box.append(grp); };
+  if(V.includes("voiture")) ct("Ta voiture (facultatif) : pour caler le contrôle technique","voitureCT","voitureMec",4,"wzCT","wzMec");
+  if(V.includes("moto")) ct("Ta moto ou ton scooter (facultatif) : pour caler le contrôle technique","motoCT","motoMec",5,"wzCTm","wzMecm"); }
 const WQ_PRIO={factures:"d'oublier une facture",courses:"de faire les courses seul·e",papiers:"de chercher un papier",rdv:"d'oublier un rendez-vous",colis:"de rater un colis",partage:"de tout faire à la maison",entretien:"d'oublier l'entretien de la maison"};
 function wqPrio({W,a,box,key,rerender}){
   const solo=a.menage.includes("seul")&&!a.menage.includes("enfants"); if(solo) a.prio=a.prio.filter(x=>x!=="partage"&&x!=="courses");
