@@ -3,7 +3,7 @@
   "before": null,
   "old": [
    "<title>Cocoon</title>",
-   "<script>try{var _t=localStorage.getItem(\"cocoon.theme\");if(_t===\"dark\"||_t===\"light\")document.documentElement.dataset.theme=_t;}catch(e){}</script>"
+   "<script>/* thème sombre par défaut (demandé par Angel) : « Clair » et « Automatique » restent au choix dans Personnaliser */try{var _t=localStorage.getItem(\"cocoon.theme\");if(!localStorage.getItem(\"cocoon.themeD\")){localStorage.setItem(\"cocoon.themeD\",\"1\");if(!_t||_t===\"auto\"){_t=\"dark\";localStorage.setItem(\"cocoon.theme\",\"dark\");}}if(_t!==\"auto\")document.documentElement.dataset.theme=_t===\"light\"?\"light\":\"dark\";}catch(e){document.documentElement.dataset.theme=\"dark\";}</script>"
   ],
   "new": [
    "<title>Démo Cocoon</title>"
@@ -79,21 +79,21 @@
   "before": "/* ---------- Thème clair / sombre ---------- */",
   "old": [
    "function applyTheme(v){ const r=document.documentElement; if(v===\"light\"||v===\"dark\") r.dataset.theme=v; else delete r.dataset.theme; try{ localStorage.setItem(\"cocoon.theme\",v||\"auto\"); }catch(_){} }",
-   "function curTheme(){ return (S.prefs&&S.prefs.theme)||(()=>{ try{ return localStorage.getItem(\"cocoon.theme\"); }catch(_){ return null; } })()||\"auto\"; }"
+   "function curTheme(){ return (S.prefs&&S.prefs.theme)||(()=>{ try{ return localStorage.getItem(\"cocoon.theme\"); }catch(_){ return null; } })()||\"dark\"; }"
   ],
   "new": [
    "function applyTheme(v){ if(v!==\"light\") v=\"dark\"; /* démo : sombre par défaut */ const r=document.documentElement; if(v===\"light\"||v===\"dark\") r.dataset.theme=v; else delete r.dataset.theme; }",
-   "function curTheme(){ return (S.prefs&&S.prefs.theme)||\"auto\"; }"
+   "function curTheme(){ return (S.prefs&&S.prefs.theme)||\"dark\"; }"
   ],
   "after": "function setTheme(v){ applyTheme(v); S.prefs=Object.assign({},S.prefs||{},{theme:v}); if(S.db&&S.uid) S.db.doc(\"data/users/\"+S.uid+\"/prefs\").set(S.prefs).catch(()=>{}); }"
  },
  {
   "before": "function setTheme(v){ applyTheme(v); S.prefs=Object.assign({},S.prefs||{},{theme:v}); if(S.db&&S.uid) S.db.doc(\"data/users/\"+S.uid+\"/prefs\").set(S.prefs).catch(()=>{}); }",
   "old": [
-   "try{ const t=localStorage.getItem(\"cocoon.theme\"); if(t===\"light\"||t===\"dark\") applyTheme(t); }catch(_){}"
+   "try{ const t=localStorage.getItem(\"cocoon.theme\"); applyTheme(t===\"light\"||t===\"auto\"?t:\"dark\"); }catch(_){ document.documentElement.dataset.theme=\"dark\"; }"
   ],
   "new": [
-   "/* démo : comme un nouvel utilisateur, le thème suit le téléphone */"
+   "/* démo : sombre par défaut, comme l'app */ applyTheme(\"dark\");"
   ],
   "after": ""
  },

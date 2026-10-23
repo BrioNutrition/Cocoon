@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#F6F5FB" id="cxTc"><script>(function(){var r=document.documentElement,m=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)");function u(){var t=document.getElementById("cxTc");if(!t)return;var d=r.dataset.theme==="dark"||(r.dataset.theme!=="light"&&m&&m.matches);t.content=d?"#13121C":"#F6F5FB";}try{new MutationObserver(u).observe(r,{attributes:true,attributeFilter:["data-theme"]});m&&m.addEventListener&&m.addEventListener("change",u);document.addEventListener("DOMContentLoaded",u);}catch(e){}u();})()</script>
+<meta name="theme-color" content="#13121C" id="cxTc"><script>(function(){var r=document.documentElement,m=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)");function u(){var t=document.getElementById("cxTc");if(!t)return;var d=r.dataset.theme==="dark"||(r.dataset.theme!=="light"&&m&&m.matches);t.content=d?"#13121C":"#F6F5FB";}try{new MutationObserver(u).observe(r,{attributes:true,attributeFilter:["data-theme"]});m&&m.addEventListener&&m.addEventListener("change",u);document.addEventListener("DOMContentLoaded",u);}catch(e){}u();})()</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Cocoon">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="description" content="Cocoon, le carnet partagé de la maison : tâches, courses, papiers, budget.">
-<script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
+<script>try{var _t=localStorage.getItem("cocoon.theme");if(!localStorage.getItem("cocoon.themeD")){localStorage.setItem("cocoon.themeD","1");if(!_t||_t==="auto"){_t="dark";localStorage.setItem("cocoon.theme","dark");}}if(_t!=="auto")document.documentElement.dataset.theme=_t==="light"?"light":"dark";}catch(e){document.documentElement.dataset.theme="dark";}</script>
 <style>
 html{background:#13121C;color-scheme:light dark}@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not(:has(#boot)):not(:has(#cxIntro)){background:#F6F5FB}}html[data-theme="light"]:not(:has(#boot)):not(:has(#cxIntro)){background:#F6F5FB}
 #cxIntro{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:#13121C!important;pointer-events:none}
@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="23/10 22:08";</script>
+<script>window.COCOON_BUILD="23/10 22:12";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -93,7 +93,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <div id="cxIntro" aria-hidden="true"><div class="cxi-c"><div class="cxi-w"><i></i><i></i><img class="cxi-logo" src="icon-192.png" alt=""></div><div class="cxi-name"><span style="--i:0">C</span><span style="--i:1">o</span><span style="--i:2">c</span><span style="--i:3">o</span><span style="--i:4">o</span><span style="--i:5">n</span></div></div></div>
 <script>(function(){try{var la=localStorage.getItem("cocoon.auth")||sessionStorage.getItem("cocoon.auth");if(la&&!/[?&#](join|invite|code)=/.test(location.href)){var ce=document.getElementById("cxIntro");if(ce)ce.remove();}}catch(_){}var T=performance.now(),done=false;window.cxIntroOut=function(fast){if(done)return;done=true;var el=document.getElementById("cxIntro");if(!el)return;if(fast){try{el.animate([{opacity:1},{opacity:0}],{duration:280,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}return;}var wait=Math.max(0,1250-(performance.now()-T));setTimeout(function(){var c=el.querySelector(".cxi-c");try{c.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(-26px) scale(.94)"}],{duration:420,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"});el.animate([{opacity:1},{opacity:0}],{duration:460,delay:120,easing:"ease-out",fill:"forwards"}).onfinish=function(){el.remove();};}catch(_){el.remove();}},wait);};setTimeout(function(){window.cxIntroOut();},9000);})();</script>
 <title>Cocoon</title>
-<script>try{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}catch(e){}</script>
+<script>/* thème sombre par défaut (demandé par Angel) : « Clair » et « Automatique » restent au choix dans Personnaliser */try{var _t=localStorage.getItem("cocoon.theme");if(!localStorage.getItem("cocoon.themeD")){localStorage.setItem("cocoon.themeD","1");if(!_t||_t==="auto"){_t="dark";localStorage.setItem("cocoon.theme","dark");}}if(_t!=="auto")document.documentElement.dataset.theme=_t==="light"?"light":"dark";}catch(e){document.documentElement.dataset.theme="dark";}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
 <style>
@@ -8656,9 +8656,9 @@ function applyTextSize(v){ v=v||textSizeGet(); let pct=100;
 try{ applyTextSize(); }catch(_){}
 /* ---------- Thème clair / sombre ---------- */
 function applyTheme(v){ const r=document.documentElement; if(v==="light"||v==="dark") r.dataset.theme=v; else delete r.dataset.theme; try{ localStorage.setItem("cocoon.theme",v||"auto"); }catch(_){} }
-function curTheme(){ return (S.prefs&&S.prefs.theme)||(()=>{ try{ return localStorage.getItem("cocoon.theme"); }catch(_){ return null; } })()||"auto"; }
+function curTheme(){ return (S.prefs&&S.prefs.theme)||(()=>{ try{ return localStorage.getItem("cocoon.theme"); }catch(_){ return null; } })()||"dark"; }
 function setTheme(v){ applyTheme(v); S.prefs=Object.assign({},S.prefs||{},{theme:v}); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); }
-try{ const t=localStorage.getItem("cocoon.theme"); if(t==="light"||t==="dark") applyTheme(t); }catch(_){}
+try{ const t=localStorage.getItem("cocoon.theme"); applyTheme(t==="light"||t==="auto"?t:"dark"); }catch(_){ document.documentElement.dataset.theme="dark"; }
 
 /* ---------- Cocoon Plus (aperçu, paiement pas encore branché) ---------- */
 const PM_FEATS=[["📸","#FFF1C9","Papiers en photo","Prends la photo : titre, date et montant sont lus, le papier est rangé avec son rappel."],

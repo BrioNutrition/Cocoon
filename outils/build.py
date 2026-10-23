@@ -82,7 +82,7 @@ manifest = {
     "name": "Cocoon", "short_name": "Cocoon", "lang": "fr",
     "description": "Le carnet partagé de la maison : tâches, courses, papiers, budget.",
     "start_url": "./", "scope": "./", "display": "standalone",
-    "background_color": "#F6F5FB", "theme_color": "#F6F5FB",
+    "background_color": "#13121C", "theme_color": "#13121C",
     "icons": [{"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
               {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
               {"src": "icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}],
@@ -279,13 +279,13 @@ head = f"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#F6F5FB" id="cxTc"><script>(function(){{var r=document.documentElement,m=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)");function u(){{var t=document.getElementById("cxTc");if(!t)return;var d=r.dataset.theme==="dark"||(r.dataset.theme!=="light"&&m&&m.matches);t.content=d?"#13121C":"#F6F5FB";}}try{{new MutationObserver(u).observe(r,{{attributes:true,attributeFilter:["data-theme"]}});m&&m.addEventListener&&m.addEventListener("change",u);document.addEventListener("DOMContentLoaded",u);}}catch(e){{}}u();}})()</script>
+<meta name="theme-color" content="#13121C" id="cxTc"><script>(function(){{var r=document.documentElement,m=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)");function u(){{var t=document.getElementById("cxTc");if(!t)return;var d=r.dataset.theme==="dark"||(r.dataset.theme!=="light"&&m&&m.matches);t.content=d?"#13121C":"#F6F5FB";}}try{{new MutationObserver(u).observe(r,{{attributes:true,attributeFilter:["data-theme"]}});m&&m.addEventListener&&m.addEventListener("change",u);document.addEventListener("DOMContentLoaded",u);}}catch(e){{}}u();}})()</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Cocoon">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="description" content="Cocoon, le carnet partagé de la maison : tâches, courses, papiers, budget.">
-<script>try{{var _t=localStorage.getItem("cocoon.theme");if(_t==="dark"||_t==="light")document.documentElement.dataset.theme=_t;}}catch(e){{}}</script>
+<script>try{{var _t=localStorage.getItem("cocoon.theme");if(!localStorage.getItem("cocoon.themeD")){{localStorage.setItem("cocoon.themeD","1");if(!_t||_t==="auto"){{_t="dark";localStorage.setItem("cocoon.theme","dark");}}}}if(_t!=="auto")document.documentElement.dataset.theme=_t==="light"?"light":"dark";}}catch(e){{document.documentElement.dataset.theme="dark";}}</script>
 {INTRO_CSS}
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">

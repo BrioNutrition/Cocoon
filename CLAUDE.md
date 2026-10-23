@@ -142,6 +142,9 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   « Cocoon » en Bricolage 800 comme la barre du haut de l'app.
   Création de compte avec une adresse déjà prise (`cocoon_email_exists`, erreur « already registered » ou utilisateur sans identité) :
   `taken(em)` → « Cette adresse e-mail est déjà utilisée… » + « Me connecter à ce compte » (connexion, e-mail prérempli) et « Mot de passe oublié ? ».
+- **Thème sombre par défaut partout** (demandé par Angel, connexion et questionnaire compris) : script tout en haut du `<head>` (source et
+  `build.py`) : sans choix enregistré → `cocoon.theme=dark` (migration unique des anciens « auto » via `cocoon.themeD`) ; `curTheme()` vaut
+  « dark » par défaut ; « Clair » et « Automatique » restent dans Personnaliser. Manifeste et `theme-color` en #13121C. Démo : sombre aussi.
 - Images instantanées à l'ouverture : photo de Cocoony gardée dans `cocoon.secid` (posée par un petit script avant le gros script),
   miniatures 192 px des photos de profil dans `cocoon.thumbs` (`THUMBS`, `makeThumb`, utilisées par `avatarFor`) ; effacées à la déconnexion.
 - App iPhone à jour toute seule : `cd app && npm run auto:ios` (`app/auto.mjs`) sur le Mac d'Angel → récupère `main` toutes les 30 s et
