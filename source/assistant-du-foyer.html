@@ -2796,6 +2796,22 @@ html[data-theme="light"]:has(#boot),html[data-theme="light"]:has(#boot) body{bac
 #docPour .pchip{flex:0 0 auto;justify-content:flex-start}
 #docPour{justify-content:flex-start}
 #fPreview .pw-edit,#fPreview .pw-add{display:none}
+/* fiche profil : formulaire à gauche, carte d'aperçu à droite (collante) */
+section[data-view="fiche"]:not([hidden]){display:grid!important;grid-template-columns:minmax(0,1fr) 128px;column-gap:12px;align-items:start}
+section[data-view="fiche"] > .hub-bar{grid-column:1/-1}
+section[data-view="fiche"] > #ficheForm{grid-column:1;grid-row:2;min-width:0}
+section[data-view="fiche"] > #fPreview{grid-column:2;grid-row:2;position:sticky;top:calc(env(safe-area-inset-top,0px) + 72px);margin:0!important}
+.fp-card{border-radius:20px;overflow:hidden;background:var(--surface);border:1px solid var(--line);text-align:center;display:grid;justify-items:center;padding-bottom:10px;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+.wrap.finishing .fp-card{background:var(--au-glass);border-color:var(--au-line);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.fp-ban{width:100%;height:66px;background-size:cover}
+.fp-ban.plain{background:radial-gradient(90% 120% at 100% 0,color-mix(in srgb,var(--mc) 40%,#FFC94A),transparent 65%),linear-gradient(135deg,var(--mc),color-mix(in srgb,var(--mc) 55%,#1C1B2E))!important}
+.fp-av{margin-top:-32px;border-radius:50%;box-shadow:0 0 0 3px var(--surface);line-height:0}
+.fp-n{margin-top:6px;font-size:16px;font-family:var(--f-display);padding:0 6px;overflow-wrap:anywhere;line-height:1.15}
+.fp-sn{font-size:11.5px;color:var(--muted);padding:0 6px}.fp-s{font-size:11.5px;color:var(--muted);margin-top:2px;padding:0 6px}
+.fp-pill{margin-top:8px;background:color-mix(in srgb,var(--ink) 10%,transparent);border-radius:999px;padding:3px 9px;font-size:11px;font-weight:700}
+.fp-live{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);width:100%;font-size:10.5px;color:var(--muted)}
+@media (min-width:760px){section[data-view="fiche"]:not([hidden]){grid-template-columns:minmax(0,1fr) 260px;column-gap:20px}
+  .fp-ban{height:120px}.fp-av{margin-top:-48px}.fp-av .av{width:96px!important;height:96px!important;font-size:42px!important}.fp-n{font-size:22px}.fp-s,.fp-sn{font-size:13.5px}}
 .bd-doc.bd-flash{animation:bdFlash 1.8s ease}
 @keyframes bdFlash{0%,35%{box-shadow:0 0 0 3px #FFC94A,0 8px 24px color-mix(in srgb,#FFC94A 35%,transparent)}100%{box-shadow:0 0 0 0 transparent}}
 .fy-sw{width:22px!important;height:22px!important;margin-left:2px!important;background:none!important;border-radius:0!important;color:var(--muted)!important;transform:translateY(-4px)!important}
@@ -4383,7 +4399,14 @@ function openSelfEditor(){
   document.querySelector(".wrap").classList.add("finishing"); $("ficheBack").hidden=true;
   setTab("fiche"); buildEditor();
 }
-function refreshPreview(){ const p=$("fPreview"); if(!p) return; p.innerHTML=""; const d=S.edit.d; p.append(pwCard(Object.assign({},d,{id:S.edit.id||"_new",infos:(d.infos||[]).filter(x=>x&&!x.p)}))); }
+/* aperçu de la fiche : carte en hauteur à droite du formulaire, qui reste visible en défilant (choix A d'Angel) */
+function refreshPreview(){ const p=$("fPreview"); if(!p) return; p.innerHTML=""; const d=S.edit.d, m=Object.assign({},d,{id:S.edit.id||"_new"}), pet=typeOf(m)==="animal", age=ageText(m);
+  const ban=el("div",{class:"fp-ban"}); paintBanner(ban,m); ban.style.setProperty("--mc",m.c||"#2C6E8F");
+  const admin=S.edit.self||d.role==="admin";
+  p.append(el("div",{class:"fp-card",style:"--mc:"+(m.c||"#2C6E8F")},ban,el("div",{class:"fp-av"},avatarFor(m,64)),
+    el("b",{class:"fp-n",text:(d.nom||"").trim()||(pet?"Son nom":"Ton prénom")}),(d.surnom||"").trim()?el("small",{class:"fp-sn",text:"« "+d.surnom.trim()+" »"}):null,
+    el("small",{class:"fp-s",text:(pet?[m.espece||"Animal",age]:[typeLabel(m),age]).filter(Boolean).join(" · ")}),
+    admin?el("span",{class:"fp-pill",text:"👑 Admin"}):null,el("span",{class:"fp-live",text:"Aperçu en direct"}))); }
 /* Recadrage : glisser pour déplacer, pincer / molette / curseur pour zoomer. Renvoie un canvas carré (ou null si annulé). */
 function cropImage(file,o){ o=o||{}; const out=o.out||512, round=o.round!==false;
   return new Promise(res=>{ let url; try{ url=URL.createObjectURL(file); }catch(_){ res(null); return; }

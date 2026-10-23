@@ -156,6 +156,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   moitié-moitié ») ; **papiers retirés** ; 10 « Ce qui m'énerve le plus, c'est… » (phrases `WQ_PRIO`, `.opt.wq-phr` ; contour 1,5 px choisi ou non et pas d'enfoncement : rien ne bouge) ; 11 groupes repliés
   avec un interrupteur par groupe (`wqPlan`, `#wqG-…`, `P.partageOff`). Sans partage réglé (foyer créé seul puis membre ajouté), rien n'est
   partagé par défaut : formulaire de dépense vide et `budgetAdd` suit `foyer/config.partage` (sinon dépense à soi).
+- **Fiche profil** (« Crée ton profil » / « Personnalise ton profil », choix A d'Angel) : formulaire à gauche, carte d'aperçu en hauteur à droite,
+  collante en défilant (`refreshPreview` → `.fp-card`, grille sur `section[data-view="fiche"]`, 128 px sur téléphone, 260 px dès 760 px).
 - Images instantanées à l'ouverture : photo de Cocoony gardée dans `cocoon.secid` (posée par un petit script avant le gros script),
   miniatures 192 px des photos de profil dans `cocoon.thumbs` (`THUMBS`, `makeThumb`, utilisées par `avatarFor`) ; effacées à la déconnexion.
 - App iPhone à jour toute seule : `cd app && npm run auto:ios` (`app/auto.mjs`) sur le Mac d'Angel → récupère `main` toutes les 30 s et
