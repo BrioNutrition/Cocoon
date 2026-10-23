@@ -2,8 +2,15 @@
    barre du haut avec boutons ronds en verre (retour, +) et titre, barre d'accueil iOS. window.__ios(onglet) : 0 Accueil, 1 Foyer, 2 Cocoony, 3 Moi. */
 (function(){
   const css=document.createElement("style"); css.textContent=`
-  .ios-glass{background:rgba(255,255,255,.58);-webkit-backdrop-filter:blur(18px) saturate(1.8);backdrop-filter:blur(18px) saturate(1.8);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(255,255,255,.35),0 0 0 .5px rgba(28,27,46,.10),0 10px 30px rgba(28,27,46,.14)}
+  /* verre Liquid Glass d'iOS 26 : matière claire et translucide, reflet net en haut, bord qui réfracte la lumière (épaisseur),
+     légère ombre de contact ; le contenu derrière est flouté et saturé */
+  .ios-glass{position:relative;isolation:isolate;
+    background:linear-gradient(180deg,rgba(255,255,255,.62) 0%,rgba(255,255,255,.34) 48%,rgba(255,255,255,.5) 100%);
+    -webkit-backdrop-filter:blur(14px) saturate(2.1) brightness(1.06);backdrop-filter:blur(14px) saturate(2.1) brightness(1.06);
+    box-shadow:inset 0 1.5px 1px rgba(255,255,255,.98),inset 0 -1.5px 1.5px rgba(255,255,255,.7),inset 1px 0 1px rgba(255,255,255,.45),inset -1px 0 1px rgba(255,255,255,.45),
+      inset 0 -6px 10px -6px rgba(28,27,46,.10),0 0 0 .6px rgba(28,27,46,.07),0 6px 18px rgba(28,27,46,.13),0 1px 3px rgba(28,27,46,.08)}
+  .ios-glass::before{content:"";position:absolute;inset:1.5px;border-radius:inherit;z-index:-1;pointer-events:none;
+    background:radial-gradient(120% 70% at 30% 0%,rgba(255,255,255,.75),rgba(255,255,255,0) 60%),radial-gradient(90% 60% at 70% 110%,rgba(255,255,255,.35),rgba(255,255,255,0) 70%)}
   #iosTab{position:fixed;left:14px;right:14px;bottom:22px;height:66px;border-radius:40px;z-index:9999;display:flex;align-items:center;justify-content:space-around;padding:0 6px;
     font:600 10.5px/1 -apple-system,"SF Pro Text","Bricolage Grotesque",sans-serif;color:#3C3B47}
   #iosTab .it{position:relative;flex:1;height:56px;margin:0 2px;border-radius:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
@@ -13,8 +20,11 @@
   #iosHome{position:fixed;left:50%;bottom:8px;width:140px;height:5px;margin-left:-70px;border-radius:9px;background:#1C1B2E;z-index:10000}
   #iosTop{position:fixed;left:0;right:0;z-index:9998;display:flex;align-items:center;justify-content:space-between;padding:0 16px;pointer-events:none}
   #iosTop .b{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:#1C1B2E}
-  #iosTop .b svg{width:20px;height:20px}
-  #iosTop .b.pro{background:rgba(255,201,74,.92);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 .5px rgba(28,27,46,.10),0 8px 22px rgba(232,160,0,.28)}
+  #iosTop .b svg{width:20px;height:20px;position:relative}
+  /* « + » : verre teinté jaune (prominentGlass), même reflet et même bord lumineux */
+  #iosTop .b.pro{background:linear-gradient(180deg,rgba(255,214,110,.96) 0%,rgba(255,196,60,.88) 55%,rgba(255,206,90,.95) 100%);
+    box-shadow:inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -1.5px 1.5px rgba(255,240,200,.85),inset 1px 0 1px rgba(255,255,255,.5),inset -1px 0 1px rgba(255,255,255,.5),
+      inset 0 -6px 10px -6px rgba(150,90,0,.25),0 0 0 .6px rgba(150,90,0,.12),0 6px 18px rgba(232,160,0,.32),0 1px 3px rgba(28,27,46,.08)}
   #iosTop .acts{display:flex;gap:10px}
   #iosTop b{position:absolute;left:50%;transform:translateX(-50%);font:700 21px/1 -apple-system,"SF Pro Display","Bricolage Grotesque",sans-serif;color:#1C1B2E;white-space:nowrap}
   #iosTop .sp{width:44px}`;

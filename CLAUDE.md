@@ -113,7 +113,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - **Images App Store** (style « affiche dégradée » choisi par Angel : dégradé Cocoon Plus, logo + « Cocoon » en Fredoka comme l'app,
   titre blanc, téléphone incliné, Cocoony en coin, pas d'autocollant) : `app/appstore/appstore-1…7.jpg` (1320×2868, iPhone 6,9").
   Captures habillées « app iPhone » par `outils/appstore/ios.js` (`__ios(onglet)` : barre d'onglets Liquid Glass flottante,
-  barre du haut comme `NT.topbar` : même position (offsetTop), retour en verre, calendrier en verre, « + » en verre jaune, titre 21 pt ; barre d'accueil) ; même cadre iPhone Pro Max que le site, téléphone entier, Cocoony en haut à droite.
+  barre du haut comme `NT.topbar` : même position (offsetTop), boutons en verre Liquid Glass (reflet, bord lumineux), « + » en verre jaune, titre 21 pt ; barre d'accueil) ; même cadre iPhone Pro Max que le site, téléphone entier, Cocoony en haut à droite.
   Pour les refaire : `bash outils/construire.sh demo` puis `python3 outils/appstore/captures.py` (foyer d'exemple `seed.js`, écrans dans
   `outils/appstore/raw/`) puis `python3 outils/appstore/affiches.py` (titres dans `PAGES`).
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
