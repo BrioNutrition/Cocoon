@@ -82,7 +82,7 @@
       "#cxGate .cx-keep input{width:22px;height:22px;accent-color:#1C1B2E;margin:0;padding:0}",
       "#cxGate .cx-msg{font-size:14px;padding:10px 12px;border-radius:12px;background:#FFF1D6;color:#6B4A00;text-align:left}",
       "#cxGate .cx-msg.err{background:#FFE3DD;color:#8A2A16}",
-      "#cxGate .cx-msg[hidden]{display:none}",
+      "#cxGate .cx-msg[hidden]{display:none}#cxGate .cx-taken{display:grid;gap:2px;justify-items:center}#cxGate .cx-taken .cx-btn{width:100%;margin:0}",
       "#cxGate .cx-inv{font-size:14px;padding:10px 12px;border-radius:12px;background:#E5F6EC;color:#1E5B38}",
       "#cxGate .cx-fid{display:flex;align-items:center;justify-content:center;gap:10px;width:100%}#cxGate .cx-fid svg{width:22px;height:22px;flex:none}",
       "#cxGate .cx-or{display:flex;align-items:center;gap:10px;color:#6A6886;font-size:13px}#cxGate .cx-or::before,#cxGate .cx-or::after{content:'';flex:1;height:1px;background:#E3E0F0}",
@@ -181,6 +181,15 @@
         }
         if (mode === "login" || mode === "signup") {
           var f = card.querySelector("form");
+          var taken = function (em) {
+            msg("Cette adresse e-mail est déjà utilisée par un compte Cocoon.", true);
+            var m = card.querySelector(".cx-msg"), x = card.querySelector(".cx-taken"); if (x) x.remove();
+            x = document.createElement("div"); x.className = "cx-taken";
+            x.innerHTML = '<button class="cx-btn alt" type="button">Me connecter à ce compte</button><button class="cx-link" type="button">Mot de passe oublié ?</button>';
+            x.firstChild.addEventListener("click", function () { G.show("login", { plain: true, email: em }); });
+            x.lastChild.addEventListener("click", function () { G.show("forgot", { email: em }); });
+            m.after(x); try { x.firstChild.focus(); } catch (_) {}
+          };
           if (extra) msg(extra.t, extra.err);
           if (extra && extra.email) f.email.value = extra.email;
           if (!sign) faceIdButton(f);
@@ -188,11 +197,16 @@
             e.preventDefault();
             var b = f.querySelector(".cx-btn"), em = f.email.value.trim(), pw = f.pw.value;
             LS.set("cocoon.keep", f.keep && !f.keep.checked ? "0" : "1");
-            b.disabled = true; msg(""); await SBP;
+            b.disabled = true; msg(""); var tk = card.querySelector(".cx-taken"); if (tk) tk.remove(); await SBP;
             try {
               if (sign) {
+                /* adresse déjà prise : on le dit et on propose de se connecter à ce compte (cocoon_email_exists si installée,
+                   sinon la réponse de Supabase : erreur « already registered », ou utilisateur sans identité quand la confirmation par e-mail est active) */
+                try { var ex0 = await sb.rpc("cocoon_email_exists", { e: em }); if (!ex0.error && ex0.data === true) { taken(em); return; } } catch (_) {}
                 var r = await sb.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: location.origin + location.pathname } });
+                if (r.error && /already registered|already exists/i.test(String(r.error.message))) { taken(em); return; }
                 if (r.error) throw r.error;
+                if (!r.data.session && r.data.user && Array.isArray(r.data.user.identities) && !r.data.user.identities.length) { taken(em); return; }
                 if (!r.data.session) { G.show("code", { email: em, type: "signup" }); return; }
               } else {
                 var r2 = await sb.auth.signInWithPassword({ email: em, password: pw });

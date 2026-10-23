@@ -140,6 +140,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   **Tous les écrans de connexion** ont la même affiche (connexion, création de compte, mot de passe oublié, code, nouveau mot de passe,
   foyer à créer/rejoindre) : `poster(mode)` dans le runtime déplace le contenu dans la feuille blanche (`TAGS` = phrase en blanc par écran) ;
   « Cocoon » en Bricolage 800 comme la barre du haut de l'app.
+  Création de compte avec une adresse déjà prise (`cocoon_email_exists`, erreur « already registered » ou utilisateur sans identité) :
+  `taken(em)` → « Cette adresse e-mail est déjà utilisée… » + « Me connecter à ce compte » (connexion, e-mail prérempli) et « Mot de passe oublié ? ».
 - Images instantanées à l'ouverture : photo de Cocoony gardée dans `cocoon.secid` (posée par un petit script avant le gros script),
   miniatures 192 px des photos de profil dans `cocoon.thumbs` (`THUMBS`, `makeThumb`, utilisées par `avatarFor`) ; effacées à la déconnexion.
 - App iPhone à jour toute seule : `cd app && npm run auto:ios` (`app/auto.mjs`) sur le Mac d'Angel → récupère `main` toutes les 30 s et
