@@ -44,7 +44,7 @@ section{padding-block:56px}
 .top .btn{min-height:42px;padding:10px 16px;font-size:15px}
 
 /* accroche : même affiche dégradée que les images App Store */
-.affiche{background:radial-gradient(110% 80% at 100% 0%,#FFD66B 0%,transparent 55%),linear-gradient(165deg,#FF9C80,#E2629B 55%,#8C5BD6);color:#fff;border-radius:0 0 40px 40px;overflow:hidden;position:relative}
+.affiche{background:radial-gradient(110% 80% at 100% 0%,#FFD66B 0%,transparent 55%),linear-gradient(165deg,#FF9C80,#E2629B 55%,#8C5BD6);color:#fff;border-radius:0;overflow:hidden;position:relative}
 .affiche .top .brand b{color:#fff}
 .affiche .top .btn.ghost{background:rgba(255,255,255,.18);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.45)}
 .affiche .eyebrow{color:rgba(255,255,255,.85)}
@@ -66,15 +66,20 @@ section{padding-block:56px}
 .cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
 .soon{margin-top:14px;font-size:13.5px;color:var(--muted)}
 .phones{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:0;padding-block:8px 20px}
-.phone{width:min(46%,240px);border-radius:34px;padding:7px;background:#1C1B2E;box-shadow:0 30px 60px rgba(28,27,46,.28);flex:none}
-.phone img{display:block;width:100%;height:auto;border-radius:28px;aspect-ratio:440/956;object-fit:cover;object-position:top}
+/* téléphone façon iPhone Pro Max : cadre titane, bords fins, Dynamic Island, boutons sur les côtés */
+.phone{position:relative;width:min(46%,250px);flex:none;container-type:inline-size}
+.phone .fr{position:relative;border-radius:17cqw;padding:2.6cqw;
+  background:linear-gradient(140deg,#8E8A86 0%,#4B4846 18%,#2C2A29 50%,#55524F 82%,#9A9590 100%);
+  box-shadow:inset 0 0 0 .5cqw #1B1A19,inset 0 0 0 .9cqw #6F6B67,0 30px 60px rgba(28,27,46,.30)}
+.phone .fr::before,.phone .fr::after{content:"";position:absolute;width:1.1cqw;border-radius:1cqw;background:linear-gradient(90deg,#3A3836,#77726E)}
+.phone .fr::before{left:-.9cqw;top:19%;height:7%;box-shadow:0 13cqw 0 #5A5653,0 26cqw 0 #5A5653}
+.phone .fr::after{right:-.9cqw;top:27%;height:15%}
+.phone .scr{position:relative;border-radius:14.5cqw;overflow:hidden;background:#F6F5FB;padding-top:11cqw}
+.phone .scr::before{content:"9:41";position:absolute;left:9cqw;top:3.6cqw;font:700 4.1cqw/1 -apple-system,"SF Pro Text","Bricolage Grotesque",sans-serif;color:#1C1B2E}
+.phone .scr::after{content:"";position:absolute;left:50%;top:2.6cqw;width:29cqw;height:8.4cqw;margin-left:-14.5cqw;border-radius:9cqw;background:#050507}
+.phone img{display:block;width:100%;height:auto;aspect-ratio:440/956;object-fit:cover;object-position:top}
 .phone.a{transform:rotate(-5deg) translateY(10px);margin-right:-22px;z-index:1}
 .phone.b{transform:rotate(4deg);z-index:2}
-@media (prefers-reduced-motion:no-preference){
-  .phone.a{animation:flotte 7s ease-in-out infinite}
-  .phone.b{animation:flotte 7s ease-in-out -3.5s infinite}
-  @keyframes flotte{50%{translate:0 -8px}}
-}
 
 /* rubriques */
 .sec-h{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
@@ -86,6 +91,25 @@ section{padding-block:56px}
 .f p{font-size:14.5px;color:var(--muted)}
 @media (max-width:560px){.f{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:14px;row-gap:2px;padding:16px}.f i{grid-row:span 2}.f h3{margin:0;font-size:17.5px}.hero{gap:20px}}
 
+/* « Tout le foyer, une seule appli » : paquet de cartes à mélanger (shuffleCardSlider) */
+.rub{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:center}
+@media (min-width:880px){.rub{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.deck{position:relative;width:min(100%,380px);height:300px;margin:12px auto 0;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.deck .card{position:absolute;inset:0;border-radius:28px;padding:26px;display:flex;flex-direction:column;gap:10px;cursor:grab;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--c) 30%,var(--surface)),var(--surface) 70%);box-shadow:0 2px 0 var(--shadow),0 18px 40px rgba(28,27,46,.12);
+  transition:transform .45s cubic-bezier(.2,.9,.3,1),opacity .35s;will-change:transform}
+.deck .card i{width:62px;height:62px;border-radius:20px;display:grid;place-items:center;font-style:normal;font-size:32px;background:color-mix(in srgb,var(--c) 45%,var(--surface))}
+.deck .card h3{font-size:26px;line-height:1.05;margin-top:6px}
+.deck .card p{font-size:16px;color:var(--muted)}
+.deck .card .n{position:absolute;right:22px;top:24px;font-size:13px;font-weight:800;color:var(--muted)}
+.deck .card.drag{transition:none;cursor:grabbing}
+.deck-ctl{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:22px}
+.deck-ctl button{width:48px;height:48px;border-radius:50%;border:0;background:var(--surface);color:var(--ink);box-shadow:0 3px 0 var(--shadow);font:800 20px/1 var(--f-display);cursor:pointer}
+.deck-ctl button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--shadow)}
+.deck-dots{display:flex;gap:6px}.deck-dots i{width:7px;height:7px;border-radius:99px;background:var(--line);transition:width .25s,background .25s}
+.deck-dots i.on{width:20px;background:var(--ink)}
+.deck-hint{text-align:center;font-size:13px;color:var(--muted);margin-top:10px}
+@media (prefers-reduced-motion:reduce){.deck .card{transition:none}}
 /* Cocoony */
 .coco{background:var(--hero);color:var(--hero-ink);border-radius:32px;padding:32px clamp(18px,4vw,44px);display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:center}
 @media (min-width:880px){.coco{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
@@ -166,8 +190,7 @@ footer{padding-block:28px 40px;font-size:13.5px;color:var(--muted);text-align:ce
 <main>
   <div class="w hero">
     <div>
-      <p class="eyebrow">L'appli du foyer</p>
-      <h1 style="margin-top:12px">Ton foyer,<br><span class="fam">enfin serein.</span></h1>
+      <h1>Ton foyer,<br><span class="fam">enfin serein.</span></h1>
       <p class="lead">Tâches, courses, repas, agenda, budget et papiers, rangés au même endroit. Seul·e ou à plusieurs, animaux compris : chacun voit ce qu'il a à faire, et plus personne ne tient tout dans sa tête.</p>
       <div class="cta">
         <a class="btn go" href="https://brionutrition.github.io/Cocoon/">Créer mon foyer, c'est gratuit</a>
@@ -177,28 +200,33 @@ footer{padding-block:28px 40px;font-size:13.5px;color:var(--muted);text-align:ce
       <p class="soon">En attendant, Cocoon marche dans le navigateur et s'installe sur l'écran d'accueil.</p>
     </div>
     <div class="phones" aria-hidden="true">
-      <div class="phone a"><img src="img/accueil.jpg" alt=""></div>
-      <div class="phone b"><img src="img/foyer.jpg" alt=""></div>
+      <div class="phone a"><div class="fr"><div class="scr"><img src="img/accueil.jpg" alt=""></div></div></div>
+      <div class="phone b"><div class="fr"><div class="scr"><img src="img/foyer.jpg" alt=""></div></div></div>
     </div>
   </div>
   <img class="cat-coin" src="img/cocoon.png" alt="">
 </div>
 
   <section id="rubriques">
-    <div class="w">
-      <div class="sec-h">
+    <div class="w rub">
+      <div class="sec-h" style="margin:0">
         <p class="eyebrow">Tout le foyer, une seule appli</p>
         <h2>Ce qui encombrait le frigo, la tête et les groupes de discussion.</h2>
+        <p class="lead">Huit rubriques, une seule appli. Mélange les cartes pour les découvrir.</p>
       </div>
-      <div class="grid">
-        <article class="f" style="--c:var(--c-jaune)"><i aria-hidden="true">✅</i><h3>Tâches à tour de rôle</h3><p>Les poubelles une semaine sur deux, l'aspirateur chacun son tour : Cocoon sait à qui c'est, et le rappelle.</p></article>
-        <article class="f" style="--c:var(--c-vert)"><i aria-hidden="true">🛒</i><h3>Courses par rayon</h3><p>La liste se range toute seule dans l'ordre du magasin : fruits et légumes, frais, épicerie…</p></article>
-        <article class="f" style="--c:var(--c-corail)"><i aria-hidden="true">🍽️</i><h3>Repas de la semaine</h3><p>« Ce soir » en un coup d'œil, la semaine en frise, et les ingrédients qui partent aux courses.</p></article>
-        <article class="f" style="--c:var(--c-bleu)"><i aria-hidden="true">📅</i><h3>Agenda partagé</h3><p>Les rendez-vous de chacun, et le tout dans le calendrier de ton téléphone.</p></article>
-        <article class="f" style="--c:var(--c-lilas)"><i aria-hidden="true">💶</i><h3>Budget et « qui doit quoi »</h3><p>Dépenses partagées, abonnements, et les comptes entre vous faits sans calculatrice.</p></article>
-        <article class="f" style="--c:var(--c-framboise)"><i aria-hidden="true">📄</i><h3>Papiers rangés</h3><p>Passeport, carte grise, assurance : un rappel 60 jours avant la date d'expiration.</p></article>
-        <article class="f" style="--c:var(--c-menthe)"><i aria-hidden="true">🏠</i><h3>Maison</h3><p>Le jour des poubelles, l'entretien de la chaudière, les véhicules et leur contrôle technique.</p></article>
-        <article class="f" style="--c:var(--c-rose)"><i aria-hidden="true">🎂</i><h3>Événements</h3><p>Anniversaire, travaux, déménagement : la liste des choses à prévoir est déjà prête, date par date.</p></article>
+      <div>
+        <div class="deck" id="deck" role="region" aria-roledescription="carrousel" aria-label="Les rubriques de Cocoon">
+          <article class="card" style="--c:var(--c-jaune)"><i aria-hidden="true">✅</i><h3>Tâches à tour de rôle</h3><p>Les poubelles une semaine sur deux, l'aspirateur chacun son tour : Cocoon sait à qui c'est, et le rappelle.</p></article>
+          <article class="card" style="--c:var(--c-vert)"><i aria-hidden="true">🛒</i><h3>Courses par rayon</h3><p>La liste se range toute seule dans l'ordre du magasin : fruits et légumes, frais, épicerie…</p></article>
+          <article class="card" style="--c:var(--c-corail)"><i aria-hidden="true">🍽️</i><h3>Repas de la semaine</h3><p>« Ce soir » en un coup d'œil, la semaine en frise, et les ingrédients qui partent aux courses.</p></article>
+          <article class="card" style="--c:var(--c-bleu)"><i aria-hidden="true">📅</i><h3>Agenda partagé</h3><p>Les rendez-vous de chacun, et le tout dans le calendrier de ton téléphone.</p></article>
+          <article class="card" style="--c:var(--c-lilas)"><i aria-hidden="true">💶</i><h3>Budget et « qui doit quoi »</h3><p>Dépenses partagées, abonnements, et les comptes entre vous faits sans calculatrice.</p></article>
+          <article class="card" style="--c:var(--c-framboise)"><i aria-hidden="true">📄</i><h3>Papiers rangés</h3><p>Passeport, carte grise, assurance : un rappel 60 jours avant la date d'expiration.</p></article>
+          <article class="card" style="--c:var(--c-menthe)"><i aria-hidden="true">🏠</i><h3>Maison</h3><p>Le jour des poubelles, l'entretien de la chaudière, les véhicules et leur contrôle technique.</p></article>
+          <article class="card" style="--c:var(--c-rose)"><i aria-hidden="true">🎂</i><h3>Événements</h3><p>Anniversaire, travaux, déménagement : la liste des choses à prévoir est déjà prête, date par date.</p></article>
+        </div>
+        <div class="deck-ctl"><button type="button" id="deckPrev" aria-label="Carte précédente">‹</button><span class="deck-dots" id="deckDots" aria-hidden="true"></span><button type="button" id="deckNext" aria-label="Carte suivante">›</button></div>
+        <p class="deck-hint">Fais glisser la carte, ou touche les flèches</p>
       </div>
     </div>
   </section>
@@ -230,13 +258,13 @@ footer{padding-block:28px 40px;font-size:13.5px;color:var(--muted);text-align:ce
         <h2>Pensée pour le téléphone, du premier au dernier écran.</h2>
       </div>
       <div class="shots">
-        <figure class="shot"><div class="phone"><img src="img/accueil.jpg" alt="Accueil de Cocoon : bonjour, membres du foyer, la journée et les raccourcis" loading="lazy"></div><figcaption>L'accueil : ta journée et ton foyer</figcaption></figure>
-        <figure class="shot"><div class="phone"><img src="img/foyer.jpg" alt="Le foyer : tâches, courses, repas, agenda, budget, papiers, maison" loading="lazy"></div><figcaption>Le foyer : toutes les rubriques</figcaption></figure>
-        <figure class="shot"><div class="phone"><img src="img/taches.jpg" alt="Les tâches du foyer, avec qui s'en occupe et pour quand" loading="lazy"></div><figcaption>Les tâches : chacun son tour</figcaption></figure>
-        <figure class="shot"><div class="phone"><img src="img/repas.jpg" alt="Les repas : ce midi, idées avec le frigo, la semaine" loading="lazy"></div><figcaption>Les repas : la semaine en un coup d'œil</figcaption></figure>
-        <figure class="shot"><div class="phone"><img src="img/agenda.jpg" alt="L'agenda du foyer avec l'anniversaire d'Emma et les rendez-vous" loading="lazy"></div><figcaption>L'agenda : rendez-vous et événements</figcaption></figure>
-        <figure class="shot"><div class="phone"><img src="img/budget.jpg" alt="Le budget du foyer : dépenses du mois et qui doit quoi" loading="lazy"></div><figcaption>Le budget : et qui doit quoi</figcaption></figure>
-        <figure class="shot"><div class="phone"><img src="img/cocoony.jpg" alt="Cocoony fait le point sur la semaine du foyer" loading="lazy"></div><figcaption>Cocoony : le point de la semaine</figcaption></figure>
+        <figure class="shot"><div class="phone"><div class="fr"><div class="scr"><img src="img/accueil.jpg" alt="Accueil de Cocoon : bonjour, membres du foyer, la journée et les raccourcis" loading="lazy"></div></div></div><figcaption>L'accueil : ta journée et ton foyer</figcaption></figure>
+        <figure class="shot"><div class="phone"><div class="fr"><div class="scr"><img src="img/foyer.jpg" alt="Le foyer : tâches, courses, repas, agenda, budget, papiers, maison" loading="lazy"></div></div></div><figcaption>Le foyer : toutes les rubriques</figcaption></figure>
+        <figure class="shot"><div class="phone"><div class="fr"><div class="scr"><img src="img/taches.jpg" alt="Les tâches du foyer, avec qui s'en occupe et pour quand" loading="lazy"></div></div></div><figcaption>Les tâches : chacun son tour</figcaption></figure>
+        <figure class="shot"><div class="phone"><div class="fr"><div class="scr"><img src="img/repas.jpg" alt="Les repas : ce midi, idées avec le frigo, la semaine" loading="lazy"></div></div></div><figcaption>Les repas : la semaine en un coup d'œil</figcaption></figure>
+        <figure class="shot"><div class="phone"><div class="fr"><div class="scr"><img src="img/agenda.jpg" alt="L'agenda du foyer avec l'anniversaire d'Emma et les rendez-vous" loading="lazy"></div></div></div><figcaption>L'agenda : rendez-vous et événements</figcaption></figure>
+        <figure class="shot"><div class="phone"><div class="fr"><div class="scr"><img src="img/budget.jpg" alt="Le budget du foyer : dépenses du mois et qui doit quoi" loading="lazy"></div></div></div><figcaption>Le budget : et qui doit quoi</figcaption></figure>
+        <figure class="shot"><div class="phone"><div class="fr"><div class="scr"><img src="img/cocoony.jpg" alt="Cocoony fait le point sur la semaine du foyer" loading="lazy"></div></div></div><figcaption>Cocoony : le point de la semaine</figcaption></figure>
       </div>
     </div>
   </section>
@@ -302,3 +330,34 @@ footer{padding-block:28px 40px;font-size:13.5px;color:var(--muted);text-align:ce
 </main>
 
 <footer class="w">Cocoon · l'appli du foyer</footer>
+
+<script>
+/* shuffleCardSlider : paquet de cartes. La carte du dessus part sur le côté (glisser, flèche ou clavier) puis passe sous le paquet ;
+   « ‹ » ramène la dernière carte sur le dessus. Trois cartes visibles en éventail, les autres cachées derrière. */
+function shuffleCardSlider(deck,prev,next,dots){
+  const cards=[...deck.querySelectorAll(".card")], n=cards.length; let order=cards.map((_,i)=>i), busy=false;
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  cards.forEach((c,i)=>{ c.setAttribute("aria-roledescription","carte"); c.append(Object.assign(document.createElement("span"),{className:"n",textContent:(i+1)+" / "+n})); });
+  dots.innerHTML=cards.map(()=>"<i></i>").join("");
+  const pose=[["0px",1,0],["14px",.95,-4],["28px",.9,4]];   /* décalage, échelle, inclinaison des 3 cartes visibles */
+  function layout(){ order.forEach((ci,pos)=>{ const c=cards[ci], p=pose[pos];
+      c.style.zIndex=String(n-pos); c.style.opacity=p?"1":"0"; c.setAttribute("aria-hidden",pos?"true":"false"); c.tabIndex=pos?-1:0;
+      c.style.transform=p?"translateY("+p[0]+") scale("+p[1]+") rotate("+p[2]+"deg)":"translateY(34px) scale(.86)"; });
+    [...dots.children].forEach((d,i)=>d.classList.toggle("on",i===order[0])); }
+  function out(dir){ if(busy) return; busy=true; const top=cards[order[0]];
+    top.classList.remove("drag"); top.style.transform="translateX("+(dir*120)+"%) rotate("+(dir*18)+"deg)"; top.style.opacity="0";
+    setTimeout(()=>{ order.push(order.shift()); top.style.transition="none"; layout(); void top.offsetWidth; top.style.transition=""; busy=false; },reduce?0:380); }
+  function back(){ if(busy) return; busy=true; order.unshift(order.pop()); const top=cards[order[0]];
+    top.style.transition="none"; top.style.zIndex=String(n+1); top.style.opacity="0"; top.style.transform="translateX(-120%) rotate(-18deg)"; void top.offsetWidth; top.style.transition="";
+    layout(); setTimeout(()=>{ busy=false; },reduce?0:380); }
+  next.addEventListener("click",()=>out(1)); prev.addEventListener("click",back);
+  deck.addEventListener("keydown",e=>{ if(e.key==="ArrowRight"){ e.preventDefault(); out(1); } if(e.key==="ArrowLeft"){ e.preventDefault(); back(); } });
+  /* glisser la carte du dessus (suivi sur toute la fenêtre) : au-delà de 90 px elle part, sinon elle revient */
+  let x0=null,dx=0,id=null;
+  deck.addEventListener("pointerdown",e=>{ const top=cards[order[0]]; if(busy||!top.contains(e.target)) return; e.preventDefault(); x0=e.clientX; dx=0; id=e.pointerId; top.classList.add("drag"); });
+  addEventListener("pointermove",e=>{ if(x0==null||e.pointerId!==id) return; dx=e.clientX-x0; cards[order[0]].style.transform="translateX("+dx+"px) rotate("+(dx/14)+"deg)"; });
+  const end=e=>{ if(x0==null||e.pointerId!==id) return; x0=null; const top=cards[order[0]]; top.classList.remove("drag"); if(Math.abs(dx)>90) out(dx>0?1:-1); else layout(); };
+  addEventListener("pointerup",end); addEventListener("pointercancel",end);
+  layout(); }
+shuffleCardSlider(document.getElementById("deck"),document.getElementById("deckPrev"),document.getElementById("deckNext"),document.getElementById("deckDots"));
+</script>
