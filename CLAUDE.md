@@ -122,7 +122,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   carrousel de 7 écrans, tarifs en « deux affiches » comme dans l'app. Téléphones fixes façon iPhone Pro Max (`.phone > .fr > .scr`, cadre titane,
   Dynamic Island, unités `cqw`), bandeau du haut à angles droits, pas de « L'appli du foyer ». Rubriques = bande sombre façon « card shuffle » (modèle
   envoyé par Angel) : titre coloré + texte à gauche qui suivent la carte, flèches en bas, grandes cartes verticales (écrans `img/c-*.jpg`)
-  empilées vers la droite ; `shuffleCardSlider({deck,prev,next,title,text,num})` (glisser, flèches ‹ ›, clavier ←/→). Images `presentation/img/*.jpg` = captures de
+  en éventail (pivot sous le paquet) ; la carte balayée sort à gauche puis repasse derrière toutes les autres ; `shuffleCardSlider({deck,prev,next,title,text,num})` (glisser, flèches ‹ ›, clavier ←/→). Images `presentation/img/*.jpg` = captures de
   `outils/appstore/raw/` réduites à 600 px de large.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
 - À faire côté Angel : redéployer `cocoon-push`, coller les modèles d'e-mail, vérifier OTP à 6 chiffres, brancher Brevo (codeEmail).
