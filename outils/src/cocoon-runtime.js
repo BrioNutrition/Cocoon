@@ -90,8 +90,10 @@
       "#cxGate.cx-back{background:radial-gradient(120% 70% at 100% 0%,#FFD66B 0%,transparent 55%),linear-gradient(165deg,#FF9C80,#E2629B 55%,#8C5BD6)!important;color:#fff;padding:0;place-items:stretch}",
       "#cxGate.cx-back .cx-card{width:100%;min-height:100%;max-width:none;display:flex;flex-direction:column;align-items:center;gap:0;padding:calc(env(safe-area-inset-top,0px) + 48px) 16px calc(env(safe-area-inset-bottom,0px) + 18px);box-sizing:border-box}",
       "#cxGate .cx-bcat{width:140px;height:140px;border-radius:42px;transform:rotate(-8deg);box-shadow:0 18px 40px rgba(0,0,0,.25)}",
-      "#cxGate .cx-wm{margin-top:22px;font-family:Fredoka,'Bricolage Grotesque',sans-serif;font-weight:700;font-variation-settings:'wdth' 115;font-size:40px;letter-spacing:-.01em;line-height:1}",
-      "#cxGate.cx-back .cx-tag{margin-top:8px;color:rgba(255,255,255,.92);font-size:16px}",
+      "#cxGate .cx-wm{margin-top:22px;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;font-size:46px;letter-spacing:-.045em;line-height:1;color:#fff}",
+      "#cxGate.cx-back .cx-tag{margin-top:8px;color:#fff!important;font-size:16px;font-weight:600}",
+      "#cxGate .cx-sheet h1{font-size:25px;text-align:center}#cxGate .cx-sheet h1+p{margin-top:-6px;text-align:center}#cxGate .cx-sheet>.cx-link{justify-self:center;padding:2px 6px}#cxGate .cx-sheet .cx-ok{margin-top:6px}",
+      "@media (max-height:760px){#cxGate .cx-bcat{width:100px;height:100px;border-radius:30px}#cxGate.cx-back .cx-card{padding-top:calc(env(safe-area-inset-top,0px) + 26px)}#cxGate .cx-wm{margin-top:14px;font-size:38px}}",
       "#cxGate .cx-sheet{margin-top:auto;width:min(440px,100%);background:#fff;color:#1C1B2E;border-radius:30px;padding:18px;display:grid;gap:12px;text-align:left;box-shadow:0 18px 50px rgba(60,20,60,.25)}",
       "#cxGate .cx-who{display:flex;align-items:center;gap:14px;padding:2px 2px 14px;border-bottom:1px solid #EEECF5}",
       "#cxGate .cx-av{width:52px;height:52px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:800;font-size:22px;color:#fff;background:var(--c,#2C6E8F);box-shadow:0 0 0 3px #fff,0 0 0 5px #FFC94A;overflow:hidden}#cxGate .cx-av img{width:100%;height:100%;object-fit:cover}",
@@ -338,7 +340,18 @@
     card.addEventListener("mousedown", function (e) { if (e.target.closest && e.target.closest(".cx-eye")) e.preventDefault(); });
     card.addEventListener("click", function (e) { var b = e.target.closest && e.target.closest(".cx-eye"); if (!b) return; e.preventDefault(); if (Date.now() - eyeT < 600) return; eyeToggle(b); });
     try { new MutationObserver(function () { addEyes(); }).observe(card, { childList: true, subtree: true }); } catch (_) {}
-    var _show = G.show; G.show = function () { var r = _show.apply(G, arguments); try { addEyes(); } catch (_) {} return r; };
+    /* même affiche dégradée pour toutes les étapes de connexion (connexion, création de compte, mot de passe oublié, code…) :
+       Cocoony, « Cocoon », une phrase en blanc, puis le contenu habituel dans la feuille blanche du bas */
+    var TAGS = { login: "Ton cocon t'attend.", join: "Bienvenue dans le cocon.", foyer: "Bienvenue dans le cocon.", signup: "Bienvenue dans le cocon.", forgot: "Pas de panique, ça arrive.", code: "Plus qu'une petite étape.", newpw: "On repart du bon pied.", pwok: "Ton cocon t'attend.", mail2fa: "Plus qu'une petite étape." };
+    function poster(mode) {
+      if (!TAGS[mode] || card.querySelector(".cx-sheet")) return;
+      var sh = document.createElement("div"); sh.className = "cx-sheet";
+      while (card.firstChild) sh.appendChild(card.firstChild);
+      var lg = sh.querySelector(".cx-logo"); if (lg) lg.remove();
+      card.innerHTML = '<img class="cx-bcat" alt="" src="' + logoSrc() + '"><div class="cx-wm">Cocoon</div><p class="cx-tag">' + TAGS[mode] + "</p>";
+      card.appendChild(sh); g.classList.add("cx-back");
+    }
+    var _show = G.show; G.show = function (mode) { var r = _show.apply(G, arguments); try { poster(mode); } catch (_) {} try { addEyes(); } catch (_) {} return r; };
     function bindGo() { card.querySelectorAll("[data-go]").forEach(function (b) { b.addEventListener("click", function () {
         /* l'adresse déjà tapée suit d'un écran à l'autre (connexion ↔ création de compte ↔ mot de passe oublié) */
         var go = b.getAttribute("data-go"), i = card.querySelector("input[name=email]"), v = i && i.value.trim();
