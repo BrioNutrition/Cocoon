@@ -145,6 +145,15 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - **Thème sombre par défaut partout** (demandé par Angel, connexion et questionnaire compris) : script tout en haut du `<head>` (source et
   `build.py`) : sans choix enregistré → `cocoon.theme=dark` (migration unique des anciens « auto » via `cocoon.themeD`) ; `curTheme()` vaut
   « dark » par défaut ; « Clair » et « Automatique » restent dans Personnaliser. Manifeste et `theme-color` en #13121C. Démo : sombre aussi.
+- **Questionnaire refait** (24 oct., choix d'Angel sur 5 maquettes par étape) : fonctions `wq*` avant `renderWizard`, mêmes données `W.a`
+  qu'avant (buildPlan/applyPlan inchangés sauf soins décochés `a.petOff` et photo `a.petPhoto`). 1 plaque de porte « Chez les … » (`wqNom`) ;
+  2 compteurs Adultes (1–2) / Enfants / Colocataires + prénoms dessous (`wqMenage`, boutons `#wqAdP`, `#wqKidP`, `#wqColP`) ; 3 fiche animal
+  (photo, nom `#wqPet0`, espèce, soins en interrupteurs + date du dernier, `#wqPetAdd`, « Pas d'animal ») ; 4 liste façon Réglages qui se
+  déplie (`wqRow`, `W.open`) ; 5 une ligne par bac + « Je ferai ça plus tard » (`#wqLater`) ; 6 garage (`#wqVvoiture`…, « Aucun véhicule ») ;
+  7 total « Chaque mois » qui monte ; 8 partage **seulement s'il y a un 2e adulte** (`wzAdults`), moitié-moitié par défaut (« Garder
+  moitié-moitié ») ; **papiers retirés** ; 10 « Ce qui m'énerve le plus, c'est… » (phrases `WQ_PRIO`, `.opt.wq-phr`) ; 11 groupes repliés
+  avec un interrupteur par groupe (`wqPlan`, `#wqG-…`, `P.partageOff`). Sans partage réglé (foyer créé seul puis membre ajouté), rien n'est
+  partagé par défaut : formulaire de dépense vide et `budgetAdd` suit `foyer/config.partage` (sinon dépense à soi).
 - Images instantanées à l'ouverture : photo de Cocoony gardée dans `cocoon.secid` (posée par un petit script avant le gros script),
   miniatures 192 px des photos de profil dans `cocoon.thumbs` (`THUMBS`, `makeThumb`, utilisées par `avatarFor`) ; effacées à la déconnexion.
 - App iPhone à jour toute seule : `cd app && npm run auto:ios` (`app/auto.mjs`) sur le Mac d'Angel → récupère `main` toutes les 30 s et

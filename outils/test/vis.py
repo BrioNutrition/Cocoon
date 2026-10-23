@@ -15,17 +15,17 @@ async def main():
     await shot('00_splash')
     await pg.click('#spGo'); await pg.clock.run_for(400); await shot('01_wz_nom')
     await pg.fill('#wzNom','Nours'); await pg.click('#wzNext'); await pg.clock.run_for(300)
-    await pg.click('.opt:has-text("En couple")'); await pg.fill('#wzPart','Emma'); await shot('02_wz_menage'); await pg.click('#wzNext'); await pg.clock.run_for(300)
-    await pg.click('.opt:has-text("Un chat")'); await pg.fill('#wzAchat','Moka'); await pg.clock.run_for(500); await shot('03_wz_animaux'); await pg.click('#wzNext'); await pg.clock.run_for(300)
+    await pg.click('#wqAdP'); await pg.fill('#wzPart','Emma'); await shot('02_wz_menage'); await pg.click('#wzNext'); await pg.clock.run_for(300)
+    await pg.click('#wqPetAdd'); await pg.fill('#wqPet0','Moka'); await pg.clock.run_for(500); await shot('03_wz_animaux'); await pg.click('#wzNext'); await pg.clock.run_for(300)
     await pg.click('.opt:has-text("Appartement")'); await pg.click('.opt:has-text("Locataire")'); await pg.click('#wzNext'); await pg.clock.run_for(300)
     await pg.click('#wzNext'); await pg.clock.run_for(300); await pg.click('.opt:has-text("Aucun")'); await pg.click('#wzNext'); await pg.clock.run_for(300)
     await pg.click('.wz-abo-h:has-text("Électricité")'); await pg.fill('#wzAm-electricite','62,50'); await pg.fill('#wzJr-electricite','15'); await shot('04_wz_abos')
     k=0
-    while not await pg.is_visible('.opt:has-text("Suivre les colis")'):
+    while not await pg.is_visible('.opt:has-text("rater un colis")'):
       if await pg.is_visible('.opt:has-text("Moitié-moitié")'): await pg.click('.opt:has-text("Moitié-moitié")')
       await pg.click('#wzNext'); await pg.clock.run_for(300); k+=1
       if k==2: await shot('05_wz_mid')
-    await pg.click('.opt:has-text("Suivre les colis")'); await pg.click('#wzNext'); await pg.clock.run_for(400); await shot('06_wz_plan')
+    await pg.click('.opt:has-text("rater un colis")'); await pg.click('#wzNext'); await pg.clock.run_for(400); await shot('06_wz_plan')
     await pg.click('#wzNext'); await pg.clock.run_for(5000)
     await shot('07_profil')
     await pg.fill('#fiNom','Angel'); await pg.fill('#fiNaissance','1990-01-01'); await pg.click('#fiSave'); await pg.clock.run_for(3000); await pg.wait_for_timeout(6000); await pg.clock.run_for(3000); await pg.wait_for_timeout(1500)

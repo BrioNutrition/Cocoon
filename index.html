@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="23/10 22:18";</script>
+<script>window.COCOON_BUILD="23/10 23:07";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1852,6 +1852,59 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .wz-abo-h .ok{width:22px;height:22px;border-radius:50%;border:2px solid var(--au-line);flex:none}
 .wz-abo-h[aria-pressed="true"] .ok{border:0;background:#FFC94A url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.5 12.5l3.5 3.5 7.5-8' fill='none' stroke='%231C1B2E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
 .wz-abo-in{display:grid;gap:10px;padding:0 14px 14px}
+/* ===== Questionnaire (24 oct.) ===== */
+.wq-scene{position:relative;border-radius:24px;overflow:hidden;background:radial-gradient(80% 60% at 50% 100%,rgba(255,156,128,.28),transparent),linear-gradient(#1B1A2A,#26233C);border:1px solid var(--au-line)}
+.wq-doorsc{height:210px}
+.wq-door{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:132px;height:184px;border-radius:66px 66px 0 0;background:linear-gradient(#45395F,#372D4F);border:5px solid #4F4370;border-bottom:0;box-shadow:0 0 50px rgba(255,201,74,.18)}
+.wq-plaque{position:absolute;top:58px;left:50%;transform:translateX(-50%) rotate(-3deg);background:#F6E7C8;color:#5B3A1E;border-radius:10px;padding:8px 12px;font-weight:800;font-size:15px;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis;box-shadow:0 8px 16px rgba(0,0,0,.4);transition:transform .25s}
+.wq-plaque.vide{color:#A8907A}
+.wq-knob{position:absolute;right:16px;top:104px;width:12px;height:12px;border-radius:50%;background:#FFC94A;box-shadow:0 0 10px rgba(255,201,74,.7)}
+.wq-list{background:var(--au-glass);border:1px solid var(--au-line);border-radius:20px;overflow:hidden;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.wq-li{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--au-line);width:100%;background:none;border-left:0;border-right:0;border-top:0;color:var(--ink);font:inherit;text-align:left;min-height:56px;box-sizing:border-box}
+.wq-list>:last-child,.wq-list>:last-child>.wq-li{border-bottom:0}
+.wq-ri:not(:last-child){border-bottom:1px solid var(--au-line)}.wq-ri>.wq-li{border-bottom:0}
+.wq-emo{font-size:22px;width:28px;text-align:center;flex:none;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.wq-lt{flex:1;min-width:0;display:grid}.wq-lt b{font-size:15.5px}.wq-lt small{color:var(--au-sub);font-size:12.5px}
+.wq-stp{display:flex;align-items:center;gap:10px;flex:none}.wq-stp output{min-width:18px;text-align:center;font-weight:800;font-size:17px}
+.wq-sb{width:36px;height:36px;border-radius:50%;border:1px solid var(--au-line);background:var(--au-glass);color:var(--ink);font:inherit;font-size:20px;font-weight:700;display:grid;place-items:center;padding:0;cursor:pointer}
+.wq-sb.plus{background:#FFC94A;border-color:#FFC94A;color:#1C1B2E}.wq-sb:disabled{opacity:.35;cursor:default}
+.wq-total{display:grid;gap:3px;justify-items:center;text-align:center;padding:16px;border-radius:20px;background:var(--au-glass);border:1px solid var(--au-line)}
+.wq-total.on{background:linear-gradient(135deg,rgba(255,201,74,.16),rgba(231,154,219,.16));border-color:#FFB38A}
+.wq-total small{color:var(--au-sub);font-size:12.5px;font-weight:600}.wq-big{font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.wq-fe{font-size:26px;letter-spacing:2px;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;word-break:break-all}
+.wq-names{display:grid;gap:14px}
+.wq-pet{display:grid;gap:10px;padding:14px;border-radius:22px;background:var(--au-glass);border:1px solid var(--au-line)}
+.wq-pet-h{display:flex;gap:10px;align-items:center}.wq-pet-h input{flex:1;min-width:0}
+.wq-pph{width:58px;height:58px;border-radius:18px;flex:none;display:grid;place-items:center;font-size:24px;border:2px dashed var(--au-line);cursor:pointer;overflow:hidden;position:relative}
+.wq-pph.on{border:0}.wq-pph img{width:100%;height:100%;object-fit:cover}.wq-pph .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.wq-pet .wq-list{background:transparent}.wq-pet .wq-li{min-height:48px;padding:8px 10px}.wq-li.off .wq-lt,.wq-li.off .wq-emo{opacity:.45}
+.wizard .wq-date{width:100%;margin-top:4px;padding:8px 10px!important;font-size:14px!important;min-height:0!important;box-sizing:border-box}
+.wq-panel .plan-row{font-size:13.5px}
+.wq-tg{width:46px;height:28px;border-radius:28px;background:rgba(127,127,150,.35);border:0;position:relative;flex:none;cursor:pointer;padding:0;transition:background .2s}
+.wq-tg::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:transform .2s}
+.wq-tg[aria-checked="true"]{background:#3CC37A}.wq-tg[aria-checked="true"]::after{transform:translateX(18px)}
+.wq-add{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border-radius:18px;border:1.5px dashed var(--au-line);background:none;color:var(--ink);font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.wq-add.big{flex-direction:column;padding:28px 14px;font-size:16px;background:var(--au-glass)}.wq-add.big span{font-size:40px}
+.wq-none .opt{min-height:0!important;flex-direction:row!important;align-items:center!important;width:100%}
+.wq-row{cursor:pointer}.wq-line{display:flex;align-items:center;padding-right:14px}.wq-line .wq-row{flex:1;min-width:0}.wq-val{color:var(--ink);font-weight:600;font-size:13.5px;max-width:45%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.wq-val.vide{color:var(--au-sub);font-weight:500}
+.wq-chev{color:var(--au-sub);font-size:20px;transition:transform .2s}.wq-row[aria-expanded="true"] .wq-chev{transform:rotate(90deg)}
+.wq-panel{padding:4px 14px 14px;display:grid;gap:10px}
+.wq-foot{font-size:12.5px!important}
+.wq-bin{width:26px;height:30px;border-radius:5px 5px 8px 8px;background:var(--c);flex:none;margin:0 1px;box-shadow:inset 0 6px 0 rgba(255,255,255,.18)}
+.wq-binp{display:grid;gap:10px}.wq-binp .seg button{flex:1;justify-content:center}
+.wq-link{background:none;border:0;color:var(--au-sub);font:inherit;font-weight:600;font-size:14.5px;text-decoration:underline;text-underline-offset:3px;padding:10px;cursor:pointer;justify-self:center;align-self:center}
+.wq-garage{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px 12px 12px;background:linear-gradient(#1B1A2A,#26233C);border-top:8px solid #3A3858}
+.wq-place{display:grid;justify-items:center;gap:4px;padding:18px 6px 12px;border-radius:16px;border:1.5px dashed rgba(255,255,255,.18);background:rgba(255,255,255,.03);color:#EDEBF7;font:inherit;cursor:pointer;text-align:center}
+.wq-place .wq-pe{font-size:36px;opacity:.3;filter:grayscale(1);transition:all .25s;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.wq-place b{font-size:13px}.wq-place small{font-size:11px;color:#A3A0BE}
+.wq-place[aria-pressed="true"]{border:1.5px solid #FFC94A;background:rgba(255,201,74,.15);box-shadow:0 0 24px rgba(255,201,74,.2)}
+.wq-place[aria-pressed="true"] .wq-pe{opacity:1;filter:none;transform:scale(1.08)}
+.wq-phrases{display:flex;flex-wrap:wrap;gap:8px}
+.wizard .opt.wq-phr{min-height:0!important;flex-direction:row!important;padding:12px 16px!important;border-radius:999px!important;font-size:15px;width:auto}
+.wizard .opt.wq-phr[aria-pressed="true"]{background:#FFC94A!important;color:#1C1B2E!important;border-color:#FFC94A!important}
+.wq-part b{font-size:20px}
+.wq-ri.off .wq-lt,.wq-ri.off .wq-emo,.wq-ri.off .wq-val{opacity:.45}
+
 .wz-abo-in.one{grid-template-columns:1fr}
 .wz-abo-in .field,.wz-soin .field{font-size:12.5px;margin:0}
 .wz-pct{display:grid;grid-template-columns:1fr 90px auto;gap:10px;align-items:center;font-weight:700}
@@ -4928,7 +4981,7 @@ const PAPIERS=[["cni","Carte d'identité","moi"],["passeport","Passeport","moi"]
 const wzAbos=()=>PRESETS.filter(p=>!["Netflix","Spotify","Disney+","Salle de sport"].includes(p[0])).map(p=>[p[0],p[1],"mensuel"]).concat([["Streaming (Netflix, Spotify…)","streaming","mensuel"]]);
 function wzAdults(a){ const n=[]; if((a.menage||[]).includes("couple")&&(a.partenaire||"").trim()) n.push(a.partenaire.trim().slice(0,30)); if((a.menage||[]).includes("coloc")) for(const c of (a.colocs||[])){ const x=(c.nom||"").trim(); if(x) n.push(x.slice(0,30)); } return n; }
 function wzSteps(W){ if(W.mode!=="foyer") return ["prio","plan"]; const a=W.a;
-  return ["nom","menage","animaux","logement","poubelles","vehicules","abonnements"].concat(wzAdults(a).length?["partage"]:[],["papiers","prio","plan"]); }
+  return ["nom","menage","animaux","logement","poubelles","vehicules","abonnements"].concat(wzAdults(a).length?["partage"]:[],["prio","plan"]); }
 function wzAddDays(n){ const t=today(); return new Date(t.getFullYear(),t.getMonth(),t.getDate()+(n||0)); }
 function wzNext(lastIso,months){ if(!lastIso) return null; let d=addMonths(parse(lastIso),months); const t=today(); let g=0; while(d<t&&g<50){ g++; d=addMonths(d,months); } return Math.max(1,Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()))/864e5)); }
 function wzAnniv(isoD,before){ if(!isoD) return null; const p=parse(isoD), t=today(); let d=new Date(t.getFullYear(),p.getMonth(),p.getDate()); d=new Date(d.getTime()-(before||0)*864e5); if(d<=t) d=new Date(t.getFullYear()+1,p.getMonth(),p.getDate()-(before||0)); return Math.max(1,Math.round((d-t)/864e5)); }
@@ -4966,10 +5019,14 @@ function buildPlan(mode,a){
   const SP={chat:"Chat",chien:"Chien",lapin:"Lapin",autre:"Autre"};
   for(const sp of a.animaux.filter(x=>x!=="aucun")){ add("animaux",2);
     const names=splitNames(a.noms[sp]); const list=names.length?names:[sp==="chat"?"Le chat":sp==="chien"?"Le chien":sp==="lapin"?"Le lapin":"Notre animal"];
-    for(const n of list){ profiles.push({nom:n,type:"animal",espece:SP[sp],on:true});
+    for(const n of list){ profiles.push({nom:n,type:"animal",espece:SP[sp],on:true,photo:(a.petPhoto||{})[n]||null});
       if(sp==="chat"||sp==="chien"){ const so=(a.soins||{})[n]||{}; T("Vermifuge "+de(n),"animaux",3,"Prochain vermifuge recommandé",wzNext(so.vermif,3)||14,{animal:n}); T("Pipette anti-puces "+de(n),"animaux",1,"Prochaine pipette recommandée",7,{animal:n}); T("Rappel de vaccin "+de(n),"animaux",12,"Prochain rappel de vaccin",wzNext(so.vaccin,12)||90,{animal:n}); }
       else if(sp==="lapin"){ const so=(a.soins||{})[n]||{}; T("Rappel de vaccin "+de(n),"animaux",12,"Prochain rappel de vaccin (myxomatose, VHD)",wzNext(so.vaccin,12)||60,{animal:n}); T("Couper les griffes "+de(n),"animaux",2,"Prochaine coupe des griffes",wzNext(so.griffes,2)||14,{animal:n}); T("Vérifier les dents "+de(n),"animaux",3,"Prochain contrôle des dents",30,{animal:n}); }
       else { const so=(a.soins||{})[n]||{}; T("Visite annuelle chez le vétérinaire pour "+n,"animaux",12,"Prochaine visite recommandée",wzNext(so.visite,12)||90,{animal:n}); } } }
+  /* soins décochés sur la fiche de l'animal (étape « Présente-nous ton animal ») */
+  if(a.petOff) for(let i=tasks.length-1;i>=0;i--){ const t=tasks[i]; if(!t.animal) continue; const off=a.petOff[t.animal]||{};
+    const k=/^Vermifuge/.test(t.titre)?"vermif":/^Pipette/.test(t.titre)?"pipette":/^Rappel de vaccin/.test(t.titre)?"vaccin":/^Couper les griffes/.test(t.titre)?"griffes":/^Vérifier les dents/.test(t.titre)?"dents":"visite";
+    if(off[k]) tasks.splice(i,1); }
   T("Tester le détecteur de fumée","maison",12,"Prochain test recommandé",30);
   const E=a.equip;
   if(E.length) add("entretien",2);
@@ -5020,6 +5077,165 @@ for(const k of ["radiateurs","chauffeeau","four","plaques","hotte","lavevaissell
 for(const k of Object.keys(Q)) if(Q[k].o) for(const o of Q[k].o) if(FI[o[0]]) o[2]=FI[o[0]];
 function optButton(label,icon,on,click){ const b=el("button",{type:"button",class:"opt","aria-pressed":String(!!on),onclick:click}); const ic=el("span",{class:"oi"}); if(icon) ic.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"'+(icon.includes('class="g')?' class="gly"':'')+'>'+icon+'</svg>'; b.append(ic,el("span",{class:"ol",text:label}),el("span",{class:"ok","aria-hidden":"true"})); return b; }
 function toggleIn(arr,v,none){ if(v===none) return arr.includes(v)?[]:[v]; const r=arr.filter(x=>x!==none); return r.includes(v)?r.filter(x=>x!==v):r.concat(v); }
+/* ===== Questionnaire, version du 24 oct. (choix d'Angel : 1A plaque, 2D compteurs, 3C fiche animal, 4E liste, 5E « plus tard »,
+   6A garage, 7B total, 8E moitié-moitié par défaut, papiers retirés, 10B phrases, 11E groupes repliés). Mêmes données W.a qu'avant. ===== */
+function wqH(box,t,h){ box.append(el("h1",{text:t})); if(h) box.append(el("p",{class:"help",text:h})); }
+function wqTg(on,label,click,id){ return el("button",{type:"button",class:"wq-tg",role:"switch","aria-checked":String(!!on),"aria-label":label,id:id||null,onclick:e=>{ e.stopPropagation(); click(); }}); }
+function wqNom({a,box,key}){
+  wqH(box,"Bienvenue chez toi.","Comment s'appelle ton foyer ? Tu pourras le changer ensuite.");
+  const pl=el("div",{class:"wq-plaque"});
+  const upd=()=>{ const n=(a.nom||"").trim().replace(/^(chez les|chez|la famille|famille|les)\s+/i,""); pl.textContent=n?"Chez les "+n:"Chez les …"; pl.classList.toggle("vide",!n); };
+  box.append(el("div",{class:"wq-scene wq-doorsc","aria-hidden":"true"},el("div",{class:"wq-door"},pl,el("i",{class:"wq-knob"}))));
+  const i=el("input",{type:"text",id:"wzNom",maxlength:"40",placeholder:"Martin, Dupont-Leroy…"}); i.value=a.nom; i.addEventListener("input",()=>{ a.nom=i.value; upd(); wzRefresh(key,a); });
+  box.append(el("label",{class:"field",for:"wzNom"},"Le nom de ta famille",i)); upd(); }
+function wqMenage({W,a,box,key,rerender}){
+  a.kids=a.kids||[]; a.colocs=a.colocs||[]; if(a.nAd==null) a.nAd=a.menage.includes("couple")?2:1;
+  if(!a.menage.includes("coloc")&&a.colocs.length===1&&!(a.colocs[0].nom||"").trim()) a.colocs=[];
+  if(!a.menage.includes("enfants")&&a.kids.length===1&&!(a.kids[0].nom||"").trim()) a.kids=[];
+  const sync=()=>{ const m=[]; if(a.nAd>1) m.push("couple"); if(a.kids.length) m.push("enfants"); if(a.colocs.length) m.push("coloc"); if(!m.length) m.push("seul"); a.menage=m;
+    a.enfants=a.kids.map(k=>(k.nom||"").trim()).filter(Boolean).join(", "); W.plan=null; };
+  sync();
+  wqH(box,"Combien êtes-vous ?","Toi compris. Les prénoms juste en dessous : chacun aura son profil.");
+  const stp=(id,val,min,max,set,what)=>el("span",{class:"wq-stp"},
+    el("button",{type:"button",id:id+"M",class:"wq-sb","aria-label":"Un "+what+" de moins",disabled:val<=min||null,text:"−",onclick:()=>{ set(val-1); sync(); rerender(); }}),
+    el("output",{text:String(val)}),
+    el("button",{type:"button",id:id+"P",class:"wq-sb plus","aria-label":"Un "+what+" de plus",disabled:val>=max||null,text:"+",onclick:()=>{ set(val+1); sync(); rerender(); setTimeout(()=>{ const x=box.querySelector(".wq-names input:placeholder-shown"); if(x) x.focus(); },40); }}));
+  const resize=(arr,n,mk)=>{ while(arr.length<n) arr.push(mk()); arr.length=n; };
+  box.append(el("div",{class:"wq-list"},
+    el("div",{class:"wq-li"},el("span",{class:"wq-emo",text:"🧑"}),el("span",{class:"wq-lt"},el("b",{text:"Adultes"}),el("small",{text:"toi et ta moitié"})),stp("wqAd",a.nAd,1,2,v=>{ a.nAd=v; if(v<2){ a.partenaire=""; a.partenaireEmail=""; } },"adulte")),
+    el("div",{class:"wq-li"},el("span",{class:"wq-emo",text:"🧒"}),el("span",{class:"wq-lt"},el("b",{text:"Enfants"})),stp("wqKid",a.kids.length,0,8,v=>resize(a.kids,v,()=>({nom:"",naissance:""})),"enfant")),
+    el("div",{class:"wq-li"},el("span",{class:"wq-emo",text:"🏠"}),el("span",{class:"wq-lt"},el("b",{text:"Colocataires"}),el("small",{text:"ou autres adultes"})),stp("wqCol",a.colocs.length,0,6,v=>resize(a.colocs,v,()=>({nom:"",email:""})),"colocataire"))));
+  const n=1+(a.nAd>1?1:0)+a.kids.length+a.colocs.length;
+  box.append(el("div",{class:"wq-total wq-fam"},el("span",{class:"wq-fe","aria-hidden":"true",text:"🧑".repeat(a.nAd)+"🧒".repeat(Math.min(a.kids.length,6))+"🧑".repeat(Math.min(a.colocs.length,4))}),el("b",{text:n>1?n+" personnes au foyer":"Rien que toi"})));
+  const live=(inp,set)=>inp.addEventListener("input",()=>{ set(inp.value); W.plan=null; wzRefresh(key,a); });
+  const names=el("div",{class:"wq-names"});
+  if(a.nAd>1){ const i=el("input",{type:"text",id:"wzPart",maxlength:"30",placeholder:"Emma, Thomas…"}); i.value=a.partenaire||""; live(i,v=>a.partenaire=v);
+    const em=mailInput("wzPartMail",a.partenaireEmail,v=>{ a.partenaireEmail=v; W.plan=null; wzRefresh(key,a); });
+    names.append(el("div",{class:"wz-mates"},el("span",{class:"label",text:"Ta moitié"}),el("label",{class:"field",for:"wzPart"},"Son prénom",i),el("label",{class:"field",for:"wzPartMail"},"Son e-mail pour l'inviter (facultatif)",em))); }
+  if(a.kids.length){ const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:a.kids.length>1?"Tes enfants":"Ton enfant"}));
+    a.kids.forEach((k,i)=>{ const n2=el("input",{type:"text",id:"wzKid"+i,maxlength:"30",placeholder:"Son prénom","aria-label":"Prénom de l'enfant "+(i+1)}); n2.value=k.nom; n2.addEventListener("input",()=>{ k.nom=n2.value; sync(); wzRefresh(key,a); });
+      grp.append(el("div",{class:"mate-row kid"},n2,wzDate("wzKidD"+i,k.naissance,v=>{ k.naissance=v; W.plan=null; },"Date de naissance de l'enfant "+(i+1)))); });
+    grp.append(el("span",{class:"mate-hint",text:"Avec la date de naissance (facultative), on prépare la rentrée et la cantine au bon moment."})); names.append(grp); }
+  if(a.colocs.length){ const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:a.colocs.length>1?"Tes colocs":"Ton coloc"}));
+    a.colocs.forEach((c,k)=>{ const n2=el("input",{type:"text",id:"wzMate"+k,maxlength:"30",placeholder:"Son prénom","aria-label":"Prénom du coloc "+(k+1)}); n2.value=c.nom; live(n2,v=>c.nom=v);
+      const m=mailInput("wzMateMail"+k,c.email,v=>{ c.email=v; W.plan=null; wzRefresh(key,a); }); m.setAttribute("aria-label","E-mail du coloc "+(k+1)+" (facultatif)"); m.placeholder="Son e-mail (facultatif)";
+      grp.append(el("div",{class:"mate-row"},n2,m)); });
+    grp.append(el("span",{class:"mate-hint",text:"L'e-mail est facultatif : "+MAIL_HINT()+"."})); names.append(grp); }
+  if(names.childNodes.length) box.append(names); }
+const WQ_SP=[["chat","🐱","Chat"],["chien","🐶","Chien"],["lapin","🐰","Lapin ou rongeur"],["autre","🐾","Autre"]];
+const WQ_SOINS={chat:[["vaccin","💉","Vaccin"],["vermif","🪱","Vermifuge"],["pipette","🐜","Anti-puces"]],chien:[["vaccin","💉","Vaccin"],["vermif","🪱","Vermifuge"],["pipette","🐜","Anti-puces"]],lapin:[["vaccin","💉","Vaccin"],["griffes","✂️","Griffes"],["dents","🦷","Dents"]],autre:[["visite","🩺","Visite chez le véto"]]};
+function wqAnimaux({W,a,box,key,rerender}){
+  a.soins=a.soins||{}; a.petOff=a.petOff||{}; a.petPhoto=a.petPhoto||{};
+  if(!a.petList){ a.petList=[]; for(const [sp] of WQ_SP) if(a.animaux.includes(sp)) for(const n of splitNames(a.noms[sp]||"")) a.petList.push({nom:n,sp}); }
+  const sync=()=>{ const L=a.petList; a.noms={}; const sps=[];
+    for(const p of L){ if(!sps.includes(p.sp)) sps.push(p.sp); const nm=(p.nom||"").trim(); if(nm) a.noms[p.sp]=(a.noms[p.sp]?a.noms[p.sp]+", ":"")+nm; }
+    a.animaux=L.length?sps:(a.animaux.includes("aucun")?["aucun"]:[]);
+    a.petOff={}; a.petPhoto={}; for(const p of L){ const nm=(p.nom||"").trim(); if(!nm) continue; a.petOff[nm]=p.off||{}; if(p.photo) a.petPhoto[nm]=p.photo; a.soins[nm]=p.soins||{}; }
+    W.plan=null; wzRefresh(key,a); };
+  const L=a.petList;
+  wqH(box,L.length?(L.length>1?"Présente-nous tes animaux":"Présente-nous ton animal"):"Des animaux à la maison ?","On s'occupe de leurs soins : vaccins, vermifuge, anti-puces.");
+  L.forEach((p,i)=>{ p.off=p.off||{}; p.soins=p.soins||{};
+    const ph=el("label",{class:"wq-pph"+(p.prev?" on":""),title:"Ajouter une photo"}); const fin=el("input",{type:"file",accept:"image/*",hidden:true});
+    ph.append(p.prev?el("img",{src:p.prev,alt:""}):el("span",{"aria-hidden":"true",text:"📷"}),fin,el("span",{class:"sr",text:"Photo de l'animal"}));
+    fin.addEventListener("change",async()=>{ const f0=fin.files[0]; fin.value=""; if(!f0) return; const cv=await cropImage(f0,{out:512,title:"Recadrer la photo"}); if(!cv) return;
+      p.prev=cv.toDataURL("image/jpeg",.8); rerender(); try{ const bl=await canvasBlob(cv,.9); p.photo=await uploadImg(bl?new File([bl],"animal.jpg",{type:"image/jpeg"}):f0,512); sync(); }catch(e){ imgErr(e); } });
+    const nm=el("input",{type:"text",id:"wqPet"+i,maxlength:"30",placeholder:{chat:"Moka",chien:"Rex",lapin:"Noisette"}[p.sp]||"Son nom","aria-label":"Nom de l'animal"}); nm.value=p.nom||"";
+    nm.addEventListener("input",()=>{ p.nom=nm.value; sync(); });
+    const sp=el("div",{class:"pchips"}); for(const [v,e,l] of WQ_SP) sp.append(el("button",{type:"button",class:"pchip","aria-pressed":String(p.sp===v),text:e+" "+l,onclick:()=>{ p.sp=v; sync(); rerender(); }}));
+    const so=el("div",{class:"wq-list"});
+    for(const [k,e,l] of WQ_SOINS[p.sp]){ const on=!p.off[k];
+      const lt=el("span",{class:"wq-lt"},el("b",{text:l}));
+      if(on&&k!=="pipette"&&k!=="dents"){ const d=wzDate("wqS"+k+i,p.soins[k]||"",v=>{ p.soins[k]=v; sync(); },"Dernier soin : "+l); d.max=iso(today()); d.classList.add("wq-date"); lt.append(el("small",{text:"Le dernier (facultatif)"}),d); }
+      so.append(el("div",{class:"wq-li"+(on?"":" off")},el("span",{class:"wq-emo",text:e}),lt,wqTg(on,l,()=>{ p.off[k]=on; sync(); rerender(); }))); }
+    box.append(el("div",{class:"wq-pet"},el("div",{class:"wq-pet-h"},ph,nm,el("button",{type:"button",class:"mate-x","aria-label":"Retirer cet animal",text:"×",onclick:()=>{ L.splice(i,1); sync(); rerender(); }})),sp,
+      el("span",{class:"label",text:"Soins proposés"}),so)); });
+  box.append(el("button",{type:"button",class:"wq-add"+(L.length?"":" big"),id:"wqPetAdd",onclick:()=>{ L.push({nom:"",sp:"chat",off:{},soins:{}}); a.animaux=a.animaux.filter(x=>x!=="aucun"); sync(); rerender(); setTimeout(()=>{ const x=$("wqPet"+(L.length-1)); if(x) x.focus(); },40); }},
+    el("span",{"aria-hidden":"true",text:L.length?"＋":"🐾"}),L.length?"Ajouter un animal":"Ajouter un animal"));
+  if(!L.length) box.append(el("div",{class:"wq-none"},optButton("Pas d'animal",FI.aucun||"",a.animaux.includes("aucun"),()=>{ a.animaux=a.animaux.includes("aucun")?[]:["aucun"]; W.plan=null; rerender(); })));
+  sync(); }
+function wqRow(W,id,emo,label,val,open,panel,o){ o=o||{}; const isOpen=W.open===id||!!open;
+  const b=el("button",{type:"button",class:"wq-li wq-row","aria-expanded":String(isOpen),onclick:()=>{ W.open=W.open===id?null:id; o.rerender(); }},el("span",{class:"wq-emo",text:emo}),el("span",{class:"wq-lt"},el("b",{text:label})),el("small",{class:"wq-val"+(val?"":" vide"),text:val||o.ph||"Choisir"}),o.right?null:el("span",{class:"wq-chev","aria-hidden":"true",text:"›"}));
+  const w=el("div",{class:"wq-ri"},o.right?el("div",{class:"wq-line"},b,o.right):b); if(isOpen&&panel) w.append(el("div",{class:"wq-panel"},panel())); return w; }
+function wqLogement({W,a,box,key,rerender}){
+  wqH(box,"Ton logement","Pour te rappeler les entretiens au bon moment. Touche une ligne pour la remplir.");
+  const R=(id,emo,label,val,open,panel,ph)=>wqRow(W,id,emo,label,val,open,panel,{rerender,ph});
+  const opts=(list,cur,set)=>{ const g=el("div",{class:"opts-grid"}); for(const [v,l] of list) g.append(optButton(l,FI[v],cur===v,()=>{ set(cur===v?"":v); W.plan=null; if(cur!==v) W.open=null; rerender(); })); return g; };
+  const L=el("div",{class:"wq-list wq-rows"});
+  L.append(R("type","🏠","Type",(LOGT.find(x=>x[0]===a.logement)||[])[1],!a.logement,()=>opts(LOGT,a.logement,v=>a.logement=v)));
+  L.append(R("statut","🔑","Tu es",(STATUT.find(x=>x[0]===a.statut)||[])[1],!a.statut&&!!a.logement,()=>opts(STATUT,a.statut,v=>a.statut=v)));
+  const loc=a.statut==="locataire";
+  L.append(R("entree","📅",loc?"Début du bail":"Emménagement",a.entree?fmtDue(a.entree):"",false,()=>wzField(loc?"Date d'entrée dans le logement":"Date d'achat ou d'emménagement",wzDate("wzEntree",a.entree,v=>{ a.entree=v; W.plan=null; }),"wzEntree"),"Facultatif"));
+  if(a.statut==="proprio") L.append(R("foncier","💶","Taxe foncière",parseMoney(a.foncier)?money(parseMoney(a.foncier))+"/mois":"",false,()=>{ const f=el("input",{type:"text",inputmode:"decimal",id:"wzFoncier",placeholder:"0,00 €"}); f.value=a.foncier||""; f.addEventListener("input",()=>{ a.foncier=f.value; W.plan=null; }); return wzField("Taxe foncière, par mois",f,"wzFoncier"); },"Facultatif"));
+  L.append(R("equip","🔧","Équipements",a.equip.length?String(a.equip.length):"",false,()=>{ const g=el("div",{class:"pchips"}); for(const [v,l] of EQUIP) g.append(el("button",{type:"button",class:"pchip","aria-pressed":String(a.equip.includes(v)),text:l,onclick:()=>{ a.equip=toggleIn(a.equip,v); W.plan=null; rerender(); }})); return g; },"Facultatif"));
+  box.append(L,el("p",{class:"help wq-foot",text:"Seuls le type et ton statut sont demandés : le reste se complète aussi plus tard dans Maison."})); }
+function wqPoubelles({W,a,box,key,rerender}){
+  wqH(box,"Les poubelles","Envie d'un rappel la veille au soir ? Touche un bac pour choisir son jour.");
+  a.bins=a.bins||{}; const JN=[[1,"Lun"],[2,"Mar"],[3,"Mer"],[4,"Jeu"],[5,"Ven"],[6,"Sam"],[0,"Dim"]], LONG={1:"Lundi",2:"Mardi",3:"Mercredi",4:"Jeudi",5:"Vendredi",6:"Samedi",0:"Dimanche"};
+  const L=el("div",{class:"wq-list wq-rows"});
+  for(const [n,c] of BIN_PRESETS){ const B=a.bins[n]=a.bins[n]||{jours:[],freq:1,week:"this"};
+    const val=B.jours.length?(B.jours.length===1?LONG[B.jours[0]]:JN.filter(([v])=>B.jours.includes(v)).map(([,l])=>l).join(", "))+(B.freq===2?" · 1 sem. sur 2":""):"";
+    const row=wqRow(W,"bin:"+n,"",n,val,false,()=>{ const p=el("div",{class:"wq-binp"}); const jd=el("div",{class:"pchips"});
+        for(const [v,l] of JN) jd.append(el("button",{type:"button",class:"pchip day","aria-pressed":String(B.jours.includes(v)),text:l,onclick:()=>{ B.jours=B.jours.includes(v)?B.jours.filter(x=>x!==v):B.jours.concat(v); W.plan=null; rerender(); }}));
+        p.append(jd);
+        if(B.jours.length){ const fq=el("div",{class:"seg"}); for(const [v,l] of [[1,"Chaque semaine"],[2,"Une semaine sur deux"]]) fq.append(el("button",{type:"button","aria-pressed":String(B.freq===v),text:l,onclick:()=>{ B.freq=v; W.plan=null; rerender(); }})); p.append(fq);
+          if(B.freq===2){ const wk=el("div",{class:"seg"}); for(const [v,l] of [["this","Cette semaine"],["next","La semaine prochaine"]]) wk.append(el("button",{type:"button","aria-pressed":String(B.week===v),text:l,onclick:()=>{ B.week=v; W.plan=null; rerender(); }})); p.append(el("span",{class:"wz-mini",text:"Prochaine collecte"}),wk); } }
+        return p; },{rerender,ph:"+ jour"});
+    row.querySelector(".wq-emo").replaceWith(el("span",{class:"wq-bin",style:"--c:"+c,"aria-hidden":"true"}));
+    L.append(row); }
+  box.append(L,el("button",{type:"button",class:"wq-link",id:"wqLater",text:"Je ferai ça plus tard",onclick:()=>{ for(const B of Object.values(a.bins)) B.jours=[]; W.plan=null; W.open=null; W.step++; rerender(); window.scrollTo({top:0}); }})); }
+function wqGarage({W,a,box,key,rerender}){
+  wqH(box,"Ton garage","Touche une place pour y garer tes véhicules : on suivra contrôle technique, révisions et assurance.");
+  const V=a.vehicules.filter(x=>x!=="aucun"), g=el("div",{class:"wq-scene wq-garage"});
+  for(const [v,e,l] of [["voiture","🚗","Voiture"],["moto","🛵","Moto ou scooter"],["velo","🚲","Vélo électrique"]]){ const on=V.includes(v);
+    g.append(el("button",{type:"button",class:"wq-place","aria-pressed":String(on),id:"wqV"+v,onclick:()=>{ a.vehicules=toggleIn(a.vehicules,v,"aucun"); W.plan=null; rerender(); }},el("span",{class:"wq-pe","aria-hidden":"true",text:e}),el("b",{text:l}),el("small",{text:on?"Garé ✓":"Toucher pour garer"}))); }
+  box.append(g);
+  if(!V.length) box.append(el("div",{class:"wq-none"},optButton("Aucun véhicule",FI.aucun||"",a.vehicules.includes("aucun"),()=>{ a.vehicules=a.vehicules.includes("aucun")?[]:["aucun"]; W.plan=null; rerender(); })));
+  if(V.includes("voiture")){ const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"Ta voiture (facultatif) : pour caler le contrôle technique"}));
+    grp.append(el("div",{class:"wz-soin"},wzField("Dernier contrôle technique",wzDate("wzCT",a.voitureCT,v=>{ a.voitureCT=v; W.plan=null; }),"wzCT"),wzField("Ou mise en circulation (si moins de 4 ans)",wzDate("wzMec",a.voitureMec,v=>{ a.voitureMec=v; W.plan=null; }),"wzMec")));
+    box.append(grp); } }
+const WQ_PRIO={factures:"d'oublier une facture",courses:"de faire les courses seul·e",papiers:"de chercher un papier",rdv:"d'oublier un rendez-vous",colis:"de rater un colis",partage:"de tout faire à la maison",entretien:"d'oublier l'entretien de la maison"};
+function wqPrio({W,a,box,key,rerender}){
+  const solo=a.menage.includes("seul")&&!a.menage.includes("enfants"); if(solo) a.prio=a.prio.filter(x=>x!=="partage"&&x!=="courses");
+  wqH(box,"Ce qui m'énerve le plus, c'est…","Touche tout ce qui te parle : on mettra ces rubriques en avant.");
+  const g=el("div",{class:"wq-phrases"});
+  for(const [v] of Q.prio.o){ if(solo&&(v==="partage"||v==="courses")) continue;
+    g.append(el("button",{type:"button",class:"opt wq-phr","aria-pressed":String(a.prio.includes(v)),text:WQ_PRIO[v]||v,onclick:()=>{ a.prio=toggleIn(a.prio,v); W.plan=null; rerender(); }})); }
+  box.append(g); }
+function wqPartage({W,a,box,key,rerender}){
+  const names=wzAdults(a); if(!a.partageMode) a.partageMode="egal";
+  const M={egal:["⚖️","Moitié-moitié","Chacun paie la moitié des dépenses communes."],prorata:["📊","Selon les revenus","Chacun sa part, en pourcentage."],chacun:["🙋","Chacun ses dépenses","Pas de partage automatique."]};
+  wqH(box,"Le partage des dépenses","Le réglage par défaut des dépenses communes. Modifiable à chaque dépense, et plus tard dans le Budget.");
+  const c=M[a.partageMode];
+  box.append(el("div",{class:"wq-total on wq-part"},el("small",{text:a.partageMode==="egal"?"Par défaut":"Ton choix"}),el("b",{text:c[0]+" "+c[1]}),el("small",{text:c[2]})));
+  const g=el("div",{class:"wq-list"});
+  for(const v of ["egal","prorata","chacun"]){ if(v===a.partageMode) continue; const [e,l]=M[v];
+    g.append(el("button",{type:"button",class:"wq-li wq-row",id:"wqPart-"+v,onclick:()=>{ a.partageMode=v; W.plan=null; rerender(); }},el("span",{class:"wq-emo",text:e}),el("span",{class:"wq-lt"},el("b",{text:l})),el("span",{class:"wq-chev","aria-hidden":"true",text:"›"}))); }
+  box.append(el("span",{class:"label",text:"Ou bien"}),g);
+  if(a.partageMode==="prorata"){ a.pct=a.pct||{}; const ppl=["__moi"].concat(names); if(!ppl.some(p=>a.pct[p])){ const eq=Math.floor(100/ppl.length); ppl.forEach((p,i)=>a.pct[p]=i===0?100-eq*(ppl.length-1):eq); }
+    const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"La part de chacun, en %"}));
+    const sum=el("span",{class:"mate-hint"}); const upd=()=>{ const t=ppl.reduce((s,p)=>s+(parseInt(a.pct[p],10)||0),0); sum.textContent=t===100?"Total : 100 %, c'est juste.":"Total : "+t+" % (il faut 100 %)"; };
+    for(const p of ppl){ const i=el("input",{type:"number",min:"0",max:"100",inputmode:"numeric",id:"wzPct-"+slug(p),"aria-label":"Part de "+(p==="__moi"?"toi":p)}); i.value=a.pct[p]; i.addEventListener("input",()=>{ a.pct[p]=parseInt(i.value,10)||0; upd(); W.plan=null; wzRefresh(key,a); });
+      grp.append(el("label",{class:"wz-pct",for:"wzPct-"+slug(p)},el("span",{text:p==="__moi"?"Toi":p}),i,el("span",{text:"%"}))); }
+    upd(); grp.append(sum); box.append(grp); } }
+function wqPlan({W,a,box,key,rerender}){
+  if(!W.plan) W.plan=buildPlan(W.mode,a);
+  const P=W.plan, JL=["dim.","lun.","mar.","mer.","jeu.","ven.","sam."];
+  wqH(box,W.mode==="foyer"?"Voici ton foyer sur mesure":"Voici ton espace sur mesure","Un interrupteur par groupe. Touche un groupe pour voir le détail et décocher.");
+  const L=el("div",{class:"wq-list wq-rows"});
+  const grp=(id,emo,label,items,detail)=>{ if(!items||!items.length) return; const n=items.filter(x=>x.on).length, on=n>0;
+    const row=wqRow(W,"plan:"+id,emo,label,String(n),false,detail,{rerender,right:wqTg(on,label,()=>{ for(const x of items) x.on=!on; rerender(); },"wqG-"+id)});
+    if(!on) row.classList.add("off"); L.append(row); };
+  const rows=(items,meta)=>()=>{ const l=el("div",{class:"plan-list"}); for(const x of items){ const cb=el("input",{type:"checkbox"}); cb.checked=x.on; cb.addEventListener("change",()=>{ x.on=cb.checked; rerender(); }); l.append(el("label",{class:"plan-row"},cb,el("span",{class:"pr-t",text:x.nom||x.titre}),el("span",{class:"pr-m",text:meta(x)}))); } return l; };
+  const catItems=P.cats.map(id=>({id,get on(){ return P.catsOn.has(id); },set on(v){ v?P.catsOn.add(id):P.catsOn.delete(id); }}));
+  grp("cats","⭐",W.mode==="foyer"?"Rubriques mises en avant":"Rubriques pour toi",catItems,()=>{ const cg=el("div",{class:"chips"}); for(const id of P.cats) cg.append(el("button",{type:"button",class:"cat-chip",style:"--stripe:"+CAT[id].c,"aria-pressed":String(P.catsOn.has(id)),text:CAT[id].nom,onclick:()=>{ P.catsOn.has(id)?P.catsOn.delete(id):P.catsOn.add(id); rerender(); }})); return cg; });
+  grp("profils","👨‍👩‍👧","Profils",P.profiles,rows(P.profiles,p=>p.type==="animal"?p.espece:p.type==="adulte"?(p.email?"Invitation · "+p.email:"Adulte · invitation prête"):"Enfant"));
+  grp("rappels","🔔",W.mode==="foyer"?"Rappels conseillés":"Rappels pour toi",P.tasks,rows(P.tasks,t=>(t.recur?"↻ "+recText(t.recur)+" · ":"")+fmtDue(iso(wzAddDays(t.days)))));
+  grp("poubelles","🗑️","Poubelles",P.bins,rows(P.bins,b=>b.jours.map(j=>JL[j]).join(", ")+(b.freq>1?" · 1 sem. sur 2":"")+" · la veille au soir"));
+  grp("abos","💶","Factures au Budget",P.abos,rows(P.abos,x=>money(x.montant)+" "+(FREQ[x.freq]||FREQ.mensuel).short+" · prochain "+fmtDue(x.debut)));
+  grp("docs","📄","Papiers suivis",P.docs,rows(P.docs,x=>"expire "+fmtDue(x.expire)));
+  if(P.partage){ const pt={get on(){ return !P.partageOff; },set on(v){ P.partageOff=!v; }};
+    grp("partage","⚖️","Partage des dépenses",[pt],()=>el("p",{class:"help",text:(P.partage.mode==="egal"?"Moitié-moitié":P.partage.mode==="chacun"?"Chacun paie ses dépenses":"Au prorata : "+Object.entries(P.partage.pct||{}).map(([k,v])=>(k==="__moi"?"toi":k)+" "+v+" %").join(", "))+" · réglage par défaut du Budget"})); }
+  box.append(L); }
 function renderWizard(){
   const W=S.wiz, box=$("wizard"); if(!W){ box.hidden=true; return; }
   box.hidden=false; document.querySelector(".wrap").classList.add("wizarding"); box.innerHTML="";
@@ -5029,163 +5245,39 @@ function renderWizard(){
   if(W.pre) box.append(el("span",{class:"step-tag",style:"align-self:flex-start",text:"Étape 1 sur 2 · Tes besoins"}));
   box.append(el("div",{class:"wz-top"},W.step>0?(()=>{ const bk=el("button",{type:"button",class:"wz-back","aria-label":"Question précédente",onclick:()=>{W.step--;rerender();}}); bk.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>'; return bk; })():null,dots,el("span",{class:"wz-count",text:(W.step+1)+"/"+W.steps.length}),W.pre?el("span"):el("button",{type:"button",class:"wz-skip",text:"Annuler",onclick:()=>{ closeWizard(); }})));
   const rerender=()=>renderWizard();
-  if(key==="nom"){
-    box.append(el("h1",{text:"Bienvenue chez toi."}),el("p",{class:"help",text:"Quelques questions pour préparer ton cocon, une minute. Tu pourras tout changer ensuite."}));
-    const i=el("input",{type:"text",id:"wzNom",maxlength:"40",placeholder:"Martin, Dupont-Leroy…"}); i.value=a.nom; i.addEventListener("input",()=>{ a.nom=i.value; wzRefresh(key,a); });
-    box.append(el("label",{class:"field",for:"wzNom"},"Le nom de ta famille",i));
-  } else if(key==="logement"){
-    box.append(el("h1",{text:Q.logement.t}),el("p",{class:"help",text:Q.logement.h}));
-    const g1=el("div",{class:"opts-grid"}); for(const [v,l] of LOGT) g1.append(optButton(l,FI[v],a.logement===v,()=>{a.logement=a.logement===v?"":v;rerender();}));
-    const g2=el("div",{class:"opts-grid"}); for(const [v,l] of STATUT) g2.append(optButton(l,FI[v],a.statut===v,()=>{a.statut=a.statut===v?"":v;rerender();}));
-    const g3=el("div",{class:"opts-grid"}); for(const [v,l] of EQUIP) g3.append(optButton(l,FI[v],a.equip.includes(v),()=>{a.equip=toggleIn(a.equip,v);rerender();}));
-    box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:"Type"}),g1),el("div",{class:"wz-group"},el("span",{class:"label",text:"Tu es"}),g2));
-    if(a.statut){ const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"Pour aller plus loin (facultatif)"}));
-      const row=el("div",{class:"wz-soin"});
-      row.append(wzField(a.statut==="locataire"?"Date d'entrée dans le logement (début du bail)":"Date d'achat ou d'emménagement",wzDate("wzEntree",a.entree,v=>{ a.entree=v; W.plan=null; }),"wzEntree"));
-      if(a.statut==="proprio"){ const f=el("input",{type:"text",inputmode:"decimal",id:"wzFoncier",placeholder:"0,00 €"}); f.value=a.foncier||""; f.addEventListener("input",()=>{ a.foncier=f.value; W.plan=null; }); row.append(wzField("Taxe foncière, par mois",f,"wzFoncier")); }
-      grp.append(row); box.append(grp); }
-    box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:"Équipements"}),g3));
-  } else if(key==="poubelles"){
-    box.append(el("h1",{text:"Les poubelles"}),el("p",{class:"help",text:"Coche les jours de collecte : Cocoon te rappellera de les sortir la veille au soir."}));
-    a.bins=a.bins||{};
-    for(const [n,c] of BIN_PRESETS){ const B=a.bins[n]=a.bins[n]||{jours:[],freq:1,week:"this"};
-      const card=el("div",{class:"wz-bin"+(B.jours.length?" on":"")});
-      card.append(el("div",{class:"wz-bin-h"},el("span",{class:"wz-bin-dot",style:"background:"+c}),el("b",{text:n})));
-      const jd=el("div",{class:"pchips"});
-      for(const [v,l] of [[1,"Lun"],[2,"Mar"],[3,"Mer"],[4,"Jeu"],[5,"Ven"],[6,"Sam"],[0,"Dim"]]) jd.append(el("button",{type:"button",class:"pchip day","aria-pressed":String(B.jours.includes(v)),text:l,onclick:()=>{ B.jours=B.jours.includes(v)?B.jours.filter(x=>x!==v):B.jours.concat(v); W.plan=null; rerender(); }}));
-      card.append(jd);
-      if(B.jours.length){ const fq=el("div",{class:"seg"}); for(const [v,l] of [[1,"Chaque semaine"],[2,"Une semaine sur deux"]]) fq.append(el("button",{type:"button","aria-pressed":String(B.freq===v),text:l,onclick:()=>{ B.freq=v; W.plan=null; rerender(); }}));
-        card.append(fq);
-        if(B.freq===2){ const wk=el("div",{class:"seg"}); for(const [v,l] of [["this","Cette semaine"],["next","La semaine prochaine"]]) wk.append(el("button",{type:"button","aria-pressed":String(B.week===v),text:l,onclick:()=>{ B.week=v; W.plan=null; rerender(); }}));
-          card.append(el("span",{class:"wz-mini",text:"Prochaine collecte"}),wk); } }
-      box.append(card); }
-  } else if(key==="abonnements"){
-    box.append(el("h1",{text:"Tes abonnements et factures"}),el("p",{class:"help",text:"Coche ce que tu paies régulièrement : on les ajoute au Budget avec un rappel avant chaque prélèvement."}));
+  const C={W,a,box,key,rerender};
+  if(key==="nom") wqNom(C);
+  else if(key==="menage") wqMenage(C);
+  else if(key==="animaux") wqAnimaux(C);
+  else if(key==="logement") wqLogement(C);
+  else if(key==="poubelles") wqPoubelles(C);
+  else if(key==="vehicules") wqGarage(C);
+  else if(key==="prio") wqPrio(C);
+  else if(key==="partage") wqPartage(C);
+  else if(key==="plan") wqPlan(C);
+  else if(key==="abonnements"){
+    box.append(el("h1",{text:"Tes charges fixes"}),el("p",{class:"help",text:"Touche ce que tu paies régulièrement : on l'ajoute au Budget avec un rappel avant chaque prélèvement."}));
     a.abos=a.abos||{};
+    const tot=el("b",{class:"wq-big"}), totN=el("small",{}), totBox=el("div",{class:"wq-total"},el("small",{text:"Chaque mois"}),tot,totN);
+    const upTot=()=>{ let t=0,n=0; for(const [nm,c0,fq] of wzAbos()){ const A=a.abos[nm]; if(!A||!A.on) continue; n++; t+=(parseMoney(A.montant)||0)*((FREQ[fq]||FREQ.mensuel).perMonth||1); } tot.textContent=money(Math.round(t)); totN.textContent=n?n+" prélèvement"+(n>1?"s":"")+" au Budget":"Rien pour l'instant"; totBox.classList.toggle("on",t>0); };
+    box.append(totBox);
     const g=el("div",{class:"wz-abos"});
     for(const [n,c,fq] of wzAbos()){ if(n==="Loyer"&&a.statut==="proprio") continue; if(n==="Assurance auto"&&!(a.vehicules||[]).some(v=>v==="voiture"||v==="moto")) continue;
       const A=a.abos[n]=a.abos[n]||{on:false,montant:"",jour:"5"};
       const row=el("div",{class:"wz-abo"+(A.on?" on":"")});
       const head=el("button",{type:"button",class:"wz-abo-h","aria-pressed":String(A.on),onclick:()=>{ A.on=!A.on; W.plan=null; rerender(); if(A.on) setTimeout(()=>{ const x=document.getElementById("wzAm-"+slug(n)); if(x) x.focus(); },40); }},el("span",{class:"wz-abo-dot",style:"background:"+BCAT[c].c}),el("span",{class:"wz-abo-n",text:n}),el("span",{class:"wz-abo-f",text:(FREQ[fq]||FREQ.mensuel).short}),el("span",{class:"ok","aria-hidden":"true"}));
       row.append(head);
-      if(A.on){ const am=el("input",{type:"text",inputmode:"decimal",id:"wzAm-"+slug(n),placeholder:"0,00 €"}); am.value=A.montant; am.addEventListener("input",()=>{ A.montant=am.value; W.plan=null; wzRefresh(key,a); });
+      if(A.on){ const am=el("input",{type:"text",inputmode:"decimal",id:"wzAm-"+slug(n),placeholder:"0,00 €"}); am.value=A.montant; am.addEventListener("input",()=>{ A.montant=am.value; W.plan=null; wzRefresh(key,a); upTot(); });
         const jr=el("input",{type:"number",min:"1",max:"28",inputmode:"numeric",id:"wzJr-"+slug(n),placeholder:"5"}); jr.value=A.jour; jr.addEventListener("input",()=>{ A.jour=jr.value; W.plan=null; });
         row.append(el("div",{class:"wz-abo-in"},wzField("Montant",am,"wzAm-"+slug(n)),wzField("Jour du prélèvement",jr,"wzJr-"+slug(n)))); }
       g.append(row); }
-    box.append(g);
-  } else if(key==="partage"){
-    const names=wzAdults(a);
-    box.append(el("h1",{text:"Comment partagez-vous l'argent ?"}),el("p",{class:"help",text:"Ce sera le réglage par défaut de chaque nouvelle dépense. Tu pourras toujours le changer au cas par cas."}));
-    const g=el("div",{class:"opts-grid"});
-    for(const [v,l] of [["egal","Moitié-moitié"],["prorata","Au prorata des revenus"],["chacun","Chacun paie ses dépenses"]]) g.append(optButton(l,"",a.partageMode===v,()=>{ a.partageMode=a.partageMode===v?"":v; W.plan=null; rerender(); }));
-    box.append(g);
-    if(a.partageMode==="prorata"){ a.pct=a.pct||{}; const ppl=["__moi"].concat(names); if(!ppl.some(p=>a.pct[p])){ const eq=Math.floor(100/ppl.length); ppl.forEach((p,i)=>a.pct[p]=i===0?100-eq*(ppl.length-1):eq); }
-      const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"La part de chacun, en %"}));
-      const sum=el("span",{class:"mate-hint"}); const upd=()=>{ const t=ppl.reduce((s,p)=>s+(parseInt(a.pct[p],10)||0),0); sum.textContent=t===100?"Total : 100 %, c'est juste.":"Total : "+t+" % (il faut 100 %)"; };
-      for(const p of ppl){ const i=el("input",{type:"number",min:"0",max:"100",inputmode:"numeric",id:"wzPct-"+slug(p),"aria-label":"Part de "+(p==="__moi"?"toi":p)}); i.value=a.pct[p]; i.addEventListener("input",()=>{ a.pct[p]=parseInt(i.value,10)||0; upd(); W.plan=null; wzRefresh(key,a); });
-        grp.append(el("label",{class:"wz-pct",for:"wzPct-"+slug(p)},el("span",{text:p==="__moi"?"Toi":p}),i,el("span",{text:"%"}))); }
-      upd(); grp.append(sum); box.append(grp); }
-  } else if(key==="papiers"){
-    box.append(el("h1",{text:"Les papiers qui expirent"}),el("p",{class:"help",text:"Indique la date d'expiration : Cocoon te prévient deux mois avant."}));
-    a.papiers=a.papiers||{};
-    const g=el("div",{class:"wz-abos"});
-    for(const [k,l,who] of PAPIERS){ if(k==="bail"&&a.statut!=="locataire") continue; if(k==="assurauto"&&!(a.vehicules||[]).some(v=>v==="voiture"||v==="moto")) continue;
-      const P=a.papiers[k]=a.papiers[k]||{on:false,date:""};
-      const row=el("div",{class:"wz-abo"+(P.on?" on":"")});
-      row.append(el("button",{type:"button",class:"wz-abo-h","aria-pressed":String(P.on),onclick:()=>{ P.on=!P.on; W.plan=null; rerender(); }},el("span",{class:"wz-abo-n",text:l}),el("span",{class:"wz-abo-f",text:who==="moi"?"à toi":"au foyer"}),el("span",{class:"ok","aria-hidden":"true"})));
-      if(P.on) row.append(el("div",{class:"wz-abo-in one"},wzField(k==="bail"?"Le bail se termine le":k.startsWith("assur")?"Échéance du contrat":"Expire le",wzDate("wzPap-"+k,P.date,v=>{ P.date=v; W.plan=null; wzRefresh(key,a); }),"wzPap-"+k)));
-      g.append(row); }
-    box.append(g);
-  } else if(key==="plan"){
-    if(!W.plan) W.plan=buildPlan(W.mode,a);
-    const P=W.plan;
-    box.append(el("h1",{text:W.mode==="foyer"?"Voici ton foyer sur mesure":"Voici ton espace sur mesure"}),el("p",{class:"help",text:"Décoche ce que tu ne veux pas, puis valide."}));
-    const cg=el("div",{class:"chips"});
-    for(const id of P.cats) cg.append(el("button",{type:"button",class:"cat-chip",style:"--stripe:"+CAT[id].c,"aria-pressed":String(P.catsOn.has(id)),text:CAT[id].nom,onclick:()=>{ P.catsOn.has(id)?P.catsOn.delete(id):P.catsOn.add(id); rerender(); }}));
-    box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:W.mode==="foyer"?"Catégories conseillées":"Catégories mises en avant pour toi"}),P.cats.length?cg:el("span",{class:"muted",text:"Aucune en particulier : on garde les catégories du foyer."})));
-    if(P.profiles.length){ const pl=el("div",{class:"plan-list"});
-      for(const p of P.profiles){ const cb=el("input",{type:"checkbox"}); cb.checked=p.on; cb.addEventListener("change",()=>p.on=cb.checked);
-        pl.append(el("label",{class:"plan-row"},cb,el("span",{class:"pr-t",text:p.nom}),el("span",{class:"pr-m",text:p.type==="animal"?p.espece:p.type==="adulte"?(p.email?"Invitation par e-mail · "+p.email:"Adulte · invitation prête"):"Enfant"}))); }
-      box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:"Profils à créer"}),pl)); }
-    if(P.tasks.length){ const tl=el("div",{class:"plan-list"});
-      for(const t of P.tasks){ const cb=el("input",{type:"checkbox"}); cb.checked=t.on; cb.addEventListener("change",()=>t.on=cb.checked);
-        const d=wzAddDays(t.days);
-        tl.append(el("label",{class:"plan-row"},cb,el("span",{class:"pr-t",text:t.titre}),el("span",{class:"pr-m",text:(t.recur?"↻ "+recText(t.recur)+" · ":"")+fmtDue(iso(d))}))); }
-      box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:W.mode==="foyer"?"Rappels conseillés pour le foyer":"Rappels conseillés, rien que pour toi"}),tl)); }
-    const JL=["dim.","lun.","mar.","mer.","jeu.","ven.","sam."];
-    const sect=(label,items,meta)=>{ if(!items||!items.length) return; const l=el("div",{class:"plan-list"});
-      for(const x of items){ const cb=el("input",{type:"checkbox"}); cb.checked=x.on; cb.addEventListener("change",()=>x.on=cb.checked); l.append(el("label",{class:"plan-row"},cb,el("span",{class:"pr-t",text:x.nom||x.titre}),el("span",{class:"pr-m",text:meta(x)}))); }
-      box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:label}),l)); };
-    sect("Poubelles à sortir",P.bins,b=>b.jours.map(j=>JL[j]).join(", ")+(b.freq>1?" · 1 sem. sur 2":"")+" · la veille au soir");
-    sect("Abonnements et factures au Budget",P.abos,x=>money(x.montant)+" "+(FREQ[x.freq]||FREQ.mensuel).short+" · prochain "+fmtDue(x.debut));
-    sect("Papiers suivis",P.docs,x=>"expire "+fmtDue(x.expire)+(x.pour==="moi"?" · à toi":""));
-    if(P.partage) box.append(el("div",{class:"wz-group"},el("span",{class:"label",text:"Partage des dépenses"}),el("div",{class:"plan-list"},el("div",{class:"plan-row"},el("span",{class:"pr-t",text:P.partage.mode==="egal"?"Moitié-moitié":P.partage.mode==="chacun"?"Chacun paie ses dépenses":"Au prorata"}),el("span",{class:"pr-m",text:P.partage.mode==="prorata"?Object.entries(P.partage.pct||{}).map(([k,v])=>(k==="__moi"?"Toi":k)+" "+v+" %").join(" · "):"réglage par défaut du Budget"})))));
-
-  } else {
-    const q=Q[key]; box.append(el("h1",{text:W.mode==="perso"&&key==="prio"?"Toi, qu'est-ce qui t'aiderait le plus ?":q.t}),el("p",{class:"help",text:q.h}));
-    const g=el("div",{class:"opts-grid"});
-    const solo=a.menage.includes("seul")&&!a.menage.includes("enfants");
-    if(key==="prio"&&solo) a.prio=a.prio.filter(x=>x!=="partage"&&x!=="courses");
-    for(const [v,l,ic] of q.o){ if(key==="prio"&&solo&&(v==="partage"||v==="courses")) continue;
-      g.append(optButton(l,ic,a[key].includes(v),()=>{ let r=toggleIn(a[key],v,q.none);
-        if(key==="menage"&&r.includes(v)){ if(v==="seul") r=r.filter(x=>x!=="couple"&&x!=="coloc"); if(v==="couple"||v==="coloc") r=r.filter(x=>x!=="seul"); }
-        a[key]=r; W.plan=null; rerender(); })); }
-    box.append(g);
-    const live=(inp,set)=>inp.addEventListener("input",()=>{ set(inp.value); W.plan=null; wzRefresh(key,a); });
-    if(key==="menage"&&a.menage.includes("couple")){ const i=el("input",{type:"text",id:"wzPart",maxlength:"30",placeholder:"Emma, Thomas…"}); i.value=a.partenaire; live(i,v=>a.partenaire=v);
-      box.append(el("label",{class:"field",for:"wzPart"},"Le prénom de ta moitié : on lui prépare son profil et une invitation",i));
-      const em=mailInput("wzPartMail",a.partenaireEmail,v=>{ a.partenaireEmail=v; W.plan=null; wzRefresh(key,a); });
-      box.append(el("label",{class:"field",for:"wzPartMail"},"Son e-mail pour l'inviter (facultatif) : "+MAIL_HINT(),em)); }
-    if(key==="menage"&&a.menage.includes("coloc")){ a.colocs=a.colocs&&a.colocs.length?a.colocs:[{nom:"",email:""}];
-      const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"Tes colocs : on leur prépare un profil et une invitation"}));
-      a.colocs.forEach((c,k)=>{ const n=el("input",{type:"text",id:"wzMate"+k,maxlength:"30",placeholder:"Son prénom","aria-label":"Prénom du coloc "+(k+1)}); n.value=c.nom; live(n,v=>c.nom=v);
-        const m=mailInput("wzMateMail"+k,c.email,v=>{ c.email=v; W.plan=null; wzRefresh(key,a); }); m.setAttribute("aria-label","E-mail du coloc "+(k+1)+" (facultatif)"); m.placeholder="Son e-mail (facultatif)";
-        const row=el("div",{class:"mate-row"},n,m);
-        if(a.colocs.length>1) row.append(el("button",{type:"button",class:"mate-x","aria-label":"Retirer ce coloc",text:"×",onclick:()=>{ a.colocs.splice(k,1); W.plan=null; rerender(); }}));
-        grp.append(row); });
-      if(a.colocs.length<6) grp.append(el("button",{type:"button",class:"btn ghost mate-add",text:"+ Ajouter un coloc",onclick:()=>{ a.colocs.push({nom:"",email:""}); W.plan=null; rerender(); setTimeout(()=>{ const x=$("wzMate"+(a.colocs.length-1)); if(x) x.focus(); },30); }}));
-      grp.append(el("span",{class:"mate-hint",text:"L'e-mail est facultatif : "+MAIL_HINT()+"."}));
-      box.append(grp); }
-    if(key==="animaux"){ a.pets=a.pets||{};
-      const SPN={chat:["chat","chats","Moka","Un autre chat"],chien:["chien","chiens","Rex","Un autre chien"],lapin:["lapin ou rongeur","lapins ou rongeurs","Noisette","Un autre lapin ou rongeur"],autre:["animal","animaux","Son nom","Un autre animal"]};
-      for(const sp of a.animaux.filter(x=>x!=="aucun")){ const L=SPN[sp]||SPN.autre;
-        if(!a.pets[sp]||!a.pets[sp].length){ a.pets[sp]=splitNames(a.noms[sp]||""); if(!a.pets[sp].length) a.pets[sp]=[""]; }
-        const arr=a.pets[sp], sync=()=>{ a.noms[sp]=arr.map(x=>(x||"").trim()).filter(Boolean).join(", "); W.plan=null; wzRefresh(key,a); clearTimeout(W._soinT); W._soinT=setTimeout(()=>{ if(W._fillSoins) W._fillSoins(); },350); };
-        const grp=el("div",{class:"wz-mates wz-pets"}); grp.append(el("span",{class:"label",text:arr.length>1?"Le nom de tes "+L[1]:"Le nom de ton "+L[0]}));
-        arr.forEach((v,i)=>{ const n=el("input",{type:"text",id:"wzA"+sp+(i||""),maxlength:"30",placeholder:i?"Son nom":L[2],"aria-label":"Nom "+(arr.length>1?"de l'animal "+(i+1):"de l'animal")}); n.value=v; n.addEventListener("input",()=>{ arr[i]=n.value; sync(); });
-          const row=el("div",{class:"mate-row pet"},n); if(arr.length>1) row.append(el("button",{type:"button",class:"mate-x","aria-label":"Retirer cet animal",text:"×",onclick:()=>{ arr.splice(i,1); sync(); rerender(); }}));
-          grp.append(row); });
-        if(arr.length<10) grp.append(el("button",{type:"button",class:"btn ghost mate-add",text:"+ "+L[3],onclick:()=>{ arr.push(""); sync(); rerender(); setTimeout(()=>{ const x=$("wzA"+sp+(arr.length-1)); if(x) x.focus(); },30); }}));
-        box.append(grp); } }
-    if(key==="menage"&&a.menage.includes("enfants")){ a.kids=a.kids&&a.kids.length?a.kids:splitNames(a.enfants).map(n=>({nom:n,naissance:""})); if(!a.kids.length) a.kids=[{nom:"",naissance:""}];
-      const sync=()=>{ a.enfants=a.kids.map(k=>(k.nom||"").trim()).filter(Boolean).join(", "); };
-      const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"Tes enfants : prénom et date de naissance (facultative)"}));
-      a.kids.forEach((k,i)=>{ const n=el("input",{type:"text",id:"wzKid"+i,maxlength:"30",placeholder:"Son prénom","aria-label":"Prénom de l'enfant "+(i+1)}); n.value=k.nom; n.addEventListener("input",()=>{ k.nom=n.value; sync(); W.plan=null; wzRefresh(key,a); });
-        const d=wzDate("wzKidD"+i,k.naissance,v=>{ k.naissance=v; W.plan=null; },"Date de naissance de l'enfant "+(i+1));
-        const row=el("div",{class:"mate-row kid"},n,d); if(a.kids.length>1) row.append(el("button",{type:"button",class:"mate-x","aria-label":"Retirer cet enfant",text:"×",onclick:()=>{ a.kids.splice(i,1); sync(); W.plan=null; rerender(); }}));
-        grp.append(row); });
-      if(a.kids.length<6) grp.append(el("button",{type:"button",class:"btn ghost mate-add",text:"+ Ajouter un enfant",onclick:()=>{ a.kids.push({nom:"",naissance:""}); W.plan=null; rerender(); setTimeout(()=>{ const x=$("wzKid"+(a.kids.length-1)); if(x) x.focus(); },30); }}));
-      grp.append(el("span",{class:"mate-hint",text:"Avec la date, on prépare la rentrée, la cantine et l'assurance scolaire au bon moment."}));
-      sync(); box.append(grp); }
-    if(key==="animaux"){ a.soins=a.soins||{}; const soinBox=el("div",{class:"wz-soins-box"}); box.append(soinBox);
-      W._fillSoins=()=>{ soinBox.innerHTML=""; const pets=[]; for(const sp of ["chat","chien","lapin","autre"]) if(a.animaux.includes(sp)) for(const n of splitNames(a.noms[sp])) pets.push({n,sp});
-        if(!pets.length) return; const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"Derniers soins (facultatif) : on démarre les rappels à la bonne date"}));
-        const F={vaccin:"Dernier vaccin",vermif:"Dernier vermifuge",griffes:"Dernière coupe des griffes",visite:"Dernière visite chez le véto"};
-        const KS={chat:["vaccin","vermif"],chien:["vaccin","vermif"],lapin:["vaccin","griffes"],autre:["visite"]};
-        pets.forEach(({n,sp},i)=>{ const S0=a.soins[n]=a.soins[n]||{};
-          grp.append(el("div",{class:"wz-soin"+(KS[sp].length===1?" one":"")},el("b",{text:n}),...KS[sp].map(k=>{ const id="wzS"+k+i; return wzField(F[k],wzDate(id,S0[k]||"",v=>{ S0[k]=v; W.plan=null; }),id); }))); });
-        soinBox.append(grp); };
-      W._fillSoins(); }
-    if(key==="vehicules"&&a.vehicules.includes("voiture")){
-      const grp=el("div",{class:"wz-mates"}); grp.append(el("span",{class:"label",text:"Ta voiture (facultatif) : pour caler le contrôle technique"}));
-      grp.append(el("div",{class:"wz-soin"},wzField("Dernier contrôle technique",wzDate("wzCT",a.voitureCT,v=>{ a.voitureCT=v; W.plan=null; }),"wzCT"),wzField("Ou mise en circulation (si moins de 4 ans)",wzDate("wzMec",a.voitureMec,v=>{ a.voitureMec=v; W.plan=null; }),"wzMec")));
-      box.append(grp); }
+    box.append(g); upTot();
   }
   const nav=el("div",{class:"wz-nav"});
   
   const needMsg=wzNeed(key,a), need=!!needMsg;
   const showNeed=need&&/^Vérifie/.test(needMsg); nav.append(el("span",{class:"wz-need",text:showNeed?needMsg:"",hidden:!showNeed||null}));
-  nav.append(el("button",{type:"button",class:"btn"+(last?" big":""),id:"wzNext",disabled:need||null,text:last?(W.pre?"Continuer":"Tout mettre en place"):"Continuer",onclick:()=>{ if(last){ if(W.pre){ S.pendingW=W; warmup(WARM_LINES,3300,null,null,goProfileStage).catch(()=>{}); } else warmup(WARM_LINES,2600,()=>applyPlan()).catch(()=>{}); } else { W.step++; if(W.steps[W.step]==="plan") W.plan=null; rerender(); window.scrollTo({top:0}); } }}));
+  nav.append(el("button",{type:"button",class:"btn"+(last?" big":""),id:"wzNext",disabled:need||null,text:last?(W.pre?"Continuer":"Tout mettre en place"):key==="nom"?"C'est nous !":key==="partage"&&a.partageMode==="egal"?"Garder moitié-moitié":"Continuer",onclick:()=>{ if(last){ if(W.pre){ S.pendingW=W; warmup(WARM_LINES,3300,null,null,goProfileStage).catch(()=>{}); } else warmup(WARM_LINES,2600,()=>applyPlan()).catch(()=>{}); } else { W.step++; if(W.steps[W.step]==="plan") W.plan=null; rerender(); window.scrollTo({top:0}); } }}));
   box.append(nav);
 }
 function wzNeed(key,a){
@@ -5215,7 +5307,7 @@ async function applyPlan(Wx){
       for(const p of P.profiles.filter(x=>x.on)){
         let id=slug(p.nom); const taken=new Set(membres().map(m=>m.id).concat(Object.values(ids))); let i=2; while(taken.has(id)) id=slug(p.nom)+"-"+(i++);
         ids[p.nom]=id;
-        await S.db.collection("membres").doc(id).set({nom:p.nom,type:p.type,espece:p.espece||null,naissance:p.naissance||null,email:p.email||null,role:p.type==="adulte"?"membre":null,invite:p.type==="adulte"||null,c:COLORS[(Object.keys(ids).length+3)%COLORS.length],ordre:now+Object.keys(ids).length,creePar:me,creeLe:now});
+        await S.db.collection("membres").doc(id).set({nom:p.nom,type:p.type,espece:p.espece||null,naissance:p.naissance||null,email:p.email||null,photo:p.photo||null,role:p.type==="adulte"?"membre":null,invite:p.type==="adulte"||null,c:COLORS[(Object.keys(ids).length+3)%COLORS.length],ordre:now+Object.keys(ids).length,creePar:me,creeLe:now});
         if(p.email&&canMail()) sendInviteMail(p.email,p.nom,id);
       }
       for(const t of P.tasks.filter(x=>x.on)){
@@ -5224,7 +5316,7 @@ async function applyPlan(Wx){
       }
       const meA=meId(); const adIds=[meA].concat(P.profiles.filter(x=>x.on&&x.type==="adulte").map(x=>ids[x.nom]).filter(Boolean));
       let partCfg=null;
-      if(P.partage){ partCfg={mode:P.partage.mode}; if(P.partage.mode==="prorata"){ const pc={}; for(const [k,v] of Object.entries(P.partage.pct||{})){ const id=k==="__moi"?meA:(ids[k]||(membres().find(m=>(m.nom||"").toLowerCase()===k.toLowerCase())||{}).id); if(id) pc[id]=parseInt(v,10)||0; } partCfg.pct=pc; } }
+      if(P.partage&&!P.partageOff){ partCfg={mode:P.partage.mode}; if(P.partage.mode==="prorata"){ const pc={}; for(const [k,v] of Object.entries(P.partage.pct||{})){ const id=k==="__moi"?meA:(ids[k]||(membres().find(m=>(m.nom||"").toLowerCase()===k.toLowerCase())||{}).id); if(id) pc[id]=parseInt(v,10)||0; } partCfg.pct=pc; } }
       const shareFor=montant=>{ if(!partCfg||partCfg.mode==="chacun"||adIds.length<2) return {partage:[meA],parts:null};
         if(partCfg.mode==="egal") return {partage:adIds.slice(),parts:null};
         return {partage:Object.keys(partCfg.pct||{}),parts:pctParts(montant,partCfg.pct)}; };
@@ -6155,7 +6247,10 @@ function statusPill(date,labelOk,prefix){ if(!date) return el("span",{class:"m-p
   return el("span",{class:"m-pill "+(n<0?"late":n<=45?"soon":"ok"),text:(prefix||"")+(n<0?"en retard de "+(-n)+" j":n===0?"aujourd'hui":n<=45?"dans "+n+" j":MOIS.format(parse(date)))}); }
 function lastRev(v){ return (v.entretiens||[]).filter(x=>x.type==="revision").sort((a,b)=>a.date<b.date?1:-1)[0]||null; }
 function revNext(v){ const r=lastRev(v); if(!r) return null; return {date:iso(addMonths(parse(r.date),12)),km:r.km?r.km+(Number(v.revisionKm)||15000):null}; }
-function budgetAdd(titre,montant,cat,solo){ const ad=adults().map(m=>m.id), me=meId(); return S.db.collection("depenses").add({titre,montant,cat,payePar:me,partage:solo||!ad.length?[me]:ad,date:iso(today()),creePar:me,creeLe:Date.now()}); }
+/* partage selon le réglage du foyer (foyer/config.partage) ; sans réglage, rien n'est partagé : chacun choisit (demandé par Angel) */
+function budgetAdd(titre,montant,cat,solo){ const ad=adults().map(m=>m.id), me=meId(), pc=S.config&&S.config.partage; let partage=[me], parts=null;
+  if(!solo&&pc&&ad.length>1){ if(pc.mode==="egal") partage=ad; else if(pc.mode==="prorata"&&pc.pct){ const ids=ad.filter(id=>(pc.pct[id]||0)>0); if(ids.length>1){ const p={}; ids.forEach(id=>p[id]=pc.pct[id]); partage=ids; parts=pctParts(montant,p); } } }
+  return S.db.collection("depenses").add({titre,montant,cat,payePar:me,partage,parts,date:iso(today()),creePar:me,creeLe:Date.now()}); }
 const vehCol=()=>S.db.doc("data/users/"+S.uid+"/espace").collection("vehicules");
 function renderMaison(){
   if(!$("mHome")) return; const me=meId(), q=(S.config&&S.config.questionnaire)||{}, L=(S.config&&S.config.logement)||{};
@@ -7533,7 +7628,7 @@ const Secretary={
   },
   tools:{
     ajouter_tache:{d:"Ajoute une tâche. {titre, pour:'tous'|'perso'|id membre|'concerne:'+id animal, echeance:'AAAA-MM-JJ', repetition_mois}",run:a=>addTask({titre:a.titre,where:a.pour||"tous",echeance:a.echeance||null,recur:a.repetition_mois})},
-    ajouter_depense:{d:"Note une dépense partagée entre les adultes. {titre, montant_centimes, categorie}",run:a=>budgetAdd(a.titre,a.montant_centimes,a.categorie||"autre")},
+    ajouter_depense:{d:"Note une dépense (partagée selon le réglage du foyer). {titre, montant_centimes, categorie}",run:a=>budgetAdd(a.titre,a.montant_centimes,a.categorie||"autre")},
     chercher:{d:"Cherche dans tout le foyer. {texte}",run:a=>searchAll(a.texte||"",true).slice(0,10).map(r=>({type:r.g,titre:r.titre,detail:r.sub}))},
     ouvrir:{d:"Ouvre un écran. {ecran: accueil|foyer|papiers|maison|budget|rappels|moi}",run:a=>setTab(({papiers:"documents"})[a.ecran]||a.ecran||"accueil")}
   },
