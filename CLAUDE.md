@@ -110,6 +110,10 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - Bannière Premium du Foyer : Cocoony (`.hb-cat`, image du personnage) monte du bas puis se penche vers « Cocoon Premium » en
   boucle douce ; `S.pbanT` mémorise le début pour ne pas rejouer l'entrée à chaque rendu (classe `seen` après 1,6 s).
   Essayé puis annulé (Angel) : Cocoony redessiné en vectoriel avec yeux/oreille/mèche animés — on garde l'image du logo.
+- **Images App Store** (style « affiche dégradée » choisi par Angel : dégradé Cocoon Plus, logo + « Cocoon » en Fredoka comme l'app,
+  titre blanc, téléphone incliné, Cocoony en coin, pas d'autocollant) : `app/appstore/appstore-1…7.jpg` (1320×2868, iPhone 6,9").
+  Pour les refaire : `bash outils/construire.sh demo` puis `python3 outils/appstore/captures.py` (foyer d'exemple `seed.js`, écrans dans
+  `outils/appstore/raw/`) puis `python3 outils/appstore/affiches.py` (titres dans `PAGES`).
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
