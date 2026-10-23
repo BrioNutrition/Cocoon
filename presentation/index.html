@@ -44,6 +44,20 @@ section{padding-block:56px}
 .btn.ghost{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 2px var(--line)}
 .top .btn{min-height:42px;padding:10px 16px;font-size:15px}
 
+/* accroche : même affiche dégradée que les images App Store */
+.affiche{background:radial-gradient(110% 80% at 100% 0%,#FFD66B 0%,transparent 55%),linear-gradient(165deg,#FF9C80,#E2629B 55%,#8C5BD6);color:#fff;border-radius:0 0 40px 40px;overflow:hidden;position:relative}
+.affiche .top .brand b{color:#fff}
+.affiche .top .btn.ghost{background:rgba(255,255,255,.18);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.45)}
+.affiche .eyebrow{color:rgba(255,255,255,.85)}
+.affiche .lead{color:rgba(255,255,255,.9)}
+.affiche .btn.go{background:#fff;color:#C2417E;box-shadow:0 5px 0 rgba(0,0,0,.18)}
+.affiche .btn.ghost{background:rgba(255,255,255,.18);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.45)}
+.affiche .soon{color:rgba(255,255,255,.85)}
+.store{display:inline-flex;align-items:center;gap:10px;margin-top:18px;padding:9px 16px 9px 12px;border-radius:14px;background:#1C1B2E;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1.15}
+.store b{display:block;font-size:17px}
+.store i{font-style:normal;font-size:22px}
+.cat-coin{position:absolute;width:96px;height:96px;border-radius:30px;box-shadow:0 14px 30px rgba(0,0,0,.25);right:max(16px,calc(50% - 520px));bottom:26px;transform:rotate(12deg)}
+@media (max-width:879px){.cat-coin{width:72px;height:72px;border-radius:22px;bottom:16px}}
 /* accroche */
 .hero{display:grid;grid-template-columns:minmax(0,1fr);gap:40px;align-items:center;padding-block:24px 56px}
 @media (min-width:880px){.hero{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}}
@@ -54,7 +68,7 @@ section{padding-block:56px}
 .soon{margin-top:14px;font-size:13.5px;color:var(--muted)}
 .phones{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:0;padding-block:8px 20px}
 .phone{width:min(46%,240px);border-radius:34px;padding:7px;background:#1C1B2E;box-shadow:0 30px 60px rgba(28,27,46,.28);flex:none}
-.phone img{display:block;width:100%;height:auto;border-radius:28px;aspect-ratio:390/844;object-fit:cover;object-position:top}
+.phone img{display:block;width:100%;height:auto;border-radius:28px;aspect-ratio:440/956;object-fit:cover;object-position:top}
 .phone.a{transform:rotate(-5deg) translateY(10px);margin-right:-22px;z-index:1}
 .phone.b{transform:rotate(4deg);z-index:2}
 @media (prefers-reduced-motion:no-preference){
@@ -93,6 +107,30 @@ section{padding-block:56px}
 .shot .phone{width:100%}
 .shot figcaption{font-size:14px;color:var(--muted);text-align:center}
 
+/* tarifs : deux affiches, comme la fenêtre Cocoon Plus de l'app */
+.duo{display:grid;grid-template-columns:minmax(0,1fr);border-radius:30px;overflow:hidden;box-shadow:0 20px 50px rgba(28,27,46,.16)}
+@media (min-width:880px){.duo{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}}
+.af{position:relative;padding:28px clamp(20px,4vw,40px) 30px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.af .tg{align-self:flex-start;font-size:12px;font-weight:800;letter-spacing:.08em;padding:5px 11px;border-radius:99px}
+.af h3{font-size:clamp(28px,4vw,38px);line-height:1;letter-spacing:-.03em}
+.af .price b{font-size:34px}
+.af1{background:#EEEDF4;color:#3D3A55}.af1 .tg{background:#DCDAE6;color:#625F7E}.af1 .price span,.af1 p{color:#625F7E}
+.af1 .cat1{position:absolute;right:24px;top:26px;width:74px;height:74px;border-radius:22px;filter:grayscale(.85) opacity(.7)}
+.af1 .zz{position:absolute;right:20px;top:8px;font-weight:800;color:#9C99B3;letter-spacing:.1em}
+.af1 ul{margin:6px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;font-size:15px}
+.af1 li::before{content:"✓ ";font-weight:800;color:#8D8AA3}
+.af2{color:#fff;background:radial-gradient(120% 80% at 100% 0%,#FFD66B 0%,transparent 55%),linear-gradient(160deg,#FF9C80,#E2629B 60%,#8C5BD6)}
+.af2 .tg{background:#fff;color:#C2417E}
+.af2 .price span{color:rgba(255,255,255,.88)}
+.af2 .st{position:absolute;right:24px;top:24px;font-weight:900;font-size:13px;background:#FFE14D;color:#1C1B2E;padding:6px 10px;border-radius:12px;transform:rotate(-8deg);box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.rows{display:flex;flex-direction:column;gap:7px;margin-top:6px;max-width:420px}
+.rw{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.18);border-radius:14px;padding:9px 11px}
+.rw .e{flex:none;width:24px;text-align:center;font-size:18px}.rw .e img{width:24px;height:24px;border-radius:7px;display:block}
+.rw>span:not(.e){flex:1;font-weight:700;font-size:15px;text-align:left}
+.rw s{font-size:12.5px;opacity:.8;font-weight:700}
+.rw em{font-style:normal;font-weight:900;background:#fff;color:#C2417E;border-radius:99px;min-width:38px;text-align:center;padding:2px 9px;font-size:15px}
+.af2 .btn{align-self:flex-start;margin-top:12px;background:#fff;color:#C2417E;box-shadow:0 5px 0 rgba(0,0,0,.18)}
+.af2 .note{font-size:13px;color:rgba(255,255,255,.85)}
 /* tarifs */
 .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;align-items:stretch}
 .plan{background:var(--surface);border-radius:26px;padding:24px;box-shadow:0 2px 0 var(--shadow);display:flex;flex-direction:column;gap:14px;min-width:0;position:relative}
@@ -120,6 +158,7 @@ section{padding-block:56px}
 footer{padding-block:28px 40px;font-size:13.5px;color:var(--muted);text-align:center}
 </style>
 
+<div class="affiche">
 <header class="w top">
   <a class="brand" href="https://brionutrition.github.io/Cocoon/"><img src="img/cocoon.png" alt=""><b>Cocoon</b></a>
   <a class="btn ghost" href="https://brionutrition.github.io/Cocoon/">Se connecter</a>
@@ -129,19 +168,22 @@ footer{padding-block:28px 40px;font-size:13.5px;color:var(--muted);text-align:ce
   <div class="w hero">
     <div>
       <p class="eyebrow">L'appli du foyer</p>
-      <h1 style="margin-top:12px">Ton foyer, <span class="fam">enfin serein.</span></h1>
+      <h1 style="margin-top:12px">Ton foyer,<br><span class="fam">enfin serein.</span></h1>
       <p class="lead">Tâches, courses, repas, agenda, budget et papiers, rangés au même endroit. Seul·e ou à plusieurs, animaux compris : chacun voit ce qu'il a à faire, et plus personne ne tient tout dans sa tête.</p>
       <div class="cta">
         <a class="btn go" href="https://brionutrition.github.io/Cocoon/">Créer mon foyer, c'est gratuit</a>
         <a class="btn ghost" href="#rubriques">Voir ce que ça fait</a>
       </div>
-      <p class="soon">Fonctionne dans le navigateur et s'installe sur l'écran d'accueil. App iPhone bientôt sur l'App Store.</p>
+      <span class="store" aria-label="L'app iPhone arrive bientôt sur l'App Store"><i aria-hidden="true">📱</i><span>Bientôt sur<b>l'App Store</b></span></span>
+      <p class="soon">En attendant, Cocoon marche dans le navigateur et s'installe sur l'écran d'accueil.</p>
     </div>
     <div class="phones" aria-hidden="true">
       <div class="phone a"><img src="img/accueil.jpg" alt=""></div>
       <div class="phone b"><img src="img/foyer.jpg" alt=""></div>
     </div>
   </div>
+  <img class="cat-coin" src="img/cocoon.png" alt="">
+</div>
 
   <section id="rubriques">
     <div class="w">
@@ -189,9 +231,13 @@ footer{padding-block:28px 40px;font-size:13.5px;color:var(--muted);text-align:ce
         <h2>Pensée pour le téléphone, du premier au dernier écran.</h2>
       </div>
       <div class="shots">
-        <figure class="shot"><div class="phone"><img src="img/accueil.jpg" alt="Accueil de Cocoon : bonjour, membres du foyer, la semaine et les raccourcis" loading="lazy"></div><figcaption>L'accueil : ta journée et ton foyer</figcaption></figure>
+        <figure class="shot"><div class="phone"><img src="img/accueil.jpg" alt="Accueil de Cocoon : bonjour, membres du foyer, la journée et les raccourcis" loading="lazy"></div><figcaption>L'accueil : ta journée et ton foyer</figcaption></figure>
         <figure class="shot"><div class="phone"><img src="img/foyer.jpg" alt="Le foyer : tâches, courses, repas, agenda, budget, papiers, maison" loading="lazy"></div><figcaption>Le foyer : toutes les rubriques</figcaption></figure>
-        <figure class="shot"><div class="phone"><img src="img/cocoony.jpg" alt="Cocoony fait le point sur le foyer" loading="lazy"></div><figcaption>Cocoony : le point en une phrase</figcaption></figure>
+        <figure class="shot"><div class="phone"><img src="img/taches.jpg" alt="Les tâches du foyer, avec qui s'en occupe et pour quand" loading="lazy"></div><figcaption>Les tâches : chacun son tour</figcaption></figure>
+        <figure class="shot"><div class="phone"><img src="img/repas.jpg" alt="Les repas : ce midi, idées avec le frigo, la semaine" loading="lazy"></div><figcaption>Les repas : la semaine en un coup d'œil</figcaption></figure>
+        <figure class="shot"><div class="phone"><img src="img/agenda.jpg" alt="L'agenda du foyer avec l'anniversaire d'Emma et les rendez-vous" loading="lazy"></div><figcaption>L'agenda : rendez-vous et événements</figcaption></figure>
+        <figure class="shot"><div class="phone"><img src="img/budget.jpg" alt="Le budget du foyer : dépenses du mois et qui doit quoi" loading="lazy"></div><figcaption>Le budget : et qui doit quoi</figcaption></figure>
+        <figure class="shot"><div class="phone"><img src="img/cocoony.jpg" alt="Cocoony fait le point sur la semaine du foyer" loading="lazy"></div><figcaption>Cocoony : le point de la semaine</figcaption></figure>
       </div>
     </div>
   </section>
@@ -203,30 +249,30 @@ footer{padding-block:28px 40px;font-size:13.5px;color:var(--muted);text-align:ce
         <h2>Cocoon Essentiel pour le quotidien. Cocoon Plus pour aller plus loin.</h2>
         <p class="lead">Un seul abonnement pour tout le foyer, sans engagement.</p>
       </div>
-      <div class="plans">
-        <div class="plan">
-          <h3>Cocoon Essentiel</h3>
+      <div class="duo">
+        <div class="af af1">
+          <span class="tg">COCOON ESSENTIEL</span><img class="cat1" src="img/cocoon.png" alt=""><span class="zz" aria-hidden="true">z z</span>
+          <h3>Le quotidien,<br>bien rangé</h3>
           <div class="price"><b>0 €</b><span>pour toujours</span></div>
           <ul>
             <li>Tâches, courses, repas, agenda, maison, événements</li>
-            <li>Budget partagé et ses graphiques</li>
-            <li>Thèmes et couleurs</li>
-            <li>25 papiers, 5 papiers lus en photo par mois</li>
-            <li>20 questions à Cocoony par mois</li>
+            <li>Budget partagé et ses graphiques, thèmes et couleurs</li>
+            <li>5 photos lues, 20 questions à Cocoony et 25 papiers</li>
           </ul>
         </div>
-        <div class="plan pm">
-          <span class="tag">1 mois offert</span>
-          <h3>Cocoon Plus</h3>
+        <div class="af af2">
+          <span class="tg">COCOON PLUS</span><span class="st" aria-hidden="true">ILLIMITÉ !</span>
+          <h3>Ton foyer<br>en mode turbo</h3>
           <div class="price"><b>3,99 €</b><span>par mois, ou 39,99 € par an (2 mois offerts)</span></div>
-          <ul>
-            <li>Papiers lus en photo sans limite : titre, date, montant</li>
-            <li>Cocoony intelligent sans limite</li>
-            <li>Papiers illimités, photos et PDF compris</li>
-            <li>Sauvegarde de tout le foyer en un clic</li>
-            <li>Plusieurs foyers : vacances, garde alternée</li>
-          </ul>
-          <p class="note">Les abonnements ouvrent bientôt.</p>
+          <div class="rows" role="list">
+            <div class="rw" role="listitem"><span class="e" aria-hidden="true">📸</span><span>Photos de papiers lues</span><s>5</s><em>∞</em></div>
+            <div class="rw" role="listitem"><span class="e" aria-hidden="true"><img src="img/cocoon.png" alt=""></span><span>Cocoony malin</span><s>20</s><em>∞</em></div>
+            <div class="rw" role="listitem"><span class="e" aria-hidden="true">📄</span><span>Papiers rangés</span><s>25</s><em>∞</em></div>
+            <div class="rw" role="listitem"><span class="e" aria-hidden="true">💾</span><span>Sauvegarde avec les fichiers</span><em>✓</em></div>
+            <div class="rw" role="listitem"><span class="e" aria-hidden="true">🏡</span><span>Plusieurs foyers</span><s>1</s><em>2+</em></div>
+          </div>
+          <a class="btn" href="https://brionutrition.github.io/Cocoon/">Essayer 1 mois gratuit</a>
+          <p class="note">Un seul abonnement pour tout le foyer. Les abonnements ouvrent bientôt.</p>
         </div>
       </div>
     </div>

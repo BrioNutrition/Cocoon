@@ -116,6 +116,9 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   `outils/appstore/raw/`) puis `python3 outils/appstore/affiches.py` (titres dans `PAGES`).
 - Page de présentation : `presentation/contenu.html` (à modifier, publiable tel quel en artefact, images dans `presentation/img/`)
   → `presentation/index.html` fabriqué par `construire.sh` ; en ligne sur https://brionutrition.github.io/Cocoon/presentation/.
+  Refonte du 23 oct. : haut de page en « affiche dégradée » (comme l'App Store, Cocoony en coin, pastille « Bientôt sur l'App Store »),
+  carrousel de 7 écrans, tarifs en « deux affiches » comme dans l'app. Images `presentation/img/*.jpg` = captures de
+  `outils/appstore/raw/` réduites à 600 px de large.
 - Prochaines idées : notifications natives (APNs), paiement Premium, test Android, animations du personnage (format Lottie ou Rive, une animation par humeur, à mettre dans `outils/src/anim/`).
 - À faire côté Angel : redéployer `cocoon-push`, coller les modèles d'e-mail, vérifier OTP à 6 chiffres, brancher Brevo (codeEmail).
 - Fenêtre ou feuille du bas ouverte → `html.nav-off` (`navOffNow`/`navOffWatch`) : la barre d'onglets descend hors de l'écran (sans fondu,
