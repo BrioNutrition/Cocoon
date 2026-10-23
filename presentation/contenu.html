@@ -94,12 +94,12 @@ section{padding-block:56px}
 /* « Tout le foyer, une seule appli » : paquet de cartes (shuffleCardSlider). Bande sombre ; à gauche le titre et le texte de la carte
    du dessus (couleur de la rubrique), flèches en bas ; à droite de grandes cartes verticales (un écran de l'app) empilées vers la droite. */
 #rubriques{background:#141320;color:#EDEBF7;padding-block:64px 80px;overflow:hidden}
-.sh{display:grid;grid-template-columns:minmax(0,1fr);gap:34px;align-items:center}
+.sh{display:grid;grid-template-columns:minmax(0,1fr);gap:34px;align-items:stretch}
 @media (min-width:880px){.sh{grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:600px}}
-.sh-txt{display:flex;flex-direction:column;gap:14px;min-width:0}
+.sh-txt{display:flex;flex-direction:column;justify-content:center;gap:14px;min-width:0}
 .sh-txt .eyebrow{color:#A3A0BE}
 .sh-txt h2{font-size:clamp(38px,6vw,64px);line-height:1;letter-spacing:-.035em;color:var(--sc,#B9A8F0);transition:color .35s}
-.sh-txt .lead{color:#C9C6E0;max-width:42ch;min-height:4.8em}
+.sh-txt .lead{color:#C9C6E0;max-width:42ch}
 .sh-txt .fade{transition:opacity .25s,transform .25s}.sh-txt .fade.out{opacity:0;transform:translateY(6px)}
 .sh-nav{display:flex;gap:12px;margin-top:auto;padding-top:18px;align-items:center}
 .sh-nav button{width:76px;height:46px;border-radius:99px;border:1.5px solid rgba(255,255,255,.28);background:transparent;color:#EDEBF7;font:700 20px/1 var(--f-display);cursor:pointer;transition:background .2s,border-color .2s}
@@ -338,9 +338,15 @@ function shuffleCardSlider(o){
   const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches, T1=reduce?0:300, T2=reduce?0:520;
   /* éventail : toutes les cartes tournent autour d'un point sous le paquet, de plus en plus inclinées et sombres */
   const fan=k=>"rotate("+(k*4.6)+"deg) scale("+(1-k*.012)+")";
-  const OUT="translateX(-118%) rotate(-14deg)";
+  const OUT="translateX(-46%) rotate(-11deg)";   /* sortie courte : la carte reste dans la zone du paquet */
   function text(ci){ const c=cards[ci], sw=()=>{ o.title.textContent=c.dataset.t; o.text.textContent=c.dataset.p; o.title.style.setProperty("--sc",c.dataset.c); o.num.textContent=(ci+1)+" / "+n; };
     if(reduce){ sw(); return; } [o.title,o.text].forEach(e=>e.classList.add("out")); setTimeout(()=>{ sw(); [o.title,o.text].forEach(e=>e.classList.remove("out")); },220); }
+  /* place réservée = le titre et le texte les plus hauts des 8 cartes : les flèches ne bougent plus d'une carte à l'autre */
+  function fit(){ for(const e of [o.title,o.text]) e.style.minHeight="0";
+    const cur=[o.title.textContent,o.text.textContent]; let ht=0, hp=0;
+    for(const c of cards){ o.title.textContent=c.dataset.t; o.text.textContent=c.dataset.p; ht=Math.max(ht,o.title.offsetHeight); hp=Math.max(hp,o.text.offsetHeight); }
+    o.title.textContent=cur[0]; o.text.textContent=cur[1]; o.title.style.minHeight=ht+"px"; o.text.style.minHeight=hp+"px"; }
+  fit(); addEventListener("resize",fit); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(fit);
   function layout(){ order.forEach((ci,k)=>{ const c=cards[ci];
       c.style.zIndex=String(n-k); c.setAttribute("aria-hidden",k?"true":"false");
       c.style.filter="brightness("+Math.max(.42,1-k*.085)+")"; c.style.transform=fan(k); }); }
@@ -357,8 +363,9 @@ function shuffleCardSlider(o){
   /* glisser la carte du dessus (suivi sur toute la fenêtre) : au-delà de 80 px elle part, sinon elle revient */
   let x0=null,dx=0,id=null;
   deck.addEventListener("pointerdown",e=>{ const top=cards[order[0]]; if(busy||!top.contains(e.target)) return; e.preventDefault(); x0=e.clientX; dx=0; id=e.pointerId; top.classList.add("drag"); });
-  addEventListener("pointermove",e=>{ if(x0==null||e.pointerId!==id) return; dx=e.clientX-x0; cards[order[0]].style.transform="translateX("+dx+"px) rotate("+(dx/18)+"deg)"; });
-  const end=e=>{ if(x0==null||e.pointerId!==id) return; x0=null; cards[order[0]].classList.remove("drag"); if(Math.abs(dx)>80) go(1); else layout(); };   /* glissée d'un côté ou de l'autre : la carte repasse derrière */
+  addEventListener("pointermove",e=>{ if(x0==null||e.pointerId!==id) return; dx=e.clientX-x0; const L=150, d=Math.abs(dx)<=L?dx:Math.sign(dx)*(L+(Math.abs(dx)-L)*.15);   /* au-delà de 150 px, elle résiste puis s'arrête */
+    cards[order[0]].style.transform="translateX("+d+"px) rotate("+(d/18)+"deg)"; });
+  const end=e=>{ if(x0==null||e.pointerId!==id) return; x0=null; cards[order[0]].classList.remove("drag"); if(Math.abs(dx)>70) go(1); else layout(); };   /* glissée d'un côté ou de l'autre : la carte repasse derrière */
   addEventListener("pointerup",end); addEventListener("pointercancel",end);
   layout(); text(order[0]); }
 shuffleCardSlider({deck:document.getElementById("deck"),prev:document.getElementById("deckPrev"),next:document.getElementById("deckNext"),
