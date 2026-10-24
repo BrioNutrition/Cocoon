@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="24/10 15:59";</script>
+<script>window.COCOON_BUILD="24/10 16:03";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2242,6 +2242,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .priv .muted{color:var(--muted);font-size:12.5px}
 .acc-gone{position:fixed;inset:0;z-index:300;background:var(--bg);display:grid;place-items:center;padding:24px;text-align:center}
 .acc-gone div{max-width:360px;display:flex;flex-direction:column;gap:12px;align-items:center}
+.cgu-bg.now{transition:none}
 .cgu-bg{position:fixed;inset:0;z-index:2147483400;background:var(--au-bg);display:grid;place-items:center;padding:20px 16px;overflow:auto;opacity:0;transition:opacity .35s}
 .cgu-bg.on{opacity:1}
 .cgu-bg .aurora{position:absolute;opacity:1;z-index:0}
@@ -4753,8 +4754,11 @@ async function saveSelf(E){
     }
     S.forceMe=id;
     const pw=S.pendingW; S.pendingW=null;
-    const res=await reveal({hello:"Bienvenue chez toi, "+d.nom,lines:["On ouvre la porte…","On pose tes affaires…","On allume la lumière…","Ton cocon est prêt"],minMs:3600,work:pw?()=>applyPlan(pw):null,
-      before:()=>{ document.querySelector(".wrap").classList.remove("finishing"); S.edit=null; S.flow=false; setTab("accueil"); }});
+    /* plus d'animation après le profil (demandé par Angel) : « Avant de commencer » s'affiche tout de suite, le foyer se prépare derrière */
+    if(S.db&&S.uid&&!S.readOnly&&!window.__noCgu&&!window.__noTour&&(S.prefs||{}).cgu!==CGU_V){
+      const w=()=>cguWelcome(()=>{ if((S.prefs||{}).tourVu) return; setTab("accueil"); window.scrollTo({top:0}); try{ startTour(); }catch(_){} }); w._over=true; openCgu(w,true); }
+    let res=null; try{ if(pw) res=await applyPlan(pw); }catch(e2){ writeErr(e2); }
+    document.querySelector(".wrap").classList.remove("finishing"); S.edit=null; S.flow=false; setTab("accueil");
     finishFlow(res);
   }catch(e){ E.busy=false; if(btn){ btn.disabled=false; btn.textContent="Terminer"; } writeErr(e); }
 }
@@ -6943,7 +6947,7 @@ function cguWelcome(done){
   if(!red){ const C=["#FFC94A","#FF9C80","#E79ADB","#8FB8FF","#7FD39A","#B9A8F0","#fff"];
     for(let i=0;i<80;i++){ const c=el("i"); c.style.cssText="left:"+(Math.random()*100)+"%;background:"+C[i%C.length]+";--dx:"+(Math.random()*160-80)+"px;--r:"+(Math.random()*720-360)+"deg;animation-delay:"+(Math.random()*.7).toFixed(2)+"s;animation-duration:"+(2.2+Math.random()*1.6).toFixed(2)+"s;width:"+(6+Math.random()*6)+"px;height:"+(8+Math.random()*8)+"px;border-radius:"+(Math.random()<.3?"50%":"2px"); conf.append(c); } }
   const m=meM&&meM(), pr=m&&m.nom?" "+m.nom:"";
-  let ok=false; const fin=()=>{ if(ok) return; ok=true; ov.classList.add("out"); setTimeout(()=>{ ov.remove(); done&&done(); },380); };
+  let ok=false; const fin=()=>{ if(ok) return; ok=true; try{ done&&done(); }catch(_){} ov.classList.add("out"); setTimeout(()=>ov.remove(),380); };
   ov.append(conf,el("div",{class:"wb-in"},el("img",{class:"wb-cy",src:cy,alt:""}),
     el("div",{class:"wb-bub"},el("b",{text:"Bienvenue chez toi"+pr+" ! 🎉"}),el("span",{text:"Moi c'est Cocoony, ton assistant. Je te fais une petite visite guidée de ton cocon : une minute, et tu sauras tout."})),
     el("button",{type:"button",class:"btn big sp-go wb-go",text:"C'est parti !",onclick:fin})));
@@ -8267,7 +8271,7 @@ function onboardGate(){
   tour();
 }
 function needCgu(){ return !!(S.db&&S.uid&&S.prefsLoaded&&meM()&&!S.readOnly&&!window.__noCgu&&!window.__noTour&&(S.prefs||{}).cgu!==CGU_V); }
-function openCgu(after){
+function openCgu(after,now){
   S.cguOpen=true; const P=window.cocoonHost&&cocoonHost.push, sup=P&&P.support?P.support():"off";
   const again=!!((S.prefs||{}).cgu); let ok=false, notif=sup==="ok";
   const bg=el("div",{class:"cgu-bg",role:"dialog","aria-label":"Avant de commencer"}); bg.append(el("div",{class:"aurora","aria-hidden":"true"},el("i"),el("i"),el("i")));
@@ -8282,7 +8286,7 @@ function openCgu(after){
     card.append(el("div",{class:"cgu-box"},el("div",{style:"flex:1"},el("b",{text:"Mes rappels en notification"}),el("small",{text:"Un résumé le matin, s'il y a quelque chose à faire, et quelques alertes utiles. Jamais la nuit. Facultatif : tu peux changer d'avis dans Moi."})),sw)); }
   else if(sup==="ios-home"&&!again) card.append(el("div",{class:"cgu-box"},el("div",{},el("b",{text:"Les notifications sur iPhone"}),el("small",{text:"Ajoute d'abord Cocoon à l'écran d'accueil (Partager → Sur l'écran d'accueil), puis active-les dans Moi. Facultatif."}))));
   card.append(go);
-  bg.append(card); document.body.append(bg); requestAnimationFrame(()=>bg.classList.add("on"));
+  bg.append(card); document.body.append(bg); if(now) bg.classList.add("now","on"); else requestAnimationFrame(()=>bg.classList.add("on"));
   go.onclick=async()=>{ if(!ok) return; go.disabled=true; go.textContent="Un instant…";
     let nmsg=null;
     const markAsk=v=>{ try{ localStorage.setItem("cocoon.pushAsk",v); }catch(_){} };
