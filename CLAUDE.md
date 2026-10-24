@@ -90,7 +90,9 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   « avant de partir » (`VAC_LIST`) devient des tâches pour la veille (`vacances:true`). Lien vers la fiche baby-sitter.
 - Réserves (Repas › « Frigo, congélateur, placard », `openStock()`, collection `stock` {nom, lieu, dlc}) : rappel 2 j avant (7 j
   congélateur), « Consommé » retire, « Une idée avec ce qui périme bientôt » ouvre le frigo prérempli (`openFrigo(pre)`).
-- Anniversaires : **rien dans les rendez-vous ni de menu à part** (demandé par Angel) ; tout est dans l'événement « Anniversaire »
+- Anniversaires des membres **dans l'agenda** (demandé par Angel le 24 oct.) : calculés chaque année depuis `membres.naissance` (`annivOn(k)`, `annivList`),
+  rien n'est enregistré ; ligne « 🎂 Ton anniversaire · 36 ans » / « Anniversaire d'Emma » (`.rdv.anniv`) dans « À venir » et le jour choisi, 🎂 sur le jour du calendrier (`.ag-cake`).
+  La date saisie au profil à l'inscription apparaît donc toute seule. Organiser la fête : événement « Anniversaire » : « Anniversaire »
   (`evAnnivCard`, onglet Frise) : idées de cadeaux (`evenements.idees`, « Aux achats » = achat de l'événement) et « Le rappeler chaque
   année » (`evenements.annuel`, coché par défaut) → rappel 7 j avant la date suivante, « Préparer celui du … » recrée l'événement.
 - Événements : toute la ligne du modèle coche/décoche ; les étapes faites restent dépliées (« N réalisées ») ; sous « Créer avec le
@@ -159,7 +161,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - **Écran « Ton foyer, enfin serein »** (avant « Créer mon cocon », choix F d'Angel parmi 10 maquettes) : épuré, logo + « Cocoon » côte à côte
   en haut, grand titre juste dessous (« enfin serein. » en dégradé, `.sp-grad`), une phrase, les atouts en **cartes qui défilent seules** (`.sp-cards`,
   deux rangées `.sp-track` en sens inverse, `pointer-events:none`, arrêtées si animations réduites), bouton en bas ; même fond uni + grain que le questionnaire ;
-  cartes `.sp-stickers` masquées ; bandeau « Démo » masqué dans la démo (hunk CSS de `demo_patch.json`) ; fond sombre classique
+  cartes `.sp-stickers` masquées ; atouts en cartes qui défilent de droite à gauche en boucle (`.sp-track`, relancées par `spMarqRestart` car le lancement annule les animations) ; bandeau « Démo » masqué dans la démo (hunk CSS de `demo_patch.json`) ; fond sombre classique
   (lueur `.sp-aura` retirée et lueurs `.aurora` masquées sur cet écran, demandé par Angel) ; textes affichés 560 ms après le départ du logo.
 - **Bienvenue** : « Créer mon cocon » lance directement le questionnaire ; les conditions restent **à la fin** (après le profil, `onboardGate`).
   À la 1re acceptation, `cguWelcome` : confettis sur l'app floutée derrière (`.wb`, flou du fond), Cocoony + bulle « Bienvenue chez toi … ! »

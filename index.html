@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="24/10 16:51";</script>
+<script>window.COCOON_BUILD="24/10 16:59";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1881,7 +1881,9 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .sp-cards{margin:0 -16px;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .sp-cards{display:grid;gap:12px}
 .sp-track{list-style:none;margin:0;padding:2px 0;display:flex;gap:12px;width:max-content;animation:spMarq 30s linear infinite}
-.sp-track.rev{animation-direction:reverse;animation-duration:34s}
+.ag-d{position:relative}.ag-d .ag-cake{position:absolute;top:1px;right:2px;font-size:10px;line-height:1;font-style:normal;pointer-events:none}
+.rdv.anniv .rdv-date{background:linear-gradient(135deg,#FF8FB8,#FFB86B);color:#fff}
+.sp-track.rev{animation-duration:36s;animation-delay:-9s}
 .sp-track li{flex:none;width:168px;min-height:128px;padding:14px;border-radius:20px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:5px;color:var(--ink)}
 .wrap.gated .sp-track li{background:color-mix(in srgb,var(--ink) 6%,transparent);border-color:color-mix(in srgb,var(--ink) 12%,transparent)}
 .sp-track .spc-e{font-size:28px;line-height:1;margin-bottom:4px;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
@@ -4271,10 +4273,12 @@ function renderOnboard(){
 async function spBackCheck(){ const b=$("spBack"), H=window.cocoonHost; if(!b||!H||!H.foyers||b._done) return; b._done=true;
   try{ const L=await H.foyers(), o=L.find(f=>!f.current&&f.nom)||L.find(f=>!f.current); if(!o) return;
     b.textContent="‹ Revenir à "+(o.nom?"« Chez les "+String(o.nom).replace(/^(la famille|famille|les)\s+/i,"")+" »":"mon autre foyer"); b.hidden=false; b.onclick=()=>{ try{ H.switchFoyer(o.id); }catch(err){ writeErr(err); } }; }catch(_){} }
+/* les cartes des atouts défilent en boucle ; les annulations d'animations du lancement les arrêtaient : on les relance */
+function spMarqRestart(sp){ (sp||document).querySelectorAll(".sp-track").forEach(t=>{ t.style.animation="none"; void t.offsetWidth; t.style.animation=""; }); }
 function splashIntro(){ try{ spBackCheck(); }catch(_){}
   const sp=$("splash"); if(!sp||sp.hidden) return;
   if(document.getElementById("boot")) return; /* l'écran de lancement s'en charge (flySplash) */
-  clearTimeout(sp._t); sp.getAnimations({subtree:true}).forEach(a=>a.cancel());
+  clearTimeout(sp._t); sp.getAnimations({subtree:true}).forEach(a=>a.cancel()); spMarqRestart(sp);
   sp.classList.add("sp-flown"); sp.classList.remove("sp-show","sp-wait");
   const hero=sp.querySelector(".sp-hero"); if(hero){ hero.style.transform=""; }
   const tl=$("spLogo"), tn=sp.querySelector(".sp-name"); if(tl) tl.style.visibility=""; if(tn) tn.style.visibility="";
@@ -5771,9 +5775,17 @@ function renderMot(){
   if(can) w.append(el("button",{type:"button",class:"mot-add",text:"+ Laisser un mot au foyer",onclick:()=>{ S.motForm={jours:3,couleur:"jaune"}; renderMot(); }}));
 }
 const RDV_FMT={j:new Intl.DateTimeFormat("fr-FR",{day:"numeric"}),m:new Intl.DateTimeFormat("fr-FR",{month:"short"}),w:new Intl.DateTimeFormat("fr-FR",{weekday:"long"})};
+/* anniversaires des membres : calculés depuis leur date de naissance, affichés dans l'agenda chaque année (rien n'est enregistré) */
+function annivOn(k){ const d=parse(k), y=d.getFullYear(), out=[];
+  for(const m of membres()){ if(!m.naissance) continue; const b=parse(m.naissance); let mo=b.getMonth(), j=b.getDate();
+    if(mo===1&&j===29&&new Date(y,1,29).getMonth()!==1) j=28; if(mo!==d.getMonth()||j!==d.getDate()) continue; const age=y-b.getFullYear(); if(age<0) continue;
+    out.push({m,date:k,heure:"",titre:"🎂 "+(m.id===meId()?"Ton anniversaire":"Anniversaire "+(/^[aeiouyhâàéèêîïôûAEIOUYHÂÀÉÈÊÎÏÔÛ]/.test(m.nom||"")?"d'":"de ")+m.nom)+(age>0&&typeOf(m)!=="animal"?" · "+age+" an"+(age>1?"s":""):""),lieu:"",pour:[m.id],kind:"anniv"}); }
+  return out; }
+function annivList(from,lim){ const out=[], t=today(); for(let i=from;i<=lim;i++) out.push(...annivOn(iso(new Date(t.getFullYear(),t.getMonth(),t.getDate()+i)))); return out; }
 function rdvList(days){ const lim=days||60, out=[];
   for(const r of (S.rdvs||[])) if(r.date&&!r.fait&&daysTo(r.date)>=-14&&daysTo(r.date)<=lim) out.push({r,date:r.date,heure:r.heure||"",titre:r.titre,lieu:r.lieu||"",pour:r.pour||[],kind:"rdv"});
   for(const t of S.foyer) if(!t.fait&&t.cat==="rdv"&&t.echeance&&daysTo(t.echeance)>=0&&daysTo(t.echeance)<=lim) out.push({t,date:t.echeance,heure:"",titre:t.titre,lieu:"",pour:t.concerne?[t.concerne]:t.pour&&t.pour!=="tous"?[t.pour]:[],kind:"tache"});
+  out.push(...annivList(0,lim));
   return out.sort((a,b)=>(a.date+a.heure)<(b.date+b.heure)?-1:1); }
 function heureTxt(h){ if(!h) return ""; const [H,M]=h.split(":"); return (+H)+"h"+(M&&M!=="00"?M:""); }
 function rdvSel(){ if(!S.rdvSelSet) S.rdvSelSet=new Set(); return S.rdvSelSet; }
@@ -5796,7 +5808,7 @@ function rdvTimer(){ clearTimeout(S.rdvT); const list=(S.rdvs||[]).filter(r=>!r.
   if(nx<Infinity) S.rdvT=setTimeout(()=>{ renderRdv(); },Math.min(nx-now+500,6*36e5)); }
 function renderRdv(){
   const w=$("rdvWrap"); if(!w) return; w.innerHTML=""; const me=meId(), can=!S.readOnly&&!!me, F=S.rdvForm, who=S.agWho||null, day=S.agDay||null;
-  let list=day?(S.rdvs||[]).filter(r=>r.date===day).map(r=>({r,date:r.date,heure:r.heure||"",titre:r.titre,lieu:r.lieu||"",pour:r.pour||[],kind:"rdv"})).sort((a,b)=>a.heure<b.heure?-1:1):rdvList(120);
+  let list=day?(S.rdvs||[]).filter(r=>r.date===day).map(r=>({r,date:r.date,heure:r.heure||"",titre:r.titre,lieu:r.lieu||"",pour:r.pour||[],kind:"rdv"})).concat(annivOn(day)).sort((a,b)=>a.heure<b.heure?-1:1):rdvList(120);
   if(who) list=list.filter(x=>(x.pour||[]).includes(who));
   { const dl=day?new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(parse(day)):null;
     w.append(el("div",{class:"sec-title"},el("h2",{text:day?dl.charAt(0).toUpperCase()+dl.slice(1):"À venir"}),day?el("button",{type:"button",class:"btn ghost ag-all",text:"Tout voir",onclick:()=>{ S.agDay=null; renderAgenda(); renderRdv(); }}):el("span",{class:"muted",style:"font-size:13px",text:list.length?list.length+" rendez-vous":""}))); }
@@ -5810,7 +5822,7 @@ function renderRdv(){
     const stt=x.r?rdvState(x.r):"", when=n===0?"Aujourd'hui":n===1?"Demain":n<0?RDV_FMT.w.format(d).replace(/^./,c=>c.toUpperCase()):RDV_FMT.w.format(d).replace(/^./,c=>c.toUpperCase());
     const hTxt=x.heure?heureTxt(x.heure)+(x.r&&x.r.heureFin?"\u2060–\u2060"+heureTxt(x.r.heureFin):""):"";
     const ppl=el("span",{class:"rdv-ppl"},...x.pour.slice(0,3).map(id=>avatar(id,34)));
-    const row=el("div",{class:"rdv"+(stt==="fini"?" fini":stt==="encours"?" encours":n<=1?" soon":"")+(x.r&&rdvSel().has(x.r.id)?" sel":"")},el("div",{class:"rdv-date"},el("b",{text:RDV_FMT.j.format(d)}),el("span",{text:RDV_FMT.m.format(d).replace(".","")})),
+    const row=el("div",{class:"rdv"+(x.kind==="anniv"?" anniv":"")+(stt==="fini"?" fini":stt==="encours"?" encours":n<=1?" soon":"")+(x.r&&rdvSel().has(x.r.id)?" sel":"")},el("div",{class:"rdv-date"},el("b",{text:RDV_FMT.j.format(d)}),el("span",{text:RDV_FMT.m.format(d).replace(".","")})),
       el("div",{class:"rdv-b"},el("b",{},x.titre,stt?el("em",{class:"rdv-st "+stt,text:stt==="fini"?"Terminé":"En cours"}):null),el("span",{text:[(stt?(n===0?"Aujourd'hui":when):when)+(hTxt?" · "+hTxt:""),x.lieu].filter(Boolean).join(" · ")})),ppl);
     if(x.r&&can&&(isAdmin()||x.r.par===me||(x.r.pour||[]).includes(me))){ if(stt!=="fini"){ const p=pencilBtn(()=>{ S.rdvForm=Object.assign({},x.r); renderRdv(); },"Modifier "+x.titre); p.classList.add("rdv-pen"); row.append(p); }
       const on=rdvSel().has(x.r.id), ck=el("button",{type:"button",class:"rdv-ck"+(on?" sel":""),"aria-pressed":String(on),"aria-label":(on?"Désélectionner ":"Sélectionner ")+x.titre,onclick:()=>{ const z=rdvSel(); if(z.has(x.r.id)) z.delete(x.r.id); else z.add(x.r.id); renderRdv(); }});
@@ -5845,6 +5857,7 @@ function renderAgenda(){ const W=$("agWho"), C=$("agCal"); if(!W||!C) return; W.
   for(let d=1;d<=dim;d++){ const k=iso(new Date(Y,Mo,d)), ev=by[k]||[], has=ev.some(r=>!r.fait), past=k<td;
     const b=el("button",{type:"button",class:"ag-d"+(k===td?" now":"")+(k===S.agDay?" sel":"")+(past?" past":"")+(ev.length?" has":""),"aria-label":d+" "+mn+(ev.length?", "+ev.length+" rendez-vous":""),"aria-pressed":String(k===S.agDay),onclick:()=>{ S.agDay=S.agDay===k?null:k; renderAgenda(); renderRdv(); }},el("b",{text:String(d)}));
     { const E=evAll().filter(e=>e.debut<=k&&evEnd(e)>=k&&(!S.agWho||true))[0]; if(E){ const st=E.debut===k, en=evEnd(E)===k; b.append(el("i",{class:"ag-evb"+(st?" st":"")+(en?" en":""),style:"background:"+evT(E).c,"aria-hidden":"true"})); b.setAttribute("aria-label",b.getAttribute("aria-label")+", "+(E.titre||evT(E).n)); } }
+    { const an=annivOn(k).filter(a=>!S.agWho||a.m.id===S.agWho); if(an.length){ b.classList.add("has","bday"); b.append(el("i",{class:"ag-cake","aria-hidden":"true",text:"🎂"})); b.setAttribute("aria-label",b.getAttribute("aria-label")+", anniversaire : "+an.map(a=>a.m.nom).join(" et ")); } }
     if(ev.length){ const dots=el("span",{class:"ag-dots"}); for(const r of ev.slice(0,3)) dots.append(el("i",{class:r.fait?"f":"",style:"background:"+((r.pour&&r.pour[0]&&membre(r.pour[0]).c)||"#8FB8FF")})); b.append(dots); }
     g.append(b); }
   C.append(g);
@@ -10294,7 +10307,7 @@ function ringsOut(w){ if(!w) return; w.querySelectorAll(":scope > i").forEach(i=
   if(op>0.01){ try{ i.animate([{opacity:op},{opacity:0}],{duration:160,easing:"ease-out",fill:"forwards"}); }catch(_){ i.style.opacity="0"; } } else i.style.opacity="0"; }); }
 async function flySplash(b,logo){ try{ spBackCheck(); }catch(_){}
   const sp=$("splash"), tl=$("spLogo"), tn=sp.querySelector(".sp-name"), bn=b.querySelector(".bt-name");
-  sp.getAnimations({subtree:true}).forEach(a=>a.cancel()); clearTimeout(sp._t);
+  sp.getAnimations({subtree:true}).forEach(a=>a.cancel()); spMarqRestart(sp); clearTimeout(sp._t);
   sp.classList.add("sp-flown","sp-wait"); sp.classList.remove("sp-show");
   tn.style.visibility="hidden"; b.style.pointerEvents="none";
   b.querySelector(".bt-bg").animate([{opacity:1},{opacity:1,offset:.12},{opacity:0}],{duration:1000,easing:"cubic-bezier(.5,0,.3,1)",fill:"forwards"});
