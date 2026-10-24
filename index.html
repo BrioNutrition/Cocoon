@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="24/10 17:23";</script>
+<script>window.COCOON_BUILD="24/10 17:25";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -9180,7 +9180,7 @@ function evBk(fn){ const b=el("button",{type:"button",class:"ev-back","aria-labe
 function evPick(inn,V){ const day=V.day||"";
   inn.append(el("div",{class:"ev-top"},el("h2",{text:"Ajouter à l'agenda"})));
   const opt=(ic,bg,t,sub,fn,cls)=>el("button",{type:"button",class:"ev-opt"+(cls?" "+cls:""),onclick:fn},el("i",{"aria-hidden":"true",style:"background:"+bg,text:ic}),el("span",{},el("b",{text:t}),el("small",{text:sub})));
-  inn.append(opt("📅","color-mix(in srgb,#8FB8FF 40%,var(--surface))","Un rendez-vous","Médecin, garage, réunion d'école…",()=>{ if(S.evClose) S.evClose(); setTimeout(()=>{ fabAct("agenda",{dataset:{direct:"rdv"}}); if(S.rdvForm) S.rdvForm.fromPick=day; },340); }),
+  inn.append(opt("📅","color-mix(in srgb,#8FB8FF 40%,var(--surface))","Rendez-vous","Médecin, garage, réunion d'école…",()=>{ if(S.evClose) S.evClose(); setTimeout(()=>{ fabAct("agenda",{dataset:{direct:"rdv"}}); if(S.rdvForm) S.rdvForm.fromPick=day; },340); }),
     opt("🎉","color-mix(in srgb,#FF9C80 40%,var(--surface))","Événement","Anniv, travaux, vacances : avec sa frise, ses achats et son budget",()=>{ if(S.evClose) S.evClose(); setTimeout(()=>openEvents({v:"new",type:"anniv",debut:day||undefined,from:"pick",pickDay:day}),340); },"hot"));
   const n=(S.evs||[]).length; if(n) inn.append(el("button",{type:"button",class:"ev-link",onclick:()=>{ S.evListPick=day; evGo({v:"list"}); }},"Voir mes événements ("+n+")")); }
 function evList(inn){ const t0=iso(today()), L=evAll(), cur=L.filter(e=>evEnd(e)>=t0), past=L.filter(e=>evEnd(e)<t0).reverse();
