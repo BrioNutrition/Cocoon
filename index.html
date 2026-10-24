@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="24/10 15:26";</script>
+<script>window.COCOON_BUILD="24/10 15:29";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1793,6 +1793,8 @@ body:has(#splash:not([hidden])),body:has(.wrap.wizarding){background:var(--au-bg
 .wizard .wz-dots span,.wizard .wz-dots span.on{background:transparent!important}
 .wizard .wz-dots::after{content:"";position:absolute;left:0;top:0;bottom:0;width:calc(var(--p,0) * 100%);border-radius:9px;background:linear-gradient(90deg,#FFC94A,#FF9C80,#E79ADB);transition:width .45s cubic-bezier(.2,.8,.2,1)}
 body:has(.wrap.finishing) .aurora{opacity:1}
+/* écran « Ton foyer, enfin serein » : fond sombre classique, sans les lueurs (demandé par Angel) */
+body:has(#splash:not([hidden])) .aurora i{opacity:0!important}
 body:has(.wrap.finishing){background:var(--au-bg)!important}
 .wrap.finishing .fiche{background:var(--au-glass)!important;border:1px solid var(--au-line)!important;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:none!important;border-radius:26px!important}
 .wrap.finishing .fiche .step-tag{background:linear-gradient(100deg,#FFC94A,#FF9C80 55%,#E79ADB)!important;color:#1C1B2E!important}
@@ -10283,10 +10285,10 @@ async function flySplash(b,logo){ try{ spBackCheck(); }catch(_){}
   bn.getAnimations({subtree:true}).forEach(a=>{ try{ a.finish(); }catch(_){ a.cancel(); } });
   bn.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(10px) scale(.96)"}],{duration:320,easing:"ease-in",fill:"forwards"});
   const fly=flyLogo(logo,tl,980);
+  /* tout le reste apparaît en même temps, un peu avant que le logo n'arrive en haut à gauche (demandé par Angel) */
+  setTimeout(()=>{ tn.style.visibility=""; sp.classList.remove("sp-wait"); sp.classList.add("sp-show");
+    tn.animate([{opacity:0,transform:"translateY(10px)"},{opacity:1,transform:"none"}],{duration:500,easing:"ease-out",fill:"backwards"}); },560);
   await fly;
-  /* le logo est arrivé en haut à gauche : tout le reste apparaît en même temps (demandé par Angel) */
-  tn.style.visibility=""; sp.classList.remove("sp-wait"); sp.classList.add("sp-show");
-  tn.animate([{opacity:0,transform:"translateY(10px)"},{opacity:1,transform:"none"}],{duration:500,easing:"ease-out",fill:"backwards"});
 }
 async function bootOut(){
   const b=$("boot"), logo=$("bootLogo"), reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
