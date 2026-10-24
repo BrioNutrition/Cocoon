@@ -5273,6 +5273,8 @@ function renderWizard(){
   box.hidden=false; document.querySelector(".wrap").classList.add("wizarding"); box.innerHTML="";
   W.steps=wzSteps(W); if(W.step>=W.steps.length) W.step=W.steps.length-1;
   const key=W.steps[W.step], a=W.a, last=W.step===W.steps.length-1;
+  /* changement d'étape (Continuer ou retour) : les lignes dépliées se referment */
+  if(W._ost!==W.step){ W._ost=W.step; W.open=null; W.opens=new Set(); }
   const dots=el("div",{class:"wz-dots"}); W.steps.forEach((_,i)=>{ const d=el("span",{class:i<=W.step?"on":""}); dots.append(d); }); dots.style.setProperty("--p",((W.step+1)/W.steps.length).toFixed(3));
   if(W.pre) box.append(el("span",{class:"step-tag",style:"align-self:flex-start",text:"Étape 1 sur 2 · Tes besoins"}));
   box.append(el("div",{class:"wz-top"},W.step>0?(()=>{ const bk=el("button",{type:"button",class:"wz-back","aria-label":"Question précédente",onclick:()=>{W.step--;rerender();}}); bk.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>'; return bk; })():null,dots,el("span",{class:"wz-count",text:(W.step+1)+"/"+W.steps.length}),W.pre?el("span"):el("button",{type:"button",class:"wz-skip",text:"Annuler",onclick:()=>{ closeWizard(); }})));
