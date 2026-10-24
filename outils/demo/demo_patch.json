@@ -14,7 +14,7 @@
   "before": "}",
   "old": [],
   "new": [
-   ".demo-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--soon-bg);border-radius:12px;padding:10px 12px;margin-bottom:16px}",
+   ".demo-bar{display:none!important}",
    ".demo-bar .label{color:var(--soon)}"
   ],
   "after": ".av{overflow:hidden}"

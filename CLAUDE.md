@@ -157,8 +157,12 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   avec un interrupteur par groupe (`wqPlan`, `#wqG-…`, `P.partageOff`). Sans partage réglé (foyer créé seul puis membre ajouté), rien n'est
   partagé par défaut : formulaire de dépense vide et `budgetAdd` suit `foyer/config.partage` (sinon dépense à soi).
 - **Écran « Ton foyer, enfin serein »** (avant « Créer mon cocon », choix F d'Angel parmi 10 maquettes) : épuré, logo + « Cocoon » côte à côte
-  en haut, grand titre en bas (« enfin serein. » en dégradé, `.sp-grad`), une phrase, le bouton ; cartes `.sp-stickers` masquées ; lueur animée
+  en haut, grand titre juste dessous (« enfin serein. » en dégradé, `.sp-grad`), une phrase, 7 étiquettes des atouts (`.sp-chips`), bouton en bas ;
+  cartes `.sp-stickers` masquées ; bandeau « Démo » masqué dans la démo (hunk CSS de `demo_patch.json`) ; lueur animée
   en fond (`.sp-aura`, 3 halos flous qui dérivent lentement, arrêtés si animations réduites).
+- **Conditions / Confidentialité** (`openTerms`, `openPrivacy`) : feuilles `upSheet` comme Cocoon Plus (`#termsPage`, `#privPage`, z-index au-dessus
+  de la connexion), fermeture sans fondu du fond (`.prem-page.nofade`) ; toucher la poignée `.pp-grab` ferme (toutes les feuilles) ; exposées sur
+  `window` pour les liens de l'écran de connexion (avant : ces liens ne faisaient rien, l'app étant dans une IIFE).
 - **Fiche profil** (« Crée ton profil » / « Personnalise ton profil », choix A d'Angel) : formulaire à gauche, carte d'aperçu en hauteur à droite,
   collante en défilant (`refreshPreview` → `.fp-card`, grille sur `section[data-view="fiche"]`, 128 px sur téléphone, 260 px dès 760 px).
   En-tête (étape, titre, phrase ; « Ton profil » hors inscription) déplacé dans `#fHead`, sur toute la largeur au-dessus des deux colonnes.

@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="24/10 14:30";</script>
+<script>window.COCOON_BUILD="24/10 14:40";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1817,10 +1817,15 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .splash .sp-logo{border-radius:15.45px!important}
 /* « Ton foyer, enfin serein » épuré (choix F d'Angel) : logo + Cocoon en haut, grand titre en bas, lueur animée en fond */
 .splash:not([hidden]){min-height:calc(100svh - 18px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 76px);position:relative}
-.splash .sp-hero{flex:1;align-content:start;grid-template-rows:auto 1fr auto auto}
+.splash .sp-hero{flex:none;align-content:start}
 .splash .sp-logo{width:52px!important;height:52px!important}
 .splash .sp-name{font-size:28px!important}
-.splash .sp-tag{align-self:end;margin-top:40px!important;font-size:clamp(46px,13.5vw,64px)!important;line-height:.98!important}
+.splash .sp-tag{margin-top:34px!important;font-size:clamp(46px,13.5vw,64px)!important;line-height:.98!important}
+.sp-chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.sp-chips li{display:inline-flex;align-items:center;gap:7px;padding:9px 14px 9px 11px;border-radius:999px;background:var(--au-glass);border:1px solid var(--au-line);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font-weight:700;font-size:14px;color:var(--ink)}
+.sp-chips li span{font-size:16px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.splash .sp-go{margin-top:auto!important}
+@media (prefers-reduced-motion:no-preference){.sp-chips li{animation:rvUp .5s ease-out both;animation-delay:calc(1.15s + var(--k,0) * .06s)}}
 .splash .sp-grad{background:linear-gradient(100deg,#FFC94A,#FF9C80 55%,#E79ADB);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .splash .sp-sub{margin:16px 0 4px!important;font-size:16px!important}
 .splash .sp-stickers{display:none!important}
@@ -2635,6 +2640,9 @@ html.sheet-open .add-fab{display:none}
 .ev-x{border:0;background:none;color:var(--muted);font-size:20px;width:30px;height:30px;border-radius:50%;cursor:pointer;flex:none}
 .prem-page{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.34);-webkit-backdrop-filter:blur(14px) saturate(1.15);backdrop-filter:blur(14px) saturate(1.15);display:flex;flex-direction:column;justify-content:flex-end;animation:ppBg .25s ease both;outline:none;transition:background .2s}
 .prem-page.out{animation:ppBgOut .32s ease both;pointer-events:none}
+.prem-page.nofade.out{animation:none}
+#termsPage,#privPage{z-index:2147483600}
+.priv-sheet .priv{max-height:none;overflow:visible;border-radius:0;background:none;padding-top:4px;width:auto;max-width:none}
 @keyframes ppBg{from{background:rgba(0,0,0,0);-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}}
 @keyframes ppBgOut{to{background:rgba(0,0,0,0);-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}}
 .pp-sheet{width:100%;max-width:640px;margin:0 auto;max-height:calc(100% - env(safe-area-inset-top,0px) - 10px);display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--bg);border-radius:26px 26px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.3);animation:ppUp .32s cubic-bezier(.2,.9,.3,1) both}
@@ -3629,6 +3637,7 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
       <li style="--bg:#FFD9CC;--pin:#E8765A;--r:2.5deg"><span class="sp-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5H16a1.5 1.5 0 0 1 1.5 1.5v1.5h-11a1.5 1.5 0 0 1 0-3z" fill="currentColor" fill-opacity=".55"/><path d="M2.5 9A2.5 2.5 0 0 1 5 6.5h13.5a3 3 0 0 1 3 3V18a3 3 0 0 1-3 3H5.5a3 3 0 0 1-3-3z" fill="currentColor"/><rect x="15" y="11.5" width="6.5" height="4" rx="2" fill="#fff" fill-opacity=".9"/><circle cx="17.2" cy="13.5" r="1" fill="currentColor"/></svg></span><b>Budget partagé</b><span>Dépenses, abonnements et qui doit quoi</span></li>
       <li style="--bg:#D8E6FF;--pin:#5B8DEF;--r:-3deg"><span class="sp-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3c.8 4.3 2.7 6.2 7 7-4.3.8-6.2 2.7-7 7-.8-4.3-2.7-6.2-7-7 4.3-.8 6.2-2.7 7-7z" fill="currentColor"/><path d="M18.5 14c.4 2 1.3 2.9 3.3 3.3-2 .4-2.9 1.3-3.3 3.3-.4-2-1.3-2.9-3.3-3.3 2-.4 2.9-1.3 3.3-3.3z" fill="currentColor"/></svg></span><b>Cocoony</b><span>Ton secrétaire qui connaît ta maison</span></li>
     </ul>
+    <ul class="sp-chips" aria-label="Ce que fait Cocoon"><li style="--k:0"><span aria-hidden="true">✅</span>Qui fait quoi</li><li style="--k:1"><span aria-hidden="true">🛒</span>Courses à plusieurs</li><li style="--k:2"><span aria-hidden="true">📄</span>Papiers rangés</li><li style="--k:3"><span aria-hidden="true">💶</span>Budget partagé</li><li style="--k:4"><span aria-hidden="true">📅</span>Agenda du foyer</li><li style="--k:5"><span aria-hidden="true">🍝</span>Repas de la semaine</li><li style="--k:6"><span aria-hidden="true">✨</span>Cocoony, ton assistant</li></ul>
     <button class="btn big sp-go" type="button" id="spGo">Créer mon cocon</button>
     <button class="sp-back" type="button" id="spBack" hidden></button>
   </div>
@@ -8206,10 +8215,10 @@ function swGrab(box,close,base,bg){ const g=el("div",{class:"sw-grab",role:"butt
 const CGU_V="2026-10";
 function openTerms(){
   const C=(window.COCOON_CONFIG||{}), hosted=!!window.cocoonHost;
-  const bg=el("div",{class:"priv-bg"}), box=el("div",{class:"priv",role:"dialog","aria-label":"Conditions d'utilisation"});
-  const close=()=>{ bg.remove(); document.removeEventListener("keydown",kd); }, kd=e=>{ if(e.key==="Escape") close(); };
+  /* s'ouvre et se ferme comme Cocoon Plus (feuille qui monte / redescend), sans fondu du fond à la fermeture */
+  const U=upSheet("termsPage","Conditions d'utilisation"), close=U.close, box=el("div",{class:"priv"}); U.P.classList.add("nofade"); U.sheet.classList.add("priv-sheet");
   const h3=t=>el("h3",{text:t}), p=t=>el("p",{text:t}), ul=(...a)=>el("ul",{},...a.map(t=>el("li",{text:t})));
-  box.append(swGrab(box,close,"",bg),el("h2",{text:"Conditions d'utilisation"}),el("p",{class:"muted",text:"Les règles du jeu, en court."}),
+  box.append(el("h2",{text:"Conditions d'utilisation"}),el("p",{class:"muted",text:"Les règles du jeu, en court."}),
     h3("Le service"),p("Cocoon aide un foyer à s'organiser : tâches, rappels, papiers, budget, rendez-vous. C'est un outil d'organisation : il ne remplace ni un conseiller, ni un professionnel de santé, ni un expert-comptable."),
     h3("Ton compte"),ul("Un compte par personne, avec une adresse e-mail à toi","Tu gardes ton mot de passe pour toi","Tu peux quitter un foyer ou supprimer ton compte quand tu veux, depuis Moi → Réglages"),
     h3("Ce que tu mets dans Cocoon"),ul("Tu restes propriétaire de ce que tu ajoutes ; Cocoon ne s'en sert que pour faire fonctionner l'app","N'ajoute les papiers ou la photo de quelqu'un que s'il est d'accord (ou si tu en as la charge, pour un enfant)","Pas de contenu illégal, ni de documents qui ne te concernent pas, toi ou ton foyer"),
@@ -8219,7 +8228,7 @@ function openTerms(){
     h3("Changements"),p("Si ces conditions changent, Cocoon te les présentera à nouveau avant de continuer."),
     h3("Contact"),p(hosted?(C.contact?"Une question : "+C.contact+".":"Une question : écris à la personne qui t'a invité dans Cocoon."):"Dans la version ouverte depuis Claude, les conditions de Claude s'appliquent aussi."),
     el("p",{class:"muted",text:"Version "+CGU_V+"."}));
-  bg.append(box); bg.addEventListener("click",e=>{ if(e.target===bg) close(); }); document.addEventListener("keydown",kd); document.body.append(bg);
+  U.sheet.append(box);
 }
 /* ===== Avant de commencer : accepter les conditions (obligatoire) + notifications (facultatif) ===== */
 /* En entrant dans l'app : d'abord les conditions (si besoin), puis la visite guidée (une seule fois), avant de pouvoir aller ailleurs */
@@ -8267,12 +8276,14 @@ async function deleteMyAccount(btn){
     el("p",{class:"muted",text:"Tes données ont été effacées. Merci d'avoir utilisé Cocoon."}),el("button",{type:"button",class:"btn",text:"Fermer",onclick:()=>location.reload()}))));
 }
 /* ===== Confidentialité ===== */
+/* l'écran de connexion (runtime) ouvre ces deux pages via window */
+window.openTerms=(...a)=>openTerms(...a); window.openPrivacy=(...a)=>openPrivacy(...a);
 function openPrivacy(){
   const hosted=!!window.cocoonHost, C=(window.COCOON_CONFIG||{}), contact=C.contact||null;
-  const bg=el("div",{class:"priv-bg"}), box=el("div",{class:"priv",role:"dialog","aria-label":"Confidentialité"});
-  const close=()=>{ bg.remove(); document.removeEventListener("keydown",kd); }, kd=e=>{ if(e.key==="Escape") close(); };
+  /* s'ouvre et se ferme comme Cocoon Plus (feuille qui monte / redescend), sans fondu du fond à la fermeture */
+  const U=upSheet("privPage","Confidentialité"), close=U.close, box=el("div",{class:"priv"}); U.P.classList.add("nofade"); U.sheet.classList.add("priv-sheet");
   const h3=t=>el("h3",{text:t}), p=t=>el("p",{text:t}), ul=(...a)=>el("ul",{},...a.map(t=>el("li",{text:t})));
-  box.append(swGrab(box,close,"",bg),el("h2",{text:"Confidentialité"}),el("p",{class:"muted",text:"Ce que Cocoon garde sur toi et sur ton foyer, en clair."}),
+  box.append(el("h2",{text:"Confidentialité"}),el("p",{class:"muted",text:"Ce que Cocoon garde sur toi et sur ton foyer, en clair."}),
     h3("Qui s'occupe de tes données"),
     p(hosted?("Cocoon est édité par "+(C.editeur||"la personne qui a créé l'app")+". Pour toute question ou demande sur tes données : "+(contact||"l'adresse de contact indiquée par la personne qui t'a invité")+"."):"Dans cette version, ouverte depuis Claude, tes données sont enregistrées par Claude (Anthropic) dans l'espace de cette page. Ce sont les règles de confidentialité de Claude qui s'appliquent."),
     h3("Ce qui est enregistré"),
@@ -8287,7 +8298,7 @@ function openPrivacy(){
     h3("Tes droits"),
     ul("Voir et récupérer tes données : demande-les à l'adresse de contact ci-dessus, tu les reçois sous un mois","Corriger : modifie directement ton profil ou l'élément concerné","Effacer : supprime l'élément, ton espace perso, ou ton compte"+(hosted?" (Moi → Supprimer mon compte)":""),"Te plaindre si quelque chose ne va pas : la CNIL, sur cnil.fr"),
     el("p",{class:"muted",text:"Dernière mise à jour : octobre 2026."}));
-  bg.append(box); bg.addEventListener("click",e=>{ if(e.target===bg) close(); }); document.addEventListener("keydown",kd); document.body.append(bg);
+  U.sheet.append(box);
 }
 async function wipeMine(){
   S.setConfirm=null; renderSettings();
@@ -8963,11 +8974,12 @@ function upSheet(id,label,onClose){ let P=$(id); if(!P){ P=el("div",{class:"prem
   P.onkeydown=e=>{ if(e.key==="Escape") close(); };
   P.onclick=e=>{ if(e.target===P) close(); };
   grab.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); close(); } });
+  grab.addEventListener("click",()=>{ if(sheet._dragged){ sheet._dragged=false; return; } close(); });
   /* glisser vers le bas pour fermer */
   { let y0=null, dy=0, t0=0, drag=false; const sc=sheet;
     const start=e=>{ const y=(e.touches?e.touches[0]:e).clientY; if(sc.scrollTop>0&&!e.target.closest(".pp-grab")) return; y0=y; dy=0; t0=Date.now(); drag=false; };
     const move=e=>{ if(y0==null) return; const y=(e.touches?e.touches[0]:e).clientY; dy=y-y0; if(dy<=0&&!drag) return; if(!drag&&dy>6){ drag=true; sc.style.transition="none"; sc.getAnimations().forEach(a=>a.cancel()); } if(drag){ if(e.cancelable) e.preventDefault(); sc.style.transform="translateY("+Math.max(0,dy)+"px)"; P.style.background="rgba(0,0,0,"+(0.34*Math.max(0,1-dy/500)).toFixed(3)+")"; } };
-    const end=()=>{ if(y0==null) return; const v=dy/Math.max(1,Date.now()-t0); y0=null; if(!drag) return; drag=false; if(dy>110||v>.6){ close(); } else { sc.style.transition="transform .3s cubic-bezier(.2,1.3,.4,1)"; sc.style.transform=""; P.style.background=""; } };
+    const end=()=>{ if(y0==null) return; const v=dy/Math.max(1,Date.now()-t0); y0=null; if(!drag) return; drag=false; sc._dragged=true; setTimeout(()=>{ sc._dragged=false; },350); if(dy>110||v>.6){ close(); } else { sc.style.transition="transform .3s cubic-bezier(.2,1.3,.4,1)"; sc.style.transform=""; P.style.background=""; } };
     sc.addEventListener("touchstart",start,{passive:true}); sc.addEventListener("touchmove",move,{passive:false}); sc.addEventListener("touchend",end); sc.addEventListener("touchcancel",end);
     sc.addEventListener("pointerdown",e=>{ if(e.pointerType==="touch"||e.target.closest("button")) return; start(e); const mm=ev=>move(ev), uu=()=>{ end(); removeEventListener("pointermove",mm); removeEventListener("pointerup",uu); }; addEventListener("pointermove",mm); addEventListener("pointerup",uu); }); }
   sheet.append(grab); P.append(sheet); P.tabIndex=-1; setTimeout(()=>{ try{ P.focus(); }catch(_){} },50);
