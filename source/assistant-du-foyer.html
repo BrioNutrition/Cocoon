@@ -2546,7 +2546,6 @@ html.sheet-open .add-fab{display:none}
 .ev-x{border:0;background:none;color:var(--muted);font-size:20px;width:30px;height:30px;border-radius:50%;cursor:pointer;flex:none}
 .prem-page{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.34);-webkit-backdrop-filter:blur(14px) saturate(1.15);backdrop-filter:blur(14px) saturate(1.15);display:flex;flex-direction:column;justify-content:flex-end;animation:ppBg .25s ease both;outline:none;transition:background .2s}
 .prem-page.out{animation:ppBgOut .32s ease both;pointer-events:none}
-.prem-page.nofade.out{animation:none}
 #termsPage,#privPage{z-index:2147483600}
 .priv-sheet .priv{max-height:none;overflow:visible;border-radius:0;background:none;padding-top:4px;width:auto;max-width:none}
 @keyframes ppBg{from{background:rgba(0,0,0,0);-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}}
@@ -8119,8 +8118,8 @@ function swGrab(box,close,base,bg){ const g=el("div",{class:"sw-grab",role:"butt
 const CGU_V="2026-10";
 function openTerms(){
   const C=(window.COCOON_CONFIG||{}), hosted=!!window.cocoonHost;
-  /* s'ouvre et se ferme comme Cocoon Plus (feuille qui monte / redescend), sans fondu du fond à la fermeture */
-  const U=upSheet("termsPage","Conditions d'utilisation"), close=U.close, box=el("div",{class:"priv"}); U.P.classList.add("nofade"); U.sheet.classList.add("priv-sheet");
+  /* s'ouvre et se ferme comme Cocoon Plus (feuille qui monte / redescend, flou du fond qui s'efface en fondu) */
+  const U=upSheet("termsPage","Conditions d'utilisation"), close=U.close, box=el("div",{class:"priv"}); U.sheet.classList.add("priv-sheet");
   const h3=t=>el("h3",{text:t}), p=t=>el("p",{text:t}), ul=(...a)=>el("ul",{},...a.map(t=>el("li",{text:t})));
   box.append(el("h2",{text:"Conditions d'utilisation"}),el("p",{class:"muted",text:"Les règles du jeu, en court."}),
     h3("Le service"),p("Cocoon aide un foyer à s'organiser : tâches, rappels, papiers, budget, rendez-vous. C'est un outil d'organisation : il ne remplace ni un conseiller, ni un professionnel de santé, ni un expert-comptable."),
@@ -8184,8 +8183,8 @@ async function deleteMyAccount(btn){
 window.openTerms=(...a)=>openTerms(...a); window.openPrivacy=(...a)=>openPrivacy(...a);
 function openPrivacy(){
   const hosted=!!window.cocoonHost, C=(window.COCOON_CONFIG||{}), contact=C.contact||null;
-  /* s'ouvre et se ferme comme Cocoon Plus (feuille qui monte / redescend), sans fondu du fond à la fermeture */
-  const U=upSheet("privPage","Confidentialité"), close=U.close, box=el("div",{class:"priv"}); U.P.classList.add("nofade"); U.sheet.classList.add("priv-sheet");
+  /* s'ouvre et se ferme comme Cocoon Plus (feuille qui monte / redescend, flou du fond qui s'efface en fondu) */
+  const U=upSheet("privPage","Confidentialité"), close=U.close, box=el("div",{class:"priv"}); U.sheet.classList.add("priv-sheet");
   const h3=t=>el("h3",{text:t}), p=t=>el("p",{text:t}), ul=(...a)=>el("ul",{},...a.map(t=>el("li",{text:t})));
   box.append(el("h2",{text:"Confidentialité"}),el("p",{class:"muted",text:"Ce que Cocoon garde sur toi et sur ton foyer, en clair."}),
     h3("Qui s'occupe de tes données"),

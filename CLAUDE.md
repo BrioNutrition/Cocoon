@@ -161,7 +161,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   cartes `.sp-stickers` masquées ; bandeau « Démo » masqué dans la démo (hunk CSS de `demo_patch.json`) ; lueur animée
   en fond (`.sp-aura`, 3 halos flous qui dérivent lentement, arrêtés si animations réduites).
 - **Conditions / Confidentialité** (`openTerms`, `openPrivacy`) : feuilles `upSheet` comme Cocoon Plus (`#termsPage`, `#privPage`, z-index au-dessus
-  de la connexion), fermeture sans fondu du fond (`.prem-page.nofade`) ; toucher la poignée `.pp-grab` ferme (toutes les feuilles) ; exposées sur
+  de la connexion), même fermeture que Cocoon Plus (flou du fond qui s'efface en fondu, demandé par Angel) ; toucher la poignée `.pp-grab` ferme (toutes les feuilles) ; exposées sur
   `window` pour les liens de l'écran de connexion (avant : ces liens ne faisaient rien, l'app étant dans une IIFE).
 - **Fiche profil** (« Crée ton profil » / « Personnalise ton profil », choix A d'Angel) : formulaire à gauche, carte d'aperçu en hauteur à droite,
   collante en défilant (`refreshPreview` → `.fp-card`, grille sur `section[data-view="fiche"]`, 128 px sur téléphone, 260 px dès 760 px).
