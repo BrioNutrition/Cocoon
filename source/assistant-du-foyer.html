@@ -1828,6 +1828,7 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .wq-total small{color:var(--au-sub);font-size:12.5px;font-weight:600}.wq-big{font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1.1}
 .wq-fe{font-size:26px;letter-spacing:2px;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;word-break:break-all}
 .wq-names{display:grid;gap:14px}
+.wq-now{margin-bottom:-6px}
 .wq-pet{display:grid;gap:10px;padding:14px;border-radius:22px;background:var(--au-glass);border:1px solid var(--au-line)}
 .wq-pet-h{display:flex;gap:10px;align-items:center}.wq-pet-h input{flex:1;min-width:0}
 .wq-pph{width:58px;height:58px;border-radius:18px;flex:none;display:grid;place-items:center;font-size:24px;border:2px dashed var(--au-line);cursor:pointer;overflow:hidden;position:relative}
@@ -5123,7 +5124,7 @@ function wqMenage({W,a,box,key,rerender}){
     el("div",{class:"wq-li"},el("span",{class:"wq-emo",text:"🧒"}),el("span",{class:"wq-lt"},el("b",{text:"Enfants"})),stp("wqKid",a.kids.length,0,8,v=>resize(a.kids,v,()=>({nom:"",naissance:""})),"enfant")),
     el("div",{class:"wq-li"},el("span",{class:"wq-emo",text:"🏠"}),el("span",{class:"wq-lt"},el("b",{text:"Colocataires"}),el("small",{text:"ou autres adultes"})),stp("wqCol",a.colocs.length,0,6,v=>resize(a.colocs,v,()=>({nom:"",email:""})),"colocataire"))));
   const n=1+(a.nAd>1?1:0)+a.kids.length+a.colocs.length;
-  box.append(el("div",{class:"wq-total wq-fam"},el("span",{class:"wq-fe","aria-hidden":"true",text:"🧑".repeat(a.nAd)+"🧒".repeat(Math.min(a.kids.length,6))+"🧑".repeat(Math.min(a.colocs.length,4))}),el("b",{text:n>1?n+" personnes au foyer":"Rien que toi"})));
+  box.append(el("span",{class:"label wq-now",text:"Actuellement"}),el("div",{class:"wq-total wq-fam"},el("span",{class:"wq-fe","aria-hidden":"true",text:"🧑".repeat(a.nAd)+"🧒".repeat(Math.min(a.kids.length,6))+"🧑".repeat(Math.min(a.colocs.length,4))}),el("b",{text:n>1?n+" personnes au foyer":"Rien que toi"})));
   const live=(inp,set)=>inp.addEventListener("input",()=>{ set(inp.value); W.plan=null; wzRefresh(key,a); });
   const names=el("div",{class:"wq-names"});
   if(a.nAd>1){ const i=el("input",{type:"text",id:"wzPart",maxlength:"30",placeholder:"Emma, Thomas…"}); i.value=a.partenaire||""; live(i,v=>a.partenaire=v);
