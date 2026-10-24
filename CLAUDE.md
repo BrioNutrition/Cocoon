@@ -162,7 +162,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   (lueur `.sp-aura` retirée et lueurs `.aurora` masquées sur cet écran, demandé par Angel) ; textes affichés 560 ms après le départ du logo.
 - **Bienvenue** : « Créer mon cocon » lance directement le questionnaire ; les conditions restent **à la fin** (après le profil, `onboardGate`).
   À la 1re acceptation, `cguWelcome` : confettis sur l'app floutée derrière (`.wb`, flou du fond), Cocoony + bulle « Bienvenue chez toi … ! »
-  qui annonce la visite guidée, « C'est parti ! » → visite. Plus de phrase « Tu pourras relire ces textes… ». Écran « enfin serein » :
+  qui annonce la visite guidée, « C'est parti ! » → visite. Ordre : profil (étape 2) → conditions → Cocoony → visite ; la bienvenue s'ouvre
+  par-dessus les conditions (flou immédiat, `after._over`), qui s'effacent dessous. Pop-up « Bienvenue dans ton foyer 🥳 » (`maybeWelcome`) supprimée. Plus de phrase « Tu pourras relire ces textes… ». Écran « enfin serein » :
   tout apparaît **en même temps** quand le logo arrive en haut à gauche (`flySplash` → `sp-show` après l'atterrissage).
 - Récap du questionnaire : plusieurs groupes ouverts à la fois (`wqRow(...,{multi:true})`, `W.opens`), lignes de détail `.wq-dr`
   (case + titre + infos dessous) ; interrupteurs `.wq-tg` façon iOS (51×31, vert #34C759, pastille qui glisse avec rebond et s'étire à l'appui ;
