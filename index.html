@@ -30,8 +30,8 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 @keyframes cxiRise{from{opacity:0;transform:translateY(22px) scale(.9)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){#cxIntro *{animation:none!important}}
 /* même fond que la suite (uni + grain), sans lueur derrière le logo */
-#cxIntro,:root:not([data-theme="light"]) #cxIntro,:root[data-theme="dark"] #cxIntro{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),#100E1A!important}#cxIntro .cxi-w::before{display:none}
-html[data-theme="light"] #cxIntro{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),#F7F4FB!important}@media (prefers-color-scheme: light){html:not([data-theme="dark"]) #cxIntro{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),#F7F4FB!important}}
+#cxIntro,:root:not([data-theme="light"]) #cxIntro,:root[data-theme="dark"] #cxIntro{background:#100E1A!important}#cxIntro .cxi-w::before{display:none}
+html[data-theme="light"] #cxIntro{background:#F7F4FB!important}@media (prefers-color-scheme: light){html:not([data-theme="dark"]) #cxIntro{background:#F7F4FB!important}}
 #cxGate .cx-card{animation:cxCardIn .5s cubic-bezier(.2,.9,.3,1) both}
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:url("data:image/svg+xml,%3Csvg xmln
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="24/10 17:08";</script>
+<script>window.COCOON_BUILD="24/10 17:14";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1801,15 +1801,15 @@ body:has(#splash:not([hidden])) .aurora i{opacity:0!important}
 /* questionnaire et profil : fond uni + grain fin, sans lueurs de couleur (choix A d'Angel) */
 body:has(.wrap.wizarding) .aurora i,body:has(.wrap.finishing) .aurora i{opacity:0!important}
 /* écran de la boîte aux lettres : même fond que le questionnaire (uni + grain) */
-.warmup{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),var(--au-bg)!important;color:var(--ink)!important}
+.warmup{background:var(--au-bg)!important;color:var(--ink)!important}
 /* champs date en sombre : icône calendrier claire (pas noire), « jj/mm/aaaa » de la couleur des indications tant que rien n'est saisi */
 :root[data-theme="dark"] input[type=date],:root[data-theme="dark"] input[type=time]{color-scheme:dark}
 @media (prefers-color-scheme:dark){:root:not([data-theme]) input[type=date],:root:not([data-theme]) input[type=time]{color-scheme:dark}}
 input[type=date]::-webkit-calendar-picker-indicator{opacity:.75;cursor:pointer}
 .fiche input[type=date].vide::-webkit-datetime-edit{color:var(--muted)}
 :root[data-theme="dark"] .wrap.finishing .fiche input[type=date].vide::-webkit-datetime-edit{color:rgba(255,255,255,.45)}
-body:has(#splash:not([hidden])) .aurora,body:has(.wrap.wizarding) .aurora,body:has(.wrap.finishing) .aurora{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),var(--au-bg)!important}
-:root[data-theme="light"] body:has(#splash:not([hidden])) .aurora,:root[data-theme="light"] body:has(.wrap.wizarding) .aurora,:root[data-theme="light"] body:has(.wrap.finishing) .aurora{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),var(--au-bg)!important}
+body:has(#splash:not([hidden])) .aurora,body:has(.wrap.wizarding) .aurora,body:has(.wrap.finishing) .aurora{background:var(--au-bg)!important}
+:root[data-theme="light"] body:has(#splash:not([hidden])) .aurora,:root[data-theme="light"] body:has(.wrap.wizarding) .aurora,:root[data-theme="light"] body:has(.wrap.finishing) .aurora{background:var(--au-bg)!important}
 body:has(.wrap.finishing){background:var(--au-bg)!important}
 .wrap.finishing .fiche{background:var(--au-glass)!important;border:1px solid var(--au-line)!important;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:none!important;border-radius:26px!important}
 .wrap.finishing .fiche .step-tag{background:linear-gradient(100deg,#FFC94A,#FF9C80 55%,#E79ADB)!important;color:#1C1B2E!important}
@@ -2946,15 +2946,17 @@ div.pf-r{cursor:default}
 }
 .wgs-grip{flex:none;width:26px;height:36px;display:grid;place-items:center;font-size:20px;color:var(--muted);cursor:grab;touch-action:none;margin-left:-4px}
 .wrap:not(.on-home) > .topbar{display:none!important}
-.bt-bg{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),#100E1A!important}
+.bt-bg{background:#100E1A!important}
 .boot .bt-name{color:#F1EFFA!important}
 html:has(#boot),html:has(#boot) body{background:#100E1A!important}
+/* même fond derrière l'écran d'accueil et le questionnaire qu'au lancement : pas de changement de couleur à la fin de l'animation */
+html:has(#splash:not([hidden])),html:has(.wrap.wizarding),html:has(.wrap.finishing){background:var(--au-bg)!important}
 /* thème clair : l'animation d'ouverture aussi (sinon on passe brutalement du sombre au blanc) */
-html[data-theme="light"] .bt-bg{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),#F7F4FB!important}
+html[data-theme="light"] .bt-bg{background:#F7F4FB!important}
 html[data-theme="light"] .boot .bt-name{color:#1C1B2E!important}
 html[data-theme="light"]:has(#boot),html[data-theme="light"]:has(#boot) body{background:#F6F5FB!important}
 @media (prefers-color-scheme: light){
-  html:not([data-theme="dark"]) .bt-bg{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),#F7F4FB!important}
+  html:not([data-theme="dark"]) .bt-bg{background:#F7F4FB!important}
   html:not([data-theme="dark"]) .boot .bt-name{color:#1C1B2E!important}
   html:not([data-theme="dark"]):has(#boot),html:not([data-theme="dark"]):has(#boot) body{background:#F6F5FB!important}
 }
@@ -8868,11 +8870,7 @@ function flyLogo(logo,target,D){
   /* Position finale mesurée une fois, avant que le reste de la page commence à bouger */
   const r=target.getBoundingClientRect(), tx=r.left+r.width/2-(lr.left+lr.width/2), ty=r.top+r.height/2-(lr.top+lr.height/2), ts=r.width/lr.width;
   target.style.visibility="hidden";
-  /* L'ombre floue coûte cher à redessiner pendant le vol : on la remplace par un halo qui s'efface */
-  const halo=document.createElement("span"); halo.setAttribute("aria-hidden","true");
-  halo.style.cssText="position:absolute;left:12%;right:12%;top:30%;bottom:-8%;border-radius:40%;background:rgba(232,118,90,.30);filter:blur(16px);pointer-events:none;transform:translate3d("+x0+"px,"+y0+"px,0)";
-  wrap.insertBefore(halo,logo); logo.style.filter="none";
-  halo.animate([{opacity:1},{opacity:0}],{duration:260,easing:"ease-out",fill:"forwards"});
+  logo.style.filter="none"; /* plus de halo orange sous le logo (demandé par Angel) */
   const a=logo.animate([{transform:from},{transform:"translate3d("+tx+"px,"+ty+"px,0) rotate(0deg) scale("+ts+")"}],{duration:D,easing:"cubic-bezier(.55,0,.15,1)",fill:"forwards"});
   const end=()=>{ target.style.visibility=""; };
   return a.finished.then(end,end);
