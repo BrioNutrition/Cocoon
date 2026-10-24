@@ -148,7 +148,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - **Questionnaire refait** (24 oct., choix d'Angel sur 5 maquettes par étape) : fonctions `wq*` avant `renderWizard`, mêmes données `W.a`
   qu'avant (buildPlan/applyPlan inchangés sauf soins décochés `a.petOff` et photo `a.petPhoto`). 1 plaque de porte « Chez les … » (`wqNom`) ;
   2 compteurs Adultes (1–2) / Enfants / Colocataires + prénoms dessous (`wqMenage`, boutons `#wqAdP`, `#wqKidP`, `#wqColP`) ; 3 fiche animal
-  (photo, nom `#wqPet0`, espèce, soins en interrupteurs + date du dernier, `#wqPetAdd`, « Pas d'animal » : juste un contour jaune quand choisi, pas de rond, idem « Aucun véhicule ») ; 4 liste façon Réglages qui se
+  (photo, nom `#wqPet0`, espèce, soins en interrupteurs + date du dernier, `#wqPetAdd`, « Pas d'animal » : juste un contour jaune quand choisi, pas de rond, idem « Aucun véhicule » ; en changeant d'étape, fiches repliées en une ligne `.wq-pet-min` (« Modifier » la rouvre) et fiches vides retirées) ; 4 liste façon Réglages qui se
   déplie (`wqRow`, `W.open`), équipements rangés par pièce (`EQUIP_G`, rappels pour chacun dans buildPlan) + « Autre chose ? »
   (`#wqEqAdd`, `a.equipPerso` → équipements de Maison, groupe du récap) ; 5 une ligne par bac + « Je ferai ça plus tard » (`#wqLater`) ; 6 garage (`#wqVvoiture`…, « Aucun véhicule »),
   contrôle technique facultatif en une colonne pour la voiture et pour la moto/scooter (`a.motoCT`/`a.motoMec`, CT moto à 5 ans puis tous les 3 ans) ;
