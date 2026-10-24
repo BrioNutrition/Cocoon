@@ -9181,7 +9181,7 @@ function evPick(inn,V){ const day=V.day||"";
   inn.append(el("div",{class:"ev-top"},el("h2",{text:"Ajouter à l'agenda"})));
   const opt=(ic,bg,t,sub,fn,cls)=>el("button",{type:"button",class:"ev-opt"+(cls?" "+cls:""),onclick:fn},el("i",{"aria-hidden":"true",style:"background:"+bg,text:ic}),el("span",{},el("b",{text:t}),el("small",{text:sub})));
   inn.append(opt("📅","color-mix(in srgb,#8FB8FF 40%,var(--surface))","Un rendez-vous","Médecin, garage, réunion d'école…",()=>{ if(S.evClose) S.evClose(); setTimeout(()=>{ fabAct("agenda",{dataset:{direct:"rdv"}}); if(S.rdvForm) S.rdvForm.fromPick=day; },340); }),
-    opt("🎉","color-mix(in srgb,#FF9C80 40%,var(--surface))","Un événement à préparer","Anniv, travaux, vacances : avec sa frise, ses achats et son budget",()=>{ if(S.evClose) S.evClose(); setTimeout(()=>openEvents({v:"new",type:"anniv",debut:day||undefined,from:"pick",pickDay:day}),340); },"hot"));
+    opt("🎉","color-mix(in srgb,#FF9C80 40%,var(--surface))","Événement","Anniv, travaux, vacances : avec sa frise, ses achats et son budget",()=>{ if(S.evClose) S.evClose(); setTimeout(()=>openEvents({v:"new",type:"anniv",debut:day||undefined,from:"pick",pickDay:day}),340); },"hot"));
   const n=(S.evs||[]).length; if(n) inn.append(el("button",{type:"button",class:"ev-link",onclick:()=>{ S.evListPick=day; evGo({v:"list"}); }},"Voir mes événements ("+n+")")); }
 function evList(inn){ const t0=iso(today()), L=evAll(), cur=L.filter(e=>evEnd(e)>=t0), past=L.filter(e=>evEnd(e)<t0).reverse();
   /* arrivé depuis « Ajouter à l'agenda » : un retour vers ce menu */
