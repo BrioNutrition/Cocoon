@@ -235,8 +235,8 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 @keyframes cxiRise{from{opacity:0;transform:translateY(22px) scale(.9)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){#cxIntro *{animation:none!important}}
 /* même fond que la suite (uni + grain), sans lueur derrière le logo */
-#cxIntro,:root:not([data-theme="light"]) #cxIntro,:root[data-theme="dark"] #cxIntro{background:#100E1A!important}#cxIntro .cxi-w::before{display:none}
-html[data-theme="light"] #cxIntro{background:#F7F4FB!important}@media (prefers-color-scheme: light){html:not([data-theme="dark"]) #cxIntro{background:#F7F4FB!important}}
+#cxIntro,:root:not([data-theme="light"]) #cxIntro,:root[data-theme="dark"] #cxIntro{background:#13121C!important}#cxIntro .cxi-w::before{display:none}
+html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-color-scheme: light){html:not([data-theme="dark"]) #cxIntro{background:#F6F5FB!important}}
 #cxGate .cx-card{animation:cxCardIn .5s cubic-bezier(.2,.9,.3,1) both}
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>"""

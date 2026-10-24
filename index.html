@@ -30,8 +30,8 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 @keyframes cxiRise{from{opacity:0;transform:translateY(22px) scale(.9)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){#cxIntro *{animation:none!important}}
 /* même fond que la suite (uni + grain), sans lueur derrière le logo */
-#cxIntro,:root:not([data-theme="light"]) #cxIntro,:root[data-theme="dark"] #cxIntro{background:#100E1A!important}#cxIntro .cxi-w::before{display:none}
-html[data-theme="light"] #cxIntro{background:#F7F4FB!important}@media (prefers-color-scheme: light){html:not([data-theme="dark"]) #cxIntro{background:#F7F4FB!important}}
+#cxIntro,:root:not([data-theme="light"]) #cxIntro,:root[data-theme="dark"] #cxIntro{background:#13121C!important}#cxIntro .cxi-w::before{display:none}
+html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-color-scheme: light){html:not([data-theme="dark"]) #cxIntro{background:#F6F5FB!important}}
 #cxGate .cx-card{animation:cxCardIn .5s cubic-bezier(.2,.9,.3,1) both}
 @keyframes cxCardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 </style>
@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F7F4FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="24/10 17:14";</script>
+<script>window.COCOON_BUILD="24/10 17:17";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1737,11 +1737,11 @@ input[type=email]{background:var(--surface);border:2px solid var(--line);border-
 .pal-btns{display:flex;gap:8px;margin-top:8px}
 .pal-btns .btn{flex:1;justify-content:center}
 .pal-panel .seg button,.pal-in .seg button{justify-content:center!important;text-align:center!important;flex:1 1 0!important;line-height:1.2}
-:root{--au-bg:#F7F4FB;--au-glass:rgba(255,255,255,.66);--au-line:rgba(28,27,46,.09);--au-op:.42;--au-sub:#5E5A78}
+:root{--au-bg:#F6F5FB;--au-glass:rgba(255,255,255,.66);--au-line:rgba(28,27,46,.09);--au-op:.42;--au-sub:#5E5A78}
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){--au-bg:#100E1A;--au-glass:rgba(255,255,255,.07);--au-line:rgba(255,255,255,.13);--au-op:.55;--au-sub:#CFCBE6}
+  :root:not([data-theme="light"]){--au-bg:#13121C;--au-glass:rgba(255,255,255,.07);--au-line:rgba(255,255,255,.13);--au-op:.55;--au-sub:#CFCBE6}
 }
-:root[data-theme="dark"]{--au-bg:#100E1A;--au-glass:rgba(255,255,255,.07);--au-line:rgba(255,255,255,.13);--au-op:.55;--au-sub:#CFCBE6}
+:root[data-theme="dark"]{--au-bg:#13121C;--au-glass:rgba(255,255,255,.07);--au-line:rgba(255,255,255,.13);--au-op:.55;--au-sub:#CFCBE6}
 .aurora{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .5s;background:var(--au-bg)}
 .aurora i{position:absolute;border-radius:50%;filter:blur(64px);opacity:var(--au-op)}
 .aurora i:nth-child(1){width:340px;height:340px;background:#FFC94A;left:-110px;top:-80px}
@@ -2946,17 +2946,17 @@ div.pf-r{cursor:default}
 }
 .wgs-grip{flex:none;width:26px;height:36px;display:grid;place-items:center;font-size:20px;color:var(--muted);cursor:grab;touch-action:none;margin-left:-4px}
 .wrap:not(.on-home) > .topbar{display:none!important}
-.bt-bg{background:#100E1A!important}
+.bt-bg{background:#13121C!important}
 .boot .bt-name{color:#F1EFFA!important}
-html:has(#boot),html:has(#boot) body{background:#100E1A!important}
+html:has(#boot),html:has(#boot) body{background:#13121C!important}
 /* même fond derrière l'écran d'accueil et le questionnaire qu'au lancement : pas de changement de couleur à la fin de l'animation */
 html:has(#splash:not([hidden])),html:has(.wrap.wizarding),html:has(.wrap.finishing){background:var(--au-bg)!important}
 /* thème clair : l'animation d'ouverture aussi (sinon on passe brutalement du sombre au blanc) */
-html[data-theme="light"] .bt-bg{background:#F7F4FB!important}
+html[data-theme="light"] .bt-bg{background:#F6F5FB!important}
 html[data-theme="light"] .boot .bt-name{color:#1C1B2E!important}
 html[data-theme="light"]:has(#boot),html[data-theme="light"]:has(#boot) body{background:#F6F5FB!important}
 @media (prefers-color-scheme: light){
-  html:not([data-theme="dark"]) .bt-bg{background:#F7F4FB!important}
+  html:not([data-theme="dark"]) .bt-bg{background:#F6F5FB!important}
   html:not([data-theme="dark"]) .boot .bt-name{color:#1C1B2E!important}
   html:not([data-theme="dark"]):has(#boot),html:not([data-theme="dark"]):has(#boot) body{background:#F6F5FB!important}
 }
