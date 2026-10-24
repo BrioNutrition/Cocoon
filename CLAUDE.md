@@ -160,11 +160,16 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   en haut, grand titre juste dessous (« enfin serein. » en dégradé, `.sp-grad`), une phrase, 7 étiquettes des atouts (`.sp-chips`), bouton en bas ;
   cartes `.sp-stickers` masquées ; bandeau « Démo » masqué dans la démo (hunk CSS de `demo_patch.json`) ; lueur animée
   en fond (`.sp-aura`, 3 halos flous qui dérivent lentement, arrêtés si animations réduites).
+- **Entrée d'un nouveau foyer** (demandé par Angel) : « Créer mon cocon » (`#spGo`) → d'abord les conditions (`openCgu`, si pas encore acceptées)
+  → puis Cocoony souhaite la bienvenue (`welcomeAnim` : écran `.wb`, confettis `.wb-conf`, Cocoony qui apparaît et salue, bulle,
+  « C'est parti ! » ou 6,5 s) → questionnaire (`startWizardFlow`). Sauté si `window.__noTour` (tests). Les conditions ne reviennent plus à la fin.
+- Récap du questionnaire : plusieurs groupes ouverts à la fois (`wqRow(...,{multi:true})`, `W.opens`), lignes de détail `.wq-dr`
+  (case + titre + infos dessous) ; interrupteurs `.wq-tg` façon iOS (51×31, vert #34C759, pastille qui glisse avec rebond et s'étire à l'appui ;
+  bascule visible tout de suite, action 260 ms après). Fiche profil : aperçu revenu en **bannière tout en haut** (`pwCard`), champs blancs en sombre.
 - **Conditions / Confidentialité** (`openTerms`, `openPrivacy`) : feuilles `upSheet` comme Cocoon Plus (`#termsPage`, `#privPage`, z-index au-dessus
   de la connexion), même fermeture que Cocoon Plus (flou du fond qui s'efface en fondu, demandé par Angel) ; toucher la poignée `.pp-grab` ferme (toutes les feuilles) ; exposées sur
   `window` pour les liens de l'écran de connexion (avant : ces liens ne faisaient rien, l'app étant dans une IIFE).
-- **Fiche profil** (« Crée ton profil » / « Personnalise ton profil », choix A d'Angel) : formulaire à gauche, carte d'aperçu en hauteur à droite,
-  collante en défilant (`refreshPreview` → `.fp-card`, grille sur `section[data-view="fiche"]`, 128 px sur téléphone, 260 px dès 760 px).
+- **Fiche profil** : aperçu en bannière en haut (essai « carte à droite » abandonné par Angel), puis en-tête `#fHead` et formulaire.
   En-tête (étape, titre, phrase ; « Ton profil » hors inscription) déplacé dans `#fHead`, sur toute la largeur au-dessus des deux colonnes.
   Pas de titre « Profil » ; pendant l'inscription : pas de barre, pas de retour (la mini-barre `hubMini` ignore un titre vide), pas de bande « Démo ». Apparence Automatique/Clair/Sombre : appliquée dès le clic (`E.theme0` = l'ancienne),
   validée par Enregistrer/Terminer (`E.themeOk`), remise comme avant si on quitte sans enregistrer (`closeEditor`) ; boutons l'un sous l'autre en colonne étroite.
