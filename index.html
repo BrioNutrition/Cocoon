@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="24/10 16:28";</script>
+<script>window.COCOON_BUILD="24/10 16:41";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2977,6 +2977,9 @@ section[data-view="fiche"] > #fHead{order:1}section[data-view="fiche"] > #fPrevi
 #fHead .fi-head h3{margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em;font-family:var(--f-display)}
 #fHead .fi-head .muted{font-size:14.5px!important;line-height:1.4}
 #fHead:empty{display:none}
+.age-stop{display:grid;gap:4px;padding:12px 14px;border-radius:14px;background:#3D2226;color:#FFD5CC;border:1px solid rgba(255,140,120,.35);font-size:14px;line-height:1.4}
+.age-stop b{font-size:15px;color:#fff}
+:root[data-theme="light"] .age-stop{background:#FFE3DD;color:#8A2A16;border-color:#F5B5A6}:root[data-theme="light"] .age-stop b{color:#5C1B0E}
 .bd-doc.bd-flash{animation:bdFlash 1.8s ease}
 @keyframes bdFlash{0%,35%{box-shadow:0 0 0 3px #FFC94A,0 8px 24px color-mix(in srgb,#FFC94A 35%,transparent)}100%{box-shadow:0 0 0 0 transparent}}
 .fy-sw{width:22px!important;height:22px!important;margin-left:2px!important;background:none!important;border-radius:0!important;color:var(--muted)!important;transform:translateY(-4px)!important}
@@ -4668,9 +4671,6 @@ function buildEditor(){
   // Couleur
   const cols=el("div",{class:"swatches"});
   for(const c of COLORS) cols.append(el("button",{type:"button",class:"sw",style:"background:"+c,"aria-label":"Couleur "+c,"aria-pressed":String(d.c===c),onclick:()=>{ d.c=c; refreshPreview(); buildEditor(); }}));
-  const cp=el("input",{type:"color",id:"fiCouleur","aria-label":"Couleur personnalisée",style:"width:44px;height:34px;padding:2px;border-radius:8px"}); cp.value=/^#[0-9a-f]{6}$/i.test(d.c||"")?d.c:"#2f6e8f";
-  cp.addEventListener("change",()=>{ d.c=cp.value; refreshPreview(); buildEditor(); });
-  cols.append(cp);
   f.append(el("div",{class:"fgroup"},el("h3",{text:"Couleur"}),cols));
 
   // Bio
@@ -4748,8 +4748,18 @@ async function saveProfile(){
     if(id===meId()){ setTab("moi"); renderAll(); } else { S.prevTab=S.editPrev; openProfile(id); }
   }catch(e){ E.busy=false; writeErr(e); }
 }
+/* âge (demandé par Angel) : 18 ans pour créer un foyer ; avant 15 ans, seulement en reprenant un profil préparé par un adulte du foyer
+   (son invitation vaut accord parental) ; les profils d'enfants sans compte restent possibles à tout âge */
+function ageBlock(E){ const age=wzAge(E.d.naissance); if(age==null) return null;
+  const creating=!E.claimId&&(S.isOwner||!admins().length);
+  if(creating&&age<18) return ["Il faut être majeur pour créer un foyer.","Demande à un parent de créer le foyer et de t'inviter : il te préparera ton profil."];
+  if(age<15&&!E.claimId) return ["Avant 15 ans, il faut l'accord d'un parent.","Demande à un adulte du foyer de te préparer un profil et de t'envoyer l'invitation."];
+  return null; }
 async function saveSelf(E){
-  const d=E.d; E.busy=true; const btn=$("fiSave"); if(btn){ btn.disabled=true; btn.textContent="Création…"; }
+  const d=E.d, stop=ageBlock(E);
+  if(stop){ const f=$("ficheForm"); let m=f&&f.querySelector(".age-stop"); if(!m&&f){ m=el("div",{class:"age-stop",role:"alert"}); const act=f.querySelector(".fiche-actions"); (act||f).before(m); }
+    if(m){ m.innerHTML=""; m.append(el("b",{text:stop[0]}),el("span",{text:stop[1]})); m.scrollIntoView({block:"center",behavior:"smooth"}); } try{ haptic(); }catch(_){} return; }
+  E.busy=true; const btn=$("fiSave"); if(btn){ btn.disabled=true; btn.textContent="Création…"; }
   try{
     let id;
     if(S.canEdit===false){ await saveOwnProfil(d,E.claimId); id=E.claimId||("u-"+String(S.uid).slice(0,12)); }
@@ -8251,7 +8261,7 @@ function swGrab(box,close,base,bg){ const g=el("div",{class:"sw-grab",role:"butt
   g.addEventListener("click",()=>close()); g.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); close(); } });
   dragSheet(box,{base,bg,close}); return g; }
 /* ===== Conditions d'utilisation ===== */
-const CGU_V="2026-10";
+const CGU_V="2026-10-24"; /* changée à l'ajout des règles d'âge : chacun réaccepte une fois */
 function openTerms(){
   const C=(window.COCOON_CONFIG||{}), hosted=!!window.cocoonHost;
   /* s'ouvre et se ferme comme Cocoon Plus (feuille qui monte / redescend, flou du fond qui s'efface en fondu) */
@@ -8260,6 +8270,7 @@ function openTerms(){
   box.append(el("h2",{text:"Conditions d'utilisation"}),el("p",{class:"muted",text:"Les règles du jeu, en court."}),
     h3("Le service"),p("Cocoon aide un foyer à s'organiser : tâches, rappels, papiers, budget, rendez-vous. C'est un outil d'organisation : il ne remplace ni un conseiller, ni un professionnel de santé, ni un expert-comptable."),
     h3("Ton compte"),ul("Un compte par personne, avec une adresse e-mail à toi","Tu gardes ton mot de passe pour toi","Tu peux quitter un foyer ou supprimer ton compte quand tu veux, depuis Moi → Réglages"),
+    h3("L'âge"),ul("Pour créer un foyer, il faut avoir 18 ans","Pour rejoindre un foyer, il faut avoir 15 ans ; avant 15 ans, un adulte du foyer prépare le profil et envoie l'invitation, ce qui vaut accord parental","Les profils d'enfants sans compte sont créés et gérés par les adultes du foyer"),
     h3("Ce que tu mets dans Cocoon"),ul("Tu restes propriétaire de ce que tu ajoutes ; Cocoon ne s'en sert que pour faire fonctionner l'app","N'ajoute les papiers ou la photo de quelqu'un que s'il est d'accord (ou si tu en as la charge, pour un enfant)","Pas de contenu illégal, ni de documents qui ne te concernent pas, toi ou ton foyer"),
     h3("Le foyer"),p("Les membres d'un foyer voient et modifient les données communes. Les admins peuvent inviter ou retirer des membres. Ton espace perso n'est visible que par toi."),
     h3("Disponibilité"),p("Cocoon est fourni tel quel. On fait de notre mieux pour qu'il marche bien et que tes données soient protégées, mais une panne ou une erreur reste possible : garde l'original de tes papiers importants, et vérifie les rappels essentiels (rendez-vous médicaux, échéances)."),
