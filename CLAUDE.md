@@ -159,8 +159,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   avec un interrupteur par groupe (`wqPlan`, `#wqG-…`, `P.partageOff`). Sans partage réglé (foyer créé seul puis membre ajouté), rien n'est
   partagé par défaut : formulaire de dépense vide et `budgetAdd` suit `foyer/config.partage` (sinon dépense à soi).
 - **Écran « Ton foyer, enfin serein »** (avant « Créer mon cocon », choix F d'Angel parmi 10 maquettes) : épuré, logo + « Cocoon » côte à côte
-  en haut, grand titre juste dessous (« enfin serein. » en dégradé, `.sp-grad`), une phrase, les atouts en **cartes qui défilent seules** (`.sp-cards`,
-  deux rangées `.sp-track` de droite à gauche, alignées sur le texte au départ puis qui démarrent après 1,8 s / 2,2 s, `pointer-events:none`, arrêtées si animations réduites), bouton en bas ; même fond uni + grain que le questionnaire ;
+  en haut, grand titre juste dessous (« enfin serein. » en dégradé, `.sp-grad`), une phrase, les atouts en **grille fixe de 6 cartes** (`.sp-cards`, demandé par Angel : plus de défilement) avec derrière chaque carte une lueur de sa couleur (`--g`) qui s'allume l'une après l'autre (`spGlow`, classe `.glow` remise par `spMarqRestart` car le lancement annule les animations), bouton en bas ; même fond uni + grain que le questionnaire ;
   cartes `.sp-stickers` masquées ; atouts en cartes qui défilent de droite à gauche en boucle (`.sp-track`, relancées par `spMarqRestart` car le lancement annule les animations) ; bandeau « Démo » masqué dans la démo (hunk CSS de `demo_patch.json`) ; fond sombre classique
   (lueur `.sp-aura` retirée et lueurs `.aurora` masquées sur cet écran, demandé par Angel) ; textes affichés 560 ms après le départ du logo.
 - **Bienvenue** : « Créer mon cocon » lance directement le questionnaire ; les conditions restent **à la fin** (après le profil, `onboardGate`).

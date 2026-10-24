@@ -1784,18 +1784,18 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .warmup .mbx{width:170px;height:170px;overflow:visible}
 #warmText{white-space:nowrap}
 /* « Ton foyer, enfin serein » : atouts en cartes qui défilent seules (on ne peut pas les toucher) */
-.sp-cards{margin:0 -16px;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14px,#000 92%,transparent)}
-.sp-cards{display:grid;gap:12px;padding-left:16px}
-.sp-track{list-style:none;margin:0;padding:2px 0;display:flex;gap:12px;width:max-content;animation:spMarq 30s linear 1.8s infinite}
+/* atouts : grille fixe, une lueur de la couleur de chaque carte s'allume derrière, l'une après l'autre */
+.sp-cards{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px;pointer-events:none;position:relative;z-index:0}
+.sp-cards li{position:relative;padding:12px 13px;border-radius:18px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:3px;color:var(--ink)}
+.wrap.gated .sp-cards li{background:color-mix(in srgb,var(--surface) 92%,var(--ink));border-color:color-mix(in srgb,var(--ink) 12%,transparent)}
+.sp-cards li::before{content:"";position:absolute;inset:8px;border-radius:18px;z-index:-1;background:var(--g);box-shadow:0 0 34px 10px color-mix(in srgb,var(--g) 55%,transparent);filter:blur(6px);opacity:0}
+.sp-cards.glow li::before{animation:spGlow 7.2s ease-in-out calc(var(--i)*1.2s + .6s) infinite}
+@keyframes spGlow{0%,100%{opacity:0;transform:scale(.85)}18%,42%{opacity:.9;transform:scale(1.05)}65%{opacity:0;transform:scale(.9)}}
+.sp-cards .spc-e{font-size:24px;line-height:1;margin-bottom:3px;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.sp-cards b{font-size:14.5px;line-height:1.2}.sp-cards small{font-size:12px;line-height:1.3;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.sp-cards li::before{animation:none;opacity:.45}}
 .ag-d{position:relative}.ag-d .ag-cake{position:absolute;top:1px;right:2px;font-size:10px;line-height:1;font-style:normal;pointer-events:none}
-.rdv.anniv .rdv-date{background:linear-gradient(135deg,#FF8FB8,#FFB86B);color:#fff}
-.sp-track.rev{animation-duration:36s;animation-delay:2.2s}
-.sp-track li{flex:none;width:168px;min-height:128px;padding:14px;border-radius:20px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:5px;color:var(--ink)}
-.wrap.gated .sp-track li{background:color-mix(in srgb,var(--ink) 6%,transparent);border-color:color-mix(in srgb,var(--ink) 12%,transparent)}
-.sp-track .spc-e{font-size:28px;line-height:1;margin-bottom:4px;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
-.sp-track b{font-size:15px;line-height:1.2}.sp-track small{font-size:12.5px;line-height:1.35;color:var(--muted)}
-@keyframes spMarq{to{transform:translateX(calc(-50% - 6px))}}
-@media (prefers-reduced-motion:reduce){.sp-track{animation:none}}#warmSub[hidden]{display:none}
+.rdv.anniv .rdv-date{background:linear-gradient(135deg,#FF8FB8,#FFB86B);color:#fff}#warmSub[hidden]{display:none}
 .mb-l{transform-box:view-box;animation:mbArrive .9s cubic-bezier(.3,.8,.4,1) both,mbBob 1.3s ease-in-out .9s infinite}
 .mb-flag{transform-box:view-box;transform-origin:116px 96px;transform:rotate(90deg)}
 /* tout est prêt : la lettre tombe dans la fente, le drapeau se lève, puis l'écran suivant */
@@ -3572,7 +3572,7 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
       <li style="--bg:#FFD9CC;--pin:#E8765A;--r:2.5deg"><span class="sp-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5H16a1.5 1.5 0 0 1 1.5 1.5v1.5h-11a1.5 1.5 0 0 1 0-3z" fill="currentColor" fill-opacity=".55"/><path d="M2.5 9A2.5 2.5 0 0 1 5 6.5h13.5a3 3 0 0 1 3 3V18a3 3 0 0 1-3 3H5.5a3 3 0 0 1-3-3z" fill="currentColor"/><rect x="15" y="11.5" width="6.5" height="4" rx="2" fill="#fff" fill-opacity=".9"/><circle cx="17.2" cy="13.5" r="1" fill="currentColor"/></svg></span><b>Budget partagé</b><span>Dépenses, abonnements et qui doit quoi</span></li>
       <li style="--bg:#D8E6FF;--pin:#5B8DEF;--r:-3deg"><span class="sp-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3c.8 4.3 2.7 6.2 7 7-4.3.8-6.2 2.7-7 7-.8-4.3-2.7-6.2-7-7 4.3-.8 6.2-2.7 7-7z" fill="currentColor"/><path d="M18.5 14c.4 2 1.3 2.9 3.3 3.3-2 .4-2.9 1.3-3.3 3.3-.4-2-1.3-2.9-3.3-3.3 2-.4 2.9-1.3 3.3-3.3z" fill="currentColor"/></svg></span><b>Cocoony</b><span>Ton secrétaire qui connaît ta maison</span></li>
     </ul>
-    <div class="sp-cards" aria-label="Ce que fait Cocoon"><ul class="sp-track"><li><span class="spc-e" aria-hidden="true">✅</span><b>Qui fait quoi</b><small>Les tâches et rappels qui reviennent tout seuls</small></li><li><span class="spc-e" aria-hidden="true">🛒</span><b>Courses à plusieurs</b><small>Une liste partagée, à jour en direct</small></li><li><span class="spc-e" aria-hidden="true">📄</span><b>Papiers rangés</b><small>Prévenu avant qu'ils expirent</small></li><li><span class="spc-e" aria-hidden="true">💶</span><b>Budget partagé</b><small>Qui a payé, qui doit combien</small></li><li aria-hidden="true"><span class="spc-e">✅</span><b>Qui fait quoi</b><small>Les tâches et rappels qui reviennent tout seuls</small></li><li aria-hidden="true"><span class="spc-e">🛒</span><b>Courses à plusieurs</b><small>Une liste partagée, à jour en direct</small></li><li aria-hidden="true"><span class="spc-e">📄</span><b>Papiers rangés</b><small>Prévenu avant qu'ils expirent</small></li><li aria-hidden="true"><span class="spc-e">💶</span><b>Budget partagé</b><small>Qui a payé, qui doit combien</small></li></ul><ul class="sp-track rev"><li><span class="spc-e" aria-hidden="true">📅</span><b>Agenda du foyer</b><small>Les rendez-vous de tout le monde</small></li><li><span class="spc-e" aria-hidden="true">🍝</span><b>Repas de la semaine</b><small>Fini le « on mange quoi ce soir ? »</small></li><li><span class="spc-e" aria-hidden="true">✨</span><b>Cocoony</b><small>Ton assistant qui connaît ta maison</small></li><li><span class="spc-e" aria-hidden="true">✅</span><b>Qui fait quoi</b><small>Les tâches et rappels qui reviennent tout seuls</small></li><li aria-hidden="true"><span class="spc-e">📅</span><b>Agenda du foyer</b><small>Les rendez-vous de tout le monde</small></li><li aria-hidden="true"><span class="spc-e">🍝</span><b>Repas de la semaine</b><small>Fini le « on mange quoi ce soir ? »</small></li><li aria-hidden="true"><span class="spc-e">✨</span><b>Cocoony</b><small>Ton assistant qui connaît ta maison</small></li><li aria-hidden="true"><span class="spc-e">✅</span><b>Qui fait quoi</b><small>Les tâches et rappels qui reviennent tout seuls</small></li></ul></div>
+    <ul class="sp-cards" aria-label="Ce que fait Cocoon"><li style="--g:#5BD08A;--i:0"><span class="spc-e" aria-hidden="true">✅</span><b>Qui fait quoi</b><small>Les tâches qui reviennent toutes seules</small></li><li style="--g:#FFB86B;--i:1"><span class="spc-e" aria-hidden="true">🛒</span><b>Courses à plusieurs</b><small>Une liste partagée, en direct</small></li><li style="--g:#7FB2FF;--i:2"><span class="spc-e" aria-hidden="true">📅</span><b>Agenda du foyer</b><small>Les rendez-vous de tout le monde</small></li><li style="--g:#FF8F8F;--i:3"><span class="spc-e" aria-hidden="true">🍝</span><b>Repas de la semaine</b><small>Fini le « on mange quoi ? »</small></li><li style="--g:#F5D45B;--i:4"><span class="spc-e" aria-hidden="true">💶</span><b>Budget partagé</b><small>Qui a payé, qui doit combien</small></li><li style="--g:#C79BFF;--i:5"><span class="spc-e" aria-hidden="true">✨</span><b>Cocoony</b><small>Ton assistant qui connaît ta maison</small></li></ul>
     <button class="btn big sp-go" type="button" id="spGo">Créer mon cocon</button>
     <button class="sp-back" type="button" id="spBack" hidden></button>
   </div>
@@ -4177,8 +4177,8 @@ function renderOnboard(){
 async function spBackCheck(){ const b=$("spBack"), H=window.cocoonHost; if(!b||!H||!H.foyers||b._done) return; b._done=true;
   try{ const L=await H.foyers(), o=L.find(f=>!f.current&&f.nom)||L.find(f=>!f.current); if(!o) return;
     b.textContent="‹ Revenir à "+(o.nom?"« Chez les "+String(o.nom).replace(/^(la famille|famille|les)\s+/i,"")+" »":"mon autre foyer"); b.hidden=false; b.onclick=()=>{ try{ H.switchFoyer(o.id); }catch(err){ writeErr(err); } }; }catch(_){} }
-/* les cartes des atouts défilent en boucle ; les annulations d'animations du lancement les arrêtaient : on les relance */
-function spMarqRestart(sp){ (sp||document).querySelectorAll(".sp-track").forEach(t=>{ t.style.animation="none"; void t.offsetWidth; t.style.animation=""; }); }
+/* lueurs des cartes des atouts : les annulations d'animations du lancement les arrêtaient, on les relance */
+function spMarqRestart(sp){ (sp||document).querySelectorAll(".sp-cards").forEach(t=>{ t.classList.remove("glow"); void t.offsetWidth; t.classList.add("glow"); }); }
 function splashIntro(){ try{ spBackCheck(); }catch(_){}
   const sp=$("splash"); if(!sp||sp.hidden) return;
   if(document.getElementById("boot")) return; /* l'écran de lancement s'en charge (flySplash) */
