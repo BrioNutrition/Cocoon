@@ -8925,7 +8925,7 @@ async function openFoyerMenu(btn){ const M=$("addMenu"); if(!M) return; if(!M.hi
   let list=S.fyCache||null;
   if(H&&H.foyers&&!list){ try{ list=await Promise.race([H.foyers(),new Promise(r=>setTimeout(()=>r(null),1500))]); }catch(err){ list=null; } if(list) S.fyCache=list; if(!M.hidden&&M.dataset.k==="fy") return; }
   build(list); place(); M.hidden=false; btn.setAttribute("aria-expanded","true");
-  if(nativeizeMenu(M,"Mes foyers")){ btn.setAttribute("aria-expanded","false"); return; }
+  /* menu de l'app gardé tel quel, même dans l'app iPhone (pas de menu natif, demandé par Angel) */
   if(H&&H.foyers&&S.fyCache){ H.foyers().then(fresh=>{ if(!fresh) return; const ch=JSON.stringify(fresh)!==JSON.stringify(S.fyCache); S.fyCache=fresh; if(ch&&!M.hidden&&M.dataset.k==="fy"){ build(fresh); place(); } }).catch(()=>{}); } }
 const PM_FREE={"Papiers en photo":"5 / mois","Cocoony intelligent":"20 / mois","Papiers illimités":"25 max","Sauvegarde du foyer":"sans fichiers","Plusieurs foyers":"1"};
 const PM_SHORT={"Papiers en photo":"Lus et rangés tout seuls","Cocoony intelligent":"Cocoony répond à tout","Papiers illimités":"Plus de limite de 25","Sauvegarde du foyer":"Tout télécharger en 1 clic","Plusieurs foyers":"Vacances, garde alternée…"};
