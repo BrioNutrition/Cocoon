@@ -3139,6 +3139,7 @@ html.native-tabs .m-dash.is-sub{display:none}
 html.native-tabs .pk-back{display:none}
 html.native-tabs .rg-h,html.native-tabs #cxAccount>h3,html.native-tabs #cxNotif>h3{display:none}
 html.native-tabs .hub-mini{display:none!important}
+html.native-tabs #evPage .ev-back,html.native-tabs #evPage .ev-more{visibility:hidden!important}
 .ing-sheet{max-height:calc(100% - env(safe-area-inset-top,0px) - 34px)}
 .ing-in{gap:12px!important}
 .ing-top h2{font-family:"Bricolage Grotesque",system-ui;font-size:22px;font-weight:800;margin:0}
@@ -7355,9 +7356,14 @@ setTab("accueil");
   NT.addListener("select",e=>{ const t=TABS[e&&e.index]; if(!t) return; const b=document.querySelector('#tabs .tab[data-tab="'+t[0]+'"]'); if(b) b.click(); });
   /* barre du haut native : bulle retour, titre, boutons en verre */
   NT.addListener("topbar",e=>{ const id=e&&e.id, bar=document.querySelector(".view:not([hidden]) .hub-bar");
+    { const ev=evNtBtns(); if(ev){ const t=id==="back"?ev.back:id==="more"?ev.more:null; if(t) t.click(); return; } }
     if(S.tab==="maison"&&S.mSec){ if(id==="back"){ mOpen(null); return; } if(id==="add"){ mAddIn(S.mSec); return; } }
     if(S.tab==="documents"&&S.docCat&&id==="back"){ S.docCat=null; renderDocs(); topNow(); return; } if(!bar){ if(id==="back"&&S.tab==="moi"&&S.moiSec) $("moiBack").click(); return; }
     const el0=id==="back"?bar.querySelector(".hub-back,.pg-back"):id==="sync"?bar.querySelector(".hub-sync"):id==="add"?bar.querySelector(".hub-add"):null; if(el0) el0.click(); });
+  /* fenêtre Événements ouverte : ses boutons retour et « ⋯ » deviennent les vrais boutons iOS (verre natif) posés à leur place */
+  function evNtBtns(){ const pg=document.getElementById("evPage"); if(!pg||pg.hidden||!pg.isConnected||pg.classList.contains("out")) return null; const sh=pg.querySelector(".pp-sheet"); if(!sh) return null;
+    const ok=e=>e&&e.getClientRects().length>0; const back=[...sh.querySelectorAll(".ev-back")].find(ok)||null, more=[...sh.querySelectorAll(".ev-more")].find(ok)||null;
+    return back||more?{sh,back,more}:null; }
   const safeTop=()=>{ const p=document.createElement("div"); p.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top,0px)"; document.body.append(p); const h=p.offsetHeight; p.remove(); return h; };
   const sync=window.__ntSync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!(document.getElementById("boot")&&!document.getElementById("boot")._done)&&!window.__tabsHold&&!(document.getElementById("wizard")&&!$("wizard").hidden)&&!document.documentElement.classList.contains("nav-off"));
     if(vis!==shown){ shown=vis; if(vis) cxSent=false; (vis?NT.show({items:TABS.map(t=>({title:t[1],icon:t[2]}))}):NT.hide()).catch(()=>{}); sel=-1; bdg=null; }
@@ -7391,6 +7397,9 @@ setTab("accueil");
         /* position dans la page sans compter les animations d'arrivée (sinon la barre se replace une 2e fois) */
         let y=0; for(let n=bar;n;n=n.offsetParent) y+=n.offsetTop; o={visible:true,title:t,back:!!bar.querySelector(".hub-back,.pg-back"),actions:acts,top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(bar.querySelector(".hb-title")||bar).color}; sig=JSON.stringify(o); }
       if(o.visible){ o.dim=shOpen; sig=JSON.stringify(o); }
+      { const ev=evNtBtns(); if(ev){ const a=ev.sh.getAnimations?ev.sh.getAnimations():[];
+          if(a.some(x=>x.playState==="running")){ clearTimeout(sync._evT); sync._evT=setTimeout(sync,380); o={visible:false}; sig="evwait"; }
+          else { const r=(ev.back||ev.more).getBoundingClientRect(); o={visible:true,title:"",back:!!ev.back,actions:ev.more?[{id:"more",icon:"ellipsis"}]:[],top:Math.max(4,Math.round(r.top+window.scrollY-safeTop())),color:getComputedStyle(ev.sh).color}; sig=JSON.stringify(o); } } }
       if(sig!==tbSig){ tbSig=sig; NT.topbar(o).catch(()=>{}); } } };
   /* filet de sécurité seulement : tout passe par la détection instantanée plus bas */
   setInterval(sync,5000); document.addEventListener("visibilitychange",sync);
