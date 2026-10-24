@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="24/10 16:23";</script>
+<script>window.COCOON_BUILD="24/10 16:27";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1878,10 +1878,15 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 /* boîte aux lettres : une enveloppe descend dans la fente, le drapeau se lève (remplace le feu de bois) */
 .warmup .mbx{width:170px;height:170px;overflow:visible}
 #warmText{white-space:nowrap}#warmSub[hidden]{display:none}
-.mb-l{transform-box:view-box;animation:mbLetter 2.2s cubic-bezier(.45,.05,.4,1) infinite}
-.mb-flag{transform-box:view-box;transform-origin:116px 96px;animation:mbFlag 2.2s ease-in-out infinite}
-@keyframes mbLetter{0%{transform:translate(-46px,-30px) rotate(-18deg);opacity:0}15%{opacity:1}55%{transform:translate(0,48px) rotate(0)}75%,100%{transform:translate(0,96px) rotate(0);opacity:1}}
-@keyframes mbFlag{0%,60%{transform:rotate(90deg)}72%{transform:rotate(-8deg)}80%,92%{transform:rotate(0)}100%{transform:rotate(90deg)}}
+.mb-l{transform-box:view-box;animation:mbArrive .9s cubic-bezier(.3,.8,.4,1) both,mbBob 1.3s ease-in-out .9s infinite}
+.mb-flag{transform-box:view-box;transform-origin:116px 96px;transform:rotate(90deg)}
+/* tout est prêt : la lettre tombe dans la fente, le drapeau se lève, puis l'écran suivant */
+.mbx.drop .mb-l{animation:mbDrop .45s cubic-bezier(.5,0,.75,0) both}
+.mbx.drop .mb-flag{animation:mbFlagUp .4s cubic-bezier(.3,1.5,.5,1) .38s both}
+@keyframes mbArrive{from{transform:translate(-46px,-30px) rotate(-18deg);opacity:0}to{transform:translate(0,40px);opacity:1}}
+@keyframes mbBob{0%,100%{transform:translate(0,40px)}50%{transform:translate(0,33px)}}
+@keyframes mbDrop{from{transform:translate(0,38px)}to{transform:translate(0,96px)}}
+@keyframes mbFlagUp{from{transform:rotate(90deg)}to{transform:rotate(0)}}
 @media (prefers-reduced-motion:reduce){.mb-l,.mb-flag{animation:none}}
 .wz-bin,.wz-abo{background:var(--au-glass);border:1px solid var(--au-line);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
 .wz-bin.on,.wz-abo.on{border-color:#FFB38A;background:linear-gradient(135deg,rgba(255,201,74,.16),rgba(231,154,219,.16))}
@@ -4530,11 +4535,15 @@ function pencilBtn(onclick,label){ const b=el("button",{type:"button",class:"pen
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function warmup(lines,minMs,work,sub,swap){
   const w=$("warmup"), tx=$("warmText"); const ws=$("warmSub"); ws.textContent=sub||""; ws.hidden=!sub;
+  const mb=w.querySelector(".mbx"); if(mb) mb.classList.remove("drop");
   tx.textContent=lines[0]; w.hidden=false; void w.offsetWidth; w.classList.add("on");
   let i=0; const it=setInterval(()=>{ i=(i+1)%lines.length; tx.style.opacity=0; setTimeout(()=>{ tx.textContent=lines[i]; tx.style.opacity=1; },300); },1100);
   let res, err;
   try{ [res]=await Promise.all([work?work():Promise.resolve(),sleep(minMs)]); }catch(e){ err=e; }
-  clearInterval(it); w.classList.add("ending"); await sleep(280);
+  clearInterval(it);
+  /* le courrier est livré pile quand tout est prêt */
+  if(mb&&!err&&!matchMedia("(prefers-reduced-motion: reduce)").matches){ mb.classList.add("drop"); await sleep(820); }
+  w.classList.add("ending"); await sleep(280);
   if(swap&&!err){ try{ swap(); }catch(_){} await sleep(60); } w.classList.remove("on"); await sleep(650); w.hidden=true; w.classList.remove("ending"); tx.style.opacity=1;
   if(err) throw err; return res;
 }
