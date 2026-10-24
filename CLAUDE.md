@@ -170,7 +170,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - **Conditions / Confidentialité** (`openTerms`, `openPrivacy`) : feuilles `upSheet` comme Cocoon Plus (`#termsPage`, `#privPage`, z-index au-dessus
   de la connexion), même fermeture que Cocoon Plus (flou du fond qui s'efface en fondu, demandé par Angel) ; toucher la poignée `.pp-grab` ferme (toutes les feuilles) ; exposées sur
   `window` pour les liens de l'écran de connexion (avant : ces liens ne faisaient rien, l'app étant dans une IIFE).
-- **Fiche profil** : aperçu en bannière en haut (essai « carte à droite » abandonné par Angel), puis en-tête `#fHead` et formulaire.
+- **Fiche profil** : en-tête `#fHead`, puis aperçu en bannière juste au-dessus de la case Identité, puis formulaire (essai « carte à droite » abandonné).
   En-tête (étape, titre, phrase ; « Ton profil » hors inscription) déplacé dans `#fHead`, sur toute la largeur au-dessus des deux colonnes.
   Pas de titre « Profil » ; pendant l'inscription : pas de barre, pas de retour (la mini-barre `hubMini` ignore un titre vide), pas de bande « Démo ». Apparence Automatique/Clair/Sombre : appliquée dès le clic (`E.theme0` = l'ancienne),
   validée par Enregistrer/Terminer (`E.themeOk`), remise comme avant si on quitte sans enregistrer (`closeEditor`) ; boutons l'un sous l'autre en colonne étroite.

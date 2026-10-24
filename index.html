@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="24/10 15:38";</script>
+<script>window.COCOON_BUILD="24/10 15:39";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2951,10 +2951,10 @@ html[data-theme="light"]:has(#boot),html[data-theme="light"]:has(#boot) body{bac
 #docPour .pchip{flex:0 0 auto;justify-content:flex-start}
 #docPour{justify-content:flex-start}
 #fPreview .pw-edit,#fPreview .pw-add{display:none}
-/* fiche profil : aperçu en bannière tout en haut (préféré par Angel), puis en-tête et formulaire */
+/* fiche profil : en-tête, puis aperçu en bannière juste au-dessus de « Identité » (demandé par Angel), puis formulaire */
 section[data-view="fiche"]:not([hidden]){display:flex!important;flex-direction:column}
 .wrap.finishing section[data-view="fiche"] > .hub-bar{display:none!important}
-section[data-view="fiche"] > #fPreview{order:1}section[data-view="fiche"] > #fHead{order:2;margin-top:16px}section[data-view="fiche"] > #ficheForm{order:3}
+section[data-view="fiche"] > #fHead{order:1}section[data-view="fiche"] > #fPreview{order:2;margin:0 0 14px!important}section[data-view="fiche"] > #ficheForm{order:3}
 /* champs plus lisibles en sombre pendant l'inscription : texte et intitulés blancs, fond plus foncé */
 :root[data-theme="dark"] .wrap.finishing .fiche input:not([type=checkbox]):not([type=radio]):not([type=color]),:root[data-theme="dark"] .wrap.finishing .fiche textarea{background:rgba(8,7,16,.55)!important;color:#fff!important;border-color:rgba(255,255,255,.14)!important}
 :root[data-theme="dark"] .wrap.finishing .fiche label,:root[data-theme="dark"] .wrap.finishing .fiche .field{color:#fff!important}
