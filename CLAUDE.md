@@ -169,6 +169,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   « Bienvenue chez toi, … » (`reveal` n'est plus appelé), « Avant de commencer » s'affiche aussitôt (`openCgu(w,true)`, sans fondu) pendant que le
   foyer se prépare derrière (`applyPlan`) ; « C'est parti ! » de Cocoony lance la visite tout de suite, son écran s'efface par-dessus. Plus de phrase « Tu pourras relire ces textes… ». Écran « enfin serein » :
   tout apparaît **en même temps** quand le logo arrive en haut à gauche (`flySplash` → `sp-show` après l'atterrissage).
+- Animation de lancement (`#boot` dans la source, `#cxIntro` dans `build.py`) : même fond uni + grain que la suite, **sans lueur derrière le logo** (demandé par Angel).
 - Fond du questionnaire et du profil (étape 2) : **uni + grain fin**, sans lueurs (choix A d'Angel parmi 5 ; `.aurora i` masqués, grain SVG
   feTurbulence en fond de `.aurora`). Essayés puis écartés : motif maison, cases ou boutons Liquid Glass.
 - Fin du questionnaire (`warmup`) : **boîte aux lettres** (`.mbx` : l'enveloppe arrive et flotte au-dessus de la fente pendant la préparation ; quand tout est prêt, `warmup` ajoute `.drop` :
