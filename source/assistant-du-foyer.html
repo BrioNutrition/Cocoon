@@ -1732,26 +1732,28 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .sp-chips li span{font-size:16px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
 .splash .sp-go{margin-top:auto!important}
 /* bienvenue de Cocoony (après les conditions, avant le questionnaire) */
-.wb{position:fixed;inset:0;z-index:2147483400;background:var(--bg);display:grid;place-items:center;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));opacity:0;transition:opacity .35s ease}
+.wb{position:fixed;inset:0;z-index:2147483400;background:rgba(10,9,18,.42);-webkit-backdrop-filter:blur(14px) saturate(1.1);backdrop-filter:blur(14px) saturate(1.1);display:grid;place-items:center;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));opacity:0;transition:opacity .35s ease}
+:root[data-theme="light"] .wb{background:rgba(255,255,255,.35)}
 .wb.on{opacity:1}.wb.out{opacity:0;pointer-events:none}
-.wb .sp-aura{position:absolute}
 .wb-in{position:relative;z-index:1;width:min(420px,100%);display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px}
 .wb-cy{width:120px;height:120px;border-radius:34px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
 .wb.on .wb-cy{animation:wbPop .9s cubic-bezier(.34,1.5,.64,1) both,wbWave 1.2s ease-in-out .9s 2}
-.wb-t{margin:6px 0 0;font-family:var(--f-display);font-weight:900;font-size:clamp(34px,10vw,46px);letter-spacing:-.04em;line-height:1.02;color:var(--ink)}
-.wb.on .wb-t{animation:rvUp .6s ease-out .35s both}
 .wb-bub{position:relative;background:var(--au-glass,var(--surface));border:1px solid var(--au-line,var(--line));border-radius:20px;padding:14px 16px;display:grid;gap:4px;text-align:left;font-size:15px;line-height:1.4;color:var(--ink)}
 .wb-bub::before{content:"";position:absolute;top:-8px;left:50%;margin-left:-8px;width:16px;height:16px;background:inherit;border-left:1px solid var(--au-line,var(--line));border-top:1px solid var(--au-line,var(--line));transform:rotate(45deg)}
 .wb-bub span{color:var(--au-sub,var(--muted))}
-.wb.on .wb-bub{animation:rvUp .6s ease-out .6s both}
-.wb-go{width:100%;margin-top:8px}.wb.on .wb-go{animation:rvUp .6s ease-out .9s both}
+.wb.on .wb-bub{animation:rvUp .6s ease-out .45s both}
+.wb-go{width:100%;margin-top:4px}.wb.on .wb-go{animation:rvUp .6s ease-out .7s both}
 .wb-conf{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:2}
 .wb-conf i{position:absolute;top:-20px;opacity:0;animation:wbFall linear both}
 @keyframes wbFall{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:.9;transform:translate(var(--dx),105vh) rotate(var(--r))}}
 @keyframes wbPop{from{transform:scale(.3) rotate(-20deg);opacity:0}to{transform:none;opacity:1}}
 @keyframes wbWave{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg)}75%{transform:rotate(8deg)}}
-@media (prefers-reduced-motion:reduce){.wb.on .wb-cy,.wb.on .wb-t,.wb.on .wb-bub,.wb.on .wb-go{animation:none}}
-@media (prefers-reduced-motion:no-preference){.sp-chips li{animation:rvUp .5s ease-out both;animation-delay:calc(1.15s + var(--k,0) * .06s)}}
+@media (prefers-reduced-motion:reduce){.wb.on .wb-cy,.wb.on .wb-bub,.wb.on .wb-go{animation:none}}
+/* tout arrive en même temps : titre, phrase, étiquettes, bouton */
+.splash .sp-tag,.splash .sp-sub,.splash .sp-chips,.splash .sp-go{animation:rvUp .5s ease-out .15s both!important}
+.splash.sp-wait .sp-tag,.splash.sp-wait .sp-sub,.splash.sp-wait .sp-chips,.splash.sp-wait .sp-go{animation:none!important;opacity:0}
+.splash.sp-show .sp-tag,.splash.sp-show .sp-sub,.splash.sp-show .sp-chips,.splash.sp-show .sp-go{animation:rvUp .5s ease-out both!important}
+@media (prefers-reduced-motion:reduce){.splash .sp-tag,.splash .sp-sub,.splash .sp-chips,.splash .sp-go{animation:none!important}}
 .splash .sp-grad{background:linear-gradient(100deg,#FFC94A,#FF9C80 55%,#E79ADB);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .splash .sp-sub{margin:16px 0 4px!important;font-size:16px!important}
 .splash .sp-stickers{display:none!important}
@@ -2159,7 +2161,6 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .cgu-sw[aria-checked="true"]::after{transform:translateX(20px)}
 .cgu .btn.big{width:100%;padding:16px;font-size:17px;border-radius:18px;background:linear-gradient(100deg,#FFC94A,#FF9C80 55%,#E79ADB);color:#1C1B2E;border:1px solid transparent;transform:none!important}
 .cgu .btn.big:disabled{background:var(--au-glass);color:var(--au-sub);border:1px solid var(--au-line)}
-.cgu-note{font-size:12.5px;color:var(--au-sub);text-align:center;margin:-4px 0 0}
 .d-consent{display:flex;gap:10px;align-items:flex-start;background:color-mix(in srgb,#7FCDB9 18%,var(--surface));border:1.5px solid color-mix(in srgb,#7FCDB9 55%,transparent);border-radius:14px;padding:11px 12px;font-size:13px;line-height:1.45;color:var(--ink);cursor:pointer}
 .d-consent[hidden]{display:none}
 .d-consent input{flex:none;width:20px;height:20px;margin:1px 0 0;accent-color:#2E9E5B}
@@ -6833,24 +6834,20 @@ async function claim(m){
   }catch(e){ writeErr(e); } finally{ S.claiming=false; renderOnboard(); }
 }
 { const lg=document.querySelector(".brand-logo"); if(lg) $("spLogo").src=lg.src; }
-/* « Créer mon cocon » : d'abord les conditions (si pas encore acceptées), puis Cocoony souhaite la bienvenue (confettis), puis le questionnaire */
 function startWizardFlow(){ S.splashDone=true; S.flow=true; openWizard(membres().length?"perso":"foyer"); S.wiz.pre=true; renderOnboard(); renderWizard(); window.scrollTo({top:0}); }
-$("spGo").addEventListener("click",()=>{ if(S.cguOpen||S.welcomeOn) return; const go=()=>welcomeAnim(startWizardFlow);
-  if(S.db&&S.uid&&!S.readOnly&&!window.__noCgu&&!window.__noTour&&(S.prefs||{}).cgu!==CGU_V) openCgu(go); else go(); });
-function welcomeAnim(done){
-  if(window.__noTour){ done(); return; }
-  S.welcomeOn=true; const red=matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const cy=(document.querySelector(".brand-logo")||{}).src||"";
-  const ov=el("div",{class:"wb",role:"dialog","aria-label":"Bienvenue sur Cocoon"},el("div",{class:"sp-aura","aria-hidden":"true"},el("i"),el("i"),el("i")));
-  const conf=el("div",{class:"wb-conf","aria-hidden":"true"});
+$("spGo").addEventListener("click",startWizardFlow);
+/* après avoir accepté les conditions (la 1re fois) : confettis sur l'app floutée, Cocoony souhaite la bienvenue et annonce la visite guidée */
+function cguWelcome(done){
+  const red=matchMedia("(prefers-reduced-motion: reduce)").matches, cy=(document.querySelector(".brand-logo")||{}).src||"";
+  const ov=el("div",{class:"wb",role:"dialog","aria-label":"Bienvenue"}), conf=el("div",{class:"wb-conf","aria-hidden":"true"});
   if(!red){ const C=["#FFC94A","#FF9C80","#E79ADB","#8FB8FF","#7FD39A","#B9A8F0","#fff"];
-    for(let i=0;i<70;i++){ const c=el("i"); c.style.cssText="left:"+(Math.random()*100)+"%;background:"+C[i%C.length]+";--dx:"+(Math.random()*160-80)+"px;--r:"+(Math.random()*720-360)+"deg;animation-delay:"+(Math.random()*.6).toFixed(2)+"s;animation-duration:"+(2.2+Math.random()*1.6).toFixed(2)+"s;width:"+(6+Math.random()*6)+"px;height:"+(8+Math.random()*8)+"px;border-radius:"+(Math.random()<.3?"50%":"2px"); conf.append(c); } }
-  const fin=()=>{ if(!S.welcomeOn) return; S.welcomeOn=false; clearTimeout(t); done(); ov.classList.add("out"); setTimeout(()=>ov.remove(),450); };
-  const btn=el("button",{type:"button",class:"btn big sp-go wb-go",text:"C'est parti !",onclick:fin});
-  ov.append(conf,el("div",{class:"wb-in"},el("img",{class:"wb-cy",src:cy,alt:""}),el("h1",{class:"wb-t"},"Bienvenue sur ",el("span",{class:"sp-grad",text:"Cocoon"}),"\u00a0!"),
-    el("div",{class:"wb-bub"},el("b",{text:"Coucou, moi c'est Cocoony 👋"}),el("span",{text:"Je vais t'aider à préparer ton cocon. Quelques questions, une minute, et c'est prêt."})),btn));
-  document.body.append(ov); requestAnimationFrame(()=>ov.classList.add("on")); try{ haptic(); }catch(_){}
-  const t=setTimeout(fin,6500); }
+    for(let i=0;i<80;i++){ const c=el("i"); c.style.cssText="left:"+(Math.random()*100)+"%;background:"+C[i%C.length]+";--dx:"+(Math.random()*160-80)+"px;--r:"+(Math.random()*720-360)+"deg;animation-delay:"+(Math.random()*.7).toFixed(2)+"s;animation-duration:"+(2.2+Math.random()*1.6).toFixed(2)+"s;width:"+(6+Math.random()*6)+"px;height:"+(8+Math.random()*8)+"px;border-radius:"+(Math.random()<.3?"50%":"2px"); conf.append(c); } }
+  const m=meM&&meM(), pr=m&&m.nom?" "+m.nom:"";
+  let ok=false; const fin=()=>{ if(ok) return; ok=true; ov.classList.add("out"); setTimeout(()=>{ ov.remove(); done&&done(); },380); };
+  ov.append(conf,el("div",{class:"wb-in"},el("img",{class:"wb-cy",src:cy,alt:""}),
+    el("div",{class:"wb-bub"},el("b",{text:"Bienvenue chez toi"+pr+" ! 🎉"}),el("span",{text:"Moi c'est Cocoony, ton assistant. Je te fais une petite visite guidée de ton cocon : une minute, et tu sauras tout."})),
+    el("button",{type:"button",class:"btn big sp-go wb-go",text:"C'est parti !",onclick:fin})));
+  document.body.append(ov); requestAnimationFrame(()=>ov.classList.add("on")); try{ haptic(); }catch(_){} }
 
 
 /* Ajout rapide */
@@ -8166,7 +8163,7 @@ function onboardGate(){
   if(S.cguOpen||S.tourOn||S.tourPending||!S.booted||S.flow||S.entering||!S.prefsLoaded||!meM()||document.querySelector(".wrap.wizarding,.wrap.finishing,.warmup:not([hidden])")||!$("splash")||!$("splash").hidden) return;
   const tour=()=>{ if((S.prefs||{}).tourVu||window.__noTour) return; S.tourPending=true; if(S.tab!=="accueil") setTab("accueil"); try{ window.scrollTo({top:0,behavior:"instant"}); }catch(_){}
     requestAnimationFrame(()=>{ S.tourPending=false; try{ startTour(); }catch(_){} }); };
-  if(needCgu()){ openCgu(tour); return; }
+  if(needCgu()){ const first=!(S.prefs||{}).cgu; openCgu(first?()=>cguWelcome(tour):tour); return; }
   tour();
 }
 function needCgu(){ return !!(S.db&&S.uid&&S.prefsLoaded&&meM()&&!S.readOnly&&!window.__noCgu&&!window.__noTour&&(S.prefs||{}).cgu!==CGU_V); }
@@ -8184,7 +8181,7 @@ function openCgu(after){
   if(sup==="ok"&&!again){ sw=el("button",{type:"button",class:"cgu-sw",role:"switch","aria-checked":String(notif),"aria-label":"Recevoir mes rappels en notification"}); sw.onclick=()=>{ notif=!notif; sw.setAttribute("aria-checked",String(notif)); };
     card.append(el("div",{class:"cgu-box"},el("div",{style:"flex:1"},el("b",{text:"Mes rappels en notification"}),el("small",{text:"Un résumé le matin, s'il y a quelque chose à faire, et quelques alertes utiles. Jamais la nuit. Facultatif : tu peux changer d'avis dans Moi."})),sw)); }
   else if(sup==="ios-home"&&!again) card.append(el("div",{class:"cgu-box"},el("div",{},el("b",{text:"Les notifications sur iPhone"}),el("small",{text:"Ajoute d'abord Cocoon à l'écran d'accueil (Partager → Sur l'écran d'accueil), puis active-les dans Moi. Facultatif."}))));
-  card.append(go,el("p",{class:"cgu-note",text:"Tu pourras relire ces textes à tout moment dans Moi → Réglages."}));
+  card.append(go);
   bg.append(card); document.body.append(bg); requestAnimationFrame(()=>bg.classList.add("on"));
   go.onclick=async()=>{ if(!ok) return; go.disabled=true; go.textContent="Un instant…";
     let nmsg=null;
@@ -10191,12 +10188,10 @@ async function flySplash(b,logo){ try{ spBackCheck(); }catch(_){}
   bn.getAnimations({subtree:true}).forEach(a=>{ try{ a.finish(); }catch(_){ a.cancel(); } });
   bn.animate([{opacity:1,transform:"none"},{opacity:0,transform:"translateY(10px) scale(.96)"}],{duration:320,easing:"ease-in",fill:"forwards"});
   const fly=flyLogo(logo,tl,980);
-  setTimeout(()=>{ sp.classList.remove("sp-wait"); sp.classList.add("sp-show"); },700);
   await fly;
-  const letters=[...tn.querySelectorAll("span")];
-  tn.style.visibility="";
-  if(letters.length) letters.forEach((l,i)=>l.animate([{opacity:0,transform:"translateY(26px) rotate(8deg)"},{opacity:1,transform:"none"}],{duration:700,delay:i*60,easing:"cubic-bezier(.2,1.4,.4,1)",fill:"backwards"}));
-  else tn.animate([{opacity:0},{opacity:1}],{duration:420,fill:"backwards"});
+  /* le logo est arrivé en haut à gauche : tout le reste apparaît en même temps (demandé par Angel) */
+  tn.style.visibility=""; sp.classList.remove("sp-wait"); sp.classList.add("sp-show");
+  tn.animate([{opacity:0,transform:"translateY(10px)"},{opacity:1,transform:"none"}],{duration:500,easing:"ease-out",fill:"backwards"});
 }
 async function bootOut(){
   const b=$("boot"), logo=$("bootLogo"), reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;

@@ -160,9 +160,10 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   en haut, grand titre juste dessous (« enfin serein. » en dégradé, `.sp-grad`), une phrase, 7 étiquettes des atouts (`.sp-chips`), bouton en bas ;
   cartes `.sp-stickers` masquées ; bandeau « Démo » masqué dans la démo (hunk CSS de `demo_patch.json`) ; lueur animée
   en fond (`.sp-aura`, 3 halos flous qui dérivent lentement, arrêtés si animations réduites).
-- **Entrée d'un nouveau foyer** (demandé par Angel) : « Créer mon cocon » (`#spGo`) → d'abord les conditions (`openCgu`, si pas encore acceptées)
-  → puis Cocoony souhaite la bienvenue (`welcomeAnim` : écran `.wb`, confettis `.wb-conf`, Cocoony qui apparaît et salue, bulle,
-  « C'est parti ! » ou 6,5 s) → questionnaire (`startWizardFlow`). Sauté si `window.__noTour` (tests). Les conditions ne reviennent plus à la fin.
+- **Bienvenue** : « Créer mon cocon » lance directement le questionnaire ; les conditions restent **à la fin** (après le profil, `onboardGate`).
+  À la 1re acceptation, `cguWelcome` : confettis sur l'app floutée derrière (`.wb`, flou du fond), Cocoony + bulle « Bienvenue chez toi … ! »
+  qui annonce la visite guidée, « C'est parti ! » → visite. Plus de phrase « Tu pourras relire ces textes… ». Écran « enfin serein » :
+  tout apparaît **en même temps** quand le logo arrive en haut à gauche (`flySplash` → `sp-show` après l'atterrissage).
 - Récap du questionnaire : plusieurs groupes ouverts à la fois (`wqRow(...,{multi:true})`, `W.opens`), lignes de détail `.wq-dr`
   (case + titre + infos dessous) ; interrupteurs `.wq-tg` façon iOS (51×31, vert #34C759, pastille qui glisse avec rebond et s'étire à l'appui ;
   bascule visible tout de suite, action 260 ms après). Fiche profil : aperçu revenu en **bannière tout en haut** (`pwCard`), champs blancs en sombre.
