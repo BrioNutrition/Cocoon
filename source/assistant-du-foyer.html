@@ -1703,6 +1703,8 @@ body:has(.wrap.finishing) .aurora{opacity:1}
 body:has(#splash:not([hidden])) .aurora i{opacity:0!important}
 /* questionnaire et profil : fond uni + grain fin, sans lueurs de couleur (choix A d'Angel) */
 body:has(.wrap.wizarding) .aurora i,body:has(.wrap.finishing) .aurora i{opacity:0!important}
+/* écran de la boîte aux lettres : même fond que le questionnaire (uni + grain) */
+.warmup{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),var(--au-bg)!important;color:var(--ink)!important}
 /* champs date en sombre : icône calendrier claire (pas noire), « jj/mm/aaaa » de la couleur des indications tant que rien n'est saisi */
 :root[data-theme="dark"] input[type=date],:root[data-theme="dark"] input[type=time]{color-scheme:dark}
 @media (prefers-color-scheme:dark){:root:not([data-theme]) input[type=date],:root:not([data-theme]) input[type=time]{color-scheme:dark}}

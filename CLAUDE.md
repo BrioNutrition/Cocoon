@@ -170,7 +170,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - Fond du questionnaire et du profil (étape 2) : **uni + grain fin**, sans lueurs (choix A d'Angel parmi 5 ; `.aurora i` masqués, grain SVG
   feTurbulence en fond de `.aurora`). Essayés puis écartés : motif maison, cases ou boutons Liquid Glass.
 - Fin du questionnaire (`warmup`) : **boîte aux lettres** (`.mbx` : l'enveloppe arrive et flotte au-dessus de la fente pendant la préparation ; quand tout est prêt, `warmup` ajoute `.drop` :
-  elle tombe dans la fente, le drapeau se lève, puis écran suivant) au lieu du feu de bois,
+  elle tombe dans la fente, le drapeau se lève, puis écran suivant) ; fond identique au questionnaire (uni + grain, `.warmup`) au lieu du feu de bois,
   une seule ligne « Nous livrons le courrier… » (`WARM_LINES`), plus de sous-titre « Cocoon prépare tout pour vous » (demandé par Angel).
 - Récap du questionnaire : chaque groupe montre « Voir le détail / Masquer le détail » (`.wq-hint`) et une flèche qui tourne ; plusieurs groupes ouverts à la fois (`wqRow(...,{multi:true})`, `W.opens`), lignes de détail `.wq-dr`
   (case + titre + infos dessous) ; interrupteurs `.wq-tg` façon iOS (51×31, vert #34C759, pastille qui glisse avec rebond et s'étire à l'appui ;
