@@ -4953,8 +4953,10 @@ function enabledCats(){
 }
 function renderTiles(){
   const tl=$("tiles"); if(!tl) return; tl.innerHTML="";
-  const open=S.foyer.filter(t=>!t.fait&&(!S.whoF||t.pour===S.whoF)), ids=enabledCats(); for(const c of Object.values(CAT)) if(c.perso&&!ids.includes(c.id)) ids.push(c.id); if(S.catF&&CAT[S.catF]&&!ids.includes(S.catF)) ids.push(S.catF);
-  const shown=ids.map(id=>CAT[id]).filter(c=>c.id===S.catF||open.some(t=>t.cat===c.id));
+  /* les catégories restent affichées quand on choisit un membre (celles du foyer) ; seuls les nombres suivent le membre choisi */
+  const me=meId(), pool=S.whoF&&S.whoF===me?S.foyer.concat(S.perso||[]):S.foyer, all=S.foyer.filter(t=>!t.fait);
+  const open=pool.filter(t=>!t.fait&&(!S.whoF||t.pour===S.whoF||(t.prive&&S.whoF===me))), ids=enabledCats(); for(const c of Object.values(CAT)) if(c.perso&&!ids.includes(c.id)) ids.push(c.id); if(S.catF&&CAT[S.catF]&&!ids.includes(S.catF)) ids.push(S.catF);
+  const shown=ids.map(id=>CAT[id]).filter(c=>c.id===S.catF||all.some(t=>t.cat===c.id)||open.some(t=>t.cat===c.id));
   tl.hidden=!shown.length; if(!shown.length) return;
   const mk=(id,nom,col,gly,n,on)=>{ const b=el("button",{type:"button",class:"tk-cat",style:"--stripe:"+col,"aria-pressed":String(on),"aria-label":nom+" : "+n+" à faire",onclick:()=>{ S.catF=id&&!on?id:null; renderFoyer(); }});
     const ic=el("span",{class:"ic","aria-hidden":"true"}); ic.innerHTML=GI(gly); b.append(ic,el("span",{class:"tn",text:nom})); if(n) b.append(el("em",{text:String(n)})); tl.append(b); };
