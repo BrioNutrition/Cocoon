@@ -165,7 +165,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   qui annonce la visite guidée, « C'est parti ! » → visite. Ordre : profil (étape 2) → conditions → Cocoony → visite ; la bienvenue s'ouvre
   par-dessus les conditions (flou immédiat, `after._over`), qui s'effacent dessous. Pop-up « Bienvenue dans ton foyer 🥳 » (`maybeWelcome`) supprimée. Plus de phrase « Tu pourras relire ces textes… ». Écran « enfin serein » :
   tout apparaît **en même temps** quand le logo arrive en haut à gauche (`flySplash` → `sp-show` après l'atterrissage).
-- Récap du questionnaire : plusieurs groupes ouverts à la fois (`wqRow(...,{multi:true})`, `W.opens`), lignes de détail `.wq-dr`
+- Récap du questionnaire : chaque groupe montre « Voir le détail / Masquer le détail » (`.wq-hint`) et une flèche qui tourne ; plusieurs groupes ouverts à la fois (`wqRow(...,{multi:true})`, `W.opens`), lignes de détail `.wq-dr`
   (case + titre + infos dessous) ; interrupteurs `.wq-tg` façon iOS (51×31, vert #34C759, pastille qui glisse avec rebond et s'étire à l'appui ;
   bascule visible tout de suite, action 260 ms après). Fiche profil : aperçu revenu en **bannière tout en haut** (`pwCard`), champs blancs en sombre.
 - **Conditions / Confidentialité** (`openTerms`, `openPrivacy`) : feuilles `upSheet` comme Cocoon Plus (`#termsPage`, `#privPage`, z-index au-dessus

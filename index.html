@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="24/10 15:45";</script>
+<script>window.COCOON_BUILD="24/10 15:55";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1950,8 +1950,8 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 /* même épaisseur de contour choisi ou non : rien ne bouge quand on touche */
 .wizard .wq-none .opt{border:2px solid var(--au-line)!important;box-shadow:none!important;transform:none!important}
 .wizard .wq-none .opt[aria-pressed="true"]{background:var(--au-glass)!important;border:2px solid #FFC94A!important;box-shadow:none!important}
-.wq-row{cursor:pointer}.wq-line{display:flex;align-items:center;padding-right:14px}.wq-line .wq-row{flex:1;min-width:0}.wq-val{color:var(--ink);font-weight:600;font-size:13.5px;max-width:45%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.wq-val.vide{color:var(--au-sub);font-weight:500}
-.wq-chev{color:var(--au-sub);font-size:20px;transition:transform .2s}.wq-row[aria-expanded="true"] .wq-chev{transform:rotate(90deg)}
+.wq-row{cursor:pointer}.wq-hint{color:#FFB38A!important;font-weight:600}.wq-line .wq-chev{margin-right:4px}.wq-line{display:flex;align-items:center;padding-right:14px}.wq-line .wq-row{flex:1;min-width:0}.wq-val{color:var(--ink);font-weight:600;font-size:13.5px;max-width:45%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.wq-val.vide{color:var(--au-sub);font-weight:500}
+.wq-chev{color:var(--au-sub);display:grid;place-items:center;flex:none;transition:transform .25s ease}.wq-row[aria-expanded="true"] .wq-chev{transform:rotate(90deg)}
 .wq-panel{padding:4px 14px 14px;display:grid;gap:10px}
 .wq-foot{font-size:12.5px!important}
 .wq-autre{display:grid;gap:10px;padding:12px;border-radius:18px;background:var(--au-glass);border:1px solid var(--au-line)}.wq-autre-h{display:flex;gap:8px;align-items:center}.wq-autre-h input{flex:1;min-width:0}
@@ -5264,7 +5264,7 @@ function wqAnimaux({W,a,box,key,rerender}){
   if(!L.length) box.append(el("div",{class:"wq-none"},optButton("Pas d'animal",FI.aucun||"",a.animaux.includes("aucun"),()=>{ a.animaux=a.animaux.includes("aucun")?[]:["aucun"]; W.plan=null; rerender(); })));
   sync(); }
 function wqRow(W,id,emo,label,val,open,panel,o){ o=o||{}; const ms=o.multi?(W.opens=W.opens||new Set()):null, isOpen=(ms?ms.has(id):W.open===id)||!!open;
-  const b=el("button",{type:"button",class:"wq-li wq-row","aria-expanded":String(isOpen),onclick:()=>{ if(ms){ ms.has(id)?ms.delete(id):ms.add(id); } else W.open=W.open===id?null:id; o.rerender(); }},el("span",{class:"wq-emo",text:emo}),el("span",{class:"wq-lt"},el("b",{text:label})),el("small",{class:"wq-val"+(val?"":" vide"),text:val||o.ph||"Choisir"}),o.right?null:el("span",{class:"wq-chev","aria-hidden":"true",text:"›"}));
+  const b=el("button",{type:"button",class:"wq-li wq-row","aria-expanded":String(isOpen),onclick:()=>{ if(ms){ ms.has(id)?ms.delete(id):ms.add(id); } else W.open=W.open===id?null:id; o.rerender(); }},el("span",{class:"wq-emo",text:emo}),el("span",{class:"wq-lt"},el("b",{text:label}),o.right?el("small",{class:"wq-hint",text:isOpen?"Masquer le détail":"Voir le détail"}):null),el("small",{class:"wq-val"+(val?"":" vide"),text:val||o.ph||"Choisir"}),(()=>{ const c=el("span",{class:"wq-chev","aria-hidden":"true"}); c.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>'; return c; })());
   const w=el("div",{class:"wq-ri"},o.right?el("div",{class:"wq-line"},b,o.right):b); if(isOpen&&panel) w.append(el("div",{class:"wq-panel"},panel())); return w; }
 function wqLogement({W,a,box,key,rerender}){
   wqH(box,"Ton logement","Pour te rappeler les entretiens au bon moment. Touche une ligne pour la remplir.");
