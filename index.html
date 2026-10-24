@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="24/10 15:55";</script>
+<script>window.COCOON_BUILD="24/10 15:59";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1952,7 +1952,9 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .wizard .wq-none .opt[aria-pressed="true"]{background:var(--au-glass)!important;border:2px solid #FFC94A!important;box-shadow:none!important}
 .wq-row{cursor:pointer}.wq-hint{color:#FFB38A!important;font-weight:600}.wq-line .wq-chev{margin-right:4px}.wq-line{display:flex;align-items:center;padding-right:14px}.wq-line .wq-row{flex:1;min-width:0}.wq-val{color:var(--ink);font-weight:600;font-size:13.5px;max-width:45%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.wq-val.vide{color:var(--au-sub);font-weight:500}
 .wq-chev{color:var(--au-sub);display:grid;place-items:center;flex:none;transition:transform .25s ease}.wq-row[aria-expanded="true"] .wq-chev{transform:rotate(90deg)}
-.wq-panel{padding:4px 14px 14px;display:grid;gap:10px}
+.wq-panel{padding:14px 14px 16px;display:grid;gap:10px;border-top:1px solid var(--au-line)}
+/* la ligne de séparation va jusqu'au bord, interrupteur compris */
+.wq-line > .wq-row{border-bottom:0!important}
 .wq-foot{font-size:12.5px!important}
 .wq-autre{display:grid;gap:10px;padding:12px;border-radius:18px;background:var(--au-glass);border:1px solid var(--au-line)}.wq-autre-h{display:flex;gap:8px;align-items:center}.wq-autre-h input{flex:1;min-width:0}
 .wq-eq{display:grid;gap:14px}.wq-eqg{display:grid;gap:8px}.wq-eqt{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--au-sub)}
