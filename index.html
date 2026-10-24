@@ -53,7 +53,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}html[data-theme="
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="24/10 16:48";</script>
+<script>window.COCOON_BUILD="24/10 16:51";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1805,8 +1805,8 @@ body:has(.wrap.wizarding) .aurora i,body:has(.wrap.finishing) .aurora i{opacity:
 input[type=date]::-webkit-calendar-picker-indicator{opacity:.75;cursor:pointer}
 .fiche input[type=date].vide::-webkit-datetime-edit{color:var(--muted)}
 :root[data-theme="dark"] .wrap.finishing .fiche input[type=date].vide::-webkit-datetime-edit{color:rgba(255,255,255,.45)}
-body:has(.wrap.wizarding) .aurora,body:has(.wrap.finishing) .aurora{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),var(--au-bg)!important}
-:root[data-theme="light"] body:has(.wrap.wizarding) .aurora,:root[data-theme="light"] body:has(.wrap.finishing) .aurora{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),var(--au-bg)!important}
+body:has(#splash:not([hidden])) .aurora,body:has(.wrap.wizarding) .aurora,body:has(.wrap.finishing) .aurora{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),var(--au-bg)!important}
+:root[data-theme="light"] body:has(#splash:not([hidden])) .aurora,:root[data-theme="light"] body:has(.wrap.wizarding) .aurora,:root[data-theme="light"] body:has(.wrap.finishing) .aurora{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),var(--au-bg)!important}
 body:has(.wrap.finishing){background:var(--au-bg)!important}
 .wrap.finishing .fiche{background:var(--au-glass)!important;border:1px solid var(--au-line)!important;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:none!important;border-radius:26px!important}
 .wrap.finishing .fiche .step-tag{background:linear-gradient(100deg,#FFC94A,#FF9C80 55%,#E79ADB)!important;color:#1C1B2E!important}
@@ -1835,9 +1835,6 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 .splash .sp-logo{width:52px!important;height:52px!important}
 .splash .sp-name{font-size:28px!important}
 .splash .sp-tag{margin-top:34px!important;font-size:clamp(46px,13.5vw,64px)!important;line-height:.98!important}
-.sp-chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
-.sp-chips li{display:inline-flex;align-items:center;gap:7px;padding:9px 14px 9px 11px;border-radius:999px;background:var(--au-glass);border:1px solid var(--au-line);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font-weight:700;font-size:14px;color:var(--ink)}
-.sp-chips li span{font-size:16px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
 .splash .sp-go{margin-top:auto!important}
 /* bienvenue de Cocoony (après les conditions, avant le questionnaire) */
 .wb{position:fixed;inset:0;z-index:2147483450;background:rgba(10,9,18,.42);-webkit-backdrop-filter:blur(14px) saturate(1.1);backdrop-filter:blur(14px) saturate(1.1);display:grid;place-items:center;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));transition:opacity .35s ease}
@@ -1859,10 +1856,10 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 @keyframes wbWave{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg)}75%{transform:rotate(8deg)}}
 @media (prefers-reduced-motion:reduce){.wb.on .wb-cy,.wb.on .wb-bub,.wb.on .wb-go{animation:none}}
 /* tout arrive en même temps : titre, phrase, étiquettes, bouton */
-.splash .sp-tag,.splash .sp-sub,.splash .sp-chips,.splash .sp-go{animation:rvUp .5s ease-out .15s both!important}
-.splash.sp-wait .sp-tag,.splash.sp-wait .sp-sub,.splash.sp-wait .sp-chips,.splash.sp-wait .sp-go{animation:none!important;opacity:0}
-.splash.sp-show .sp-tag,.splash.sp-show .sp-sub,.splash.sp-show .sp-chips,.splash.sp-show .sp-go{animation:rvUp .5s ease-out both!important}
-@media (prefers-reduced-motion:reduce){.splash .sp-tag,.splash .sp-sub,.splash .sp-chips,.splash .sp-go{animation:none!important}}
+.splash .sp-tag,.splash .sp-sub,.splash .sp-cards,.splash .sp-go{animation:rvUp .5s ease-out .15s both!important}
+.splash.sp-wait .sp-tag,.splash.sp-wait .sp-sub,.splash.sp-wait .sp-cards,.splash.sp-wait .sp-go{animation:none!important;opacity:0}
+.splash.sp-show .sp-tag,.splash.sp-show .sp-sub,.splash.sp-show .sp-cards,.splash.sp-show .sp-go{animation:rvUp .5s ease-out both!important}
+@media (prefers-reduced-motion:reduce){.splash .sp-tag,.splash .sp-sub,.splash .sp-cards,.splash .sp-go{animation:none!important}}
 .splash .sp-grad{background:linear-gradient(100deg,#FFC94A,#FF9C80 55%,#E79ADB);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .splash .sp-sub{margin:16px 0 4px!important;font-size:16px!important}
 .splash .sp-stickers{display:none!important}
@@ -1879,7 +1876,18 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 @media (prefers-reduced-motion:reduce){.sp-aura i{animation:none}}
 /* boîte aux lettres : une enveloppe descend dans la fente, le drapeau se lève (remplace le feu de bois) */
 .warmup .mbx{width:170px;height:170px;overflow:visible}
-#warmText{white-space:nowrap}#warmSub[hidden]{display:none}
+#warmText{white-space:nowrap}
+/* « Ton foyer, enfin serein » : atouts en cartes qui défilent seules (on ne peut pas les toucher) */
+.sp-cards{margin:0 -16px;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.sp-cards{display:grid;gap:12px}
+.sp-track{list-style:none;margin:0;padding:2px 0;display:flex;gap:12px;width:max-content;animation:spMarq 30s linear infinite}
+.sp-track.rev{animation-direction:reverse;animation-duration:34s}
+.sp-track li{flex:none;width:168px;min-height:128px;padding:14px;border-radius:20px;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:5px;color:var(--ink)}
+.wrap.gated .sp-track li{background:color-mix(in srgb,var(--ink) 6%,transparent);border-color:color-mix(in srgb,var(--ink) 12%,transparent)}
+.sp-track .spc-e{font-size:28px;line-height:1;margin-bottom:4px;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.sp-track b{font-size:15px;line-height:1.2}.sp-track small{font-size:12.5px;line-height:1.35;color:var(--muted)}
+@keyframes spMarq{to{transform:translateX(calc(-50% - 6px))}}
+@media (prefers-reduced-motion:reduce){.sp-track{animation:none}}#warmSub[hidden]{display:none}
 .mb-l{transform-box:view-box;animation:mbArrive .9s cubic-bezier(.3,.8,.4,1) both,mbBob 1.3s ease-in-out .9s infinite}
 .mb-flag{transform-box:view-box;transform-origin:116px 96px;transform:rotate(90deg)}
 /* tout est prêt : la lettre tombe dans la fente, le drapeau se lève, puis l'écran suivant */
@@ -3656,7 +3664,7 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
       <li style="--bg:#FFD9CC;--pin:#E8765A;--r:2.5deg"><span class="sp-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5H16a1.5 1.5 0 0 1 1.5 1.5v1.5h-11a1.5 1.5 0 0 1 0-3z" fill="currentColor" fill-opacity=".55"/><path d="M2.5 9A2.5 2.5 0 0 1 5 6.5h13.5a3 3 0 0 1 3 3V18a3 3 0 0 1-3 3H5.5a3 3 0 0 1-3-3z" fill="currentColor"/><rect x="15" y="11.5" width="6.5" height="4" rx="2" fill="#fff" fill-opacity=".9"/><circle cx="17.2" cy="13.5" r="1" fill="currentColor"/></svg></span><b>Budget partagé</b><span>Dépenses, abonnements et qui doit quoi</span></li>
       <li style="--bg:#D8E6FF;--pin:#5B8DEF;--r:-3deg"><span class="sp-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3c.8 4.3 2.7 6.2 7 7-4.3.8-6.2 2.7-7 7-.8-4.3-2.7-6.2-7-7 4.3-.8 6.2-2.7 7-7z" fill="currentColor"/><path d="M18.5 14c.4 2 1.3 2.9 3.3 3.3-2 .4-2.9 1.3-3.3 3.3-.4-2-1.3-2.9-3.3-3.3 2-.4 2.9-1.3 3.3-3.3z" fill="currentColor"/></svg></span><b>Cocoony</b><span>Ton secrétaire qui connaît ta maison</span></li>
     </ul>
-    <ul class="sp-chips" aria-label="Ce que fait Cocoon"><li style="--k:0"><span aria-hidden="true">✅</span>Qui fait quoi</li><li style="--k:1"><span aria-hidden="true">🛒</span>Courses à plusieurs</li><li style="--k:2"><span aria-hidden="true">📄</span>Papiers rangés</li><li style="--k:3"><span aria-hidden="true">💶</span>Budget partagé</li><li style="--k:4"><span aria-hidden="true">📅</span>Agenda du foyer</li><li style="--k:5"><span aria-hidden="true">🍝</span>Repas de la semaine</li><li style="--k:6"><span aria-hidden="true">✨</span>Cocoony, ton assistant</li></ul>
+    <div class="sp-cards" aria-label="Ce que fait Cocoon"><ul class="sp-track"><li><span class="spc-e" aria-hidden="true">✅</span><b>Qui fait quoi</b><small>Les tâches et rappels qui reviennent tout seuls</small></li><li><span class="spc-e" aria-hidden="true">🛒</span><b>Courses à plusieurs</b><small>Une liste partagée, à jour en direct</small></li><li><span class="spc-e" aria-hidden="true">📄</span><b>Papiers rangés</b><small>Prévenu avant qu'ils expirent</small></li><li><span class="spc-e" aria-hidden="true">💶</span><b>Budget partagé</b><small>Qui a payé, qui doit combien</small></li><li aria-hidden="true"><span class="spc-e">✅</span><b>Qui fait quoi</b><small>Les tâches et rappels qui reviennent tout seuls</small></li><li aria-hidden="true"><span class="spc-e">🛒</span><b>Courses à plusieurs</b><small>Une liste partagée, à jour en direct</small></li><li aria-hidden="true"><span class="spc-e">📄</span><b>Papiers rangés</b><small>Prévenu avant qu'ils expirent</small></li><li aria-hidden="true"><span class="spc-e">💶</span><b>Budget partagé</b><small>Qui a payé, qui doit combien</small></li></ul><ul class="sp-track rev"><li><span class="spc-e" aria-hidden="true">📅</span><b>Agenda du foyer</b><small>Les rendez-vous de tout le monde</small></li><li><span class="spc-e" aria-hidden="true">🍝</span><b>Repas de la semaine</b><small>Fini le « on mange quoi ce soir ? »</small></li><li><span class="spc-e" aria-hidden="true">✨</span><b>Cocoony</b><small>Ton assistant qui connaît ta maison</small></li><li><span class="spc-e" aria-hidden="true">✅</span><b>Qui fait quoi</b><small>Les tâches et rappels qui reviennent tout seuls</small></li><li aria-hidden="true"><span class="spc-e">📅</span><b>Agenda du foyer</b><small>Les rendez-vous de tout le monde</small></li><li aria-hidden="true"><span class="spc-e">🍝</span><b>Repas de la semaine</b><small>Fini le « on mange quoi ce soir ? »</small></li><li aria-hidden="true"><span class="spc-e">✨</span><b>Cocoony</b><small>Ton assistant qui connaît ta maison</small></li><li aria-hidden="true"><span class="spc-e">✅</span><b>Qui fait quoi</b><small>Les tâches et rappels qui reviennent tout seuls</small></li></ul></div>
     <button class="btn big sp-go" type="button" id="spGo">Créer mon cocon</button>
     <button class="sp-back" type="button" id="spBack" hidden></button>
   </div>
