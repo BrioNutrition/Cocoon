@@ -158,8 +158,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   partagé par défaut : formulaire de dépense vide et `budgetAdd` suit `foyer/config.partage` (sinon dépense à soi).
 - **Écran « Ton foyer, enfin serein »** (avant « Créer mon cocon », choix F d'Angel parmi 10 maquettes) : épuré, logo + « Cocoon » côte à côte
   en haut, grand titre juste dessous (« enfin serein. » en dégradé, `.sp-grad`), une phrase, 7 étiquettes des atouts (`.sp-chips`), bouton en bas ;
-  cartes `.sp-stickers` masquées ; bandeau « Démo » masqué dans la démo (hunk CSS de `demo_patch.json`) ; lueur animée
-  en fond (`.sp-aura`, 3 halos flous qui dérivent lentement, arrêtés si animations réduites).
+  cartes `.sp-stickers` masquées ; bandeau « Démo » masqué dans la démo (hunk CSS de `demo_patch.json`) ; fond sombre classique
+  (lueur animée `.sp-aura` retirée à la demande d'Angel ; ses styles servent encore ailleurs).
 - **Bienvenue** : « Créer mon cocon » lance directement le questionnaire ; les conditions restent **à la fin** (après le profil, `onboardGate`).
   À la 1re acceptation, `cguWelcome` : confettis sur l'app floutée derrière (`.wb`, flou du fond), Cocoony + bulle « Bienvenue chez toi … ! »
   qui annonce la visite guidée, « C'est parti ! » → visite. Plus de phrase « Tu pourras relire ces textes… ». Écran « enfin serein » :
