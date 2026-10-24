@@ -1783,6 +1783,7 @@ body:has(.wrap.finishing){background:var(--au-bg)!important}
 @media (prefers-reduced-motion:reduce){.sp-aura i{animation:none}}
 /* boîte aux lettres : une enveloppe descend dans la fente, le drapeau se lève (remplace le feu de bois) */
 .warmup .mbx{width:170px;height:170px;overflow:visible}
+#warmText{white-space:nowrap}#warmSub[hidden]{display:none}
 .mb-l{transform-box:view-box;animation:mbLetter 2.2s cubic-bezier(.45,.05,.4,1) infinite}
 .mb-flag{transform-box:view-box;transform-origin:116px 96px;animation:mbFlag 2.2s ease-in-out infinite}
 @keyframes mbLetter{0%{transform:translate(-46px,-30px) rotate(-18deg);opacity:0}15%{opacity:1}55%{transform:translate(0,48px) rotate(0)}75%,100%{transform:translate(0,96px) rotate(0);opacity:1}}
@@ -3809,8 +3810,8 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
 </div>
 <div class="warmup" id="warmup" hidden aria-live="polite">
   <svg class="mbx" viewBox="0 0 160 160" aria-hidden="true"><defs><linearGradient id="mbBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB38A"/><stop offset=".55" stop-color="#E2629B"/><stop offset="1" stop-color="#8C5BD6"/></linearGradient><clipPath id="mbClip"><rect x="0" y="0" width="160" height="81"/></clipPath></defs><ellipse class="mb-sh" cx="80" cy="148" rx="40" ry="5" fill="#000" opacity=".25"/><rect x="74" y="104" width="12" height="44" rx="3" fill="#6B5544"/><g class="mb-flag"><rect x="114" y="62" width="4" height="34" rx="2" fill="#C9C7DD"/><path d="M118 62h16v11h-16z" fill="#FFC94A"/></g><path d="M44 106V74a30 30 0 0 1 30-30h12a30 30 0 0 1 30 30v32z" fill="url(#mbBody)"/><path d="M50 74a24 24 0 0 1 24-24h12a24 24 0 0 1 24 24" fill="none" stroke="#fff" stroke-opacity=".25" stroke-width="3" stroke-linecap="round"/><rect x="60" y="77" width="40" height="6" rx="3" fill="#2A1F3D"/><g clip-path="url(#mbClip)"><g class="mb-l"><rect x="66" y="0" width="28" height="19" rx="2.5" fill="#fff"/><path d="M66.6 1.2 80 11l13.4-9.8" fill="none" stroke="#C9C7DD" stroke-width="1.6" stroke-linejoin="round"/></g></g></svg>
-  <p id="warmText">On est en train de livrer le courrier…</p>
-  <small id="warmSub">Cocoon prépare tout pour vous</small>
+  <p id="warmText">Nous livrons le courrier…</p>
+  <small id="warmSub" hidden></small>
 </div>
 <div class="reveal" id="reveal" hidden aria-live="polite">
   <div class="rv-bg"></div>
@@ -4432,7 +4433,7 @@ function openEditor(id,type){
 function pencilBtn(onclick,label){ const b=el("button",{type:"button",class:"pencil-btn","aria-label":label||"Personnaliser le profil",title:"Personnaliser",onclick}); b.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.6 3.1a2.6 2.6 0 0 1 3.7 0l1.6 1.6a2.6 2.6 0 0 1 0 3.7L19.5 9.8 14.2 4.5zM12.8 5.9l5.3 5.3-9.9 9.9c-.3.3-.7.5-1.1.6l-4.1.9c-.8.2-1.4-.5-1.3-1.3l.9-4.1c.1-.4.3-.8.6-1.1z"/></svg>'; return b; }
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function warmup(lines,minMs,work,sub,swap){
-  const w=$("warmup"), tx=$("warmText"); $("warmSub").textContent=sub||"Cocoon prépare tout pour vous";
+  const w=$("warmup"), tx=$("warmText"); const ws=$("warmSub"); ws.textContent=sub||""; ws.hidden=!sub;
   tx.textContent=lines[0]; w.hidden=false; void w.offsetWidth; w.classList.add("on");
   let i=0; const it=setInterval(()=>{ i=(i+1)%lines.length; tx.style.opacity=0; setTimeout(()=>{ tx.textContent=lines[i]; tx.style.opacity=1; },300); },1100);
   let res, err;
@@ -4441,7 +4442,7 @@ async function warmup(lines,minMs,work,sub,swap){
   if(swap&&!err){ try{ swap(); }catch(_){} await sleep(60); } w.classList.remove("on"); await sleep(650); w.hidden=true; w.classList.remove("ending"); tx.style.opacity=1;
   if(err) throw err; return res;
 }
-const WARM_LINES=["On est en train de livrer le courrier…"];
+const WARM_LINES=["Nous livrons le courrier…"];
 function goProfileStage(){ S.wiz=null; $("wizard").hidden=true; document.querySelector(".wrap").classList.remove("wizarding"); openSelfEditor(); window.scrollTo({top:0}); }
 function openSelfEditor(){
   if(S.edit&&S.edit.self) return;
