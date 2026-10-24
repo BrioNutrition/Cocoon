@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="24/10 17:31";</script>
+<script>window.COCOON_BUILD="24/10 17:34";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -7463,10 +7463,18 @@ setTab("accueil");
   function evNtBtns(){ const pg=document.getElementById("evPage"); if(!pg||pg.hidden||!pg.isConnected||pg.classList.contains("out")) return null; const sh=pg.querySelector(".pp-sheet"); if(!sh) return null;
     const ok=e=>e&&e.getClientRects().length>0; const back=[...sh.querySelectorAll(".ev-back")].find(ok)||null, more=[...sh.querySelectorAll(".ev-more")].find(ok)||null;
     return back||more?{sh,back,more}:null; }
+  /* pose les boutons natifs sur ceux de la fenêtre (une fois la fenêtre montée : pendant son animation, rien) */
+  function evNtSend(ev){ const a=ev.sh.getAnimations?ev.sh.getAnimations():[]; let o, sig;
+    if(a.some(x=>x.playState==="running")||(ev.sh.style.transform&&ev.sh.style.transform!=="none"&&ev.sh.style.transform!=="translateY(0)")){ clearTimeout(evNtSend._t); evNtSend._t=setTimeout(()=>window.__ntSync&&window.__ntSync(),200); o={visible:false}; sig="evwait"; }
+    else { const r=(ev.back||ev.more).getBoundingClientRect(); o={visible:true,title:"",back:!!ev.back,actions:ev.more?[{id:"more",icon:"ellipsis"}]:[],top:Math.max(4,Math.round(r.top+window.scrollY-safeTop())),color:getComputedStyle(ev.sh).color}; sig=JSON.stringify(o); }
+    if(sig!==tbSig){ tbSig=sig; NT.topbar(o).catch(()=>{}); } }
   const safeTop=()=>{ const p=document.createElement("div"); p.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top,0px)"; document.body.append(p); const h=p.offsetHeight; p.remove(); return h; };
   const sync=window.__ntSync=()=>{ const tabs=$("tabs"); const gate=document.getElementById("cxGate"); const vis=!!(tabs&&meId()&&!(gate&&!gate.hidden)&&!(document.getElementById("boot")&&!document.getElementById("boot")._done)&&!window.__tabsHold&&!(document.getElementById("wizard")&&!$("wizard").hidden)&&!document.documentElement.classList.contains("nav-off"));
     if(vis!==shown){ shown=vis; if(vis) cxSent=false; (vis?NT.show({items:TABS.map(t=>({title:t[1],icon:t[2]}))}):NT.hide()).catch(()=>{}); sel=-1; bdg=null; }
-    if(!vis){ if(tbSig!=="off"){ tbSig="off"; NT.topbar({visible:false}).catch(()=>{}); } return; }
+    if(!vis){ /* fenêtre Événements ouverte (barre d'onglets cachée) : ses boutons natifs restent */
+      const ev=document.documentElement.classList.contains("nav-off")&&meId()?evNtBtns():null;
+      if(ev){ evNtSend(ev); return; }
+      if(tbSig!=="off"){ tbSig="off"; NT.topbar({visible:false}).catch(()=>{}); } return; }
     /* une fiche ouverte depuis l'accueil (ou Moi) reste sous cet onglet */
     const cur=S.tab==="profil"&&S.prevTab?S.prevTab:S.tab;
     const i=Math.max(0,TABS.findIndex(t=>t[0]===(cur==="cocoony"?"cocoony":["accueil","moi"].includes(cur)?cur:"hub")));
@@ -7496,9 +7504,7 @@ setTab("accueil");
         /* position dans la page sans compter les animations d'arrivée (sinon la barre se replace une 2e fois) */
         let y=0; for(let n=bar;n;n=n.offsetParent) y+=n.offsetTop; o={visible:true,title:t,back:!!bar.querySelector(".hub-back,.pg-back"),actions:acts,top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(bar.querySelector(".hb-title")||bar).color}; sig=JSON.stringify(o); }
       if(o.visible){ o.dim=shOpen; sig=JSON.stringify(o); }
-      { const ev=evNtBtns(); if(ev){ const a=ev.sh.getAnimations?ev.sh.getAnimations():[];
-          if(a.some(x=>x.playState==="running")){ clearTimeout(sync._evT); sync._evT=setTimeout(sync,380); o={visible:false}; sig="evwait"; }
-          else { const r=(ev.back||ev.more).getBoundingClientRect(); o={visible:true,title:"",back:!!ev.back,actions:ev.more?[{id:"more",icon:"ellipsis"}]:[],top:Math.max(4,Math.round(r.top+window.scrollY-safeTop())),color:getComputedStyle(ev.sh).color}; sig=JSON.stringify(o); } } }
+      { const ev=evNtBtns(); if(ev){ evNtSend(ev); return; } }
       if(sig!==tbSig){ tbSig=sig; NT.topbar(o).catch(()=>{}); } } };
   /* filet de sécurité seulement : tout passe par la détection instantanée plus bas */
   setInterval(sync,5000); document.addEventListener("visibilitychange",sync);
