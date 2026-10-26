@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="26/10 23:36";</script>
+<script>window.COCOON_BUILD="26/10 23:41";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2897,13 +2897,15 @@ div.pf-r{cursor:default}
 .dbig-sw button{width:38px;height:38px;border-radius:50%;border:0;background:var(--sunk);color:var(--ink);display:grid;place-items:center;padding:0;cursor:pointer}
 .dbig-sw button:active{opacity:.6}
 .dyr{margin-top:4px}
-.dyr-bars{display:flex;gap:2px;align-items:flex-end;height:34px}
-.dyr-b{flex:1;min-width:0;height:var(--h);border:0;padding:0;border-radius:2px;background:color-mix(in srgb,var(--ink) 16%,transparent);cursor:pointer}
+.dyr-bars{display:flex;gap:2px;align-items:flex-end;height:34px;padding-top:8px;box-sizing:content-box;touch-action:none;cursor:ew-resize;user-select:none;-webkit-user-select:none}
+.dyr-b{flex:1;min-width:0;height:var(--h);border-radius:2px;background:color-mix(in srgb,var(--ink) 16%,transparent);pointer-events:none}
 .dyr-b.r{background:#8FB8FF}.dyr-b.e{background:#FFC94A}.dyr-b.a{background:#F28DB8}
 .dyr-b.now{box-shadow:0 -3px 0 var(--mark)}
 .dyr-b.cur{background:var(--ink);height:100%}
 .dyr-m{display:flex;justify-content:space-between;font-size:10px;font-weight:800;color:var(--muted);margin-top:5px}.dyr-m .on{color:var(--mark)}
-.dyr-h{display:block;text-align:center;font-size:11.5px;color:var(--muted);margin-top:8px}#urgCard .acc-sec,#cocNote .acc-sec{margin:4px 4px 10px}
+/* changement de jour : la carte garde sa taille (la journée défile dedans), la date garde sa place */
+#dayCard #todayCard{height:186px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}#dayCard #todayCard::-webkit-scrollbar{display:none}
+.dbig-n{min-width:1.25em;font-variant-numeric:tabular-nums}.dbig-w{flex:1}.dbig-w b,.dbig-w small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#urgCard .acc-sec,#cocNote .acc-sec{margin:4px 4px 10px}
 .acc-sec button{border:0;background:none;font:inherit;font-size:13px;letter-spacing:0;text-transform:none;font-weight:700;color:var(--mark);cursor:pointer;padding:6px 0}
 .ug{position:relative;overflow:hidden;border-radius:26px;padding:18px 18px 16px;background:linear-gradient(100deg,#FFC94A,#FF9C80 45%,#F28DB8 75%,#C79BFF);color:#1C1B2E;display:flex;flex-direction:column;gap:3px;transition:opacity .3s,transform .3s}
 .ug.gone{opacity:.4;transform:scale(.98)}
@@ -5101,9 +5103,9 @@ function dayShift(n){ const d=parse(S.accDay||iso(today())); d.setDate(d.getDate
 function isoWeek(d){ const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())), dn=(t.getUTCDay()+6)%7; t.setUTCDate(t.getUTCDate()-dn+3); const f=new Date(Date.UTC(t.getUTCFullYear(),0,4)); return 1+Math.round(((t-f)/864e5-3+((f.getUTCDay()+6)%7))/7); }
 function dayBigYear(t0){ const B=$("dayBig"), Y=$("dayYear"); if(!B||!Y) return;
   const chev=n=>{ const b=el("button",{type:"button","aria-label":n<0?"Jour précédent":"Jour suivant",onclick:()=>dayShift(n)}); b.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+(n<0?"M15 5l-7 7 7 7":"M9 5l7 7-7 7")+'"/></svg>'; return b; }; const d=parse(t0), td=iso(today());
-  const wd=new Intl.DateTimeFormat("fr-FR",{weekday:"long"}).format(d), mo=new Intl.DateTimeFormat("fr-FR",{month:"long",year:"numeric"}).format(d);
+  const wd=new Intl.DateTimeFormat("fr-FR",{weekday:"long"}).format(d), mo=new Intl.DateTimeFormat("fr-FR",{month:"short",year:"numeric"}).format(d);
   const rel=t0===td?"Aujourd'hui":daysTo(t0)===1?"Demain":daysTo(t0)===-1?"Hier":wd.charAt(0).toUpperCase()+wd.slice(1);
-  B.replaceChildren(el("span",{class:"dbig-n",text:String(d.getDate())}),el("span",{class:"dbig-w"},el("b",{text:rel}),el("small",{text:(rel!==wd.charAt(0).toUpperCase()+wd.slice(1)?wd+" · ":"")+mo+" · semaine "+isoWeek(d)})),
+  B.replaceChildren(el("span",{class:"dbig-n",text:String(d.getDate())}),el("span",{class:"dbig-w"},el("b",{text:rel}),el("small",{text:(rel!==wd.charAt(0).toUpperCase()+wd.slice(1)?wd+" · ":"")+mo+" · sem. "+isoWeek(d)})),
     el("span",{class:"dbig-sw"},chev(-1),chev(1)));
   /* l'année du jour choisi : une barre par semaine (lundi), hauteur = ce qui est prévu, couleur = anniversaire / événement / rendez-vous */
   const yr=d.getFullYear(), j1=new Date(yr,0,1), m0=new Date(yr,0,1-((j1.getDay()+6)%7)), W=[], key=x=>Math.floor((parse(x)-m0)/(7*864e5));
@@ -5112,11 +5114,20 @@ function dayBigYear(t0){ const B=$("dayBig"), Y=$("dayYear"); if(!B||!Y) return;
   for(const r of (S.rdvs||[])) add(r.date,"r"); for(const t of allTasks()) if(t.echeance) add(t.echeance);
   for(const ev of evAll()) add(ev.debut,"e"); for(const m of membres()) if(m.naissance){ const b=parse(m.naissance); add(iso(new Date(yr,b.getMonth(),b.getDate())),"a"); }
   const mx=Math.max(3,...W.map(w=>w.c)), cur=key(t0), now=parse(td).getFullYear()===yr?key(td):-1;
-  const bars=el("div",{class:"dyr-bars"}); W.forEach((w,i)=>{ const mon=new Date(m0.getTime()+i*7*864e5);
-    bars.append(el("button",{type:"button",class:"dyr-b"+(w.a?" a":w.e?" e":w.r?" r":"")+(i===cur?" cur":"")+(i===now?" now":""),style:"--h:"+Math.round(18+82*w.c/mx)+"%","aria-label":"Semaine du "+new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"long"}).format(mon)+(w.c?", "+w.c+" chose"+(w.c>1?"s":""):""),
-      onclick:()=>{ S.accDay=i===now?null:iso(mon<j1?j1:mon); renderToday(); }})); });
-  const ms=el("div",{class:"dyr-m"}); "JFMAMJJASOND".split("").forEach((l,i)=>ms.append(el("span",{class:i===d.getMonth()?"on":"",text:l})));
-  Y.replaceChildren(bars,ms,el("small",{class:"dyr-h",text:"Une barre = une semaine · touche pour y aller"})); }
+  /* la frise n'est redessinée que si l'année ou son contenu change : en changeant de jour, seul le curseur bouge */
+  const sig=yr+":"+W.map(w=>w.c+"."+(w.a?"a":w.e?"e":w.r?"r":"")).join(",");
+  if(Y._sig!==sig||!Y.querySelector(".dyr-bars")){ Y._sig=sig; const bars=el("div",{class:"dyr-bars",role:"slider","aria-label":"Semaine de l'année","aria-valuemin":"1","aria-valuemax":String(W.length)});
+    W.forEach((w,i)=>bars.append(el("span",{class:"dyr-b"+(w.a?" a":w.e?" e":w.r?" r":"")+(i===now?" now":""),style:"--h:"+Math.round(18+82*w.c/mx)+"%"})));
+    /* glisser le doigt sur la frise : on parcourt les semaines (même jour de la semaine que celui affiché) */
+    const at=x=>{ const r=bars.getBoundingClientRect(); return Math.max(0,Math.min(W.length-1,Math.floor((x-r.left)/r.width*W.length))); };
+    const go=i=>{ if(i===bars._i) return; bars._i=i; const cd=parse(S.accDay||iso(today())), wd=(cd.getDay()+6)%7; let d=new Date(m0.getTime()+(i*7+wd)*864e5);
+      if(d.getFullYear()<yr) d=new Date(yr,0,1); if(d.getFullYear()>yr) d=new Date(yr,11,31); S.accDay=iso(d)===iso(today())?null:iso(d); haptic(4); renderToday(); };
+    bars.addEventListener("pointerdown",e=>{ bars.setPointerCapture(e.pointerId); bars._i=null; go(at(e.clientX)); });
+    bars.addEventListener("pointermove",e=>{ if(bars.hasPointerCapture(e.pointerId)) go(at(e.clientX)); });
+    const ms=el("div",{class:"dyr-m"}); "JFMAMJJASOND".split("").forEach(l=>ms.append(el("span",{text:l})));
+    Y.replaceChildren(bars,ms); }
+  const bars=Y.querySelector(".dyr-bars"); [...bars.children].forEach((b,i)=>b.classList.toggle("cur",i===cur)); bars.setAttribute("aria-valuenow",String(cur+1));
+  [...Y.querySelector(".dyr-m").children].forEach((m,i)=>m.classList.toggle("on",i===d.getMonth())); }
 /* ---------- Accueil : le plus urgent, puis une remarque de Cocoony ---------- */
 const URG_EMO={factures:"💶",entretien:"🔧",courses:"🛒",colis:"📦",animaux:"🐾",rdv:"📅",maison:"🏠",documents:"📄",voitures:"🚗",ecole:"🎒",jardin:"🌱"};
 function renderUrgent(){ const box=$("urgCard"); if(!box) return; box.innerHTML=""; const me=meId(); S.urgT=null;
