@@ -52,7 +52,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   `select foyer, data, updated_at from cocoon_docs where path='retours' order by updated_at desc;`
 - **Foyer de nuit** (choisi par Angel, maquette C) : sur l'onglet Foyer, `html.foyer-nuit` (posée par `setTab`). Fond et tuiles
   aux **couleurs habituelles du thème** (`var(--bg)`/`var(--surface)`, demandé par Angel : pas de fond de nuit à part), tuiles
-  éclairées par un halo de leur couleur (dégradé dans le fond de `.hb-t`, fixe : pas de calque flouté), pastilles dorées, pas de sous-titre sous « Le foyer » (retiré par Angel). Pas de tuile Événements dans le Foyer (retirée par Angel). Tuiles-boutons à ombre dure : proposées puis écartées.
+  éclairées par un halo de leur couleur (dégradé dans le fond de `.hb-t`, fixe : pas de calque flouté), pastilles dorées, pas de sous-titre sous « Le foyer » (retiré par Angel). Tuile **Événements** remise dans le Foyer (groupe Gestion, 26 oct., car le « + » de l'Agenda ne crée plus que des rendez-vous). Tuiles-boutons à ombre dure : proposées puis écartées.
 - Tuiles du Foyer : essayé puis annulé (Angel préfère l'actuel, ne pas reproposer tel quel) : « pastel » (tuile à sa couleur),
   « carte postale » (bandeau de couleur en haut), « liste groupée » (lignes façon Réglages).
 - **Noms des formules** (choisis par Angel) : gratuit = **Cocoon Essentiel**, payant = **Cocoon Plus** (le mot « Premium » ne doit plus
@@ -99,8 +99,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   modèle … », lien « Continuer sans utiliser le modèle » (`#evCreateSans`) qui crée l'événement sans aucune étape.
   Anneaux d'avancement (`evRing`, raccourci `.wg-ring.emo`) : emoji du type au centre (`emoIco`), anneau à la couleur du type sur
   fond teinté, % dans la ligne du bas, pastille verte ✓ à 100 % ; anneau des raccourcis centré en hauteur, plus gros (60 px, 56 en court) et décalé vers la gauche sur les longs ; remplissage animé seulement la 1re fois ou si le % change (`ringNew`).
-- « + » de l'Agenda : toujours le menu de l'app « Ajouter à l'agenda » (`evPick`), plus la feuille d'actions iOS (elle attendait sa propre
-  animation, d'où la lenteur). « + » des Papiers : menu `openDocAdd()` (« Ajouter un papier » : photo lue par Cocoony, fichier, à la main,
+- « + » de l'Agenda : **ouvre directement un rendez-vous** (26 oct., Angel ; les événements se créent depuis la tuile Événements du Foyer ; `evPick` ne sert plus depuis le « + »). « + » des Papiers : menu `openDocAdd()` (« Ajouter un papier » : photo lue par Cocoony, fichier, à la main,
   facture avec garantie ; boutons `#docAddPhoto/File/Main/Gar`, les tests cliquent `#docAddMain`).
 - Rendez-vous : formulaire dans une feuille du bas façon « Nouvel événement » (`openRdvSheet()`, ouverte dès que `S.rdvForm`
   est posé puis `renderRdv()`), grille de types `RDV_TYPES` qui remplit le titre, mêmes champs `ev-inp` / bouton `ev-cta`.
@@ -159,8 +158,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   avec un interrupteur par groupe (`wqPlan`, `#wqG-…`, `P.partageOff`). Sans partage réglé (foyer créé seul puis membre ajouté), rien n'est
   partagé par défaut : formulaire de dépense vide et `budgetAdd` suit `foyer/config.partage` (sinon dépense à soi).
 - **Écran « Ton foyer, enfin serein »** (avant « Créer mon cocon », choix F d'Angel parmi 10 maquettes) : épuré, logo + « Cocoon » côte à côte
-  en haut, grand titre juste dessous (« enfin serein. » en dégradé, `.sp-grad`), une phrase, les atouts en **grille fixe de 6 cartes** (`.sp-cards`, demandé par Angel : plus de défilement) avec derrière chaque carte une lueur de sa couleur (`--g`) qui s'allume l'une après l'autre (`spGlow`, classe `.glow` remise par `spMarqRestart` car le lancement annule les animations), bouton en bas ; même fond uni + grain que le questionnaire ;
-  cartes `.sp-stickers` masquées ; atouts en cartes qui défilent de droite à gauche en boucle (`.sp-track`, relancées par `spMarqRestart` car le lancement annule les animations) ; bandeau « Démo » masqué dans la démo (hunk CSS de `demo_patch.json`) ; fond sombre classique
+  en haut, grand titre juste dessous (« enfin serein. » en dégradé, `.sp-grad`), une phrase, les atouts en **grille fixe de 6 cartes** (`.sp-cards`, demandé par Angel : plus de défilement) avec derrière chaque carte une lueur de sa couleur (`--g`) qui s'allume l'une après l'autre (`spGlow`, classe `.glow` remise par `spMarqRestart` car le lancement annule les animations), bouton en bas ; même fond uni que le questionnaire ;
+  cartes `.sp-stickers` masquées ; bandeau « Démo » masqué dans la démo (hunk CSS de `demo_patch.json`) ; fond sombre classique
   (lueur `.sp-aura` retirée et lueurs `.aurora` masquées sur cet écran, demandé par Angel) ; textes affichés 560 ms après le départ du logo.
 - **Bienvenue** : « Créer mon cocon » lance directement le questionnaire ; les conditions restent **à la fin** (après le profil, `onboardGate`).
   À la 1re acceptation, `cguWelcome` : confettis sur l'app floutée derrière (`.wb`, flou du fond), Cocoony + bulle « Bienvenue chez toi … ! »
@@ -173,7 +172,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - **Plus de grain nulle part** (demandé par Angel le 24 oct.) : fonds unis. Ancien : fond du questionnaire et du profil (étape 2) : **uni + grain fin**, sans lueurs (choix A d'Angel parmi 5 ; `.aurora i` masqués, grain SVG
   feTurbulence en fond de `.aurora`). Essayés puis écartés : motif maison, cases ou boutons Liquid Glass.
 - Fin du questionnaire (`warmup`) : **boîte aux lettres** (`.mbx` : l'enveloppe arrive et flotte au-dessus de la fente pendant la préparation ; quand tout est prêt, `warmup` ajoute `.drop` :
-  elle tombe dans la fente, le drapeau se lève, puis écran suivant) ; fond identique au questionnaire (uni + grain, `.warmup`) au lieu du feu de bois,
+  elle tombe dans la fente, le drapeau se lève, puis écran suivant) ; fond identique au questionnaire (uni, `.warmup`) au lieu du feu de bois,
   une seule ligne « Nous livrons le courrier… » (`WARM_LINES`), plus de sous-titre « Cocoon prépare tout pour vous » (demandé par Angel).
 - Récap du questionnaire : chaque groupe montre « Voir le détail / Masquer le détail » (`.wq-hint`) et une flèche qui tourne ; plusieurs groupes ouverts à la fois (`wqRow(...,{multi:true})`, `W.opens`), lignes de détail `.wq-dr`
   (case + titre + infos dessous) ; interrupteurs `.wq-tg` façon iOS (51×31, vert #34C759, pastille qui glisse avec rebond et s'étire à l'appui ;
@@ -195,14 +194,16 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - **Accueil « ultime »** (choisi par Angel le 26 oct., maquette qui réunit les 5 propositions) : bonjour + 2e ligne en dégradé qui résume la journée
   (`#homeL2` : « journée calme. » / « N choses aujourd'hui. » / « grosse journée ! », calculée dans `renderToday`) ; carte du foyer inchangée ; carte
   « Le plus urgent » / « En retard » (`renderUrgent`, `#urgCard`, `.ug` en dégradé, emoji de la catégorie `URG_EMO`, « ✓ C'est fait » = `completeTask`,
-  « Plus tard » = échéance au lendemain, « 1 sur N › » passe à la suivante, `S.urgI`) ; titre « Ta journée » (`#daySec`, sans lien Agenda : retiré par Angel) au-dessus de la frise
+  « Plus tard » = échéance au lendemain, « 1 sur N › » passe à la suivante, `S.urgI`) ; titre « Ta journée » (`#daySec`, sans lien Agenda : retiré par Angel ; bouton « Demain › » / « ‹ Aujourd'hui » → `S.accDem`) au-dessus de la frise
   (la semaine `#week` et l'en-tête `#dayHead` sont masqués sur l'accueil, la journée est toujours aujourd'hui) ; « Cocoony a remarqué » (`renderCocNote`, `#cocNote`,
   une remarque à la fois : soir sans repas → frigo, papier qui expire sous 14 j, événement sous 21 j avec des choses à préparer, courses en cours/longue liste ;
   « Non merci » mémorisé dans `cocoon.cocNo`) ; puis « Mes raccourcis » inchangés.
+  Bannière « rendez-vous dans X min » (`#rdvAlert`) masquée sur l'accueil (doublon de la frise). Noms des repas partout : Petit-déj / Déjeuner / Repas (`RSLOTS`, frise).
+  Raccourci Agenda : le plus proche entre rendez-vous, événement et anniversaire, puis le suivant en étiquette. Appui sur la frise : plus de rétrécissement (opacité).
   Cartes de l'accueil (foyer, journée, raccourcis, Cocoony) : contour fin 1 px (`var(--line)`) ; lueurs essayées puis **retirées** (Angel).
   **Raccourcis en « carte à la une »** (choix C d'Angel parmi 3 styles × 9 raccourcis) : `wgX(k)` donne emoji (`e`), compte à rebours en haut à droite
   (`cd`, rouge si `hot`), petite ligne (`cap`), titre (`big`), détail (`small`), étiquette en bas (`chip`), barre (`bar`, événement), anneau (`ring`, semaine), bac en couleur (`bin`) ;
-  rendu `.wg.wgc` (fond teinté de `--wc`) dans `renderWidgets` (l'ancien rendu `wgData` reste dessous, plus utilisé). Planche des 3 styles : A liste détaillée, B visuel, C carte à la une.
+  rendu `.wg.wgc` (fond teinté de `--wc`) dans `renderWidgets` (ancien rendu `wgData`/`budgetSpark` supprimé). Planche des 3 styles : A liste détaillée, B visuel, C carte à la une.
   Texte coupé d'un raccourci (étiquette, détail, petite ligne, compte à rebours) : défile pour tout lire puis revient d'un coup au début, en boucle (`wgMarquee`, `.mq`, `wgMq`, demandé par Angel) ; Repas : « Déjeuner » (midi), « Repas » (soir), « Petit-déj » (matin).
 - Menu « Tes foyers » (`openFoyerMenu`) : **menu de l'app aussi sur iPhone** (pas de `nativeizeMenu`, demandé par Angel).
 - App iPhone à jour toute seule : `cd app && npm run auto:ios` (`app/auto.mjs`) sur le Mac d'Angel → récupère `main` toutes les 30 s et

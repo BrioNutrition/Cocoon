@@ -35,9 +35,8 @@ async def main():
     await pg.add_style_tag(content='.toast{display:none!important}')
     await pg.click('.tab[data-tab="accueil"]'); await pg.wait_for_timeout(1500)
     await pg.click('.tab[data-tab="hub"]'); await pg.wait_for_timeout(500)
-    await pg.click('.hb-t[data-go="agenda"]'); await pg.wait_for_timeout(900); await pg.keyboard.press('Escape'); await pg.wait_for_timeout(500)
-    await pg.click('.hub-add[data-add="agenda"]'); await pg.wait_for_timeout(400)
-    await pg.click('.ev-opt.hot'); await pg.click('.ev-type:has-text("Anniversaire")'); await pg.fill('#evNom','Anniv de Patoune'); await pg.fill('#evDeb','2030-05-10')
+    await pg.click('.hb-t[data-go="evenements"]'); await pg.wait_for_timeout(700)
+    await pg.click('#evPage .ev-cta:has-text("Nouvel événement")'); await pg.click('.ev-type:has-text("Anniversaire")'); await pg.fill('#evNom','Anniv de Patoune'); await pg.fill('#evDeb','2030-05-10')
     await pg.click('#evCreate'); await pg.wait_for_selector('.ev-frise', timeout=8000); await pg.wait_for_timeout(1500)
     for _ in range(25):
       n=await pg.evaluate("document.querySelectorAll('.ev-frise .ev-it').length")
@@ -46,7 +45,7 @@ async def main():
     print('frise items', n); assert n==9, n
     await pg.click('.ev-seg button:has-text("Budget")'); await pg.click('.ev-add'); await pg.fill('#evDepT','Gâteau'); await pg.fill('.ev-form input[inputmode=decimal]','35'); await pg.click('.ev-form button[type=submit]'); await pg.wait_for_timeout(1200)
     t=await pg.inner_text('.ev-bud'); print('bud', t.replace('\n',' | ')); assert '35' in t
-    await pg.click('.pp-grab'); await pg.wait_for_timeout(700); c=await pg.locator('.ag-ev').count(); print('agenda events',c); assert c==1
+    await pg.click('.pp-grab'); await pg.wait_for_timeout(700); await pg.evaluate("document.querySelector('.hb-t[data-go=agenda]')&&document.querySelector('.hb-t[data-go=agenda]').click()"); await pg.wait_for_timeout(900); c=await pg.locator('.ag-ev').count(); print('agenda events',c); assert c==1
     await pg.screenshot(path='/tmp/dk/ev/h_list.png')
     # ouvrir depuis une notification : « C'est fait » sur une tâche, puis lien vers l'événement
     await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.wait_for_timeout(600)

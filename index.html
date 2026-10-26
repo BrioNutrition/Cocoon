@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="26/10 22:47";</script>
+<script>window.COCOON_BUILD="26/10 23:03";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2470,7 +2470,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .td-pill.ok{opacity:.55;text-decoration:line-through}
 .td-pill.ok i{background:#3CC37A;border-color:#3CC37A}
 .td-pill.more{padding:6px 11px;color:var(--muted)}
-.td-pill:active{transform:scale(.95)}
+.td-pill:active{opacity:.7}
 .td-tl{position:relative;display:flex;flex-direction:column;gap:7px;padding-left:58px}
 .td-tl::before{content:"";position:absolute;left:47px;top:8px;bottom:8px;width:2px;background:var(--line);border-radius:2px}
 .td-ev{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:1px;border:0;background:var(--bg);border-radius:13px;padding:8px 11px;font:inherit;color:var(--ink);text-align:left;cursor:pointer;width:100%}
@@ -2479,7 +2479,7 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .td-ev b{font-size:14px;font-weight:700}
 .td-ev span{font-size:12px;color:var(--muted)}
 .td-ev.past{opacity:.5}
-.td-ev:active{transform:scale(.98)}
+.td-ev:active{opacity:.7}
 .td-now{position:relative;height:2px;margin:3px 0}
 .td-now hr{border:0;border-top:2px dashed #E0A100;margin:0}
 .td-now::before{content:"";position:absolute;left:-17px;top:-5px;width:12px;height:12px;border-radius:50%;background:#FFC94A;box-shadow:0 0 0 3px var(--surface)}
@@ -2885,7 +2885,7 @@ div.pf-r{cursor:default}
 /* ---- accueil « ultime » ---- */
 .brand p.hello-l2{margin:2px 0 0;font:800 30px/1.05 var(--f-display);letter-spacing:-.03em;background:linear-gradient(100deg,#FFC94A,#FF9C80 45%,#F28DB8 75%,#C79BFF);-webkit-background-clip:text;background-clip:text;color:transparent;width:max-content;max-width:100%}
 .brand p.hello-l2[hidden]{display:none}
-[data-view="accueil"] #week,[data-view="accueil"] #dayHead{display:none!important}
+[data-view="accueil"] #week,[data-view="accueil"] #dayHead,[data-view="accueil"] #rdvAlert{display:none!important}
 .acc-sec{display:flex;align-items:baseline;justify-content:space-between;margin:22px 4px 10px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .acc-sec[hidden]{display:none}
 #daySec{margin:4px 4px -10px}#urgCard .acc-sec,#cocNote .acc-sec{margin:4px 4px 10px}
@@ -3771,7 +3771,7 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
     <div id="rdvAlert"></div>
     <div id="evAlert"></div>
     <div id="urgCard" hidden></div>
-    <div class="acc-sec" id="daySec" hidden><span>Ta journée</span></div>
+    <div class="acc-sec" id="daySec" hidden><span id="dayTtl">Ta journée</span><button type="button" id="dayTog">Demain ›</button></div>
     <div class="jr-card" id="dayCard" hidden><div class="td-h" id="dayHead"></div><div class="week" id="week"></div><div class="td-body" id="todayCard"></div></div>
     <div id="cocNote" hidden></div>
     <div id="recapCard" class="recap" hidden></div>
@@ -5033,7 +5033,8 @@ const eurR=v=>money(Math.round(v/100)*100).replace(/,00\s?€/," €");
 /* Aujourd'hui : la frise de la journée (dans l'ordre des heures, avec un repère « maintenant ») */
 function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); if(!w||!C) return; w.innerHTML=""; H.innerHTML=""; const me=meId();
   if(!S.loaded.t||!me){ C.hidden=true; $("daySec").hidden=true; return; } C.hidden=false; $("daySec").hidden=false;
-  const td=iso(today()), t0=td, isT=t0===td, N=new Date(), nowM=t0<td?24*60:t0>td?-1:N.getHours()*60+N.getMinutes();
+  const td=iso(today()), tm=iso(new Date(today().getTime()+864e5)), t0=S.accDem?tm:td;
+  $("dayTtl").textContent=S.accDem?"Demain":"Ta journée"; $("dayTog").textContent=S.accDem?"‹ Aujourd'hui":"Demain ›"; const isT=t0===td, N=new Date(), nowM=t0<td?24*60:t0>td?-1:N.getHours()*60+N.getMinutes();
   const go=(tab,sel)=>()=>{ setTab(tab); window.scrollTo({top:0}); if(sel) setTimeout(()=>{ const e=$(sel); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); },90); };
   const hm=h=>{ const m=/^(\d{1,2}):(\d{2})/.exec(h||""); return m?+m[1]*60+ +m[2]:null; }, hl=m=>Math.floor(m/60)+"h"+(m%60?String(m%60).padStart(2,"0"):"");
   const nm=id=>id&&membre(id).nom?(id===me?"toi":membre(id).nom):null;
@@ -5046,7 +5047,7 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
   const ev=[];
   for(const r of (S.rdvs||[])) if(r.date===t0&&!r.fait&&(!r.pour||!r.pour.length||r.pour.includes(me)||r.pour.includes("tous"))){ const m=hm(r.heure);
     ev.push({m:m==null?9*60:m,h:m==null?"":hl(m),t:r.titre,s:[r.lieu,r.heureFin?"jusqu'à "+heureTxt(r.heureFin):null].filter(Boolean).join(" · ")||"Rendez-vous",c:"#8FB8FF",end:hm(r.heureFin)||(m==null?null:m+60),fn:()=>{ S.agDay=t0; setTab("agenda"); window.scrollTo({top:0}); }}); }
-  const MS={matin:[8*60,"Petit-déj","#E9A86B"],midi:[12*60+30,"Déjeuner","#6FA8DC"],soir:[19*60+30,"Dîner","#E0B21C"]};
+  const MS={matin:[8*60,"Petit-déj","#E9A86B"],midi:[12*60+30,"Déjeuner","#6FA8DC"],soir:[19*60+30,"Repas","#E0B21C"]};
   for(const sl of ["matin","midi","soir"]){ const m=(S.repas||[]).find(r=>r.date===t0&&r.slot===sl&&r.plat); if(!m) continue; const c=nm(m.cuisine), v=nm(m.vaisselle), bits=[];
     if(c) bits.push(c==="toi"?"tu cuisines":c+" cuisine"); if(v) bits.push(v==="toi"?"tu fais la vaisselle":v+" fait la vaisselle");
     const mn=Math.round(hNum(repasH(sl,m))*60); ev.push({m:mn,h:hl(mn),t:m.plat,s:MS[sl][1]+(bits.length?" · "+bits.join(" · "):""),c:MS[sl][2],end:mn+60,fn:go("repas")}); }
@@ -5054,7 +5055,7 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
     ev.push({m,h:hl(m),t:"Sortir "+b.nom.toLowerCase().replace(/^ordures ménagères$/,"les ordures ménagères"),s:wh.label,c:"#7FD39A",end:m+90,fn:()=>{ S.mSec="bins"; go("maison")(); }}); }
   ev.sort((a,b)=>a.m-b.m);
   /* le bonjour résume la journée (2e ligne en dégradé) */
-  { const n=open0.length+ev.filter(e=>(e.end||e.m)>nowM).length, L=$("homeL2");
+  if(isT){ const n=open0.length+ev.filter(e=>(e.end||e.m)>nowM).length, L=$("homeL2");
     if(L){ L.textContent=n===0?"journée calme.":n>=5?"grosse journée !":n+(n>1?" choses":" chose")+" aujourd'hui."; L.hidden=$("homeHello").hidden; } }
   // à part : anniversaires et papiers qui expirent
   const extra=[];
@@ -6203,7 +6204,7 @@ const WG={
   repas:{t:"Repas",ic:"utensils",c:"#FF9C80",go:"repas",d:"ce soir et demain"},
   courses:{t:"Courses",ic:"cart",c:"#7FD39A",go:"courses",d:"le nombre d'articles et les premiers"},
   budget:{t:"Budget",ic:"euro",c:"#B9A8F0",go:"budget",d:"dépenses du mois et tendance"},
-  agenda:{t:"Agenda",ic:"calendar",c:"#8FB8FF",go:"agenda",d:"le prochain rendez-vous"},
+  agenda:{t:"Agenda",ic:"calendar",c:"#8FB8FF",go:"agenda",d:"le prochain rendez-vous, événement ou anniversaire"},
   poubelles:{t:"Poubelles",ic:"trash",c:"#E79ADB",go:"maison",sec:"bins",d:"laquelle sortir, et qui"},
   papiers:{t:"Papiers",ic:"file",c:"#FF9CB0",go:"documents",d:"ce qui expire bientôt"},
   semaine:{t:"Semaine du foyer",ic:"check",c:"#3CC37A",go:"foyer",d:"tâches faites, avec une jauge"},
@@ -6212,32 +6213,6 @@ const WG={
 const WG_DEF=[{k:"repas",l:0},{k:"semaine",l:0},{k:"budget",l:1}];
 function wgList(){ let w=(S.prefs||{}).widgets; if(!Array.isArray(w)){ try{ w=JSON.parse(localStorage.getItem("cocoon.widgets")||"null"); }catch(_){ w=null; } } if(!Array.isArray(w)) w=WG_DEF; return w.filter(x=>x&&WG[x.k]); }
 function wgSave(list,quiet){ S.prefs=Object.assign({},S.prefs||{},{widgets:list}); try{ localStorage.setItem("cocoon.widgets",JSON.stringify(list)); }catch(_){} if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); if(!quiet) renderWidgets(); }
-function wgData(k,large){ const t0=iso(today()), me=meId();
-  if(k==="repas"){ const h=new Date().getHours(), sl=repasSlots(); const nx=[]; for(let d=0;d<3&&nx.length<2;d++){ const dt=iso(new Date(today().getFullYear(),today().getMonth(),today().getDate()+d)); for(const x of ["matin","midi","soir"]){ if(!sl.includes(x)) continue; if(d===0&&((x==="matin"&&h>=10)||(x==="midi"&&h>=14)||(x==="soir"&&h>=21))) continue; nx.push([dt,x,repasOf(dt,x)]); if(nx.length>=2) break; } }
-    const lbl=([dt,x])=>(dt===t0?(x==="soir"?"ce soir":x==="midi"?"ce midi":"ce matin"):(daysTo(dt)===1?"demain "+(x==="soir"?"soir":x==="midi"?"midi":"matin"):dueLabel(dt)+" "+x));
-    const a=nx[0]; if(!a) return {h:"Repas",big:"Rien de prévu",small:"touche pour planifier"};
-    return {h:lbl(a).replace(/^./,c=>c.toUpperCase()),big:a[2]?a[2].plat:"Rien de prévu",small:nx[1]?lbl(nx[1])+" : "+(nx[1][2]?nx[1][2].plat:"à prévoir"):a[2]?"":"touche pour planifier"}; }
-  if(k==="courses"){ const it=(S.courses||[]).filter(i=>!i.fait); return {h:"Courses",big:it.length?it.length+" article"+(it.length>1?"s":""):"Liste vide",small:it.length?it.slice(0,large?5:3).map(i=>i.nom).join(", ")+(it.length>(large?5:3)?" +"+(it.length-(large?5:3)):""):"rien à acheter"}; }
-  if(k==="budget"){ const E=monthEst(), t=today(), day=t.getDate(), pm=new Date(t.getFullYear(),t.getMonth()-1,1); let prev=0; for(const d of (S.depenses||[])){ if(d.type==="rembt"||!d.date) continue; const x=parse(d.date); if(x.getFullYear()===pm.getFullYear()&&x.getMonth()===pm.getMonth()&&x.getDate()<=day) prev+=d.montant; }
-    const pct=prev?Math.round((E.tot-prev)/prev*100):null; let nxt=null; for(const a of (S.abos||[])){ if(a.actif===false) continue; const n=subNext(a); if(n&&daysTo(n)>=0&&(!nxt||n<nxt[1])) nxt=[a,n]; }
-    return {h:"Budget · "+E.nm,big:eurR(E.tot),trend:pct,small:large&&nxt?"prochain : "+nxt[0].nom+" · "+dueLabel(nxt[1]):(pct==null?"ce mois-ci":(pct>0?"+":"")+pct+" % vs mois dernier"),spark:true}; }
-  if(k==="agenda"){ const r=(S.rdvs||[]).filter(r=>!r.fait&&r.date&&r.date>=t0).sort((a,b)=>(a.date+(a.heure||""))<(b.date+(b.heure||""))?-1:1); const x=r[0];
-    return x?{h:"Rendez-vous",big:x.titre,small:(x.date===t0?"aujourd'hui":dueLabel(x.date))+(x.heure?" · "+heureTxt(x.heure):"")+(x.pour&&x.pour.length===1&&membre(x.pour[0])?" · "+(x.pour[0]===me?"toi":membre(x.pour[0]).nom):"")+(large&&r[1]?" — puis "+r[1].titre:"")}:{h:"Agenda",big:"Aucun rendez-vous",small:"rien de prévu"}; }
-  if(k==="poubelles"){ let best=null; for(const b of (S.bins||[])){ const nx=binNext(b); if(nx&&(!best||nx.sortie<best[1].sortie)) best=[b,nx]; }
-    if(!best) return {h:"Poubelles",big:"Aucune poubelle",small:"ajoute tes jours de collecte"}; const [b,nx]=best;
-    return {h:"Poubelles",big:b.nom,dot:b.c||"#59606B",small:"à sortir "+binWhen(b,nx.sortie)+" · "+binWho(b).label}; }
-  if(k==="papiers"){ const d=S.docs.filter(d=>d.expire&&daysTo(d.expire)<=120).sort((a,b)=>a.expire<b.expire?-1:1)[0];
-    if(!d) return {h:"Papiers",big:S.docs.length?"Tout est à jour":"Rien de rangé",small:S.docs.length?S.docs.length+" papier"+(S.docs.length>1?"s":"")+" rangé"+(S.docs.length>1?"s":""):"range tes papiers"};
-    const n=daysTo(d.expire); return {did:d.id,h:"Papiers",big:d.titre,small:(n<0?"expiré":"expire "+dueLabel(d.expire))+(d.pour&&d.pour!=="foyer"&&membre(d.pour)?" · "+membre(d.pour).nom:""),late:n<0}; }
-  if(k==="semaine"){ const ws=weekStart(), we=ws+7*864e5; const done=S.foyer.filter(t=>t.fait&&t.faitLe>=ws).length; const todo=S.foyer.filter(t=>!t.fait&&(!t.echeance||parse(t.echeance).getTime()<we)).length; const tot=done+todo, p=tot?Math.round(done/tot*100):0;
-    if(!tot) return {h:"Semaine",big:"Rien à faire",small:"aucune tâche cette semaine"};
-    return {h:"Semaine",big:done+" / "+tot,small:"tâches faites"+(large&&todo?" · "+todo+" à faire":""),ring:p}; }
-  if(k==="anniv"){ let best=null; for(const m of membres()){ const nb=nextBirthday(m); if(nb&&(!best||nb.date<best[1].date)) best=[m,nb]; }
-    if(!best) return {h:"Anniversaires",big:"Aucune date",small:"ajoute les dates de naissance"}; const n=daysTo(best[1].date);
-    return {h:"Anniversaire",big:best[0].id===me?"Toi":best[0].nom,small:n===0?"aujourd'hui ! 🎉":dueLabel(best[1].date)+(best[1].age?" · "+best[1].age+" ans":""),mid:best[0].id}; }
-  if(k==="evenement"){ const ev=evNext(); if(!ev) return {h:"Événement",big:"Rien de prévu",small:"anniv, travaux, vacances…"}; const P=evProg(ev);
-    return {h:evJ(ev),big:ev.titre||evT(ev).n,small:P.tot?P.done+"/"+P.tot+" prêts"+(P.p<100?" · "+P.p+" %":"")+(large?" · "+evDates(ev):""):evDates(ev),ring:P.tot?P.p:null,ringE:evT(ev).e,ringC:evT(ev).c,evid:ev.id}; }
-  return {h:"",big:"",small:""}; }
 /* style « carte à la une » (choix C d'Angel) : gros emoji, compte à rebours, titre, détail, étiquette en bas */
 function wgJ(dt){ const n=daysTo(dt); return n<0?"passé":n===0?"auj.":n===1?"demain":"J-"+n; }
 function wgX(k){ const t0=iso(today()), me=meId(), nm=id=>id&&membre(id)&&membre(id).nom?(id===me?"toi":membre(id).nom):null;
@@ -6286,7 +6261,7 @@ function wgMarquee(root){ requestAnimationFrame(()=>{ for(const e of root.queryS
   const t=e.textContent; e.textContent=""; e.classList.add("mq-on"); const sp=el("span",{class:"mq",text:t}); e.append(sp);
   const dx=sp.scrollWidth-e.clientWidth+(parseFloat(getComputedStyle(e).paddingRight)||0); if(dx<=2){ e.classList.remove("mq-on"); e.textContent=t; continue; }
   sp.style.setProperty("--dx",-Math.ceil(dx+4)+"px"); sp.style.animationDuration=(3.2+dx/28).toFixed(1)+"s"; } }); }
-function wgGo(k,D){ if(k==="evenement"){ if(D&&D.evid) openEvent(D.evid); else openEvents(); return; } const w=WG[k]; if(k==="papiers"&&D&&D.did){ goDoc(S.docs.find(x=>x.id===D.did)); return; } if(k==="anniv"){ if(D&&D.mid) openMemberSheet(D.mid); return; } if(w.sec) S.mSec=w.sec; setTab(w.go); renderHeader(); window.scrollTo({top:0}); }
+function wgGo(k,D){ if(k==="agenda"&&D&&D.evid){ openEvent(D.evid); return; } if(k==="evenement"){ if(D&&D.evid) openEvent(D.evid); else openEvents(); return; } const w=WG[k]; if(k==="papiers"&&D&&D.did){ goDoc(S.docs.find(x=>x.id===D.did)); return; } if(k==="anniv"){ if(D&&D.mid) openMemberSheet(D.mid); return; } if(w.sec) S.mSec=w.sec; setTab(w.go); renderHeader(); window.scrollTo({top:0}); }
 /* Petite vibration : API Vibration (Android) ou interrupteur natif (iPhone, iOS 18+) */
 function haptic(ms){ try{ if(window.__nt&&window.__nt.haptic){ window.__nt.haptic({style:(ms||12)>=12?"medium":"light"}).catch(()=>{}); return; } }catch(_){} try{ if(navigator.vibrate&&navigator.vibrate(ms||12)) return; }catch(_){}
   try{ let l=document.getElementById("hpLbl"); if(!l){ const i=document.createElement("input"); i.type="checkbox"; i.setAttribute("switch",""); i.id="hpSw"; i.tabIndex=-1; i.setAttribute("aria-hidden","true");
@@ -6327,28 +6302,18 @@ function sortable(box,sel,done,o){ o=o||{}; const lp=o.lp==null?380:o.lp; let it
   box.addEventListener("mousedown",start);
   box.addEventListener("click",e=>{ if(Date.now()-(box._sorted||0)<450){ e.stopPropagation(); e.preventDefault(); } },true);
   box.addEventListener("contextmenu",e=>{ if(it) e.preventDefault(); }); }
-function wgSig(){ try{ return JSON.stringify(wgList().map(x=>[x.k,x.l?1:0,wgData(x.k,!!x.l)]))+"|"+(document.documentElement.dataset.theme||""); }catch(_){ return String(Math.random()); } }
+function wgSig(){ try{ return JSON.stringify(wgList().map(x=>[x.k,x.l?1:0,wgX(x.k)]))+"|"+(document.documentElement.dataset.theme||""); }catch(_){ return String(Math.random()); } }
 function renderWidgets(){ const box=$("accBudget"); if(!box) return; if(box.querySelector(".sorting")||box._landing) return; const sig=wgSig(); if(box._sig===sig&&box.querySelector(".wg-grid")) return; box.innerHTML=""; box._sig=sig; if(!meId()) return; box.className="wg-zone";
   const g=el("div",{class:"wg-grid"});
-  for(const x of wgList()){ const w=WG[x.k], L=!!x.l, D=Object.assign(wgData(x.k,L),wgX(x.k));
-    if(true){ const X=D, b=el("button",{type:"button",class:"wg wgc"+(L?" wide":""),"data-k":x.k,style:"--wc:"+w.c+";--gc:"+w.c,"aria-label":w.t+" : "+X.big+(X.small?", "+X.small:""),onclick:()=>wgGo(x.k,D)});
+  for(const x of wgList()){ const w=WG[x.k], L=!!x.l, D=wgX(x.k);
+    { const X=D, b=el("button",{type:"button",class:"wg wgc"+(L?" wide":""),"data-k":x.k,style:"--wc:"+w.c+";--gc:"+w.c,"aria-label":w.t+" : "+X.big+(X.small?", "+X.small:""),onclick:()=>wgGo(x.k,D)});
       const top=X.ring!=null?el("span",{class:"wgc-ring",style:"--p:"+X.ring+"%"},el("b",{text:X.ring+"%"})):X.bin?el("span",{class:"wgc-bin",style:"--bc:"+X.bin,"aria-hidden":"true"}):el("span",{class:"wgc-e","aria-hidden":"true",text:X.e||"•"});
       b.append(top);
       if(X.cd) b.append(el("span",{class:"wgc-cd"+(X.hot?" hot":""),text:X.cd}));
       b.append(el("small",{class:"wgc-cap",text:X.cap||w.t}),el("b",{class:"wgc-big",text:X.big}),X.small?el("small",{class:"wgc-s",text:X.small}):null);
       if(X.bar!=null) b.append(el("span",{class:"wgc-bar"},el("i",{style:"width:"+X.bar+"%"})));
       if(X.chip) b.append(el("span",{class:"wgc-chip",text:X.chip}));
-      g.append(b); continue; }
-    const b=el("button",{type:"button",class:"wg"+(L?" wide":""),"data-k":x.k,style:"--wc:"+w.c,"aria-label":w.t+" : "+D.big+(D.small?", "+D.small:""),onclick:()=>wgGo(x.k,D)},
-      el("div",{class:"wg-h"},(()=>{ const i=el("i",{"aria-hidden":"true",class:"wg-ic"}); i.innerHTML=uicSvg(w.ic); return i; })(),el("span",{text:D.h})),
-      el("b",{class:"wg-big"},D.dot?el("span",{class:"wg-dot",style:"background:"+D.dot}):"",D.big,D.trend!=null&&L?el("small",{class:"wg-tr"+(D.trend>0?" up":" down"),text:(D.trend>0?"+":"")+D.trend+" %"}):""),
-      D.small?el("small",{class:"wg-s"+(D.late?" late":""),text:D.small}):el("small",{class:"wg-s","aria-hidden":"true",text:"\u00a0"}));
-    if(D.ring!=null&&D.ringE){ /* événement : son emoji au centre, anneau à sa couleur, pastille ✓ à 100 % */
-      const r=el("span",{class:"wg-ring emo"+(D.ring>=100?" full":"")+(ringNew("w"+D.evid,D.ring)?" anim":""),style:"--rp:"+D.ring+"%;--rc:"+D.ringC},emoIco(D.ringE));
-      if(D.ring>=100){ const k=el("span",{class:"ring-ok"}); k.innerHTML=RING_OK; r.append(k); } b.append(r); b.classList.add("has-ring"); }
-    else if(D.ring!=null){ const r=el("span",{class:"wg-ring",style:"--p:"+D.ring+"%"},el("b",{text:D.ring+"%"})); b.append(r); b.classList.add("has-ring"); }
-    if(D.spark&&L){ const sp=el("span",{class:"wg-spark","aria-hidden":"true"}); sp.innerHTML=budgetSpark(); b.append(sp); }
-    g.append(b); }
+      g.append(b); } }
   sortable(g,".wg",keys=>{ const cur=wgList(); wgSave(keys.map(k=>cur.find(x=>x.k===k)).filter(Boolean),true); box._sig=wgSig(); });
   const ed=el("button",{type:"button",class:"wg-edit",onclick:openWidgetSheet},el("span",{"aria-hidden":"true",text:"✎"}),wgList().length?"Modifier l'accueil":"Ajouter des raccourcis");
   box.append(el("div",{class:"wg-sec"},el("span",{text:"Mes raccourcis"}),""),g,ed); wgMarquee(g); }
@@ -6935,6 +6900,7 @@ function hubMiniUpd(){ const M=$("hubMini"); if(!M) return; const ti=document.qu
   if(ti&&ti.offsetParent&&ti.textContent.trim()&&!document.documentElement.classList.contains("prem-open")){ const r=ti.getBoundingClientRect(); on=r.bottom<4; if(on){ const t=ti.textContent; if($("hubMiniT").textContent!==t) $("hubMiniT").textContent=t; const add=document.querySelector('.view:not([hidden]) .hub-add'); $("hubMiniAdd").hidden=!add; } }
   if(M.classList.contains("on")!==on){ M.classList.toggle("on",on); M.setAttribute("aria-hidden",String(!on)); M.querySelectorAll("button").forEach(b=>b.tabIndex=on?0:-1); } }
 addEventListener("scroll",()=>{ if(!S._hmRaf) S._hmRaf=requestAnimationFrame(()=>{ S._hmRaf=0; hubMiniUpd(); }); },{passive:true});
+$("dayTog").addEventListener("click",()=>{ S.accDem=!S.accDem; renderToday(); });
 $("hubMiniAdd").addEventListener("click",()=>{ const add=document.querySelector('.view:not([hidden]) .hub-add'); if(add){ window.scrollTo({top:0,behavior:"smooth"}); add.click(); } });
 /* catégories de tâches créées par le foyer : on les retrouve dans les tâches elles-mêmes (nom + couleur) */
 function syncTaskCats(){ for(const t of allTasks()) if(t.cat&&!CAT[t.cat]&&t.catNom) CAT[t.cat]={id:t.cat,nom:t.catNom,c:t.catC||"#A9B4C2",perso:true}; }
@@ -8246,11 +8212,6 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
   RG.append(el("h2",{class:"rg-h",text:"Réglages"}),el("div",{class:"ms-gl",text:"Préférences"}),box); }
 /* Foyer : toutes les rubriques en tuiles (bento) */
 function hubGo(v){ if(v==="premium"){ openPremium(); return; } if(v==="evenements"){ const n=(S.evs||[]).filter(e=>evEnd(e)>=iso(today())); if(n.length===1) openEvent(n[0].id); else openEvents(); return; } if(v==="maison") S.mSec=null; setTab(v); window.scrollTo({top:0}); }
-function budgetSpark(){ const t=today(), Y=t.getFullYear(), M=t.getMonth(), dim=new Date(Y,M+1,0).getDate(), day=t.getDate();
-  const cum=(y,m,n)=>{ const a=new Array(n).fill(0); for(const d of (S.depenses||[])){ if(d.type==="rembt"||!d.date) continue; const x=parse(d.date); if(x.getFullYear()===y&&x.getMonth()===m&&x.getDate()<=n) a[x.getDate()-1]+=d.montant; } for(let i=1;i<n;i++) a[i]+=a[i-1]; return a; };
-  const pm=new Date(Y,M-1,1), cur=cum(Y,M,day), prev=cum(pm.getFullYear(),pm.getMonth(),dim), mx=Math.max(1,...cur,...prev);
-  const pt=(a,len)=>a.map((v,i)=>((len>1?i/(dim-1):0)*200).toFixed(1)+","+(34-(v/mx)*30).toFixed(1)).join(" ");
-  return '<svg viewBox="0 0 200 36" preserveAspectRatio="none" aria-hidden="true"><polyline points="'+pt(prev,dim)+'" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="1.6" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/><polyline points="'+pt(cur,day)+'" fill="none" stroke="var(--bc)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>'; }
 // Emoji des tuiles : dessiné une fois sur un canevas puis recadré sur ses pixels réels, pour être pile au centre de son carré
 // quelle que soit la police emoji (iPhone, Windows, Android n'ont pas les mêmes marges). Repli : l'emoji en texte.
 const EMO_IMG={};
@@ -8294,6 +8255,7 @@ function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const
   let mt=null; for(const b of (S.bins||[])){ const nx=binNext(b); if(nx&&daysTo(iso(nx.sortie))<=1){ mt=b.nom+" "+(iso(nx.sortie)===t0?(b.veille?"ce soir":"aujourd'hui"):"demain"); break; } }
   if(!mt){ const eq=(S.equip||[]).map(x=>[x,eqNext(x)]).filter(x=>x[1]).sort((a,b)=>a[1]<b[1]?-1:1)[0]; if(eq&&daysTo(eq[1])<=45) mt="Entretien "+(eq[0].nom||"équipement").toLowerCase()+" "+dueLabel(eq[1]); }
   tile("maison","","#7FCDB9","Maison",mt||"tout le logement",{gly:"maison"});
+  { const ne=evNext(); tile("evenements","","#FF9C80","Événements",ne?evJ(ne)+" · "+(ne.titre||evT(ne).n):"anniv, travaux, vacances…",{gly:"evenements"}); }
   /* Cocoon Plus en grand, au-dessus du titre « Le foyer » */
   { const sec=H.closest("section"), old=sec&&sec.querySelector(".hb-pban"); if(old) old.remove();
     if(sec){ const pa=!!(S.prefs&&S.prefs.premiumInteret), ic=el("i",{"aria-hidden":"true"}); ic.innerHTML='<svg viewBox="0 -4 64 64" aria-hidden="true"><path d="M32 4c2.6 15 9 21.4 24 24-15 2.6-21.4 9-24 24-2.6-15-9-21.4-24-24 15-2.6 21.4-9 24-24z" fill="#FFE7A0"/></svg>';
@@ -8359,8 +8321,7 @@ function fabAct(v0,anchor){ const me=meId(), v=v0||S.tab;
   const go=(sel)=>setTimeout(()=>{ const e=$(sel)||document.querySelector(sel); if(e) e.scrollIntoView({block:"center",behavior:"smooth"}); },80);
   if(v==="courses"){ window.scrollTo({top:0,behavior:"smooth"}); setTimeout(()=>{ try{ $("cNom").focus(); }catch(_){} },250); return; }
   if(v==="repas"){ if(!needMe()) return; const [d,sl]=nextFreeMeal(), t0=weekStartOf(today()); S.rWeek=Math.round((weekStartOf(parse(d))-t0)/(7*864e5)); S.rDay=d; setTab("repas"); renderRepas(); openRepas(d,sl); return; }
-  if(v==="agenda"){ if(!needMe()) return; const day=S.agDay&&S.agDay>=iso(today())?S.agDay:""; if(!anchor||!anchor.dataset||anchor.dataset.direct!=="rdv"){ /* menu de l'app (immédiat) plutôt que la feuille d'actions iOS, qui
-      attendait la fin de sa propre animation avant d'ouvrir le formulaire */ openEvents({v:"pick",day}); return; } S.rdvForm={pour:[S.agWho||me],date:day}; renderRdv(); return; }
+  if(v==="agenda"){ if(!needMe()) return; const day=S.agDay&&S.agDay>=iso(today())?S.agDay:"";  S.rdvForm={pour:[S.agWho||me],date:day}; renderRdv(); return; }
   if(v==="documents"){ if(S.tab==="documents"&&!$("docForm").hidden){ closeDocForm(); return; } openDocAdd(); return; }
   if(v==="budget"){ const M=$("addMenu"); if(!M.hidden){ M.hidden=true; return; } M.innerHTML="";
     const it=(ic,t,id)=>M.append(el("button",{type:"button",role:"menuitem",onclick:()=>{ M.hidden=true; const b=$(id); if(b) b.click(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),t));
@@ -9762,7 +9723,7 @@ $("sgCourses").addEventListener("click",()=>{ closeSheet(); setTab("courses"); w
 /* ---------- Repas de la semaine ---------- */
 const PLATS0=[["Pâtes bolognaise","Spaghetti, Bœuf haché, Sauce tomate, Oignon, Ail, Parmesan"],["Lasagnes","Feuilles de lasagne, Bœuf haché, Sauce tomate, Lait, Beurre, Farine, Emmental"],["Poulet rôti et pommes de terre","Poulet, Pommes de terre, Ail, Thym"],["Quiche lorraine","Pâte brisée, Lardons, Œufs, Crème fraîche, Emmental"],["Curry de légumes","Lait de coco, Curry, Pois chiches, Courgette, Poivron, Riz"],["Chili con carne","Bœuf haché, Haricots rouges, Tomates pelées, Oignon, Poivron, Riz"],["Saumon, riz et brocoli","Saumon, Riz, Citron, Brocoli"],["Tacos maison","Tortillas, Bœuf haché, Tomate, Salade, Cheddar, Avocat"],["Gratin dauphinois","Pommes de terre, Crème fraîche, Lait, Ail, Emmental"],["Soupe de légumes","Carottes, Poireau, Pommes de terre, Courgette, Bouillon"],["Risotto aux champignons","Riz, Champignons, Parmesan, Oignon, Bouillon, Vin blanc"],["Croque-monsieur","Pain de mie, Jambon, Emmental, Beurre"],["Pizza maison","Pâte à pizza, Sauce tomate, Mozzarella, Jambon, Champignons"],["Omelette et salade","Œufs, Salade, Fromage râpé, Tomate"],["Salade composée","Salade, Tomate, Concombre, Thon, Maïs, Œufs"]];
 const JOURS_LONGS=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
-const RSLOTS=[["matin","Petit-déj"],["midi","Midi"],["soir","Soir"]];
+const RSLOTS=[["matin","Petit-déj"],["midi","Déjeuner"],["soir","Repas"]];
 /* heure des repas : celle du repas s'il en a une, sinon l'heure habituelle du foyer (foyer/config.repasH), sinon 8h, 12h30, 19h30 */
 const RH_DEF={matin:"08:00",midi:"12:30",soir:"19:30"};
 const repasH=(sl,m)=>(m&&m.heure)||((S.config&&S.config.repasH)||{})[sl]||RH_DEF[sl];
