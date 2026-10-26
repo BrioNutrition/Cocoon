@@ -203,6 +203,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   **Raccourcis en « carte à la une »** (choix C d'Angel parmi 3 styles × 9 raccourcis) : `wgX(k)` donne emoji (`e`), compte à rebours en haut à droite
   (`cd`, rouge si `hot`), petite ligne (`cap`), titre (`big`), détail (`small`), étiquette en bas (`chip`), barre (`bar`, événement), anneau (`ring`, semaine), bac en couleur (`bin`) ;
   rendu `.wg.wgc` (fond teinté de `--wc`) dans `renderWidgets` (l'ancien rendu `wgData` reste dessous, plus utilisé). Planche des 3 styles : A liste détaillée, B visuel, C carte à la une.
+  Texte coupé d'un raccourci (étiquette, détail, petite ligne, compte à rebours) : défile pour tout lire puis revient d'un coup au début, en boucle (`wgMarquee`, `.mq`, `wgMq`, demandé par Angel) ; Repas : « Déjeuner » (midi), « Repas » (soir), « Petit-déj » (matin).
 - Menu « Tes foyers » (`openFoyerMenu`) : **menu de l'app aussi sur iPhone** (pas de `nativeizeMenu`, demandé par Angel).
 - App iPhone à jour toute seule : `cd app && npm run auto:ios` (`app/auto.mjs`) sur le Mac d'Angel → récupère `main` toutes les 30 s et
   recharge l'app (via `live.mjs`). Il suffit donc de pousser sur `main`.
