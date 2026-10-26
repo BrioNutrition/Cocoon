@@ -3674,7 +3674,7 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
     <div id="rdvAlert"></div>
     <div id="evAlert"></div>
     <div id="urgCard" hidden></div>
-    <div class="acc-sec" id="daySec" hidden><span>Ta journée</span><button type="button" id="dayAg">Agenda ›</button></div>
+    <div class="acc-sec" id="daySec" hidden><span>Ta journée</span></div>
     <div class="jr-card" id="dayCard" hidden><div class="td-h" id="dayHead"></div><div class="week" id="week"></div><div class="td-body" id="todayCard"></div></div>
     <div id="cocNote" hidden></div>
     <div id="recapCard" class="recap" hidden></div>
@@ -6836,7 +6836,6 @@ function hubMiniUpd(){ const M=$("hubMini"); if(!M) return; const ti=document.qu
   if(ti&&ti.offsetParent&&ti.textContent.trim()&&!document.documentElement.classList.contains("prem-open")){ const r=ti.getBoundingClientRect(); on=r.bottom<4; if(on){ const t=ti.textContent; if($("hubMiniT").textContent!==t) $("hubMiniT").textContent=t; const add=document.querySelector('.view:not([hidden]) .hub-add'); $("hubMiniAdd").hidden=!add; } }
   if(M.classList.contains("on")!==on){ M.classList.toggle("on",on); M.setAttribute("aria-hidden",String(!on)); M.querySelectorAll("button").forEach(b=>b.tabIndex=on?0:-1); } }
 addEventListener("scroll",()=>{ if(!S._hmRaf) S._hmRaf=requestAnimationFrame(()=>{ S._hmRaf=0; hubMiniUpd(); }); },{passive:true});
-$("dayAg").addEventListener("click",()=>{ S.agDay=null; setTab("agenda"); window.scrollTo({top:0}); });
 $("hubMiniAdd").addEventListener("click",()=>{ const add=document.querySelector('.view:not([hidden]) .hub-add'); if(add){ window.scrollTo({top:0,behavior:"smooth"}); add.click(); } });
 /* catégories de tâches créées par le foyer : on les retrouve dans les tâches elles-mêmes (nom + couleur) */
 function syncTaskCats(){ for(const t of allTasks()) if(t.cat&&!CAT[t.cat]&&t.catNom) CAT[t.cat]={id:t.cat,nom:t.catNom,c:t.catC||"#A9B4C2",perso:true}; }
