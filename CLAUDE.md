@@ -195,7 +195,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   (`#homeL2` : « journée calme. » / « N choses aujourd'hui. » / « grosse journée ! », calculée dans `renderToday`) ; carte du foyer inchangée ; carte
   « Le plus urgent » / « En retard » (`renderUrgent`, `#urgCard`, `.ug` en dégradé, emoji de la catégorie `URG_EMO`, « ✓ C'est fait » = `completeTask`,
   « Plus tard » = échéance au lendemain, « 1 sur N › » passe à la suivante, `S.urgI`) ; titre « Ta journée » (`#daySec`, sans lien Agenda : retiré par Angel ; bouton « Aujourd'hui » visible hors du jour même) au-dessus de la frise
-  (la semaine `#week` et l'en-tête `#dayHead` sont masqués sur l'accueil). **N'importe quel jour de l'année** (choix C d'Angel) : grande date en dégradé
+  (la semaine `#week` et l'en-tête `#dayHead` sont masqués sur l'accueil). Plus de date tout en haut de l'accueil (`#foyerName` masqué, la date est dans « Ta journée »). **N'importe quel jour de l'année** (choix C d'Angel) : grande date en dégradé
   + « Aujourd'hui/Demain/Hier » + « semaine N » + ‹ › (`#dayBig`, `dayBigYear`, `dayShift`, `S.accDay`), glisser la carte à gauche/droite change de jour,
   frise de l'année en bas (`#dayYear`, une barre par semaine : hauteur = ce qui est prévu, rose anniversaire, jaune événement, bleu rendez-vous ; toucher = y aller) ; « Cocoony a remarqué » (`renderCocNote`, `#cocNote`,
   une remarque à la fois : soir sans repas → frigo, papier qui expire sous 14 j, événement sous 21 j avec des choses à préparer, courses en cours/longue liste ;
