@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="26/10 22:22";</script>
+<script>window.COCOON_BUILD="26/10 22:34";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -6238,7 +6238,7 @@ function wgJ(dt){ const n=daysTo(dt); return n<0?"passé":n===0?"auj.":n===1?"de
 function wgX(k){ const t0=iso(today()), me=meId(), nm=id=>id&&membre(id)&&membre(id).nom?(id===me?"toi":membre(id).nom):null;
   if(k==="repas"){ const h=new Date().getHours(), sl=repasSlots(), nx=[];
     for(let d=0;d<3&&nx.length<2;d++){ const dt=iso(new Date(today().getFullYear(),today().getMonth(),today().getDate()+d)); for(const x of ["matin","midi","soir"]){ if(!sl.includes(x)) continue; if(d===0&&((x==="matin"&&h>=10)||(x==="midi"&&h>=14)||(x==="soir"&&h>=21))) continue; nx.push([dt,x,repasOf(dt,x)]); if(nx.length>=2) break; } }
-    const lb=([dt,x])=>(dt===t0?(x==="soir"?"Ce soir":x==="midi"?"Ce midi":"Ce matin"):(daysTo(dt)===1?"Demain "+(x==="soir"?"soir":x==="midi"?"midi":"matin"):dueLabel(dt)+" "+x));
+    const nmS=x=>x==="soir"?"Repas":x==="midi"?"Déjeuner":"Petit-déj", lb=([dt,x])=>(dt===t0?nmS(x):(daysTo(dt)===1?"Demain · ":dueLabel(dt).replace(/^./,c=>c.toUpperCase())+" · ")+nmS(x));
     const a=nx[0]; if(!a) return {e:"🍽️",cap:"Repas",big:"Rien de prévu",small:"touche pour planifier"};
     const m=a[2], who=[]; if(m&&nm(m.cuisine)) who.push(nm(m.cuisine)==="toi"?"tu cuisines":nm(m.cuisine)+" cuisine"); if(m&&nm(m.vaisselle)) who.push(nm(m.vaisselle)==="toi"?"tu fais la vaisselle":nm(m.vaisselle)+" fait la vaisselle");
     const hh=Math.round(hNum(repasH(a[1],m))*60);
