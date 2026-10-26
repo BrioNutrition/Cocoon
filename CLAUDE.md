@@ -199,7 +199,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   + « Aujourd'hui/Demain/Hier » + « semaine N » + ‹ › (`#dayBig`, `dayBigYear`, `dayShift`, `S.accDay`), glisser la carte à gauche/droite change de jour,
   frise de l'année en bas (`#dayYear`, une barre par semaine : hauteur = ce qui est prévu, rose anniversaire, jaune événement, bleu rendez-vous ;
   **glisser le doigt dessus** parcourt les semaines en gardant le jour de la semaine, pas de phrase d'aide ; redessinée seulement si son contenu change, sinon seul le curseur bouge).
-  Changement de jour stable : journée à hauteur fixe qui défile dedans (`#todayCard` 186 px), date sur une ligne (« lundi · oct. 2026 · sem. 44 ») ; « Cocoony a remarqué » (`renderCocNote`, `#cocNote`,
+  Changement de jour stable : journée à hauteur fixe qui défile dedans (`#todayCard` 186 px ; jour vide = carte resserrée, demandé par Angel), date sur une ligne (« lundi · oct. 2026 · sem. 44 ») ; « Cocoony a remarqué » (`renderCocNote`, `#cocNote`,
   une remarque à la fois : soir sans repas → frigo, papier qui expire sous 14 j, événement sous 21 j avec des choses à préparer, courses en cours/longue liste ;
   « Non merci » mémorisé dans `cocoon.cocNo`) ; puis « Mes raccourcis » inchangés.
   Bannière « rendez-vous dans X min » (`#rdvAlert`) masquée sur l'accueil (doublon de la frise). Noms des repas partout : Petit-déj / Déjeuner / Repas (`RSLOTS`, frise).
