@@ -199,6 +199,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   (la semaine `#week` et l'en-tête `#dayHead` sont masqués sur l'accueil, la journée est toujours aujourd'hui) ; « Cocoony a remarqué » (`renderCocNote`, `#cocNote`,
   une remarque à la fois : soir sans repas → frigo, papier qui expire sous 14 j, événement sous 21 j avec des choses à préparer, courses en cours/longue liste ;
   « Non merci » mémorisé dans `cocoon.cocNo`) ; puis « Mes raccourcis » inchangés.
+  Cartes de l'accueil (foyer, journée, raccourcis, Cocoony) : contour fin + lueur de leur couleur qui s'allume l'une après l'autre (`accGlow`, `--gc`, `--gi`), comme l'écran « enfin serein » (demandé par Angel).
 - Menu « Tes foyers » (`openFoyerMenu`) : **menu de l'app aussi sur iPhone** (pas de `nativeizeMenu`, demandé par Angel).
 - App iPhone à jour toute seule : `cd app && npm run auto:ios` (`app/auto.mjs`) sur le Mac d'Angel → récupère `main` toutes les 30 s et
   recharge l'app (via `live.mjs`). Il suffit donc de pousser sur `main`.
