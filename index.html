@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="26/10 21:47";</script>
+<script>window.COCOON_BUILD="26/10 22:01";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2882,6 +2882,29 @@ div.pf-r{cursor:default}
 .rg-h{margin:4px 2px 2px;font:800 26px/1.1 var(--f-display);letter-spacing:-.02em}
 #moiFiche{margin-top:2px}
 .wg-zone{display:flex;flex-direction:column;gap:10px}
+/* ---- accueil « ultime » ---- */
+.brand p.hello-l2{margin:2px 0 0;font:800 30px/1.05 var(--f-display);letter-spacing:-.03em;background:linear-gradient(100deg,#FFC94A,#FF9C80 45%,#F28DB8 75%,#C79BFF);-webkit-background-clip:text;background-clip:text;color:transparent;width:max-content;max-width:100%}
+.brand p.hello-l2[hidden]{display:none}
+[data-view="accueil"] #week,[data-view="accueil"] #dayHead{display:none!important}
+.acc-sec{display:flex;align-items:baseline;justify-content:space-between;margin:22px 4px 10px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.acc-sec[hidden]{display:none}
+#daySec{margin:4px 4px -10px}#urgCard .acc-sec,#cocNote .acc-sec{margin:4px 4px 10px}
+.acc-sec button{border:0;background:none;font:inherit;font-size:13px;letter-spacing:0;text-transform:none;font-weight:700;color:var(--mark);cursor:pointer;padding:6px 0}
+.ug{position:relative;overflow:hidden;border-radius:26px;padding:18px 18px 16px;background:linear-gradient(100deg,#FFC94A,#FF9C80 45%,#F28DB8 75%,#C79BFF);color:#1C1B2E;display:flex;flex-direction:column;gap:3px;transition:opacity .3s,transform .3s}
+.ug.gone{opacity:.4;transform:scale(.98)}
+.ug-emo{position:absolute;right:-2px;top:-10px;font-size:68px;line-height:1;transform:rotate(12deg);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;pointer-events:none}
+.ug-cap{font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:rgba(28,27,46,.65);padding-right:64px}
+.ug-t{font:800 24px/1.08 var(--f-display);letter-spacing:-.03em;padding-right:60px}
+.ug-btns{display:flex;gap:8px;margin-top:12px}
+.ug-btns button{border:0;border-radius:999px;padding:10px 16px;font:inherit;font-weight:800;font-size:14px;cursor:pointer;min-height:40px}
+.ug-ok{background:#1C1B2E;color:#fff}.ug-later{background:rgba(255,255,255,.5);color:#1C1B2E}
+.ug-n{position:absolute;right:14px;bottom:16px;border:0;font:inherit;font-size:12px;font-weight:800;background:rgba(28,27,46,.12);color:#1C1B2E;border-radius:999px;padding:6px 10px;cursor:pointer}
+.cn{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border-radius:20px;padding:14px;border:1px solid var(--line)}
+.cn-av{width:42px;height:42px;border-radius:13px;flex:none;object-fit:cover}
+.cn p{margin:0;font-size:14.5px;line-height:1.4}
+.cn-b{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.cn-b button{border:0;border-radius:999px;padding:8px 13px;font:inherit;font-weight:800;font-size:13.5px;cursor:pointer}
+.cn-go{background:var(--mark);color:#1C1B2E}.cn-no{background:var(--sunk);color:var(--ink)}
 .wg-sec{margin:6px 4px -2px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .wg-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .wg{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-height:112px;border:0;border-radius:20px;padding:13px;background:var(--surface);box-shadow:0 2px 0 var(--shadow);font:inherit;color:var(--ink);text-align:left;cursor:pointer;overflow:hidden;min-width:0;-webkit-tap-highlight-color:transparent;transition:transform .12s ease}
@@ -3675,6 +3698,7 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
       <div>
         <p class="eyebrow" id="foyerName"></p>
         <h1 class="hello" id="homeHello" hidden></h1>
+        <p class="hello-l2" id="homeL2" hidden></p>
         <p class="hello-sub" id="homeSub" hidden></p>
       </div>
     </div>
@@ -3723,7 +3747,10 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
   <section class="view" data-view="accueil">
     <div id="rdvAlert"></div>
     <div id="evAlert"></div>
+    <div id="urgCard" hidden></div>
+    <div class="acc-sec" id="daySec" hidden><span>Ta journée</span><button type="button" id="dayAg">Agenda ›</button></div>
     <div class="jr-card" id="dayCard" hidden><div class="td-h" id="dayHead"></div><div class="week" id="week"></div><div class="td-body" id="todayCard"></div></div>
+    <div id="cocNote" hidden></div>
     <div id="recapCard" class="recap" hidden></div>
     <div id="setupCard" hidden></div>
     <div class="sec-day" id="secDay" aria-hidden="true"></div>
@@ -4982,14 +5009,15 @@ function monthEst(){
 const eurR=v=>money(Math.round(v/100)*100).replace(/,00\s?€/," €");
 /* Aujourd'hui : la frise de la journée (dans l'ordre des heures, avec un repère « maintenant ») */
 function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); if(!w||!C) return; w.innerHTML=""; H.innerHTML=""; const me=meId();
-  if(!S.loaded.t||!me){ C.hidden=true; return; } C.hidden=false;
-  const td=iso(today()), t0=S.wkDay||td, isT=t0===td, N=new Date(), nowM=t0<td?24*60:t0>td?-1:N.getHours()*60+N.getMinutes();
+  if(!S.loaded.t||!me){ C.hidden=true; $("daySec").hidden=true; return; } C.hidden=false; $("daySec").hidden=false;
+  const td=iso(today()), t0=td, isT=t0===td, N=new Date(), nowM=t0<td?24*60:t0>td?-1:N.getHours()*60+N.getMinutes();
   const go=(tab,sel)=>()=>{ setTab(tab); window.scrollTo({top:0}); if(sel) setTimeout(()=>{ const e=$(sel); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); },90); };
   const hm=h=>{ const m=/^(\d{1,2}):(\d{2})/.exec(h||""); return m?+m[1]*60+ +m[2]:null; }, hl=m=>Math.floor(m/60)+"h"+(m%60?String(m%60).padStart(2,"0"):"");
   const nm=id=>id&&membre(id).nom?(id===me?"toi":membre(id).nom):null;
   // tâches du jour (sans heure) : pastilles à cocher
   const mineT=t=>!t.pour||t.pour==="tous"||t.pour===me||S.perso.includes(t);
-  const open=allTasks().filter(t=>!t.fait&&t.echeance&&(isT?t.echeance<=t0:t.echeance===t0)&&mineT(t)).sort(sortOpen);
+  const open0=allTasks().filter(t=>!t.fait&&t.echeance&&(isT?t.echeance<=t0:t.echeance===t0)&&mineT(t)).sort(sortOpen);
+  const open=open0.filter(t=>t!==S.urgT);
   const doneT=allTasks().filter(t=>t.fait&&t.echeance===t0&&mineT(t));
   // événements avec une heure
   const ev=[];
@@ -5002,6 +5030,9 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
   for(const b of (S.bins||[])){ const nx=binNext(b,parse(t0)); if(!nx||iso(nx.sortie)!==t0) continue; const wh=binWho(b), m=b.veille?19*60+30:7*60+30;
     ev.push({m,h:hl(m),t:"Sortir "+b.nom.toLowerCase().replace(/^ordures ménagères$/,"les ordures ménagères"),s:wh.label,c:"#7FD39A",end:m+90,fn:()=>{ S.mSec="bins"; go("maison")(); }}); }
   ev.sort((a,b)=>a.m-b.m);
+  /* le bonjour résume la journée (2e ligne en dégradé) */
+  { const n=open0.length+ev.filter(e=>(e.end||e.m)>nowM).length, L=$("homeL2");
+    if(L){ L.textContent=n===0?"journée calme.":n>=5?"grosse journée !":n+(n>1?" choses":" chose")+" aujourd'hui."; L.hidden=$("homeHello").hidden; } }
   // à part : anniversaires et papiers qui expirent
   const extra=[];
   for(const m of membres()){ const nb=nextBirthday(m); if(nb&&nb.date===t0) extra.push(["🎂","Anniversaire "+de(m.nom),()=>openProfile(m.id)]); }
@@ -5027,6 +5058,39 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
   for(const [ic,tx,fn] of extra) w.append(el("button",{type:"button",class:"td-x",onclick:fn},el("i",{"aria-hidden":"true",text:ic}),tx));
   if(!open.length&&!doneT.length&&!ev.length&&!extra.length) w.append(el("p",{class:"td-calm",text:isT?"Journée calme : rien de prévu pour toi aujourd'hui.":"Rien de prévu ce jour-là."}));
 }
+/* ---------- Accueil : le plus urgent, puis une remarque de Cocoony ---------- */
+const URG_EMO={factures:"💶",entretien:"🔧",courses:"🛒",colis:"📦",animaux:"🐾",rdv:"📅",maison:"🏠",documents:"📄",voitures:"🚗",ecole:"🎒",jardin:"🌱"};
+function renderUrgent(){ const box=$("urgCard"); if(!box) return; box.innerHTML=""; const me=meId(); S.urgT=null;
+  if(!S.loaded.t||!me||S.readOnly){ box.hidden=true; return; }
+  const td=iso(today()), mine=t=>!t.pour||t.pour==="tous"||t.pour===me||S.perso.includes(t);
+  const L=allTasks().filter(t=>!t.fait&&t.echeance&&t.echeance<=td&&mine(t)).sort(sortOpen);
+  if(!L.length){ box.hidden=true; return; }
+  const i=Math.min(S.urgI||0,L.length-1), t=L[i]; S.urgT=t; box.hidden=false;
+  const late=t.echeance<td, by=t.creePar&&t.creePar!==me&&membre(t.creePar).nom?" · noté par "+membre(t.creePar).nom:"";
+  const done=el("button",{type:"button",class:"ug-ok"},"✓ C'est fait"), later=el("button",{type:"button",class:"ug-later",text:"Plus tard"});
+  done.onclick=async()=>{ if(!S.db||!needMe()) return; done.disabled=later.disabled=true; haptic(12); box.firstChild&&box.firstChild.classList.add("gone");
+    try{ await completeTask(t); toast("✓ « "+esc(t.titre)+" » fait."); }catch(e){ done.disabled=later.disabled=false; writeErr(e); } };
+  later.onclick=async()=>{ if(!S.db||!needMe()) return; done.disabled=later.disabled=true; const d=today(); d.setDate(d.getDate()+1);
+    try{ await colFor(t).doc(t.id).update({echeance:iso(d)}); toast("« "+esc(t.titre)+" » reportée à demain."); }catch(e){ done.disabled=later.disabled=false; writeErr(e); } };
+  const c=CAT[t.cat]?CAT[t.cat].c:"#FFC94A";
+  const card=el("div",{class:"ug"+(late?" late":""),style:"--uc:"+c},el("span",{class:"ug-emo","aria-hidden":"true",text:URG_EMO[t.cat]||"✅"}),
+    el("small",{class:"ug-cap",text:(late?"En retard · "+dueLabel(t.echeance):"Aujourd'hui")+by}),el("b",{class:"ug-t",text:t.titre}),
+    el("div",{class:"ug-btns"},done,later),
+    L.length>1?el("button",{type:"button",class:"ug-n","aria-label":"Voir la suivante",text:(i+1)+" sur "+L.length+" ›",onclick:()=>{ S.urgI=(i+1)%L.length; renderUrgent(); renderToday(); }}):null);
+  box.append(el("div",{class:"acc-sec"},el("span",{text:late?"En retard":"Le plus urgent"})),card); }
+function cocNoteList(){ const me=meId(), out=[], td=iso(today()), h=new Date().getHours();
+  const ce=(S.repas||[]).find(r=>r.date===td&&r.slot==="soir"&&r.plat);
+  if(!ce&&h>=11&&h<20) out.push({k:"soir"+td,t:"Rien de prévu pour ce soir. Je te trouve une idée avec ce qu'il y a dans le frigo ?",go:"Une idée",fn:()=>openFrigo()});
+  for(const d of (S.docs||[])) if(d.expire&&daysTo(d.expire)>=0&&daysTo(d.expire)<=14){ out.push({k:"doc"+d.id+d.expire,t:"Ton papier « "+d.titre+" » expire "+dueLabel(d.expire)+". Pense à le renouveler.",go:"Voir",fn:()=>{ setTab("documents"); window.scrollTo({top:0}); }}); break; }
+  for(const ev of evAll()){ const n=daysTo(ev.debut); if(n<0||n>21) continue; const P=evProg(ev), rest=P.tot-P.done; if(rest>0){ out.push({k:"ev"+ev.id+td,t:"Plus que "+n+" jour"+(n>1?"s":"")+" avant « "+(ev.titre||evT(ev).n)+" » : "+rest+" chose"+(rest>1?"s":"")+" à préparer.",go:"Ouvrir",fn:()=>openEvent(ev.id)}); break; } }
+  { const nc=(S.courses||[]).filter(i=>!i.fait).length, ss=cSession&&cSession(); if(ss&&ss.par!==me&&membre(ss.par).nom) out.unshift({k:"cs"+td+ss.par,t:membre(ss.par).nom+" fait les courses en ce moment : ajoute vite ce qui manque 🛒",go:"Courses",fn:()=>setTab("courses")}); else if(nc>=8) out.push({k:"nc"+td,t:nc+" articles attendent sur la liste de courses.",go:"Voir",fn:()=>setTab("courses")}); }
+  return out; }
+function renderCocNote(){ const box=$("cocNote"); if(!box) return; box.innerHTML=""; if(!S.loaded.t||!meId()||S.readOnly){ box.hidden=true; return; }
+  let no=[]; try{ no=JSON.parse(localStorage.getItem("cocoon.cocNo")||"[]"); }catch(_){}
+  const n=cocNoteList().find(x=>!no.includes(x.k)); if(!n){ box.hidden=true; return; } box.hidden=false;
+  const img=el("img",{class:"cn-av",alt:"","aria-hidden":"true"}); try{ const si=document.querySelector(".sec-big"); if(si&&si.src) img.src=si.src; else img.src=document.querySelector(".brand-logo").src; }catch(_){}
+  box.append(el("div",{class:"acc-sec"},el("span",{text:"Cocoony a remarqué"})),el("div",{class:"cn"},img,el("div",{},el("p",{text:n.t}),
+    el("div",{class:"cn-b"},el("button",{type:"button",class:"cn-go",text:n.go,onclick:n.fn}),el("button",{type:"button",class:"cn-no",text:"Non merci",onclick:()=>{ no=no.concat(n.k).slice(-60); try{ localStorage.setItem("cocoon.cocNo",JSON.stringify(no)); }catch(_){} renderCocNote(); }}))))); }
 function premiumTip(){ if(!meId()||(S.prefs&&S.prefs.premiumInteret)) return null;
   let last=0; try{ last=+localStorage.getItem("cocoon.premTip")||0; }catch(_){} if(Date.now()-last<14*864e5) return null;
   const nd=(S.docs||[]).length, nf=(S.docs||[]).filter(d=>d.assetId).length;
@@ -6792,6 +6856,7 @@ function hubMiniUpd(){ const M=$("hubMini"); if(!M) return; const ti=document.qu
   if(ti&&ti.offsetParent&&ti.textContent.trim()&&!document.documentElement.classList.contains("prem-open")){ const r=ti.getBoundingClientRect(); on=r.bottom<4; if(on){ const t=ti.textContent; if($("hubMiniT").textContent!==t) $("hubMiniT").textContent=t; const add=document.querySelector('.view:not([hidden]) .hub-add'); $("hubMiniAdd").hidden=!add; } }
   if(M.classList.contains("on")!==on){ M.classList.toggle("on",on); M.setAttribute("aria-hidden",String(!on)); M.querySelectorAll("button").forEach(b=>b.tabIndex=on?0:-1); } }
 addEventListener("scroll",()=>{ if(!S._hmRaf) S._hmRaf=requestAnimationFrame(()=>{ S._hmRaf=0; hubMiniUpd(); }); },{passive:true});
+$("dayAg").addEventListener("click",()=>{ S.agDay=null; setTab("agenda"); window.scrollTo({top:0}); });
 $("hubMiniAdd").addEventListener("click",()=>{ const add=document.querySelector('.view:not([hidden]) .hub-add'); if(add){ window.scrollTo({top:0,behavior:"smooth"}); add.click(); } });
 /* catégories de tâches créées par le foyer : on les retrouve dans les tâches elles-mêmes (nom + couleur) */
 function syncTaskCats(){ for(const t of allTasks()) if(t.cat&&!CAT[t.cat]&&t.catNom) CAT[t.cat]={id:t.cat,nom:t.catNom,c:t.catC||"#A9B4C2",perso:true}; }
@@ -6799,7 +6864,7 @@ function renderAllNowInner(){ try{ syncTaskCats(); }catch(_){} try{ saveLast(); 
   const v=S.tab;
   renderSelBar(); renderHeader(); renderOnboard(); renderBadges(); calSync(); renderCocon(); renderFab(); try{ evRefresh(); }catch(e){ console.error(e); } try{ renderHubTitle(); }catch(e){ console.error(e); }
   if(S.pendingWizard&&meM()&&S.configLoaded){ S.pendingWizard=false; openWizard(isAdmin()&&!(S.config&&S.config.qFait)?"foyer":"perso"); }
-  if(v==="accueil"){ renderToday(); renderRecap(); renderSetupCard(); renderSecretary(); renderRdvAlert(); renderWeek(); renderFridge(); renderAccBudget(); renderAccWho(); }
+  if(v==="accueil"){ renderUrgent(); renderToday(); renderCocNote(); renderRecap(); renderSetupCard(); renderSecretary(); renderRdvAlert(); renderWeek(); renderFridge(); renderAccBudget(); renderAccWho(); }
   else if(v==="moi"){ renderMine(); renderCars(); renderPremium(); renderSettings(); renderMoiNav(); }
   else if(v==="recherche") renderSearch();
   else if(v==="foyer") renderFoyer();
@@ -7554,7 +7619,7 @@ try{ if(navigator.serviceWorker) navigator.serviceWorker.addEventListener("messa
 
 $("today").textContent=new Intl.DateTimeFormat("fr-FR",{weekday:"short",day:"numeric",month:"short"}).format(new Date());
 renderAll();
-setInterval(()=>{ renderFeed(); renderSecretary(); if(S.tab==="accueil"){ renderRdvAlert(); renderToday(); } },60000);
+setInterval(()=>{ renderFeed(); renderSecretary(); if(S.tab==="accueil"){ renderRdvAlert(); renderUrgent(); renderToday(); renderCocNote(); } },60000);
 
 /* =====================================================================
    V3.5 — consolidation
@@ -9992,7 +10057,7 @@ function bilanAuto(){
 /* ===== Visite guidée après le questionnaire ===== */
 window.TOUR_ALL=[
   {sel:"#members",t:"Ton foyer",d:"Chaque membre a son anneau : il se remplit en vert avec les tâches faites cette semaine. Touche un avatar pour voir sa journée et sa fiche, ou « Ajouter » pour inviter quelqu'un."},
-  {sel:"#dayCard",alt:"#rdvWrap",t:"Ta journée",d:"La semaine en un coup d'œil, puis ta journée : tâches à cocher, rendez-vous, repas, poubelles. Touche un jour pour le voir."},
+  {sel:"#dayCard",alt:"#rdvWrap",t:"Ta journée",d:"Le plus urgent en haut, puis ta journée heure par heure : tâches à cocher, rendez-vous, repas, poubelles."},
   {sel:'.tab[data-tab="hub"]',t:"Le Foyer",d:"Toutes les rubriques en tuiles : tâches, courses, repas, agenda, budget, papiers et maison. Dans chacune, le bouton + est en haut à droite."},
   {sel:"#accBudget",opt:true,t:"Tes raccourcis",d:"L'essentiel en un coup d'œil : budget du mois, courses, prochain événement et son avancement… Touche un raccourci pour ouvrir sa rubrique, garde le doigt dessus pour le déplacer, et « Modifier l'accueil » pour en ajouter ou en retirer."},
   {sel:"#cxBtn",t:"Voici %N",d:"Ton assistant a son propre onglet. Écris comme tu parles : « pain, lait », « dentiste jeudi 15h », « il faut payer la cantine vendredi ». %N range tout au bon endroit."},

@@ -192,6 +192,13 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   miniatures 192 px des photos de profil dans `cocoon.thumbs` (`THUMBS`, `makeThumb`, utilisées par `avatarFor`) ; effacées à la déconnexion.
 - Fenêtre Événements sur iPhone : retour et « ⋯ » façon **en-tête de feuille iOS** (Rappels, Calendrier) : « ‹ Retour » en texte jaune, ⋯ cerclé jaune, sans fond (`html.native-tabs:not(.zz) .ev-back/.ev-more`). Essayé puis abandonné (Angel : « fonctionne mal ») : vrais boutons natifs posés par-dessus via `NT.topbar` (ne suivaient pas la fenêtre). Sur le web : ronds en verre CSS.
 - Animal sans photo : **emoji du téléphone** selon l'espèce/race (`petEmo`, `PET_EMO` : 🐱 🐶 🐰 🐹 🐦 🐟 🐢 🐴 🐍 🦎…, sinon 🐾) dans son rond (`.av-pet`) ; anciennes icônes dessinées (`petSvg`) retirées.
+- **Accueil « ultime »** (choisi par Angel le 26 oct., maquette qui réunit les 5 propositions) : bonjour + 2e ligne en dégradé qui résume la journée
+  (`#homeL2` : « journée calme. » / « N choses aujourd'hui. » / « grosse journée ! », calculée dans `renderToday`) ; carte du foyer inchangée ; carte
+  « Le plus urgent » / « En retard » (`renderUrgent`, `#urgCard`, `.ug` en dégradé, emoji de la catégorie `URG_EMO`, « ✓ C'est fait » = `completeTask`,
+  « Plus tard » = échéance au lendemain, « 1 sur N › » passe à la suivante, `S.urgI`) ; titre « Ta journée » + « Agenda › » (`#daySec`) au-dessus de la frise
+  (la semaine `#week` et l'en-tête `#dayHead` sont masqués sur l'accueil, la journée est toujours aujourd'hui) ; « Cocoony a remarqué » (`renderCocNote`, `#cocNote`,
+  une remarque à la fois : soir sans repas → frigo, papier qui expire sous 14 j, événement sous 21 j avec des choses à préparer, courses en cours/longue liste ;
+  « Non merci » mémorisé dans `cocoon.cocNo`) ; puis « Mes raccourcis » inchangés.
 - Menu « Tes foyers » (`openFoyerMenu`) : **menu de l'app aussi sur iPhone** (pas de `nativeizeMenu`, demandé par Angel).
 - App iPhone à jour toute seule : `cd app && npm run auto:ios` (`app/auto.mjs`) sur le Mac d'Angel → récupère `main` toutes les 30 s et
   recharge l'app (via `live.mjs`). Il suffit donc de pousser sur `main`.
