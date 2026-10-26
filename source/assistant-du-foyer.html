@@ -3010,6 +3010,7 @@ button.ev-it{cursor:pointer}
 .ev-ht small{font-size:12.5px;color:var(--muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ev-more{flex:none;width:36px;height:36px;border-radius:12px;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);color:var(--ink);cursor:pointer;display:grid;place-items:center;padding:0;transition:transform .12s,background .15s}
 .ev-more svg{width:18px;height:18px;fill:currentColor;opacity:.75}
+.av.av-pet{font-size:1.25em;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif!important;line-height:1;display:inline-grid;place-items:center}
 /* boutons retour et « ⋯ » des feuilles : ronds en verre Liquid Glass comme les boutons natifs d'iOS (demandé par Angel) */
 .ev-back,.ev-more,.s-back{position:relative;isolation:isolate;width:44px!important;height:44px!important;border-radius:50%!important;border:0!important;color:#1C1B2E!important;font-size:0!important;
   display:grid!important;place-items:center;padding:0!important;
@@ -4073,11 +4074,7 @@ function typeLabel(m){ const t=typeOf(m); if(t==="animal") return (m.espece||"An
 const animaux=()=>membres().filter(m=>m.type==="animal");
 const meM=()=>S.uid?membres().find(m=>m.uid===S.uid)||null:null;
 const meId=()=>(meM()||{}).id||S.forceMe||null;
-const CATSVG='<svg viewBox="0 0 24 24" fill="#fff"><path d="M4 3l4 4.5c1.2-.4 2.6-.6 4-.6s2.8.2 4 .6L20 3v9c0 4.4-3.6 8-8 8s-8-3.6-8-8V3z"/><circle cx="9" cy="12" r="1.2" fill="#0003"/><circle cx="15" cy="12" r="1.2" fill="#0003"/></svg>';
 const LOCKSVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
-const DOGSVG='<svg viewBox="0 0 24 24" fill="#fff"><path d="M5 4c-1.5 0-3 2-3 5 0 1.6 1 2.4 2 2.6V15c0 3.3 3.6 6 8 6s8-2.7 8-6v-3.4c1-.2 2-1 2-2.6 0-3-1.5-5-3-5-1.4 0-2.6 1.3-3.2 2.6A9 9 0 0 0 12 6.2c-1.4 0-2.7.2-3.8.4C7.6 5.3 6.4 4 5 4z"/><circle cx="9" cy="12.5" r="1.1" fill="#0003"/><circle cx="15" cy="12.5" r="1.1" fill="#0003"/><ellipse cx="12" cy="16" rx="1.8" ry="1.2" fill="#0003"/></svg>';
-const PAWSVG='<svg viewBox="0 0 24 24" fill="#fff"><ellipse cx="12" cy="16" rx="5" ry="4"/><circle cx="6" cy="10" r="2"/><circle cx="10" cy="6.5" r="2"/><circle cx="14" cy="6.5" r="2"/><circle cx="18" cy="10" r="2"/></svg>';
-function petSvg(e){ return e==="Chien"?DOGSVG:(!e||e==="Chat")?CATSVG:PAWSVG; }
 /* Photos de profil : une miniature (192 px) gardée sur l'appareil s'affiche tout de suite, sans attendre le lien temporaire
    ni le téléchargement ; elle est refaite quand la photo change (nouvelle référence). Effacées à la déconnexion. */
 const THUMBS=(()=>{ try{ return JSON.parse(localStorage.getItem("cocoon.thumbs")||"{}")||{}; }catch(_){ return {}; } })(), THUMB_Q=new Set();
@@ -4086,8 +4083,11 @@ async function makeThumb(ref,url){ if(!ref||THUMBS[ref]||THUMB_Q.has(ref)||/^dat
   try{ const r=await fetch(url); if(!r.ok) throw 0; const bm=await createImageBitmap(await r.blob()); const N=192, k=Math.max(N/bm.width,N/bm.height), w=bm.width*k, h=bm.height*k;
     const c=document.createElement("canvas"); c.width=c.height=N; c.getContext("2d").drawImage(bm,(N-w)/2,(N-h)/2,w,h); THUMBS[ref]=c.toDataURL("image/jpeg",.82); saveThumbs(); }catch(_){} THUMB_Q.delete(ref); }
 function avatarFor(m,size,cls){ const a=el("span",{class:"av"+(cls?" "+cls:""),style:"background:"+(m.c||"#888")+(size?";width:"+size+"px;height:"+size+"px;font-size:"+Math.round(size*.45)+"px":""),"aria-hidden":"true"});
-  const th=m.photo&&THUMBS[m.photo], u=th||imgUrl(m.photo); if(u&&!th&&m.photo) makeThumb(m.photo,u); if(u) a.append(el("img",{src:u,alt:"",decoding:"sync"})); else if(typeOf(m)==="animal") a.innerHTML=petSvg(m.espece); else a.textContent=(m.nom||"?").slice(0,1).toUpperCase(); return a; }
+  const th=m.photo&&THUMBS[m.photo], u=th||imgUrl(m.photo); if(u&&!th&&m.photo) makeThumb(m.photo,u); if(u) a.append(el("img",{src:u,alt:"",decoding:"sync"})); else if(typeOf(m)==="animal"){ a.classList.add("av-pet"); a.textContent=petEmo(m); if(size) a.style.fontSize=Math.round(size*.56)+"px"; } else a.textContent=(m.nom||"?").slice(0,1).toUpperCase(); return a; }
 function avatar(id,size){ return avatarFor(membre(id),size); }
+/* animal sans photo : l'emoji du téléphone (Apple, Android…) qui correspond à son espèce */
+const PET_EMO=[[/chat|cat|félin/,"🐱"],[/chien|chiot|dog/,"🐶"],[/lapin/,"🐰"],[/hamster|rongeur|souris|rat\b|gerbille|cochon d.inde|chinchilla/,"🐹"],[/oiseau|perruche|perroquet|canari|poule|coq/,"🐦"],[/poisson/,"🐟"],[/tortue/,"🐢"],[/cheval|poney|âne/,"🐴"],[/serpent|python/,"🐍"],[/lézard|gecko|iguane|reptile/,"🦎"],[/furet/,"🦦"],[/chèvre|mouton/,"🐐"],[/grenouille/,"🐸"]];
+function petEmo(m){ const t=((m&&m.espece)||"")+" "+((m&&m.race)||""); const l=t.toLowerCase(); for(const [rx,e] of PET_EMO) if(rx.test(l)) return e; return "🐾"; }
 function paintBanner(node,m){ const p=BANNERS.find(b=>"preset:"+b.id===m.banniere); const u=!p&&imgUrl(m.banniere); node.style.setProperty("--mc",m.c||"#888"); node.classList.toggle("plain",!p&&!u); node.classList.toggle("rich",!!(p||u)); node.style.background=p?p.css:u?"center/cover no-repeat url(\""+u+"\")":""; return !!(p||u); }
 function profileCard(m,actions){
   const card=el("div",{class:"pcard"}); const head=el("div",{class:"pc-head"}); paintBanner(head,m); card.append(head);

@@ -191,6 +191,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - Images instantanées à l'ouverture : photo de Cocoony gardée dans `cocoon.secid` (posée par un petit script avant le gros script),
   miniatures 192 px des photos de profil dans `cocoon.thumbs` (`THUMBS`, `makeThumb`, utilisées par `avatarFor`) ; effacées à la déconnexion.
 - Fenêtre Événements sur iPhone : retour et « ⋯ » façon **en-tête de feuille iOS** (Rappels, Calendrier) : « ‹ Retour » en texte jaune, ⋯ cerclé jaune, sans fond (`html.native-tabs:not(.zz) .ev-back/.ev-more`). Essayé puis abandonné (Angel : « fonctionne mal ») : vrais boutons natifs posés par-dessus via `NT.topbar` (ne suivaient pas la fenêtre). Sur le web : ronds en verre CSS.
+- Animal sans photo : **emoji du téléphone** selon l'espèce/race (`petEmo`, `PET_EMO` : 🐱 🐶 🐰 🐹 🐦 🐟 🐢 🐴 🐍 🦎…, sinon 🐾) dans son rond (`.av-pet`) ; anciennes icônes dessinées (`petSvg`) retirées.
 - Menu « Tes foyers » (`openFoyerMenu`) : **menu de l'app aussi sur iPhone** (pas de `nativeizeMenu`, demandé par Angel).
 - App iPhone à jour toute seule : `cd app && npm run auto:ios` (`app/auto.mjs`) sur le Mac d'Angel → récupère `main` toutes les 30 s et
   recharge l'app (via `live.mjs`). Il suffit donc de pousser sur `main`.
