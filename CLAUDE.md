@@ -199,7 +199,10 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   (la semaine `#week` et l'en-tête `#dayHead` sont masqués sur l'accueil, la journée est toujours aujourd'hui) ; « Cocoony a remarqué » (`renderCocNote`, `#cocNote`,
   une remarque à la fois : soir sans repas → frigo, papier qui expire sous 14 j, événement sous 21 j avec des choses à préparer, courses en cours/longue liste ;
   « Non merci » mémorisé dans `cocoon.cocNo`) ; puis « Mes raccourcis » inchangés.
-  Cartes de l'accueil (foyer, journée, raccourcis, Cocoony) : contour fin + lueur de leur couleur qui s'allume l'une après l'autre (`accGlow`, `--gc`, `--gi`), comme l'écran « enfin serein » (demandé par Angel).
+  Cartes de l'accueil (foyer, journée, raccourcis, Cocoony) : contour fin 1 px (`var(--line)`) ; lueurs essayées puis **retirées** (Angel).
+  **Raccourcis en « carte à la une »** (choix C d'Angel parmi 3 styles × 9 raccourcis) : `wgX(k)` donne emoji (`e`), compte à rebours en haut à droite
+  (`cd`, rouge si `hot`), petite ligne (`cap`), titre (`big`), détail (`small`), étiquette en bas (`chip`), barre (`bar`, événement), anneau (`ring`, semaine), bac en couleur (`bin`) ;
+  rendu `.wg.wgc` (fond teinté de `--wc`) dans `renderWidgets` (l'ancien rendu `wgData` reste dessous, plus utilisé). Planche des 3 styles : A liste détaillée, B visuel, C carte à la une.
 - Menu « Tes foyers » (`openFoyerMenu`) : **menu de l'app aussi sur iPhone** (pas de `nativeizeMenu`, demandé par Angel).
 - App iPhone à jour toute seule : `cd app && npm run auto:ios` (`app/auto.mjs`) sur le Mac d'Angel → récupère `main` toutes les 30 s et
   recharge l'app (via `live.mjs`). Il suffit donc de pousser sur `main`.
