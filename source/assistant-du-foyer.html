@@ -2777,6 +2777,14 @@ div.pf-r{cursor:default}
 .jw-d i u.b{background:#8FB8FF}.jw-d i u.y{background:#FFC94A}.jw-d i u.p{background:#F28DB8}.jw-d i u.w{background:#cfcde0}.jw-d i u.rd{background:#FF6B6B}
 .jw-leg{display:flex;gap:10px;justify-content:center;font-size:10.5px;color:var(--muted);margin-top:8px}.jw-leg span{display:flex;align-items:center;gap:4px}.jw-leg i{width:7px;height:7px;border-radius:50%}.jw-leg i.b{background:#8FB8FF}.jw-leg i.y{background:#FFC94A}.jw-leg i.p{background:#F28DB8}.jw-leg i.w{background:#cfcde0}
 .wkn button{border:0;background:none;font:inherit;font-size:13px;letter-spacing:0;text-transform:none;font-weight:800;color:var(--mark);cursor:pointer;padding:6px 6px}
+/* Repas, Budget : la grande carte du haut au style de la carte « à la une » de l'accueil */
+.r-hero,.r-hero.e{--c:#E0B21C;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 20%,var(--surface)),var(--surface));border:1px solid color-mix(in srgb,var(--c) 45%,transparent);color:var(--ink);border-radius:18px}
+.r-hero .r-hk{color:var(--c);opacity:1}.r-hero .r-hp b{color:var(--ink)}.r-hero .r-hw{color:var(--muted)}
+.r-hero .r-hbt{background:color-mix(in srgb,var(--ink) 9%,transparent);color:var(--ink);font-weight:800}.r-hero .r-hbt.dk{background:#FFC94A;color:#1C1B2E}
+.b-hero{--c:#7FD39A;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 18%,var(--surface)),var(--surface))!important;border:1px solid color-mix(in srgb,var(--c) 45%,transparent);box-shadow:none!important;border-radius:18px}
+.b-hero .label{color:var(--c)!important;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.b-big.z{font-size:30px}
+.r-jm{padding:14px}.cn-pg{margin:0 0 10px}
 /* Tâches et courses : mêmes lignes que « À cocher » de l'accueil (rond à gauche, titre, infos dessous, avatar à droite, contour fin) */
 .item[data-key]{grid-template-columns:auto minmax(0,1fr) auto auto;padding:12px 12px;border:1px solid var(--line);box-shadow:none;border-radius:16px;gap:12px}
 .item[data-key]::before{display:none}.fridge .item[data-key]:nth-child(n){transform:none}
@@ -3256,8 +3264,7 @@ html.native-tabs:not(.zz) :is(.ev-back,.ev-more,.s-back):active{transform:none;o
 .cr-btns{display:flex;gap:8px}
 .cr-btns .btn{flex:1}
 .cr-btns .btn:disabled{opacity:.5}
-.r-hero{border-radius:22px;padding:14px 15px;background:linear-gradient(135deg,#FFC94A,#FF9C80);color:#1C1B2E;display:flex;flex-direction:column;gap:8px}
-.r-hero.e{background:linear-gradient(135deg,#FFE7A8,#FFD3C4)}
+.r-hero{padding:14px 15px;display:flex;flex-direction:column;gap:8px}
 .r-hk{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;opacity:.72}
 .r-hp{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px}
 .r-he{font-size:30px;line-height:1}
@@ -5029,6 +5036,24 @@ function dayDots(k){ const me=meId(), td=iso(today()), o=[];
   if(T.some(t=>!t.fait)) o.push(k<td?"rd":"w"); return o; }
 /* « Ta journée » : la semaine du jour choisi, fixe ; la poignée (ou « Semaine N ») déplie le mois entier, comme Calendrier sur iPhone */
 const JM_ROW=46, JM_GAP=4;
+/* grille « semaine qui se déplie » réutilisable (Repas…) : o={sel,open,mo,dots(k)→[classe|couleur],pick(k),toggle(o),month(n),legend:[[couleur,texte]]} */
+const JM_L='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>', JM_R='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>';
+function jmGrid(o){ const td=iso(today()), s=parse(o.sel), mo=o.open&&o.mo?o.mo:new Date(s.getFullYear(),s.getMonth(),1), m0=mo.getMonth(), lead=(mo.getDay()+6)%7, nd=new Date(mo.getFullYear(),m0+1,0).getDate(), rows=Math.ceil((lead+nd)/7), F=x=>new Intl.DateTimeFormat("fr-FR",x);
+  const g=el("div",{class:"jm-g"}); let row=0;
+  for(let i=0;i<rows*7;i++){ const x=new Date(mo.getFullYear(),m0,1-lead+i), k=iso(x); if(k===o.sel) row=Math.floor(i/7);
+    g.append(el("button",{type:"button",class:"jw-d"+(x.getMonth()!==m0?" om":"")+(k===o.sel?" on":"")+(k===td&&k!==o.sel?" td":"")+(k<td?" past":""),"aria-pressed":String(k===o.sel),"aria-label":F({weekday:"long",day:"numeric",month:"long"}).format(x),onclick:()=>o.pick(k)},
+      el("b",{text:String(x.getDate())}),el("i",{"aria-hidden":"true"},...(o.dots(k)||[]).map(c=>/^#/.test(c)?el("u",{style:"background-color:"+c}):el("u",{class:c}))))); }
+  const vp=el("div",{class:"jm-v"},g), grab=el("button",{type:"button",class:"jm-grab",onclick:()=>o.toggle(!o.open)},el("i",{"aria-hidden":"true"}));
+  const J=el("div",{class:"jm"+(o.open?" open":"")},el("div",{class:"jm-hw"},el("div",{class:"jm-h"},el("b",{text:F({month:"long",year:"numeric"}).format(mo).replace(/^./,c=>c.toUpperCase())}),el("span",{},jmNav("Mois précédent",()=>o.month(-1),JM_L),jmNav("Mois suivant",()=>o.month(1),JM_R)))),
+    el("div",{class:"jm-dn","aria-hidden":"true"},..."LMMJVSD".split("").map(l=>el("span",{text:l}))),vp,grab,
+    o.legend?el("div",{class:"jw-leg","aria-hidden":"true"},...o.legend.map(([cl,t])=>el("span",{},el("i",{style:"background:"+cl}),t))):null);
+  J._set=op=>{ o.open=op; J.classList.toggle("open",op); vp.style.height=(op?rows*(JM_ROW+JM_GAP)-JM_GAP:JM_ROW)+"px"; g.style.transform="translateY("+(op?0:-row*(JM_ROW+JM_GAP))+"px)"; grab.setAttribute("aria-label",op?"Replier le mois":"Voir tout le mois"); };
+  J.classList.add("nt"); J._set(o.open); requestAnimationFrame(()=>J.classList.remove("nt")); return J; }
+/* une ligne de Cocoony dans une page (même look que sur l'accueil) ; « × » la cache pour de bon (cocoon.cocNo) */
+function cocLine(key,text,go,fn){ let no=[]; try{ no=JSON.parse(localStorage.getItem("cocoon.cocNo")||"[]"); }catch(_){} if(no.includes(key)) return null;
+  const img=el("img",{class:"cn-av",alt:"","aria-hidden":"true"}); try{ const si=document.querySelector(".sec-big"); img.src=si&&si.src?si.src:document.querySelector(".brand-logo").src; }catch(_){}
+  const box=el("div",{class:"cn cn-pg"},img,el("p",{text}),go?el("button",{type:"button",class:"cn-go",text:go,onclick:fn}):null);
+  box.append(el("button",{type:"button",class:"cn-no","aria-label":"Ne plus afficher",text:"×",onclick:()=>{ no=no.concat(key).slice(-60); try{ localStorage.setItem("cocoon.cocNo",JSON.stringify(no)); }catch(_){} box.remove(); }})); return box; }
 const jmNav=(l,fn,svg)=>{ const b=el("button",{type:"button",class:"jm-nav","aria-label":l,onclick:fn}); b.innerHTML=svg; return b; };
 function dayWeek(t0){ const B=$("dayBig"); if(!B) return; const d=parse(t0), td=iso(today()), open=!!S.accOpen, F=o=>new Intl.DateTimeFormat("fr-FR",o);
   $("dayTtl").textContent=t0===td?F({weekday:"long",day:"numeric",month:"long"}).format(d).replace(/^./,c=>c.toUpperCase()):daysTo(t0)===1?"Demain":daysTo(t0)===-1?"Hier":F({weekday:"short",day:"numeric",month:"short"}).format(d).replace(/^./,c=>c.toUpperCase());
@@ -6299,7 +6324,7 @@ function renderBudget(){
   const mine=month.filter(d=>amtOf(d)>0), hTot=mine.reduce((a,d)=>a+amtOf(d),0);
   if(duo) h.append(segAnim(el("div",{class:"b-who",role:"group","aria-label":"Budget affiché"},...[["foyer","Foyer"],["moi","Moi"]].map(([k,l])=>el("button",{type:"button","aria-pressed":String(who===k),text:l,onclick:()=>{ S.bWho=k; renderBudget(); }}))),"who"));
   h.append(el("div",{class:"b-mnav"},el("button",{type:"button","aria-label":"Mois précédent",text:"‹",disabled:off<=-36||null,onclick:()=>{ S.bMonth=off-1; renderBudget(); }}),el("span",{class:"label",text:(who==="moi"?"Ta part · ":"Budget du foyer · ")+mois}),el("button",{type:"button","aria-label":"Mois suivant",text:"›",disabled:cur||null,onclick:()=>{ S.bMonth=Math.min(0,off+1); renderBudget(); }})),
-    el("div",{},el("div",{class:"b-big",text:money(hTot)}),el("div",{class:"b-sub",text:(mine.length?mine.length+" dépense"+(mine.length>1?"s":"")+" "+quand:(cur?"Aucune dépense ce mois-ci pour l'instant":"Aucune dépense "+quand))})));
+    el("div",{},el("div",{class:"b-big"+(hTot?"":" z"),text:hTot?money(hTot):"Aucune dépense"}),el("div",{class:"b-sub",text:(mine.length?mine.length+" dépense"+(mine.length>1?"s":"")+" "+quand:(cur?"rien de noté ce mois-ci":"rien de noté "+quand))})));
   if(month.length||deps.length) h.append(budgetCurve(off));
   $("nBudget").textContent=soon.length; $("nBudget").hidden=!soon.length;
   setTimeout(bookRecurring,0);
@@ -6342,7 +6367,8 @@ function renderBudget(){
   $("bDepCount").textContent=[past.length?past.length+" dépense"+(past.length>1?"s":""):"",fut.length?fut.length+" à venir":""].filter(Boolean).join(" · ");
   if(fut.length){ dl.append(el("div",{class:"b-fut-l",text:"À venir ce mois-ci"})); for(const {a,n} of fut){ if(S.bForm&&S.bForm.id===a.id&&S.bForm.kind==="sub"&&S.bFormSrc==="frise"){ dl.append(BF); continue; } dl.append(subRow(a,n,true)); } }
   if(cur) dl.append(el("div",{class:"b-today",text:"Aujourd'hui · "+new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"short"}).format(tNow)}));
-  if(!past.length) dl.append(el("div",{class:"b-empty"},el("strong",{text:fC?"Rien dans cette catégorie":cur?"Aucune dépense pour l'instant":"Aucune dépense en "+mois}),fC?"Touche « Tout » sous la courbe pour tout revoir.":"Note les courses, le plein, le véto… Cocoon calcule qui doit quoi à qui."));
+  if(!past.length&&cur&&!fC){ const L=cocLine("bud-vide","Je fais les comptes 💶","+ Dépense",()=>openBForm("dep")); if(L) dl.append(L); }
+  else if(!past.length) dl.append(el("div",{class:"b-empty"},el("strong",{text:fC?"Rien dans cette catégorie":cur?"Aucune dépense pour l'instant":"Aucune dépense en "+mois}),fC?"Touche « Tout » sous la courbe pour tout revoir.":"Note les courses, le plein, le véto… Cocoon calcule qui doit quoi à qui."));
   for(const d of past){ const rb=d.type==="rembt";
     const meta=el("div",{class:"meta"});
     meta.append(el("span",{class:"tag"},d.payePar==="chacun"?null:avatar(d.payePar,16),(rb?(d.payePar===me?"tu as remboursé ":membre(d.payePar).nom+" a remboursé ")+(d.partage&&d.partage[0]===me?"toi":membre((d.partage||[])[0]).nom):(d.payePar==="chacun"?"chacun paie sa part":"payé par "+(d.payePar===me?"toi":membre(d.payePar).nom)))));
@@ -9621,7 +9647,7 @@ function renderCourses(){
   for(const r of RAYONS){ const its=todo.filter(i=>rayonOf(i)===r[0]).sort((a,b)=>(a.ajouteLe||0)-(b.ajouteLe||0)); if(!its.length) continue;
     const list=el("div",{class:"c-list"}); for(const i of its) list.append(courseRow(i,{rayon:true}));
     box.append(el("div",{class:"c-group"},el("h3",{},el("span",{class:"c-ico","aria-hidden":"true",text:r[2]}),r[1],el("span",{class:"count",text:String(its.length)})),list)); }
-  if(todo.length&&!shop) box.append(el("p",{class:"c-tip",text:"Astuce : appui long sur un article pour changer son rayon. Cocoon s'en souviendra."}));
+  if(todo.length&&!shop){ const L=cocLine("c-rayon","Appui long = changer de rayon"); if(L) box.prepend(L); }
   if(!todo.length) box.append(el("div",{class:"list"},el("div",{class:"empty"},el("strong",{text:"Tout est dans le caddie !"}),shop?"Appuie sur « J'ai fini les courses » : le caddie se vide tout seul.":"Vide le caddie quand les courses sont rangées.")));
   if(done.length){ const open=shop||!!S.cCartOpen, list=el("div",{class:"c-list done"}); if(open) for(const i of done.slice().sort((a,b)=>(b.faitLe||0)-(a.faitLe||0))) list.append(courseRow(i));
     box.append(el("div",{class:"c-group c-cart"+(open?" open":"")},el("h3",{},el("button",{type:"button",class:"c-cart-t","aria-expanded":String(open),onclick:()=>{ S.cCartOpen=!S.cCartOpen; renderCourses(); }},el("span",{class:"c-ck","aria-hidden":"true",text:"✓"}),"Dans le caddie",el("span",{class:"count",text:"· "+done.length}),el("span",{class:"c-chev","aria-hidden":"true",text:"›"})),shop?null:el("button",{type:"button",class:"btn ghost c-clear",text:"Vider le caddie",onclick:async()=>{ await rowsOutAll(done.map(i=>cRowEl(i.id)).filter(Boolean)); softDelete(done.map(i=>({key:"courses:"+i.id,arr:"courses",item:i,run:()=>S.db.collection("courses").doc(i.id).delete()})),done.length>1?done.length+" articles retirés de la liste.":"Article retiré de la liste."); }})),list)); }
@@ -9825,8 +9851,7 @@ function openRepas(ds,sl,pre){ if(!needMe()) return; const sn=(RSLOTS.find(r=>r[
   if(!m&&!pre) setTimeout(()=>{ try{ pi.focus({preventScroll:true}); }catch(_){} },360); }
 function renderRepas(){
   const box=$("rBody"); if(!box) return; box.innerHTML=""; const me=meId(), shown=repasSlots();
-  const base=weekStartOf(today()), ws=base+(S.rWeek||0)*7*864e5, t0=iso(today());
-  const d0=new Date(ws), d6=new Date(ws+6*864e5);
+  const t0=iso(today()), sel=S.rDay||t0, base=weekStartOf(today()); S.rWeek=Math.round((weekStartOf(parse(sel))-base)/(7*864e5)); const ws=base+S.rWeek*7*864e5;
   const slots=RSLOTS.filter(r=>shown.includes(r[0]));
   const nm=id=>id&&humains().some(h=>h.id===id)?(id===me?"Toi":membre(id).nom):null;
   /* 1. le prochain repas, en vedette */
@@ -9839,28 +9864,20 @@ function renderRepas(){
       hero.append(el("div",{class:"r-hb"},el("button",{type:"button",class:"r-hbt",onclick:()=>openIngSheet(hm.plat)},uic("cart"),"Ingrédients"),el("button",{type:"button",class:"r-hbt",onclick:()=>openRepas(hd,hs)},"✎ Changer"))); }
     else { hero.append(el("button",{type:"button",class:"r-hp",onclick:()=>openRepas(hd,hs)},el("span",{class:"r-he","aria-hidden":"true",text:"🤔"}),el("b",{text:"Rien de prévu"})));
       const ids=el("div",{class:"r-hb"}); for(const p of platsConnus(hs).slice(0,3)) ids.append(el("button",{type:"button",class:"r-hbt",onclick:()=>openRepas(hd,hs,p.nom)},platEmoji(p.nom,hs)+" "+p.nom));
-      ids.append(el("button",{type:"button",class:"r-hbt dk",onclick:()=>openRepas(hd,hs)},"Choisir"));
+      ids.prepend(el("button",{type:"button",class:"r-hbt dk",onclick:()=>openFrigo()},"Une idée avec le frigo")); ids.append(el("button",{type:"button",class:"r-hbt",onclick:()=>openRepas(hd,hs)},"Choisir un plat"));
       hero.append(ids); }
     box.append(hero); }
   box.append(el("button",{type:"button",class:"r-frigo",onclick:()=>openFrigo()},el("span",{"aria-hidden":"true",text:"🧊"}),el("span",{},el("b",{text:"Avec ce qu'il y a dans le frigo"}),el("small",{text:"3 idées de plats, et ce qui manque part aux courses"})),el("u",{"aria-hidden":"true",text:"›"})));
   { const st=S.stock||[], bt=st.filter(x=>stockJ(x)!=null&&stockJ(x)<=stockAlerte(x)).length;
     box.append(el("button",{type:"button",class:"r-frigo",onclick:()=>openStock()},el("span",{"aria-hidden":"true",text:"🥫"}),el("span",{},el("b",{text:"Frigo, congélateur, placard"}),el("small",{text:st.length?st.length+" produit"+(st.length>1?"s":"")+(bt?" · "+bt+" à consommer vite":""):"Note ce que tu ranges, Cocoon prévient avant que ça périme"})),bt?el("em",{class:"r-fbadge",text:String(bt)}):el("u",{"aria-hidden":"true",text:"›"}))); }
   /* 2. la frise de la semaine */
-  let planned=0; for(let k=0;k<7;k++){ const ds=iso(new Date(ws+k*864e5)); for(const [sl] of slots) if(repasOf(ds,sl)) planned++; }
-  const lbl=(S.rWeek||0)===0?"Cette semaine":S.rWeek===1?"La semaine prochaine":S.rWeek===-1?"La semaine dernière":"Du "+d0.getDate()+" "+MOIS_C(d0)+" au "+d6.getDate()+" "+MOIS_C(d6);
-  const goWeek=n=>{ S.rWeek=(S.rWeek||0)+n; S.rDay=null; renderRepas(); };
-  box.append(el("div",{class:"r-nav"},
-    el("button",{type:"button",class:"r-arw","aria-label":"Semaine précédente",onclick:()=>goWeek(-1)},"‹"),
-    el("div",{class:"r-wk"},el("b",{text:lbl}),el("span",{text:planned+" repas prévu"+(planned>1?"s":"")+" sur "+7*slots.length})),
-    el("button",{type:"button",class:"r-arw","aria-label":"Semaine suivante",onclick:()=>goWeek(1)},"›")));
-  let sel=S.rDay; if(!sel||sel<iso(d0)||sel>iso(d6)) sel=(S.rWeek||0)===0?t0:iso(d0); S.rDay=sel;
-  const JL=["L","M","M","J","V","S","D"], strip=el("div",{class:"r-strip",role:"tablist","aria-label":"Jours de la semaine"});
-  for(let k=0;k<7;k++){ const d=new Date(ws+k*864e5), ds=iso(d), on=ds===sel;
-    const dots=el("i",{class:"r-dots","aria-hidden":"true"}); for(const [sl] of slots) dots.append(el("u",{class:repasOf(ds,sl)?"r-dt-"+sl:""}));
-    const n=slots.filter(([sl])=>repasOf(ds,sl)).length;
-    strip.append(el("button",{type:"button",role:"tab","aria-selected":String(on),class:"r-sd"+(on?" on":"")+(ds===t0?" now":"")+(ds<t0?" past":""),"aria-label":JOURS_LONGS[k]+" "+d.getDate()+" : "+n+" repas prévu"+(n>1?"s":""),
-      onclick:()=>{ if(S.rDay===ds) return; S.rDay=ds; haptic(5); renderRepas(); }},JL[k],el("b",{text:String(d.getDate())}),dots)); }
-  box.append(strip);
+  /* même rangée de jours que l'accueil ; « + » déplie le mois. Points = repas prévus (petit-déj, déjeuner, repas) */
+  const RC={matin:"#E9A86B",midi:"#6FA8DC",soir:"#E0B21C"};
+  box.append(el("div",{class:"jr-card r-jm"},jmGrid({sel,open:!!S.rOpen,mo:S.rMo?parse(S.rMo):null,dots:k=>slots.filter(([sl])=>repasOf(k,sl)).map(([sl])=>RC[sl]),
+    pick:k=>{ S.rDay=k===t0?null:k; haptic(5); renderRepas(); },
+    toggle:op=>{ S.rOpen=op; if(!op&&S.rMo){ S.rMo=null; renderRepas(); return; } const J=box.querySelector(".r-jm .jm"); if(J&&J._set){ J._set(op); haptic(6); } else renderRepas(); },
+    month:n=>{ const d=S.rMo?parse(S.rMo):new Date(parse(sel).getFullYear(),parse(sel).getMonth(),1); S.rMo=iso(new Date(d.getFullYear(),d.getMonth()+n,1)); renderRepas(); },
+    legend:slots.map(([sl,sn])=>[RC[sl],sn.toLowerCase()])})));
   /* 3. les repas du jour choisi, en grandes cartes */
   const sd=parse(sel), past=sel<t0, now=sel===t0, hr=new Date().getHours()+new Date().getMinutes()/60;
   const slPast=sl=>past||(now&&repasFini(sel,sl,hr));
