@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="27/10 14:42";</script>
+<script>window.COCOON_BUILD="27/10 15:06";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2873,8 +2873,7 @@ div.pf-r{cursor:default}
 .jw-d i u.b{background:#8FB8FF}.jw-d i u.y{background:#FFC94A}.jw-d i u.p{background:#F28DB8}.jw-d i u.w{background:#cfcde0}.jw-d i u.rd{background:#FF6B6B}
 .jw-leg{display:flex;gap:10px;justify-content:center;font-size:10.5px;color:var(--muted);margin-top:8px}.jw-leg span{display:flex;align-items:center;gap:4px}.jw-leg i{width:7px;height:7px;border-radius:50%}.jw-leg i.b{background:#8FB8FF}.jw-leg i.y{background:#FFC94A}.jw-leg i.p{background:#F28DB8}.jw-leg i.w{background:#cfcde0}
 .wkn button{border:0;background:none;font:inherit;font-size:13px;letter-spacing:0;text-transform:none;font-weight:800;color:var(--mark);cursor:pointer;padding:6px 6px}
-.wkn #wkLbl:after{content:"";display:inline-block;width:6px;height:6px;border:solid currentColor;border-width:0 2px 2px 0;transform:translateY(-3px) rotate(45deg);margin-left:7px;transition:transform .3s}.wkn #wkLbl.open:after{transform:translateY(0) rotate(-135deg)}
-.wkn #wkToday{color:var(--ink);background:var(--sunk);border-radius:99px;padding:5px 10px;margin-right:4px;font-size:12px}
+.wkn #wkLbl{font-size:13px;letter-spacing:0;text-transform:none;font-weight:800;color:var(--muted);padding:6px}
 .jm-hw{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s cubic-bezier(.3,1,.4,1)}.jm.open .jm-hw{grid-template-rows:1fr}.jm-hw>.jm-h{overflow:hidden;min-height:0}
 .jm-h{display:flex;justify-content:space-between;align-items:center;padding:0 2px}.jm-h b{font:800 16px var(--f-display);padding:2px 0 10px}.jm-h span{display:flex;gap:4px;padding-bottom:8px}
 .jm-nav{border:0;background:var(--sunk);color:var(--ink);width:32px;height:32px;border-radius:50%;cursor:pointer;display:grid;place-items:center;padding:0}
@@ -2882,7 +2881,7 @@ div.pf-r{cursor:default}
 .jm-v{overflow:hidden;transition:height .32s cubic-bezier(.3,1,.4,1)}.jm-g{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:46px;gap:4px;transition:transform .32s cubic-bezier(.3,1,.4,1)}
 .jm.nt .jm-v,.jm.nt .jm-g,.jm.nt .jm-hw{transition:none}
 .jm .jw-d{padding:0;justify-content:center;gap:2px}.jm.open .jw-d.om{opacity:.35}
-.jm-grab{display:block;width:100%;height:22px;border:0;background:none;cursor:pointer;touch-action:none;margin-top:2px}.jm-grab i{display:block;width:38px;height:5px;border-radius:3px;background:var(--line);margin:0 auto;transition:background .2s}.jm-grab:active i{background:var(--muted)}
+.jm-grab{display:grid;place-items:center;width:34px;height:26px;border:0;border-radius:99px;background:var(--sunk);cursor:pointer;margin:6px auto 0;padding:0}.jm-grab i{position:relative;display:block;width:12px;height:12px}.jm-grab i:before,.jm-grab i:after{content:"";position:absolute;left:0;top:5px;width:12px;height:2px;border-radius:1px;background:var(--ink);transition:transform .3s}.jm-grab i:after{transform:rotate(90deg)}.jm.open .jm-grab i:after{transform:rotate(0)}.jm-grab:active{background:var(--line)}
 @media (prefers-reduced-motion:reduce){.jm-v,.jm-g,.jm-hw{transition:none}}
 .jw-d{border:0;border-radius:13px;background:var(--sunk);color:var(--muted);padding:6px 0 7px;display:flex;flex-direction:column;align-items:center;gap:1px;font:inherit;cursor:pointer}
 .jw-d small{font-size:10px;font-weight:800}.jw-d b{font:800 17px/1.1 var(--f-display);color:var(--ink)}
@@ -3779,7 +3778,7 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
   <section class="view" data-view="accueil">
     <div id="rdvAlert"></div>
     <div id="evAlert"></div>
-    <div class="acc-sec" id="daySec" hidden><span id="dayTtl"></span><span class="wkn"><button type="button" id="wkToday" hidden>Aujourd'hui</button><button type="button" id="wkLbl" aria-expanded="false"></button></span></div>
+    <div class="acc-sec" id="daySec" hidden><span id="dayTtl"></span><span class="wkn"><button type="button" id="wkToday" hidden>Revenir à aujourd'hui</button><span id="wkLbl"></span></span></div>
     <div class="jr-card" id="dayCard" hidden><div class="td-h" id="dayHead"></div><div class="week" id="week"></div><div class="jw" id="dayBig"></div><div class="td-body" id="todayCard"></div></div>
     <div id="cocNote" hidden></div>
     <div id="recapCard" class="recap" hidden></div>
@@ -5122,19 +5121,16 @@ function dayWeek(t0){ const B=$("dayBig"); if(!B) return; const d=parse(t0), td=
   const tm=new Date(today().getFullYear(),today().getMonth(),1), step=n=>()=>{ S.accMo=iso(new Date(mo.getFullYear(),m0+n,1)); dayWeek(t0); };
   const head=el("div",{class:"jm-hw"},el("div",{class:"jm-h"},el("b",{text:F({month:"long",year:"numeric"}).format(mo).replace(/^./,c=>c.toUpperCase())}),
     el("span",{},jmNav("Mois précédent",step(-1),'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>'),jmNav("Mois suivant",step(1),'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>'))));
-  const vp=el("div",{class:"jm-v"},g), grab=el("button",{type:"button",class:"jm-grab","aria-label":open?"Replier le mois":"Voir tout le mois"},el("i"));
-  grab.onclick=()=>{ if(grab._drag){ grab._drag=0; return; } jmOpen(!S.accOpen); };
-  let y0=null; grab.addEventListener("pointerdown",e=>{ y0=e.clientY; }); grab.addEventListener("pointerup",e=>{ if(y0==null) return; const dy=e.clientY-y0; y0=null; if(Math.abs(dy)>16){ grab._drag=1; jmOpen(dy>0); } });
+  const vp=el("div",{class:"jm-v"},g), grab=el("button",{type:"button",class:"jm-grab","aria-label":open?"Replier le mois":"Voir tout le mois",onclick:()=>jmOpen(!S.accOpen)},el("i",{"aria-hidden":"true"}));
   const J=el("div",{class:"jm"+(open?" open":"")},head,el("div",{class:"jm-dn","aria-hidden":"true"},..."LMMJVSD".split("").map(l=>el("span",{text:l}))),vp,grab,
     el("div",{class:"jw-leg","aria-hidden":"true"},...[["b","rendez-vous"],["y","événement"],["p","anniv."],["w","tâches"]].map(([c,t])=>el("span",{},el("i",{class:c}),t))));
   J._set=o=>{ J.classList.toggle("open",o); vp.style.height=(o?rows*(JM_ROW+JM_GAP)-JM_GAP:JM_ROW)+"px"; g.style.transform="translateY("+(o?0:-row*(JM_ROW+JM_GAP))+"px)"; grab.setAttribute("aria-label",o?"Replier le mois":"Voir tout le mois"); };
   J.classList.add("nt"); J._set(open); B.replaceChildren(J); void J.offsetHeight; J.classList.remove("nt");
   const wk=isoWeek(new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7)));
-  $("wkLbl").textContent="Semaine "+wk; $("wkLbl").classList.toggle("open",open); $("wkLbl").setAttribute("aria-expanded",String(open));
-  $("wkToday").hidden=t0===td&&(!open||mo.getTime()===tm.getTime()); }
+  const away=!(t0===td&&(!open||mo.getTime()===tm.getTime())); $("wkLbl").textContent="Semaine "+wk; $("wkLbl").hidden=away; $("wkToday").hidden=!away; }
 function jmOpen(o){ const t0=S.accDay||iso(today()), B=$("dayBig");
   if(!o&&S.accMo){ S.accMo=null; dayWeek(t0); }
-  S.accOpen=o; const J=B&&B.querySelector(".jm"); if(J&&J._set){ J._set(o); $("wkLbl").classList.toggle("open",o); $("wkLbl").setAttribute("aria-expanded",String(o)); haptic(6); } else dayWeek(t0); }
+  S.accOpen=o; const J=B&&B.querySelector(".jm"); if(J&&J._set){ J._set(o); haptic(6); } else dayWeek(t0); }
 /* ---------- Accueil : le plus urgent, puis une remarque de Cocoony ---------- */
 const URG_EMO={factures:"💶",entretien:"🔧",courses:"🛒",colis:"📦",animaux:"🐾",rdv:"📅",maison:"🏠",documents:"📄",voitures:"🚗",ecole:"🎒",jardin:"🌱"};
 function cocNoteList(){ const me=meId(), out=[], td=iso(today()), h=new Date().getHours();
@@ -6922,8 +6918,7 @@ function hubMiniUpd(){ const M=$("hubMini"); if(!M) return; const ti=document.qu
   if(ti&&ti.offsetParent&&ti.textContent.trim()&&!document.documentElement.classList.contains("prem-open")){ const r=ti.getBoundingClientRect(); on=r.bottom<4; if(on){ const t=ti.textContent; if($("hubMiniT").textContent!==t) $("hubMiniT").textContent=t; const add=document.querySelector('.view:not([hidden]) .hub-add'); $("hubMiniAdd").hidden=!add; } }
   if(M.classList.contains("on")!==on){ M.classList.toggle("on",on); M.setAttribute("aria-hidden",String(!on)); M.querySelectorAll("button").forEach(b=>b.tabIndex=on?0:-1); } }
 addEventListener("scroll",()=>{ if(!S._hmRaf) S._hmRaf=requestAnimationFrame(()=>{ S._hmRaf=0; hubMiniUpd(); }); },{passive:true});
-/* « Semaine N » et la poignée : déplier / replier le mois ; « Aujourd'hui » revient au jour même */
-$("wkLbl").addEventListener("click",()=>jmOpen(!S.accOpen));
+/* « Revenir à aujourd'hui » (à la place de « Semaine N » dès qu'on regarde un autre jour ou un autre mois) */
 $("wkToday").addEventListener("click",()=>{ S.accDay=null; S.accMo=null; renderToday(); });
 $("hubMiniAdd").addEventListener("click",()=>{ const add=document.querySelector('.view:not([hidden]) .hub-add'); if(add){ window.scrollTo({top:0,behavior:"smooth"}); add.click(); } });
 /* catégories de tâches créées par le foyer : on les retrouve dans les tâches elles-mêmes (nom + couleur) */
