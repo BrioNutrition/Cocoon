@@ -36,7 +36,7 @@ async def main():
     await pg.wait_for_timeout(1200)
     F=await pg.evaluate("__mock.T.cocoon_foyers[0].id")
     await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="courses"]'); await pg.wait_for_timeout(200)
-    await pg.click('.cl-note:not(.cl-new)'); await pg.wait_for_timeout(700); await pg.fill('#cNom','lait, pain, tomates'); await pg.press('#cNom','Enter'); await pg.wait_for_timeout(500)
+    await pg.click('section[data-view="courses"] .hub-add'); await pg.wait_for_timeout(700); await pg.fill('#clTitre','Courses'); await pg.click('#clGo'); await pg.wait_for_timeout(1000); await pg.fill('#cNom','lait, pain, tomates'); await pg.press('#cNom','Enter'); await pg.wait_for_timeout(500)
     # Emma part faire les courses (autre téléphone)
     await pg.evaluate("([F])=>__mock.remote({foyer:F,path:'coursesLive',id:'session',data:{par:'emma',depuis:Date.now(),fin:null},updated_by:'u-emma'})",[F]); await pg.wait_for_timeout(400)
     print('bandeau:', (await pg.inner_text('#cLive')).replace('\n',' | '))

@@ -2804,12 +2804,15 @@ div.pf-r{cursor:default}
 .cl-done .cl-e{width:28px;height:28px;border-radius:50%;background:color-mix(in srgb,var(--c) 30%,transparent);display:grid;place-items:center;font-size:14px;font-weight:800}
 .cl-dt{flex:1;min-width:0;display:flex;flex-direction:column}.cl-dt b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cl-dt small{font-size:12px;color:var(--muted)}
 .cl-redo{border:0;background:var(--sunk);color:var(--ink);font:inherit;font-size:12.5px;font-weight:800;padding:7px 11px;border-radius:99px;cursor:pointer}.cl-x{border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px}
+.cl-cols{display:flex;gap:9px;flex-wrap:wrap;margin:2px 0 4px}.cl-cols button{width:32px;height:32px;border-radius:50%;border:0;background:var(--c);cursor:pointer;padding:0}.cl-cols button[aria-checked="true"]{box-shadow:0 0 0 2.5px var(--surface),0 0 0 4.5px var(--c)}
+.cl-back{border:0;background:none;color:var(--mark);font:inherit;font-size:14px;font-weight:800;padding:2px 0 10px;cursor:pointer}
+.cl-empty{grid-column:1/-1}
 .cl-emos{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 6px}.cl-emos button{width:40px;height:40px;border-radius:12px;border:0;background:var(--sunk);font-size:20px;cursor:pointer}.cl-emos button[aria-checked="true"]{box-shadow:inset 0 0 0 2px #FFC94A;background:color-mix(in srgb,var(--c) 25%,var(--sunk))}
 .cl-in .pchips{margin-bottom:6px}
 .cl-tg{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;background:var(--sunk);border:0;border-radius:14px;padding:11px 12px;margin-top:8px;font:inherit;font-size:14px;font-weight:700;color:var(--ink);text-align:left;cursor:pointer}
 .cl-tg u{flex:none;width:44px;height:26px;border-radius:99px;background:color-mix(in srgb,var(--ink) 25%,transparent);position:relative;transition:background .2s}.cl-tg u:after{content:"";position:absolute;left:2px;top:2px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
 .cl-tg[aria-checked="true"] u{background:#34C759!important}.cl-tg[aria-checked="true"] u::after{transform:translateX(18px)!important}
-.cl-head{margin-bottom:10px}.cl-hr{display:flex;align-items:center;justify-content:space-between;gap:10px}.cl-tt{font-family:var(--f-display);font-size:20px;font-weight:800;margin:0;min-width:0;overflow-wrap:anywhere}
+.cl-head{margin-bottom:10px;border-left:4px solid var(--c,#7FD39A);padding-left:10px}.cl-hr{display:flex;align-items:center;justify-content:space-between;gap:10px}.cl-tt{font-family:var(--f-display);font-size:20px;font-weight:800;margin:0;min-width:0;overflow-wrap:anywhere}
 .cl-sheet .cl-more{position:static;flex:none;width:36px;height:36px;border-radius:50%;border:0;background:var(--sunk);color:var(--ink);display:grid;place-items:center;cursor:pointer}.cl-sheet .cl-more svg{width:20px;height:20px;fill:currentColor}
 .cl-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.cl-chips span{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:99px;background:var(--sunk)}
 .cl-sheet .c-add{display:flex;gap:8px;margin:4px 0 8px}.cl-sheet .c-add input{flex:1;min-width:0}.cl-sheet .c-add .btn{width:48px;padding:0;font-size:22px}
@@ -9701,14 +9704,16 @@ const CL_DEF="principale", CL_NODES=["cForm","cRepas","cHab","cPour","cLists"].m
 /* le champ, les habituels et la liste vivent dans la feuille de la liste ouverte ; rangés dans #cStash sinon */
 function clStash(){ const st=document.getElementById("cStash"); if(st) for(const x of CL_NODES) if(x&&x.parentNode!==st) st.append(x); }
 const CL_EMO=[["🛒","#7FD39A"],["🥖","#FFC94A"],["🎂","#F28DB8"],["💊","#8FB8FF"],["🏠","#E9A86B"],["🐾","#C9A7FF"],["🎁","#FF9C80"],["🧴","#7FCDB9"],["🎉","#FFB86B"]];
-const clCol=l=>(CL_EMO.find(x=>x[0]===l.emoji)||CL_EMO[0])[1];
+/* couleur de la liste (pastilles, Angel) ; les anciennes listes à emoji gardent la couleur de leur emoji */
+const CL_COLS=["#7FD39A","#3CC3A0","#7FCDB9","#8FB8FF","#5B8DEF","#9B7BFF","#C9A7FF","#E79ADB","#F28DB8","#FF6B8B","#FF9C80","#FFB86B","#FFC94A","#E9A86B","#B9B6CC"];
+const clCol=l=>l.couleur||(CL_EMO.find(x=>x[0]===l.emoji)||CL_EMO[0])[1];
 function clAll(){ const me=meId(); return (S.listes||[]).filter(l=>!l.prive||l.par===me); }
 function cItemsOf(id){ const act=new Set((S.listes||[]).filter(l=>!l.fini&&l.id!==CL_DEF).map(l=>l.id));
   return (S.courses||[]).filter(i=>id===CL_DEF?!(i.liste&&act.has(i.liste)):i.liste===id); }
 function clGet(id){ const l=(S.listes||[]).find(x=>x.id===id); if(l) return l; if(id===CL_DEF) return {id:CL_DEF,titre:"Liste de courses",emoji:"🛒",virt:true}; return null; }
 function clActives(){ const L=clAll().filter(l=>!l.fini&&l.id!==CL_DEF); const P=clGet(CL_DEF);
   const out=L.slice().sort((a,b)=>(a.date||"9999")<(b.date||"9999")?-1:(a.date||"9999")>(b.date||"9999")?1:(a.creeLe||0)-(b.creeLe||0));
-  if(!P.fini&&(!P.virt||cItemsOf(CL_DEF).length||!out.length)) out.unshift(P); return out; }
+  if(!P.fini&&(!P.virt||cItemsOf(CL_DEF).length)) out.unshift(P); return out; }
 function clWhen(d){ if(!d) return "Sans date"; const n=daysTo(d); if(n<0) return "Passée · "+new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"short"}).format(parse(d)); if(n===0) return "Aujourd'hui"; if(n===1) return "Demain";
   if(n<7) return new Intl.DateTimeFormat("fr-FR",{weekday:"long"}).format(parse(d)).replace(/^./,x=>x.toUpperCase()); return new Intl.DateTimeFormat("fr-FR",{weekday:"short",day:"numeric",month:"short"}).format(parse(d)).replace(/^./,x=>x.toUpperCase()); }
 /* note = page de carnet à spirale (choix C d'Angel) : tranche de couleur + spirale à gauche, lignes, ronds à cocher */
@@ -9719,13 +9724,14 @@ function clNote(l){ const its=cItemsOf(l.id).slice().sort((a,b)=>(a.ajouteLe||0)
   const sp=el("span",{class:"cl-sp","aria-hidden":"true"}); for(let k=0;k<8;k++) sp.append(el("i"));
   const sub=[clWhen(l.date),l.lieu,l.prive?"🔒 moi seul":"",l.recur?"🔁 chaque semaine":""].filter(Boolean).join(" · ");
   return el("button",{type:"button",class:"cl-note",style:"--c:"+col,"aria-label":(l.titre||"Liste")+", "+sub+", "+n+" article"+(n>1?"s":""),onclick:()=>openCList(l.id)},sp,
-    el("span",{class:"cl-h"},el("b",{text:l.titre||"Liste de courses"}),el("span",{class:"cl-e","aria-hidden":"true",text:l.emoji||"🛒"})),
+    el("span",{class:"cl-h"},el("b",{text:l.titre||"Liste de courses"})),
     el("small",{class:l.date&&daysTo(l.date)<0?"late":"",text:sub}),ul,
     el("span",{class:"cl-m"},el("span",{text:n?ok+" / "+n:""}),l.qui&&membre(l.qui).nom?avatar(l.qui,18):"")); }
 function renderCHome(){ const H=$("cHome"); if(!H) return; H.innerHTML=""; if(!meId()) return;
   const act=clActives(), done=clAll().filter(l=>l.fini).sort((a,b)=>(b.finiLe||0)-(a.finiLe||0)).slice(0,6);
   H.append(el("p",{class:"cl-sec",text:"Mes listes"}));
   const g=el("div",{class:"cl-grid"}); for(const l of act) g.append(clNote(l));
+  if(!act.length) H.append(el("div",{class:"empty cl-empty"},el("strong",{text:"Aucune liste en cours"}),"Touche le + en haut à droite pour en créer une."));
   H.append(g);
   if(done.length){ H.append(el("p",{class:"cl-sec",text:"Terminées"}));
     for(const l of done){ const d=l.finiLe?new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"short"}).format(new Date(l.finiLe)):"";
@@ -9733,12 +9739,13 @@ function renderCHome(){ const H=$("cHome"); if(!H) return; H.innerHTML=""; if(!m
         el("button",{type:"button",class:"cl-redo",onclick:()=>clRedo(l)},"Refaire"),el("button",{type:"button",class:"cl-x","aria-label":"Effacer de l'historique",text:"×",onclick:()=>S.db.collection("listes").doc(l.id).delete().catch(writeErr)}))); } } }
 /* créer / modifier une liste (feuille du bas comme « Nouveau rendez-vous ») */
 function openCListForm(l){ if(!needMe()) return; const me=meId(), edit=!!l;
-  const F=edit?{titre:l.titre||"",emoji:l.emoji||"🛒",date:l.date||null,lieu:l.lieu||"",qui:l.qui||null,prive:!!l.prive,recur:l.recur||null}:{titre:"",emoji:"🛒",date:null,lieu:"",qui:null,prive:false,recur:null,ing:false};
-  const U=upSheet("clForm",edit?"Modifier la liste":"Nouvelle liste"); U.sheet.classList.add("ev-sheet");
+  const F=edit?{titre:l.titre||"",couleur:clCol(l),date:l.date||null,lieu:l.lieu||"",qui:l.qui||null,prive:!!l.prive,recur:l.recur||null}:{titre:"",couleur:CL_COLS[0],date:null,lieu:"",qui:null,prive:false,recur:null,ing:false};
+  const U=clSheet(); clClear(U); S.cListe=null;
   const inn=el("div",{class:"pp-in ev-in cl-in"}); U.sheet.append(inn);
+  if(edit) inn.append(el("button",{type:"button",class:"cl-back",onclick:()=>openCList(l.id)},"‹ Retour à la liste"));
   inn.append(el("div",{class:"ev-top"},el("h2",{text:edit?"Modifier la liste":"Nouvelle liste"}),el("p",{text:"Elle s'affiche en note sur la page Courses."})));
   const ti=el("input",{class:"ev-inp",type:"text",id:"clTitre",maxlength:"60",placeholder:"Courses de la semaine, anniversaire, pharmacie…","aria-label":"Titre"}); ti.value=F.titre; ti.addEventListener("input",()=>F.titre=ti.value);
-  const em=el("div",{class:"cl-emos",role:"radiogroup","aria-label":"Emoji"}); const paintE=()=>{ em.innerHTML=""; for(const [e,col] of CL_EMO) em.append(el("button",{type:"button",role:"radio","aria-checked":String(F.emoji===e),style:"--c:"+col,onclick:()=>{ F.emoji=e; paintE(); haptic(5); }},e)); }; paintE();
+  const em=el("div",{class:"cl-cols",role:"radiogroup","aria-label":"Couleur"}); const paintE=()=>{ em.innerHTML=""; for(const col of CL_COLS) em.append(el("button",{type:"button",role:"radio","aria-checked":String(F.couleur===col),"aria-label":"Couleur "+col,style:"--c:"+col,onclick:()=>{ F.couleur=col; paintE(); haptic(5); }})); }; paintE();
   const t0=iso(today()), t1=iso(new Date(today().getTime()+864e5)), da=el("input",{class:"ev-inp",type:"date",id:"clDate","aria-label":"Date"}); da.value=F.date||"";
   const qd=el("div",{class:"pchips"}); const paintD=()=>{ qd.innerHTML=""; for(const [l2,v] of [["Aujourd'hui",t0],["Demain",t1],["Sans date",null]]) qd.append(el("button",{type:"button",class:"pchip","aria-pressed":String(F.date===v),onclick:()=>{ F.date=v; da.value=v||""; paintD(); }},l2)); }; paintD();
   da.addEventListener("input",()=>{ F.date=da.value||null; paintD(); });
@@ -9751,16 +9758,16 @@ function openCListForm(l){ if(!needMe()) return; const me=meId(), edit=!!l;
   const vis=el("div",{class:"pchips"}); const paintV=()=>{ vis.innerHTML=""; for(const [l2,v] of [["Tout le foyer",false],["Moi seul",true]]) vis.append(el("button",{type:"button",class:"pchip","aria-pressed":String(F.prive===v),onclick:()=>{ F.prive=v; paintV(); }},l2)); }; paintV();
   const tg=(txt,key)=>{ const b=el("button",{type:"button",class:"cl-tg",role:"switch","aria-checked":String(!!F[key]),onclick:()=>{ F[key]=key==="recur"?(F.recur?null:"semaine"):!F[key]; b.setAttribute("aria-checked",String(!!F[key])); haptic(5); }},el("span",{text:txt}),el("u",{"aria-hidden":"true"})); return b; };
   const lab=(t,...k)=>el("div",{class:"ev-lab"},el("span",{text:t}),...k);
-  inn.append(lab("Titre",ti),em,lab("Quand",qd,da),lab("Où",lc,li),lab("Qui y va",qw),lab("Visible par",vis),tg("🔁 Refaire chaque semaine","recur"));
+  inn.append(lab("Titre",ti),lab("Couleur",em),lab("Quand",qd,da),lab("Où",lc,li),lab("Qui y va",qw),lab("Visible par",vis),tg("🔁 Refaire chaque semaine","recur"));
   if(!edit) inn.append(tg("🍽️ Ajouter les ingrédients des repas prévus","ing"));
   const go=el("button",{type:"button",class:"btn ev-cta",id:"clGo",text:edit?"Enregistrer":"Créer la liste",onclick:async()=>{ if(!needMe()) return;
-    const doc={titre:(F.titre||"").trim()||(edit?l.titre:"Liste de courses"),emoji:F.emoji,date:F.date||null,lieu:(F.lieu||"").trim()||null,qui:F.qui||null,prive:!!F.prive,recur:F.recur||null};
+    const doc={titre:(F.titre||"").trim()||(edit?l.titre:"Liste de courses"),couleur:F.couleur,date:F.date||null,lieu:(F.lieu||"").trim()||null,qui:F.qui||null,prive:!!F.prive,recur:F.recur||null};
     go.disabled=true;
     try{ let id;
       if(edit){ id=l.id; await S.db.collection("listes").doc(id).set(Object.assign({},l.virt?{par:me,creeLe:Date.now()}:{},Object.fromEntries(Object.entries(l).filter(([k])=>!["id","virt"].includes(k))),doc)); }
       else { const ref=await S.db.collection("listes").add(Object.assign(doc,{par:me,creeLe:Date.now(),fini:false})); id=ref.id;
         if(F.ing){ const n=await clAddIng(id,doc.date); if(n) toast(n+" ingrédient"+(n>1?"s":"")+" des repas ajouté"+(n>1?"s":"")+"."); } }
-      U.close(); if(!edit) setTimeout(()=>openCList(id),340); else toast("Liste enregistrée.");
+      openCList(id); if(edit) toast("Liste enregistrée.");
     }catch(e){ go.disabled=false; writeErr(e); } }});
   inn.append(go); setTimeout(()=>{ if(!edit) ti.focus(); },350); }
 /* ingrédients des repas prévus d'ici la date de la liste (7 jours sans date) */
@@ -9768,36 +9775,38 @@ async function clAddIng(id,date){ const t0=iso(today()), end=date&&date>=t0?date
   for(const m of (S.repas||[])){ if(!m.plat||!m.date||m.date<t0||m.date>end) continue; for(const x of platIng(m.plat)){ const k=cKey(x); if(have.has(k)) continue; have.add(k); const a=parseArticle(x); a.extra={repas:m.plat}; arts.push(a); } }
   return arts.length?addCourses(arts,{liste:id}):0; }
 /* une liste ouverte : feuille du bas avec le champ, les habituels et les articles (mêmes éléments qu'avant, déplacés dedans) */
-function clSheetSync(){ const U=S.clSheet; if(!U) return; const l=clGet(S.cListe); if(!l||l.fini){ U.close(); return; }
-  const its=cItemsOf(l.id), ok=its.filter(i=>i.fait).length, H=U.sheet.querySelector(".cl-head"); if(!H) return;
-  H.querySelector(".cl-tt").textContent=(l.emoji||"🛒")+" "+(l.titre||"Liste de courses");
+function clSheetSync(){ const U=S.clSheet; if(!U) return; const H=U.sheet.querySelector(".cl-head"); if(!H) return; const l=clGet(S.cListe); if(!l||l.fini){ U.close(); return; }
+  const its=cItemsOf(l.id), ok=its.filter(i=>i.fait).length;
+  H.querySelector(".cl-tt").textContent=l.titre||"Liste de courses"; H.style.setProperty("--c",clCol(l));
   const ch=H.querySelector(".cl-chips"); ch.innerHTML=""; ch.append(el("span",{text:"📅 "+clWhen(l.date)})); if(l.lieu) ch.append(el("span",{text:"📍 "+l.lieu})); if(l.qui&&membre(l.qui).nom) ch.append(el("span",{},avatar(l.qui,16),l.qui===meId()?"Moi":membre(l.qui).nom)); if(l.recur) ch.append(el("span",{text:"🔁 chaque semaine"})); ch.append(el("span",{text:ok+" / "+its.length}));
   const v=U.sheet.querySelector("#clVal"); if(v) v.disabled=!its.length; }
-function openCList(id){ if(!meId()) return; const l=clGet(id); if(!l) return; S.cListe=id;
-  clStash(); const U=upSheet("clPage",l.titre||"Liste de courses",()=>{ S.cListe=null; S.clSheet=null; document.documentElement.classList.remove("cl-open"); S.cSel&&S.cSel.clear(); renderSelBar(); setTimeout(()=>{ if(!S.clSheet) clStash(); renderCHome(); },380); });
-  U.sheet.classList.add("ev-sheet","cl-sheet"); S.clSheet=U; document.documentElement.classList.add("cl-open");
+function clSheet(){ if(S.clSheet&&!S.clSheet._gone) return S.clSheet; clStash();
+  const U=upSheet("clPage","Liste de courses",()=>{ U._gone=true; S.cListe=null; S.clSheet=null; document.documentElement.classList.remove("cl-open"); S.cSel&&S.cSel.clear(); renderSelBar(); setTimeout(()=>{ if(!S.clSheet) clStash(); renderCHome(); },380); });
+  U.sheet.classList.add("ev-sheet","cl-sheet"); S.clSheet=U; document.documentElement.classList.add("cl-open"); return U; }
+function clClear(U){ clStash(); U.sheet.querySelectorAll(":scope>.pp-in,:scope>.ev-pop").forEach(x=>x.remove()); U.sheet.scrollTop=0; }
+function openCList(id){ if(!meId()) return; const l=clGet(id); if(!l) return; const U=clSheet(); clClear(U); S.cListe=id;
   const inn=el("div",{class:"pp-in cl-body"}); U.sheet.append(inn);
   const mb=el("button",{type:"button",class:"ev-more cl-more","aria-label":"Options de la liste","aria-haspopup":"menu",onclick:e=>{ e.stopPropagation(); clMenu(mb,clGet(S.cListe)); }}); mb.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18.5" cy="12" r="2"/></svg>';
   inn.append(el("div",{class:"cl-head"},el("div",{class:"cl-hr"},el("h2",{class:"cl-tt"}),mb),el("div",{class:"cl-chips"})));
   for(const x of CL_NODES) inn.append(x);
   inn.append(el("button",{type:"button",class:"btn ev-cta",id:"clVal",onclick:()=>clValidate(clGet(S.cListe))},"✓ Valider la liste"));
   renderCourses(); }
-function clMenu(btn,l){ if(!l) return; const acts=[["edit","✏️","Modifier",()=>{ const x=clGet(S.cListe); S.clSheet&&S.clSheet.close(); setTimeout(()=>openCListForm(x),340); }],["dup","⧉","Dupliquer",()=>clDup(l)],["val","✓","Valider la liste",()=>clValidate(l)]];
+function clMenu(btn,l){ if(!l) return; const acts=[["edit","✏️","Modifier",()=>openCListForm(clGet(S.cListe))],["dup","⧉","Dupliquer",()=>clDup(l)],["val","✓","Valider la liste",()=>clValidate(l)]];
   { const nm=nativeMenu(l.titre||"Liste",acts.map(([id,,t])=>({id,title:t})).concat([{id:"del",title:"Supprimer la liste",destructive:true}]));
-    if(nm){ nm.then(id=>{ const a=acts.find(x=>x[0]===id); if(a) a[3](); else if(id==="del") nativeMenu("Supprimer « "+(l.titre||"la liste")+" » et ses articles ?",[{id:"ok",title:"Supprimer",destructive:true}]).then(c=>{ if(c==="ok") clDel(l); }); }); return; } }
+    if(nm){ nm.then(id=>{ const a=acts.find(x=>x[0]===id); if(a) a[3](); else if(id==="del") clDel(l); }); return; } }
   const old=document.querySelector(".ev-pop"); if(old){ old._close(); if(old._btn===btn) return; }
   const sheet=btn.closest(".pp-sheet"); if(!sheet) return; const pop=el("div",{class:"ev-pop",role:"menu"}); pop._btn=btn;
   const close=()=>{ if(pop._gone) return; pop._gone=true; pop.classList.add("out"); document.removeEventListener("pointerdown",away,true); setTimeout(()=>pop.remove(),160); };
   pop._close=close; const away=e=>{ if(!pop.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)) close(); };
   const item=(ic,t,fn,cls)=>el("button",{type:"button",role:"menuitem",class:"ev-pi"+(cls?" "+cls:""),onclick:fn},el("i",{"aria-hidden":"true",text:ic}),el("span",{text:t}));
-  const del=item("🗑","Supprimer la liste",()=>{ if(!del.classList.contains("sure")){ del.classList.add("sure"); del.lastChild.textContent="Confirmer la suppression"; return; } close(); clDel(l); },"danger");
+  const del=item("🗑","Supprimer la liste",()=>{ close(); clDel(l); },"danger");
   for(const [,ic,t,fn] of acts) pop.append(item(ic,t,()=>{ close(); fn(); })); pop.append(el("hr"),del);
   const rb=btn.getBoundingClientRect(), sr=sheet.getBoundingClientRect(); pop.style.top=(rb.bottom-sr.top+sheet.scrollTop+8)+"px"; pop.style.right=(sr.right-rb.right)+"px";
   sheet.append(pop); requestAnimationFrame(()=>pop.classList.add("in")); setTimeout(()=>document.addEventListener("pointerdown",away,true),0); }
-async function clNew(base,arts,open){ const me=meId(); const ref=await S.db.collection("listes").add(Object.assign({titre:base.titre||"Liste de courses",emoji:base.emoji||"🛒",date:base.date||null,lieu:base.lieu||null,qui:base.qui||null,prive:!!base.prive,recur:base.recur||null},{par:me,creeLe:Date.now(),fini:false}));
-  if(arts.length) await addCourses(arts.map(a=>({nom:a.nom,qte:a.qte||null,extra:a.pour&&a.pour!=="tous"?{pour:a.pour}:{}})),{liste:ref.id}); if(open) setTimeout(()=>openCList(ref.id),open); return ref.id; }
-async function clDup(l){ try{ const arts=cItemsOf(l.id).map(i=>({nom:i.nom,qte:i.qte,pour:i.pour})); S.clSheet&&S.clSheet.close(); await clNew(Object.assign({},l,{titre:(l.titre||"Liste")+" (copie)",recur:null}),arts,360); toast("Liste dupliquée."); }catch(e){ writeErr(e); } }
-async function clRedo(l){ try{ await clNew(Object.assign({},l,{date:null}),l.articles||[],60); toast("« "+esc(l.titre||"Courses")+" » est de retour."); }catch(e){ writeErr(e); } }
+async function clNew(base,arts,open){ const me=meId(); const ref=await S.db.collection("listes").add(Object.assign({titre:base.titre||"Liste de courses",couleur:clCol(base),date:base.date||null,lieu:base.lieu||null,qui:base.qui||null,prive:!!base.prive,recur:base.recur||null},{par:me,creeLe:Date.now(),fini:false}));
+  if(arts.length) await addCourses(arts.map(a=>({nom:a.nom,qte:a.qte||null,extra:a.pour&&a.pour!=="tous"?{pour:a.pour}:{}})),{liste:ref.id}); if(open) openCList(ref.id); return ref.id; }
+async function clDup(l){ try{ const arts=cItemsOf(l.id).map(i=>({nom:i.nom,qte:i.qte,pour:i.pour})); await clNew(Object.assign({},l,{titre:(l.titre||"Liste")+" (copie)",recur:null}),arts,true); toast("Liste dupliquée."); }catch(e){ writeErr(e); } }
+async function clRedo(l){ try{ await clNew(Object.assign({},l,{date:null}),l.articles||[],true); toast("« "+esc(l.titre||"Courses")+" » est de retour."); }catch(e){ writeErr(e); } }
 async function clDel(l){ try{ const its=cItemsOf(l.id); S.clSheet&&S.clSheet.close(); for(const i of its) await S.db.collection("courses").doc(i.id).delete(); if(!l.virt) await S.db.collection("listes").doc(l.id).delete(); toast("Liste supprimée."); }catch(e){ writeErr(e); } }
 /* valider (complète ou non) : « Combien ça a coûté ? » → dépense dans Budget ; la liste passe dans « Terminées » ; ce qui n'a pas été pris retourne dans la liste principale (ou dans celle de la semaine suivante) */
 function clValidate(l){ if(!l||!S.clSheet) return; const sheet=S.clSheet.sheet; const old=sheet.querySelector(".cl-val"); if(old){ old.remove(); return; }
@@ -9807,7 +9816,7 @@ function clValidate(l){ if(!l||!S.clSheet) return; const sheet=S.clSheet.sheet; 
     el("div",{class:"cl-vb"},el("button",{type:"button",class:"btn ev-cta",id:"clValOk",onclick:async e=>{ e.currentTarget.disabled=true; await clDone(l,parseMoney(am.value)||0); }},"Valider")));
   const v=$("clVal"); v.before(P); setTimeout(()=>{ P.scrollIntoView({block:"center",behavior:"smooth"}); am.focus(); },60); }
 async function clDone(l,montant){ const me=meId(), its=cItemsOf(l.id), got=its.filter(i=>i.fait), left=its.filter(i=>!i.fait), now=Date.now();
-  try{ const rec={titre:l.titre||"Liste de courses",emoji:l.emoji||"🛒",lieu:l.lieu||null,qui:l.qui||null,prive:!!l.prive,date:l.date||null,fini:true,finiLe:now,montant:montant||null,articles:got.map(i=>({nom:i.nom,qte:i.qte||null}))};
+  try{ const rec={titre:l.titre||"Liste de courses",couleur:clCol(l),lieu:l.lieu||null,qui:l.qui||null,prive:!!l.prive,date:l.date||null,fini:true,finiLe:now,montant:montant||null,articles:got.map(i=>({nom:i.nom,qte:i.qte||null}))};
     if(l.id===CL_DEF) await S.db.collection("listes").add(Object.assign(rec,{par:me,creeLe:now})); else await S.db.collection("listes").doc(l.id).set(Object.assign({},Object.fromEntries(Object.entries(l).filter(([k])=>k!=="id")),rec));
     let nxt=null; if(l.recur){ const d=l.date?new Date(parse(l.date).getTime()+7*864e5):new Date(today().getTime()+7*864e5); nxt=await clNew(Object.assign({},l,{date:iso(d)}),got.map(i=>({nom:i.nom,qte:i.qte,pour:i.pour})),0); }
     for(const i of got) await S.db.collection("courses").doc(i.id).delete();
