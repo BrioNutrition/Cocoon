@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="27/10 15:14";</script>
+<script>window.COCOON_BUILD="27/10 16:03";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2909,7 +2909,7 @@ div.pf-r{cursor:default}
 .acc-sec button{border:0;background:none;font:inherit;font-size:13px;letter-spacing:0;text-transform:none;font-weight:700;color:var(--mark);cursor:pointer;padding:6px 0}
 .cn{display:flex;gap:10px;align-items:center;background:var(--surface);border-radius:16px;padding:10px 8px 10px 12px;border:1px solid var(--line)}
 .cn-av{width:28px;height:28px;border-radius:9px;flex:none;object-fit:cover}
-.cn p{flex:1;margin:0;font-size:13.5px;line-height:1.3}
+.cn p{flex:1;min-width:0;margin:0;font-size:14px;font-weight:700;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cn-b{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .cn button{border:0;border-radius:999px;padding:7px 11px;font:inherit;font-weight:800;font-size:12.5px;cursor:pointer;white-space:nowrap;flex:none}.cn .cn-no{background:none;color:var(--muted);font-size:18px;padding:4px 6px}
 .cn-go{background:var(--mark);color:#1C1B2E}.cn-no{background:var(--sunk);color:var(--ink)}
@@ -5112,7 +5112,7 @@ function dayDots(k){ const me=meId(), td=iso(today()), o=[];
 const JM_ROW=46, JM_GAP=4;
 const jmNav=(l,fn,svg)=>{ const b=el("button",{type:"button",class:"jm-nav","aria-label":l,onclick:fn}); b.innerHTML=svg; return b; };
 function dayWeek(t0){ const B=$("dayBig"); if(!B) return; const d=parse(t0), td=iso(today()), open=!!S.accOpen, F=o=>new Intl.DateTimeFormat("fr-FR",o);
-  $("dayTtl").textContent=t0===td?"Aujourd'hui":daysTo(t0)===1?"Demain":daysTo(t0)===-1?"Hier":F({weekday:"short",day:"numeric",month:"short"}).format(d).replace(/^./,c=>c.toUpperCase());
+  $("dayTtl").textContent=t0===td?F({weekday:"long",day:"numeric",month:"long"}).format(d).replace(/^./,c=>c.toUpperCase()):daysTo(t0)===1?"Demain":daysTo(t0)===-1?"Hier":F({weekday:"short",day:"numeric",month:"short"}).format(d).replace(/^./,c=>c.toUpperCase());
   const mo=open&&S.accMo?parse(S.accMo):new Date(d.getFullYear(),d.getMonth(),1), m0=mo.getMonth(), lead=(mo.getDay()+6)%7, nd=new Date(mo.getFullYear(),m0+1,0).getDate(), rows=Math.ceil((lead+nd)/7);
   const g=el("div",{class:"jm-g"}); let row=0;
   for(let i=0;i<rows*7;i++){ const x=new Date(mo.getFullYear(),m0,1-lead+i), k=iso(x); if(k===t0) row=Math.floor(i/7);
@@ -5134,10 +5134,10 @@ function jmOpen(o){ const t0=S.accDay||iso(today()), B=$("dayBig");
 const URG_EMO={factures:"💶",entretien:"🔧",courses:"🛒",colis:"📦",animaux:"🐾",rdv:"📅",maison:"🏠",documents:"📄",voitures:"🚗",ecole:"🎒",jardin:"🌱"};
 function cocNoteList(){ const me=meId(), out=[], td=iso(today()), h=new Date().getHours();
   const ce=(S.repas||[]).find(r=>r.date===td&&r.slot==="soir"&&r.plat);
-  if(!ce&&h>=11&&h<20) out.push({k:"soir"+td,t:"Rien de prévu pour ce soir. Je te trouve une idée avec ce qu'il y a dans le frigo ?",go:"Une idée",fn:()=>openFrigo()});
-  for(const d of (S.docs||[])) if(d.expire&&daysTo(d.expire)>=0&&daysTo(d.expire)<=14){ out.push({k:"doc"+d.id+d.expire,t:"Ton papier « "+d.titre+" » expire "+dueLabel(d.expire)+". Pense à le renouveler.",go:"Voir",fn:()=>{ setTab("documents"); window.scrollTo({top:0}); }}); break; }
-  for(const ev of evAll()){ const n=daysTo(ev.debut); if(n<0||n>21) continue; const P=evProg(ev), rest=P.tot-P.done; if(rest>0){ out.push({k:"ev"+ev.id+td,t:"Plus que "+n+" jour"+(n>1?"s":"")+" avant « "+(ev.titre||evT(ev).n)+" » : "+rest+" chose"+(rest>1?"s":"")+" à préparer.",go:"Ouvrir",fn:()=>openEvent(ev.id)}); break; } }
-  { const nc=(S.courses||[]).filter(i=>!i.fait).length, ss=cSession&&cSession(); if(ss&&ss.par!==me&&membre(ss.par).nom) out.unshift({k:"cs"+td+ss.par,t:membre(ss.par).nom+" fait les courses en ce moment : ajoute vite ce qui manque 🛒",go:"Courses",fn:()=>setTab("courses")}); else if(nc>=8) out.push({k:"nc"+td,t:nc+" articles attendent sur la liste de courses.",go:"Voir",fn:()=>setTab("courses")}); }
+  if(!ce&&h>=11&&h<20) out.push({k:"soir"+td,t:"Rien de prévu ce soir 🍽️",go:"Une idée",fn:()=>openFrigo()});
+  for(const d of (S.docs||[])) if(d.expire&&daysTo(d.expire)>=0&&daysTo(d.expire)<=14){ out.push({k:"doc"+d.id+d.expire,t:"« "+d.titre+" » expire "+dueLabel(d.expire)+" 📄",go:"Voir",fn:()=>{ setTab("documents"); window.scrollTo({top:0}); }}); break; }
+  for(const ev of evAll()){ const n=daysTo(ev.debut); if(n<0||n>21) continue; const P=evProg(ev), rest=P.tot-P.done; if(rest>0){ out.push({k:"ev"+ev.id+td,t:(ev.titre||evT(ev).n)+(n===0?" aujourd'hui":n===1?" demain":" dans "+n+" j")+" : "+rest+" à préparer",go:"Ouvrir",fn:()=>openEvent(ev.id)}); break; } }
+  { const nc=(S.courses||[]).filter(i=>!i.fait).length, ss=cSession&&cSession(); if(ss&&ss.par!==me&&membre(ss.par).nom) out.unshift({k:"cs"+td+ss.par,t:membre(ss.par).nom+" est au magasin 🛒",go:"Ajouter",fn:()=>setTab("courses")}); else if(nc>=8) out.push({k:"nc"+td,t:nc+" articles sur la liste 🛒",go:"Voir",fn:()=>setTab("courses")}); }
   return out; }
 function renderCocNote(){ const box=$("cocNote"); if(!box) return; box.innerHTML=""; if(!S.loaded.t||!meId()||S.readOnly){ box.hidden=true; return; }
   let no=[]; try{ no=JSON.parse(localStorage.getItem("cocoon.cocNo")||"[]"); }catch(_){}
@@ -6252,11 +6252,11 @@ function wgX(k){ const t0=iso(today()), me=meId(), nm=id=>id&&membre(id)&&membre
     return {e:"🍽️",cd:miss.length?miss.length+" à prévoir":"✓ complet",hot:miss.length>tot/2,cap:"Repas · 7 jours",big:ok+" sur "+tot+" prévus",small:miss.length?"à prévoir : "+miss.slice(0,3).map(lb).join(", ")+(miss.length>3?"…":""):"toute la semaine est prévue"}; }
   if(k==="courses"){ const it=(S.courses||[]).filter(i=>!i.fait), ss=typeof cSession==="function"?cSession():null;
     return {e:"🛒",cd:it.length?String(it.length):null,cap:"Courses",big:it.length?it.length+" article"+(it.length>1?"s":""):"Liste vide",small:it.length?it.slice(0,6).map(i=>i.nom).join(", ")+(it.length>6?"…":""):"rien à acheter",
-      chip:ss&&nm(ss.par)?"🏪 "+(nm(ss.par)==="toi"?"tu es au magasin":nm(ss.par)+" est au magasin"):it.length?"✏️ ajoutez ce qui manque":null}; }
+      chip:ss&&nm(ss.par)?"🏪 "+(nm(ss.par)==="toi"?"tu es au magasin":nm(ss.par)+" est au magasin"):it.length?"✏️ ajoute ce qui manque":null}; }
   if(k==="budget"){ const E=monthEst(), t=today(), day=t.getDate(), pm=new Date(t.getFullYear(),t.getMonth()-1,1); let prev=0;
     for(const d of (S.depenses||[])){ if(d.type==="rembt"||!d.date) continue; const x=parse(d.date); if(x.getFullYear()===pm.getFullYear()&&x.getMonth()===pm.getMonth()&&x.getDate()<=day) prev+=d.montant; }
     const pct=prev?Math.round((E.tot-prev)/prev*100):null; let nxt=null; for(const a of (S.abos||[])){ if(a.actif===false) continue; const n=subNext(a); if(n&&daysTo(n)>=0&&(!nxt||n<nxt[1])) nxt=[a,n]; }
-    return {e:"💶",cd:pct==null?null:(pct>0?"+":"")+pct+" %",hot:pct!=null&&pct>10,cap:"Dépensé en "+E.nm,big:eurR(E.tot),small:E.est&&E.est>E.tot?"fin de mois ≈ "+eurR(E.est):"ce mois-ci",chip:nxt?"📆 "+nxt[0].nom+" · "+dueLabel(nxt[1]):null}; }
+    return {e:"💶",cd:pct==null?null:(pct>0?"+":"")+pct+" %",hot:pct!=null&&pct>10,cap:"Dépensé en "+E.nm,big:E.tot?eurR(E.tot):"Aucune dépense",small:!E.tot?"rien de noté ce mois-ci":E.est&&E.est>E.tot?"fin de mois ≈ "+eurR(E.est):"ce mois-ci",chip:nxt?"📆 "+nxt[0].nom+" · "+dueLabel(nxt[1]):null}; }
   if(k==="papiers"){ const d=S.docs.filter(d=>d.expire&&daysTo(d.expire)<=120).sort((a,b)=>a.expire<b.expire?-1:1)[0], N=S.docs.length;
     if(!d) return {e:"📂",cap:"Papiers",big:N?"Tout est à jour":"Rien de rangé",small:N?N+" papier"+(N>1?"s":"")+" rangé"+(N>1?"s":""):"range tes papiers",chip:null};
     const n=daysTo(d.expire), tt=(d.titre||"").toLowerCase(), e=/passeport/.test(tt)?"🛂":/identit|permis|carte vitale|titre de s/.test(tt)?"🪪":/assur/.test(tt)?"🛡️":/garantie|facture/.test(tt)?"🧾":"📄";
@@ -6322,7 +6322,7 @@ function sortable(box,sel,done,o){ o=o||{}; const lp=o.lp==null?380:o.lp; let it
 function wgSig(){ try{ return JSON.stringify(wgList().map(x=>[x.k,x.l?1:0,wgX(x.k)]))+"|"+(document.documentElement.dataset.theme||""); }catch(_){ return String(Math.random()); } }
 function renderWidgets(){ const box=$("accBudget"); if(!box) return; if(box.querySelector(".sorting")||box._landing) return; const sig=wgSig(); if(box._sig===sig&&box.querySelector(".wg-grid")) return; box.innerHTML=""; box._sig=sig; if(!meId()) return; box.className="wg-zone";
   const g=el("div",{class:"wg-grid"});
-  for(const x of wgList()){ const w=WG[x.k], L=!!x.l, D=wgX(x.k);
+  const WL=wgList(); WL.forEach((x,i)=>{ const w=WG[x.k], L=WL.length%2===1&&i===WL.length-1, D=wgX(x.k);
     { const X=D, b=el("button",{type:"button",class:"wg wgc"+(L?" wide":""),"data-k":x.k,style:"--wc:"+w.c+";--gc:"+w.c,"aria-label":w.t+" : "+X.big+(X.small?", "+X.small:""),onclick:()=>wgGo(x.k,D)});
       const top=X.ring!=null?el("span",{class:"wgc-ring",style:"--p:"+X.ring+"%"},el("b",{text:X.ring+"%"})):X.bin?el("span",{class:"wgc-bin",style:"--bc:"+X.bin,"aria-hidden":"true"}):el("span",{class:"wgc-e","aria-hidden":"true",text:X.e||"•"});
       b.append(top);
@@ -6330,7 +6330,7 @@ function renderWidgets(){ const box=$("accBudget"); if(!box) return; if(box.quer
       b.append(el("small",{class:"wgc-cap",text:X.cap||w.t}),el("b",{class:"wgc-big",text:X.big}),X.small?el("small",{class:"wgc-s",text:X.small}):null);
       if(X.bar!=null) b.append(el("span",{class:"wgc-bar"},el("i",{style:"width:"+X.bar+"%"})));
       if(X.chip) b.append(el("span",{class:"wgc-chip",text:X.chip}));
-      g.append(b); } }
+      g.append(b); } });
   sortable(g,".wg",keys=>{ const cur=wgList(); wgSave(keys.map(k=>cur.find(x=>x.k===k)).filter(Boolean),true); box._sig=wgSig(); });
   const ed=el("button",{type:"button",class:"wg-edit",onclick:openWidgetSheet},el("span",{"aria-hidden":"true",text:"✎"}),wgList().length?"Modifier l'accueil":"Ajouter des raccourcis");
   box.append(el("div",{class:"wg-sec"},el("span",{text:"En un coup d'œil"}),""),g,ed); wgMarquee(g); }
@@ -6339,7 +6339,7 @@ function openWidgetSheet(){ const U=upSheet("wgPage","En un coup d'œil"), sheet
     inn.append(el("div",{class:"wgs-h"},el("b",{text:"En un coup d'œil"}),el("span",{text:"Ajoute ou retire des raccourcis. Pour changer l'ordre, glisse ⠿ ici, ou maintiens un widget sur l'accueil."})));
     const on=el("div",{class:"wgs-list"});
     list.forEach((x,i)=>{ const w=WG[x.k];
-      const sz=el("div",{class:"wgs-sz",role:"group","aria-label":"Taille"},...[["Petit",0],["Large",1]].map(([t,v])=>el("button",{type:"button","aria-pressed":String(x.l===v),text:t,onclick:()=>{ list[i].l=v; wgSave(list); draw(); }})));
+      const sz=w.d?el("small",{text:w.d}):null;
       on.append(el("div",{class:"wgs-row","data-k":x.k,style:"--wc:"+w.c},el("span",{class:"wgs-grip","aria-hidden":"true",text:"⠿"}),(()=>{ const i=el("i",{"aria-hidden":"true",class:"wg-ic"}); i.innerHTML=uicSvg(w.ic); return i; })(),el("div",{class:"wgs-t"},el("b",{text:w.t}),sz),
         el("button",{type:"button",class:"wgs-x","aria-label":"Retirer "+w.t,text:"−",onclick:()=>{ list.splice(i,1); wgSave(list); draw(); }}))); });
     sortable(on,".wgs-row",keys=>{ wgSave(keys.map(k=>list.find(x=>x.k===k)).filter(Boolean)); draw(); },{lp:60,handle:".wgs-grip"});
