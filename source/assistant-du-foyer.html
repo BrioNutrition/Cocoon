@@ -4992,7 +4992,10 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
   if(!hero&&!heroT&&!rest.length&&!open.length&&!doneT.length&&!extra.length) w.append(el("p",{class:"td-calm",text:isT?(ev.length||S.urgT?"Rien d'autre de prévu aujourd'hui.":"Journée calme : rien de prévu pour toi aujourd'hui."):"Rien de prévu ce jour-là."}));
 }
 /* ---------- Ta journée : date choisie en titre, « ‹ Semaine N › » à droite, les 7 jours avec des points ---------- */
-function dayShift(n){ const d=parse(S.accDay||iso(today())); d.setDate(d.getDate()+n); S.accDay=iso(d)===iso(today())?null:iso(d); renderToday(); }
+function dayShift(n){ const d=parse(S.accDay||iso(today())); d.setDate(d.getDate()+n); S.accDay=iso(d)===iso(today())?null:iso(d); S.accWk=null; renderToday(); }
+/* glisser la semaine : on parcourt les semaines sans changer le jour affiché (il change quand on touche un jour) */
+function weekBrowse(n){ const t0=S.accDay||iso(today()), d=parse(S.accWk||t0); const mon=new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7)+n*7);
+  const dm=parse(t0), m0=new Date(dm.getFullYear(),dm.getMonth(),dm.getDate()-((dm.getDay()+6)%7)); S.accWk=iso(mon)===iso(m0)?null:iso(mon); dayWeek(t0); }
 function isoWeek(d){ const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())), dn=(t.getUTCDay()+6)%7; t.setUTCDate(t.getUTCDate()-dn+3); const f=new Date(Date.UTC(t.getUTCFullYear(),0,4)); return 1+Math.round(((t-f)/864e5-3+((f.getUTCDay()+6)%7))/7); }
 function dayDots(k){ const me=meId(), td=iso(today()), o=[];
   if((S.rdvs||[]).some(r=>r.date===k&&!r.fait&&(!r.pour||!r.pour.length||r.pour.includes(me)||r.pour.includes("tous")))) o.push("b");
@@ -5000,13 +5003,13 @@ function dayDots(k){ const me=meId(), td=iso(today()), o=[];
   if(annivOn(k).length) o.push("p");
   const T=allTasks().filter(t=>t.echeance===k&&(!t.pour||t.pour==="tous"||t.pour===me||S.perso.includes(t)));
   if(T.some(t=>!t.fait)) o.push(k<td?"rd":"w"); return o; }
-function dayWeek(t0){ const B=$("dayBig"); if(!B) return; const d=parse(t0), td=iso(today()), mon=new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7));
+function dayWeek(t0){ const B=$("dayBig"); if(!B) return; const d=parse(t0), td=iso(today()), mon=S.accWk?parse(S.accWk):new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7));
   const ttl=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(d); $("dayTtl").textContent=t0===td?"Aujourd'hui":daysTo(t0)===1?"Demain":daysTo(t0)===-1?"Hier":new Intl.DateTimeFormat("fr-FR",{weekday:"short",day:"numeric",month:"short"}).format(d).replace(/^./,c=>c.toUpperCase());
-  const wk=isoWeek(d), wt=isoWeek(today()); $("wkLbl").textContent="Semaine "+wk; $("wkLbl").classList.toggle("off",wk!==wt||d.getFullYear()!==today().getFullYear()); $("wkLbl").setAttribute("aria-label","Semaine "+wk+(wk!==wt?", revenir à aujourd'hui":""));
+  const wk=isoWeek(mon), wt=isoWeek(today()), monT=iso(new Date(today().getFullYear(),today().getMonth(),today().getDate()-((today().getDay()+6)%7))); $("wkLbl").textContent="Semaine "+wk; $("wkLbl").classList.toggle("off",iso(mon)!==monT||t0!==td); $("wkLbl").setAttribute("aria-label","Semaine "+wk+(wk!==wt?", revenir à aujourd'hui":""));
   /* trois semaines côte à côte (précédente, affichée, suivante) : en glissant, on voit arriver les jours voisins */
   const wkG=off=>{ const g=el("div",{class:"jw-g"});
   for(let i=0;i<7;i++){ const x=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+off*7+i), k=iso(x), dots=dayDots(k);
-    g.append(el("button",{type:"button",class:"jw-d"+(k===t0?" on":"")+(k===td?" td":"")+(k<td?" past":""),"aria-pressed":String(k===t0),"aria-label":new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(x),onclick:()=>{ S.accDay=k===td?null:k; renderToday(); }},
+    g.append(el("button",{type:"button",class:"jw-d"+(k===t0?" on":"")+(k===td?" td":"")+(k<td?" past":""),"aria-pressed":String(k===t0),"aria-label":new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(x),onclick:()=>{ S.accDay=k===td?null:k; S.accWk=null; renderToday(); }},
       el("small",{text:"LMMJVSD"[i]}),el("b",{text:String(x.getDate())}),el("i",{"aria-hidden":"true"},...dots.map(c=>el("u",{class:c}))))); }
     if(off) g.setAttribute("aria-hidden","true"); return g; };
   B.replaceChildren(el("div",{class:"jw-t"},wkG(-1),wkG(0),wkG(1)),el("div",{class:"jw-leg","aria-hidden":"true"},...[["b","rendez-vous"],["y","événement"],["p","anniv."],["w","tâches"]].map(([c,t])=>el("span",{},el("i",{class:c}),t)))); }
@@ -6810,7 +6813,7 @@ function hubMiniUpd(){ const M=$("hubMini"); if(!M) return; const ti=document.qu
   if(ti&&ti.offsetParent&&ti.textContent.trim()&&!document.documentElement.classList.contains("prem-open")){ const r=ti.getBoundingClientRect(); on=r.bottom<4; if(on){ const t=ti.textContent; if($("hubMiniT").textContent!==t) $("hubMiniT").textContent=t; const add=document.querySelector('.view:not([hidden]) .hub-add'); $("hubMiniAdd").hidden=!add; } }
   if(M.classList.contains("on")!==on){ M.classList.toggle("on",on); M.setAttribute("aria-hidden",String(!on)); M.querySelectorAll("button").forEach(b=>b.tabIndex=on?0:-1); } }
 addEventListener("scroll",()=>{ if(!S._hmRaf) S._hmRaf=requestAnimationFrame(()=>{ S._hmRaf=0; hubMiniUpd(); }); },{passive:true});
-$("wkLbl").addEventListener("click",()=>{ S.accDay=null; renderToday(); });
+$("wkLbl").addEventListener("click",()=>{ S.accDay=null; S.accWk=null; renderToday(); });
 /* « Ta journée » : glisser la carte à gauche / à droite = jour suivant / précédent (pas sur la rangée des jours, qui a son propre glisser) */
 { const C=$("dayCard"); let x0=null,y0=0; C.addEventListener("touchstart",e=>{ if(e.target.closest(".jx,.jw-g")) return; x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
   C.addEventListener("touchend",e=>{ if(x0==null) return; const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null; if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5) dayShift(dx<0?1:-1); },{passive:true}); }
@@ -6828,7 +6831,7 @@ $("wkLbl").addEventListener("click",()=>{ S.accDay=null; renderToday(); });
     if(!go){ g.animate([{transform:at(s0.dx)},{transform:base}],{duration:red?1:260,easing:"cubic-bezier(.2,1.2,.4,1)"}); g.style.transform=""; return; }
     const dir=s0.dx<0?1:-1; haptic(8);
     const out=g.animate([{transform:at(s0.dx)},{transform:at(-dir*w)}],{duration:red?1:220,easing:"cubic-bezier(.2,.8,.3,1)",fill:"forwards"});
-    out.onfinish=()=>{ dayShift(dir*7); }; };
+    out.onfinish=()=>{ weekBrowse(dir); }; };
   B.addEventListener("pointerup",end); B.addEventListener("pointercancel",e=>{ if(st&&st.on){ st.dx=0; } end(e); });
   B.addEventListener("click",e=>{ if(B._noClick){ e.stopPropagation(); e.preventDefault(); } },true); }
 $("hubMiniAdd").addEventListener("click",()=>{ const add=document.querySelector('.view:not([hidden]) .hub-add'); if(add){ window.scrollTo({top:0,behavior:"smooth"}); add.click(); } });
