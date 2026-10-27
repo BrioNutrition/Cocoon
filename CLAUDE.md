@@ -230,6 +230,10 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   **plus de rayons** dans une liste (Angel : jamais par catégorie en vrai) : articles dans l'ordre d'ajout, astuce « appui long = rayon » retirée ; non pris → liste principale (ou liste de la semaine suivante si `recur`, recréée à +7 j avec tous les articles). Option « Ajouter les ingrédients des repas prévus » (`clAddIng`, jusqu'à la date ou 7 j).
   Couleur de liste = **pastilles** (`CL_COLS`, champ `couleur` ; anciennes listes à emoji : couleur de l'emoji via `clCol`), plus d'emoji ; page vide = « Aucune liste en cours » (plus de liste fictive) ;
   Supprimer = direct, sans confirmation (Angel).
+  **Liste ouverte** (choix 2 d'Angel, 27 oct., bloc CSS `.cl-panel …` après `.c-item.on .c-box`) : champ « Ajouter un article… » avec « + » jaune à gauche, pastilles sur une ligne qui défile
+  (plats de la semaine où il manque des ingrédients `mealMiss()` → « 🍝 Lasagnes jeudi » ajoute le manquant avec `repas`, puis les habituels) ; « Pour qui » et la carte `#cRepas` masqués dans la liste (« … pour Emma » au clavier marche toujours) ;
+  lignes à filets : nom + « × 2 » (`qte` numérique) + « pour les lasagnes » (`platLow`), avatar de qui l'a ajouté s'il n'est pas moi ; « Au caddie · N » replié en petites majuscules ; « ✓ Valider la liste » en dégradé.
+  Estimation du prix d'une liste (« ~22 € ») : essayée puis retirée (Angel).
   « Je fais les courses » / bandeau en direct (`#cLive`) **masqués** (Angel : inutile). Barre « Au caddie » au-dessus de la feuille (`html.cl-open .selbar`).
 - **Calendriers remis à aujourd'hui** en quittant un écran (`calReset(prevTab)` dans `setTab` : accueil `accDay/accOpen/accMo`, agenda `agDay/agM`, repas `rDay/rWeek/rOpen/rMo`, budget `bMonth`, semaine des tâches `wkDay`) et au retour dans l'app après 5 min.
 - Menu « Tes foyers » (`openFoyerMenu`) : **menu de l'app aussi sur iPhone** (pas de `nativeizeMenu`, demandé par Angel).

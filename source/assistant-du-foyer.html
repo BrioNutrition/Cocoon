@@ -2853,6 +2853,34 @@ html.cl-open .selbar{z-index:80}
 .c-item.sel{box-shadow:inset 0 0 0 2px var(--mark)!important}
 .c-box{width:24px!important;height:24px!important;border-color:color-mix(in srgb,var(--ink) 35%,transparent)}
 .c-item.on .c-box{border-color:#3CC37A;background-color:#3CC37A}
+/* liste ouverte (choix 2 d'Angel, 27 oct.) : champ à « + » jaune, suggestions en pastilles, lignes à filets, « Au caddie » discret, Valider en dégradé */
+.cl-panel{padding:4px 14px 14px}
+.cl-panel .c-add{position:relative;display:block;margin:12px 0 8px}
+.cl-panel .c-add input[type=text]{width:100%;padding:13px 14px 13px 46px;border-radius:14px;background:var(--bg);border:1px solid var(--line);font-size:16px}
+.cl-panel .c-add .btn{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:24px;height:24px;min-height:0;padding:0;border-radius:50%;background:#FFC94A;color:#1C1B2E;font-size:18px;font-weight:900;line-height:1;display:grid;place-items:center;box-shadow:none}
+.cl-panel .c-add .btn::before{content:"";position:absolute;inset:-10px}
+.cl-panel .c-hab{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -14px 4px;padding:0 14px 2px}
+.cl-panel .c-hab::-webkit-scrollbar{display:none}
+.cl-panel .c-hb{flex:none;white-space:nowrap;box-shadow:none;background:color-mix(in srgb,#FFC94A 18%,transparent);color:var(--ink);padding:6px 11px;font-size:13px}
+.cl-panel .c-hb b{display:none}
+.cl-panel .c-pour,.cl-panel #cRepas{display:none!important}
+.cl-panel .c-list{gap:0}
+.cl-panel .c-row{border-bottom:1px solid var(--line);gap:0}
+.cl-panel .c-item,.cl-panel .c-list.done .c-item{background:none;box-shadow:none;border:0;border-radius:0;padding:11px 2px}
+.cl-panel .c-item.sel{box-shadow:none}
+.cl-panel .c-tx{flex-direction:row;flex-wrap:wrap;align-items:baseline;column-gap:7px;row-gap:2px}
+.cl-panel .c-n{font-weight:700;font-size:15.5px}
+.cl-panel .c-q{margin-left:0;font-size:12.5px}
+.cl-panel .c-by{margin-left:auto;padding-left:8px;display:flex}
+.cl-panel .c-del{opacity:.45}
+.cl-panel .c-cart-t{background:none!important;color:var(--muted)!important;padding:14px 2px 4px;font-size:12px;letter-spacing:.07em;text-transform:uppercase}
+.cl-panel .c-group .c-cart-t .count{font-size:12px}
+.cl-panel .c-cart .c-ck{display:none}
+.cl-panel .c-cart.open .c-list{margin-top:0}
+.cl-panel .c-list.done .c-item{opacity:.5}
+.cl-panel .cl-acts{margin-top:16px}
+.cl-panel .cl-val-b{background:linear-gradient(135deg,#FFC94A,#FF9C80 50%,#F28DB8);color:#1C1B2E;font-weight:800;font-size:15.5px;min-height:50px;border-radius:16px}
+.cl-panel .cl-more{border-radius:16px;width:50px}
 /* « Revenir à aujourd'hui » ne doit pas changer la hauteur du titre (sinon tout descend) : pas de marge, zone de toucher agrandie par un calque */
 .wkn #wkToday{position:relative;padding:0;line-height:17px;height:17px}.wkn #wkToday:before{content:"";position:absolute;inset:-12px -8px}
 
@@ -9626,16 +9654,17 @@ function cDiff(){ const me=meId(), prev=S.cKnown, nowM=new Map((S.courses||[]).m
       else if(prev.get(i.id)!==!!i.fait&&i.faitPar&&i.faitPar!==me) S.cFlash.set(i.id,Date.now()); }
     if(added.length&&(iShop()||S.tab==="courses")){ const by=membre(added[0].ajoutePar).nom; toast("＋ "+esc(added.slice(0,3).map(i=>i.nom).join(", "))+(added.length>3?"…":"")+" ajouté"+(added.length>1?"s":"")+" par "+esc(by)); try{ if(iShop()&&navigator.vibrate) navigator.vibrate(30); }catch(_){} } }
   S.cKnown=nowM; }
+/* « pour les lasagnes » : le nom du plat en minuscules (sauf s'il commence par un nom propre ou un sigle) */
+function platLow(p){ p=String(p||"").trim(); if(!p) return ""; const w=p.split(/\s+/)[0]; if(w.length>1&&w===w.toUpperCase()) return p; return p.charAt(0).toLowerCase()+p.slice(1); }
 function courseRow(i,o){ o=o||{}; const me=meId();
   const fl=S.cFlash&&S.cFlash.get(i.id), flash=fl&&Date.now()-fl<4000;
   const meta=[]; if(i.pour&&i.pour!=="tous"&&humains().some(m=>m.id===i.pour)) meta.push(el("span",{class:"c-for"},avatar(i.pour,16),i.pour===me?"pour moi":"pour "+membre(i.pour).nom));
-  if(i.repas) meta.push(el("span",{class:"c-rep",text:"🍽 "+i.repas}));
+  if(i.repas) meta.push(el("span",{class:"c-rep",text:"pour "+platLow(i.repas)}));
   if(flash&&!i.fait&&i.ajoutePar&&i.ajoutePar!==me) meta.push(el("span",{class:"c-new",text:"Nouveau · "+membre(i.ajoutePar).nom}));
   const isSel=!i.fait&&S.cSel.has(i.id);
   const b=el("button",{type:"button",class:"c-item"+(i.fait?" on":"")+(isSel?" sel":"")+(isSel&&S.cSelJust===i.id?" just":"")+(flash?" flash":""),"aria-pressed":String(!!i.fait||isSel),onclick:()=>toggleCourse(i)},el("span",{class:"c-box","aria-hidden":"true"}),
-    el("span",{class:"c-tx"},el("span",{class:"c-n",text:i.nom}),meta.length?el("span",{class:"c-meta"},...meta):null),
-    i.qte?el("span",{class:"c-q",text:i.qte}):null,
-    i.fait&&i.faitPar&&i.faitPar!==me?el("span",{class:"c-by",title:"Dans le caddie "+de(membre(i.faitPar).nom)},avatar(i.faitPar,20)):null);
+    el("span",{class:"c-tx"},el("span",{class:"c-n",text:i.nom}),i.qte?el("span",{class:"c-q",text:/^\d+([.,]\d+)?$/.test(String(i.qte).trim())?"× "+String(i.qte).trim():i.qte}):null,meta.length?el("span",{class:"c-meta"},...meta):null),
+    (()=>{ const who=i.fait?i.faitPar:i.ajoutePar; if(!who||who===me||humains().length<2||!membre(who).nom) return null; return el("span",{class:"c-by",title:(i.fait?"Dans le caddie ":"Ajouté par ")+membre(who).nom},avatar(who,22)); })());
   b.addEventListener("contextmenu",ev=>{ ev.preventDefault(); if(i.fait) return; S.cPick=S.cPick===i.id?null:i.id; renderCourses(); });
   { let lt=0, sx=0, sy=0; const stop=()=>{ clearTimeout(lt); b.classList.remove("lp-hold"); };
     b.addEventListener("pointerdown",ev=>{ if(i.fait||iShop()) return; sx=ev.clientX; sy=ev.clientY; stop(); b.classList.add("lp-hold"); lt=setTimeout(()=>{ b.dataset.lp="1"; try{ navigator.vibrate&&navigator.vibrate(15); }catch(_){} S.cPick=i.id; S.cPickJust=i.id; renderCourses(); },550); });
@@ -9702,7 +9731,7 @@ function renderCourses(){
   const opts=[["tous","Le foyer"]].concat(humains().map(m=>[m.id,m.id===me?"Moi":m.nom]));
   if(!opts.some(o=>o[0]===S.cPour)) S.cPour="tous";
   for(const [v,l] of opts) cp.append(el("button",{type:"button","aria-pressed":String(S.cPour===v),onclick:()=>{ S.cPour=v; renderCourses(); }},v==="tous"?null:avatar(v,18),l));
-  $("cNom").placeholder=S.cPour==="tous"?"Lait, pain, piles…":"Pour "+(S.cPour===me?"moi":membre(S.cPour).nom)+" : shampoing, chaussettes…";
+  $("cNom").placeholder=S.cPour==="tous"?"Ajouter un article…":"Pour "+(S.cPour===me?"moi":membre(S.cPour).nom)+" : shampoing, chaussettes…";
   renderHab(); box.innerHTML="";
   const items=cItemsOf(S.cListe||CL_DEF), todo=items.filter(i=>!i.fait), done=items.filter(i=>i.fait);
   if(!items.length){ box.append(el("div",{class:"list"},el("div",{class:"empty"},el("strong",{text:"La liste est vide"}),"Écris ce qui manque juste au-dessus. Plusieurs d'un coup ? Sépare-les par des virgules."))); return; }
@@ -9710,7 +9739,7 @@ function renderCourses(){
   if(todo.length){ const list=el("div",{class:"c-list"}); for(const i of todo.slice().sort((a,b)=>(a.ajouteLe||0)-(b.ajouteLe||0))) list.append(courseRow(i)); box.append(el("div",{class:"c-group"},list)); }
   if(!todo.length) box.append(el("div",{class:"list"},el("div",{class:"empty"},el("strong",{text:"Tout est dans le caddie !"}),shop?"Appuie sur « J'ai fini les courses » : le caddie se vide tout seul.":"Vide le caddie quand les courses sont rangées.")));
   if(done.length){ const open=shop||!!S.cCartOpen, list=el("div",{class:"c-list done"}); if(open) for(const i of done.slice().sort((a,b)=>(b.faitLe||0)-(a.faitLe||0))) list.append(courseRow(i));
-    box.append(el("div",{class:"c-group c-cart"+(open?" open":"")},el("h3",{},el("button",{type:"button",class:"c-cart-t","aria-expanded":String(open),onclick:()=>{ S.cCartOpen=!S.cCartOpen; renderCourses(); }},el("span",{class:"c-ck","aria-hidden":"true",text:"✓"}),"Dans le caddie",el("span",{class:"count",text:"· "+done.length}),el("span",{class:"c-chev","aria-hidden":"true",text:"›"})),shop?null:el("button",{type:"button",class:"btn ghost c-clear",text:"Vider le caddie",onclick:async()=>{ await rowsOutAll(done.map(i=>cRowEl(i.id)).filter(Boolean)); softDelete(done.map(i=>({key:"courses:"+i.id,arr:"courses",item:i,run:()=>S.db.collection("courses").doc(i.id).delete()})),done.length>1?done.length+" articles retirés de la liste.":"Article retiré de la liste."); }})),list)); }
+    box.append(el("div",{class:"c-group c-cart"+(open?" open":"")},el("h3",{},el("button",{type:"button",class:"c-cart-t","aria-expanded":String(open),onclick:()=>{ S.cCartOpen=!S.cCartOpen; renderCourses(); }},el("span",{class:"c-ck","aria-hidden":"true",text:"✓"}),"Au caddie",el("span",{class:"count",text:"· "+done.length}),el("span",{class:"c-chev","aria-hidden":"true",text:"›"})),shop?null:el("button",{type:"button",class:"btn ghost c-clear",text:"Vider le caddie",onclick:async()=>{ await rowsOutAll(done.map(i=>cRowEl(i.id)).filter(Boolean)); softDelete(done.map(i=>({key:"courses:"+i.id,arr:"courses",item:i,run:()=>S.db.collection("courses").doc(i.id).delete()})),done.length>1?done.length+" articles retirés de la liste.":"Article retiré de la liste."); }})),list)); }
   if(S.cFlash&&S.cFlash.size){ clearTimeout(S.cFlashT); S.cFlashT=setTimeout(()=>{ const t=Date.now(); for(const [k,v] of S.cFlash) if(t-v>=4000) S.cFlash.delete(k); if(S.tab==="courses") renderCourses(); },4100); }
 }
 async function addCourses(arts,extra){ const me=meId(), now=Date.now(); let n=0;
@@ -9870,7 +9899,19 @@ function habList(){ const on=new Set((S.courses||[]).filter(i=>!i.fait).map(i=>h
   const hidden=new Set((S.habituels||[]).filter(h=>h.cache).map(h=>h.id));
   for(const n of base){ const k=habKey(n); if(out.length>=8) break; if(on.has(k)||seen.has(k)||hidden.has(k)) continue; seen.add(k); out.push(n); }
   return out.slice(0,8); }
-function renderHab(){ const w=$("cHab"); if(!w) return; w.innerHTML=""; const l=habList(); w.hidden=!l.length||iShop();
+/* plats prévus cette semaine dont il manque des ingrédients (pastille « 🍝 Lasagnes jeudi » dans la liste ouverte) */
+function mealMiss(){ const t0=iso(today()), end=iso(new Date(today().getTime()+6*864e5)), out=[], keys=new Set();
+  for(const m of (S.repas||[]).filter(r=>r.plat&&r.date>=t0&&r.date<=end).sort((a,b)=>(a.date+a.slot)<(b.date+b.slot)?-1:1)){
+    if(out.some(x=>norm(x.plat)===norm(m.plat))) continue; const miss=[];
+    for(const g of platIng(m.plat)){ const k=cKey(parseArticle(g).nom), st=ingState(g); if(st.on||st.bought||keys.has(k)) continue; keys.add(k); miss.push(g); }
+    if(miss.length) out.push({plat:m.plat,date:m.date,slot:m.slot,miss}); }
+  return out.slice(0,3); }
+function renderHab(){ const w=$("cHab"); if(!w) return; w.innerHTML=""; const l=habList(), mm=S.clOpenId?mealMiss():[]; w.hidden=(!l.length&&!mm.length)||iShop();
+  const JS=d=>{ const n0=daysTo(d); return n0===0?"ce soir":n0===1?"demain":JOURS_LONGS[(parse(d).getDay()+6)%7].toLowerCase(); };
+  for(const m of mm){ const b=el("button",{type:"button",class:"c-hb c-hb-r","aria-label":"Ajouter ce qui manque pour "+m.plat+" : "+m.miss.join(", ")},platEmoji(m.plat,m.slot)+" "+m.plat+" "+JS(m.date));
+    b.addEventListener("click",async()=>{ if(!S.db||!needMe()) return; b.disabled=true; b.classList.add("go");
+      try{ const k=await addCourses(m.miss.map(parseArticle),Object.assign({pour:"tous",repas:m.plat},S.cListe&&S.cListe!==CL_DEF?{liste:S.cListe}:{})); haptic(10); toast("🛒 "+k+" ingrédient"+(k>1?"s":"")+" pour "+esc(platLow(m.plat))+" : "+esc(m.miss.slice(0,4).join(", "))+(m.miss.length>4?"…":"")+"."); }catch(e){ writeErr(e); b.disabled=false; } });
+    w.append(b); }
   for(const n of l){ const b=el("button",{type:"button",class:"c-hb","aria-label":"Ajouter "+n},el("b",{text:"+","aria-hidden":"true"}),n);
     b.addEventListener("click",async()=>{ if(!S.db||!needMe()) return; b.disabled=true; b.classList.add("go");
       try{ await addCourses([parseArticle(n)],Object.assign({pour:S.cPour||"tous"},S.cListe&&S.cListe!==CL_DEF?{liste:S.cListe}:{})); toast("« "+esc(n)+" » ajouté à la liste."); }catch(e){ writeErr(e); b.disabled=false; } });
