@@ -202,9 +202,10 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   **une seule grande carte** (`.jn`) : rendez-vous/repas dans les 2 h (compte à rebours, « 📍 Itinéraire », « Voir › »), sinon la tâche la plus en retard/urgente (« ✓ C'est fait », « Plus tard » = lendemain, `S.urgT`), sinon le prochain ; « Ensuite » en petites cartes qui défilent (`.jx`) ;
   « À cocher » = tâches du jour (`.jt`) ; glisser la carte = jour suivant/précédent (`dayShift`, `S.accDay`). Grande date + frise de l'année : essayées puis remplacées ; ancienne frise `.td-tl` supprimée; « Cocoony » en **une ligne** (`renderCocNote`, `#cocNote`, bouton + ×,
   une remarque à la fois : soir sans repas → frigo, papier qui expire sous 14 j, événement sous 21 j avec des choses à préparer, courses en cours/longue liste ;
-  « Non merci » mémorisé dans `cocoon.cocNo`) ; puis « Mes raccourcis » (par défaut Repas, Courses, Budget : `WG_DEF`, plus d'Agenda/Semaine en double).
+  « Non merci » mémorisé dans `cocoon.cocNo`) ; puis **« En un coup d'œil »** (ex « Mes raccourcis », 27 oct.) : par défaut Courses, Papiers, Budget (`WG_DEF`) ; Agenda et Poubelles **retirés** de la liste (déjà dans « Aujourd'hui ») ;
+  Repas = la semaine des repas (« 5 sur 9 prévus », ce qui reste à prévoir sur 7 jours).
+  Événements et anniversaires apparaissent dans la journée (« Toute la journée », en premier) ; points du jour choisi en couleur avec contour sombre.
   Bannière « rendez-vous dans X min » (`#rdvAlert`) masquée sur l'accueil (doublon de la frise). Noms des repas partout : Petit-déj / Déjeuner / Repas (`RSLOTS`, frise).
-  Raccourci Agenda : le plus proche entre rendez-vous, événement et anniversaire, puis le suivant en étiquette. Appui sur la frise : plus de rétrécissement (opacité).
   Cartes de l'accueil (foyer, journée, raccourcis, Cocoony) : contour fin 1 px (`var(--line)`) ; lueurs essayées puis **retirées** (Angel).
   **Raccourcis en « carte à la une »** (choix C d'Angel parmi 3 styles × 9 raccourcis) : `wgX(k)` donne emoji (`e`), compte à rebours en haut à droite
   (`cd`, rouge si `hot`), petite ligne (`cap`), titre (`big`), détail (`small`), étiquette en bas (`chip`), barre (`bar`, événement), anneau (`ring`, semaine), bac en couleur (`bin`) ;
