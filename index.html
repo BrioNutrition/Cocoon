@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 00:30";</script>
+<script>window.COCOON_BUILD="28/10 00:31";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2897,7 +2897,8 @@ div.pf-r{cursor:default}
 /* style C d'Angel (27 oct.) : fond uni, titre à la couleur de la liste, 3 premiers articles visibles */
 .cl-card{background:var(--surface);min-height:150px}
 .cl-card>b{color:var(--c);padding-right:2px}
-.cl-card>small{padding-right:34px}
+.cl-card>small{padding-right:34px}.cl-card:not(.open)>small{padding-right:0}
+.cl-card:not(.open) .ka-cnt{font-size:13.5px;margin-top:1px}
 .cl-card .ka-opt{position:absolute;top:6px;right:6px;width:36px;height:30px;border:0;border-radius:12px;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer}
 .cl-card .ka-opt svg{width:18px;height:18px;fill:currentColor}.cl-card .ka-opt:active{background:var(--sunk)}
 
@@ -9901,8 +9902,9 @@ function clRow(l,open){ const its=cItemsOf(l.id).slice().sort((a,b)=>(a.ajouteLe
   const mb=el("button",{type:"button",class:"ka-opt","aria-label":"Options de « "+(l.titre||"la liste")+" »","aria-haspopup":"menu",onclick:e=>{ e.stopPropagation(); clMenu(mb,clGet(l.id)); }}); mb.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18.5" cy="12" r="2"/></svg>';
   return el("div",{class:"cl-card"+(open?" open":""),role:"button",tabindex:"0",style:"--c:"+clCol(l)+";view-transition-name:clc-"+String(l.id).replace(/[^A-Za-z0-9_-]/g,"_"),"aria-expanded":String(!!open),"aria-label":(l.titre||"Liste")+", "+cap+", "+ok+" sur "+n,
       onclick:tg,onkeydown:e=>{ if(e.target===e.currentTarget&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); tg(); } }},
-    mb,
+    open?mb:null,
     el("small",{text:cap}),el("b",{text:l.titre||"Liste de courses"}),
+    !open&&n?el("span",{class:"ka-pv ka-cnt",text:"🛒 "+ok+" / "+n}):null,
     open?el("span",{class:"ka-pv ka-cnt",text:n?"🛒 "+ok+" / "+n:"Liste vide"}):n?el("span",{class:"ka-ul"},...its.slice(0,3).map(i=>el("span",{class:"ka-li"+(i.fait?" f":"")},el("i",{},foodEmo(i.nom)?el("span",{class:"f-emo","aria-hidden":"true",text:foodEmo(i.nom)}):null,i.nom))),n>3?el("span",{class:"ka-more",text:"+ "+(n-3)+" autre"+(n>4?"s":"")}):null):el("span",{class:"ka-pv",text:"Liste vide"})); }
 /* le contenu déroulé : le champ, les habituels, « Pour qui », les articles (mêmes éléments qu'avant, déplacés dedans) + Valider et ⋯ */
 let CL_PANEL=null;
