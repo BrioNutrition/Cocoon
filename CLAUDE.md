@@ -193,14 +193,14 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - Animal sans photo : **emoji du téléphone** selon l'espèce/race (`petEmo`, `PET_EMO` : 🐱 🐶 🐰 🐹 🐦 🐟 🐢 🐴 🐍 🦎…, sinon 🐾) dans son rond (`.av-pet`) ; anciennes icônes dessinées (`petSvg`) retirées.
 - **Accueil « ultime »** (choisi par Angel le 26 oct., maquette qui réunit les 5 propositions) : bonjour + 2e ligne en dégradé qui résume la journée
   (`#homeL2` : « journée calme. » / « N choses aujourd'hui. » / « grosse journée ! », calculée dans `renderToday`) ; carte du foyer inchangée ; carte
-  « Le plus urgent » / « En retard » (`renderUrgent`, `#urgCard`, `.ug` en dégradé, emoji de la catégorie `URG_EMO`, « ✓ C'est fait » = `completeTask`,
-  « Plus tard » = échéance au lendemain, « 1 sur N › » passe à la suivante, `S.urgI`) ; titre « Ta journée » (`#daySec`, sans lien Agenda : retiré par Angel ; bouton « Aujourd'hui » visible hors du jour même) au-dessus de la frise
+  « Le plus urgent » à part **supprimée** (27 oct., cohérence : elle est devenue la grande carte de « Aujourd'hui ») ; titre « Ta journée » (`#daySec`, sans lien Agenda : retiré par Angel ; bouton « Aujourd'hui » visible hors du jour même) au-dessus de la frise
   (la semaine `#week` et l'en-tête `#dayHead` sont masqués sur l'accueil). Plus de date tout en haut de l'accueil (`#foyerName` masqué, la date est dans « Ta journée »). **« Ta journée » façon « Maintenant, ensuite » + semaine** (choix C puis 1 d'Angel, 27 oct.) : titre = jour choisi (« Aujourd'hui », « Demain », « Mar. 3 nov. »),
-  à droite « ‹ Semaine 44 › » (`#wkPrev/#wkLbl/#wkNext` ; toucher le numéro = revenir à aujourd'hui) ; les 7 jours en cases avec des points (`dayWeek`, `dayCount`, `.jw-d`) ;
-  carte « Prochain / Maintenant / Premier » en grand avec compte à rebours, « 📍 Itinéraire » (si lieu) et « Voir › » (`.jn`) ; « Ensuite » en petites cartes qui défilent (`.jx`) ;
-  « À cocher » = tâches du jour (`.jt`) ; glisser la carte = jour suivant/précédent (`dayShift`, `S.accDay`). Grande date + frise de l'année : essayées puis remplacées ; ancienne frise `.td-tl` supprimée; « Cocoony a remarqué » (`renderCocNote`, `#cocNote`,
+  à droite « Semaine 44 » (`#wkLbl`, toucher = revenir à aujourd'hui ; **pas de flèches : on glisse la rangée des 7 jours** pour changer de semaine, `weekSwipe`,
+  le reste de la carte glissé = jour suivant/précédent) ; points de couleur par jour (`dayDots` : bleu rendez-vous, jaune événement, rose anniversaire, blanc tâches, rouge tâche restée en retard ; pas les repas) + légende `.jw-leg` ;
+  **une seule grande carte** (`.jn`) : rendez-vous/repas dans les 2 h (compte à rebours, « 📍 Itinéraire », « Voir › »), sinon la tâche la plus en retard/urgente (« ✓ C'est fait », « Plus tard » = lendemain, `S.urgT`), sinon le prochain ; « Ensuite » en petites cartes qui défilent (`.jx`) ;
+  « À cocher » = tâches du jour (`.jt`) ; glisser la carte = jour suivant/précédent (`dayShift`, `S.accDay`). Grande date + frise de l'année : essayées puis remplacées ; ancienne frise `.td-tl` supprimée; « Cocoony » en **une ligne** (`renderCocNote`, `#cocNote`, bouton + ×,
   une remarque à la fois : soir sans repas → frigo, papier qui expire sous 14 j, événement sous 21 j avec des choses à préparer, courses en cours/longue liste ;
-  « Non merci » mémorisé dans `cocoon.cocNo`) ; puis « Mes raccourcis » inchangés.
+  « Non merci » mémorisé dans `cocoon.cocNo`) ; puis « Mes raccourcis » (par défaut Repas, Courses, Budget : `WG_DEF`, plus d'Agenda/Semaine en double).
   Bannière « rendez-vous dans X min » (`#rdvAlert`) masquée sur l'accueil (doublon de la frise). Noms des repas partout : Petit-déj / Déjeuner / Repas (`RSLOTS`, frise).
   Raccourci Agenda : le plus proche entre rendez-vous, événement et anniversaire, puis le suivant en étiquette. Appui sur la frise : plus de rétrécissement (opacité).
   Cartes de l'accueil (foyer, journée, raccourcis, Cocoony) : contour fin 1 px (`var(--line)`) ; lueurs essayées puis **retirées** (Angel).
