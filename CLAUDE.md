@@ -195,11 +195,10 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   (`#homeL2` : « journée calme. » / « N choses aujourd'hui. » / « grosse journée ! », calculée dans `renderToday`) ; carte du foyer inchangée ; carte
   « Le plus urgent » / « En retard » (`renderUrgent`, `#urgCard`, `.ug` en dégradé, emoji de la catégorie `URG_EMO`, « ✓ C'est fait » = `completeTask`,
   « Plus tard » = échéance au lendemain, « 1 sur N › » passe à la suivante, `S.urgI`) ; titre « Ta journée » (`#daySec`, sans lien Agenda : retiré par Angel ; bouton « Aujourd'hui » visible hors du jour même) au-dessus de la frise
-  (la semaine `#week` et l'en-tête `#dayHead` sont masqués sur l'accueil). Plus de date tout en haut de l'accueil (`#foyerName` masqué, la date est dans « Ta journée »). **N'importe quel jour de l'année** (choix C d'Angel) : grande date en dégradé
-  + « Aujourd'hui/Demain/Hier » + « semaine N » + ‹ › (`#dayBig`, `dayBigYear`, `dayShift`, `S.accDay`), glisser la carte à gauche/droite change de jour,
-  frise de l'année en bas (`#dayYear`, une barre par semaine : hauteur = ce qui est prévu, rose anniversaire, jaune événement, bleu rendez-vous ;
-  **glisser le doigt dessus** parcourt les semaines en gardant le jour de la semaine, pas de phrase d'aide ; redessinée seulement si son contenu change, sinon seul le curseur bouge).
-  Changement de jour stable : journée à hauteur fixe qui défile dedans (`#todayCard` 186 px ; jour vide = carte resserrée, demandé par Angel), date sur une ligne (« lundi · oct. 2026 · sem. 44 ») ; « Cocoony a remarqué » (`renderCocNote`, `#cocNote`,
+  (la semaine `#week` et l'en-tête `#dayHead` sont masqués sur l'accueil). Plus de date tout en haut de l'accueil (`#foyerName` masqué, la date est dans « Ta journée »). **« Ta journée » façon « Maintenant, ensuite » + semaine** (choix C puis 1 d'Angel, 27 oct.) : titre = jour choisi (« Aujourd'hui », « Demain », « Mar. 3 nov. »),
+  à droite « ‹ Semaine 44 › » (`#wkPrev/#wkLbl/#wkNext` ; toucher le numéro = revenir à aujourd'hui) ; les 7 jours en cases avec des points (`dayWeek`, `dayCount`, `.jw-d`) ;
+  carte « Prochain / Maintenant / Premier » en grand avec compte à rebours, « 📍 Itinéraire » (si lieu) et « Voir › » (`.jn`) ; « Ensuite » en petites cartes qui défilent (`.jx`) ;
+  « À cocher » = tâches du jour (`.jt`) ; glisser la carte = jour suivant/précédent (`dayShift`, `S.accDay`). Grande date + frise de l'année : essayées puis remplacées ; ancienne frise `.td-tl` supprimée; « Cocoony a remarqué » (`renderCocNote`, `#cocNote`,
   une remarque à la fois : soir sans repas → frigo, papier qui expire sous 14 j, événement sous 21 j avec des choses à préparer, courses en cours/longue liste ;
   « Non merci » mémorisé dans `cocoon.cocNo`) ; puis « Mes raccourcis » inchangés.
   Bannière « rendez-vous dans X min » (`#rdvAlert`) masquée sur l'accueil (doublon de la frise). Noms des repas partout : Petit-déj / Déjeuner / Repas (`RSLOTS`, frise).

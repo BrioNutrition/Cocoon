@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="26/10 23:53";</script>
+<script>window.COCOON_BUILD="27/10 11:00";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2463,27 +2463,6 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .jr-card{gap:10px;padding:14px}
 .td-h{margin-bottom:0}
 .td-pills{display:flex;flex-wrap:wrap;gap:7px}
-.td-pill{display:inline-flex;align-items:center;gap:7px;border:0;background:var(--sunk);color:var(--ink);font:inherit;font-size:13px;font-weight:700;padding:6px 11px 6px 8px;border-radius:999px;cursor:pointer;max-width:100%;transition:opacity .25s ease,transform .15s ease}
-.td-pill i{width:15px;height:15px;border-radius:5px;border:2px solid var(--check);flex:none;box-sizing:border-box}
-.td-pill.late i{border-color:var(--late)}
-.td-pill.late{color:var(--late)}
-.td-pill.ok{opacity:.55;text-decoration:line-through}
-.td-pill.ok i{background:#3CC37A;border-color:#3CC37A}
-.td-pill.more{padding:6px 11px;color:var(--muted)}
-.td-pill:active{opacity:.7}
-.td-tl{position:relative;display:flex;flex-direction:column;gap:7px;padding-left:58px}
-.td-tl::before{content:"";position:absolute;left:47px;top:8px;bottom:8px;width:2px;background:var(--line);border-radius:2px}
-.td-ev{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:1px;border:0;background:var(--bg);border-radius:13px;padding:8px 11px;font:inherit;color:var(--ink);text-align:left;cursor:pointer;width:100%}
-.td-ev::before{content:"";position:absolute;left:-15px;top:13px;width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px var(--surface)}
-.td-ev s{position:absolute;left:-58px;top:9px;width:36px;text-align:right;text-decoration:none;font-size:11.5px;font-weight:800;color:var(--muted)}
-.td-ev b{font-size:14px;font-weight:700}
-.td-ev span{font-size:12px;color:var(--muted)}
-.td-ev.past{opacity:.5}
-.td-ev:active{opacity:.7}
-.td-now{position:relative;height:2px;margin:3px 0}
-.td-now hr{border:0;border-top:2px dashed #E0A100;margin:0 0 0 -10px}
-.td-now::before{content:"";position:absolute;left:-16px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:#FFC94A;opacity:.45;z-index:1}
-.td-now s{position:absolute;left:-58px;top:50%;margin-top:-7px;line-height:14px;width:36px;text-align:right;text-decoration:none;font-size:11.5px;font-weight:800;color:#E0A100}
 .td-x{display:flex;align-items:center;gap:9px;border:0;background:none;padding:2px 0;font:inherit;font-size:13.5px;font-weight:600;color:var(--ink);text-align:left;cursor:pointer}
 .td-x i{font-style:normal}
 .jr-card .week{background:none;box-shadow:none;padding:0;border-radius:0;gap:8px}
@@ -2889,24 +2868,35 @@ div.pf-r{cursor:default}
 .acc-sec{display:flex;align-items:baseline;justify-content:space-between;margin:22px 4px 10px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .acc-sec[hidden]{display:none}
 #daySec{margin:4px 4px -10px}
-#daySec button[hidden]{display:none}
-.dbig{display:flex;align-items:center;gap:12px}
-.dbig-n{font:800 60px/1.05 var(--f-display);letter-spacing:-.04em;padding:0 .06em 0 0;margin:-6px 0;background:linear-gradient(135deg,#FFC94A,#FF9C80 50%,#F28DB8);-webkit-background-clip:text;background-clip:text;color:transparent}
-.dbig-w{display:flex;flex-direction:column;gap:2px;min-width:0}.dbig-w b{font:800 19px/1.1 var(--f-display)}.dbig-w small{font-size:12.5px;color:var(--muted)}
-.dbig-sw{margin-left:auto;display:flex;gap:6px;align-self:center}
-.dbig-sw button{width:38px;height:38px;border-radius:50%;border:0;background:var(--sunk);color:var(--ink);display:grid;place-items:center;padding:0;cursor:pointer}
-.dbig-sw button:active{opacity:.6}
-.dyr{margin-top:4px}
-.dyr-bars{display:flex;gap:2px;align-items:flex-end;height:34px;padding-top:8px;box-sizing:content-box;touch-action:none;cursor:ew-resize;user-select:none;-webkit-user-select:none}
-.dyr-b{flex:1;min-width:0;height:var(--h);border-radius:2px;background:color-mix(in srgb,var(--ink) 16%,transparent);pointer-events:none}
-.dyr-b.r{background:#8FB8FF}.dyr-b.e{background:#FFC94A}.dyr-b.a{background:#F28DB8}
-.dyr-b.now{box-shadow:0 -3px 0 var(--mark)}
-.dyr-b.cur{background:var(--ink);height:100%}
-.dyr-m{display:flex;justify-content:space-between;font-size:10px;font-weight:800;color:var(--muted);margin-top:5px}.dyr-m .on{color:var(--mark)}
-/* changement de jour : la carte garde sa taille (la journée défile dedans), la date garde sa place */
-#dayCard #todayCard:has(> .td-calm:only-child){height:auto;min-height:0}
-#dayCard #todayCard{height:186px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}#dayCard #todayCard::-webkit-scrollbar{display:none}
-.dbig-n{min-width:1.25em;font-variant-numeric:tabular-nums}.dbig-w{flex:1}.dbig-w b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dbig-w small{line-height:1.3;max-height:2.6em;overflow:hidden}#urgCard .acc-sec,#cocNote .acc-sec{margin:4px 4px 10px}
+#daySec{align-items:center}#daySec #dayTtl{letter-spacing:.06em}
+.wkn{display:flex;align-items:center;gap:0;white-space:nowrap;flex:none}
+.wkn button{border:0;background:none;font:inherit;font-size:13px;letter-spacing:0;text-transform:none;font-weight:800;color:var(--mark);cursor:pointer;padding:6px 6px}
+.wkn #wkPrev,.wkn #wkNext{display:grid;place-items:center;padding:6px}
+.wkn #wkLbl.off{color:var(--ink)}
+.jw-g{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.jw-d{border:0;border-radius:13px;background:var(--sunk);color:var(--muted);padding:6px 0 7px;display:flex;flex-direction:column;align-items:center;gap:1px;font:inherit;cursor:pointer}
+.jw-d small{font-size:10px;font-weight:800}.jw-d b{font:800 17px/1.1 var(--f-display);color:var(--ink)}
+.jw-d i{display:flex;gap:2px;height:5px;margin-top:3px}.jw-d i u{width:4px;height:4px;border-radius:50%;background:#8FB8FF}
+.jw-d.past b{color:var(--muted)}.jw-d.td{box-shadow:inset 0 0 0 1.5px var(--mark)}
+.jw-d.on{background:linear-gradient(135deg,#FFC94A,#FF9C80 50%,#F28DB8);color:#1C1B2E;box-shadow:none}.jw-d.on b{color:#1C1B2E}.jw-d.on i u{background:#1C1B2E}
+.jn{border-radius:20px;padding:14px;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 30%,var(--surface)),var(--surface) 75%);border:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
+.jn-h{display:flex;align-items:center;gap:8px}.jn-h small{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c)}
+.jn-cd{margin-left:auto;font:800 13.5px var(--f-display);background:color-mix(in srgb,var(--c) 25%,transparent);border-radius:999px;padding:5px 10px}
+.jn-t{font:800 22px/1.1 var(--f-display);letter-spacing:-.02em;margin-top:2px}.jn-s{font-size:13px;color:var(--muted)}
+.jn-a{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.jn-b{border:0;border-radius:999px;padding:7px 12px;font:inherit;font-size:12.5px;font-weight:800;background:var(--sunk);color:var(--ink);text-decoration:none;cursor:pointer}
+.jn-b.on{background:var(--c);color:#1C1B2E}
+.jsec{margin:4px 2px -4px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.jx{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:0 14px;scroll-snap-type:x mandatory}.jx::-webkit-scrollbar{display:none}
+.jx-c{flex:none;width:148px;scroll-snap-align:start;border:1px solid var(--line);border-radius:16px;background:var(--bg);padding:10px 12px;display:flex;flex-direction:column;gap:2px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;border-left:3px solid var(--c)}
+.jx-c small{font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}.jx-c b{font-size:14px;line-height:1.2}.jx-c span{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jt{display:flex;flex-direction:column}
+.jt-r{display:flex;align-items:center;gap:10px;border:0;background:none;padding:9px 2px;border-top:1px solid var(--line);font:inherit;color:var(--ink);text-align:left;cursor:pointer}.jt-r:first-child{border-top:0}
+.jt-r .ck{width:22px;height:22px;border-radius:50%;border:2px solid color-mix(in srgb,var(--ink) 35%,transparent);flex:none;position:relative}
+.jt-r b{display:block;font-size:14.5px;font-weight:700}.jt-r small{font-size:12px;color:#FF8F8F}
+.jt-r.ok .ck{background:#3CC37A;border-color:#3CC37A}.jt-r.ok .ck:after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+.jt-r.ok b{text-decoration:line-through;color:var(--muted)}
+.jt-more{border:0;background:none;font:inherit;font-size:13px;font-weight:700;color:var(--mark);padding:8px 2px;text-align:left;cursor:pointer}#urgCard .acc-sec,#cocNote .acc-sec{margin:4px 4px 10px}
 .acc-sec button{border:0;background:none;font:inherit;font-size:13px;letter-spacing:0;text-transform:none;font-weight:700;color:var(--mark);cursor:pointer;padding:6px 0}
 .ug{position:relative;overflow:hidden;border-radius:26px;padding:18px 18px 16px;background:linear-gradient(100deg,#FFC94A,#FF9C80 45%,#F28DB8 75%,#C79BFF);color:#1C1B2E;display:flex;flex-direction:column;gap:3px;transition:opacity .3s,transform .3s}
 .ug.gone{opacity:.4;transform:scale(.98)}
@@ -3789,8 +3779,8 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
     <div id="rdvAlert"></div>
     <div id="evAlert"></div>
     <div id="urgCard" hidden></div>
-    <div class="acc-sec" id="daySec" hidden><span id="dayTtl">Ta journée</span><button type="button" id="dayTog" hidden>Aujourd'hui</button></div>
-    <div class="jr-card" id="dayCard" hidden><div class="td-h" id="dayHead"></div><div class="week" id="week"></div><div class="dbig" id="dayBig"></div><div class="td-body" id="todayCard"></div><div class="dyr" id="dayYear"></div></div>
+    <div class="acc-sec" id="daySec" hidden><span id="dayTtl"></span><span class="wkn"><button type="button" id="wkPrev" aria-label="Semaine précédente"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" id="wkLbl"></button><button type="button" id="wkNext" aria-label="Semaine suivante"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></span></div>
+    <div class="jr-card" id="dayCard" hidden><div class="td-h" id="dayHead"></div><div class="week" id="week"></div><div class="jw" id="dayBig"></div><div class="td-body" id="todayCard"></div></div>
     <div id="cocNote" hidden></div>
     <div id="recapCard" class="recap" hidden></div>
     <div id="setupCard" hidden></div>
@@ -5051,7 +5041,7 @@ const eurR=v=>money(Math.round(v/100)*100).replace(/,00\s?€/," €");
 function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); if(!w||!C) return; w.innerHTML=""; H.innerHTML=""; const me=meId();
   if(!S.loaded.t||!me){ C.hidden=true; $("daySec").hidden=true; return; } C.hidden=false; $("daySec").hidden=false;
   const td=iso(today()), t0=S.accDay||td;
-  $("dayTog").hidden=t0===td; dayBigYear(t0); const isT=t0===td, N=new Date(), nowM=t0<td?24*60:t0>td?-1:N.getHours()*60+N.getMinutes();
+  dayWeek(t0); const isT=t0===td, N=new Date(), nowM=t0<td?24*60:t0>td?-1:N.getHours()*60+N.getMinutes();
   const go=(tab,sel)=>()=>{ setTab(tab); window.scrollTo({top:0}); if(sel) setTimeout(()=>{ const e=$(sel); if(e) e.scrollIntoView({block:"start",behavior:"smooth"}); },90); };
   const hm=h=>{ const m=/^(\d{1,2}):(\d{2})/.exec(h||""); return m?+m[1]*60+ +m[2]:null; }, hl=m=>Math.floor(m/60)+"h"+(m%60?String(m%60).padStart(2,"0"):"");
   const nm=id=>id&&membre(id).nom?(id===me?"toi":membre(id).nom):null;
@@ -5063,11 +5053,11 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
   // événements avec une heure
   const ev=[];
   for(const r of (S.rdvs||[])) if(r.date===t0&&!r.fait&&(!r.pour||!r.pour.length||r.pour.includes(me)||r.pour.includes("tous"))){ const m=hm(r.heure);
-    ev.push({m:m==null?9*60:m,h:m==null?"":hl(m),t:r.titre,s:[r.lieu,r.heureFin?"jusqu'à "+heureTxt(r.heureFin):null].filter(Boolean).join(" · ")||"Rendez-vous",c:"#8FB8FF",end:hm(r.heureFin)||(m==null?null:m+60),fn:()=>{ S.agDay=t0; setTab("agenda"); window.scrollTo({top:0}); }}); }
+    ev.push({lieu:r.lieu||"",k:"rendez-vous",m:m==null?9*60:m,h:m==null?"":hl(m),t:r.titre,s:[r.lieu,r.heureFin?"jusqu'à "+heureTxt(r.heureFin):null].filter(Boolean).join(" · ")||"Rendez-vous",c:"#8FB8FF",end:hm(r.heureFin)||(m==null?null:m+60),fn:()=>{ S.agDay=t0; setTab("agenda"); window.scrollTo({top:0}); }}); }
   const MS={matin:[8*60,"Petit-déj","#E9A86B"],midi:[12*60+30,"Déjeuner","#6FA8DC"],soir:[19*60+30,"Repas","#E0B21C"]};
   for(const sl of ["matin","midi","soir"]){ const m=(S.repas||[]).find(r=>r.date===t0&&r.slot===sl&&r.plat); if(!m) continue; const c=nm(m.cuisine), v=nm(m.vaisselle), bits=[];
     if(c) bits.push(c==="toi"?"tu cuisines":c+" cuisine"); if(v) bits.push(v==="toi"?"tu fais la vaisselle":v+" fait la vaisselle");
-    const mn=Math.round(hNum(repasH(sl,m))*60); ev.push({m:mn,h:hl(mn),t:m.plat,s:MS[sl][1]+(bits.length?" · "+bits.join(" · "):""),c:MS[sl][2],end:mn+60,fn:go("repas")}); }
+    const mn=Math.round(hNum(repasH(sl,m))*60); ev.push({k:MS[sl][1].toLowerCase(),m:mn,h:hl(mn),t:m.plat,s:MS[sl][1]+(bits.length?" · "+bits.join(" · "):""),c:MS[sl][2],end:mn+60,fn:go("repas")}); }
   for(const b of (S.bins||[])){ const nx=binNext(b,parse(t0)); if(!nx||iso(nx.sortie)!==t0) continue; const wh=binWho(b), m=b.veille?19*60+30:7*60+30;
     ev.push({m,h:hl(m),t:"Sortir "+b.nom.toLowerCase().replace(/^ordures ménagères$/,"les ordures ménagères"),s:wh.label,c:"#7FD39A",end:m+90,fn:()=>{ S.mSec="bins"; go("maison")(); }}); }
   ev.sort((a,b)=>a.m-b.m);
@@ -5079,56 +5069,41 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
   for(const m of membres()){ const nb=nextBirthday(m); if(nb&&nb.date===t0) extra.push(["🎂","Anniversaire "+de(m.nom),()=>openProfile(m.id)]); }
   const dz=isT?S.docs.filter(d=>d.expire&&daysTo(d.expire)>=0&&daysTo(d.expire)<=7):S.docs.filter(d=>d.expire===t0);
   if(dz.length) extra.push(["📄",dz.length>1?dz.length+" papiers expirent cette semaine":dz[0].titre+" expire "+dueLabel(dz[0].expire),go("documents")]);
-  const tot=open.length+doneT.length, dd=parse(t0), dl=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(dd);
-  const ttl=isT?"Aujourd'hui":t0===iso(new Date(today().getTime()+864e5))?"Demain":t0===iso(new Date(today().getTime()-864e5))?"Hier":dl.charAt(0).toUpperCase()+dl.slice(1);
-  H.append(el("b",{text:ttl})); if(tot) H.append(el("span",{text:doneT.length+" / "+tot+" fait"+(doneT.length>1?"s":"")}));
-  if(open.length||doneT.length){ const pl=el("div",{class:"td-pills"});
-    for(const t of open.slice(0,6)){ const late=t.echeance<t0, b=el("button",{type:"button",class:"td-pill"+(late?" late":""),"aria-label":"Marquer « "+t.titre+" » comme fait"},el("i",{"aria-hidden":"true"}),t.titre);
+  /* la prochaine chose en grand (aujourd'hui : la prochaine à venir ; un autre jour : la première), puis la suite, puis les tâches à cocher */
+  const fut=isT?ev.filter(e=>(e.end||e.m+60)>nowM):ev, hero=fut[0], rest=fut.slice(1);
+  if(hero){ const cur=isT&&hero.m<=nowM, mn=hero.m-nowM, cd=!isT?null:cur?"en cours":mn<60?"dans "+mn+" min":"dans "+Math.floor(mn/60)+" h"+(mn%60?" "+String(mn%60).padStart(2,"0"):"");
+    const acts=el("div",{class:"jn-a"}); if(hero.lieu) acts.append(el("a",{class:"jn-b on",href:"https://maps.apple.com/?q="+encodeURIComponent(hero.lieu),target:"_blank",rel:"noopener"},"📍 Itinéraire"));
+    acts.append(el("button",{type:"button",class:"jn-b",onclick:hero.fn},"Voir ›"));
+    w.append(el("div",{class:"jn",style:"--c:"+hero.c},el("div",{class:"jn-h"},el("small",{text:(cur?"Maintenant":isT?"Prochain":"Premier")+(hero.h?" · "+hero.h:"")}),cd?el("span",{class:"jn-cd",text:cd}):null),
+      el("b",{class:"jn-t",text:hero.t}),hero.s?el("span",{class:"jn-s",text:hero.s}):null,acts)); }
+  if(rest.length){ const x=el("div",{class:"jx"}); for(const e of rest) x.append(el("button",{type:"button",class:"jx-c",style:"--c:"+e.c,onclick:e.fn},el("small",{text:e.h||"dans la journée"}),el("b",{text:e.t}),e.s?el("span",{text:e.s}):null));
+    w.append(el("p",{class:"jsec",text:"Ensuite"}),x); }
+  if(open.length||doneT.length){ const L=el("div",{class:"jt"});
+    for(const t of open.slice(0,6)){ const late=t.echeance<t0, b=el("button",{type:"button",class:"jt-r"+(late?" late":""),"aria-label":"Marquer « "+t.titre+" » comme fait"},el("i",{class:"ck","aria-hidden":"true"}),el("span",{},el("b",{text:t.titre}),late?el("small",{text:"en retard · "+dueLabel(t.echeance)}):null));
       b.addEventListener("click",async()=>{ if(!S.db||!needMe()) return; b.classList.add("ok"); b.disabled=true; try{ await completeTask(t); toast("✓ « "+esc(t.titre)+" » fait."); }catch(e){ b.classList.remove("ok"); b.disabled=false; writeErr(e); } });
-      pl.append(b); }
-    if(open.length>6) pl.append(el("button",{type:"button",class:"td-pill more",text:"+"+(open.length-6),onclick:go("foyer")}));
-    for(const t of doneT.slice(0,3)) pl.append(el("span",{class:"td-pill ok"},el("i",{"aria-hidden":"true"}),t.titre));
-    w.append(pl); }
-  if(ev.length){ const tl=el("div",{class:"td-tl"}); let placed=false;
-    const nowEl=()=>isT?el("div",{class:"td-now","aria-label":"Maintenant, "+hl(nowM)},el("s",{text:hl(nowM)}),el("hr")):null;
-    for(const e of ev){ if(!placed&&e.m>nowM){ const n=nowEl(); if(n) tl.append(n); placed=true; }
-      const past=(e.end||e.m)<=nowM;
-      tl.append(el("button",{type:"button",class:"td-ev"+(past?" past":""),style:"--c:"+e.c,onclick:e.fn},el("s",{text:e.h}),el("b",{text:e.t}),e.s?el("span",{text:e.s}):null)); }
-    if(!placed){ const n=nowEl(); if(n) tl.append(n); }
-    w.append(tl); }
+      L.append(b); }
+    if(open.length>6) L.append(el("button",{type:"button",class:"jt-more",text:"+ "+(open.length-6)+" autres",onclick:go("foyer")}));
+    for(const t of doneT.slice(0,3)) L.append(el("span",{class:"jt-r ok"},el("i",{class:"ck","aria-hidden":"true"}),el("span",{},el("b",{text:t.titre}))));
+    w.append(el("p",{class:"jsec",text:"À cocher"}),L); }
   for(const [ic,tx,fn] of extra) w.append(el("button",{type:"button",class:"td-x",onclick:fn},el("i",{"aria-hidden":"true",text:ic}),tx));
-  if(!open.length&&!doneT.length&&!ev.length&&!extra.length) w.append(el("p",{class:"td-calm",text:isT?"Journée calme : rien de prévu pour toi aujourd'hui.":"Rien de prévu ce jour-là."}));
+  if(!hero&&!open.length&&!doneT.length&&!extra.length) w.append(el("p",{class:"td-calm",text:isT?(ev.length||S.urgT?"Rien d'autre de prévu aujourd'hui.":"Journée calme : rien de prévu pour toi aujourd'hui."):"Rien de prévu ce jour-là."}));
 }
-/* ---------- Ta journée : grande date (‹ ›), frise de l'année (une barre par semaine) ---------- */
+/* ---------- Ta journée : date choisie en titre, « ‹ Semaine N › » à droite, les 7 jours avec des points ---------- */
 function dayShift(n){ const d=parse(S.accDay||iso(today())); d.setDate(d.getDate()+n); S.accDay=iso(d)===iso(today())?null:iso(d); renderToday(); }
 function isoWeek(d){ const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())), dn=(t.getUTCDay()+6)%7; t.setUTCDate(t.getUTCDate()-dn+3); const f=new Date(Date.UTC(t.getUTCFullYear(),0,4)); return 1+Math.round(((t-f)/864e5-3+((f.getUTCDay()+6)%7))/7); }
-function dayBigYear(t0){ const B=$("dayBig"), Y=$("dayYear"); if(!B||!Y) return;
-  const chev=n=>{ const b=el("button",{type:"button","aria-label":n<0?"Jour précédent":"Jour suivant",onclick:()=>dayShift(n)}); b.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+(n<0?"M15 5l-7 7 7 7":"M9 5l7 7-7 7")+'"/></svg>'; return b; }; const d=parse(t0), td=iso(today());
-  const wd=new Intl.DateTimeFormat("fr-FR",{weekday:"long"}).format(d), mo=new Intl.DateTimeFormat("fr-FR",{month:"short",year:"numeric"}).format(d);
-  const rel=t0===td?"Aujourd'hui":daysTo(t0)===1?"Demain":daysTo(t0)===-1?"Hier":wd.charAt(0).toUpperCase()+wd.slice(1);
-  B.replaceChildren(el("span",{class:"dbig-n",text:String(d.getDate())}),el("span",{class:"dbig-w"},el("b",{text:rel}),el("small",{text:(rel!==wd.charAt(0).toUpperCase()+wd.slice(1)?wd+" · ":"")+mo.replace(/ /g,"\u00a0")+" · sem.\u00a0"+isoWeek(d)})),
-    el("span",{class:"dbig-sw"},chev(-1),chev(1)));
-  /* l'année du jour choisi : une barre par semaine (lundi), hauteur = ce qui est prévu, couleur = anniversaire / événement / rendez-vous */
-  const yr=d.getFullYear(), j1=new Date(yr,0,1), m0=new Date(yr,0,1-((j1.getDay()+6)%7)), W=[], key=x=>Math.floor((parse(x)-m0)/(7*864e5));
-  const n=Math.floor((new Date(yr,11,31)-m0)/(7*864e5))+1; for(let i=0;i<n;i++) W.push({c:0,r:0,e:0,a:0});
-  const add=(x,f)=>{ if(!x||+x.slice(0,4)!==yr) return; const k=key(x); if(W[k]){ W[k].c++; if(f) W[k][f]++; } };
-  for(const r of (S.rdvs||[])) add(r.date,"r"); for(const t of allTasks()) if(t.echeance) add(t.echeance);
-  for(const ev of evAll()) add(ev.debut,"e"); for(const m of membres()) if(m.naissance){ const b=parse(m.naissance); add(iso(new Date(yr,b.getMonth(),b.getDate())),"a"); }
-  const mx=Math.max(3,...W.map(w=>w.c)), cur=key(t0), now=parse(td).getFullYear()===yr?key(td):-1;
-  /* la frise n'est redessinée que si l'année ou son contenu change : en changeant de jour, seul le curseur bouge */
-  const sig=yr+":"+W.map(w=>w.c+"."+(w.a?"a":w.e?"e":w.r?"r":"")).join(",");
-  if(Y._sig!==sig||!Y.querySelector(".dyr-bars")){ Y._sig=sig; const bars=el("div",{class:"dyr-bars",role:"slider","aria-label":"Semaine de l'année","aria-valuemin":"1","aria-valuemax":String(W.length)});
-    W.forEach((w,i)=>bars.append(el("span",{class:"dyr-b"+(w.a?" a":w.e?" e":w.r?" r":"")+(i===now?" now":""),style:"--h:"+Math.round(18+82*w.c/mx)+"%"})));
-    /* glisser le doigt sur la frise : on parcourt les semaines (même jour de la semaine que celui affiché) */
-    const at=x=>{ const r=bars.getBoundingClientRect(); return Math.max(0,Math.min(W.length-1,Math.floor((x-r.left)/r.width*W.length))); };
-    const go=i=>{ if(i===bars._i) return; bars._i=i; const cd=parse(S.accDay||iso(today())), wd=(cd.getDay()+6)%7; let d=new Date(m0.getTime()+(i*7+wd)*864e5);
-      if(d.getFullYear()<yr) d=new Date(yr,0,1); if(d.getFullYear()>yr) d=new Date(yr,11,31); S.accDay=iso(d)===iso(today())?null:iso(d); haptic(4); renderToday(); };
-    bars.addEventListener("pointerdown",e=>{ bars.setPointerCapture(e.pointerId); bars._i=null; go(at(e.clientX)); });
-    bars.addEventListener("pointermove",e=>{ if(bars.hasPointerCapture(e.pointerId)) go(at(e.clientX)); });
-    const ms=el("div",{class:"dyr-m"}); "JFMAMJJASOND".split("").forEach(l=>ms.append(el("span",{text:l})));
-    Y.replaceChildren(bars,ms); }
-  const bars=Y.querySelector(".dyr-bars"); [...bars.children].forEach((b,i)=>b.classList.toggle("cur",i===cur)); bars.setAttribute("aria-valuenow",String(cur+1));
-  [...Y.querySelector(".dyr-m").children].forEach((m,i)=>m.classList.toggle("on",i===d.getMonth())); }
+function dayCount(k){ const me=meId(); let n=0;
+  for(const r of (S.rdvs||[])) if(r.date===k&&!r.fait&&(!r.pour||!r.pour.length||r.pour.includes(me)||r.pour.includes("tous"))) n++;
+  for(const t of allTasks()) if(!t.fait&&t.echeance===k&&(!t.pour||t.pour==="tous"||t.pour===me||S.perso.includes(t))) n++;
+  for(const r of (S.repas||[])) if(r.date===k&&r.plat) n++;
+  for(const ev of evAll()) if(ev.debut===k) n++; n+=annivOn(k).length; return n; }
+function dayWeek(t0){ const B=$("dayBig"); if(!B) return; const d=parse(t0), td=iso(today()), mon=new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7));
+  const ttl=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(d); $("dayTtl").textContent=t0===td?"Aujourd'hui":daysTo(t0)===1?"Demain":daysTo(t0)===-1?"Hier":new Intl.DateTimeFormat("fr-FR",{weekday:"short",day:"numeric",month:"short"}).format(d).replace(/^./,c=>c.toUpperCase());
+  const wk=isoWeek(d), wt=isoWeek(today()); $("wkLbl").textContent="Semaine "+wk; $("wkLbl").classList.toggle("off",wk!==wt||d.getFullYear()!==today().getFullYear()); $("wkLbl").setAttribute("aria-label","Semaine "+wk+(wk!==wt?", revenir à aujourd'hui":""));
+  const g=el("div",{class:"jw-g"});
+  for(let i=0;i<7;i++){ const x=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+i), k=iso(x), n=Math.min(3,dayCount(k));
+    g.append(el("button",{type:"button",class:"jw-d"+(k===t0?" on":"")+(k===td?" td":"")+(k<td?" past":""),"aria-pressed":String(k===t0),"aria-label":new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(x),onclick:()=>{ S.accDay=k===td?null:k; renderToday(); }},
+      el("small",{text:"LMMJVSD"[i]}),el("b",{text:String(x.getDate())}),el("i",{"aria-hidden":"true"},...Array.from({length:n},()=>el("u"))))); }
+  B.replaceChildren(g); }
 /* ---------- Accueil : le plus urgent, puis une remarque de Cocoony ---------- */
 const URG_EMO={factures:"💶",entretien:"🔧",courses:"🛒",colis:"📦",animaux:"🐾",rdv:"📅",maison:"🏠",documents:"📄",voitures:"🚗",ecole:"🎒",jardin:"🌱"};
 function renderUrgent(){ const box=$("urgCard"); if(!box) return; box.innerHTML=""; const me=meId(); S.urgT=null;
@@ -6947,9 +6922,10 @@ function hubMiniUpd(){ const M=$("hubMini"); if(!M) return; const ti=document.qu
   if(ti&&ti.offsetParent&&ti.textContent.trim()&&!document.documentElement.classList.contains("prem-open")){ const r=ti.getBoundingClientRect(); on=r.bottom<4; if(on){ const t=ti.textContent; if($("hubMiniT").textContent!==t) $("hubMiniT").textContent=t; const add=document.querySelector('.view:not([hidden]) .hub-add'); $("hubMiniAdd").hidden=!add; } }
   if(M.classList.contains("on")!==on){ M.classList.toggle("on",on); M.setAttribute("aria-hidden",String(!on)); M.querySelectorAll("button").forEach(b=>b.tabIndex=on?0:-1); } }
 addEventListener("scroll",()=>{ if(!S._hmRaf) S._hmRaf=requestAnimationFrame(()=>{ S._hmRaf=0; hubMiniUpd(); }); },{passive:true});
-$("dayTog").addEventListener("click",()=>{ S.accDay=null; renderToday(); });
+$("wkPrev").addEventListener("click",()=>dayShift(-7)); $("wkNext").addEventListener("click",()=>dayShift(7));
+$("wkLbl").addEventListener("click",()=>{ S.accDay=null; renderToday(); });
 /* « Ta journée » : glisser la carte à gauche / à droite = jour suivant / précédent */
-{ const C=$("dayCard"); let x0=null,y0=0; C.addEventListener("touchstart",e=>{ if(e.target.closest(".dyr")) return; x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
+{ const C=$("dayCard"); let x0=null,y0=0; C.addEventListener("touchstart",e=>{ if(e.target.closest(".jx")) return; x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
   C.addEventListener("touchend",e=>{ if(x0==null) return; const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null; if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5) dayShift(dx<0?1:-1); },{passive:true}); }
 $("hubMiniAdd").addEventListener("click",()=>{ const add=document.querySelector('.view:not([hidden]) .hub-add'); if(add){ window.scrollTo({top:0,behavior:"smooth"}); add.click(); } });
 /* catégories de tâches créées par le foyer : on les retrouve dans les tâches elles-mêmes (nom + couleur) */
