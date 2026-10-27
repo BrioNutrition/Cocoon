@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 00:31";</script>
+<script>window.COCOON_BUILD="28/10 00:43";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2909,9 +2909,12 @@ div.pf-r{cursor:default}
 ::view-transition-old(*){animation:none;opacity:0}::view-transition-new(*){animation:none}
 ::view-transition-old(root){opacity:1;animation:vtOut .2s ease both}::view-transition-new(root){animation:vtIn .2s ease both}
 @keyframes vtOut{to{opacity:0}}@keyframes vtIn{from{opacity:0}}
-html.vt-close::view-transition-old(*){opacity:1;animation:vtOutLate .3s ease both}html.vt-close::view-transition-new(*){animation:vtInLate .3s ease both}
-html.vt-close::view-transition-old(root){animation:vtOut .2s ease both}html.vt-close::view-transition-new(root){animation:vtIn .2s ease both}
-@keyframes vtOutLate{0%,65%{opacity:1}to{opacity:0}}@keyframes vtInLate{0%,65%{opacity:0}to{opacity:1}}
+/* fermeture : seule la liste qui se referme (cl-x) a un fond de carte pendant le vol ; son contenu ouvert s'efface tôt, la carte fermée apparaît en fondu sur la seconde moitié (pas de saut) */
+html.vt-close::view-transition-group(*){animation-duration:.4s;animation-timing-function:cubic-bezier(.3,.7,.25,1)}
+::view-transition-group(cl-x){z-index:5;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);border-radius:20px}
+html.vt-close::view-transition-old(cl-x){opacity:1;animation:vtCloseOut .4s ease-out both}
+html.vt-close::view-transition-new(cl-x){animation:vtCloseIn .4s ease-in-out both}
+@keyframes vtCloseOut{0%{opacity:1}40%,to{opacity:0}}@keyframes vtCloseIn{0%,35%{opacity:0}to{opacity:1}}
 .cl-open{grid-column:1/-1;min-width:0;border:1px solid var(--line);border-radius:20px;background:var(--surface);overflow:hidden}
 .cl-open>.cl-card{border:0;border-radius:0;background:none;min-height:0}
 .cl-open>.cl-panel{border:0;border-radius:0;margin:0;background:none;animation:none}
@@ -9898,9 +9901,9 @@ function clWhen(d){ if(!d) return "Sans date"; const n=daysTo(d); if(n<0) return
 /* une liste = une carte « à la une » comme les raccourcis de l'accueil (choix A d'Angel) ; la toucher la déroule (elle prend toute la largeur) */
 function clRow(l,open){ const its=cItemsOf(l.id).slice().sort((a,b)=>(a.ajouteLe||0)-(b.ajouteLe||0)), todo=its.filter(i=>!i.fait), n=its.length, ok=n-todo.length;
   const cap=[l.lieu,l.date?clWhen(l.date):"",l.prive?"🔒 moi seul":"",l.recur?"🔁 chaque semaine":""].filter(Boolean).join(" · ")||"Foyer";
-  const tg=()=>{ if(S.clOpenId===l.id){ const ae=document.activeElement; if(ae&&ae.blur&&CL_OPEN&&CL_OPEN.contains(ae)) ae.blur(); clVT(()=>{ S.clOpenId=S.cListe=null; renderCourses(); },true); } else openCList(l.id); };
+  const tg=()=>{ if(S.clOpenId===l.id){ const ae=document.activeElement; if(ae&&ae.blur&&CL_OPEN&&CL_OPEN.contains(ae)) ae.blur(); S.clClosing=l.id; if(CL_OPEN) CL_OPEN.style.viewTransitionName="cl-x"; clVT(()=>{ S.clOpenId=S.cListe=null; renderCourses(); },true); } else openCList(l.id); };
   const mb=el("button",{type:"button",class:"ka-opt","aria-label":"Options de « "+(l.titre||"la liste")+" »","aria-haspopup":"menu",onclick:e=>{ e.stopPropagation(); clMenu(mb,clGet(l.id)); }}); mb.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18.5" cy="12" r="2"/></svg>';
-  return el("div",{class:"cl-card"+(open?" open":""),role:"button",tabindex:"0",style:"--c:"+clCol(l)+";view-transition-name:clc-"+String(l.id).replace(/[^A-Za-z0-9_-]/g,"_"),"aria-expanded":String(!!open),"aria-label":(l.titre||"Liste")+", "+cap+", "+ok+" sur "+n,
+  return el("div",{class:"cl-card"+(open?" open":""),role:"button",tabindex:"0",style:"--c:"+clCol(l)+";view-transition-name:"+(S.clClosing===l.id?"cl-x":"clc-"+String(l.id).replace(/[^A-Za-z0-9_-]/g,"_")),"aria-expanded":String(!!open),"aria-label":(l.titre||"Liste")+", "+cap+", "+ok+" sur "+n,
       onclick:tg,onkeydown:e=>{ if(e.target===e.currentTarget&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); tg(); } }},
     open?mb:null,
     el("small",{text:cap}),el("b",{text:l.titre||"Liste de courses"}),
@@ -9914,9 +9917,9 @@ function clPanelFill(id){ if(!CL_PANEL) CL_PANEL=el("div",{class:"cl-panel"}); c
 /* déroulé / replié en douceur : les cartes glissent à leur place (View Transitions quand le navigateur sait faire) */
 /* à la fermeture (html.vt-close) : l'image de la liste ouverte se replie (rognée par le bloc qui rétrécit) puis la carte apparaît, l'inverse de l'ouverture */
 function clVT(fn,close){ const red=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(!document.startViewTransition||red||S.tab!=="courses"){ fn(); return; }
+  if(!document.startViewTransition||red||S.tab!=="courses"){ S.clClosing=null; fn(); return; }
   const H=document.documentElement; H.classList.toggle("vt-close",!!close);
-  try{ const t=document.startViewTransition(fn); t.finished.finally(()=>H.classList.remove("vt-close")); }catch(_){ H.classList.remove("vt-close"); fn(); } }
+  try{ const t=document.startViewTransition(fn); t.finished.finally(()=>{ H.classList.remove("vt-close"); S.clClosing=null; }); }catch(_){ H.classList.remove("vt-close"); fn(); } }
 /* liste déroulée = un seul bloc (.cl-open : la carte + le contenu) : pas de traits entre les deux, et il glisse d'un seul tenant */
 let CL_GRID=null, CL_OPEN=null;
 function renderCHome(){ const H=$("cHome"); if(!H) return; if(!meId()){ clStash(); H.innerHTML=""; return; }
