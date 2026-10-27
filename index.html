@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="27/10 16:17";</script>
+<script>window.COCOON_BUILD="27/10 17:19";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2883,6 +2883,7 @@ div.pf-r{cursor:default}
 .jm-v{overflow:hidden;transition:height .32s cubic-bezier(.3,1,.4,1)}.jm-g{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:46px;gap:4px;transition:transform .32s cubic-bezier(.3,1,.4,1)}
 .jm.nt .jm-v,.jm.nt .jm-g,.jm.nt .jm-hw{transition:none}
 .jm .jw-d{padding:0;justify-content:center;gap:2px}.jm.open .jw-d.om{opacity:.35}
+.jm:not(.open) .jw-leg{display:none}
 .jm-grab{display:grid;place-items:center;width:34px;height:26px;border:0;border-radius:99px;background:var(--sunk);cursor:pointer;margin:6px auto 0;padding:0}.jm-grab i{position:relative;display:block;width:12px;height:12px}.jm-grab i:before,.jm-grab i:after{content:"";position:absolute;left:0;top:5px;width:12px;height:2px;border-radius:1px;background:var(--ink);transition:transform .3s}.jm-grab i:after{transform:rotate(90deg)}.jm.open .jm-grab i:after{transform:rotate(0)}.jm-grab:active{background:var(--line)}
 @media (prefers-reduced-motion:reduce){.jm-v,.jm-g,.jm-hw{transition:none}}
 .jw-d{border:0;border-radius:13px;background:var(--sunk);color:var(--muted);padding:6px 0 7px;display:flex;flex-direction:column;align-items:center;gap:1px;font:inherit;cursor:pointer}
@@ -2919,7 +2920,7 @@ div.pf-r{cursor:default}
 .fy-card,#dayCard,#accBudget .wg,#cocNote .cn{border:1px solid var(--line)!important}
 /* raccourcis « carte à la une » */
 .wg.wgc{min-height:172px;padding:13px;gap:2px;background:linear-gradient(160deg,color-mix(in srgb,var(--wc) 30%,var(--surface)) 0%,var(--surface) 72%);overflow:hidden}
-.wg.wgc.wide{min-height:150px}
+.wg.wgc.wide{min-height:0}
 .wgc-e{font-size:32px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;margin-bottom:6px}
 .wgc-bin{width:28px;height:34px;border-radius:5px 5px 9px 9px;background:var(--bc);box-shadow:inset 0 5px 0 rgba(0,0,0,.2);margin-bottom:6px}
 .wgc-ring{width:50px;height:50px;border-radius:50%;background:conic-gradient(var(--wc) 0 var(--p),color-mix(in srgb,var(--ink) 14%,transparent) 0);display:grid;place-items:center;margin-bottom:6px}
@@ -5099,7 +5100,7 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
     for(const t of doneT.slice(0,3)) L.append(el("span",{class:"jt-r ok"},el("i",{class:"ck","aria-hidden":"true"}),el("span",{},el("b",{text:t.titre}))));
     w.append(el("p",{class:"jsec",text:"À cocher"}),L); }
   for(const [ic,tx,fn] of extra) w.append(el("button",{type:"button",class:"td-x",onclick:fn},el("i",{"aria-hidden":"true",text:ic}),tx));
-  if(!hero&&!heroT&&!rest.length&&!open.length&&!doneT.length&&!extra.length) w.append(el("p",{class:"td-calm",text:isT?(ev.length||S.urgT?"Rien d'autre de prévu aujourd'hui.":"Journée calme : rien de prévu pour toi aujourd'hui."):"Rien de prévu ce jour-là."}));
+  if(!hero&&!heroT&&!rest.length&&!open.length&&!doneT.length&&!extra.length) w.append(el("p",{class:"td-calm",text:isT?(ev.length||S.urgT?"Rien d'autre de prévu aujourd'hui.":"Rien de prévu pour toi aujourd'hui. Profite !"):"Rien de prévu ce jour-là."}));
 }
 /* ---------- Ta journée : date choisie en titre, « ‹ Semaine N › » à droite, les 7 jours avec des points ---------- */
 /* glisser la semaine : on parcourt les semaines sans changer le jour affiché (il change quand on touche un jour) */
