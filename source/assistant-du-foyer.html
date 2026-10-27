@@ -2901,7 +2901,9 @@ html.cl-open .selbar{z-index:80}
 .cl-panel .c-cart .c-ck{display:none}
 .cl-panel .c-cart.open .c-list{margin-top:0}
 .cl-panel .c-item.on{opacity:.55}.cl-panel .c-item.on .c-n{text-decoration:line-through}
-.ka-cnt{font-weight:700;color:var(--ink)}
+.f-emo{display:inline-block;margin-right:6px;text-decoration:none}
+.ka-cnt{font-weight:800;color:var(--ink);font-size:15px;margin-top:3px;-webkit-line-clamp:1}
+.cl-card>b{font-size:19px}.cl-card.open>b{font-size:23px;margin:3px 0 2px}
 .cl-panel .cl-acts{margin-top:16px}
 .cl-panel .cl-val-b{background:linear-gradient(135deg,#FFC94A,#FF9C80 50%,#F28DB8);color:#1C1B2E;font-weight:800;font-size:15.5px;min-height:50px;border-radius:16px}
 .cl-panel .cl-more{border-radius:16px;width:50px}
@@ -9650,6 +9652,12 @@ const RAYONS=[
 const RAYON=Object.fromEntries(RAYONS.map(r=>[r[0],{id:r[0],nom:r[1],ico:r[2]}]));
 const RKEYS=RAYONS.flatMap(r=>r[3]?r[3].split("|").map(k=>[k,r[0]]):[]).sort((a,b)=>b[0].length-a[0].length);
 const cKey=n=>norm(n).replace(/[^a-z0-9]+/g," ").trim();
+/* l'emoji d'un article (Angel : « l'app doit comprendre ») : deviné d'après le nom, mots les plus longs d'abord ; rien n'est enregistré */
+const FOOD_EMO=[["lait de coco","🥥"],["coco","🥥"],["lait","🥛"],["yaourt","🥛"],["creme fraiche","🥛"],["creme","🥛"],["fromage blanc","🥛"],["pain de mie","🍞"],["pain au chocolat","🥐"],["croissant","🥐"],["viennoiserie","🥐"],["baguette","🥖"],["pain","🍞"],["brioche","🍞"],["biscotte","🍞"],["oeuf","🥚"],["beurre","🧈"],["fromage","🧀"],["emmental","🧀"],["gruyere","🧀"],["comte","🧀"],["mozzarella","🧀"],["parmesan","🧀"],["camembert","🧀"],["raclette","🧀"],["cheddar","🧀"],["feta","🧀"],["chevre","🧀"],["rape","🧀"],["tomate","🍅"],["salade","🥬"],["laitue","🥬"],["epinard","🥬"],["chou","🥬"],["carotte","🥕"],["pomme de terre","🥔"],["patate","🥔"],["frite","🍟"],["chips","🍟"],["oignon","🧅"],["echalote","🧅"],["ail","🧄"],["poivron","🫑"],["piment","🌶️"],["concombre","🥒"],["cornichon","🥒"],["courgette","🥒"],["aubergine","🍆"],["brocoli","🥦"],["chou fleur","🥦"],["haricot vert","🫛"],["petit pois","🫛"],["champignon","🍄"],["mais","🌽"],["avocat","🥑"],["banane","🍌"],["pomme","🍎"],["poire","🍐"],["orange","🍊"],["clementine","🍊"],["mandarine","🍊"],["citron","🍋"],["raisin","🍇"],["fraise","🍓"],["framboise","🍓"],["fruits rouges","🍓"],["myrtille","🫐"],["cerise","🍒"],["peche","🍑"],["abricot","🍑"],["nectarine","🍑"],["ananas","🍍"],["mangue","🥭"],["kiwi","🥝"],["melon","🍈"],["pasteque","🍉"],["fruit","🍎"],["legume","🥦"],["poulet","🍗"],["dinde","🍗"],["cuisse","🍗"],["boeuf","🥩"],["steak","🥩"],["viande","🥩"],["hache","🥩"],["veau","🥩"],["agneau","🥩"],["porc","🥓"],["lardon","🥓"],["bacon","🥓"],["jambon","🍖"],["saucisson","🍖"],["chorizo","🍖"],["saucisse","🌭"],["knacki","🌭"],["merguez","🌭"],["poisson","🐟"],["saumon","🐟"],["thon","🐟"],["cabillaud","🐟"],["colin","🐟"],["sardine","🐟"],["crevette","🦐"],["moule","🦪"],["huitre","🦪"],["surimi","🦀"],["riz","🍚"],["pates","🍝"],["pate a pizza","🍕"],["pate brisee","🥧"],["pate feuilletee","🥧"],["spaghetti","🍝"],["tagliatelle","🍝"],["penne","🍝"],["coquillette","🍝"],["lasagne","🍝"],["nouille","🍜"],["ramen","🍜"],["semoule","🌾"],["farine","🌾"],["quinoa","🌾"],["flocon","🌾"],["cereale","🥣"],["granola","🥣"],["muesli","🥣"],["sucre","🍬"],["bonbon","🍬"],["sel","🧂"],["poivre","🧂"],["epice","🧂"],["curry","🧂"],["huile","🫒"],["olive","🫒"],["vinaigre","🫙"],["moutarde","🫙"],["mayonnaise","🫙"],["ketchup","🍅"],["sauce tomate","🍅"],["tomates pelees","🍅"],["sauce","🫙"],["bouillon","🍲"],["soupe","🍲"],["miel","🍯"],["confiture","🍯"],["nutella","🍫"],["pate a tartiner","🍫"],["chocolat","🍫"],["cacao","🍫"],["biscuit","🍪"],["cookie","🍪"],["gateau","🍰"],["tarte","🥧"],["quiche","🥧"],["glace","🍦"],["cafe","☕"],["capsule","☕"],["the","🍵"],["tisane","🍵"],["eau","💧"],["jus","🧃"],["sirop","🧃"],["soda","🥤"],["coca","🥤"],["limonade","🥤"],["boisson","🥤"],["biere","🍺"],["vin","🍷"],["champagne","🍾"],["rhum","🥃"],["whisky","🥃"],["glacon","🧊"],["pizza","🍕"],["burger","🍔"],["tortilla","🌮"],["wrap","🌯"],["sushi","🍣"],["popcorn","🍿"],["noix","🥜"],["cacahuete","🥜"],["amande","🥜"],["noisette","🌰"],["chataigne","🌰"],["haricot","🫘"],["lentille","🫘"],["pois chiche","🫘"],["basilic","🌿"],["persil","🌿"],["coriandre","🌿"],["thym","🌿"],["menthe","🌿"],["herbe","🌿"],["papier toilette","🧻"],["essuie tout","🧻"],["sopalin","🧻"],["mouchoir","🧻"],["lingette","🧻"],["savon","🧼"],["gel douche","🧼"],["shampo","🧴"],["shampoing","🧴"],["apres shampoing","🧴"],["creme solaire","🧴"],["deodorant","🧴"],["dentifrice","🪥"],["brosse a dent","🪥"],["rasoir","🪒"],["lessive","🧺"],["adoucissant","🧺"],["liquide vaisselle","🧽"],["pastille lave vaisselle","🧽"],["eponge","🧽"],["javel","🧴"],["nettoyant","🧴"],["sac poubelle","🗑️"],["couche","👶"],["lait infantile","🍼"],["biberon","🍼"],["compote","🍎"],["croquette","🐾"],["patee","🐾"],["litiere","🐾"],["pile","🔋"],["ampoule","💡"],["doliprane","💊"],["paracetamol","💊"],["medicament","💊"],["vitamine","💊"],["pansement","🩹"],["bougie","🕯️"],["cadeau","🎁"],["fleur","💐"],["decoration","🎉"],["ballon","🎈"],["serviette","🧻"],["assiette","🍽️"],["gobelet","🥤"],["aluminium","🧻"],["film","🧻"]].sort((a,b)=>b[0].length-a[0].length);
+const foodSg=t=>t.split(" ").map(w=>w.length>3?w.replace(/[sx]$/,""):w).join(" ");
+const FOOD_SG=FOOD_EMO.map(([k,e])=>[" "+foodSg(k)+" ",e]);
+function foodEmo(nom){ const raw=String(nom||"").trim(); if(!raw||/^\p{Extended_Pictographic}/u.test(raw)) return ""; const t=" "+foodSg(cKey(raw).replace(/\b(d|l)\s/g,""))+" ";
+  for(const [k,e] of FOOD_SG) if(t.includes(k)) return e; return ""; }
 function guessRayon(nom){ const t=" "+cKey(nom)+" "; for(const [k,r] of RKEYS){ if(t.includes(" "+k+" ")||t.includes(" "+k+"s ")||t.includes(" "+k+"x ")) return r; } return "autre"; }
 function rayonOf(i){ const k=cKey(i.nom), p=S.rayonsPerso||{}; return p[k.replace(/ /g,"-")]||i.rayon||guessRayon(i.nom); }
 function parseArticle(p){ const q=p.trim().match(/^(\d+(?:[.,]\d+)?\s*(?:x|kg|g|l|cl|ml|paquets?|bo[iî]tes?|bouteilles?|packs?|sachets?|tranches?|pots?)?)\s+(?:d[e'’]\s*)?(.+)$/i); const nom=(q?q[2]:p).trim(); return {nom:nom.replace(/^./,c=>c.toUpperCase()),qte:q?q[1]:null}; }
@@ -9687,7 +9695,7 @@ function courseRow(i,o){ o=o||{}; const me=meId();
   if(flash&&!i.fait&&i.ajoutePar&&i.ajoutePar!==me) meta.push(el("span",{class:"c-new",text:"Nouveau · "+membre(i.ajoutePar).nom}));
   const isSel=!i.fait&&S.cSel.has(i.id);
   const b=el("button",{type:"button",class:"c-item"+(i.fait?" on":"")+(isSel?" sel":"")+(isSel&&S.cSelJust===i.id?" just":"")+(flash?" flash":""),"aria-pressed":String(!!i.fait||isSel),onclick:()=>toggleCourse(i)},el("span",{class:"c-box","aria-hidden":"true"}),
-    el("span",{class:"c-tx"},el("span",{class:"c-n",text:i.nom}),i.qte?el("span",{class:"c-q",text:/^\d+([.,]\d+)?$/.test(String(i.qte).trim())?"× "+String(i.qte).trim():i.qte}):null,meta.length?el("span",{class:"c-meta"},...meta):null),
+    el("span",{class:"c-tx"},el("span",{class:"c-n"},foodEmo(i.nom)?el("span",{class:"f-emo","aria-hidden":"true",text:foodEmo(i.nom)}):null,i.nom),i.qte?el("span",{class:"c-q",text:/^\d+([.,]\d+)?$/.test(String(i.qte).trim())?"× "+String(i.qte).trim():i.qte}):null,meta.length?el("span",{class:"c-meta"},...meta):null),
     (()=>{ const who=i.fait?i.faitPar:i.ajoutePar; if(!who||who===me||humains().length<2||!membre(who).nom) return null; return el("span",{class:"c-by",title:(i.fait?"Dans le caddie ":"Ajouté par ")+membre(who).nom},avatar(who,22)); })());
   b.addEventListener("contextmenu",ev=>{ ev.preventDefault(); if(i.fait) return; S.cPick=S.cPick===i.id?null:i.id; renderCourses(); });
   { let lt=0, sx=0, sy=0; const stop=()=>{ clearTimeout(lt); b.classList.remove("lp-hold"); };
@@ -9721,8 +9729,7 @@ async function cSelOk(){ const ids=[...S.cSel].filter(id=>(S.courses||[]).some(i
   for(const id of ids){ const i=(S.courses||[]).find(x=>x.id===id); if(i){ i.fait=true; i.faitPar=me; i.faitLe=now; if(S.cKnown) S.cKnown.set(id,true); } }
   renderCourses();
   try{ await Promise.all(ids.map(id=>S.db.collection("courses").doc(id).update({fait:true,faitPar:me,faitLe:now}))); }catch(e){ writeErr(e); }
-  if(ids.length>1) toast("🛒 "+ids.length+" articles dans le caddie.");
-  { const l=S.cListe&&clGet(S.cListe), its=l?cItemsOf(l.id):[]; if(l&&its.length&&its.every(i=>i.fait)) setTimeout(()=>{ if(S.cListe===l.id) clFinish(clGet(l.id)); },500); } }
+  if(ids.length>1) toast("🛒 "+ids.length+" articles dans le caddie."); }
 async function cSelDel(){ const its=[...S.cSel].map(id=>(S.courses||[]).find(i=>i.id===id)).filter(Boolean); S.cSel.clear(); renderSelBar(); if(!its.length) return;
   await rowsOutAll(its.map(i=>cRowEl(i.id)).filter(Boolean));
   softDelete(its.map(i=>({key:"courses:"+i.id,arr:"courses",item:i,run:()=>S.db.collection("courses").doc(i.id).delete()})),its.length>1?its.length+" articles retirés de la liste.":"« "+esc(its[0].nom)+" » retiré de la liste."); }
@@ -9730,8 +9737,7 @@ async function cDelOne(i){ await rowOut(cRowEl(i.id),"del"); softDelete([{key:"c
 async function toggleCourse(i){ if(!S.db||!needMe()) return;
   /* cocher = juste coché, à sa place dans la liste (Angel : pas d'animation, pas de rubrique « Au caddie ») ; re-toucher décoche */
   const me=meId(); i.fait=!i.fait; i.faitPar=i.fait?me:null; i.faitLe=i.fait?Date.now():null; if(S.cKnown) S.cKnown.set(i.id,i.fait); if(i.fait) haptic(6); renderCourses();
-  try{ await S.db.collection("courses").doc(i.id).update({fait:i.fait,faitPar:i.faitPar,faitLe:i.faitLe}); }catch(e){ writeErr(e); }
-  if(i.fait){ const l=S.cListe&&clGet(S.cListe), its=l?cItemsOf(l.id):[]; if(l&&its.length&&its.every(x=>x.fait)) setTimeout(()=>{ if(S.cListe===l.id&&cItemsOf(l.id).every(x=>x.fait)) clFinish(clGet(l.id)); },450); } }
+  try{ await S.db.collection("courses").doc(i.id).update({fait:i.fait,faitPar:i.faitPar,faitLe:i.faitLe}); }catch(e){ writeErr(e); } }
 function renderCLive(){ const w=$("cLive"); if(!w) return; w.innerHTML=""; const ss=cSession(), me=meId(), items=S.courses||[], todo=items.filter(i=>!i.fait).length, done=items.filter(i=>i.fait).length, tot=todo+done;
   if(!ss){ w.hidden=!todo; w.className="c-live c-sum";
     if(todo){ const its=items.filter(i=>!i.fait), nr=new Set(its.map(rayonOf)).size, last=its.slice().sort((a,b)=>(b.ajouteLe||0)-(a.ajouteLe||0))[0];
@@ -9795,7 +9801,7 @@ function clRow(l,open){ const its=cItemsOf(l.id).slice().sort((a,b)=>(a.ajouteLe
       onclick:tg,onkeydown:e=>{ if(e.target===e.currentTarget&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); tg(); } }},
     mb,
     el("small",{text:cap}),el("b",{text:l.titre||"Liste de courses"}),
-    open?el("span",{class:"ka-pv ka-cnt",text:n?"🛒 "+ok+" / "+n:"Liste vide"}):n?el("span",{class:"ka-ul"},...its.slice(0,3).map(i=>el("span",{class:"ka-li"+(i.fait?" f":"")},el("i",{text:i.nom}))),n>3?el("span",{class:"ka-more",text:"+ "+(n-3)+" autre"+(n>4?"s":"")}):null):el("span",{class:"ka-pv",text:"Liste vide"})); }
+    open?el("span",{class:"ka-pv ka-cnt",text:n?"🛒 "+ok+" / "+n:"Liste vide"}):n?el("span",{class:"ka-ul"},...its.slice(0,3).map(i=>el("span",{class:"ka-li"+(i.fait?" f":"")},el("i",{},foodEmo(i.nom)?el("span",{class:"f-emo","aria-hidden":"true",text:foodEmo(i.nom)}):null,i.nom))),n>3?el("span",{class:"ka-more",text:"+ "+(n-3)+" autre"+(n>4?"s":"")}):null):el("span",{class:"ka-pv",text:"Liste vide"})); }
 /* le contenu déroulé : le champ, les habituels, « Pour qui », les articles (mêmes éléments qu'avant, déplacés dedans) + Valider et ⋯ */
 let CL_PANEL=null;
 function clPanelFill(id){ if(!CL_PANEL) CL_PANEL=el("div",{class:"cl-panel"}); const P=CL_PANEL; P.innerHTML="";
