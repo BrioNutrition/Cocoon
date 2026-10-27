@@ -219,6 +219,15 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   Cocoony en une ligne dans les pages (`cocLine(clé,texte,bouton,fn)`, × mémorisé dans `cocoon.cocNo`) : Courses « Appui long = changer de rayon » (ex-astuce), Budget vide « Je fais les comptes 💶 » + « + Dépense » ; pas de ligne dans Papiers (le bandeau « N papiers à renouveler » le fait déjà) ;
   Agenda = grille du mois de l'accueil (`renderAgenda` : `.jm.open.ag-jm`, cases `.jw-d`, jour choisi ou aujourd'hui en dégradé, aujourd'hui cerclé sinon, points b/y/p au lieu de la barre d'événement et du 🎂, ‹ › `jmNav`, légende) ;
   Tâches (`taskRow`, CSS `.item[data-key]`) et Courses (`.c-item`) = lignes de « À cocher » : rond à gauche, plus de barre de couleur ni de rotation, contour fin, avatar de la personne à droite (`.t-av`, l'étiquette « Tout le foyer » retirée des infos).
+- **Courses refaites en listes-notes** (27 oct., Angel) : plus de barre « Ajouter » ; « + » en haut (`fabAct("courses")` → `openCListForm`) ; collection `listes`
+  {titre, emoji, date, lieu, qui, prive (moi seul, filtré dans l'app), par, recur:"semaine", fini, finiLe, montant, articles[]} ; articles = `courses` avec `liste`
+  (sans `liste` ou liste finie/supprimée = liste principale `CL_DEF="principale"`, note « Liste de courses » ; Repas/frigo/Cocoony/accueil ajoutent là).
+  Page = notes `.cl-note` (`renderCHome` : emoji, date, magasin, 4 articles, barre, x/y, avatar de qui y va) + « Nouvelle liste » + « Terminées » (`.cl-done`, « Refaire » = `clRedo`).
+  Liste ouverte = feuille `openCList(id)` (`#clPage`) : le champ `#cForm`/`#cNom`, les habituels, « Pour qui », la liste par rayons y sont **déplacés** (`CL_NODES`, rangés dans `#cStash` à la fermeture) ;
+  « ⋯ » (`clMenu`) : Modifier, Dupliquer (`clDup`), Valider, Supprimer ; « ✓ Valider la liste » (`clValidate` → `clDone`) : « Combien ça a coûté ? » → `budgetAdd(…,"courses")`, liste en « Terminées »,
+  non pris → liste principale (ou liste de la semaine suivante si `recur`, recréée à +7 j avec tous les articles). Option « Ajouter les ingrédients des repas prévus » (`clAddIng`, jusqu'à la date ou 7 j).
+  « Je fais les courses » / bandeau en direct (`#cLive`) **masqués** (Angel : inutile). Barre « Au caddie » au-dessus de la feuille (`html.cl-open .selbar`).
+- **Calendriers remis à aujourd'hui** en quittant un écran (`calReset(prevTab)` dans `setTab` : accueil `accDay/accOpen/accMo`, agenda `agDay/agM`, repas `rDay/rWeek/rOpen/rMo`, budget `bMonth`, semaine des tâches `wkDay`) et au retour dans l'app après 5 min.
 - Menu « Tes foyers » (`openFoyerMenu`) : **menu de l'app aussi sur iPhone** (pas de `nativeizeMenu`, demandé par Angel).
 - App iPhone à jour toute seule : `cd app && npm run auto:ios` (`app/auto.mjs`) sur le Mac d'Angel → récupère `main` toutes les 30 s et
   recharge l'app (via `live.mjs`). Il suffit donc de pousser sur `main`.
