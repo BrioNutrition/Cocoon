@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="27/10 21:48";</script>
+<script>window.COCOON_BUILD="27/10 22:19";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2885,20 +2885,27 @@ div.pf-r{cursor:default}
 /* Listes de courses en notes */
 .cl-sec{margin:14px 4px 8px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .cl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.cl-note{--c:#7FD39A;position:relative;background:var(--surface);border:1px solid var(--line);border-radius:6px 16px 16px 6px;padding:12px 12px 10px 28px;min-height:196px;display:flex;flex-direction:column;gap:2px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;min-width:0;overflow:hidden}
-.cl-note:before{content:"";position:absolute;left:0;top:0;bottom:0;width:16px;background:color-mix(in srgb,var(--c) 85%,#000)}
-.cl-note:active{transform:scale(.98)}
-.cl-sp{position:absolute;left:9px;top:14px;bottom:0;display:flex;flex-direction:column;gap:28px;pointer-events:none}.cl-sp i{display:block;width:12px;height:6px;border-radius:4px;border:2px solid #bdbad0;background:var(--bg);flex:none}
-.cl-h{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}.cl-h b{font-family:var(--f-display);font-size:15.5px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}.cl-e{font-size:18px;line-height:1;flex:none}
-.cl-note>small{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--c);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}.cl-note>small.late{color:#FF8F8F}
-.cl-note ul{list-style:none;margin:6px -12px 0 0;padding:0 12px 0 0;flex:1;font-size:13px;font-weight:600;line-height:22px;background:repeating-linear-gradient(to bottom,transparent 0 21px,var(--line) 21px 22px)}
-.cl-note li{display:flex;align-items:center;gap:7px;overflow:hidden;white-space:nowrap}.cl-note li:before{content:"";width:12px;height:12px;border-radius:50%;border:1.5px solid var(--muted);flex:none;box-sizing:border-box}
-.cl-note li.f{color:var(--muted);text-decoration:line-through}.cl-note li.f:before{background:#3CC37A;border-color:#3CC37A}
-.cl-note li.more{color:var(--muted)}.cl-note li.more:before{border-color:transparent}
-.cl-m{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;color:var(--muted);margin-top:6px;min-height:18px}
+.cl-row{--c:#7FD39A;display:flex;align-items:center;gap:12px;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 13px;margin-bottom:8px;font:inherit;color:var(--ink);text-align:left;cursor:pointer}
+.cl-row:active{transform:scale(.99)}
+.cl-ring{--p:0%;width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--c) var(--p),color-mix(in srgb,var(--ink) 10%,transparent) 0);display:grid;place-items:center;flex:none}
+.cl-ring b{width:34px;height:34px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:11px;font-weight:800}
+.cl-ring.ok{--p:100%;--c:color-mix(in srgb,var(--ink) 35%,transparent)}
+.cl-rt{flex:1;min-width:0;display:flex;flex-direction:column}.cl-rt b{font-family:var(--f-display);font-size:15.5px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
+.cl-rt small{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--c);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cl-rt small.late{color:#FF8F8F}
+.cl-pv{font-size:12.5px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cl-chev{color:var(--muted);display:grid;place-items:center;flex:none;transition:transform .25s}.cl-row.open .cl-chev{transform:rotate(90deg)}
+.cl-row.open{border-radius:18px 18px 0 0;margin-bottom:0;border-bottom-color:transparent}
+.cl-panel{position:relative;background:var(--surface);border:1px solid var(--line);border-top:0;border-radius:0 0 18px 18px;padding:2px 13px 13px;margin-bottom:8px;animation:clIn .22s ease-out}
+@keyframes clIn{from{opacity:0;transform:translateY(-4px)}}
+.cl-panel .c-add{display:flex;gap:8px;margin:4px 0 8px}.cl-panel .c-add input{flex:1;min-width:0}.cl-panel .c-add .btn{width:48px;padding:0;font-size:22px}
+.cl-panel .c-clear{display:none}.cl-panel .c-item{background:var(--bg)}
+.cl-acts{display:flex;gap:8px;margin-top:12px}.cl-val-b{flex:1;background:var(--mark);color:#1C1B2E}
+.cl-panel .cl-more{flex:none;width:44px;border:0;border-radius:14px;background:var(--sunk);color:var(--ink);display:grid;place-items:center;cursor:pointer}.cl-panel .cl-more svg{width:20px;height:20px;fill:currentColor}
+.cl-panel .ev-pop{position:absolute}
+.cl-panel .cl-val{margin-top:12px}
 .cl-new{--c:#9C9AB5;border-style:dashed;background:none;align-items:flex-start;justify-content:center}.cl-plus{width:34px;height:34px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-size:22px;font-weight:700}
 .cl-done{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:8px}
-.cl-done .cl-e{width:28px;height:28px;border-radius:50%;background:color-mix(in srgb,var(--c) 30%,transparent);display:grid;place-items:center;font-size:14px;font-weight:800}
+.cl-done .cl-ring{width:36px;height:36px}.cl-done .cl-ring b{width:28px;height:28px}
 .cl-dt{flex:1;min-width:0;display:flex;flex-direction:column}.cl-dt b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cl-dt small{font-size:12px;color:var(--muted)}
 .cl-redo{border:0;background:var(--sunk);color:var(--ink);font:inherit;font-size:12.5px;font-weight:800;padding:7px 11px;border-radius:99px;cursor:pointer}.cl-x{border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px}
 .cl-cols{display:flex;gap:9px;flex-wrap:wrap;margin:2px 0 4px}.cl-cols button{width:32px;height:32px;border-radius:50%;border:0;background:var(--c);cursor:pointer;padding:0}.cl-cols button[aria-checked="true"]{box-shadow:0 0 0 2.5px var(--surface),0 0 0 4.5px var(--c)}
@@ -9816,33 +9823,44 @@ function clActives(){ const L=clAll().filter(l=>!l.fini&&l.id!==CL_DEF); const P
 function clWhen(d){ if(!d) return "Sans date"; const n=daysTo(d); if(n<0) return "Passée · "+new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"short"}).format(parse(d)); if(n===0) return "Aujourd'hui"; if(n===1) return "Demain";
   if(n<7) return new Intl.DateTimeFormat("fr-FR",{weekday:"long"}).format(parse(d)).replace(/^./,x=>x.toUpperCase()); return new Intl.DateTimeFormat("fr-FR",{weekday:"short",day:"numeric",month:"short"}).format(parse(d)).replace(/^./,x=>x.toUpperCase()); }
 /* note = page de carnet à spirale (choix C d'Angel) : tranche de couleur + spirale à gauche, lignes, ronds à cocher */
-function clNote(l){ const its=cItemsOf(l.id).slice().sort((a,b)=>(a.ajouteLe||0)-(b.ajouteLe||0)), todo=its.filter(i=>!i.fait), n=its.length, ok=n-todo.length, col=clCol(l);
-  const show=todo.concat(its.filter(i=>i.fait)).slice(0,4), ul=el("ul",{"aria-hidden":"true"});
-  for(const i of show) ul.append(el("li",{class:i.fait?"f":"",text:i.nom})); if(n>4) ul.append(el("li",{class:"more",text:"+ "+(n-4)+" autre"+(n-4>1?"s":"")}));
-  if(!n) ul.append(el("li",{class:"more",text:"Liste vide"}));
-  const sp=el("span",{class:"cl-sp","aria-hidden":"true"}); for(let k=0;k<8;k++) sp.append(el("i"));
+/* une liste = une ligne avec un anneau d'avancée à sa couleur (choix B d'Angel) ; la toucher la déroule juste dessous */
+function clRow(l,open){ const its=cItemsOf(l.id).slice().sort((a,b)=>(a.ajouteLe||0)-(b.ajouteLe||0)), todo=its.filter(i=>!i.fait), n=its.length, ok=n-todo.length;
   const sub=[clWhen(l.date),l.lieu,l.prive?"🔒 moi seul":"",l.recur?"🔁 chaque semaine":""].filter(Boolean).join(" · ");
-  return el("button",{type:"button",class:"cl-note",style:"--c:"+col,"aria-label":(l.titre||"Liste")+", "+sub+", "+n+" article"+(n>1?"s":""),onclick:()=>openCList(l.id)},sp,
-    el("span",{class:"cl-h"},el("b",{text:l.titre||"Liste de courses"})),
-    el("small",{class:l.date&&daysTo(l.date)<0?"late":"",text:sub}),ul,
-    el("span",{class:"cl-m"},el("span",{text:n?ok+" / "+n:""}),l.qui&&membre(l.qui).nom?avatar(l.qui,18):"")); }
-function renderCHome(){ const H=$("cHome"); if(!H) return; H.innerHTML=""; if(!meId()) return;
+  const prev=todo.length?todo.slice(0,6).map(i=>i.nom).join(", ")+(todo.length>6?"…":""):n?"Tout est pris ✓":"Liste vide";
+  return el("button",{type:"button",class:"cl-row"+(open?" open":""),style:"--c:"+clCol(l)+";--p:"+(n?Math.round(ok/n*100):0)+"%","aria-expanded":String(!!open),"aria-label":(l.titre||"Liste")+", "+sub+", "+ok+" sur "+n,
+      onclick:()=>{ if(S.clOpenId===l.id){ S.clOpenId=S.cListe=null; renderCourses(); } else openCList(l.id); }},
+    el("span",{class:"cl-ring","aria-hidden":"true"},el("b",{text:n?ok+"/"+n:"0"})),
+    el("span",{class:"cl-rt"},el("b",{text:l.titre||"Liste de courses"}),el("small",{class:l.date&&daysTo(l.date)<0?"late":"",text:sub}),open?null:el("span",{class:"cl-pv",text:prev})),
+    l.qui&&membre(l.qui).nom?avatar(l.qui,22):null,(()=>{ const s=el("span",{class:"cl-chev","aria-hidden":"true"}); s.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>'; return s; })()); }
+/* le contenu déroulé : le champ, les habituels, « Pour qui », les articles (mêmes éléments qu'avant, déplacés dedans) + Valider et ⋯ */
+let CL_PANEL=null;
+function clPanelFill(id){ if(!CL_PANEL) CL_PANEL=el("div",{class:"cl-panel"}); const P=CL_PANEL; P.innerHTML="";
+  for(const x of CL_NODES) P.append(x);
+  const mb=el("button",{type:"button",class:"cl-more","aria-label":"Options de la liste","aria-haspopup":"menu",onclick:e=>{ e.stopPropagation(); clMenu(mb,clGet(S.cListe)); }}); mb.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18.5" cy="12" r="2"/></svg>';
+  P.append(el("div",{class:"cl-acts"},el("button",{type:"button",class:"btn cl-val-b",id:"clVal",onclick:()=>clValidate(clGet(S.cListe))},"✓ Valider la liste"),mb)); }
+function renderCHome(){ const H=$("cHome"); if(!H) return; if(!meId()){ clStash(); H.innerHTML=""; return; }
   const act=clActives(), done=clAll().filter(l=>l.fini).sort((a,b)=>(b.finiLe||0)-(a.finiLe||0)).slice(0,6);
-  H.append(el("p",{class:"cl-sec",text:"Mes listes"}));
-  const g=el("div",{class:"cl-grid"}); for(const l of act) g.append(clNote(l));
-  if(!act.length) H.append(el("div",{class:"empty cl-empty"},el("strong",{text:"Aucune liste en cours"}),"Touche le + en haut à droite pour en créer une."));
-  H.append(g);
-  if(done.length){ H.append(el("p",{class:"cl-sec",text:"Terminées"}));
+  let open=S.clOpenId; if(open&&!act.some(l=>l.id===open)){ open=S.clOpenId=null; if(S.cListe&&S.cListe!==CL_DEF) S.cListe=null; }
+  const P=CL_PANEL, keep=!!(open&&P&&P.parentNode===H&&P._id===open);
+  /* le bloc déroulé reste en place (le champ garde le clavier) : on remplace seulement ce qu'il y a autour */
+  if(keep) [...H.childNodes].forEach(n=>{ if(n!==P) n.remove(); }); else { clStash(); H.innerHTML=""; }
+  const before=[el("p",{class:"cl-sec",text:"Mes listes"})], after=[]; let past=false;
+  if(!act.length) before.push(el("div",{class:"empty cl-empty"},el("strong",{text:"Aucune liste en cours"}),"Touche le + en haut à droite pour en créer une."));
+  for(const l of act){ (past?after:before).push(clRow(l,l.id===open)); if(l.id===open) past=true; }
+  if(done.length){ after.push(el("p",{class:"cl-sec",text:"Terminées"}));
     for(const l of done){ const d=l.finiLe?new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"short"}).format(new Date(l.finiLe)):"";
-      H.append(el("div",{class:"cl-done",style:"--c:"+clCol(l)},el("span",{class:"cl-e","aria-hidden":"true",text:"✓"}),el("span",{class:"cl-dt"},el("b",{text:l.titre||"Courses"}),el("small",{text:[d,(l.articles||[]).length+" article"+((l.articles||[]).length>1?"s":""),l.montant?money(l.montant):""].filter(Boolean).join(" · ")})),
-        el("button",{type:"button",class:"cl-redo",onclick:()=>clRedo(l)},"Refaire"),el("button",{type:"button",class:"cl-x","aria-label":"Effacer de l'historique",text:"×",onclick:()=>S.db.collection("listes").doc(l.id).delete().catch(writeErr)}))); } } }
+      after.push(el("div",{class:"cl-done",style:"--c:"+clCol(l)},el("span",{class:"cl-ring ok","aria-hidden":"true"},el("b",{text:"✓"})),el("span",{class:"cl-dt"},el("b",{text:l.titre||"Courses"}),el("small",{text:[d,(l.articles||[]).length+" article"+((l.articles||[]).length>1?"s":""),l.montant?money(l.montant):""].filter(Boolean).join(" · ")})),
+        el("button",{type:"button",class:"cl-redo",onclick:()=>clRedo(l)},"Refaire"),el("button",{type:"button",class:"cl-x","aria-label":"Effacer de l'historique",text:"×",onclick:()=>S.db.collection("listes").doc(l.id).delete().catch(writeErr)}))); } }
+  if(keep){ for(const n of before) H.insertBefore(n,P); for(const n of after) H.append(n); }
+  else { for(const n of before) H.append(n); if(open){ clPanelFill(open); CL_PANEL._id=open; H.append(CL_PANEL); } for(const n of after) H.append(n); }
+  const v=$("clVal"); if(v) v.disabled=!cItemsOf(S.cListe||CL_DEF).length; }
 /* créer / modifier une liste (feuille du bas comme « Nouveau rendez-vous ») */
 function openCListForm(l){ if(!needMe()) return; const me=meId(), edit=!!l;
   const F=edit?{titre:l.titre||"",couleur:clCol(l),date:l.date||null,lieu:l.lieu||"",qui:l.qui||null,prive:!!l.prive,recur:l.recur||null}:{titre:"",couleur:CL_COLS[0],date:null,lieu:"",qui:null,prive:false,recur:null,ing:false};
-  const U=clSheet(); clClear(U); S.cListe=null;
+  const U=clSheet(); clClear(U);
   const inn=el("div",{class:"pp-in ev-in cl-in"}); U.sheet.append(inn);
-  if(edit) inn.append(el("button",{type:"button",class:"cl-back",onclick:()=>openCList(l.id)},"‹ Retour à la liste"));
-  inn.append(el("div",{class:"ev-top"},el("h2",{text:edit?"Modifier la liste":"Nouvelle liste"}),el("p",{text:"Elle s'affiche en note sur la page Courses."})));
+
+  inn.append(el("div",{class:"ev-top"},el("h2",{text:edit?"Modifier la liste":"Nouvelle liste"}),el("p",{text:"Elle s'affiche sur la page Courses."})));
   const ti=el("input",{class:"ev-inp",type:"text",id:"clTitre",maxlength:"60",placeholder:"Courses de la semaine, anniversaire, pharmacie…","aria-label":"Titre"}); ti.value=F.titre; ti.addEventListener("input",()=>F.titre=ti.value);
   const em=el("div",{class:"cl-cols",role:"radiogroup","aria-label":"Couleur"}); const paintE=()=>{ em.innerHTML=""; for(const col of CL_COLS) em.append(el("button",{type:"button",role:"radio","aria-checked":String(F.couleur===col),"aria-label":"Couleur "+col,style:"--c:"+col,onclick:()=>{ F.couleur=col; paintE(); haptic(5); }})); }; paintE();
   const t0=iso(today()), t1=iso(new Date(today().getTime()+864e5)), da=el("input",{class:"ev-inp",type:"date",id:"clDate","aria-label":"Date"}); da.value=F.date||"";
@@ -9874,46 +9892,40 @@ async function clAddIng(id,date){ const t0=iso(today()), end=date&&date>=t0?date
   for(const m of (S.repas||[])){ if(!m.plat||!m.date||m.date<t0||m.date>end) continue; for(const x of platIng(m.plat)){ const k=cKey(x); if(have.has(k)) continue; have.add(k); const a=parseArticle(x); a.extra={repas:m.plat}; arts.push(a); } }
   return arts.length?addCourses(arts,{liste:id}):0; }
 /* une liste ouverte : feuille du bas avec le champ, les habituels et les articles (mêmes éléments qu'avant, déplacés dedans) */
-function clSheetSync(){ const U=S.clSheet; if(!U) return; const H=U.sheet.querySelector(".cl-head"); if(!H) return; const l=clGet(S.cListe); if(!l||l.fini){ U.close(); return; }
-  const its=cItemsOf(l.id), ok=its.filter(i=>i.fait).length;
-  H.querySelector(".cl-tt").textContent=l.titre||"Liste de courses"; H.style.setProperty("--c",clCol(l));
-  const ch=H.querySelector(".cl-chips"); ch.innerHTML=""; ch.append(el("span",{text:"📅 "+clWhen(l.date)})); if(l.lieu) ch.append(el("span",{text:"📍 "+l.lieu})); if(l.qui&&membre(l.qui).nom) ch.append(el("span",{},avatar(l.qui,16),l.qui===meId()?"Moi":membre(l.qui).nom)); if(l.recur) ch.append(el("span",{text:"🔁 chaque semaine"})); ch.append(el("span",{text:ok+" / "+its.length}));
-  const v=U.sheet.querySelector("#clVal"); if(v) v.disabled=!its.length; }
-function clSheet(){ if(S.clSheet&&!S.clSheet._gone) return S.clSheet; clStash();
-  const U=upSheet("clPage","Liste de courses",()=>{ U._gone=true; S.cListe=null; S.clSheet=null; document.documentElement.classList.remove("cl-open"); S.cSel&&S.cSel.clear(); renderSelBar(); setTimeout(()=>{ if(!S.clSheet) clStash(); renderCHome(); },380); });
-  U.sheet.classList.add("ev-sheet","cl-sheet"); S.clSheet=U; document.documentElement.classList.add("cl-open"); return U; }
-function clClear(U){ clStash(); U.sheet.querySelectorAll(":scope>.pp-in,:scope>.ev-pop").forEach(x=>x.remove()); U.sheet.scrollTop=0; }
-function openCList(id){ if(!meId()) return; const l=clGet(id); if(!l) return; const U=clSheet(); clClear(U); S.cListe=id;
-  const inn=el("div",{class:"pp-in cl-body"}); U.sheet.append(inn);
-  const mb=el("button",{type:"button",class:"ev-more cl-more","aria-label":"Options de la liste","aria-haspopup":"menu",onclick:e=>{ e.stopPropagation(); clMenu(mb,clGet(S.cListe)); }}); mb.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18.5" cy="12" r="2"/></svg>';
-  inn.append(el("div",{class:"cl-head"},el("div",{class:"cl-hr"},el("h2",{class:"cl-tt"}),mb),el("div",{class:"cl-chips"})));
-  for(const x of CL_NODES) inn.append(x);
-  inn.append(el("button",{type:"button",class:"btn ev-cta",id:"clVal",onclick:()=>clValidate(clGet(S.cListe))},"✓ Valider la liste"));
-  renderCourses(); }
+function clSheetSync(){}
+function clSheet(){ if(S.clSheet&&!S.clSheet._gone) return S.clSheet;
+  const U=upSheet("clPage","Liste de courses",()=>{ U._gone=true; S.clSheet=null; });
+  U.sheet.classList.add("ev-sheet","cl-sheet"); S.clSheet=U; return U; }
+function clClear(U){ U.sheet.querySelectorAll(":scope>.pp-in,:scope>.ev-pop").forEach(x=>x.remove()); U.sheet.scrollTop=0; }
+/* dérouler une liste sur la page Courses (et fermer le formulaire s'il était ouvert) */
+function openCList(id){ if(!meId()) return; const l=clGet(id); if(!l) return; if(S.clSheet&&!S.clSheet._gone) S.clSheet.close();
+  S.clOpenId=S.cListe=id; if(S.tab!=="courses") setTab("courses"); renderCourses();
+  setTimeout(()=>{ const row=CL_PANEL&&CL_PANEL.previousElementSibling; if(row&&row.getBoundingClientRect().top<70) row.scrollIntoView({block:"start",behavior:"smooth"}); },80); }
 function clMenu(btn,l){ if(!l) return; const acts=[["edit","✏️","Modifier",()=>openCListForm(clGet(S.cListe))],["dup","⧉","Dupliquer",()=>clDup(l)],["val","✓","Valider la liste",()=>clValidate(l)]];
   { const nm=nativeMenu(l.titre||"Liste",acts.map(([id,,t])=>({id,title:t})).concat([{id:"del",title:"Supprimer la liste",destructive:true}]));
     if(nm){ nm.then(id=>{ const a=acts.find(x=>x[0]===id); if(a) a[3](); else if(id==="del") clDel(l); }); return; } }
   const old=document.querySelector(".ev-pop"); if(old){ old._close(); if(old._btn===btn) return; }
-  const sheet=btn.closest(".pp-sheet"); if(!sheet) return; const pop=el("div",{class:"ev-pop",role:"menu"}); pop._btn=btn;
+  const sheet=btn.closest(".pp-sheet,.cl-panel"); if(!sheet) return; const pop=el("div",{class:"ev-pop",role:"menu"}); pop._btn=btn;
   const close=()=>{ if(pop._gone) return; pop._gone=true; pop.classList.add("out"); document.removeEventListener("pointerdown",away,true); setTimeout(()=>pop.remove(),160); };
   pop._close=close; const away=e=>{ if(!pop.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)) close(); };
   const item=(ic,t,fn,cls)=>el("button",{type:"button",role:"menuitem",class:"ev-pi"+(cls?" "+cls:""),onclick:fn},el("i",{"aria-hidden":"true",text:ic}),el("span",{text:t}));
   const del=item("🗑","Supprimer la liste",()=>{ close(); clDel(l); },"danger");
   for(const [,ic,t,fn] of acts) pop.append(item(ic,t,()=>{ close(); fn(); })); pop.append(el("hr"),del);
-  const rb=btn.getBoundingClientRect(), sr=sheet.getBoundingClientRect(); pop.style.top=(rb.bottom-sr.top+sheet.scrollTop+8)+"px"; pop.style.right=(sr.right-rb.right)+"px";
+  const rb=btn.getBoundingClientRect(), sr=sheet.getBoundingClientRect(), up=sheet.classList.contains("cl-panel");
+  if(up){ pop.style.bottom=(sr.bottom-rb.top+8)+"px"; pop.style.top="auto"; } else pop.style.top=(rb.bottom-sr.top+sheet.scrollTop+8)+"px"; pop.style.right=(sr.right-rb.right)+"px";
   sheet.append(pop); requestAnimationFrame(()=>pop.classList.add("in")); setTimeout(()=>document.addEventListener("pointerdown",away,true),0); }
 async function clNew(base,arts,open){ const me=meId(); const ref=await S.db.collection("listes").add(Object.assign({titre:base.titre||"Liste de courses",couleur:clCol(base),date:base.date||null,lieu:base.lieu||null,qui:base.qui||null,prive:!!base.prive,recur:base.recur||null},{par:me,creeLe:Date.now(),fini:false}));
   if(arts.length) await addCourses(arts.map(a=>({nom:a.nom,qte:a.qte||null,extra:a.pour&&a.pour!=="tous"?{pour:a.pour}:{}})),{liste:ref.id}); if(open) openCList(ref.id); return ref.id; }
 async function clDup(l){ try{ const arts=cItemsOf(l.id).map(i=>({nom:i.nom,qte:i.qte,pour:i.pour})); await clNew(Object.assign({},l,{titre:(l.titre||"Liste")+" (copie)",recur:null}),arts,true); toast("Liste dupliquée."); }catch(e){ writeErr(e); } }
 async function clRedo(l){ try{ await clNew(Object.assign({},l,{date:null}),l.articles||[],true); toast("« "+esc(l.titre||"Courses")+" » est de retour."); }catch(e){ writeErr(e); } }
-async function clDel(l){ try{ const its=cItemsOf(l.id); S.clSheet&&S.clSheet.close(); for(const i of its) await S.db.collection("courses").doc(i.id).delete(); if(!l.virt) await S.db.collection("listes").doc(l.id).delete(); toast("Liste supprimée."); }catch(e){ writeErr(e); } }
+async function clDel(l){ try{ const its=cItemsOf(l.id); S.clOpenId=null; if(S.cListe===l.id) S.cListe=null; for(const i of its) await S.db.collection("courses").doc(i.id).delete(); if(!l.virt) await S.db.collection("listes").doc(l.id).delete(); toast("Liste supprimée."); }catch(e){ writeErr(e); } }
 /* valider (complète ou non) : « Combien ça a coûté ? » → dépense dans Budget ; la liste passe dans « Terminées » ; ce qui n'a pas été pris retourne dans la liste principale (ou dans celle de la semaine suivante) */
-function clValidate(l){ if(!l||!S.clSheet) return; const sheet=S.clSheet.sheet; const old=sheet.querySelector(".cl-val"); if(old){ old.remove(); return; }
+function clValidate(l){ if(!l||!CL_PANEL) return; const old=CL_PANEL.querySelector(".cl-val"); if(old){ old.remove(); return; }
   const its=cItemsOf(l.id), left=its.filter(i=>!i.fait).length;
   const am=el("input",{class:"ev-inp",type:"text",inputmode:"decimal",id:"clMontant",placeholder:"Montant en € (facultatif)","aria-label":"Montant"});
   const P=el("div",{class:"cl-val"},el("b",{text:"Combien ça a coûté ?"}),el("small",{text:"Le montant part dans le Budget, catégorie Courses."+(left?" "+left+" article"+(left>1?"s":"")+" pas pris : "+(l.recur?"ils passent à la liste de la semaine prochaine.":l.id===CL_DEF?"ils restent sur la liste.":"ils retournent dans « Liste de courses »."):"")}),am,
     el("div",{class:"cl-vb"},el("button",{type:"button",class:"btn ev-cta",id:"clValOk",onclick:async e=>{ e.currentTarget.disabled=true; await clDone(l,parseMoney(am.value)||0); }},"Valider")));
-  const v=$("clVal"); v.before(P); setTimeout(()=>{ P.scrollIntoView({block:"center",behavior:"smooth"}); am.focus(); },60); }
+  const v=CL_PANEL.querySelector(".cl-acts"); v.before(P); setTimeout(()=>{ P.scrollIntoView({block:"center",behavior:"smooth"}); am.focus(); },60); }
 async function clDone(l,montant){ const me=meId(), its=cItemsOf(l.id), got=its.filter(i=>i.fait), left=its.filter(i=>!i.fait), now=Date.now();
   try{ const rec={titre:l.titre||"Liste de courses",couleur:clCol(l),lieu:l.lieu||null,qui:l.qui||null,prive:!!l.prive,date:l.date||null,fini:true,finiLe:now,montant:montant||null,articles:got.map(i=>({nom:i.nom,qte:i.qte||null}))};
     if(l.id===CL_DEF) await S.db.collection("listes").add(Object.assign(rec,{par:me,creeLe:now})); else await S.db.collection("listes").doc(l.id).set(Object.assign({},Object.fromEntries(Object.entries(l).filter(([k])=>k!=="id")),rec));
@@ -9921,7 +9933,7 @@ async function clDone(l,montant){ const me=meId(), its=cItemsOf(l.id), got=its.f
     for(const i of got) await S.db.collection("courses").doc(i.id).delete();
     if(l.id!==CL_DEF) for(const i of left) await S.db.collection("courses").doc(i.id).update(nxt?{liste:nxt}:{liste:null});
     if(montant>0) await budgetAdd((l.titre||"Courses")+(l.lieu?" · "+l.lieu:""),montant,"courses");
-    S.clSheet&&S.clSheet.close(); haptic(12); toast("✓ Liste validée"+(montant>0?" · "+money(montant)+" dans le Budget":"")+(nxt?" · celle de la semaine prochaine est prête":"")+".");
+    S.clOpenId=null; S.cListe=null; renderCourses(); haptic(12); toast("✓ Liste validée"+(montant>0?" · "+money(montant)+" dans le Budget":"")+(nxt?" · celle de la semaine prochaine est prête":"")+".");
   }catch(e){ writeErr(e); } }
 /* Les habituels : ce que le foyer rachète souvent, proposé en un tap */
 const HAB0=["Lait","Pain","Œufs","Café","Beurre","Papier toilette","Bananes","Pâtes"];
