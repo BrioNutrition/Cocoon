@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="27/10 18:27";</script>
+<script>window.COCOON_BUILD="27/10 21:38";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -9782,11 +9782,9 @@ function renderCourses(){
   $("cNom").placeholder=S.cPour==="tous"?"Lait, pain, piles…":"Pour "+(S.cPour===me?"moi":membre(S.cPour).nom)+" : shampoing, chaussettes…";
   renderHab(); box.innerHTML="";
   const items=cItemsOf(S.cListe||CL_DEF), todo=items.filter(i=>!i.fait), done=items.filter(i=>i.fait);
-  if(!items.length){ box.append(el("div",{class:"list"},el("div",{class:"empty"},el("strong",{text:"La liste est vide"}),"Écris ce qui manque juste au-dessus : chaque article se range tout seul dans son rayon. Plusieurs d'un coup ? Sépare-les par des virgules."))); return; }
-  for(const r of RAYONS){ const its=todo.filter(i=>rayonOf(i)===r[0]).sort((a,b)=>(a.ajouteLe||0)-(b.ajouteLe||0)); if(!its.length) continue;
-    const list=el("div",{class:"c-list"}); for(const i of its) list.append(courseRow(i,{rayon:true}));
-    box.append(el("div",{class:"c-group"},el("h3",{},el("span",{class:"c-ico","aria-hidden":"true",text:r[2]}),r[1],el("span",{class:"count",text:String(its.length)})),list)); }
-  if(todo.length&&!shop){ const L=cocLine("c-rayon","Appui long = changer de rayon"); if(L) box.prepend(L); }
+  if(!items.length){ box.append(el("div",{class:"list"},el("div",{class:"empty"},el("strong",{text:"La liste est vide"}),"Écris ce qui manque juste au-dessus. Plusieurs d'un coup ? Sépare-les par des virgules."))); return; }
+  /* pas de rayons (Angel : on ne fait jamais ses courses par catégorie) : la liste dans l'ordre où on l'a écrite */
+  if(todo.length){ const list=el("div",{class:"c-list"}); for(const i of todo.slice().sort((a,b)=>(a.ajouteLe||0)-(b.ajouteLe||0))) list.append(courseRow(i)); box.append(el("div",{class:"c-group"},list)); }
   if(!todo.length) box.append(el("div",{class:"list"},el("div",{class:"empty"},el("strong",{text:"Tout est dans le caddie !"}),shop?"Appuie sur « J'ai fini les courses » : le caddie se vide tout seul.":"Vide le caddie quand les courses sont rangées.")));
   if(done.length){ const open=shop||!!S.cCartOpen, list=el("div",{class:"c-list done"}); if(open) for(const i of done.slice().sort((a,b)=>(b.faitLe||0)-(a.faitLe||0))) list.append(courseRow(i));
     box.append(el("div",{class:"c-group c-cart"+(open?" open":"")},el("h3",{},el("button",{type:"button",class:"c-cart-t","aria-expanded":String(open),onclick:()=>{ S.cCartOpen=!S.cCartOpen; renderCourses(); }},el("span",{class:"c-ck","aria-hidden":"true",text:"✓"}),"Dans le caddie",el("span",{class:"count",text:"· "+done.length}),el("span",{class:"c-chev","aria-hidden":"true",text:"›"})),shop?null:el("button",{type:"button",class:"btn ghost c-clear",text:"Vider le caddie",onclick:async()=>{ await rowsOutAll(done.map(i=>cRowEl(i.id)).filter(Boolean)); softDelete(done.map(i=>({key:"courses:"+i.id,arr:"courses",item:i,run:()=>S.db.collection("courses").doc(i.id).delete()})),done.length>1?done.length+" articles retirés de la liste.":"Article retiré de la liste."); }})),list)); }
@@ -9823,7 +9821,6 @@ function renderCHome(){ const H=$("cHome"); if(!H) return; H.innerHTML=""; if(!m
   const act=clActives(), done=clAll().filter(l=>l.fini).sort((a,b)=>(b.finiLe||0)-(a.finiLe||0)).slice(0,6);
   H.append(el("p",{class:"cl-sec",text:"Mes listes"}));
   const g=el("div",{class:"cl-grid"}); for(const l of act) g.append(clNote(l));
-  g.append(el("button",{type:"button",class:"cl-note cl-new",onclick:()=>openCListForm(null)},el("span",{class:"cl-plus","aria-hidden":"true",text:"+"}),el("b",{text:"Nouvelle liste"}),el("small",{text:"un titre, une date, un magasin"})));
   H.append(g);
   if(done.length){ H.append(el("p",{class:"cl-sec",text:"Terminées"}));
     for(const l of done){ const d=l.finiLe?new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"short"}).format(new Date(l.finiLe)):"";
@@ -9938,7 +9935,7 @@ $("cForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||!n
   const parts=txt.split(/\s*[,;\n]\s*|\s+et\s+/).map(x=>x.trim()).filter(Boolean).slice(0,20);
   $("cNom").value="";
   try{ await addCourses(parts.map(parseArticle),Object.assign({pour},S.cListe&&S.cListe!==CL_DEF?{liste:S.cListe}:{}));
-    toast(parts.length>1?parts.length+" articles ajoutés, rangés par rayon.":"Ajouté à la liste."); }catch(err){ writeErr(err); } });
+    toast(parts.length>1?parts.length+" articles ajoutés.":"Ajouté à la liste."); }catch(err){ writeErr(err); } });
 $("moiBack").addEventListener("click",moiBackGo);
 $("sgCourses").addEventListener("click",()=>{ closeSheet(); setTab("courses"); window.scrollTo({top:0}); setTimeout(()=>openCList(CL_DEF),120); });
 

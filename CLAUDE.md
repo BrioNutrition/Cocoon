@@ -222,10 +222,10 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
 - **Courses refaites en listes-notes** (27 oct., Angel) : plus de barre « Ajouter » ; « + » en haut (`fabAct("courses")` → `openCListForm`) ; collection `listes`
   {titre, emoji, date, lieu, qui, prive (moi seul, filtré dans l'app), par, recur:"semaine", fini, finiLe, montant, articles[]} ; articles = `courses` avec `liste`
   (sans `liste` ou liste finie/supprimée = liste principale `CL_DEF="principale"`, note « Liste de courses » ; Repas/frigo/Cocoony/accueil ajoutent là).
-  Page = notes `.cl-note` (`renderCHome` : emoji, date, magasin, 4 articles, barre, x/y, avatar de qui y va) + « Nouvelle liste » + « Terminées » (`.cl-done`, « Refaire » = `clRedo`).
+  Page = notes `.cl-note` (`renderCHome` : emoji, date, magasin, 4 articles, barre, x/y, avatar de qui y va ; plus de note « Nouvelle liste » : le « + » suffit) + « Terminées » (`.cl-done`, « Refaire » = `clRedo`).
   Liste ouverte = feuille `openCList(id)` (`#clPage`) : le champ `#cForm`/`#cNom`, les habituels, « Pour qui », la liste par rayons y sont **déplacés** (`CL_NODES`, rangés dans `#cStash` à la fermeture) ;
   « ⋯ » (`clMenu`) : Modifier, Dupliquer (`clDup`), Valider, Supprimer ; « ✓ Valider la liste » (`clValidate` → `clDone`) : « Combien ça a coûté ? » → `budgetAdd(…,"courses")`, liste en « Terminées »,
-  non pris → liste principale (ou liste de la semaine suivante si `recur`, recréée à +7 j avec tous les articles). Option « Ajouter les ingrédients des repas prévus » (`clAddIng`, jusqu'à la date ou 7 j).
+  **plus de rayons** dans une liste (Angel : jamais par catégorie en vrai) : articles dans l'ordre d'ajout, astuce « appui long = rayon » retirée ; non pris → liste principale (ou liste de la semaine suivante si `recur`, recréée à +7 j avec tous les articles). Option « Ajouter les ingrédients des repas prévus » (`clAddIng`, jusqu'à la date ou 7 j).
   « Je fais les courses » / bandeau en direct (`#cLive`) **masqués** (Angel : inutile). Barre « Au caddie » au-dessus de la feuille (`html.cl-open .selbar`).
 - **Calendriers remis à aujourd'hui** en quittant un écran (`calReset(prevTab)` dans `setTab` : accueil `accDay/accOpen/accMo`, agenda `agDay/agM`, repas `rDay/rWeek/rOpen/rMo`, budget `bMonth`, semaine des tâches `wkDay`) et au retour dans l'app après 5 min.
 - Menu « Tes foyers » (`openFoyerMenu`) : **menu de l'app aussi sur iPhone** (pas de `nativeizeMenu`, demandé par Angel).
