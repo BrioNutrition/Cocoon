@@ -2900,7 +2900,8 @@ html.cl-open .selbar{z-index:80}
 .cl-panel .c-group .c-cart-t .count{font-size:12px}
 .cl-panel .c-cart .c-ck{display:none}
 .cl-panel .c-cart.open .c-list{margin-top:0}
-.cl-panel .c-list.done .c-item{opacity:.5}
+.cl-panel .c-item.on{opacity:.55}.cl-panel .c-item.on .c-n{text-decoration:line-through}
+.ka-cnt{font-weight:700;color:var(--ink)}
 .cl-panel .cl-acts{margin-top:16px}
 .cl-panel .cl-val-b{background:linear-gradient(135deg,#FFC94A,#FF9C80 50%,#F28DB8);color:#1C1B2E;font-weight:800;font-size:15.5px;min-height:50px;border-radius:16px}
 .cl-panel .cl-more{border-radius:16px;width:50px}
@@ -9727,10 +9728,10 @@ async function cSelDel(){ const its=[...S.cSel].map(id=>(S.courses||[]).find(i=>
   softDelete(its.map(i=>({key:"courses:"+i.id,arr:"courses",item:i,run:()=>S.db.collection("courses").doc(i.id).delete()})),its.length>1?its.length+" articles retirés de la liste.":"« "+esc(its[0].nom)+" » retiré de la liste."); }
 async function cDelOne(i){ await rowOut(cRowEl(i.id),"del"); softDelete([{key:"courses:"+i.id,arr:"courses",item:i,run:()=>S.db.collection("courses").doc(i.id).delete()}],"« "+esc(i.nom)+" » retiré de la liste."); }
 async function toggleCourse(i){ if(!S.db||!needMe()) return;
-  /* cocher = directement au caddie (Angel : plus de sélection jaune ni de barre « Au caddie ») */
-  if(!i.fait){ if(S.cBusy&&S.cBusy.has(i.id)) return; (S.cBusy=S.cBusy||new Set()).add(i.id); S.cSel=new Set([i.id]); try{ await cSelOk(); } finally{ S.cBusy.delete(i.id); } return; }
-  const me=meId(); i.fait=!i.fait; i.faitPar=i.fait?me:null; i.faitLe=i.fait?Date.now():null; if(S.cKnown) S.cKnown.set(i.id,i.fait); renderCourses();
-  try{ await S.db.collection("courses").doc(i.id).update({fait:i.fait,faitPar:i.faitPar,faitLe:i.faitLe}); }catch(e){ writeErr(e); } }
+  /* cocher = juste coché, à sa place dans la liste (Angel : pas d'animation, pas de rubrique « Au caddie ») ; re-toucher décoche */
+  const me=meId(); i.fait=!i.fait; i.faitPar=i.fait?me:null; i.faitLe=i.fait?Date.now():null; if(S.cKnown) S.cKnown.set(i.id,i.fait); if(i.fait) haptic(6); renderCourses();
+  try{ await S.db.collection("courses").doc(i.id).update({fait:i.fait,faitPar:i.faitPar,faitLe:i.faitLe}); }catch(e){ writeErr(e); }
+  if(i.fait){ const l=S.cListe&&clGet(S.cListe), its=l?cItemsOf(l.id):[]; if(l&&its.length&&its.every(x=>x.fait)) setTimeout(()=>{ if(S.cListe===l.id&&cItemsOf(l.id).every(x=>x.fait)) clFinish(clGet(l.id)); },450); } }
 function renderCLive(){ const w=$("cLive"); if(!w) return; w.innerHTML=""; const ss=cSession(), me=meId(), items=S.courses||[], todo=items.filter(i=>!i.fait).length, done=items.filter(i=>i.fait).length, tot=todo+done;
   if(!ss){ w.hidden=!todo; w.className="c-live c-sum";
     if(todo){ const its=items.filter(i=>!i.fait), nr=new Set(its.map(rayonOf)).size, last=its.slice().sort((a,b)=>(b.ajouteLe||0)-(a.ajouteLe||0))[0];
@@ -9759,11 +9760,8 @@ function renderCourses(){
   renderHab(); box.innerHTML="";
   const items=cItemsOf(S.cListe||CL_DEF), todo=items.filter(i=>!i.fait), done=items.filter(i=>i.fait);
   if(!items.length){ box.append(el("div",{class:"list"},el("div",{class:"empty"},el("strong",{text:"La liste est vide"}),"Écris ce qui manque juste au-dessus. Plusieurs d'un coup ? Sépare-les par des virgules."))); return; }
-  /* pas de rayons (Angel : on ne fait jamais ses courses par catégorie) : la liste dans l'ordre où on l'a écrite */
-  if(todo.length){ const list=el("div",{class:"c-list"}); for(const i of todo.slice().sort((a,b)=>(a.ajouteLe||0)-(b.ajouteLe||0))) list.append(courseRow(i)); box.append(el("div",{class:"c-group"},list)); }
-  if(!todo.length) box.append(el("div",{class:"list"},el("div",{class:"empty"},el("strong",{text:"Tout est dans le caddie !"}),shop?"Appuie sur « J'ai fini les courses » : le caddie se vide tout seul.":"Vide le caddie quand les courses sont rangées.")));
-  if(done.length){ const open=shop||!!S.cCartOpen, list=el("div",{class:"c-list done"}); if(open) for(const i of done.slice().sort((a,b)=>(b.faitLe||0)-(a.faitLe||0))) list.append(courseRow(i));
-    box.append(el("div",{class:"c-group c-cart"+(open?" open":"")},el("h3",{},el("button",{type:"button",class:"c-cart-t","aria-expanded":String(open),onclick:()=>{ S.cCartOpen=!S.cCartOpen; renderCourses(); }},el("span",{class:"c-ck","aria-hidden":"true",text:"✓"}),"Au caddie",el("span",{class:"count",text:"· "+done.length}),el("span",{class:"c-chev","aria-hidden":"true",text:"›"})),shop?null:el("button",{type:"button",class:"btn ghost c-clear",text:"Vider le caddie",onclick:async()=>{ await rowsOutAll(done.map(i=>cRowEl(i.id)).filter(Boolean)); softDelete(done.map(i=>({key:"courses:"+i.id,arr:"courses",item:i,run:()=>S.db.collection("courses").doc(i.id).delete()})),done.length>1?done.length+" articles retirés de la liste.":"Article retiré de la liste."); }})),list)); }
+  /* pas de rayons ni de rubrique « Au caddie » (Angel) : la liste dans l'ordre où on l'a écrite, les articles cochés restent à leur place */
+  { const list=el("div",{class:"c-list"}); for(const i of items.slice().sort((a,b)=>(a.ajouteLe||0)-(b.ajouteLe||0))) list.append(courseRow(i)); box.append(el("div",{class:"c-group"},list)); }
   if(S.cFlash&&S.cFlash.size){ clearTimeout(S.cFlashT); S.cFlashT=setTimeout(()=>{ const t=Date.now(); for(const [k,v] of S.cFlash) if(t-v>=4000) S.cFlash.delete(k); if(S.tab==="courses") renderCourses(); },4100); }
 }
 async function addCourses(arts,extra){ const me=meId(), now=Date.now(); let n=0;
@@ -9797,7 +9795,7 @@ function clRow(l,open){ const its=cItemsOf(l.id).slice().sort((a,b)=>(a.ajouteLe
       onclick:tg,onkeydown:e=>{ if(e.target===e.currentTarget&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); tg(); } }},
     mb,
     el("small",{text:cap}),el("b",{text:l.titre||"Liste de courses"}),
-    open?el("span",{class:"ka-pv",text:n?ok+" sur "+n+" au caddie":"Liste vide"}):n?el("span",{class:"ka-ul"},...its.slice(0,3).map(i=>el("span",{class:"ka-li"+(i.fait?" f":"")},el("i",{text:i.nom}))),n>3?el("span",{class:"ka-more",text:"+ "+(n-3)+" autre"+(n>4?"s":"")}):null):el("span",{class:"ka-pv",text:"Liste vide"})); }
+    open?el("span",{class:"ka-pv ka-cnt",text:n?"🛒 "+ok+" / "+n:"Liste vide"}):n?el("span",{class:"ka-ul"},...its.slice(0,3).map(i=>el("span",{class:"ka-li"+(i.fait?" f":"")},el("i",{text:i.nom}))),n>3?el("span",{class:"ka-more",text:"+ "+(n-3)+" autre"+(n>4?"s":"")}):null):el("span",{class:"ka-pv",text:"Liste vide"})); }
 /* le contenu déroulé : le champ, les habituels, « Pour qui », les articles (mêmes éléments qu'avant, déplacés dedans) + Valider et ⋯ */
 let CL_PANEL=null;
 function clPanelFill(id){ if(!CL_PANEL) CL_PANEL=el("div",{class:"cl-panel"}); const P=CL_PANEL; P.innerHTML="";
@@ -9904,15 +9902,14 @@ function clValidate(l){ if(!l) return; const its=cItemsOf(l.id), left=its.filter
   const ok=el("button",{type:"button",class:"btn ev-cta",id:"clValOk",onclick:e=>{ const m=parseMoney(am.value)||0; if(!m){ toast("Indique le montant, ou « Sans montant »."); am.focus(); return; } go(m,e.currentTarget); }},"Valider");
   am.addEventListener("keydown",e=>{ if(e.key==="Enter") ok.click(); });
   inn.append(el("div",{class:"ev-top"},el("h2",{text:fin?"Liste terminée 🎉":"Valider « "+(l.titre||"la liste")+" »"}),el("p",{text:"Combien ça a coûté ? Le montant part dans le Budget, catégorie Courses."})),
-    am,left?el("p",{class:"cl-left",text:left+" article"+(left>1?"s":"")+" pas pris : "+(l.recur?"ils passent à la liste de la semaine prochaine.":l.id===CL_DEF?"ils restent sur la liste.":"ils retournent dans « Liste de courses ».")}):null,
+    am,
     ok,el("button",{type:"button",class:"cl-skip",id:"clValSans",onclick:e=>go(0,e.currentTarget)},"Sans montant"));
   setTimeout(()=>am.focus(),350); }
-async function clDone(l,montant,quiet){ const me=meId(), its=cItemsOf(l.id), got=its.filter(i=>i.fait), left=its.filter(i=>!i.fait), now=Date.now();
-  try{ const rec={titre:l.titre||"Liste de courses",couleur:clCol(l),lieu:l.lieu||null,qui:l.qui||null,prive:!!l.prive,date:l.date||null,fini:true,finiLe:now,montant:montant||null,articles:got.map(i=>({nom:i.nom,qte:i.qte||null}))};
+async function clDone(l,montant,quiet){ const me=meId(), its=cItemsOf(l.id), now=Date.now();
+  try{ const rec={titre:l.titre||"Liste de courses",couleur:clCol(l),lieu:l.lieu||null,qui:l.qui||null,prive:!!l.prive,date:l.date||null,fini:true,finiLe:now,montant:montant||null,articles:its.map(i=>({nom:i.nom,qte:i.qte||null,pris:!!i.fait}))};
     let rid=l.id; if(l.id===CL_DEF) rid=(await S.db.collection("listes").add(Object.assign(rec,{par:me,creeLe:now}))).id; else await S.db.collection("listes").doc(l.id).set(Object.assign({},Object.fromEntries(Object.entries(l).filter(([k])=>k!=="id")),rec));
-    let nxt=null; if(l.recur){ const d=l.date?new Date(parse(l.date).getTime()+7*864e5):new Date(today().getTime()+7*864e5); nxt=await clNew(Object.assign({},l,{date:iso(d)}),got.map(i=>({nom:i.nom,qte:i.qte,pour:i.pour})),0); }
-    for(const i of got) await S.db.collection("courses").doc(i.id).delete();
-    if(l.id!==CL_DEF) for(const i of left) await S.db.collection("courses").doc(i.id).update(nxt?{liste:nxt}:{liste:null});
+    let nxt=null; if(l.recur){ const d=l.date?new Date(parse(l.date).getTime()+7*864e5):new Date(today().getTime()+7*864e5); nxt=await clNew(Object.assign({},l,{date:iso(d)}),its.map(i=>({nom:i.nom,qte:i.qte,pour:i.pour})),0); }
+    for(const i of its) await S.db.collection("courses").doc(i.id).delete();
     if(montant>0) await budgetAdd((l.titre||"Courses")+(l.lieu?" · "+l.lieu:""),montant,"courses");
     S.clOpenId=null; S.cListe=null; if(S.clSheet&&!S.clSheet._gone&&!quiet) S.clSheet.close(); renderCourses(); haptic(12); if(!quiet) toast("✓ Liste validée"+(montant>0?" · "+money(montant)+" dans le Budget":"")+(nxt?" · celle de la semaine prochaine est prête":"")+".");
     return rid;
