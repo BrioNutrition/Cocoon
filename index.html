@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="27/10 13:07";</script>
+<script>window.COCOON_BUILD="27/10 13:16";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2880,7 +2880,7 @@ div.pf-r{cursor:default}
 .jw-g{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .jw-d{border:0;border-radius:13px;background:var(--sunk);color:var(--muted);padding:6px 0 7px;display:flex;flex-direction:column;align-items:center;gap:1px;font:inherit;cursor:pointer}
 .jw-d small{font-size:10px;font-weight:800}.jw-d b{font:800 17px/1.1 var(--f-display);color:var(--ink)}
-.jw-d i{display:flex;justify-content:center;align-items:center;align-self:stretch;gap:3px;height:8px;margin-top:2px;font-style:normal;line-height:0}.jw-d.on i{gap:5px}.jw-d.on i u{box-shadow:0 0 0 1.5px #1C1B2E}.jw-d i u{display:block;flex:none;width:5px;height:5px;border-radius:50%;background:#8FB8FF;text-decoration:none}
+.jw-d i{display:flex;justify-content:center;align-items:center;align-self:stretch;gap:3px;height:8px;margin-top:2px;font-style:normal;line-height:0}.jw-d.on i{gap:2px}.jw-d.on i u{box-sizing:border-box;width:8px;height:8px;border:1.5px solid #1C1B2E;background-clip:padding-box}.jw-d i u{display:block;flex:none;width:5px;height:5px;border-radius:50%;background:#8FB8FF;text-decoration:none}
 .jw-d.past b{color:var(--muted)}.jw-d.td{box-shadow:inset 0 0 0 1.5px var(--mark)}
 .jw-d.on{background:linear-gradient(135deg,#FFC94A,#FF9C80 50%,#F28DB8);color:#1C1B2E;box-shadow:none}.jw-d.on b{color:#1C1B2E}
 .jn{border-radius:20px;padding:14px;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 30%,var(--surface)),var(--surface) 75%);border:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
@@ -6904,19 +6904,24 @@ function hubMiniUpd(){ const M=$("hubMini"); if(!M) return; const ti=document.qu
 addEventListener("scroll",()=>{ if(!S._hmRaf) S._hmRaf=requestAnimationFrame(()=>{ S._hmRaf=0; hubMiniUpd(); }); },{passive:true});
 $("wkLbl").addEventListener("click",()=>{ S.accDay=null; S.accWk=null; renderToday(); });
 /* la rangée des jours suit le doigt comme un défilement ; au lâcher : semaine suivante / précédente (ou retour en place si le geste est trop court) */
-{ const B=$("dayBig"), H=$("daySec"), C=$("dayCard"); let st=null, raf=0, noClick=false;
+{ const B=$("dayBig"), H=$("daySec"), C=$("dayCard"); let st=null, raf=0, noClick=false, pend=null;
   const red=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
   const at=dx=>"translate3d(calc(-100% - 28px + "+dx.toFixed(1)+"px),0,0)", base=at(0);
   const paint=()=>{ raf=0; if(st&&st.on) st.g.style.transform=at(st.dx); };
   /* on peut attraper la semaine partout entre le titre et les jours (titre, haut de la carte, rangée des jours) */
   const down=e=>{ if(st||(e.pointerType==="mouse"&&e.button!==0)) return; const t=e.target; if(C.contains(t)&&!B.contains(t)&&t!==C) return;
-    const g=B.querySelector(".jw-t"); if(!g) return; st={x:e.clientX,y:e.clientY,g,id:e.pointerId,dx:0,on:false,s:[[performance.now(),0]]}; };
+    /* geste rapide pendant l'animation : la semaine en cours de sortie est validée tout de suite, puis on repart de la nouvelle, sans saut */
+    if(pend){ const p=pend; pend=null; p.a.onfinish=null; p.a.cancel(); weekBrowse(p.dir); }
+    const g=B.querySelector(".jw-t"); if(!g) return; let off=0;
+    if(g.getAnimations().length){ const W=g.firstChild.offsetWidth+28; try{ off=new DOMMatrix(getComputedStyle(g).transform).m41+W; }catch(_){} g.getAnimations().forEach(a=>a.cancel()); g.style.transform=at(off); }
+    st={x:e.clientX-off,y:e.clientY,g,id:e.pointerId,dx:off,off,on:false,s:[[performance.now(),off]]}; };
   H.addEventListener("pointerdown",down); C.addEventListener("pointerdown",down);
   addEventListener("pointermove",e=>{ if(!st||e.pointerId!==st.id) return; const dx=e.clientX-st.x, dy=e.clientY-st.y;
-    if(!st.on){ if(Math.abs(dx)<5&&Math.abs(dy)<5) return; if(Math.abs(dy)>Math.abs(dx)*1.2){ st=null; return; } st.on=true; st.x=e.clientX-Math.sign(dx)*2; st.g.getAnimations().forEach(a=>a.cancel()); }
+    if(!st.on){ const ddx=dx-st.off; if(Math.abs(ddx)<5&&Math.abs(dy)<5) return; if(Math.abs(dy)>Math.abs(ddx)*1.2){ const s0=st; st=null; if(s0.off) s0.g.animate([{transform:at(s0.off)},{transform:base}],{duration:220,easing:"cubic-bezier(.25,1,.5,1)"}); s0.g.style.transform=""; return; } st.on=true; st.x-=Math.sign(ddx)*2; }
     st.dx=e.clientX-st.x; const t=performance.now(); st.s.push([t,st.dx]); while(st.s.length>2&&t-st.s[0][0]>80) st.s.shift();
     if(!raf) raf=requestAnimationFrame(paint); },{passive:true});
-  const end=e=>{ if(!st||e.pointerId!==st.id) return; const s0=st; st=null; if(raf){ cancelAnimationFrame(raf); raf=0; } if(!s0.on) return;
+  const end=e=>{ if(!st||e.pointerId!==st.id) return; const s0=st; st=null; if(raf){ cancelAnimationFrame(raf); raf=0; }
+    if(!s0.on){ if(s0.off){ s0.g.animate([{transform:at(s0.off)},{transform:base}],{duration:220,easing:"cubic-bezier(.25,1,.5,1)"}); s0.g.style.transform=""; } return; }
     noClick=true; setTimeout(()=>{ noClick=false; },80);
     const g=s0.g, W=g.firstChild.offsetWidth+28, f=s0.s[0], v=s0.s.length>1?(s0.dx-f[1])/Math.max(1,performance.now()-f[0]):0;
     /* un geste rapide (même court, ou interrompu par le navigateur) compte : on suit l'élan du doigt */
@@ -6925,7 +6930,7 @@ $("wkLbl").addEventListener("click",()=>{ S.accDay=null; S.accWk=null; renderTod
     if(!go){ g.animate([{transform:at(s0.dx)},{transform:base}],{duration:red?1:280,easing:"cubic-bezier(.25,1,.5,1)"}); g.style.transform=""; return; }
     const dir=s0.dx<0?1:-1, left=W-Math.abs(s0.dx), ms=red?1:Math.max(150,Math.min(320,left/Math.max(Math.abs(v),.9)));
     const out=g.animate([{transform:at(s0.dx)},{transform:at(-dir*W)}],{duration:ms,easing:"cubic-bezier(.25,1,.5,1)",fill:"forwards"});
-    out.onfinish=()=>{ weekBrowse(dir); haptic(8); }; };
+    pend={a:out,dir}; out.onfinish=()=>{ if(!pend||pend.a!==out) return; pend=null; weekBrowse(dir); haptic(8); }; };
   addEventListener("pointerup",end); addEventListener("pointercancel",end);
   const blk=e=>{ if(noClick){ e.stopPropagation(); e.preventDefault(); } }; B.addEventListener("click",blk,true); H.addEventListener("click",blk,true); }
 $("hubMiniAdd").addEventListener("click",()=>{ const add=document.querySelector('.view:not([hidden]) .hub-add'); if(add){ window.scrollTo({top:0,behavior:"smooth"}); add.click(); } });

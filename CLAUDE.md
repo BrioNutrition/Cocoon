@@ -205,7 +205,8 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   une remarque à la fois : soir sans repas → frigo, papier qui expire sous 14 j, événement sous 21 j avec des choses à préparer, courses en cours/longue liste ;
   « Non merci » mémorisé dans `cocoon.cocNo`) ; puis **« En un coup d'œil »** (ex « Mes raccourcis », 27 oct.) : par défaut Courses, Papiers, Budget (`WG_DEF`) ; Agenda et Poubelles **retirés** de la liste (déjà dans « Aujourd'hui ») ;
   Repas = la semaine des repas (« 5 sur 9 prévus », ce qui reste à prévoir sur 7 jours).
-  Événements et anniversaires apparaissent dans la journée (« Toute la journée », en premier) ; points du jour choisi en couleur avec contour sombre 1,5 px, espacés pour ne pas se toucher, centrés sous le chiffre.
+  Événements et anniversaires apparaissent dans la journée (« Toute la journée », en premier) ; points du jour choisi en couleur avec contour sombre 1,5 px (bordure du point lui-même, pas d'ombre : toujours concentrique), centrés sous le chiffre.
+  Gestes rapides enchaînés : un nouveau geste pendant l'animation valide aussitôt la semaine qui sortait (`pend`) puis repart de la nouvelle ; pendant un retour en place, on reprend la rangée là où elle est (offset lu dans la transformation).
   Grande carte d'un autre jour : « À 14h » / « Dans la journée » (plus de « Premier »).
   Bannière « rendez-vous dans X min » (`#rdvAlert`) masquée sur l'accueil (doublon de la frise). Noms des repas partout : Petit-déj / Déjeuner / Repas (`RSLOTS`, frise).
   Cartes de l'accueil (foyer, journée, raccourcis, Cocoony) : contour fin 1 px (`var(--line)`) ; lueurs essayées puis **retirées** (Angel).
