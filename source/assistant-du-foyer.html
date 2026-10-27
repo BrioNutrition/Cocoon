@@ -2805,7 +2805,15 @@ div.pf-r{cursor:default}
 .cl-card .ka-opt svg{width:18px;height:18px;fill:currentColor}.cl-card .ka-opt:active{background:var(--sunk)}
 
 ::view-transition-group(*){animation-duration:.3s;animation-timing-function:cubic-bezier(.25,.8,.3,1)}
-::view-transition-old(cl-panel){animation:none;opacity:0}
+::view-transition-group(*){overflow:clip;border-radius:20px}
+::view-transition-group(root){border-radius:0}
+::view-transition-old(*),::view-transition-new(*){height:100%;width:100%;object-fit:none;object-position:left top}
+::view-transition-old(*){animation:none;opacity:0}::view-transition-new(*){animation:none}
+::view-transition-old(root){opacity:1;animation:vtOut .2s ease both}::view-transition-new(root){animation:vtIn .2s ease both}
+@keyframes vtOut{to{opacity:0}}@keyframes vtIn{from{opacity:0}}
+.cl-open{grid-column:1/-1;min-width:0;border:1px solid var(--line);border-radius:20px;background:var(--surface);overflow:hidden}
+.cl-open>.cl-card{border:0;border-radius:0;background:none;min-height:0}
+.cl-open>.cl-panel{border:0;border-radius:0;margin:0;background:none;animation:none}
 .ka-ul{display:flex;flex-direction:column;margin-top:6px}
 .ka-li{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;padding:3px 0;color:var(--ink);opacity:.88;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ka-li:before{content:"";width:11px;height:11px;border-radius:50%;border:1.6px solid color-mix(in srgb,var(--ink) 35%,transparent);flex:none}
@@ -2882,7 +2890,7 @@ html.cl-open .selbar{z-index:80}
 .cl-panel .c-list{gap:0}
 .cl-panel .c-row{border-bottom:1px solid var(--line);gap:0}
 .cl-panel .c-item,.cl-panel .c-list.done .c-item{background:none;box-shadow:none;border:0;border-radius:0;padding:11px 2px}
-.cl-panel .c-item.sel{box-shadow:none}
+.cl-panel .c-item.sel{box-shadow:none!important;outline:0}
 .cl-panel .c-tx{flex-direction:row;flex-wrap:wrap;align-items:baseline;column-gap:7px;row-gap:2px}
 .cl-panel .c-n{font-weight:700;font-size:15.5px}
 .cl-panel .c-q{margin-left:0;font-size:12.5px}
@@ -9712,14 +9720,15 @@ async function cSelOk(){ const ids=[...S.cSel].filter(id=>(S.courses||[]).some(i
   for(const id of ids){ const i=(S.courses||[]).find(x=>x.id===id); if(i){ i.fait=true; i.faitPar=me; i.faitLe=now; if(S.cKnown) S.cKnown.set(id,true); } }
   renderCourses();
   try{ await Promise.all(ids.map(id=>S.db.collection("courses").doc(id).update({fait:true,faitPar:me,faitLe:now}))); }catch(e){ writeErr(e); }
-  toast(ids.length>1?"🛒 "+ids.length+" articles dans le caddie.":"🛒 Dans le caddie.");
+  if(ids.length>1) toast("🛒 "+ids.length+" articles dans le caddie.");
   { const l=S.cListe&&clGet(S.cListe), its=l?cItemsOf(l.id):[]; if(l&&its.length&&its.every(i=>i.fait)) setTimeout(()=>{ if(S.cListe===l.id) clFinish(clGet(l.id)); },500); } }
 async function cSelDel(){ const its=[...S.cSel].map(id=>(S.courses||[]).find(i=>i.id===id)).filter(Boolean); S.cSel.clear(); renderSelBar(); if(!its.length) return;
   await rowsOutAll(its.map(i=>cRowEl(i.id)).filter(Boolean));
   softDelete(its.map(i=>({key:"courses:"+i.id,arr:"courses",item:i,run:()=>S.db.collection("courses").doc(i.id).delete()})),its.length>1?its.length+" articles retirés de la liste.":"« "+esc(its[0].nom)+" » retiré de la liste."); }
 async function cDelOne(i){ await rowOut(cRowEl(i.id),"del"); softDelete([{key:"courses:"+i.id,arr:"courses",item:i,run:()=>S.db.collection("courses").doc(i.id).delete()}],"« "+esc(i.nom)+" » retiré de la liste."); }
 async function toggleCourse(i){ if(!S.db||!needMe()) return;
-  if(!i.fait){ S.cSel.has(i.id)?S.cSel.delete(i.id):S.cSel.add(i.id); S.cSelJust=i.id; renderCourses(); S.cSelJust=null; renderSelBar(); return; }
+  /* cocher = directement au caddie (Angel : plus de sélection jaune ni de barre « Au caddie ») */
+  if(!i.fait){ if(S.cBusy&&S.cBusy.has(i.id)) return; (S.cBusy=S.cBusy||new Set()).add(i.id); S.cSel=new Set([i.id]); try{ await cSelOk(); } finally{ S.cBusy.delete(i.id); } return; }
   const me=meId(); i.fait=!i.fait; i.faitPar=i.fait?me:null; i.faitLe=i.fait?Date.now():null; if(S.cKnown) S.cKnown.set(i.id,i.fait); renderCourses();
   try{ await S.db.collection("courses").doc(i.id).update({fait:i.fait,faitPar:i.faitPar,faitLe:i.faitLe}); }catch(e){ writeErr(e); } }
 function renderCLive(){ const w=$("cLive"); if(!w) return; w.innerHTML=""; const ss=cSession(), me=meId(), items=S.courses||[], todo=items.filter(i=>!i.fait).length, done=items.filter(i=>i.fait).length, tot=todo+done;
@@ -9797,21 +9806,24 @@ function clPanelFill(id){ if(!CL_PANEL) CL_PANEL=el("div",{class:"cl-panel"}); c
 /* déroulé / replié en douceur : les cartes glissent à leur place (View Transitions quand le navigateur sait faire) */
 function clVT(fn){ const red=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
   if(!document.startViewTransition||red||S.tab!=="courses"){ fn(); return; } try{ document.startViewTransition(fn); }catch(_){ fn(); } }
-let CL_GRID=null;
+/* liste déroulée = un seul bloc (.cl-open : la carte + le contenu) : pas de traits entre les deux, et il glisse d'un seul tenant */
+let CL_GRID=null, CL_OPEN=null;
 function renderCHome(){ const H=$("cHome"); if(!H) return; if(!meId()){ clStash(); H.innerHTML=""; return; }
   const act=clActives(), done=clAll().filter(l=>l.fini).sort((a,b)=>(b.finiLe||0)-(a.finiLe||0)).slice(0,6);
   let open=S.clOpenId; if(open&&!act.some(l=>l.id===open)){ open=S.clOpenId=null; if(S.cListe&&S.cListe!==CL_DEF) S.cListe=null; }
-  if(!CL_GRID) CL_GRID=el("div",{class:"cl-grid"}); const G=CL_GRID, P=CL_PANEL, keep=!!(open&&P&&P.parentNode===G&&G.parentNode===H&&P._id===open);
+  if(!CL_GRID) CL_GRID=el("div",{class:"cl-grid"}); const G=CL_GRID, W=CL_OPEN, keep=!!(open&&W&&W.parentNode===G&&G.parentNode===H&&W._id===open);
   /* le bloc déroulé reste en place (le champ garde le clavier) : on remplace seulement ce qu'il y a autour */
-  if(keep){ [...H.childNodes].forEach(n=>{ if(n!==G) n.remove(); }); [...G.childNodes].forEach(n=>{ if(n!==P) n.remove(); }); }
+  if(keep){ [...H.childNodes].forEach(n=>{ if(n!==G) n.remove(); }); [...G.childNodes].forEach(n=>{ if(n!==W) n.remove(); }); }
   else { clStash(); H.innerHTML=""; G.innerHTML=""; }
   const sec=el("p",{class:"cl-sec",text:"Mes listes"}); if(keep) H.insertBefore(sec,G); else H.append(sec);
   if(!act.length) H.insertBefore(el("div",{class:"empty cl-empty"},el("strong",{text:"Aucune liste en cours"}),"Touche le + en haut à droite pour en créer une."),keep?G:null);
   if(!keep) H.append(G);
-  let past=false;
   const ord=open?act.filter(l=>l.id===open).concat(act.filter(l=>l.id!==open)):act;
-  for(const l of ord){ const card=clRow(l,l.id===open); if(keep&&!past) G.insertBefore(card,P); else G.append(card);
-    if(l.id===open){ past=true; if(!keep){ clPanelFill(open); CL_PANEL._id=open; CL_PANEL.style.viewTransitionName="cl-panel"; G.append(CL_PANEL); } } }
+  for(const l of ord){ const card=clRow(l,l.id===open);
+    if(l.id!==open){ G.append(card); continue; }
+    if(keep) W.firstChild.replaceWith(card);
+    else { if(!CL_OPEN) CL_OPEN=el("div",{class:"cl-open"}); CL_OPEN.innerHTML=""; clPanelFill(open); CL_OPEN.append(card,CL_PANEL); CL_OPEN._id=open; G.append(CL_OPEN); }
+    CL_OPEN.style.viewTransitionName=card.style.viewTransitionName||""; card.style.viewTransitionName="none"; }
   if(done.length){ H.append(el("p",{class:"cl-sec",text:"Terminées"}));
     for(const l of done){ const d=l.finiLe?new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"short"}).format(new Date(l.finiLe)):"";
       H.append(el("div",{class:"cl-done",style:"--c:"+clCol(l)},el("span",{class:"cl-ring ok","aria-hidden":"true"},el("b",{text:"✓"})),el("span",{class:"cl-dt"},el("b",{text:l.titre||"Courses"}),el("small",{text:[d,(l.articles||[]).length+" article"+((l.articles||[]).length>1?"s":""),l.montant?money(l.montant):""].filter(Boolean).join(" · ")})),
@@ -9863,7 +9875,7 @@ function clClear(U){ U.sheet.querySelectorAll(":scope>.pp-in,:scope>.ev-pop").fo
 /* dérouler une liste sur la page Courses (et fermer le formulaire s'il était ouvert) */
 function openCList(id){ if(!meId()) return; const l=clGet(id); if(!l) return; if(S.clSheet&&!S.clSheet._gone) S.clSheet.close();
   if(S.tab!=="courses"){ S.clOpenId=S.cListe=id; setTab("courses"); renderCourses(); } else clVT(()=>{ S.clOpenId=S.cListe=id; renderCourses(); });
-  setTimeout(()=>{ const row=CL_PANEL&&CL_PANEL.previousElementSibling; if(row){ const t=row.getBoundingClientRect().top; if(t<70||t>innerHeight*.55) row.scrollIntoView({block:"start",behavior:"smooth"}); } },80); }
+  setTimeout(()=>{ const row=CL_OPEN&&CL_OPEN.isConnected?CL_OPEN:null; if(row){ const t=row.getBoundingClientRect().top; if(t<70||t>innerHeight*.55) row.scrollIntoView({block:"start",behavior:"smooth"}); } },80); }
 function clMenu(btn,l){ if(!l) return; const acts=[["edit","✏️","Modifier",()=>openCListForm(l)],["dup","⧉","Dupliquer",()=>clDup(l)],["val","✓","Valider la liste",()=>clValidate(l)]];
   { const nm=nativeMenu(l.titre||"Liste",acts.map(([id,,t])=>({id,title:t})).concat([{id:"del",title:"Supprimer la liste",destructive:true}]));
     if(nm){ nm.then(id=>{ const a=acts.find(x=>x[0]===id); if(a) a[3](); else if(id==="del") clDel(l); }); return; } }
