@@ -2773,7 +2773,8 @@ div.pf-r{cursor:default}
 #daySec{margin:4px 4px -10px}
 #daySec{align-items:center}#daySec #dayTtl{letter-spacing:.06em}
 .wkn{display:flex;align-items:center;gap:0;white-space:nowrap;flex:none}
-.jw-g{touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.jw-g{touch-action:pan-y;user-select:none;-webkit-user-select:none;will-change:transform}
+#dayBig{overflow:hidden;margin:0 -14px;padding:0 14px}
 .jw-d i u.b{background:#8FB8FF}.jw-d i u.y{background:#FFC94A}.jw-d i u.p{background:#F28DB8}.jw-d i u.w{background:#cfcde0}.jw-d i u.rd{background:#FF6B6B}.jw-d.on i u{box-shadow:0 0 0 1.5px rgba(255,255,255,.85)}
 .jw-leg{display:flex;gap:10px;justify-content:center;font-size:10.5px;color:var(--muted);margin-top:8px}.jw-leg span{display:flex;align-items:center;gap:4px}.jw-leg i{width:7px;height:7px;border-radius:50%}.jw-leg i.b{background:#8FB8FF}.jw-leg i.y{background:#FFC94A}.jw-leg i.p{background:#F28DB8}.jw-leg i.w{background:#cfcde0}
 .wkn button{border:0;background:none;font:inherit;font-size:13px;letter-spacing:0;text-transform:none;font-weight:800;color:var(--mark);cursor:pointer;padding:6px 6px}
@@ -4990,9 +4991,6 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
   if(!hero&&!heroT&&!rest.length&&!open.length&&!doneT.length&&!extra.length) w.append(el("p",{class:"td-calm",text:isT?(ev.length||S.urgT?"Rien d'autre de prévu aujourd'hui.":"Journée calme : rien de prévu pour toi aujourd'hui."):"Rien de prévu ce jour-là."}));
 }
 /* ---------- Ta journée : date choisie en titre, « ‹ Semaine N › » à droite, les 7 jours avec des points ---------- */
-/* la semaine glisse dans le sens du doigt, puis la nouvelle arrive de l'autre côté */
-function weekSwipe(n,dx){ const g=document.querySelector("#dayBig .jw-g"); dayShift(n); if(Math.abs(n)!==7) return; const g2=document.querySelector("#dayBig .jw-g");
-  if(g2&&g2.animate&&!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)) g2.animate([{transform:"translateX("+(dx<0?40:-40)+"px)",opacity:0},{transform:"none",opacity:1}],{duration:220,easing:"cubic-bezier(.2,.8,.2,1)"}); }
 function dayShift(n){ const d=parse(S.accDay||iso(today())); d.setDate(d.getDate()+n); S.accDay=iso(d)===iso(today())?null:iso(d); renderToday(); }
 function isoWeek(d){ const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())), dn=(t.getUTCDay()+6)%7; t.setUTCDate(t.getUTCDate()-dn+3); const f=new Date(Date.UTC(t.getUTCFullYear(),0,4)); return 1+Math.round(((t-f)/864e5-3+((f.getUTCDay()+6)%7))/7); }
 function dayDots(k){ const me=meId(), td=iso(today()), o=[];
@@ -6810,13 +6808,25 @@ function hubMiniUpd(){ const M=$("hubMini"); if(!M) return; const ti=document.qu
   if(M.classList.contains("on")!==on){ M.classList.toggle("on",on); M.setAttribute("aria-hidden",String(!on)); M.querySelectorAll("button").forEach(b=>b.tabIndex=on?0:-1); } }
 addEventListener("scroll",()=>{ if(!S._hmRaf) S._hmRaf=requestAnimationFrame(()=>{ S._hmRaf=0; hubMiniUpd(); }); },{passive:true});
 $("wkLbl").addEventListener("click",()=>{ S.accDay=null; renderToday(); });
-/* « Ta journée » : glisser la carte à gauche / à droite = jour suivant / précédent */
-{ const C=$("dayCard"); let x0=null,y0=0; C.addEventListener("touchstart",e=>{ if(e.target.closest(".jx")) return; x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
-  C.addEventListener("touchend",e=>{ if(x0==null) return; const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null; if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5) weekSwipe(C._wk?(dx<0?7:-7):(dx<0?1:-1),dx); },{passive:true});
-  C.addEventListener("touchstart",e=>{ C._wk=!!e.target.closest(".jw-g"); },{passive:true,capture:true});
-  /* souris (ordinateur) : glisser la rangée des jours */
-  let mx=null; C.addEventListener("pointerdown",e=>{ if(e.pointerType==="touch"||!e.target.closest(".jw-g")) return; mx=e.clientX; });
-  addEventListener("pointerup",e=>{ if(mx==null) return; const dx=e.clientX-mx; mx=null; if(Math.abs(dx)>50){ C._wk=true; weekSwipe(dx<0?7:-7,dx); } }); }
+/* « Ta journée » : glisser la carte à gauche / à droite = jour suivant / précédent (pas sur la rangée des jours, qui a son propre glisser) */
+{ const C=$("dayCard"); let x0=null,y0=0; C.addEventListener("touchstart",e=>{ if(e.target.closest(".jx,.jw-g")) return; x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
+  C.addEventListener("touchend",e=>{ if(x0==null) return; const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null; if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5) dayShift(dx<0?1:-1); },{passive:true}); }
+/* la rangée des jours suit le doigt comme un défilement ; au lâcher : semaine suivante / précédente (ou retour en place si le geste est trop court) */
+{ const B=$("dayBig"); let st=null;
+  const red=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  B.addEventListener("pointerdown",e=>{ const g=e.target.closest(".jw-g"); if(!g||(e.pointerType==="mouse"&&e.button!==0)) return; st={x:e.clientX,y:e.clientY,t:performance.now(),g,id:e.pointerId,dx:0,on:false}; });
+  B.addEventListener("pointermove",e=>{ if(!st||e.pointerId!==st.id) return; const dx=e.clientX-st.x, dy=e.clientY-st.y;
+    if(!st.on){ if(Math.abs(dx)<8) return; if(Math.abs(dy)>Math.abs(dx)){ st=null; return; } st.on=true; try{ B.setPointerCapture(e.pointerId); }catch(_){} st.g.getAnimations().forEach(a=>a.cancel()); }
+    st.dx=dx; st.g.style.transform="translateX("+dx+"px)"; st.g.style.opacity=String(1-Math.min(.5,Math.abs(dx)/(st.g.offsetWidth*1.6))); });
+  const end=e=>{ if(!st||e.pointerId!==st.id) return; const s0=st; st=null; if(!s0.on) return;
+    B._noClick=true; setTimeout(()=>{ B._noClick=false; },60);
+    const g=s0.g, w=g.offsetWidth, v=s0.dx/Math.max(1,performance.now()-s0.t), go=Math.abs(s0.dx)>w*.22||Math.abs(v)>.45;
+    if(!go){ const a=g.animate([{transform:"translateX("+s0.dx+"px)",opacity:g.style.opacity},{transform:"none",opacity:1}],{duration:red?1:240,easing:"cubic-bezier(.2,1.2,.4,1)"}); g.style.transform=""; g.style.opacity=""; return; }
+    const dir=s0.dx<0?1:-1; haptic(8);
+    const out=g.animate([{transform:"translateX("+s0.dx+"px)",opacity:g.style.opacity},{transform:"translateX("+(-dir*w)+"px)",opacity:0}],{duration:red?1:160,easing:"ease-in",fill:"forwards"});
+    out.onfinish=()=>{ dayShift(dir*7); const g2=B.querySelector(".jw-g"); if(g2&&!red&&g2.animate) g2.animate([{transform:"translateX("+(dir*w*.6)+"px)",opacity:0},{transform:"none",opacity:1}],{duration:260,easing:"cubic-bezier(.2,.9,.25,1)"}); }; };
+  B.addEventListener("pointerup",end); B.addEventListener("pointercancel",e=>{ if(st&&st.on){ st.dx=0; } end(e); });
+  B.addEventListener("click",e=>{ if(B._noClick){ e.stopPropagation(); e.preventDefault(); } },true); }
 $("hubMiniAdd").addEventListener("click",()=>{ const add=document.querySelector('.view:not([hidden]) .hub-add'); if(add){ window.scrollTo({top:0,behavior:"smooth"}); add.click(); } });
 /* catégories de tâches créées par le foyer : on les retrouve dans les tâches elles-mêmes (nom + couleur) */
 function syncTaskCats(){ for(const t of allTasks()) if(t.cat&&!CAT[t.cat]&&t.catNom) CAT[t.cat]={id:t.cat,nom:t.catNom,c:t.catC||"#A9B4C2",perso:true}; }
