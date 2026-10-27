@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="27/10 21:38";</script>
+<script>window.COCOON_BUILD="27/10 21:41";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2885,16 +2885,17 @@ div.pf-r{cursor:default}
 /* Listes de courses en notes */
 .cl-sec{margin:14px 4px 8px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .cl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.cl-note{--c:#7FD39A;border:1px solid color-mix(in srgb,var(--c) 40%,transparent);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 24%,var(--surface)),var(--surface) 75%);border-radius:18px;padding:12px;min-height:158px;display:flex;flex-direction:column;gap:4px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;min-width:0}
+.cl-note{--c:#7FD39A;position:relative;background:var(--surface);border:1px solid var(--line);border-radius:6px 16px 16px 6px;padding:12px 12px 10px 28px;min-height:196px;display:flex;flex-direction:column;gap:2px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;min-width:0;overflow:hidden}
+.cl-note:before{content:"";position:absolute;left:0;top:0;bottom:0;width:16px;background:color-mix(in srgb,var(--c) 85%,#000)}
 .cl-note:active{transform:scale(.98)}
-.cl-h{display:flex;justify-content:space-between;align-items:center;gap:6px}.cl-e{font-size:22px;line-height:1}
-.cl-d{font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:99px;background:color-mix(in srgb,var(--c) 30%,transparent);white-space:nowrap}.cl-d.late{background:color-mix(in srgb,#FF6B6B 30%,transparent)}
-.cl-note>b{font-family:var(--f-display);font-size:16px;font-weight:800;line-height:1.2;margin-top:4px;overflow-wrap:anywhere}
-.cl-note>small{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--c);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cl-note ul{list-style:none;margin:2px 0 0;padding:0;font-size:12px;line-height:1.45;color:color-mix(in srgb,var(--ink) 80%,transparent)}
-.cl-note li{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cl-note li:before{content:"○ ";color:var(--muted)}.cl-note li.more{color:var(--muted)}.cl-note li.more:before{content:""}
-.cln-bar{display:block;flex:none;height:5px;border-radius:3px;background:color-mix(in srgb,var(--ink) 10%,transparent);margin-top:auto;overflow:hidden}.cln-bar i{display:block;height:100%;background:var(--c);border-radius:3px}
-.cl-m{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);margin-top:5px;min-height:18px}
+.cl-sp{position:absolute;left:9px;top:14px;bottom:0;display:flex;flex-direction:column;gap:28px;pointer-events:none}.cl-sp i{display:block;width:12px;height:6px;border-radius:4px;border:2px solid #bdbad0;background:var(--bg);flex:none}
+.cl-h{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}.cl-h b{font-family:var(--f-display);font-size:15.5px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}.cl-e{font-size:18px;line-height:1;flex:none}
+.cl-note>small{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--c);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}.cl-note>small.late{color:#FF8F8F}
+.cl-note ul{list-style:none;margin:6px -12px 0 0;padding:0 12px 0 0;flex:1;font-size:13px;font-weight:600;line-height:22px;background:repeating-linear-gradient(to bottom,transparent 0 21px,var(--line) 21px 22px)}
+.cl-note li{display:flex;align-items:center;gap:7px;overflow:hidden;white-space:nowrap}.cl-note li:before{content:"";width:12px;height:12px;border-radius:50%;border:1.5px solid var(--muted);flex:none;box-sizing:border-box}
+.cl-note li.f{color:var(--muted);text-decoration:line-through}.cl-note li.f:before{background:#3CC37A;border-color:#3CC37A}
+.cl-note li.more{color:var(--muted)}.cl-note li.more:before{border-color:transparent}
+.cl-m{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;color:var(--muted);margin-top:6px;min-height:18px}
 .cl-new{--c:#9C9AB5;border-style:dashed;background:none;align-items:flex-start;justify-content:center}.cl-plus{width:34px;height:34px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-size:22px;font-weight:700}
 .cl-done{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:8px}
 .cl-done .cl-e{width:28px;height:28px;border-radius:50%;background:color-mix(in srgb,var(--c) 30%,transparent);display:grid;place-items:center;font-size:14px;font-weight:800}
@@ -9809,14 +9810,17 @@ function clActives(){ const L=clAll().filter(l=>!l.fini&&l.id!==CL_DEF); const P
   if(!P.fini&&(!P.virt||cItemsOf(CL_DEF).length||!out.length)) out.unshift(P); return out; }
 function clWhen(d){ if(!d) return "Sans date"; const n=daysTo(d); if(n<0) return "Passée · "+new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"short"}).format(parse(d)); if(n===0) return "Aujourd'hui"; if(n===1) return "Demain";
   if(n<7) return new Intl.DateTimeFormat("fr-FR",{weekday:"long"}).format(parse(d)).replace(/^./,x=>x.toUpperCase()); return new Intl.DateTimeFormat("fr-FR",{weekday:"short",day:"numeric",month:"short"}).format(parse(d)).replace(/^./,x=>x.toUpperCase()); }
-function clNote(l){ const its=cItemsOf(l.id), todo=its.filter(i=>!i.fait), n=its.length, ok=n-todo.length, col=clCol(l);
-  const ul=el("ul",{"aria-hidden":"true"}); for(const i of todo.slice(0,4)) ul.append(el("li",{text:i.nom})); if(todo.length>4) ul.append(el("li",{class:"more",text:"+ "+(todo.length-4)+" autre"+(todo.length-4>1?"s":"")}));
-  if(!n) ul.append(el("li",{class:"more",text:"Liste vide : touche pour ajouter"}));
-  return el("button",{type:"button",class:"cl-note",style:"--c:"+col,"aria-label":(l.titre||"Liste")+", "+n+" article"+(n>1?"s":""),onclick:()=>openCList(l.id)},
-    el("span",{class:"cl-h"},el("span",{class:"cl-e","aria-hidden":"true",text:l.emoji||"🛒"}),el("span",{class:"cl-d"+(l.date&&daysTo(l.date)<0?" late":""),text:clWhen(l.date)})),
-    el("b",{text:l.titre||"Liste de courses"}),el("small",{text:[l.lieu,l.prive?"🔒 moi seul":"",l.recur?"🔁 chaque semaine":""].filter(Boolean).join(" · ")||"Pour le foyer"}),ul,
-    el("span",{class:"cln-bar"},el("i",{style:"width:"+(n?Math.round(ok/n*100):0)+"%"})),
-    el("span",{class:"cl-m"},el("span",{text:n?ok+" / "+n:"0 article"}),l.qui&&membre(l.qui).nom?avatar(l.qui,18):"")); }
+/* note = page de carnet à spirale (choix C d'Angel) : tranche de couleur + spirale à gauche, lignes, ronds à cocher */
+function clNote(l){ const its=cItemsOf(l.id).slice().sort((a,b)=>(a.ajouteLe||0)-(b.ajouteLe||0)), todo=its.filter(i=>!i.fait), n=its.length, ok=n-todo.length, col=clCol(l);
+  const show=todo.concat(its.filter(i=>i.fait)).slice(0,4), ul=el("ul",{"aria-hidden":"true"});
+  for(const i of show) ul.append(el("li",{class:i.fait?"f":"",text:i.nom})); if(n>4) ul.append(el("li",{class:"more",text:"+ "+(n-4)+" autre"+(n-4>1?"s":"")}));
+  if(!n) ul.append(el("li",{class:"more",text:"Liste vide"}));
+  const sp=el("span",{class:"cl-sp","aria-hidden":"true"}); for(let k=0;k<8;k++) sp.append(el("i"));
+  const sub=[clWhen(l.date),l.lieu,l.prive?"🔒 moi seul":"",l.recur?"🔁 chaque semaine":""].filter(Boolean).join(" · ");
+  return el("button",{type:"button",class:"cl-note",style:"--c:"+col,"aria-label":(l.titre||"Liste")+", "+sub+", "+n+" article"+(n>1?"s":""),onclick:()=>openCList(l.id)},sp,
+    el("span",{class:"cl-h"},el("b",{text:l.titre||"Liste de courses"}),el("span",{class:"cl-e","aria-hidden":"true",text:l.emoji||"🛒"})),
+    el("small",{class:l.date&&daysTo(l.date)<0?"late":"",text:sub}),ul,
+    el("span",{class:"cl-m"},el("span",{text:n?ok+" / "+n:""}),l.qui&&membre(l.qui).nom?avatar(l.qui,18):"")); }
 function renderCHome(){ const H=$("cHome"); if(!H) return; H.innerHTML=""; if(!meId()) return;
   const act=clActives(), done=clAll().filter(l=>l.fini).sort((a,b)=>(b.finiLe||0)-(a.finiLe||0)).slice(0,6);
   H.append(el("p",{class:"cl-sec",text:"Mes listes"}));
