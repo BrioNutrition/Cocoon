@@ -213,6 +213,9 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   (`cd`, rouge si `hot`), petite ligne (`cap`), titre (`big`), détail (`small`), étiquette en bas (`chip`), barre (`bar`, événement), anneau (`ring`, semaine), bac en couleur (`bin`) ;
   rendu `.wg.wgc` (fond teinté de `--wc`) dans `renderWidgets` (ancien rendu `wgData`/`budgetSpark` supprimé). Planche des 3 styles : A liste détaillée, B visuel, C carte à la une.
   Texte coupé d'un raccourci (étiquette, détail, petite ligne, compte à rebours) : défile pour tout lire puis revient d'un coup au début, en boucle (`wgMarquee`, `.mq`, `wgMq`, demandé par Angel) ; Repas : « Déjeuner » (midi), « Repas » (soir), « Petit-déj » (matin).
+- **Même style que l'accueil ailleurs** (27 oct., Angel : points 1 et 4 faits ; 2 Repas semaine, 3 cartes du haut Repas/Budget façon `.jn`, 5 Cocoony en une ligne dans les pages = maquettes montrées, en attente) :
+  Agenda = grille du mois de l'accueil (`renderAgenda` : `.jm.open.ag-jm`, cases `.jw-d`, jour choisi ou aujourd'hui en dégradé, aujourd'hui cerclé sinon, points b/y/p au lieu de la barre d'événement et du 🎂, ‹ › `jmNav`, légende) ;
+  Tâches (`taskRow`, CSS `.item[data-key]`) et Courses (`.c-item`) = lignes de « À cocher » : rond à gauche, plus de barre de couleur ni de rotation, contour fin, avatar de la personne à droite (`.t-av`, l'étiquette « Tout le foyer » retirée des infos).
 - Menu « Tes foyers » (`openFoyerMenu`) : **menu de l'app aussi sur iPhone** (pas de `nativeizeMenu`, demandé par Angel).
 - App iPhone à jour toute seule : `cd app && npm run auto:ios` (`app/auto.mjs`) sur le Mac d'Angel → récupère `main` toutes les 30 s et
   recharge l'app (via `live.mjs`). Il suffit donc de pousser sur `main`.
