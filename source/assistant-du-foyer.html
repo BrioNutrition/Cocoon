@@ -2776,7 +2776,7 @@ div.pf-r{cursor:default}
 .jw-d i u.b{background:#8FB8FF}.jw-d i u.y{background:#FFC94A}.jw-d i u.p{background:#F28DB8}.jw-d i u.w{background:#cfcde0}.jw-d i u.rd{background:#FF6B6B}
 .jw-leg{display:flex;gap:10px;justify-content:center;font-size:10.5px;color:var(--muted);margin-top:8px}.jw-leg span{display:flex;align-items:center;gap:4px}.jw-leg i{width:7px;height:7px;border-radius:50%}.jw-leg i.b{background:#8FB8FF}.jw-leg i.y{background:#FFC94A}.jw-leg i.p{background:#F28DB8}.jw-leg i.w{background:#cfcde0}
 .wkn button{border:0;background:none;font:inherit;font-size:13px;letter-spacing:0;text-transform:none;font-weight:800;color:var(--mark);cursor:pointer;padding:6px 6px}
-.wkn #wkLbl{font-size:13px;letter-spacing:0;text-transform:none;font-weight:800;color:var(--muted);padding:6px}
+
 .jm-hw{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s cubic-bezier(.3,1,.4,1)}.jm.open .jm-hw{grid-template-rows:1fr}.jm-hw>.jm-h{overflow:hidden;min-height:0}
 .jm-h{display:flex;justify-content:space-between;align-items:center;padding:0 2px}.jm-h b{font:800 16px var(--f-display);padding:2px 0 10px}.jm-h span{display:flex;gap:4px;padding-bottom:8px}
 .jm-nav{border:0;background:var(--sunk);color:var(--ink);width:32px;height:32px;border-radius:50%;cursor:pointer;display:grid;place-items:center;padding:0}
@@ -3681,7 +3681,7 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
   <section class="view" data-view="accueil">
     <div id="rdvAlert"></div>
     <div id="evAlert"></div>
-    <div class="acc-sec" id="daySec" hidden><span id="dayTtl"></span><span class="wkn"><button type="button" id="wkToday" hidden>Revenir à aujourd'hui</button><span id="wkLbl"></span></span></div>
+    <div class="acc-sec" id="daySec" hidden><span id="dayTtl"></span><span class="wkn"><button type="button" id="wkToday" hidden>Revenir à aujourd'hui</button></span></div>
     <div class="jr-card" id="dayCard" hidden><div class="td-h" id="dayHead"></div><div class="week" id="week"></div><div class="jw" id="dayBig"></div><div class="td-body" id="todayCard"></div></div>
     <div id="cocNote" hidden></div>
     <div id="recapCard" class="recap" hidden></div>
@@ -5027,8 +5027,7 @@ function dayWeek(t0){ const B=$("dayBig"); if(!B) return; const d=parse(t0), td=
     el("div",{class:"jw-leg","aria-hidden":"true"},...[["b","rendez-vous"],["y","événement"],["p","anniv."],["w","tâches"]].map(([c,t])=>el("span",{},el("i",{class:c}),t))));
   J._set=o=>{ J.classList.toggle("open",o); vp.style.height=(o?rows*(JM_ROW+JM_GAP)-JM_GAP:JM_ROW)+"px"; g.style.transform="translateY("+(o?0:-row*(JM_ROW+JM_GAP))+"px)"; grab.setAttribute("aria-label",o?"Replier le mois":"Voir tout le mois"); };
   J.classList.add("nt"); J._set(open); B.replaceChildren(J); void J.offsetHeight; J.classList.remove("nt");
-  const wk=isoWeek(new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7)));
-  const away=!(t0===td&&(!open||mo.getTime()===tm.getTime())); $("wkLbl").textContent="Semaine "+wk; $("wkLbl").hidden=away; $("wkToday").hidden=!away; }
+  const away=!(t0===td&&(!open||mo.getTime()===tm.getTime())); $("wkToday").hidden=!away; }
 function jmOpen(o){ const t0=S.accDay||iso(today()), B=$("dayBig");
   if(!o&&S.accMo){ S.accMo=null; dayWeek(t0); }
   S.accOpen=o; const J=B&&B.querySelector(".jm"); if(J&&J._set){ J._set(o); haptic(6); } else dayWeek(t0); }
