@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 11:27";</script>
+<script>window.COCOON_BUILD="28/10 11:40";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3025,6 +3025,10 @@ html.cl-open .selbar{z-index:80}
 .tk-list .item{border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;background:none!important;box-shadow:none!important;padding-left:2px;padding-right:2px}
 .tk-list .item:last-child{border-bottom:0!important}
 .tk-list .item[data-key]{grid-template-columns:auto minmax(0,1fr) auto auto auto}.tk-list .item[data-key] .tk-del{order:4}
+.np-seg{display:flex;gap:4px;margin:2px 14px 8px;padding:3px;border-radius:12px;background:var(--sunk)}
+.np-seg button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-size:13px;font-weight:800;padding:7px;border-radius:9px;cursor:pointer}
+.np-seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.np-feed{padding:2px 14px 12px}
 .tk-del{flex:none;width:32px;height:36px;border:0;background:none;color:var(--muted);font-size:20px;cursor:pointer;align-self:center}
 .tk-none{color:var(--muted);font-size:13.5px;margin:6px 2px 10px}
 html.boot-lock,html.boot-lock body{overflow:hidden!important;overscroll-behavior:none;touch-action:none}
@@ -4018,10 +4022,6 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
     <div class="tk-cats" id="tiles" role="group" aria-label="Filtrer par catégorie"></div>
     <div class="list fridge" id="openList"></div>
     <details class="done-list" id="doneWrap"><summary id="doneSummary">Tâches réalisées</summary><div class="list" id="doneList"></div></details>
-    <div class="sub">
-      <div class="sec-title"><h2>Activité du foyer</h2></div>
-      <div class="feed" id="feed" style="margin-top:14px"></div>
-    </div>
   </section>
 
   <!-- COURSES -->
@@ -5236,13 +5236,14 @@ function renderDocs(){
     G0.append(el("button",{type:"button",class:"gar-tile",onclick:()=>{ S.docCat="__gar"; renderDocs(); topNow(); }},el("span",{"aria-hidden":"true",text:"🛡"}),el("span",{},el("b",{text:"Garanties"}),el("small",{text:on.length+" en cours"+(soon?" · "+soon+" bientôt finie"+(soon>1?"s":""):"")})),el("u",{"aria-hidden":"true",text:"›"}))); }
   G0.append(grid);
 }
-function renderFeed(){
+function renderFeed(box){
+  const f=box||document.querySelector("#npanel .np-feed"); if(!f) return;
   const ev=[];
   for(const t of S.foyer){ if(t.creeLe) ev.push({at:t.creeLe,who:t.creePar,txt:"a ajouté",q:t.titre,pour:t.pour}); if(t.fait&&t.faitLe) ev.push({at:t.faitLe,who:t.faitPar,txt:"a validé",q:t.titre,next:t.nextMsg}); }
   for(const d of S.docs) if(d.ajouteLe) ev.push({at:d.ajouteLe,who:d.ajoutePar,txt:"a rangé le document",q:d.titre});
   for(const t of S.perso) if(t.fait&&t.faitLe) ev.push({at:t.faitLe,who:meId(),txt:"a validé",q:t.titre,next:t.nextMsg,prive:true});
   ev.sort((a,b)=>b.at-a.at);
-  const f=$("feed"); f.innerHTML="";
+  f.innerHTML="";
   if(!ev.length){ f.append(el("div",{class:"ev muted"},S.loaded.t?"Le fil se remplit dès que quelqu'un ajoute ou coche une tâche du foyer.":"Chargement…")); return; }
   const me=meId();
   for(const e of ev.slice(0,15)){
@@ -7787,6 +7788,10 @@ function renderNotifs(){
   const p=$("npanel"); p.innerHTML=""; const items=npItems(), fresh=S.npNew||new Set(), me=meId();
   const head=el("div",{class:"np-head"},el("b",{text:"Notifications"}),items.length?el("span",{class:"np-n",text:String(items.length)}):"",el("button",{type:"button",class:"np-x","aria-label":"Fermer",text:"×",onclick:closeNotifs}));
   p.append(head);
+  /* deux onglets : ce qui est à faire, et l'activité du foyer (qui a fait quoi, déplacée ici depuis la page Tâches) */
+  { const tb=(id,l)=>el("button",{type:"button","aria-pressed":String((S.npTab||"todo")===id),onclick:()=>{ S.npTab=id; renderNotifs(); }},l);
+    p.append(el("div",{class:"np-seg",role:"group","aria-label":"Afficher"},tb("todo","À faire"),tb("act","Activité"))); }
+  if(S.npTab==="act"){ const fb=el("div",{class:"np-body np-feed feed"}); p.append(fb); renderFeed(fb); p.classList.remove("selecting"); return; }
   const body=el("div",{class:"np-body"});
   const groups=[["En direct",r=>r.live],["Mercis",r=>r.merci],["En retard",r=>!r.merci&&!r.live&&daysTo(r.date)<0],["Aujourd'hui",r=>!r.merci&&!r.live&&daysTo(r.date)===0],["Demain",r=>!r.merci&&!r.live&&daysTo(r.date)===1],["Cette semaine",r=>{ const n=daysTo(r.date); return !r.merci&&!r.live&&n>1&&n<=7; }]];
   for(const [name,f] of groups){ const its=items.filter(f); if(!its.length) continue;
