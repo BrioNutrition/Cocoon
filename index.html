@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 10:53";</script>
+<script>window.COCOON_BUILD="28/10 11:00";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -1126,7 +1126,7 @@ button.acc-card{cursor:pointer}
 .newcat input{width:100%}
 .nc-sw{display:flex;flex-wrap:wrap;gap:8px}
 .nc-c{width:30px;height:30px;border-radius:10px;border:0;background:var(--c);box-shadow:inset 0 0 0 1.5px #0001;padding:0;transition:transform .15s}
-.nc-c[aria-checked="true"]{box-shadow:0 0 0 2.5px var(--surface),0 0 0 4.5px var(--ink);transform:scale(1.05)}
+.nc-c[aria-checked="true"]{outline:2px solid var(--ink);outline-offset:2px;transform:scale(1.05)}
 .bd-ic.perso{font-family:var(--f-display);font-weight:800;font-size:20px;color:color-mix(in srgb,var(--bc) 45%,#1d1b26)}
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]) .bd-ic.perso{color:color-mix(in srgb,var(--bc) 55%,#fff)}
@@ -1309,7 +1309,7 @@ html,body{overflow-anchor:none}
 .coc-pick{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 14px}
 .coc-opt{width:46px;height:46px;border-radius:50%;border:0;background:var(--coc-y,color-mix(in srgb,#FFC94A var(--tile-pct),var(--surface)));display:grid;place-items:center;font-size:22px;cursor:pointer;padding:0;position:relative;overflow:hidden;color:var(--ink)}
 .coc-opt img{width:34px;height:34px;border-radius:10px}
-.coc-opt.on{box-shadow:0 0 0 2.5px var(--surface),0 0 0 4.5px var(--ink)}
+.coc-opt.on{outline:2px solid var(--ink);outline-offset:2px}
 .coc-opt.photo{width:auto;border-radius:999px;padding:0 14px;display:flex;gap:6px;font-size:13.5px;font-weight:700}
 .coc-file{position:absolute;inset:0;opacity:0;cursor:pointer}
 .coc-pick{--coc-y:color-mix(in srgb,#FFC94A var(--tile-pct),var(--surface))}
@@ -2646,7 +2646,7 @@ html.sheet-open .add-fab{display:none}
 .tk-cat .ic{width:50px;height:50px;border-radius:17px;display:grid;place-items:center;color:var(--ink);background:color-mix(in srgb,var(--stripe) 42%,var(--surface));--gbg:color-mix(in srgb,var(--stripe) 42%,var(--surface));transition:transform .15s ease,box-shadow .15s ease}
 .tk-cat .ic svg{width:23px;height:23px}
 .tk-cat .tn{font-size:11.5px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
-.tk-cat[aria-pressed="true"] .ic{box-shadow:0 0 0 2.5px var(--bg),0 0 0 4.5px #FFC94A}
+.tk-cat[aria-pressed="true"] .ic{outline:2px solid #FFC94A;outline-offset:2px}
 .tk-cat[aria-pressed="true"] .tn{color:var(--ink);font-weight:800}
 .tk-cat:active .ic{transform:scale(.92)}
 .tk-cat em{position:absolute;top:-4px;right:0;font-style:normal;font-size:10.5px;font-weight:800;min-width:19px;text-align:center;padding:1px 5px;border-radius:999px;background:#FFC94A;color:#1C1B2E;box-shadow:0 0 0 2px var(--bg)}
@@ -2914,8 +2914,8 @@ div.pf-r{cursor:default}
 html.vt-close::view-transition-group(*){animation-duration:.4s;animation-timing-function:cubic-bezier(.3,.7,.25,1)}
 html.vt-close::view-transition-group(cl-x){z-index:5;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);border-radius:20px}
 html.vt-close::view-transition-old(cl-x){opacity:1;animation:vtCloseOut .4s ease-out both}
-html.vt-close::view-transition-new(cl-x){animation:vtCloseIn .4s ease-in-out both}
-@keyframes vtCloseOut{0%{opacity:1}40%,to{opacity:0}}@keyframes vtCloseIn{0%,35%{opacity:0}to{opacity:1}}
+html.vt-close::view-transition-new(cl-x){object-fit:fill;animation:vtCloseIn .4s ease-in-out both}
+@keyframes vtCloseOut{0%{opacity:1}40%,to{opacity:0}}@keyframes vtCloseIn{0%,55%{opacity:0}to{opacity:1}}
 .cl-open{grid-column:1/-1;min-width:0;border:1px solid var(--line);border-radius:20px;background:var(--surface);overflow:hidden}
 .cl-open>.cl-card{border:0;border-radius:0;background:none;min-height:0}
 .cl-open>.cl-panel{border:0;border-radius:0;margin:0;background:none;animation:none}
@@ -2949,7 +2949,7 @@ html.vt-close::view-transition-new(cl-x){animation:vtCloseIn .4s ease-in-out bot
 .cl-done .cl-ring{width:36px;height:36px}.cl-done .cl-ring b{width:28px;height:28px}
 .cl-dt{flex:1;min-width:0;display:flex;flex-direction:column}.cl-dt b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cl-dt small{font-size:12px;color:var(--muted)}
 .cl-redo{border:0;background:var(--sunk);color:var(--ink);font:inherit;font-size:12.5px;font-weight:800;padding:7px 11px;border-radius:99px;cursor:pointer}.cl-x{border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px}
-.cl-cols{display:flex;gap:9px;flex-wrap:wrap;margin:2px 0 4px}.cl-cols button{width:32px;height:32px;border-radius:50%;border:0;background:var(--c);cursor:pointer;padding:0}.cl-cols button[aria-checked="true"]{box-shadow:0 0 0 2.5px var(--surface),0 0 0 4.5px var(--c)}
+.cl-cols{display:flex;gap:9px;flex-wrap:wrap;margin:2px 0 4px}.cl-cols button{width:32px;height:32px;border-radius:50%;border:0;background:var(--c);cursor:pointer;padding:0}.cl-cols button[aria-checked="true"]{outline:2px solid var(--c);outline-offset:2px}
 .cl-back{border:0;background:none;color:var(--mark);font:inherit;font-size:14px;font-weight:800;padding:2px 0 10px;cursor:pointer}
 .cl-empty{grid-column:1/-1}
 .cl-emos{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 6px}.cl-emos button{width:40px;height:40px;border-radius:12px;border:0;background:var(--sunk);font-size:20px;cursor:pointer}.cl-emos button[aria-checked="true"]{box-shadow:inset 0 0 0 2px #FFC94A;background:color-mix(in srgb,var(--c) 25%,var(--sunk))}
@@ -2987,6 +2987,8 @@ html.cl-open .selbar{z-index:80}
 .cl-panel .c-add input[type=text]{width:100%;padding:13px 14px 13px 46px;border-radius:14px;background:var(--bg);border:1px solid var(--line);font-size:16px}
 .cl-panel .c-add .btn{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:24px;height:24px;min-height:0;padding:0;border-radius:50%;background:#FFC94A;color:#1C1B2E;font-size:18px;font-weight:900;line-height:1;display:grid;place-items:center;box-shadow:none}
 .cl-panel .c-add .btn::before{content:"";position:absolute;inset:-10px}
+.c-add .btn svg{width:60%;height:60%;display:block;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round}
+.cl-panel .c-add .btn svg{width:16px;height:16px}
 .cl-panel .c-hab{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -14px 4px;padding:0 14px 2px}
 .cl-panel .c-hab::-webkit-scrollbar{display:none}
 .cl-panel .c-hb{flex:none;white-space:nowrap;box-shadow:none;background:color-mix(in srgb,#FFC94A 18%,transparent);color:var(--ink);padding:6px 11px;font-size:13px}
@@ -3793,7 +3795,7 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
 .tk-nok{padding:0 16px;border-radius:12px;font-weight:800}
 .tk-sw{display:flex;gap:7px;flex-wrap:wrap}
 .tk-dot{width:28px;height:28px;border-radius:50%;border:0;background:var(--c);cursor:pointer;padding:0}
-.tk-dot.on{box-shadow:0 0 0 2.5px var(--surface),0 0 0 4.5px var(--ink)}
+.tk-dot.on{outline:2px solid var(--ink);outline-offset:2px}
 .tk-tr{margin-top:9px;background:var(--sunk);border-radius:14px;padding:10px}
 .tk-tr .tk-ch{background:var(--surface)}
 .tk-tr .tk-ch.on{background:var(--mark)}
@@ -4012,7 +4014,7 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
     <div id="cStash" hidden>
     <form class="c-add" id="cForm" autocomplete="off">
       <input type="text" id="cNom" maxlength="120" placeholder="Ajouter un article…" aria-label="Article à ajouter" enterkeyhint="done">
-      <button class="btn" type="submit" aria-label="Ajouter">+</button>
+      <button class="btn" type="submit" aria-label="Ajouter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg></button>
     </form>
     <div id="cRepas" hidden></div>
     <div class="c-hab" id="cHab" role="group" aria-label="À racheter"></div>
