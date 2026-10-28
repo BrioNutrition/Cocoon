@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="28/10 18:06";</script>
+<script>window.COCOON_BUILD="28/10 18:11";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -10945,15 +10945,7 @@ function renderRepas(){
     if(m){ const ck=nm(m.cuisine), vs=nm(m.vaisselle); const w=[ck?"👩‍🍳 "+ck:"",vs?"🧽 "+vs:""].filter(Boolean).join(" · "); if(w) tx.append(el("small",{class:"r-bw",text:w})); }
     c.append(tx); list.append(c); }
   box.append(list);
-  /* 4. idées rapides : un plat touché remplit le premier créneau libre du jour */
-  const free=slots.find(([sl])=>!repasOf(sel,sl)&&!slPast(sl));
-  if(free){ const ids=platsConnus(free[0]).slice(0,8);
-    if(ids.length){ box.append(el("div",{class:"r-dayh",text:"Idées pour "+free[1].toLowerCase()}));
-      const row=el("div",{class:"r-ideas r-qi"}); for(const p of ids) row.append(el("button",{type:"button",onclick:()=>openRepas(sel,free[0],p.nom)},platEmoji(p.nom,free[0])+" "+p.nom)); box.append(row); } }
-  /* 5. les repas affichés */
-  const opt=el("div",{class:"r-opt",role:"group","aria-label":"Repas affichés"});
-  for(const [v,l] of RSLOTS){ const on=shown.includes(v); opt.append(el("button",{type:"button",class:"r-chip r-c-"+v,"aria-pressed":String(on),onclick:()=>{ let a=on?shown.filter(x=>x!==v):shown.concat(v); if(!a.length){ toast("Garde au moins un repas affiché."); return; } a=RSLOTS.map(r=>r[0]).filter(x=>a.includes(x)); S.rSlots=a.join(","); try{ localStorage.setItem("cocoon.repasSlots",S.rSlots); }catch(_){} renderRepas(); }},l)); }
-  box.append(el("div",{class:"r-dayh",text:"Repas affichés"}),opt);
+  /* (28 oct., Angel : « Idées pour … » et « Repas affichés » retirés de la page ; S.rSlots / cocoon.repasSlots restent tels quels) */
   /* heures habituelles du foyer : modifiables par les admins, chaque repas peut avoir la sienne dans sa fiche */
   const hrs=el("div",{class:"r-hrs"});
   for(const [v,l] of RSLOTS){ if(!shown.includes(v)) continue; const inp=el("input",{type:"time",step:"300",id:"rH-"+v,"aria-label":"Heure habituelle : "+l.toLowerCase(),disabled:isAdmin()?null:true}); inp.value=repasH(v);
