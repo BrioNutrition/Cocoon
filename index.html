@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 15:42";</script>
+<script>window.COCOON_BUILD="28/10 15:47";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2385,10 +2385,12 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .dg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 10px;margin-top:4px}
 .dg-t{display:flex;flex-direction:column;align-items:center;border:0;background:none;color:var(--ink);font:inherit;padding:0;cursor:pointer;text-align:center;min-width:0;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .dg-t:active .dg-pv{transform:scale(.95)}
-.dg-pv{position:relative;width:100%;aspect-ratio:1;display:grid;place-items:end center;margin-bottom:8px;transition:transform .15s ease}
-.dg-pv img{display:block;max-width:88%;max-height:100%;border-radius:3px;background:#fff;box-shadow:0 0 0 1px color-mix(in srgb,var(--ink) 14%,transparent),0 4px 14px rgba(0,0,0,.28)}
-.dg-ph{width:76%;height:96%;border-radius:5px;display:grid;place-items:center;font-size:34px;line-height:1;background:linear-gradient(160deg,color-mix(in srgb,var(--bc) 26%,var(--surface)),color-mix(in srgb,var(--bc) 12%,var(--surface)));box-shadow:0 0 0 1px var(--line),0 4px 14px rgba(0,0,0,.22)}
-.dg-b{position:absolute;top:-4px;right:-2px;font-style:normal;font-size:10.5px;font-weight:800;padding:3px 7px;border-radius:99px;background:#FF6B6B;color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.dg-pv{position:relative;width:100%;display:grid;place-items:center;margin-bottom:8px;transition:transform .15s ease}
+/* tous les aperçus ont exactement la même taille (cadre 3:4), comme dans Fichiers */
+.dg-pv img,.dg-ph{width:78%;aspect-ratio:3/4;height:auto}
+.dg-pv img{display:block;object-fit:cover;object-position:top center;border-radius:4px;background:#fff;box-shadow:0 0 0 1px color-mix(in srgb,var(--ink) 14%,transparent),0 4px 14px rgba(0,0,0,.28)}
+.dg-ph{border-radius:5px;display:grid;place-items:center;font-size:34px;line-height:1;background:linear-gradient(160deg,color-mix(in srgb,var(--bc) 26%,var(--surface)),color-mix(in srgb,var(--bc) 12%,var(--surface)));box-shadow:0 0 0 1px var(--line),0 4px 14px rgba(0,0,0,.22)}
+.dg-b{position:absolute;top:-6px;right:calc(11% - 10px);font-style:normal;font-size:10.5px;font-weight:800;padding:3px 7px;border-radius:99px;background:#FF6B6B;color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3)}
 .dg-b.soon{background:#FFC94A;color:#1C1B2E}
 .dg-n{font-size:13px;font-weight:700;line-height:1.25;max-width:100%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
 .dg-d{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:3px;line-height:1.25}
@@ -5636,7 +5638,6 @@ function renderDocs(){
     tile("✅","#A8D672","Garanties",on.length+" en cours",soon?soon+" bientôt":null,"o",()=>{ S.docCat="__gar"; renderDocs(); topNow(); }); }
   if(order.length>1) tile("🗂️","#B9A8F0","Tout voir",pool.length+" papiers",null,null,()=>{ S.docCat="__all"; renderDocs(); topNow(); });
   G0.append(grid);
-  { const rec=pool.slice().sort((a,b)=>(b.ajouteLe||0)-(a.ajouteLe||0)).slice(0,6); if(rec.length){ G0.append(el("div",{class:"dg-sec",text:"Récents"}),docGrid(rec,showWho)); } }
 }
 function renderFeed(box){
   const f=box||document.querySelector("#npanel .np-feed"); if(!f) return; f.innerHTML="";
