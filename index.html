@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 13:12";</script>
+<script>window.COCOON_BUILD="28/10 13:23";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3060,6 +3060,8 @@ html.cl-open .selbar{z-index:80}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .tk-sl{color:#FFC94A} }
 .tk-rts{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:1px 1px 3px}.tk-rts::-webkit-scrollbar{display:none}
 .tk-rts.fit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible}.tk-rts.fit .tk-rt{width:auto}
+/* une ou deux routines : cartes en largeur, anneau à gauche */
+.tk-rts.few{grid-template-columns:repeat(var(--n),minmax(0,1fr))}.tk-rts.few .tk-rt{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:11px;row-gap:2px;align-items:center;align-content:center}.tk-rts.few .tk-ring{grid-row:span 2}.tk-rts.few .tk-rn{margin-top:0;align-self:end}.tk-rts.few .tk-rt small{align-self:start}
 .tk-rt{flex:0 0 auto;width:118px;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
 .tk-rt.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 10%,var(--surface))}
 .tk-ring{width:38px;height:38px;border-radius:50%;background:conic-gradient(var(--c) var(--p),color-mix(in srgb,var(--ink) 10%,transparent) 0);display:grid;place-items:center;flex:none}
@@ -4715,10 +4717,10 @@ function renderFoyer(){
   const me=meId();
   { const tl=$("tiles"); if(tl){ tl.innerHTML=""; tl.hidden=true; } } tkStash();
   const wf=$("whoFilter"); wf.innerHTML="";
-  { const op=S.foyer.filter(t=>!t.fait&&(!S.catF||t.cat===S.catF)), hs=humains(); const L=[{id:null,nom:"Tous",l:"Toutes les tâches"},{id:"tous",nom:"Foyer",l:"Pour tout le foyer"},...hs.filter(m=>m.id===me).concat(hs.filter(m=>m.id!==me)).map(m=>({id:m.id,nom:m.id===me?"Moi":m.nom,l:"Pour "+(m.id===me?"moi":m.nom)}))];
-    const opP=S.perso.filter(t=>!t.fait&&(!S.catF||t.cat===S.catF));
+  { const op=S.foyer.filter(t=>tkShown(t)&&(!S.catF||tkCatOf(t)===S.catF)), hs=humains(); const L=[{id:null,nom:"Tous",l:"Toutes les tâches"},{id:"tous",nom:"Foyer",l:"Pour tout le foyer"},...hs.filter(m=>m.id===me).concat(hs.filter(m=>m.id!==me)).map(m=>({id:m.id,nom:m.id===me?"Moi":m.nom,l:"Pour "+(m.id===me?"moi":m.nom)}))];
+    const opP=S.perso.filter(t=>tkShown(t)&&(!S.catF||tkCatOf(t)===S.catF));
     for(const w of L){ const n=op.filter(t=>!w.id||t.pour===w.id).length+(w.id===me?opP.length:0); wf.append(el("button",{type:"button","aria-pressed":String(S.whoF===w.id),"aria-label":w.l+" : "+n,onclick:()=>{S.whoF=w.id;renderFoyer();}},w.nom,n?el("i",{text:String(n)}):null)); } }
-  const match=t=>(!S.catF||t.cat===S.catF)&&(!S.whoF||t.pour===S.whoF||(t.prive&&S.whoF===me));
+  const match=t=>(!S.catF||tkCatOf(t)===S.catF)&&(!S.whoF||t.pour===S.whoF||(t.prive&&S.whoF===me));
   /* filtre « Moi » : mes tâches perso (privées) aussi */
   const pool=S.whoF&&S.whoF===me?S.foyer.concat(S.perso):S.foyer;
   const open=pool.filter(t=>!t.fait&&match(t)).sort(sortOpen);
@@ -4751,7 +4753,7 @@ function actRule(n,op,d,old){ d=d||{}; const o=old||{};
   return null; }
 function actLog(n,op,d,id){ try{ if(!ACT_ARR[n]||!S.dbRaw||!meId()) return; const arr=S[ACT_ARR[n]]||[], old=id?(arr.find(x=>x.id===id)||(S.pendingDel&&S.pendingDel.get&&(S.pendingDel.get(n+":"+id)||{}).item)||null):null;
     const txt=actRule(n,op,d,old); if(!txt) return; const q=actName(n,Object.assign({},old||{},op==="del"?{}:(d||{}))); if(!q) return;
-    S.dbRaw.collection("activite").add({par:meId(),at:Date.now(),txt,q:String(q).slice(0,120),ic:ACT_ICO[n]||"•"}).catch(()=>{}); }catch(_){} }
+    const e={par:meId(),at:Date.now(),txt,q:String(q).slice(0,120),ic:ACT_ICO[n]||"•"}; if(n==="taches"&&id) e.ref=id; S.dbRaw.collection("activite").add(e).catch(()=>{}); }catch(_){} }
 /* enveloppe simple (pas de Proxy : la base de l'artefact n'aime pas être enveloppée par un Proxy, tout avait cessé de charger) ;
    seules les méthodes utilisées par l'app sont relayées : collection().add/doc/onSnapshot/get, doc().set/update/delete/get/onSnapshot/collection */
 function actWrap(db){
@@ -4778,33 +4780,58 @@ function tkRoutine(t){ if(!t||t.routine==="aucune") return null; if(t.routine&&R
   if(r.u==="j") return r.n===1?"jour":r.n<7?"semaine":"mois"; if(r.u==="s") return r.n===1?"semaine":r.n<=4?"mois":null; if(r.u==="m") return r.n===1?"mois":null; return null; }
 function rtPeriod(k){ const t=today(); if(k==="semaine"){ const d=(t.getDay()+6)%7, a=new Date(t.getFullYear(),t.getMonth(),t.getDate()-d); return [a,new Date(a.getFullYear(),a.getMonth(),a.getDate()+6)]; }
   if(k==="mois") return [new Date(t.getFullYear(),t.getMonth(),1),new Date(t.getFullYear(),t.getMonth()+1,0)]; return [t,t]; }
-/* une routine pour la période en cours : ce qui reste à faire (échéance d'ici la fin de la période, retards compris) + ce qui a été fait pendant la période */
-function rtItems(k,pool){ const [a,b]=rtPeriod(k), end=iso(b), a0=a.getTime();
-  const todo=pool.filter(t=>!t.fait&&tkRoutine(t)===k&&(!t.echeance||t.echeance<=end)).sort(sortOpen), done=pool.filter(t=>t.fait&&tkRoutine(t)===k&&(t.faitLe||0)>=a0).sort((x,y)=>(x.faitLe||0)-(y.faitLe||0));
+/* état d'une tâche de routine pour la période en cours : « todo » (à faire d'ici la fin de la période, retards compris),
+   « done » (faite pendant la période : sa prochaine fois a été créée pendant la période, sans dépendre de l'historique qu'on peut vider), sinon null (frise) */
+function rtState(t){ const k=tkRoutine(t); if(!k||!t||t.fait) return null; const [a,b]=rtPeriod(k); if(!t.echeance||t.echeance<=iso(b)) return "todo"; if(t.auto&&(t.creeLe||0)>=a.getTime()) return "done"; return null; }
+/* ce que la page montre comme « à faire » (les routines déjà faites pour la période n'en sont plus) */
+const tkShown=t=>!t.fait&&rtState(t)!=="done";
+function rtItems(k,pool){ const a0=rtPeriod(k)[0].getTime(), now=Date.now();
+  const todo=pool.filter(t=>tkRoutine(t)===k&&rtState(t)==="todo").sort(sortOpen), done=pool.filter(t=>tkRoutine(t)===k&&rtState(t)==="done").sort((x,y)=>(x.creeLe||0)-(y.creeLe||0));
+  /* juste validée : sa prochaine fois n'est pas encore arrivée de la base */
+  for(const t of pool) if(t.fait&&tkRoutine(t)===k&&(t.faitLe||0)>=a0&&now-(t.faitLe||0)<15000&&!tkNextOf(t)) done.push(t);
   return {todo,done}; }
+/* tâche qui revient : sa prochaine fois (prec = la fois d'avant ; anciennes données : même titre, créée au moment où l'autre a été faite) et l'inverse */
+const tkSame=(x,t)=>x.titre===t.titre&&String(x.recur)===String(t.recur)&&Math.abs((x.creeLe||0)-(t.faitLe||0))<120000;
+function tkNextOf(t){ if(!t||!t.recur||!t.fait) return null; return (t.prive?(S.perso||[]):S.foyer).find(x=>!x.fait&&x.auto&&(x.prec?x.prec===t.id:tkSame(x,t)))||null; }
+function tkPrevOf(x){ if(!x||!x.auto) return null; return (x.prive?(S.perso||[]):S.foyer).find(t=>t.fait&&(x.prec?t.id===x.prec:tkSame(x,t)))||null; }
+const tkRaw=t=>t.prive?persoCol():S.dbRaw.collection("taches");
+/* remettre à faire une tâche qui revient : sa prochaine fois disparaît (sinon elle serait en double) */
+function tkDropNext(t){ const nx=tkNextOf(t); if(!nx) return null; const arr=nx.prive?"perso":"foyer"; S[arr]=S[arr].filter(x=>x.id!==nx.id); return ()=>tkRaw(nx).doc(nx.id).delete().catch(()=>{}); }
+/* décocher une routine faite (on touche sa prochaine fois) : la fois d'avant revient à faire */
+async function rtUndo(x){ if(!S.db||!needMe()) return; haptic(8); const p=tkPrevOf(x), arr=x.prive?"perso":"foyer";
+  if(p){ S[arr]=S[arr].filter(y=>y.id!==x.id); Object.assign(p,{fait:false,faitPar:null,faitLe:null,nextMsg:null}); renderTaskViews();
+    try{ await colFor(p).doc(p.id).update({fait:false,faitPar:null,faitLe:null,nextMsg:null}); await tkRaw(x).doc(x.id).delete(); }catch(e){ writeErr(e); } return; }
+  /* la fois d'avant a été retirée de l'historique : elle revient à faire aujourd'hui, et le journal la décompte de la semaine */
+  if(x.prec&&!x.prive){ const e={par:meId(),at:Date.now(),txt:"a remis à faire",q:String(x.titre||"").slice(0,120),ic:ACT_ICO.taches,ref:x.prec}; (S.activite=S.activite||[]).push(e); S.dbRaw.collection("activite").add(e).catch(()=>{}); }
+  const d=iso(today()); x.echeance=d; renderTaskViews(); try{ await colFor(x).doc(x.id).update({echeance:d}); }catch(e){ writeErr(e); } }
+/* qui a fait quoi cette semaine : les tâches faites encore là + le journal pour celles retirées de l'historique depuis */
+function weekDone(){ const a0=rtPeriod("semaine")[0].getTime(), by=new Map(), here=new Set(S.foyer.map(t=>t.id));
+  for(const t of S.foyer) if(t.fait&&t.faitPar&&(t.faitLe||0)>=a0) by.set(t.id,t.faitPar);
+  for(const a of (S.activite||[]).filter(a=>a.ref&&(a.at||0)>=a0&&!here.has(a.ref)).sort((x,y)=>(x.at||0)-(y.at||0))){ if(a.txt==="a fait") by.set(a.ref,a.par); else if(a.txt==="a remis à faire") by.delete(a.ref); }
+  const cnt=new Map(); for(const p of by.values()) cnt.set(p,(cnt.get(p)||0)+1); return cnt; }
 const tkKey=t=>(t.prive?"ptaches:":"taches:")+t.id;
 const tkCatOf=t=>CAT[t.cat]?t.cat:"maison";
 /* une ligne de tâche (frise, routines) */
-function tkLine(t,o){ o=o||{}; const me=meId(), c=CAT[tkCatOf(t)]||CAT.maison, key=(t.prive?"p:":"f:")+t.id, ed=canEditTask(t)&&!S.readOnly&&!!me;
-  const ck=el("button",{type:"button",class:"check tkl-ck","aria-label":t.fait?"Remettre « "+t.titre+" » à faire":"« "+t.titre+" » : c'est fait",onclick:()=>toggleDone(t)}); ck.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+function tkLine(t,o){ o=o||{}; const me=meId(), c=CAT[tkCatOf(t)]||CAT.maison, key=(t.prive?"p:":"f:")+t.id, ed=canEditTask(t)&&!S.readOnly&&!!me&&!o.asDone, isDone=t.fait||!!o.asDone;
+  const ck=el("button",{type:"button",class:"check tkl-ck","aria-label":isDone?"Remettre « "+t.titre+" » à faire":"« "+t.titre+" » : c'est fait",onclick:()=>o.asDone?rtUndo(t):toggleDone(t)}); ck.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   if(S.readOnly||!me) ck.disabled=true;
-  const sub=[]; if(t.fait&&t.faitPar&&!t.prive) sub.push("Fait par "+(t.faitPar===me?"toi":membre(t.faitPar).nom));
+  const sub=[], par=o.asDone?t.creePar:t.faitPar; if(isDone){ if(par&&!t.prive&&membre(par).nom) sub.push("Fait par "+(par===me?"toi":membre(par).nom)); else sub.push("Fait"); }
   else { if(t.echeance&&!o.noDue){ const n=daysTo(t.echeance); sub.push(n<0?(n===-1?"Hier":"En retard · "+dueLabel(t.echeance)):dueLabel(t.echeance).replace(/^./,x=>x.toUpperCase())); } else if(t.echeance&&daysTo(t.echeance)<0) sub.push("En retard");
     if(recNorm(t.recur)&&!o.noRec) sub.push(recText(t.recur)); if(t.concerne&&membre(t.concerne).nom) sub.push(membre(t.concerne).nom); if(t.prive) sub.push("🔒 Perso"); }
-  const late=!t.fait&&t.echeance&&daysTo(t.echeance)<0;
+  const late=!isDone&&t.echeance&&daysTo(t.echeance)<0;
   const right=[];
-  if(!t.fait&&!t.prive&&(t.pour==="tous"||!t.pour)&&humains().length>1&&ed) right.push(el("button",{type:"button",class:"tkl-take",onclick:async()=>{ haptic(8); t.pour=me; renderTaskViews(); try{ await colFor(t).doc(t.id).update({pour:me}); toast("C'est pour toi : « "+esc(t.titre)+" »."); }catch(e){ writeErr(e); } }},"Je prends"));
-  else if(!t.prive&&t.pour&&t.pour!=="tous"&&membre(t.pour).nom) right.push(el("span",{class:"tkl-av",title:"Pour "+membre(t.pour).nom},avatar(t.pour,22)));
-  if(ed&&!t.fait){ const pen=el("button",{type:"button",class:"tkl-ed","aria-label":"Modifier « "+t.titre+" »",onclick:()=>{ S.editing=S.editing===key?null:key; S.tdraft=null; S.confirm=null; renderTaskViews(); }}); pen.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg>'; right.push(pen); }
-  const row=el("div",{class:"tkl"+(t.fait?" done":"")+(late?" late":""),"data-key":tkKey(t),style:"--c:"+c.c},ck,el("span",{class:"tkl-dot","aria-hidden":"true"}),
+  if(!isDone&&!t.prive&&(t.pour==="tous"||!t.pour)&&humains().length>1&&ed) right.push(el("button",{type:"button",class:"tkl-take",onclick:async()=>{ haptic(8); t.pour=me; renderTaskViews(); try{ await colFor(t).doc(t.id).update({pour:me}); toast("C'est pour toi : « "+esc(t.titre)+" »."); }catch(e){ writeErr(e); } }},"Je prends"));
+  else if(!isDone&&!t.prive&&t.pour&&t.pour!=="tous"&&membre(t.pour).nom) right.push(el("span",{class:"tkl-av",title:"Pour "+membre(t.pour).nom},avatar(t.pour,22)));
+  if(ed&&!isDone){ const pen=el("button",{type:"button",class:"tkl-ed","aria-label":"Modifier « "+t.titre+" »",onclick:()=>{ S.editing=S.editing===key?null:key; S.tdraft=null; S.confirm=null; renderTaskViews(); }}); pen.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg>'; right.push(pen); }
+  const row=el("div",{class:"tkl"+(isDone?" done":"")+(late?" late":""),"data-key":tkKey(t),style:"--c:"+c.c},ck,el("span",{class:"tkl-dot","aria-hidden":"true"}),
     el("span",{class:"tkl-tx"},el("b",{text:t.titre}),sub.length?el("small",{text:sub.join(" · ")}):null),...right);
   if(ed&&S.editing===key) return el("div",{class:"tkl-w"},row,taskEditor(t,key));
   return row; }
 function renderTk2(pool,me){ const box=$("openList"); box.innerHTML="";
   const whoOk=t=>!S.whoF||t.pour===S.whoF||(t.prive&&S.whoF===me), catOk=t=>!S.catF||tkCatOf(t)===S.catF;
-  const P=pool.filter(t=>whoOk(t)&&catOk(t)), openWho=pool.filter(t=>!t.fait&&whoOk(t));
+  const P=pool.filter(t=>whoOk(t)&&catOk(t)), openWho=pool.filter(t=>tkShown(t)&&whoOk(t));
   /* 1. la semaine du foyer (qui a fait quoi) + le mode focus */
-  { const hs=humains(), a0=rtPeriod("semaine")[0].getTime(), cnt=new Map(); for(const t of S.foyer) if(t.fait&&(t.faitLe||0)>=a0&&t.faitPar) cnt.set(t.faitPar,(cnt.get(t.faitPar)||0)+1);
+  { const hs=humains(), cnt=weekDone();
     const tot=[...cnt.values()].reduce((x,y)=>x+y,0), q=focusQueue(pool,me), bar=el("div",{class:"tk-bal"});
     const L=el("div",{class:"tk-bw"},el("span",{class:"tk-bl"},el("b",{text:"Cette semaine"}),tot?" · "+tot+" faite"+(tot>1?"s":""):" · rien de fait encore"));
     if(hs.length>1&&tot){ const seg=el("span",{class:"tk-bar","aria-hidden":"true"}); const ord=hs.filter(h=>cnt.get(h.id)).sort((x,y)=>cnt.get(y.id)-cnt.get(x.id));
@@ -4824,16 +4851,16 @@ function renderTk2(pool,me){ const box=$("openList"); box.innerHTML="";
   { const R=RT.map(r=>({r,...rtItems(r[0],P)})).filter(x=>x.todo.length+x.done.length);
     if(R.length){ box.append(el("div",{class:"tk-sec"},el("span",{text:"Routines"}),el("button",{type:"button",class:"tk-sl",onclick:()=>openRoutines()},"Gérer")));
       if(S.rtOpen&&!R.some(x=>x.r[0]===S.rtOpen)) S.rtOpen=null;
-      const rr=el("div",{class:"tk-rts"+(R.length<=3?" fit":""),style:"--n:"+R.length});
+      const rr=el("div",{class:"tk-rts"+(R.length<=3?" fit":"")+(R.length<=2?" few":""),style:"--n:"+R.length});
       for(const x of R){ const [k,e,lab,col]=x.r, n=x.todo.length+x.done.length, d=x.done.length, left=x.todo.length;
         rr.append(el("button",{type:"button",class:"tk-rt"+(S.rtOpen===k?" on":""),style:"--c:"+col,"aria-expanded":String(S.rtOpen===k),onclick:()=>{ S.rtOpen=S.rtOpen===k?null:k; haptic(5); renderFoyer(); }},
           el("span",{class:"tk-ring",style:"--p:"+Math.round(d/n*100)+"%"},el("b",{text:d+"/"+n})),el("b",{class:"tk-rn",text:e+" "+lab}),el("small",{text:left?left+" restante"+(left>1?"s":""):"Tout est fait ✓"}))); }
       box.append(rr);
       const op=R.find(x=>x.r[0]===S.rtOpen);
       if(op){ const pnl=el("div",{class:"tk-rp",style:"--c:"+op.r[3]},el("div",{class:"tk-rph"},el("b",{text:op.r[1]+" "+op.r[2]}),el("small",{text:op.r[0]==="semaine"?"repart à zéro lundi":op.r[0]==="mois"?"repart à zéro le 1er":"repart à zéro demain"})));
-        for(const t of op.todo) pnl.append(tkLine(t,{noRec:true,noDue:daysTo(t.echeance||iso(today()))>=0})); for(const t of op.done) pnl.append(tkLine(t,{noRec:true})); box.append(pnl); } } }
+        for(const t of op.todo) pnl.append(tkLine(t,{noRec:true,noDue:daysTo(t.echeance||iso(today()))>=0})); for(const t of op.done) pnl.append(tkLine(t,{noRec:true,asDone:!t.fait})); box.append(pnl); } } }
   /* 4. la frise des jours : le reste (tâches ponctuelles et rares) */
-  { const L=P.filter(t=>!t.fait&&!tkRoutine(t)).sort(sortOpen), G=[["En retard",t=>t.echeance&&daysTo(t.echeance)<0,"late"],["Aujourd'hui",t=>t.echeance&&daysTo(t.echeance)===0],["Demain",t=>t.echeance&&daysTo(t.echeance)===1],["Cette semaine",t=>t.echeance&&daysTo(t.echeance)>1&&daysTo(t.echeance)<=7],["Plus tard",t=>t.echeance&&daysTo(t.echeance)>7],["Sans date",t=>!t.echeance]];
+  { const L=P.filter(t=>!t.fait&&!rtState(t)).sort(sortOpen), G=[["En retard",t=>t.echeance&&daysTo(t.echeance)<0,"late"],["Aujourd'hui",t=>t.echeance&&daysTo(t.echeance)===0],["Demain",t=>t.echeance&&daysTo(t.echeance)===1],["Cette semaine",t=>t.echeance&&daysTo(t.echeance)>1&&daysTo(t.echeance)<=7],["Plus tard",t=>t.echeance&&daysTo(t.echeance)>7],["Sans date",t=>!t.echeance]];
     let any=false; for(const [lab,f,cls] of G){ const its=L.filter(f); if(!its.length) continue; any=true;
       box.append(el("div",{class:"tk-sec"+(cls?" "+cls:"")},el("span",{text:lab}),el("em",{text:String(its.length)})));
       const g=el("div",{class:"tk-grp"}); for(const t of its) g.append(tkLine(t,{noDue:lab==="Aujourd'hui"||lab==="Demain"||lab==="Sans date"})); box.append(g); }
@@ -4841,7 +4868,7 @@ function renderTk2(pool,me){ const box=$("openList"); box.innerHTML="";
 /* mode focus : la prochaine chose à faire aujourd'hui (selon la personne et la catégorie choisies) */
 function focusQueue(pool,me){ me=me||meId(); pool=pool||(S.whoF&&S.whoF===me?S.foyer.concat(S.perso||[]):S.foyer);
   const whoOk=t=>!S.whoF||t.pour===S.whoF||(t.prive&&S.whoF===me), catOk=t=>!S.catF||tkCatOf(t)===S.catF, t0=iso(today());
-  return pool.filter(t=>!t.fait&&whoOk(t)&&catOk(t)&&((t.echeance&&t.echeance<=t0)||(tkRoutine(t)&&(()=>{ const e=iso(rtPeriod(tkRoutine(t))[1]); return !t.echeance||t.echeance<=e; })())))
+  return pool.filter(t=>tkShown(t)&&whoOk(t)&&catOk(t)&&(t.echeance?t.echeance<=t0:rtState(t)==="todo"))
     .sort((a,b)=>{ const la=a.echeance&&a.echeance<t0?0:1, lb=b.echeance&&b.echeance<t0?0:1; return la-lb||sortOpen(a,b); }); }
 function openFocus(){ if(!needMe()) return; const U=upSheet("focusPage","Mode focus"); U.sheet.classList.add("fx-sheet"); const inn=el("div",{class:"pp-in fx-in"}); U.sheet.append(inn); let doneN=0;
   const draw=()=>{ inn.innerHTML=""; const q=focusQueue(), t=q[0], tot=q.length+doneN;
@@ -7468,19 +7495,20 @@ async function restoreTask(t,btn){
   const key=(t.prive?"ptaches:":"taches:")+t.id, scope=(btn&&(btn.classList&&btn.classList.contains("view")?btn:btn.closest&&btn.closest(".view")))||document.body;
   const old={fait:t.fait,faitPar:t.faitPar,faitLe:t.faitLe,nextMsg:t.nextMsg};
   const before=reduce?null:new Map([...scope.querySelectorAll(".item[data-key]")].filter(r=>r.dataset.key!==key&&r.offsetParent).map(r=>[r.dataset.key,r.getBoundingClientRect().top]));
-  S.flip=null; Object.assign(t,{fait:false,faitPar:null,faitLe:null,nextMsg:null});
+  S.flip=null; const dropNx=tkDropNext(t); Object.assign(t,{fait:false,faitPar:null,faitLe:null,nextMsg:null});
   const de=document.documentElement; de.style.overflowAnchor="none"; clearTimeout(S.flipAnchorT); S.flipAnchorT=setTimeout(()=>{ de.style.overflowAnchor=""; },1400);
   renderTaskViews();
   if(before){ S.flip={before,key,scope,t0:performance.now()}; applyFlip(); }
   setTimeout(()=>{ const r=scope.querySelector('.item[data-key="'+key+'"]'); if(!r) return; const b=r.getBoundingClientRect(); if(b.top<90||b.bottom>innerHeight-100) r.scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"}); },120);
-  try{ await colFor(t).doc(t.id).update({fait:false,faitPar:null,faitLe:null,nextMsg:null}); }
+  try{ await colFor(t).doc(t.id).update({fait:false,faitPar:null,faitLe:null,nextMsg:null}); if(dropNx) await dropNx(); }
   catch(e){ S.flip=null; Object.assign(t,old); renderTaskViews(); writeErr(e); }
 }
 async function toggleDone(t){
   if(!S.db||!needMe()) return;
   const key=(t.prive?"p:":"f:")+t.id;
   if(!t.fait){ if(S.validating&&S.validating.has(key)) return; (S.validating=S.validating||new Set()).add(key); haptic(10); try{ await validateTasks([t]); } finally{ S.validating.delete(key); } return; }
-  try{ await colFor(t).doc(t.id).update({fait:false,faitPar:null,faitLe:null,nextMsg:null}); }catch(e){ writeErr(e); }
+  const dropNx=tkDropNext(t); Object.assign(t,{fait:false,faitPar:null,faitLe:null,nextMsg:null}); renderTaskViews();
+  try{ await colFor(t).doc(t.id).update({fait:false,faitPar:null,faitLe:null,nextMsg:null}); if(dropNx) await dropNx(); }catch(e){ writeErr(e); }
 }
 function renderSelBar(){
   if(S.cSel){ for(const id of [...S.cSel]) if(!(S.courses||[]).some(i=>i.id===id&&!i.fait)) S.cSel.delete(id); if(S.tab!=="courses") S.cSel.clear(); }
@@ -7566,7 +7594,7 @@ async function completeTaskInner(t){
       const nextMsg=(t.recurMsg||"Prochaine fois")+" : "+(["j","s"].includes((recNorm(t.recur)||{}).u)?fmtDue(iso(nd)):MOIS.format(nd))+(tour.length>1?" · au tour "+(nextPour===me?"de toi":de(membre(nextPour).nom)):"");
       await ref.update({fait:true,faitPar:me,faitLe:Date.now(),nextMsg});
       const nx={titre:t.titre,cat:t.cat,pour:nextPour,concerne:t.concerne||null,echeance:iso(nd),recur:t.recur,recurMsg:t.recurMsg||null,fait:false,creePar:me,creeLe:Date.now(),auto:true};
-      if(t.catNom){ nx.catNom=t.catNom; nx.catC=t.catC||null; } if(tour.length>1) nx.tour=tour; if(t.routine) nx.routine=t.routine;
+      if(t.catNom){ nx.catNom=t.catNom; nx.catC=t.catC||null; } if(tour.length>1) nx.tour=tour; if(t.routine) nx.routine=t.routine; nx.prec=t.id;
       await col.add(nx);
       return nextMsg;
     }
