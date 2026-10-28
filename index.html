@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 15:22";</script>
+<script>window.COCOON_BUILD="28/10 15:36";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2378,7 +2378,9 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .pap-frise .bd-meta .due.late{color:#FF8A8A}.pap-frise .bd-meta .due.soon{color:#FFD27A}
 :root[data-theme="light"] .pap-frise .bd-meta .due.late{color:#C2412D}:root[data-theme="light"] .pap-frise .bd-meta .due.soon{color:#9A6A00}
 .pap-frise .pf-days{font-size:11.5px;padding:4px 8px}
-.pk-back{font-size:0!important;padding:0!important}.pk-back::before{content:"";width:9px;height:9px;border-left:2.4px solid currentColor;border-bottom:2.4px solid currentColor;transform:rotate(45deg);margin-left:4px}
+.pk-head .pk-back{width:36px;height:36px;padding:0;border:1px solid var(--line);box-shadow:none;background:var(--surface);display:grid;place-items:center;flex:none}
+.pk-back svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.pk-back:active{transform:scale(.92)}
 .pk-head b{font-size:19px;flex:1}
 .pk-head span{color:var(--muted);font-size:13px}
 .wk-leg{display:flex;justify-content:center;gap:16px;margin-top:-2px;font-size:12px;font-weight:600;color:var(--muted)}
@@ -5478,6 +5480,8 @@ function renderDocPour(){
   const opts=[["foyer","Foyer",null]].concat(membres().map(m=>[m.id,m.id===me?"Moi":m.nom,m.id]));
   for(const [v,l,id] of opts) w.append(el("button",{type:"button",class:"pchip","aria-pressed":String(S.docPour===v),onclick:()=>{ S.docPour=v; renderDocPour(); updConsent(); }},id?avatar(id,20):"",l));
 }
+/* retour aux classeurs (même rond que le retour de la barre du haut, flèche dessinée bien centrée) */
+function pkBack(){ const b=el("button",{type:"button",class:"pk-back","aria-label":"Retour aux catégories",onclick:()=>{ S.docCat=null; renderDocs(); topNow(); }}); b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg>'; return b; }
 const DOC_EMO={identite:"🪪",sante:"💊",assurance:"🛡️",factures:"🧾",documents:"📄",voitures:"🚗",maison:"🏠",ecole:"🎒",animaux:"🐾",entretien:"🔧"};
 const docEmo=cid=>DOC_EMO[cid]||tkEmo(cid);
 /* « C'est renouvelé » (carte à la une de Papiers) : la nouvelle date d'expiration, ou plus de date */
@@ -5548,7 +5552,7 @@ function renderDocs(){
   /* Garanties : toutes les factures avec garantie + les équipements de Maison, de la plus proche de la fin à la plus lointaine */
   const gars=pool.filter(d=>d.garantieFin).map(d=>({d,fin:d.garantieFin})).concat(S.docWho?[]:(S.equip||[]).filter(x=>x.garantieFin).map(x=>({eq:x,fin:x.garantieFin})));
   if(S.docCat==="__gar"){ const on=gars.filter(g=>daysTo(g.fin)>=0).sort((a,b)=>a.fin<b.fin?-1:1), off=gars.filter(g=>daysTo(g.fin)<0).sort((a,b)=>a.fin<b.fin?1:-1);
-    G0.append(el("div",{class:"pk-head",style:"--bc:#7FCDB9"},el("button",{type:"button",class:"pk-back","aria-label":"Retour aux catégories",text:"‹",onclick:()=>{ S.docCat=null; renderDocs(); topNow(); }}),el("span",{class:"pk-ic",style:"--bc:#7FCDB9;font-size:18px;display:grid;place-items:center",text:"🛡"}),el("b",{text:"Garanties"}),el("span",{text:on.length+" en cours"})));
+    G0.append(el("div",{class:"pk-head",style:"--bc:#7FCDB9"},pkBack(),el("span",{class:"pk-ic",style:"--bc:#7FCDB9;font-size:18px;display:grid;place-items:center",text:"🛡"}),el("b",{text:"Garanties"}),el("span",{text:on.length+" en cours"})));
     const eqRow=x=>{ const n=daysTo(x.garantieFin); return el("button",{type:"button",class:"bd-doc gar-eq",style:"--bc:#FF9C80",onclick:()=>{ S.mSec="equip"; setTab("maison"); topNow(); }},el("span",{class:"bd-ft",text:"🔧"}),el("div",{class:"bd-db"},el("b",{text:x.nom||"Équipement"}),el("div",{class:"bd-meta"},el("span",{class:"pf-cat",text:"Équipement de la maison"}),el("span",{class:"due gar"+(n<0?" off":n<=60?" soon":""),text:n<0?"🛡 Garantie terminée":"🛡 Garantie jusqu'au "+fmtDue(x.garantieFin)})))); };
     if(!gars.length) G0.append(el("div",{class:"bd-none",text:"Aucune garantie pour l'instant. En rangeant la facture d'un achat, ouvre « Facture d'un achat ? » pour noter sa garantie : Cocoon te prévient avant la fin."}));
     for(const g of on) G0.append(g.d?docRow(g.d,showWho):eqRow(g.eq));
@@ -5557,11 +5561,11 @@ function renderDocs(){
   const groups={}; for(const d of pool){ const c=catOf(d.cat||"documents").id||"documents"; (groups[c]=groups[c]||[]).push(d); }
   if(S.docCat&&S.docCat!=="__all"&&!groups[S.docCat]) S.docCat=null;
   const icon=(c,cls)=>el("span",{class:cls+" dz-ice",style:"--bc:"+c.c,text:docEmo(c.id)});
-  if(S.docCat==="__all"){ G0.append(el("div",{class:"pk-head",style:"--bc:#B9A8F0"},el("button",{type:"button",class:"pk-back","aria-label":"Retour aux catégories",text:"‹",onclick:()=>{ S.docCat=null; renderDocs(); topNow(); }}),el("span",{class:"pk-ic dz-ice",style:"--bc:#B9A8F0",text:"🗂️"}),el("b",{text:"Tous les papiers"}),el("span",{text:pool.length+" papier"+(pool.length>1?"s":"")})));
+  if(S.docCat==="__all"){ G0.append(el("div",{class:"pk-head",style:"--bc:#B9A8F0"},pkBack(),el("span",{class:"pk-ic dz-ice",style:"--bc:#B9A8F0",text:"🗂️"}),el("b",{text:"Tous les papiers"}),el("span",{text:pool.length+" papier"+(pool.length>1?"s":"")})));
     for(const d of sortDocs(pool)) G0.append(docRow(d,showWho)); return; }
   if(S.docCat){ // une catégorie ouverte
     const c=catOf(S.docCat), ds=sortDocs(groups[S.docCat]);
-    G0.append(el("div",{class:"pk-head",style:"--bc:"+c.c},el("button",{type:"button",class:"pk-back","aria-label":"Retour aux catégories",text:"‹",onclick:()=>{ S.docCat=null; renderDocs(); topNow(); }}),icon(c,"pk-ic"),el("b",{text:c.nom}),el("span",{text:ds.length+" papier"+(ds.length>1?"s":"")})));
+    G0.append(el("div",{class:"pk-head",style:"--bc:"+c.c},pkBack(),icon(c,"pk-ic"),el("b",{text:c.nom}),el("span",{text:ds.length+" papier"+(ds.length>1?"s":"")})));
     for(const d of ds) G0.append(docRow(d,showWho,true)); return; }
   if(!pool.length){ G0.append(el("div",{class:"bd-none",text:"Aucun papier pour "+(S.docWho===me?"toi":ownerName(S.docWho))+" pour l'instant."})); return; }
   const urg=ds=>{ const e=ds.filter(d=>d.expire).map(d=>daysTo(d.expire)); return e.length?Math.min(...e):9999; };
