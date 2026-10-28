@@ -2288,6 +2288,8 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .dg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 10px;margin-top:4px}
 .dg-t{display:flex;flex-direction:column;align-items:center;border:0;background:none;color:var(--ink);font:inherit;padding:0;cursor:pointer;text-align:center;min-width:0;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .dg-t:active .dg-pv{transform:scale(.95)}
+.dg-pv>*{grid-area:1/1}.dg-pv::before{content:"";grid-area:1/1;width:78%;aspect-ratio:3/4}
+.dg-pv img.small{aspect-ratio:auto;height:auto;max-height:100%;object-fit:contain;align-self:center}
 .dg-pv{position:relative;width:100%;display:grid;place-items:center;margin-bottom:8px;transition:transform .15s ease}
 /* tous les aperçus ont exactement la même taille (cadre 3:4), comme dans Fichiers */
 .dg-pv img,.dg-ph{width:78%;aspect-ratio:3/4;height:auto}
@@ -5414,7 +5416,10 @@ function docThumb(d){ const k=d.assetId; if(!k) return Promise.resolve(null); if
 /* un papier en tuile : aperçu, pastille d'échéance, nom (2 lignes), date, à qui */
 function docTile(d,showWho){ const me=meId(), c=catOf(d.cat||"documents"), o=d.pour||"foyer";
   const ph=el("span",{class:"dg-ph","aria-hidden":"true",text:docEmo(c.id||"documents")}), pv=el("span",{class:"dg-pv",style:"--bc:"+(c.c||"#A9B4C2")},ph);
-  if(d.assetId) docThumb(d).then(u=>{ if(!u) return; const im=el("img",{alt:"",draggable:"false"}); im.onload=()=>ph.replaceWith(im); im.src=u; });
+  /* photo trop petite pour remplir le cadre sans flou : affichée à sa taille, comme avant */
+  if(d.assetId) docThumb(d).then(u=>{ if(!u) return; const im=el("img",{alt:"",draggable:"false"}); im.onload=()=>{ const r=ph.getBoundingClientRect(), dpr=window.devicePixelRatio||1, fw=(r.width||84)*dpr, fh=(r.height||112)*dpr;
+      if(d.fichierType!=="PDF"&&(im.naturalWidth<fw*.9||im.naturalHeight<fh*.9)){ im.classList.add("small"); im.style.width=Math.min(im.naturalWidth/dpr,r.width||84)+"px"; }
+      ph.replaceWith(im); }; im.src=u; });
   let dl="", dc="";
   if(d.expire){ const n=daysTo(d.expire); dl=(n<0?"Expiré · ":"Expire ")+fmtDue(d.expire); dc=n<0||n<=30?" late":n<=90?" soon":"";
     if(n<=90) pv.append(el("em",{class:"dg-b"+(n<0||n<=30?"":" soon"),text:n<0?"expiré":n===0?"auj.":n<=60?n+" j":Math.round(n/30)+" mois"})); }
