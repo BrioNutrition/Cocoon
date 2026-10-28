@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 11:00";</script>
+<script>window.COCOON_BUILD="28/10 11:05";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3010,7 +3010,10 @@ html.cl-open .selbar{z-index:80}
 .cl-panel .c-item.on{opacity:.55}.cl-panel .c-item.on .c-n{text-decoration:line-through}
 .f-emo{display:inline-block;margin-right:6px;text-decoration:none}
 .cl-favs{display:flex;flex-direction:column;gap:8px}
-.cl-fav-r{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;cursor:pointer}
+.cl-fav-r{display:flex;align-items:center;gap:4px;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:4px 4px 4px 0}
+.cl-fav-main{flex:1;min-width:0;display:flex;align-items:center;gap:12px;text-align:left;font:inherit;color:var(--ink);background:none;border:0;padding:8px 6px 8px 14px;cursor:pointer}
+.cl-fav-x{flex:none;width:38px;height:38px;border:0;background:none;color:var(--muted);font-size:20px;cursor:pointer;border-radius:12px}
+.cl-fav-none{color:var(--muted);font-size:13.5px;margin:4px 2px}
 .cl-fav-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.cl-fav-t b{font-size:16px;font-weight:800;color:var(--c);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cl-fav-t small{font-size:12.5px;color:var(--muted)}
 .cl-fav-go{flex:none;font-size:13px;font-weight:800;padding:7px 12px;border-radius:99px;background:var(--sunk)}
 .cl-in .cl-sec{margin:18px 2px 8px}
@@ -10007,7 +10010,7 @@ function clWhen(d){ if(!d) return "Sans date"; const n=daysTo(d); if(n<0) return
 /* note = page de carnet à spirale (choix C d'Angel) : tranche de couleur + spirale à gauche, lignes, ronds à cocher */
 /* une liste = une carte « à la une » comme les raccourcis de l'accueil (choix A d'Angel) ; la toucher la déroule (elle prend toute la largeur) */
 function clRow(l,open){ const its=cItemsOf(l.id).slice().sort((a,b)=>cOrd(a)-cOrd(b)), todo=its.filter(i=>!i.fait), n=its.length, ok=n-todo.length;
-  const cap=(l.fav?"⭐ ":"")+([l.lieu,l.date?clWhen(l.date):"",l.prive?"🔒 moi seul":"",l.recur?"🔁 chaque semaine":""].filter(Boolean).join(" · ")||"Foyer");
+  const cap=([l.lieu,l.date?clWhen(l.date):"",l.prive?"🔒 moi seul":"",l.recur?"🔁 chaque semaine":""].filter(Boolean).join(" · ")||"Foyer");
   const tg=()=>{ if(S.clOpenId===l.id){ const ae=document.activeElement; if(ae&&ae.blur&&CL_OPEN&&CL_OPEN.contains(ae)) ae.blur(); S.clClosing=l.id; if(CL_OPEN) CL_OPEN.style.viewTransitionName="cl-x"; clVT(()=>{ S.clOpenId=S.cListe=null; renderCourses(); S.clClosing=null; },true); } else openCList(l.id); };
   const mb=el("button",{type:"button",class:"ka-opt","aria-label":"Options de « "+(l.titre||"la liste")+" »","aria-haspopup":"menu",onclick:e=>{ e.stopPropagation(); clMenu(mb,clGet(l.id)); }}); mb.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18.5" cy="12" r="2"/></svg>';
   return el("div",{class:"cl-card"+(open?" open":""),role:"button",tabindex:"0","data-vt":"clc-"+String(l.id).replace(/[^A-Za-z0-9_-]/g,"_"),style:"--c:"+clCol(l)+";view-transition-name:"+(S.clClosing===l.id?"cl-x":"clc-"+String(l.id).replace(/[^A-Za-z0-9_-]/g,"_")),"aria-expanded":String(!!open),"aria-label":(l.titre||"Liste")+", "+cap+", "+ok+" sur "+n,
@@ -10093,7 +10096,7 @@ function clClear(U){ U.sheet.querySelectorAll(":scope>.pp-in,:scope>.ev-pop").fo
 function openCList(id){ if(!meId()) return; const l=clGet(id); if(!l) return; if(S.clSheet&&!S.clSheet._gone) S.clSheet.close();
   if(S.tab!=="courses"){ S.clOpenId=S.cListe=id; setTab("courses"); renderCourses(); } else clVT(()=>{ S.clOpenId=S.cListe=id; renderCourses(); });
   setTimeout(()=>{ const row=CL_OPEN&&CL_OPEN.isConnected?CL_OPEN:null; if(row){ const t=row.getBoundingClientRect().top; if(t<70||t>innerHeight*.55) row.scrollIntoView({block:"start",behavior:"smooth"}); } },80); }
-function clMenu(btn,l){ if(!l) return; const acts=[["edit","✏️","Modifier",()=>openCListForm(l)],["dup","⧉","Dupliquer",()=>clDup(l)],["send","📤","Envoyer",()=>clShare(l)],["val","✓","Valider la liste",()=>clValidate(l)]].concat(l.virt?[]:[["fav",l.fav?"☆":"⭐",l.fav?"Retirer des favoris":"Mettre en favori",()=>clFavSet(l,!l.fav)]]);
+function clMenu(btn,l){ if(!l) return; const acts=[["edit","✏️","Modifier",()=>openCListForm(l)],["dup","⧉","Dupliquer",()=>clDup(l)],["send","📤","Envoyer",()=>clShare(l)],["val","✓","Valider la liste",()=>clValidate(l)]].concat([["save","💾","Enregistrer la liste",()=>clSave(l)]]);
   { const nm=nativeMenu(l.titre||"Liste",acts.map(([id,,t])=>({id,title:t})).concat([{id:"del",title:"Supprimer la liste",destructive:true}]));
     if(nm){ nm.then(id=>{ const a=acts.find(x=>x[0]===id); if(a) a[3](); else if(id==="del") clDel(l); }); return; } }
   const old=document.querySelector(".ev-pop"); if(old){ old._close(); if(old._btn===btn) return; }
@@ -10107,24 +10110,29 @@ function clMenu(btn,l){ if(!l) return; const acts=[["edit","✏️","Modifier",(
   if(card){ pop.classList.add("no-tip"); pop.style.position="fixed"; pop.style.top=Math.min(rb.bottom+6,innerHeight-260)+"px"; pop.style.right=(innerWidth-rb.right)+"px"; pop.style.zIndex="60"; }
   else if(up){ pop.style.bottom=(sr.bottom-rb.top+8)+"px"; pop.style.top="auto"; } else pop.style.top=(rb.bottom-sr.top+sheet.scrollTop+8)+"px"; if(!card) pop.style.right=(sr.right-rb.right)+"px";
   sheet.append(pop); requestAnimationFrame(()=>pop.classList.add("in")); setTimeout(()=>document.addEventListener("pointerdown",away,true),0); }
-async function clNew(base,arts,open){ const me=meId(); const ref=await S.db.collection("listes").add(Object.assign({titre:base.titre||"Liste de courses",couleur:clCol(base),date:base.date||null,lieu:base.lieu||null,qui:base.qui||null,prive:!!base.prive,recur:base.recur||null},{par:me,creeLe:Date.now(),fini:false,fav:!!base.fav}));
+async function clNew(base,arts,open){ const me=meId(); const ref=await S.db.collection("listes").add(Object.assign({titre:base.titre||"Liste de courses",couleur:clCol(base),date:base.date||null,lieu:base.lieu||null,qui:base.qui||null,prive:!!base.prive,recur:base.recur||null},{par:me,creeLe:Date.now(),fini:false}));
   if(arts.length) await addCourses(arts.map(a=>({nom:a.nom,qte:a.qte||null,extra:a.pour&&a.pour!=="tous"?{pour:a.pour}:{}})),{liste:ref.id}); if(open) openCList(ref.id); return ref.id; }
 async function clDup(l){ try{ const arts=cItemsOf(l.id).map(i=>({nom:i.nom,qte:i.qte,pour:i.pour})); await clNew(Object.assign({},l,{titre:(l.titre||"Liste")+" (copie)",recur:null}),arts,true); toast("Liste dupliquée."); }catch(e){ writeErr(e); } }
-/* favorites (Angel) : une liste marquée ⭐ (listes.fav) se reprend depuis le « + » ; la reprendre recrée la liste avec ses articles (décochés) et lui passe l'étoile */
-function clFavs(){ const seen=new Set(); return clAll().filter(l=>l.fav&&l.id!==CL_DEF).sort((a,b)=>(b.finiLe||b.creeLe||0)-(a.finiLe||a.creeLe||0)).filter(l=>{ const k=norm(l.titre||""); if(seen.has(k)) return false; seen.add(k); return true; }); }
-function clFavArts(l){ return l.fini?(l.articles||[]):cItemsOf(l.id).map(i=>({nom:i.nom,qte:i.qte,pour:i.pour})); }
-async function clFavSet(l,on){ if(!l||l.virt) return; try{ await S.db.collection("listes").doc(l.id).update({fav:!!on}); haptic(8); toast(on?"⭐ « "+esc(l.titre||"Liste")+" » en favori : tu la retrouveras avec le +.":"Retirée des favoris."); }catch(e){ writeErr(e); } }
-async function clReprendre(l){ try{ if(!l.fini){ openCList(l.id); return; } if(S.clSheet&&!S.clSheet._gone) S.clSheet.close();
-  const id=await clNew(Object.assign({},l,{date:null,fav:true}),clFavArts(l),false); await S.db.collection("listes").doc(l.id).update({fav:false}); openCList(id); toast("« "+esc(l.titre||"Courses")+" » est prête."); }catch(e){ writeErr(e); } }
-/* « + » : nouvelle liste, ou reprendre une favorite */
-function openCListPick(){ const F=clFavs(); if(!F.length){ openCListForm(null); return; }
+/* listes enregistrées (Angel, 28 oct., à la place des favorites) : une copie (titre, couleur, magasin, articles) dans « modeles » ;
+   elle reste même si la liste est validée ou supprimée, et le « + » la recrée */
+function clMods(){ const me=meId(); return (S.modeles||[]).filter(m=>!m.prive||m.par===me).sort((a,b)=>(b.le||0)-(a.le||0)); }
+async function clSave(l){ if(!l) return; const arts=cItemsOf(l.id).slice().sort((a,b)=>cOrd(a)-cOrd(b)).map(i=>({nom:i.nom,qte:i.qte||null}));
+  const k=norm(l.titre||""), old=(S.modeles||[]).find(m=>norm(m.titre||"")===k);
+  const doc={titre:l.titre||"Liste de courses",couleur:clCol(l),lieu:l.lieu||null,prive:!!l.prive,articles:arts,par:meId(),le:Date.now()};
+  try{ if(old) await S.db.collection("modeles").doc(old.id).set(doc); else await S.db.collection("modeles").add(doc); haptic(8);
+    toast("💾 « "+esc(doc.titre)+" » "+(old?"mise à jour":"enregistrée")+" : tu la recréeras avec le +, même après l'avoir supprimée."); }catch(e){ writeErr(e); } }
+async function clRecreer(m){ try{ if(S.clSheet&&!S.clSheet._gone) S.clSheet.close(); const id=await clNew({titre:m.titre,couleur:m.couleur,lieu:m.lieu,prive:m.prive},m.articles||[],false); openCList(id); toast("« "+esc(m.titre||"Courses")+" » est prête."); }catch(e){ writeErr(e); } }
+/* « + » : nouvelle liste, ou recréer une liste enregistrée */
+function openCListPick(){ const M=clMods(); if(!M.length){ openCListForm(null); return; }
   const U=clSheet(); clClear(U); const inn=el("div",{class:"pp-in ev-in cl-in"}); U.sheet.append(inn);
-  inn.append(el("div",{class:"ev-top"},el("h2",{text:"Nouvelle liste"}),el("p",{text:"Pars de zéro, ou reprends une de tes listes favorites."})),
-    el("button",{type:"button",class:"btn ev-cta",id:"clNewBlank",onclick:()=>openCListForm(null)},"Nouvelle liste"),el("p",{class:"cl-sec",text:"⭐ Favorites"}));
-  const box=el("div",{class:"cl-favs"});
-  for(const l of F){ const a=clFavArts(l), n=a.length;
-    box.append(el("button",{type:"button",class:"cl-fav-r",style:"--c:"+clCol(l),onclick:()=>clReprendre(l)},el("span",{class:"cl-fav-t"},el("b",{text:l.titre||"Liste"}),el("small",{text:[l.lieu,n+" article"+(n>1?"s":""),l.fini?"":"en cours"].filter(Boolean).join(" · ")})),el("span",{class:"cl-fav-go",text:l.fini?"Reprendre":"Ouvrir"}))); }
-  inn.append(box); }
+  inn.append(el("div",{class:"ev-top"},el("h2",{text:"Nouvelle liste"}),el("p",{text:"Pars de zéro, ou recrée une de tes listes enregistrées."})),
+    el("button",{type:"button",class:"btn ev-cta",id:"clNewBlank",onclick:()=>openCListForm(null)},"Nouvelle liste"),el("p",{class:"cl-sec",text:"💾 Listes enregistrées"}));
+  const box=el("div",{class:"cl-favs"}); const draw=()=>{ box.innerHTML=""; const L=clMods(); if(!L.length){ box.append(el("p",{class:"cl-fav-none",text:"Plus aucune liste enregistrée."})); return; }
+    for(const m of L){ const n=(m.articles||[]).length;
+      box.append(el("div",{class:"cl-fav-r",style:"--c:"+clCol(m)},
+        el("button",{type:"button",class:"cl-fav-main",onclick:()=>clRecreer(m)},el("span",{class:"cl-fav-t"},el("b",{text:m.titre||"Liste"}),el("small",{text:[m.lieu,n+" article"+(n>1?"s":"")].filter(Boolean).join(" · ")})),el("span",{class:"cl-fav-go",text:"Recréer"})),
+        el("button",{type:"button",class:"cl-fav-x","aria-label":"Oublier « "+(m.titre||"la liste")+" »",text:"×",onclick:async()=>{ S.modeles=(S.modeles||[]).filter(x=>x.id!==m.id); draw(); try{ await S.db.collection("modeles").doc(m.id).delete(); }catch(e){ writeErr(e); } }}))); } };
+  draw(); inn.append(box); }
 async function clDel(l){ const its=cItemsOf(l.id); S.clOpenId=null; if(S.cListe===l.id) S.cListe=null; haptic(10);
   clUndoable("Liste supprimée.",l.virt?[]:[l.id],its.map(i=>i.id),async()=>{ await Promise.all(its.map(i=>S.db.collection("courses").doc(i.id).delete())); if(!l.virt) await S.db.collection("listes").doc(l.id).delete(); }); }
 /* valider (complète ou non) : « Combien ça a coûté ? » → dépense dans Budget ; la liste passe dans « Terminées » ; ce qui n'a pas été pris retourne dans la liste principale (ou dans celle de la semaine suivante) */
@@ -10857,6 +10865,7 @@ async function autoClaimLegacy(){
   db.collection("rayons").onSnapshot(s=>{ const m={}; s.docs.forEach(d=>{ const x=d.data(); if(x&&x.r) m[d.id]=x.r; }); S.rayonsPerso=m; renderAll(); },()=>{});
   db.collection("repas").onSnapshot(s=>{ S.repas=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"repas"); S.repasLoaded=true; renderAll(); },()=>{ S.repasLoaded=true; });
   db.collection("listes").onSnapshot(s=>{ S.listes=s.docs.map(d=>Object.assign({id:d.id},d.data())); if(S.tab==="courses") renderCourses(); },()=>{});
+  db.collection("modeles").onSnapshot(s=>{ S.modeles=s.docs.map(d=>Object.assign({id:d.id},d.data())); },()=>{});
   db.collection("habituels").onSnapshot(s=>{ S.habituels=s.docs.map(d=>Object.assign({id:d.id},d.data())); if(S.tab==="courses") renderHab(); },()=>{});
   db.collection("plats").onSnapshot(s=>{ S.plats=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("poubelles").onSnapshot(s=>{ S.bins=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"poubelles"); renderAll(); },()=>{});
