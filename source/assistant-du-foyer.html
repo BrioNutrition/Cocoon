@@ -2950,7 +2950,7 @@ html.cl-open .selbar{z-index:80}
 .tk-focus{flex:none;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 13px;border:0;border-radius:99px;background:color-mix(in srgb,#3CC37A 20%,var(--surface));color:var(--ink);font:inherit;font-size:13px;font-weight:800;cursor:pointer;line-height:1}
 .tk-focus>span{font-size:10px;color:#3CC37A;line-height:1}.tk-focus em{font-style:normal;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#3CC37A;color:#06210f;font-size:11.5px;display:grid;place-items:center}
 .tk-focus:disabled{opacity:.45;cursor:default}
-.tk-cats{display:flex;gap:7px;margin:14px 0 0;overflow-x:auto;scrollbar-width:none;padding:1px 1px 3px}.tk-cats::-webkit-scrollbar{display:none}
+.tk-chips{display:flex;gap:7px;margin:14px 0 0;overflow-x:auto;scrollbar-width:none;padding:1px 1px 3px}.tk-chips::-webkit-scrollbar{display:none}
 .tk-cc{flex:none;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 13px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:inherit;font-size:13px;font-weight:800;white-space:nowrap;cursor:pointer;line-height:1}
 .tk-cc em{font-style:normal;font-size:12px;font-weight:700;color:var(--muted)}
 .tk-cc[aria-pressed="true"]{border-color:var(--c);background:color-mix(in srgb,var(--c) 20%,var(--surface))}.tk-cc[aria-pressed="true"] em{color:var(--ink)}
@@ -2972,22 +2972,22 @@ html.cl-open .selbar{z-index:80}
 .tk-rph{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:11px 0 4px}.tk-rph b{font-size:14px;font-weight:800}.tk-rph small{font-size:11.5px;font-weight:600;color:var(--muted)}
 .tk-grp{padding:0 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
 .tk-empty{margin-top:18px}
-.tl{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);min-height:52px}
-.tk-grp>.tl:last-child,.tk-grp>.tl-w:last-child>.tl,.tk-rp>.tl:last-child,.tk-rp>.tl-w:last-child>.tl{border-bottom:0}
-.tl .tl-ck{flex:none;width:24px;height:24px;margin:0;padding:0;border-radius:50%!important;border:2px solid color-mix(in srgb,var(--ink) 35%,transparent);background:transparent;display:grid;place-items:center;cursor:pointer}
-.tl .tl-ck svg{width:13px;height:13px;opacity:0}
-.tl.done .tl-ck{background:#3CC37A;border-color:#3CC37A}.tl.done .tl-ck svg{opacity:1}
-.tl-dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
-.tl-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.tl-tx b{font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
-.tl-tx small{font-size:11.5px;font-weight:600;color:var(--muted);line-height:1.3}
-.tl.late .tl-tx small{color:#FF8A8A}
-.tl.done .tl-tx b{text-decoration:line-through;color:var(--muted)}
-.tl-av{flex:none;display:flex}
-.tl-take{flex:none;border:1px solid color-mix(in srgb,#FFC94A 55%,transparent);border-radius:99px;padding:6px 10px;background:color-mix(in srgb,#FFC94A 14%,transparent);color:var(--ink);font:inherit;font-size:11.5px;font-weight:800;line-height:1;cursor:pointer}
-.tl-ed{flex:none;width:32px;height:32px;margin:-4px -6px -4px -2px;border:0;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer;border-radius:10px}
-.tl-ed svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.tl-w{border-bottom:1px solid var(--line);padding-bottom:10px}.tl-w>.tl{border-bottom:0}
+.tkl{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);min-height:52px}
+.tk-grp>.tkl:last-child,.tk-grp>.tkl-w:last-child>.tkl,.tk-rp>.tkl:last-child,.tk-rp>.tkl-w:last-child>.tkl{border-bottom:0}
+.tkl .tkl-ck{flex:none;width:24px;height:24px;margin:0;padding:0;border-radius:50%!important;border:2px solid color-mix(in srgb,var(--ink) 35%,transparent);background:transparent;display:grid;place-items:center;cursor:pointer}
+.tkl .tkl-ck svg{width:13px;height:13px;opacity:0}
+.tkl.done .tkl-ck{background:#3CC37A;border-color:#3CC37A}.tkl.done .tkl-ck svg{opacity:1}
+.tkl-dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.tkl-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tkl-tx b{font-size:14.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
+.tkl-tx small{font-size:11.5px;font-weight:600;color:var(--muted);line-height:1.3}
+.tkl.late .tkl-tx small{color:#FF8A8A}
+.tkl.done .tkl-tx b{text-decoration:line-through;color:var(--muted)}
+.tkl-av{flex:none;display:flex}
+.tkl-take{flex:none;border:1px solid color-mix(in srgb,#FFC94A 55%,transparent);border-radius:99px;padding:6px 10px;background:color-mix(in srgb,#FFC94A 14%,transparent);color:var(--ink);font:inherit;font-size:11.5px;font-weight:800;line-height:1;cursor:pointer}
+.tkl-ed{flex:none;width:32px;height:32px;margin:-4px -6px -4px -2px;border:0;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer;border-radius:10px}
+.tkl-ed svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tkl-w{border-bottom:1px solid var(--line);padding-bottom:10px}.tkl-w>.tkl{border-bottom:0}
 /* mode focus */
 .fx-in{padding:4px 18px 26px}
 .fx-cnt{text-align:center;font-size:13px;font-weight:700;color:var(--muted);margin:2px 0 8px}.fx-cnt b{color:var(--ink);font-weight:800}
@@ -3009,13 +3009,13 @@ html.cl-open .selbar{z-index:80}
 .fx-next{text-align:center;font-size:12.5px;font-weight:700;color:var(--muted);margin-top:16px}
 .fx-end{text-align:center;padding:30px 18px}.fx-end b{display:block;font-size:19px;font-weight:800;margin:8px 0 4px}.fx-big-e{font-size:42px;line-height:1}
 /* gérer les routines */
-.rt-in{padding:4px 18px 26px}
-.rt-t{padding:13px 14px;margin-top:10px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
-.rt-th{display:flex;align-items:center;gap:9px}.rt-th b{flex:1;min-width:0;font-size:14.5px;font-weight:800}.rt-th small{flex:none;font-size:11.5px;font-weight:600;color:var(--muted)}
-.rt-opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.rt-o{height:32px;padding:0 11px;border:1px solid var(--line);border-radius:99px;background:none;color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;line-height:1}
-.rt-o[aria-pressed="true"]{background:#FFC94A;border-color:#FFC94A;color:#1C1B2E}
-.rt-none{color:var(--muted);font-size:13.5px;margin-top:12px;line-height:1.45}
+.rtg-in{padding:4px 18px 26px}
+.rtg-t{padding:13px 14px;margin-top:10px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.rtg-th{display:flex;align-items:center;gap:9px}.rtg-th b{flex:1;min-width:0;font-size:14.5px;font-weight:800}.rtg-th small{flex:none;font-size:11.5px;font-weight:600;color:var(--muted)}
+.rtg-opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.rtg-o{height:32px;padding:0 11px;border:1px solid var(--line);border-radius:99px;background:none;color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;line-height:1}
+.rtg-o[aria-pressed="true"]{background:#FFC94A;border-color:#FFC94A;color:#1C1B2E}
+.rtg-none{color:var(--muted);font-size:13.5px;margin-top:12px;line-height:1.45}
 .np-seg{display:flex;gap:4px;margin:2px 14px 8px;padding:3px;border-radius:12px;background:var(--sunk)}
 .np-seg button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-size:13px;font-weight:800;padding:7px;border-radius:9px;cursor:pointer}
 .np-seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}
@@ -4685,19 +4685,19 @@ const tkKey=t=>(t.prive?"ptaches:":"taches:")+t.id;
 const tkCatOf=t=>CAT[t.cat]?t.cat:"maison";
 /* une ligne de tâche (frise, routines) */
 function tkLine(t,o){ o=o||{}; const me=meId(), c=CAT[tkCatOf(t)]||CAT.maison, key=(t.prive?"p:":"f:")+t.id, ed=canEditTask(t)&&!S.readOnly&&!!me;
-  const ck=el("button",{type:"button",class:"check tl-ck","aria-label":t.fait?"Remettre « "+t.titre+" » à faire":"« "+t.titre+" » : c'est fait",onclick:()=>toggleDone(t)}); ck.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const ck=el("button",{type:"button",class:"check tkl-ck","aria-label":t.fait?"Remettre « "+t.titre+" » à faire":"« "+t.titre+" » : c'est fait",onclick:()=>toggleDone(t)}); ck.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   if(S.readOnly||!me) ck.disabled=true;
   const sub=[]; if(t.fait&&t.faitPar&&!t.prive) sub.push("Fait par "+(t.faitPar===me?"toi":membre(t.faitPar).nom));
   else { if(t.echeance&&!o.noDue){ const n=daysTo(t.echeance); sub.push(n<0?(n===-1?"Hier":"En retard · "+dueLabel(t.echeance)):dueLabel(t.echeance).replace(/^./,x=>x.toUpperCase())); } else if(t.echeance&&daysTo(t.echeance)<0) sub.push("En retard");
     if(recNorm(t.recur)&&!o.noRec) sub.push(recText(t.recur)); if(t.concerne&&membre(t.concerne).nom) sub.push(membre(t.concerne).nom); if(t.prive) sub.push("🔒 Perso"); }
   const late=!t.fait&&t.echeance&&daysTo(t.echeance)<0;
   const right=[];
-  if(!t.fait&&!t.prive&&(t.pour==="tous"||!t.pour)&&humains().length>1&&ed) right.push(el("button",{type:"button",class:"tl-take",onclick:async()=>{ haptic(8); t.pour=me; renderTaskViews(); try{ await colFor(t).doc(t.id).update({pour:me}); toast("C'est pour toi : « "+esc(t.titre)+" »."); }catch(e){ writeErr(e); } }},"Je prends"));
-  else if(!t.prive&&t.pour&&t.pour!=="tous"&&membre(t.pour).nom) right.push(el("span",{class:"tl-av",title:"Pour "+membre(t.pour).nom},avatar(t.pour,22)));
-  if(ed&&!t.fait){ const pen=el("button",{type:"button",class:"tl-ed","aria-label":"Modifier « "+t.titre+" »",onclick:()=>{ S.editing=S.editing===key?null:key; S.tdraft=null; S.confirm=null; renderTaskViews(); }}); pen.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg>'; right.push(pen); }
-  const row=el("div",{class:"tl"+(t.fait?" done":"")+(late?" late":""),"data-key":tkKey(t),style:"--c:"+c.c},ck,el("span",{class:"tl-dot","aria-hidden":"true"}),
-    el("span",{class:"tl-tx"},el("b",{text:t.titre}),sub.length?el("small",{text:sub.join(" · ")}):null),...right);
-  if(ed&&S.editing===key) return el("div",{class:"tl-w"},row,taskEditor(t,key));
+  if(!t.fait&&!t.prive&&(t.pour==="tous"||!t.pour)&&humains().length>1&&ed) right.push(el("button",{type:"button",class:"tkl-take",onclick:async()=>{ haptic(8); t.pour=me; renderTaskViews(); try{ await colFor(t).doc(t.id).update({pour:me}); toast("C'est pour toi : « "+esc(t.titre)+" »."); }catch(e){ writeErr(e); } }},"Je prends"));
+  else if(!t.prive&&t.pour&&t.pour!=="tous"&&membre(t.pour).nom) right.push(el("span",{class:"tkl-av",title:"Pour "+membre(t.pour).nom},avatar(t.pour,22)));
+  if(ed&&!t.fait){ const pen=el("button",{type:"button",class:"tkl-ed","aria-label":"Modifier « "+t.titre+" »",onclick:()=>{ S.editing=S.editing===key?null:key; S.tdraft=null; S.confirm=null; renderTaskViews(); }}); pen.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg>'; right.push(pen); }
+  const row=el("div",{class:"tkl"+(t.fait?" done":"")+(late?" late":""),"data-key":tkKey(t),style:"--c:"+c.c},ck,el("span",{class:"tkl-dot","aria-hidden":"true"}),
+    el("span",{class:"tkl-tx"},el("b",{text:t.titre}),sub.length?el("small",{text:sub.join(" · ")}):null),...right);
+  if(ed&&S.editing===key) return el("div",{class:"tkl-w"},row,taskEditor(t,key));
   return row; }
 function renderTk2(pool,me){ const box=$("openList"); box.innerHTML="";
   const whoOk=t=>!S.whoF||t.pour===S.whoF||(t.prive&&S.whoF===me), catOk=t=>!S.catF||tkCatOf(t)===S.catF;
@@ -4714,7 +4714,7 @@ function renderTk2(pool,me){ const box=$("openList"); box.innerHTML="";
     box.append(bar); }
   /* 2. les catégories : un toucher filtre toute la page */
   { const cats=new Map(); for(const t of openWho){ const k=tkCatOf(t); cats.set(k,(cats.get(k)||0)+1); } if(S.catF&&!cats.has(S.catF)) cats.set(S.catF,0);
-    const row=el("div",{class:"tk-cats",role:"group","aria-label":"Catégories"});
+    const row=el("div",{class:"tk-chips",role:"group","aria-label":"Catégories"});
     const chip=(k,lab,n,col)=>row.append(el("button",{type:"button",class:"tk-cc","aria-pressed":String((S.catF||null)===k),style:col?"--c:"+col:"",onclick:()=>{ S.catF=S.catF===k?null:k; haptic(5); renderFoyer(); }},lab,el("em",{text:String(n)})));
     chip(null,"Tout",openWho.length,"#FFC94A");
     for(const [k,n] of [...cats.entries()].sort((x,y)=>y[1]-x[1])){ const c=CAT[k]||CAT.maison; chip(k,tkEmo(k)+" "+c.nom,n,c.c); }
@@ -4765,13 +4765,13 @@ function fxWho(btn,t,after){ const me=meId(), box=el("div",{class:"fx-pick"});
   if(t.pour!=="tous") box.append(el("button",{type:"button",class:"fx-pk",onclick:()=>pick("tous")},el("span",{class:"fx-all",text:"🏠"}),"Tout le foyer (qui veut)"));
   const old=btn.parentNode.querySelector(".fx-pick"); if(old){ old.remove(); return; } btn.after(box); }
 /* « Gérer » les routines : chaque tâche qui revient, dans quelle routine (ou aucune) */
-function openRoutines(){ if(!needMe()) return; const U=upSheet("rtPage","Routines"); U.sheet.classList.add("rt-sheet"); const inn=el("div",{class:"pp-in rt-in"}); U.sheet.append(inn);
+function openRoutines(){ if(!needMe()) return; const U=upSheet("rtPage","Routines"); U.sheet.classList.add("rtg-sheet"); const inn=el("div",{class:"pp-in rtg-in"}); U.sheet.append(inn);
   const draw=()=>{ inn.innerHTML=""; inn.append(el("div",{class:"ev-top"},el("h2",{text:"Routines"}),el("p",{text:"Choisis où ranger chaque tâche qui revient. Une routine se remet à zéro toute seule à chaque période."})));
     const L=S.foyer.filter(t=>!t.fait&&recNorm(t.recur)).sort((a,b)=>(a.titre||"").localeCompare(b.titre||""));
-    if(!L.length){ inn.append(el("p",{class:"rt-none",text:"Aucune tâche qui revient pour l'instant. Donne une fréquence à une tâche (chaque jour, chaque semaine…) et elle viendra ici."})); return; }
+    if(!L.length){ inn.append(el("p",{class:"rtg-none",text:"Aucune tâche qui revient pour l'instant. Donne une fréquence à une tâche (chaque jour, chaque semaine…) et elle viendra ici."})); return; }
     for(const t of L){ const cur=tkRoutine(t)||"aucune", c=CAT[tkCatOf(t)]||CAT.maison;
-      const opts=el("div",{class:"rt-opts"}); for(const [k,e,lab] of RT.concat([["aucune","🗓️","Aucune (dans la liste)"]])) opts.append(el("button",{type:"button",class:"rt-o","aria-pressed":String(cur===k),onclick:async()=>{ haptic(5); t.routine=k; draw(); renderTaskViews(); try{ await colFor(t).doc(t.id).update({routine:k}); }catch(err){ writeErr(err); } }},e+" "+lab));
-      inn.append(el("div",{class:"rt-t",style:"--c:"+c.c},el("div",{class:"rt-th"},el("span",{class:"tl-dot"}),el("b",{text:t.titre}),el("small",{text:recText(t.recur)})),opts)); } };
+      const opts=el("div",{class:"rtg-opts"}); for(const [k,e,lab] of RT.concat([["aucune","🗓️","Aucune (dans la liste)"]])) opts.append(el("button",{type:"button",class:"rtg-o","aria-pressed":String(cur===k),onclick:async()=>{ haptic(5); t.routine=k; draw(); renderTaskViews(); try{ await colFor(t).doc(t.id).update({routine:k}); }catch(err){ writeErr(err); } }},e+" "+lab));
+      inn.append(el("div",{class:"rtg-t",style:"--c:"+c.c},el("div",{class:"rtg-th"},el("span",{class:"tkl-dot"}),el("b",{text:t.titre}),el("small",{text:recText(t.recur)})),opts)); } };
   draw(); }
 /* ---------- Tâches façon Courses (28 oct., Angel) : « Aujourd'hui » (retards + du jour) puis une carte par catégorie, qui se déroule ---------- */
 const TK_EMO={factures:"💶",entretien:"🔧",courses:"🛒",colis:"📦",animaux:"🐾",rdv:"📅",maison:"🏠",documents:"📄",voitures:"🚗",enfants:"🧸",menage:"🧹",jardin:"🌿",sante:"💊",ecole:"🎒",loisirs:"🎉",travaux:"🛠️"};
