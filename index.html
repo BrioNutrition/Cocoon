@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 15:36";</script>
+<script>window.COCOON_BUILD="28/10 15:42";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2381,6 +2381,22 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .pk-head .pk-back{width:36px;height:36px;padding:0;border:1px solid var(--line);box-shadow:none;background:var(--surface);display:grid;place-items:center;flex:none}
 .pk-back svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 .pk-back:active{transform:scale(.92)}
+/* grille façon Fichiers d'Apple */
+.dg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 10px;margin-top:4px}
+.dg-t{display:flex;flex-direction:column;align-items:center;border:0;background:none;color:var(--ink);font:inherit;padding:0;cursor:pointer;text-align:center;min-width:0;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.dg-t:active .dg-pv{transform:scale(.95)}
+.dg-pv{position:relative;width:100%;aspect-ratio:1;display:grid;place-items:end center;margin-bottom:8px;transition:transform .15s ease}
+.dg-pv img{display:block;max-width:88%;max-height:100%;border-radius:3px;background:#fff;box-shadow:0 0 0 1px color-mix(in srgb,var(--ink) 14%,transparent),0 4px 14px rgba(0,0,0,.28)}
+.dg-ph{width:76%;height:96%;border-radius:5px;display:grid;place-items:center;font-size:34px;line-height:1;background:linear-gradient(160deg,color-mix(in srgb,var(--bc) 26%,var(--surface)),color-mix(in srgb,var(--bc) 12%,var(--surface)));box-shadow:0 0 0 1px var(--line),0 4px 14px rgba(0,0,0,.22)}
+.dg-b{position:absolute;top:-4px;right:-2px;font-style:normal;font-size:10.5px;font-weight:800;padding:3px 7px;border-radius:99px;background:#FF6B6B;color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.dg-b.soon{background:#FFC94A;color:#1C1B2E}
+.dg-n{font-size:13px;font-weight:700;line-height:1.25;max-width:100%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.dg-d{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:3px;line-height:1.25}
+.dg-d.late{color:#FF8A8A}.dg-d.soon{color:#FFD27A}
+:root[data-theme="light"] .dg-d.late{color:#C2412D}:root[data-theme="light"] .dg-d.soon{color:#9A6A00}
+.dg-w{font-size:11.5px;color:var(--muted);opacity:.75;line-height:1.3}
+.dg-sec{margin:18px 2px 4px;font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.dg-mo b{font-size:18px;line-height:1;width:22px;text-align:center}.dg-mo.del{color:#FF8A8A}
 .pk-head b{font-size:19px;flex:1}
 .pk-head span{color:var(--muted);font-size:13px}
 .wk-leg{display:flex;justify-content:center;gap:16px;margin-top:-2px;font-size:12px;font-weight:600;color:var(--muted)}
@@ -5480,6 +5496,47 @@ function renderDocPour(){
   const opts=[["foyer","Foyer",null]].concat(membres().map(m=>[m.id,m.id===me?"Moi":m.nom,m.id]));
   for(const [v,l,id] of opts) w.append(el("button",{type:"button",class:"pchip","aria-pressed":String(S.docPour===v),onclick:()=>{ S.docPour=v; renderDocPour(); updConsent(); }},id?avatar(id,20):"",l));
 }
+/* ---------- Papiers façon Fichiers d'Apple (28 oct., Angel) : grille d'aperçus (photo ou 1re page du PDF), nom, date, à qui ---------- */
+/* aperçus gardés sur l'appareil (cocoon.dthumbs, effacés à la déconnexion), fabriqués un par un */
+const DTH=(()=>{ try{ return JSON.parse(localStorage.getItem("cocoon.dthumbs")||"{}")||{}; }catch(_){ return {}; } })(), DTH_P=new Map(); let dthQ=Promise.resolve();
+function docThumb(d){ const k=d.assetId; if(!k) return Promise.resolve(null); if(DTH[k]) return Promise.resolve(DTH[k]); if(DTH_P.has(k)) return DTH_P.get(k);
+  const p=dthQ=dthQ.then(async()=>{ let url=null; try{ url=await fileUrl(k); if(!url) return null; let cv;
+      const fit=(w,h)=>{ const r=Math.min(300/w,400/h,1), c=document.createElement("canvas"); c.width=Math.max(1,Math.round(w*r)); c.height=Math.max(1,Math.round(h*r)); return c; };
+      if(d.fichierType==="PDF"){ const L=await loadPdfJs(), buf=await (await fetch(url)).arrayBuffer(), pdf=await L.getDocument({data:new Uint8Array(buf)}).promise, page=await pdf.getPage(1), v0=page.getViewport({scale:1});
+        cv=fit(v0.width,v0.height); const vp=page.getViewport({scale:cv.width/v0.width}), x=cv.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,cv.width,cv.height); await page.render({canvasContext:x,canvas:cv,viewport:vp}).promise; try{ pdf.destroy(); }catch(_){} }
+      else { const bl=await (await fetch(url)).blob(), bm=await createImageBitmap(bl); cv=fit(bm.width,bm.height); cv.getContext("2d").drawImage(bm,0,0,cv.width,cv.height); }
+      const u=cv.toDataURL("image/jpeg",.72); DTH[k]=u; const ks=Object.keys(DTH); if(ks.length>80) delete DTH[ks[0]]; try{ localStorage.setItem("cocoon.dthumbs",JSON.stringify(DTH)); }catch(_){ } return u; }
+    catch(_){ return d.fichierType!=="PDF"?url:null; } });
+  DTH_P.set(k,p); return p; }
+/* un papier en tuile : aperçu, pastille d'échéance, nom (2 lignes), date, à qui */
+function docTile(d,showWho){ const me=meId(), c=catOf(d.cat||"documents"), o=d.pour||"foyer";
+  const ph=el("span",{class:"dg-ph","aria-hidden":"true",text:docEmo(c.id||"documents")}), pv=el("span",{class:"dg-pv",style:"--bc:"+(c.c||"#A9B4C2")},ph);
+  if(d.assetId) docThumb(d).then(u=>{ if(!u) return; const im=el("img",{alt:"",draggable:"false"}); im.onload=()=>ph.replaceWith(im); im.src=u; });
+  let dl="", dc="";
+  if(d.expire){ const n=daysTo(d.expire); dl=(n<0?"Expiré · ":"Expire ")+fmtDue(d.expire); dc=n<0||n<=30?" late":n<=90?" soon":"";
+    if(n<=90) pv.append(el("em",{class:"dg-b"+(n<0||n<=30?"":" soon"),text:n<0?"expiré":n===0?"auj.":n<=60?n+" j":Math.round(n/30)+" mois"})); }
+  else if(d.garantieFin) dl="Garantie → "+fmtDue(d.garantieFin);
+  else if(d.ajouteLe) dl=new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date(d.ajouteLe));
+  const who=o==="foyer"?"Commun":o===me?"Moi":(membre(o).nom||"");
+  let lp=0, lpT=0;
+  const t=el("button",{type:"button",class:"dg-t","data-key":"documents:"+d.id,"aria-label":d.titre+(dl?", "+dl:""),
+    onclick:()=>{ if(lp){ lp=0; return; } if(d.assetId) openViewer(d); else docMenu(d); },
+    oncontextmenu:e=>{ e.preventDefault(); docMenu(d); },
+    onpointerdown:()=>{ lp=0; clearTimeout(lpT); lpT=setTimeout(()=>{ lp=1; haptic(10); docMenu(d); },450); },
+    onpointerup:()=>clearTimeout(lpT),onpointerleave:()=>clearTimeout(lpT),onpointercancel:()=>clearTimeout(lpT)},
+    pv,el("span",{class:"dg-n",text:d.titre}),dl?el("span",{class:"dg-d"+dc,text:dl}):null,el("span",{class:"dg-w",text:showWho?who:c.nom}));
+  return t; }
+/* appui long (ou papier sans fichier) : Voir, C'est renouvelé, Supprimer */
+function docMenu(d){ let done=false; const close=()=>{ if(done) return; done=true; ov.classList.add("out"); setTimeout(()=>ov.remove(),180); };
+  const o=(e,l,fn,cls)=>el("button",{type:"button",class:"clp-o dg-mo"+(cls?" "+cls:""),onclick:()=>{ close(); fn(); }},el("b",{"aria-hidden":"true",text:e}),el("span",{text:l}));
+  const box=el("div",{class:"clp-box",role:"dialog","aria-label":d.titre},el("b",{class:"clp-h",text:d.titre}));
+  if(d.assetId) box.append(o("👁️","Voir le fichier",()=>openViewer(d)));
+  if(d.expire&&!S.readOnly&&meId()) box.append(o("🔁","C'est renouvelé…",()=>docRenew(d)));
+  if(!S.readOnly&&meId()) box.append(o("🗑️","Supprimer",()=>softDelete([{key:"documents:"+d.id,arr:"docs",item:d,run:()=>delDoc(d)}],"Document « "+esc(d.titre)+" » supprimé."),"del"));
+  if(box.children.length===1) box.append(el("p",{class:"dz-rp",text:"Pas de fichier pour ce papier."}));
+  box.append(el("button",{type:"button",class:"clp-x",onclick:close},"Annuler"));
+  const ov=el("div",{class:"clp-ov",onclick:e=>{ if(e.target===ov) close(); }},box); document.body.append(ov); requestAnimationFrame(()=>ov.classList.add("in")); }
+const docGrid=(ds,showWho)=>el("div",{class:"dg-grid"},...ds.map(d=>docTile(d,showWho)));
 /* retour aux classeurs (même rond que le retour de la barre du haut, flèche dessinée bien centrée) */
 function pkBack(){ const b=el("button",{type:"button",class:"pk-back","aria-label":"Retour aux catégories",onclick:()=>{ S.docCat=null; renderDocs(); topNow(); }}); b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg>'; return b; }
 const DOC_EMO={identite:"🪪",sante:"💊",assurance:"🛡️",factures:"🧾",documents:"📄",voitures:"🚗",maison:"🏠",ecole:"🎒",animaux:"🐾",entretien:"🔧"};
@@ -5547,26 +5604,27 @@ function renderDocs(){
     const hits=sortDocs(pool.filter(d=>q.split(/\s+/).every(w=>hay(d).includes(w))));
     G0.append(el("div",{class:"pf-l"},"Résultats",el("em",{text:"· "+hits.length})));
     if(!hits.length) G0.append(el("div",{class:"bd-none",text:"Aucun papier ne correspond à « "+$("papQ").value.trim()+" »."}));
-    for(const d of hits) G0.append(docRow(d,showWho)); return; }
+    if(hits.length) G0.append(docGrid(hits,showWho)); return; }
   // regroupement par catégorie
   /* Garanties : toutes les factures avec garantie + les équipements de Maison, de la plus proche de la fin à la plus lointaine */
   const gars=pool.filter(d=>d.garantieFin).map(d=>({d,fin:d.garantieFin})).concat(S.docWho?[]:(S.equip||[]).filter(x=>x.garantieFin).map(x=>({eq:x,fin:x.garantieFin})));
   if(S.docCat==="__gar"){ const on=gars.filter(g=>daysTo(g.fin)>=0).sort((a,b)=>a.fin<b.fin?-1:1), off=gars.filter(g=>daysTo(g.fin)<0).sort((a,b)=>a.fin<b.fin?1:-1);
     G0.append(el("div",{class:"pk-head",style:"--bc:#7FCDB9"},pkBack(),el("span",{class:"pk-ic",style:"--bc:#7FCDB9;font-size:18px;display:grid;place-items:center",text:"🛡"}),el("b",{text:"Garanties"}),el("span",{text:on.length+" en cours"})));
-    const eqRow=x=>{ const n=daysTo(x.garantieFin); return el("button",{type:"button",class:"bd-doc gar-eq",style:"--bc:#FF9C80",onclick:()=>{ S.mSec="equip"; setTab("maison"); topNow(); }},el("span",{class:"bd-ft",text:"🔧"}),el("div",{class:"bd-db"},el("b",{text:x.nom||"Équipement"}),el("div",{class:"bd-meta"},el("span",{class:"pf-cat",text:"Équipement de la maison"}),el("span",{class:"due gar"+(n<0?" off":n<=60?" soon":""),text:n<0?"🛡 Garantie terminée":"🛡 Garantie jusqu'au "+fmtDue(x.garantieFin)})))); };
+    const eqRow=x=>{ const n=daysTo(x.garantieFin); return el("button",{type:"button",class:"dg-t",onclick:()=>{ S.mSec="equip"; setTab("maison"); topNow(); }},el("span",{class:"dg-pv",style:"--bc:#FF9C80"},el("span",{class:"dg-ph","aria-hidden":"true",text:"🔧"})),el("span",{class:"dg-n",text:x.nom||"Équipement"}),el("span",{class:"dg-d"+(n<0?"":n<=60?" soon":""),text:n<0?"Garantie terminée":"Garantie → "+fmtDue(x.garantieFin)}),el("span",{class:"dg-w",text:"Maison"})); };
     if(!gars.length) G0.append(el("div",{class:"bd-none",text:"Aucune garantie pour l'instant. En rangeant la facture d'un achat, ouvre « Facture d'un achat ? » pour noter sa garantie : Cocoon te prévient avant la fin."}));
-    for(const g of on) G0.append(g.d?docRow(g.d,showWho):eqRow(g.eq));
-    if(off.length){ G0.append(el("div",{class:"pf-l"},"Terminées",el("em",{text:"· "+off.length}))); for(const g of off) G0.append(g.d?docRow(g.d,showWho):eqRow(g.eq)); }
+    const gg=L=>{ const g=el("div",{class:"dg-grid"}); for(const x of L) g.append(x.d?docTile(x.d,showWho):eqRow(x.eq)); return g; };
+    if(on.length) G0.append(gg(on));
+    if(off.length){ G0.append(el("div",{class:"pf-l"},"Terminées",el("em",{text:"· "+off.length}))); G0.append(gg(off)); }
     return; }
   const groups={}; for(const d of pool){ const c=catOf(d.cat||"documents").id||"documents"; (groups[c]=groups[c]||[]).push(d); }
   if(S.docCat&&S.docCat!=="__all"&&!groups[S.docCat]) S.docCat=null;
   const icon=(c,cls)=>el("span",{class:cls+" dz-ice",style:"--bc:"+c.c,text:docEmo(c.id)});
   if(S.docCat==="__all"){ G0.append(el("div",{class:"pk-head",style:"--bc:#B9A8F0"},pkBack(),el("span",{class:"pk-ic dz-ice",style:"--bc:#B9A8F0",text:"🗂️"}),el("b",{text:"Tous les papiers"}),el("span",{text:pool.length+" papier"+(pool.length>1?"s":"")})));
-    for(const d of sortDocs(pool)) G0.append(docRow(d,showWho)); return; }
+    G0.append(docGrid(sortDocs(pool),showWho)); return; }
   if(S.docCat){ // une catégorie ouverte
     const c=catOf(S.docCat), ds=sortDocs(groups[S.docCat]);
     G0.append(el("div",{class:"pk-head",style:"--bc:"+c.c},pkBack(),icon(c,"pk-ic"),el("b",{text:c.nom}),el("span",{text:ds.length+" papier"+(ds.length>1?"s":"")})));
-    for(const d of ds) G0.append(docRow(d,showWho,true)); return; }
+    G0.append(docGrid(ds,showWho)); return; }
   if(!pool.length){ G0.append(el("div",{class:"bd-none",text:"Aucun papier pour "+(S.docWho===me?"toi":ownerName(S.docWho))+" pour l'instant."})); return; }
   const urg=ds=>{ const e=ds.filter(d=>d.expire).map(d=>daysTo(d.expire)); return e.length?Math.min(...e):9999; };
   const order=Object.keys(groups).sort((a,b)=>{ const ua=urg(groups[a])<=90?urg(groups[a]):9999, ub=urg(groups[b])<=90?urg(groups[b]):9999; return ua-ub||groups[b].length-groups[a].length; });
@@ -5578,6 +5636,7 @@ function renderDocs(){
     tile("✅","#A8D672","Garanties",on.length+" en cours",soon?soon+" bientôt":null,"o",()=>{ S.docCat="__gar"; renderDocs(); topNow(); }); }
   if(order.length>1) tile("🗂️","#B9A8F0","Tout voir",pool.length+" papiers",null,null,()=>{ S.docCat="__all"; renderDocs(); topNow(); });
   G0.append(grid);
+  { const rec=pool.slice().sort((a,b)=>(b.ajouteLe||0)-(a.ajouteLe||0)).slice(0,6); if(rec.length){ G0.append(el("div",{class:"dg-sec",text:"Récents"}),docGrid(rec,showWho)); } }
 }
 function renderFeed(box){
   const f=box||document.querySelector("#npanel .np-feed"); if(!f) return; f.innerHTML="";

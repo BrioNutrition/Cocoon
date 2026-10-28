@@ -388,7 +388,7 @@
   async function logout() {
     try { await Promise.race([PUSH.disable(), new Promise(function (r) { setTimeout(r, 2500); })]); } catch (_) {}
     try { var L0 = JSON.parse(LS.get("cocoon.last") || "{}"); if (ME && ME.email) { L0.email = ME.email; L0.uid = ME.id; LS.set("cocoon.last", JSON.stringify(L0)); } } catch (_) {}
-    LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer"); LS.del("cocoon.thumbs"); LS.del("cocoon.secid");
+    LS.del("cocoon.snap"); LS.del("cocoon.outbox"); LS.del("cocoon.foyer"); LS.del("cocoon.thumbs"); LS.del("cocoon.dthumbs"); LS.del("cocoon.secid");
     /* « Se connecter avec Face ID » activé : la session reste ouverte côté serveur et son jeton part dans le trousseau
        (lisible seulement après Face ID) ; sinon déconnexion complète */
     /* chaque étape a un délai maximal : la déconnexion ne doit jamais rester bloquée (pont natif ou verrou de supabase-js) */
@@ -893,7 +893,7 @@
       var r = await sb.rpc("cocoon_delete_me");
       if (r.error) { DELETING = false; throw new Error(/function|exist/i.test(r.error.message) ? "la suppression de compte n'est pas encore installée dans Supabase (script securite.sql)" : frErr(r.error)); }
       try { await Promise.race([PUSH.disable(), new Promise(function (ok) { setTimeout(ok, 2500); })]); } catch (_) {}
-      ["cocoon.snap", "cocoon.outbox", "cocoon.foyer", "cocoon.theme", "cocoon.palette", "cocoon.bootSeen", "cocoon.last", "cocoon.thumbs", "cocoon.secid"].forEach(function (k) { LS.del(k); });
+      ["cocoon.snap", "cocoon.outbox", "cocoon.foyer", "cocoon.theme", "cocoon.palette", "cocoon.bootSeen", "cocoon.last", "cocoon.thumbs", "cocoon.dthumbs", "cocoon.secid"].forEach(function (k) { LS.del(k); });
       try { await sb.auth.signOut(); } catch (_) {}
       try { if (await natif() && window.__nt.faceidKey) await window.__nt.faceidKey({ del: true }); } catch (_) {}
       authStore.removeItem("cocoon.auth");

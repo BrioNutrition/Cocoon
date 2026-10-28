@@ -43,7 +43,7 @@ async def main():
     print('mention santé:', await pg.is_visible('.d-sante'))
     await pg.click('.hub-add[data-add=documents]'); await pg.click('#docAddMain'); await pg.fill('#dTitle','Carte identité'); await pg.set_input_files('#dFile','test/tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(800)
     ref=await pg.evaluate("(__mock.T.cocoon_docs.find(r=>r.path==='documents'&&r.data.assetId)||{data:{}}).data.assetId"); print('référence enregistrée:', ref)
-    eye=pg.locator('.bd-eye').first; print('œil = bouton:', await eye.evaluate("e=>e.tagName"))
+    eye=pg.locator('.dg-t:has-text("Carte identité")').first; print('œil = bouton:', await eye.evaluate("e=>e.tagName"))
     await eye.click(); await pg.wait_for_selector('.vw img',timeout=8000); await pg.wait_for_timeout(300); print('image affichée:', await pg.evaluate("document.querySelector('.vw img').naturalWidth>0"))
     await pg.screenshot(path='/tmp/dk/vw_img.png')
     cdp=await ctx.new_cdp_session(pg)
@@ -58,7 +58,7 @@ async def main():
     # PDF
     await pg.click('.hub-add[data-add=documents]'); await pg.click('#docAddMain'); await pg.fill('#dTitle','Bail'); await pg.set_input_files('#dFile','test/tst.pdf'); await pg.click('#dSubmit'); await pg.wait_for_timeout(900)
     print('ref pdf:', await pg.evaluate("(__mock.T.cocoon_docs.find(r=>r.path==='documents'&&r.data.fichierType==='PDF')||{data:{}}).data.assetId"))
-    await pg.locator('.bd-doc:has-text("Bail") .bd-eye').click(); await pg.wait_for_selector('.vw-page canvas',timeout=15000); await pg.wait_for_timeout(800)
+    await pg.locator('.dg-t:has-text("Bail")').first.click(); await pg.wait_for_selector('.vw-page canvas',timeout=15000); await pg.wait_for_timeout(800)
     print('pages:', await pg.locator('.vw-page').count(), '|', await pg.inner_text('.vw-pg'))
     await pg.screenshot(path='/tmp/dk/vw_pdf.png')
     await pg.click('.vw-zb[aria-label="Zoomer"]'); await pg.click('.vw-zb[aria-label="Zoomer"]'); await pg.wait_for_timeout(1200)
