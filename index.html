@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 13:02";</script>
+<script>window.COCOON_BUILD="28/10 13:12";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2977,6 +2977,8 @@ html.cl-open .selbar{z-index:80}
 .item[data-key] .meta .tag:first-of-type .cdot,.item[data-key] .meta .tag{background:none;padding:0}
 .item[data-key] .due{background:none;padding:0;font-family:inherit;font-weight:700}
 .item[data-key].selected{box-shadow:inset 0 0 0 2px var(--mark)}
+/* tâches réalisées : texte à gauche, Restaurer / Supprimer tout à droite */
+.item[data-key].done{display:flex;align-items:center}.item[data-key].done .t-body{flex:1;min-width:0}.item[data-key].done .t-av{order:2}.item[data-key].done .hist-acts{order:3;margin-left:auto;align-self:center}
 .c-item{border:1px solid var(--line);box-shadow:none!important;border-radius:16px;padding:11px 12px}
 .c-item.sel{box-shadow:inset 0 0 0 2px var(--mark)!important}
 .c-box{width:24px!important;height:24px!important;border-color:color-mix(in srgb,var(--ink) 35%,transparent)}
@@ -4678,8 +4680,8 @@ function taskRow(t,opts={}){
   if(Array.isArray(t.tour)&&t.tour.length>1){ const tr=t.tour.filter(id=>humains().some(h=>h.id===id)); if(tr.length>1){ const nx=tr[(tr.indexOf(t.pour)+1)%tr.length]; meta.append(el("span",{class:"rec tour",text:"🔄 à tour de rôle · ensuite "+(nx===meId()?"toi":membre(nx).nom)})); } }
   if(t.fait&&t.faitPar&&!t.prive) meta.append(el("span",{text:"fait par "+membre(t.faitPar).nom+" · "+ago(t.faitLe)}));
   if(t.fait&&t.faitPar&&!t.prive&&meId()&&t.faitPar!==meId()&&!S.readOnly){ const sent=(S.mercis||[]).some(m=>m.id===t.id+"_"+meId()); const mb=el("button",{type:"button",class:"merci-b"+(sent?" sent":""),"aria-label":sent?"Merci déjà envoyé":"Dire merci à "+membre(t.faitPar).nom,onclick:ev=>{ ev.stopPropagation(); sendMerci(t,mb); }},el("span",{class:"hs",text:"🤝"}),sent?"Merci envoyé":"Merci "+membre(t.faitPar).nom); if(sent) mb.disabled=true; meta.append(mb); }
-  else if(t.fait&&t.faitLe) meta.append(el("span",{text:"fait "+ago(t.faitLe)}));
-  else if(t.creePar&&!t.prive) meta.append(el("span",{text:"ajouté par "+membre(t.creePar).nom}));
+  else if(t.fait&&t.faitLe&&!(t.faitPar&&!t.prive)) meta.append(el("span",{text:"fait "+ago(t.faitLe)}));
+  else if(!t.fait&&t.creePar&&!t.prive) meta.append(el("span",{text:"ajouté par "+membre(t.creePar).nom}));
   row.append(first,el("div",{class:"t-body"},el("div",{class:"t-title",text:opts.petName?stripPet(t.titre,opts.petName):t.titre}),meta)); if(whoAv) row.append(whoAv);
   const key=(t.prive?"p:":"f:")+t.id;
   const editable=canEditTask(t);
