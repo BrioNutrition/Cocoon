@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 15:50";</script>
+<script>window.COCOON_BUILD="28/10 16:05";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2368,6 +2368,23 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 :root[data-theme="light"] .dz-st.r{color:#C2412D}
 .pk-ic.dz-ice{font-size:18px;line-height:1;display:grid;place-items:center}
 .dz-rp{margin:0 4px 4px;font-size:13.5px;color:var(--muted)}
+/* Maison (28 oct., choix A d'Angel) */
+.m-dash.mz{gap:0}
+.mz-hero{background:color-mix(in srgb,var(--c) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--c) 45%,transparent);border-radius:20px;padding:14px}
+.mz-hero .dz-tx b{font-size:17px;font-weight:800;line-height:1.25}.mz-hero .dz-tx small{font-size:12.5px;font-weight:600;color:var(--muted)}
+.mz-hero.ok .dz-tx b{font-size:15.5px}
+.mz-sec{margin:16px 2px 8px}
+.mz-grp{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:2px 14px}
+.mz-l{display:flex;align-items:center;gap:11px;width:100%;padding:10px 0;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}.mz-l:last-child{border-bottom:0}
+.mz-l .dz-tx b{font-size:14.5px;font-weight:800;line-height:1.25}.mz-l .dz-tx small{font-size:12px;font-weight:600;color:var(--muted)}
+.mz-l .dz-st{margin:0}
+.m-card.mz-home{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start;text-align:left;gap:11px;padding:10px 12px;border:1px solid var(--line);box-shadow:none;border-radius:16px;min-height:0}
+.mz-home .dz-tx{align-items:flex-start}.mz-home>button{flex:none;margin:0 0 0 auto;width:36px;height:36px}
+.mz-home .dz-tx b{font-size:15px;font-weight:800}.mz-home .dz-tx small{font-size:12.5px;font-weight:600;color:var(--muted)}
+#mHome.sub{margin-top:14px!important}#mHome:empty{display:none}.m-tiles.dz-g3 .dz-tn{font-size:12.5px}
+.m-tiles.dz-g3{margin-top:12px;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.m-tiles.dz-g3[hidden]{display:none}
+.m-tiles.dz-g3 .dz-st{margin-top:6px}
+.m-bk{display:grid;place-items:center}.m-bk svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 #papHero .dz-e.big{font-size:26px;opacity:1}#papHero .dz-tx{opacity:1;font-size:inherit}
 #papHero .dz-next b{font-family:inherit;font-size:inherit;font-weight:800;letter-spacing:0}
 /* lignes de papiers : emoji sur carré teinté, contour fin (comme les autres pages) */
@@ -7264,10 +7281,9 @@ function renderMaison(){
   const h=$("mHome"); h.innerHTML="";
   const typ=L.type||(q.logement==="maison"?"Maison":q.logement==="appart"?"Appartement":""), st=L.statut||(q.statut==="proprio"?"Propriétaire":q.statut==="locataire"?"Locataire":"");
   const facts=[]; if(typ) facts.push(["Type",typ]); if(st) facts.push(["Statut",st]); if(L.surface) facts.push(["Surface",L.surface+" m²"]); if(L.annee) facts.push(["Construit en",L.annee]); if(L.chauffage) facts.push(["Chauffage",L.chauffage]);
-  const card=el("div",{class:"m-card"},el("div",{class:"m-head"},(()=>{ const i=el("span",{class:"b-ico",style:"--stripe:#7FCDB9"}); i.innerHTML=GI("maison"); return i; })(),el("div",{class:"m-title"},el("b",{text:S.foyerNom?"Chez les "+S.foyerNom.replace(/^les\s+/i,""):"Ton logement"}),el("span",{text:facts.length?"":"Ajoute quelques infos sur ton chez-toi"})),pencilBtn(()=>openMForm("logement"),"Modifier le logement")));
-  if(facts.length){ const g=el("div",{class:"facts"}); for(const [l,v] of facts) g.append(el("div",{class:"fact"},el("span",{text:l}),el("b",{text:String(v)}))); card.append(g); }
+  const card=el("div",{class:"m-card mz-home"},el("span",{class:"dz-e",style:"--c:#7FCDB9",text:"🏠"}),el("span",{class:"dz-tx"},el("b",{text:S.foyerNom?"Chez les "+S.foyerNom.replace(/^les\s+/i,""):"Ton logement"}),el("small",{text:facts.length?facts.map(f=>f[1]).join(" · "):"Ajoute quelques infos sur ton chez-toi"})),pencilBtn(()=>openMForm("logement"),"Modifier le logement"));
   mPlace("logement",card,"replace");
-  h.append(el("div",{class:"sec-title"},el("h2",{text:"Le logement"})),card);
+  h.append(card);
   // Équipements
   const e=$("mEquip"); e.innerHTML="";
   const eqs=S.equip.slice().sort((a,b)=>(eqNext(a)||"9")<(eqNext(b)||"9")?-1:1);
@@ -7393,33 +7409,41 @@ function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; co
   for(const [k,id] of Object.entries(ids)){ const e=$(id); if(e) e.hidden=sec!==k; }
   $("mHome").hidden=!!sec; T.hidden=!!sec;
   if(sec){ const m=MSECS.find(x=>x[0]===sec); D.className="m-dash is-sub";
-    D.append(el("button",{type:"button",class:"m-back","aria-label":"Retour à la maison",onclick:()=>mOpen(null)},el("span",{"aria-hidden":"true",text:"‹"}),"La maison"));
+    D.append((()=>{ const b=el("button",{type:"button",class:"m-back","aria-label":"Retour à la maison",onclick:()=>mOpen(null)},el("span",{"aria-hidden":"true",class:"m-bk"}),"La maison"); b.firstChild.innerHTML='<svg viewBox="0 0 24 24"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg>'; return b; })());
     return; }
-  D.className="m-dash";
-  // ce qui compte cette semaine
-  const al=[];
+  D.className="m-dash mz";
+  /* ce qui compte (28 oct., choix A d'Angel) : la prochaine chose à faire en grand, puis « Bientôt » */
+  const al=[], h=new Date().getHours(), goSec=k=>()=>mOpen(k);
   for(const b of (S.bins||[])){ const nx=binNext(b); if(!nx) continue; const d=iso(nx.sortie); if(d!==t0&&d!==iso(new Date(today().getTime()+864e5))) continue;
-    const w=binWho(b), tdy=d===t0, h=new Date().getHours();
-    al.push({o:tdy?0:2,ic:"🗑",t:(tdy?(h>=16?"Ce soir":"Aujourd'hui"):"Demain")+" : "+b.nom,s:w.label,btn:tdy?["Fait",x=>binDone(b,x)]:null}); }
-  for(const x of (S.equip||[])){ const nx=eqNext(x); if(!nx) continue; const n=daysTo(nx); if(n>45) continue; const T2=EQ[x.type]||EQ.autre;
-    al.push({o:n<0?1:3,ic:"🔧",t:"Entretien "+(x.nom||T2.nom).toLowerCase().replace(/^entretien /,""),s:n<0?"en retard de "+(-n)+" j":n===0?"aujourd'hui":"à prévoir d'ici "+n+" j",late:n<0,btn:["C'est fait",()=>{ S.mSec="equip"; openMForm("maint",null,x); }]}); }
-  { const L=meterLast(); if(L&&daysTo(L.date)<-30) al.push({o:4,ic:"⚡",t:"Relever les compteurs",s:"dernier relevé "+ago(parse(L.date).getTime()),btn:["Relever",()=>{ S.mSec="meters"; openMForm("releve",{compteur:L.compteur||"elec"}); }]}); }
-  al.sort((a,b)=>a.o-b.o);
-  if(al.length) for(const a of al.slice(0,3)){ const row=el("div",{class:"m-al"+(a.late?" late":"")},el("i",{"aria-hidden":"true",text:a.ic}),el("div",{},el("b",{text:a.t}),el("span",{text:a.s})));
-      if(a.btn){ const b=el("button",{type:"button",class:"m-al-go",text:a.btn[0]}); b.addEventListener("click",()=>a.btn[1](b)); row.append(b); } D.append(row); }
-  else if((S.bins||[]).length||(S.equip||[]).length||(S.releves||[]).length) D.append(el("div",{class:"m-al ok"},el("i",{"aria-hidden":"true",text:"✓"}),el("div",{},el("b",{text:"Rien d'urgent cette semaine"}),el("span",{text:"Poubelles, entretiens et relevés sont à jour."}))));
+    const w=binWho(b), tdy=d===t0, quand=tdy?(h>=16?"ce soir":"aujourd'hui"):"demain";
+    al.push({o:tdy?0:2,d:tdy?0:1,ic:"🗑️",col:binCol(b),cap:"🗑️ À sortir "+quand,t:b.nom,s:"À sortir "+quand+(w.label?" · "+w.label:""),pill:tdy?(h>=16?"Ce soir":"Auj."):"Demain",btn:tdy?["✓ C'est sorti",x=>binDone(b,x)]:null,go:goSec("bins")}); }
+  for(const x of (S.equip||[])){ const nx=eqNext(x); if(!nx) continue; const n=daysTo(nx); if(n>45) continue; const T2=EQ[x.type]||EQ.autre, nom=x.nom||T2.nom;
+    al.push({o:n<0?1:3,d:n,ic:"🔧",col:"#FF9C80",cap:"🔧 Entretien "+(n<0?"en retard":"à prévoir"),t:"Entretien : "+nom.replace(/^entretien\s*/i,""),s:n<0?"En retard de "+(-n)+" jour"+(-n>1?"s":""):n===0?"Aujourd'hui":"Dans "+n+" jour"+(n>1?"s":"")+" · "+fmtDue(nx),late:n<0,pill:n<0?"Retard":n+" j",btn:["✓ C'est fait",()=>{ S.mSec="equip"; openMForm("maint",null,x); }],go:goSec("equip")}); }
+  { const L=meterLast(); if(L&&daysTo(L.date)<-30) al.push({o:4,d:99,ic:"⚡",col:"#FFC94A",cap:"⚡ Compteurs",t:"Relever les compteurs",s:"Dernier relevé "+ago(parse(L.date).getTime()),pill:"À faire",btn:["Relever",()=>{ S.mSec="meters"; openMForm("releve",{compteur:L.compteur||"elec"}); }],go:goSec("meters")}); }
+  for(const x of (S.equip||[])){ if(!x.garantieFin) continue; const n=daysTo(x.garantieFin); if(n<0||n>60) continue;
+    al.push({o:5,d:n,ic:"🧾",col:"#8FB8FF",cap:"🧾 Fin de garantie",t:"Garantie : "+(x.nom||(EQ[x.type]||EQ.autre).nom),s:"Se termine "+(n===0?"aujourd'hui":"dans "+n+" jour"+(n>1?"s":"")+" · "+fmtDue(x.garantieFin)),pill:n<=60?(n<=31?n+" j":Math.round(n/30)+" mois"):"",go:goSec("equip")}); }
+  al.sort((a,b)=>a.o-b.o||a.d-b.d);
+  if(al.length){ const a=al[0], H=el("div",{class:"mz-hero",style:"--c:"+a.col},el("div",{class:"dz-cap",text:a.cap}),
+      el("div",{class:"dz-hr"},el("span",{class:"dz-e big",style:"--c:"+a.col,text:a.ic}),el("span",{class:"dz-tx"},el("b",{text:a.t}),el("small",{text:a.s}))));
+    const acts=el("div",{class:"dz-acts"}); if(a.btn&&me){ const b=el("button",{type:"button",class:"dz-b y",id:"mzGo",text:a.btn[0]}); b.addEventListener("click",()=>a.btn[1](b)); acts.append(b); }
+    acts.append(el("button",{type:"button",class:"dz-b",onclick:a.go},"Voir")); H.append(acts); D.append(H);
+    const rest=al.slice(1,4); if(rest.length){ D.append(el("div",{class:"dg-sec mz-sec",text:"Bientôt"}));
+      D.append(el("div",{class:"mz-grp"},...rest.map(x=>el("button",{type:"button",class:"mz-l",onclick:x.go},el("span",{class:"dz-e",style:"--c:"+x.col,text:x.ic}),el("span",{class:"dz-tx"},el("b",{text:x.t}),el("small",{text:x.s})),x.pill?el("span",{class:"dz-st "+(x.late||x.d<=1?"r":x.d<=14?"o":""),text:x.pill}):null)))); } }
+  else if((S.bins||[]).length||(S.equip||[]).length||(S.releves||[]).length) D.append(el("div",{class:"mz-hero ok",style:"--c:#3CC37A"},el("div",{class:"dz-hr"},el("span",{class:"dz-e big",style:"--c:#3CC37A",text:"✅"}),el("span",{class:"dz-tx"},el("b",{text:"Rien d'urgent cette semaine"}),el("small",{text:"Poubelles, entretiens et relevés sont à jour."})))));
   // les tuiles
   const bins=S.bins||[], days=[...new Set(bins.flatMap(b=>b.jours||[]))].sort((a,b)=>((a+6)%7)-((b+6)%7));
   const eqs=S.equip||[], eqSoon=eqs.filter(x=>{ const n=eqNext(x); return n&&daysTo(n)<=45; }).length, cts=S.contacts||[], L=meterLast();
-  const info={bins:[bins.length?bins.length+" bac"+(bins.length>1?"s":"")+(days.length?" · "+days.map(d=>JOURS_COURTS[d]).join(" "):""):"Qui les sort, et quand",null],
-    contacts:[cts.length?cts.length+" numéro"+(cts.length>1?"s":""):"Plombier, médecin, proprio…",null],
-    equip:[eqs.length?eqs.slice(0,2).map(x=>x.nom||(EQ[x.type]||EQ.autre).nom).join(", ")+(eqs.length>2?"…":""):"Chaudière, VMC…",eqSoon?eqSoon+" bientôt":null],
-    meters:[L?"dernier relevé "+ago(parse(L.date).getTime()):"Électricité, eau, gaz",L&&daysTo(L.date)<-30?"relevé":null],
-    garde:["À partager : enfants, animaux, consignes",null],
-    vac:[vacOn()?"En vacances jusqu'au "+fmtDue(S.vac.fin):S.vac&&S.vac.debut>iso(today())?"Départ "+dueLabel(S.vac.debut):"Pause des rappels, liste avant de partir",vacOn()?"🏖":null]};
-  for(const [k,n,c,ic] of MSECS){ const [sub,badge]=info[k];
-    const t=el("button",{type:"button",class:"m-tile",style:"--bc:"+c,"aria-label":n+", "+sub,onclick:()=>k==="garde"?openGarde():k==="vac"?openVac():mOpen(k)},emoIco(MSEC_EMO[k]||"✨"),el("b",{text:n}),el("span",{text:sub}));
-    if(badge) t.append(el("em",{text:badge})); T.append(t); }
+  const binTdy=bins.some(b=>{ const nx=binNext(b); return nx&&iso(nx.sortie)===t0; });
+  const info={bins:[bins.length?bins.length+" bac"+(bins.length>1?"s":"")+(days.length?" · "+days.map(d=>JOURS_COURTS[d]).join(" "):""):"À régler",binTdy?["Ce soir","o"]:null],
+    contacts:[cts.length?cts.length+" numéro"+(cts.length>1?"s":""):"Aucun",null],
+    equip:[eqs.length?eqs.length+" appareil"+(eqs.length>1?"s":""):"Aucun",eqSoon?[eqSoon+" entretien"+(eqSoon>1?"s":""),"r"]:null],
+    meters:[L?"Il y a "+Math.max(0,-daysTo(L.date))+" j":"Aucun relevé",L&&daysTo(L.date)<-30?["Relevé","o"]:null],
+    garde:[(S.garde&&Object.keys(S.garde).length)?"Fiche prête":"À préparer",null],
+    vac:[vacOn()?"Jusqu'au "+fmtDue(S.vac.fin):S.vac&&S.vac.debut>iso(today())?"Départ "+dueLabel(S.vac.debut):"Rien de prévu",vacOn()?["En cours","o"]:null]};
+  T.className="m-tiles dz-g3";
+  for(const [k,n,c] of MSECS){ const [sub,badge]=info[k];
+    const t=el("button",{type:"button",class:"dz-t",style:"--c:"+c,"aria-label":n+", "+sub,onclick:()=>k==="garde"?openGarde():k==="vac"?openVac():mOpen(k)},el("span",{class:"dz-te","aria-hidden":"true",text:MSEC_EMO[k]||"✨"}),el("span",{class:"dz-tn",text:k==="garde"?"Baby-sitter":n}),el("span",{class:"dz-tk",text:sub}));
+    if(badge) t.append(el("span",{class:"dz-st "+badge[1],text:badge[0]})); T.append(t); }
 }
 function renderCars(){
   const cw=$("mCars"); if(!cw) return; cw.innerHTML=""; const me=meId(); if(!me) return; const q=(S.config&&S.config.questionnaire)||{};
@@ -10948,6 +10972,7 @@ function binWho(b){ const me=meId(); const q=(b.qui&&b.qui.length?b.qui:["tous"]
   return {ids:q,label:q.map(id=>id===me?"toi":membre(id).nom).join(", ")}; }
 function binWhen(b,s){ const n=daysTo(iso(s)); return b.veille?(n<=0?"ce soir":n===1?"demain soir":WDAYS[s.getDay()]+" soir"):(n<=0?"aujourd'hui":n===1?"demain":WDAYS[s.getDay()]); }
 function binDays(b){ const d=(b.jours||[]).slice().sort((x,y)=>((x+6)%7)-((y+6)%7)).map(x=>JOURS_COURTS[x]); return (d.length?"Collecte "+d.join(", "):"Jours à choisir")+((b.freq||1)>1?" · une semaine sur "+b.freq:""); }
+const binCol=b=>{ if(b.c) return b.c; const n=norm(b.nom||""); return /jaune|emballage|plastique/.test(n)?"#F5D45B":/verre/.test(n)?"#7FD39A":/bleu|papier/.test(n)?"#8FB8FF":/bio|compost|marron|dechets verts/.test(n)?"#C08A5A":/ordure|gris|noir|menager/.test(n)?"#A9B4C2":"#7FD39A"; };
 async function binDone(b,btn){ const nx=binNext(b); if(!nx||!needMe()) return; const w=binWho(b); const upd={derniere:iso(nx.sortie),dernierPar:meId()};
   if(w.tour) upd.tourIdx=((b.tourIdx||0)+1)%((b.qui||[]).length||1);
   try{ await S.db.collection("poubelles").doc(b.id).update(upd); if(btn){ const r=btn.getBoundingClientRect(); confetti(r.left+r.width/2,r.top); }
