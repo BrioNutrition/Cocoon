@@ -4567,17 +4567,19 @@ function actRule(n,op,d,old){ d=d||{}; const o=old||{};
 function actLog(n,op,d,id){ try{ if(!ACT_ARR[n]||!S.dbRaw||!meId()) return; const arr=S[ACT_ARR[n]]||[], old=id?(arr.find(x=>x.id===id)||(S.pendingDel&&S.pendingDel.get&&(S.pendingDel.get(n+":"+id)||{}).item)||null):null;
     const txt=actRule(n,op,d,old); if(!txt) return; const q=actName(n,Object.assign({},old||{},op==="del"?{}:(d||{}))); if(!q) return;
     S.dbRaw.collection("activite").add({par:meId(),at:Date.now(),txt,q:String(q).slice(0,120),ic:ACT_ICO[n]||"•"}).catch(()=>{}); }catch(_){} }
+/* enveloppe simple (pas de Proxy : la base de l'artefact n'aime pas être enveloppée par un Proxy, tout avait cessé de charger) ;
+   seules les méthodes utilisées par l'app sont relayées : collection().add/doc/onSnapshot/get, doc().set/update/delete/get/onSnapshot/collection */
 function actWrap(db){
-  const wrapDoc=(d,n,id)=>new Proxy(d,{get(t,p){ const v=t[p];
-    if(p==="set") return (data,o)=>{ const old=(S[ACT_ARR[n]]||[]).find(x=>x.id===id); const op=old?"set":(n==="listes"||n==="repas"||n==="modeles"?"set":"add"); actLog(n,op,data,id); return v.call(t,data,o); };
-    if(p==="update") return data=>{ actLog(n,"upd",data,id); return v.call(t,data); };
-    if(p==="delete") return ()=>{ actLog(n,"del",null,id); return v.call(t); };
-    return typeof v==="function"?v.bind(t):v; }});
-  const wrapCol=(c,n)=>new Proxy(c,{get(t,p){ const v=t[p];
-    if(p==="add") return data=>v.call(t,data).then(r=>{ actLog(n,"add",data,null); return r; });
-    if(p==="doc") return id=>wrapDoc(v.call(t,id),n,id);
-    return typeof v==="function"?v.bind(t):v; }});
-  return new Proxy(db,{get(t,p){ const v=t[p]; if(p==="collection") return n=>wrapCol(v.call(t,n),n); return typeof v==="function"?v.bind(t):v; }}); }
+  const wrapDoc=(d,n,id)=>({ id:d.id, ref:d,
+    set:(data,o)=>{ try{ const old=(S[ACT_ARR[n]]||[]).find(x=>x.id===id); actLog(n,old||n==="listes"||n==="repas"||n==="modeles"?"set":"add",data,id); }catch(_){} return o===undefined?d.set(data):d.set(data,o); },
+    update:data=>{ try{ actLog(n,"upd",data,id); }catch(_){} return d.update(data); },
+    delete:()=>{ try{ actLog(n,"del",null,id); }catch(_){} return d.delete(); },
+    get:(...a)=>d.get(...a), onSnapshot:(...a)=>d.onSnapshot(...a), collection:(...a)=>d.collection(...a) });
+  const wrapCol=(c,n)=>({ id:c.id, ref:c,
+    add:data=>c.add(data).then(r=>{ try{ actLog(n,"add",data,null); }catch(_){} return r; }),
+    doc:id=>wrapDoc(c.doc(id),n,id),
+    get:(...a)=>c.get(...a), onSnapshot:(...a)=>c.onSnapshot(...a) });
+  return { raw:db, collection:n=>ACT_ARR[n]?wrapCol(db.collection(n),n):db.collection(n), doc:(...a)=>db.doc(...a) }; }
 /* on garde les 300 dernières (le plus ancien est effacé par celui qui ouvre l'app) */
 function actPrune(){ const A=(S.activite||[]).slice().sort((a,b)=>(b.at||0)-(a.at||0)); if(A.length<=300||S.actPruning) return; S.actPruning=true;
   Promise.all(A.slice(300,330).map(x=>S.dbRaw.collection("activite").doc(x.id).delete().catch(()=>{}))).finally(()=>{ S.actPruning=false; }); }
