@@ -2271,6 +2271,11 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 :root[data-theme="light"] .dz-st.r{color:#C2412D}
 .pk-ic.dz-ice{font-size:18px;line-height:1;display:grid;place-items:center}
 .dz-rp{margin:0 4px 4px;font-size:13.5px;color:var(--muted)}
+/* Repas : ligne « Réserves » au bas de « Ce soir » */
+.r-stk{display:flex;align-items:center;gap:8px;width:100%;margin-top:12px;padding:11px 0 0;border:0;border-top:1px solid color-mix(in srgb,#E0B21C 30%,transparent);background:none;color:var(--ink);font:inherit;font-size:13.5px;text-align:left;cursor:pointer}
+.r-stk>span{font-size:17px;line-height:1}.r-stk b{font-weight:800}.r-stk small{flex:1;min-width:0;color:var(--muted);font-weight:600;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r-stk em{font-style:normal;color:#FF8A8A;font-weight:800}:root[data-theme="light"] .r-stk em{color:#C2412D}
+.r-stk i{flex:none;width:8px;height:8px;border-right:2px solid var(--muted);border-top:2px solid var(--muted);transform:rotate(45deg);margin-right:4px}
 /* Maison (28 oct., choix A d'Angel) */
 .m-dash.mz{gap:0}
 .mz-hero{background:color-mix(in srgb,var(--c) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--c) 45%,transparent);border-radius:20px;padding:14px}
@@ -10814,12 +10819,13 @@ function renderRepas(){
       hero.append(el("div",{class:"r-hb"},el("button",{type:"button",class:"r-hbt",onclick:()=>openIngSheet(hm.plat)},uic("cart"),"Ingrédients"),el("button",{type:"button",class:"r-hbt",onclick:()=>openRepas(hd,hs)},"✎ Changer"))); }
     else { hero.append(el("button",{type:"button",class:"r-hp",onclick:()=>openRepas(hd,hs)},el("span",{class:"r-he","aria-hidden":"true",text:"🤔"}),el("b",{text:"Rien de prévu"})));
       const ids=el("div",{class:"r-hb"}); for(const p of platsConnus(hs).slice(0,3)) ids.append(el("button",{type:"button",class:"r-hbt",onclick:()=>openRepas(hd,hs,p.nom)},platEmoji(p.nom,hs)+" "+p.nom));
-      ids.prepend(el("button",{type:"button",class:"r-hbt dk",onclick:()=>openFrigo()},"Une idée avec le frigo")); ids.append(el("button",{type:"button",class:"r-hbt",onclick:()=>openRepas(hd,hs)},"Choisir un plat"));
+      ids.prepend(el("button",{type:"button",class:"r-hbt dk",onclick:()=>openFrigo()},"🧊 Une idée avec le frigo")); ids.append(el("button",{type:"button",class:"r-hbt",onclick:()=>openRepas(hd,hs)},"Choisir un plat"));
       hero.append(ids); }
+    /* les réserves en une ligne au bas de « Ce soir » (28 oct., choix A d'Angel : les cartes « frigo » et « réserves » prenaient trop de place) */
+    { const st=S.stock||[], bt=st.filter(x=>stockJ(x)!=null&&stockJ(x)<=stockAlerte(x)).length;
+      hero.append(el("button",{type:"button",class:"r-stk",id:"rStock",onclick:()=>openStock()},el("span",{"aria-hidden":"true",text:"🥫"}),el("b",{text:"Réserves"}),
+        el("small",{},st.length?st.length+" produit"+(st.length>1?"s":""):"Frigo, congélateur, placard",bt?" · ":"",bt?el("em",{text:bt+" à finir vite"}):""),el("i",{"aria-hidden":"true"}))); }
     box.append(hero); }
-  box.append(el("button",{type:"button",class:"r-frigo",onclick:()=>openFrigo()},el("span",{"aria-hidden":"true",text:"🧊"}),el("span",{},el("b",{text:"Avec ce qu'il y a dans le frigo"}),el("small",{text:"3 idées de plats, et ce qui manque part aux courses"})),el("u",{"aria-hidden":"true",text:"›"})));
-  { const st=S.stock||[], bt=st.filter(x=>stockJ(x)!=null&&stockJ(x)<=stockAlerte(x)).length;
-    box.append(el("button",{type:"button",class:"r-frigo",onclick:()=>openStock()},el("span",{"aria-hidden":"true",text:"🥫"}),el("span",{},el("b",{text:"Frigo, congélateur, placard"}),el("small",{text:st.length?st.length+" produit"+(st.length>1?"s":"")+(bt?" · "+bt+" à consommer vite":""):"Note ce que tu ranges, Cocoon prévient avant que ça périme"})),bt?el("em",{class:"r-fbadge",text:String(bt)}):el("u",{"aria-hidden":"true",text:"›"}))); }
   /* 2. la frise de la semaine */
   /* même rangée de jours que l'accueil ; « + » déplie le mois. Points = repas prévus (petit-déj, déjeuner, repas) */
   const RC={matin:"#E9A86B",midi:"#6FA8DC",soir:"#E0B21C"};
