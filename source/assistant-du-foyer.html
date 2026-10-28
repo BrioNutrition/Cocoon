@@ -2287,6 +2287,12 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 #mHome.sub{margin-top:14px!important}#mHome:empty{display:none}.m-tiles.dz-g3 .dz-tn{font-size:12.5px}
 .m-tiles.dz-g3{margin-top:12px;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.m-tiles.dz-g3[hidden]{display:none}
 .m-tiles.dz-g3 .dz-st{margin-top:6px}
+/* formulaires de la Maison dans une feuille du bas */
+.mx-in .b-form{background:none;box-shadow:none;padding:0;margin:0;border:0}
+.mx-in input[type=tel],.mx-in input[type=number],.mx-in input[type=text],.mx-in input[type=date],.mx-in select,.mx-in textarea{width:100%;box-sizing:border-box;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:11px 12px;font:inherit;font-size:15px;min-height:44px;-webkit-appearance:none;appearance:none}
+.mx-in select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:32px}
+.mx-in input:focus,.mx-in select:focus,.mx-in textarea:focus{outline:none;border-color:var(--ink)}.mx-in .b-form>h3{display:none}
+.mx-in .b-form .row-btns .btn:not(.ghost){flex:1;padding:13px;border-radius:16px;font-weight:800}
 .m-bk{display:grid;place-items:center}.m-bk svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 #papHero .dz-e.big{font-size:26px;opacity:1}#papHero .dz-tx{opacity:1;font-size:inherit}
 #papHero .dz-next b{font-family:inherit;font-size:inherit;font-weight:800;letter-spacing:0}
@@ -7224,15 +7230,25 @@ function renderMaison(){
     rs.forEach((r,i)=>{ const p=rs[i+1]; hl.append(el("div",{class:"dl"},el("span",{},fmtDue(r.date)+" ",el("small",{text:p?"+"+nf.format(Math.round((r.valeur-p.valeur)*10)/10)+" "+M.u:""})),el("b",{text:nf.format(r.valeur)+" "+M.u}))); });
     mt.append(hl); }
   if(S.mForm&&S.mForm.slot==="meters"){ const box=el("div",{class:"m-card editing"}); box.append(MHF); mt.append(box); }
-  renderMDash();
+  renderMDash(); mfSync();
 }
 /* Maison : tableau de bord (ce qui compte cette semaine + 4 tuiles qui s'ouvrent) */
 const MSECS=[["bins","Poubelles","#7FD39A","poubelle"],["contacts","Contacts","#8FB8FF","tel"],["equip","Équipements","#FF9C80","entretien"],["meters","Compteurs","#FFC94A","eclair"],["garde","Fiche baby-sitter","#E79ADB","enfants"],["vac","Vacances","#7CCFE0","loisirs"]];
 const MSEC_EMO={bins:"🗑️",contacts:"📞",equip:"🔧",meters:"⚡",garde:"🧸",vac:"🏖️"};
 function mOpen(sec){ S.mSec=sec||null; renderMaison(); topNow(); }
 /* le + d'un sous-menu de Maison ajoute directement ce qu'il contient */
-function mAddIn(sec){ if(sec==="contacts"){ S.ctForm={role:"",nom:"",tel:"",note:"",c:"#C9C7DD"}; renderMaison(); topNow(); setTimeout(()=>{ const x=$("ctRole"); if(x) x.focus(); },200); }
+function mAddIn(sec){ if(sec==="contacts"){ S.ctForm={role:"",nom:"",tel:"",note:"",c:"#C9C7DD"}; renderContacts(); }
+  else if(sec==="bins"){ S.binForm={nom:"",c:"#59606B",jours:[],freq:1,veille:true,qui:["tous"],tour:false}; renderBins(); }
   else if(sec==="equip") openMForm("equip"); else if(sec==="meters") openMForm("releve",{compteur:"elec"}); }
+/* Maison (28 oct., Angel) : chaque formulaire s'ouvre dans une feuille qui monte du bas, au lieu de s'insérer dans la page.
+   on = l'objet du formulaire en cours (null = fermé) ; la feuille n'est refaite que si ce formulaire change (le clavier et la saisie restent) */
+const MX={};
+function mxSync(key,on,build,title,sub,reset,always){ const cur=MX[key];
+  if(!on){ if(cur){ delete MX[key]; cur.U.close(); } return; }
+  if(!always&&cur&&cur.sig===on&&cur.U.sheet.isConnected) return;
+  let C=cur&&cur.U.sheet.isConnected?cur:null;
+  if(!C){ const U=upSheet("mx-"+key,title,()=>{ if(MX[key]&&MX[key].U===U){ delete MX[key]; reset(); } }); U.sheet.classList.add("ev-sheet","mx-sheet"); const inn=el("div",{class:"pp-in ev-in mx-in"}); U.sheet.append(inn); C=MX[key]={U,inn}; }
+  C.sig=on; C.inn.innerHTML=""; C.inn.append(el("div",{class:"ev-top"},el("h2",{text:title}),sub?el("p",{text:sub}):null),build()); }
 /* ---------- Fiche baby-sitter ----------
    Une fiche pour la personne qui garde les enfants ou les animaux : qui garder (âge, infos publiques des profils), contacts,
    adresse, Wi-Fi, consignes. Rangée dans fiches/garde ; partagée par un lien vers fiche/ (page à part, sans compte) :
@@ -7308,6 +7324,7 @@ function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; co
   D.innerHTML=""; T.innerHTML="";
   const ids={bins:"mBins",contacts:"mContacts",equip:"mEquip",meters:"mMeters"};
   for(const [k,id] of Object.entries(ids)){ const e=$(id); if(e) e.hidden=sec!==k; }
+  document.querySelectorAll('.hub-add[data-add="maison"]').forEach(b=>b.hidden=!sec);
   $("mHome").hidden=!!sec; T.hidden=!!sec;
   if(sec){ const m=MSECS.find(x=>x[0]===sec); D.className="m-dash is-sub";
     D.append((()=>{ const b=el("button",{type:"button",class:"m-back","aria-label":"Retour à la maison",onclick:()=>mOpen(null)},el("span",{"aria-hidden":"true",class:"m-bk"}),"La maison"); b.firstChild.innerHTML='<svg viewBox="0 0 24 24"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg>'; return b; })());
@@ -7401,13 +7418,17 @@ function openMForm(kind,item,ctx){
   if(kind==="equip"&&!d.type) d.type="autre";
   S.mForm={kind,id:item&&item.id&&!item._new?item.id:null,ctx:ctx||null,d,confirm:false,slot:mSlotOf(kind,item,ctx)};
   const car=["vehic","vent","km"].includes(kind), target=car?"moi":"maison";
+  if(!car) S.mForm.slot="sheet";
   if(S.tab!==target) setTab(target);
   if(car) renderCars(); else renderMaison();
-  renderMForm(); setTimeout(()=>{ if(MHF.isConnected) MHF.scrollIntoView({behavior:"smooth",block:"center"}); /* pas de curseur automatique sur téléphone : iOS ouvrirait tout seul la liste de choix (ou le clavier) */
+  renderMForm(); setTimeout(()=>{ if(MHF.isConnected&&!(S.mForm&&S.mForm.slot==="sheet")) MHF.scrollIntoView({behavior:"smooth",block:"center"}); /* pas de curseur automatique sur téléphone : iOS ouvrirait tout seul la liste de choix (ou le clavier) */
     let touch=false; try{ touch=matchMedia("(pointer: coarse)").matches; }catch(_){}
     const i=MHF.querySelector("input:not([type=checkbox]),select"); if(i&&!S.mForm.id&&!touch) try{ i.focus({preventScroll:true}); }catch(_){} },80);
 }
 function closeMForm(){ S.mForm=null; MHF.hidden=true; MHF.innerHTML=""; document.body.append(MHF); renderMaison(); renderCars(); }
+const MF_T={equip:["Nouvel équipement","Modifier l'équipement","Cocoon te rappelle ses entretiens"],maint:["Entretien fait","Entretien fait","Il sera noté dans son carnet"],releve:["Nouveau relevé","Modifier le relevé","Pour suivre ta consommation"],logement:["Le logement","Le logement","Quelques infos sur ton chez-toi"]};
+function mfSync(){ const F=S.mForm&&S.mForm.slot==="sheet"?S.mForm:null, t=F&&(MF_T[F.kind]||["Maison","Maison",""]);
+  mxSync("mf",F,()=>{ renderMForm(); MHF.hidden=false; return MHF; },t?(F.id?t[1]:t[0]):"",t?t[2]:"",()=>closeMForm()); }
 function renderMForm(){
   const F=S.mForm, f=MHF; if(!F){ f.hidden=true; return; } f.hidden=false; f.innerHTML="";
   const spec=MFORMS[F.kind], d=F.d;
@@ -7497,12 +7518,12 @@ function hubSummary(v){ const t0=iso(today()), me=meId();
   return ""; }
 function renderHubTitle(){ const v=S.tab, p=document.querySelector('.hub-sum[data-sum="'+v+'"]'); if(p){ const t=hubSummary(v); if(p.textContent!==t) p.textContent=t; } hubMiniUpd(); }
 function hubMiniUpd(){ const M=$("hubMini"); if(!M) return; const ti=document.querySelector('.view:not([hidden]) .hb-title'); let on=false;
-  if(ti&&ti.offsetParent&&ti.textContent.trim()&&!document.documentElement.classList.contains("prem-open")){ const r=ti.getBoundingClientRect(); on=r.bottom<4; if(on){ const t=ti.textContent; if($("hubMiniT").textContent!==t) $("hubMiniT").textContent=t; const add=document.querySelector('.view:not([hidden]) .hub-add'); $("hubMiniAdd").hidden=!add; } }
+  if(ti&&ti.offsetParent&&ti.textContent.trim()&&!document.documentElement.classList.contains("prem-open")){ const r=ti.getBoundingClientRect(); on=r.bottom<4; if(on){ const t=ti.textContent; if($("hubMiniT").textContent!==t) $("hubMiniT").textContent=t; const add=document.querySelector('.view:not([hidden]) .hub-add:not([hidden])'); $("hubMiniAdd").hidden=!add; } }
   if(M.classList.contains("on")!==on){ M.classList.toggle("on",on); M.setAttribute("aria-hidden",String(!on)); M.querySelectorAll("button").forEach(b=>b.tabIndex=on?0:-1); } }
 addEventListener("scroll",()=>{ if(!S._hmRaf) S._hmRaf=requestAnimationFrame(()=>{ S._hmRaf=0; hubMiniUpd(); }); },{passive:true});
 /* « Revenir à aujourd'hui » (à la place de « Semaine N » dès qu'on regarde un autre jour ou un autre mois) */
 $("wkToday").addEventListener("click",()=>{ S.accDay=null; S.accMo=null; renderToday(); });
-$("hubMiniAdd").addEventListener("click",()=>{ const add=document.querySelector('.view:not([hidden]) .hub-add'); if(add){ window.scrollTo({top:0,behavior:"smooth"}); add.click(); } });
+$("hubMiniAdd").addEventListener("click",()=>{ const add=document.querySelector('.view:not([hidden]) .hub-add:not([hidden])'); if(add){ window.scrollTo({top:0,behavior:"smooth"}); add.click(); } });
 /* catégories de tâches créées par le foyer : on les retrouve dans les tâches elles-mêmes (nom + couleur) */
 function syncTaskCats(){ for(const t of allTasks()) if(t.cat&&!CAT[t.cat]&&t.catNom) CAT[t.cat]={id:t.cat,nom:t.catNom,c:t.catC||"#A9B4C2",perso:true}; }
 function renderAllNowInner(){ try{ syncTaskCats(); }catch(_){} try{ saveLast(); }catch(_){}
@@ -8208,11 +8229,11 @@ setTab("accueil");
         let y=0; for(let n=mb;n;n=n.offsetParent) y+=n.offsetTop; o={visible:true,title:MT[S.moiSec]||"",back:true,actions:[],top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(document.body).color}; sig=JSON.stringify(o); }
       else if(bar&&!open&&S.tab==="maison"&&S.mSec){ /* sous-menu de Maison : un seul retour (vers Maison), son titre, + sauf Poubelles */
         const m=MSECS.find(x=>x[0]===S.mSec); let y=0; for(let n=bar;n;n=n.offsetParent) y+=n.offsetTop;
-        o={visible:true,title:m?m[1]:"Maison",back:true,actions:S.mSec==="bins"?[]:[{id:"add",icon:"plus",prominent:true}],top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(bar.querySelector(".hb-title")||bar).color}; sig=JSON.stringify(o); }
+        o={visible:true,title:m?m[1]:"Maison",back:true,actions:[{id:"add",icon:"plus",prominent:true}],top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(bar.querySelector(".hb-title")||bar).color}; sig=JSON.stringify(o); }
       else if(bar&&!open&&S.tab==="documents"&&S.docCat){ /* une catégorie de Papiers : retour vers les catégories, son nom en titre */
         const c=catOf(S.docCat); let y=0; for(let n=bar;n;n=n.offsetParent) y+=n.offsetTop;
         o={visible:true,title:(c&&c.nom)||"Papiers",back:true,actions:bar.querySelector(".hub-add")?[{id:"add",icon:"plus",prominent:true}]:[],top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(bar.querySelector(".hb-title")||bar).color}; sig=JSON.stringify(o); }
-      else if(bar&&!open){ const t=(bar.querySelector(".hb-title")||{}).textContent||"", acts=[]; if(bar.querySelector(".hub-sync")) acts.push({id:"sync",icon:"calendar"}); if(bar.querySelector(".hub-add")) acts.push({id:"add",icon:"plus",prominent:true});
+      else if(bar&&!open){ const t=(bar.querySelector(".hb-title")||{}).textContent||"", acts=[]; if(bar.querySelector(".hub-sync")) acts.push({id:"sync",icon:"calendar"}); if(bar.querySelector(".hub-add:not([hidden])")) acts.push({id:"add",icon:"plus",prominent:true});
         /* position dans la page sans compter les animations d'arrivée (sinon la barre se replace une 2e fois) */
         let y=0; for(let n=bar;n;n=n.offsetParent) y+=n.offsetTop; o={visible:true,title:t,back:!!bar.querySelector(".hub-back,.pg-back"),actions:acts,top:Math.max(4,Math.round(y-safeTop())),color:getComputedStyle(bar.querySelector(".hb-title")||bar).color}; sig=JSON.stringify(o); }
       if(o.visible){ o.dim=shOpen; sig=JSON.stringify(o); }
@@ -8940,6 +8961,7 @@ function fabAct(v0,anchor){ const me=meId(), v=v0||S.tab;
     M.hidden=false; return; }
   if(v==="moi"){ openTaskSheet({where:"perso"}); return; }
   if(v==="foyer"){ openTaskSheet({cat:S.catF||null}); return; }
+  if(v==="maison"&&S.mSec){ mAddIn(S.mSec); return; }
   if(v==="maison"){ const M=$("addMenu"); if(!M.hidden){ M.hidden=true; return; } M.innerHTML="";
     const it=(ic,t,fn)=>M.append(el("button",{type:"button",role:"menuitem",onclick:()=>{ M.hidden=true; fn(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); i.innerHTML=GI(ic); return i; })(),t));
     it("poubelle","Une poubelle",()=>{ S.mSec="bins"; renderMaison(); topNow(); });
@@ -10893,11 +10915,10 @@ function renderContacts(){
     const card=el("div",{class:"m-card ct-card"},el("div",{class:"m-head"},ini,el("div",{class:"m-title"},el("b",{text:c.nom||c.role}),el("span",{text:[c.nom?c.role:null,telFmt(c.tel)].filter(Boolean).join(" · ")})),pencilBtn(()=>{ S.ctForm=JSON.parse(JSON.stringify(c)); renderContacts(); },"Modifier "+(c.nom||c.role))));
     if(c.note) card.append(el("p",{class:"ct-note",text:c.note}));
     const h=telHref(c.tel); if(h) card.append(el("div",{class:"m-acts"},el("a",{class:"btn ct-call",href:h},"Appeler")));
-    if(S.ctForm&&S.ctForm.id===c.id){ card.replaceChildren(contactFormEl()); card.classList.add("editing"); }
     grid.append(card); }
   if(list.length) w.append(grid);
-  if(S.ctForm&&!S.ctForm.id) w.append(el("div",{class:"m-card editing"},contactFormEl()));
-  if(!S.ctForm||S.ctForm.id){ const sg=el("div",{class:"m-sugg"}), have=new Set(list.map(c=>c.role));
+  mxSync("ct",S.ctForm||null,contactFormEl,S.ctForm&&S.ctForm.id?"Modifier le contact":"Nouveau contact","Les numéros qu'on cherche au mauvais moment",()=>{ S.ctForm=null; renderContacts(); });
+  { const sg=el("div",{class:"m-sugg"}), have=new Set(list.map(c=>c.role));
     for(const [r,col] of CONTACT_PRESETS) if(!have.has(r)) sg.append(el("button",{type:"button",text:"+ "+r,onclick:()=>{ S.ctForm={role:r,nom:"",tel:"",note:"",c:col}; renderContacts(); setTimeout(()=>{ const x=$("ctNom"); if(x) x.focus(); },40); }}));
     sg.append(el("button",{type:"button",text:"+ Autre contact",onclick:()=>{ S.ctForm={role:"",nom:"",tel:"",note:"",c:"#C9C7DD"}; renderContacts(); setTimeout(()=>{ const x=$("ctRole"); if(x) x.focus(); },40); }}));
     w.append(sg); }
@@ -11013,11 +11034,11 @@ function renderBins(){
     pills.append(el("span",{class:"m-pill who"},...who.ids.slice(0,3).map(id=>avatar(id,16)),who.label));
     c.append(pills);
     if(nx&&daysTo(iso(nx.sortie))<=1){ const btn=el("button",{type:"button",class:"btn",text:"C'est sorti ✓"}); btn.addEventListener("click",()=>binDone(b,btn)); c.append(el("div",{class:"m-acts"},btn)); }
-    if(S.binForm&&S.binForm.id===b.id){ c.replaceChildren(binFormEl()); c.classList.add("editing"); }
     grid.append(c); }
   if(bins.length) w.append(grid);
-  if(S.binForm&&!S.binForm.id){ const box=el("div",{class:"m-card editing"},binFormEl()); w.append(box); }
-  if(!S.binForm||S.binForm.id){ const sg=el("div",{class:"m-sugg"}), have=new Set(bins.map(b=>b.nom));
+  /* le formulaire se redessine à chaque choix (jours, qui…) : on refait le contenu de la feuille à chaque fois */
+  mxSync("bin",S.binForm||null,binFormEl,S.binForm&&S.binForm.id?"Modifier la poubelle":"Nouvelle poubelle","Cocoon te rappelle de la sortir la veille",()=>{ S.binForm=null; renderBins(); },true);
+  { const sg=el("div",{class:"m-sugg"}), have=new Set(bins.map(b=>b.nom));
     for(const [n,c] of BIN_PRESETS) if(!have.has(n)) sg.append(el("button",{type:"button",text:"+ "+n,onclick:()=>{ S.binForm={nom:n,c,jours:[],freq:1,veille:true,qui:["tous"],tour:false}; renderBins(); }}));
     sg.append(el("button",{type:"button",text:"+ Autre poubelle",onclick:()=>{ S.binForm={nom:"",c:"#59606B",jours:[],freq:1,veille:true,qui:["tous"],tour:false}; renderBins(); }}));
     w.append(sg); }
