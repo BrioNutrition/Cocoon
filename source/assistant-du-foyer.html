@@ -4034,6 +4034,13 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
 .dz-h,.dz-form .d-sante{margin:0;font-size:12.5px;color:var(--muted);line-height:1.4}
 .dz-form #docPour{flex-wrap:wrap}
 .dz-form .ev-cta:disabled{opacity:.45}
+
+/* Tuiles du Foyer (28 oct., Angel) : emoji sans carré de couleur, plus d'indication dessous, titres plus gros */
+.hb-t>i.emo{width:auto;height:auto;background:none!important;border-radius:0;place-items:start;font-size:30px;line-height:1}
+.hb-t>i.emo-img img{width:32px;height:32px}
+.hb-t>b,.hb-g2 .hb-t>b,.hb-g3 .hb-t>b{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-top:auto;padding-top:10px}
+.hb-g2 .hb-t{min-height:100px}
+.hb-t.wide>b{margin:0;padding:0}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -8962,7 +8969,7 @@ function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const
   H.append(el("p",{class:"hb-sec",text:"Au quotidien"}),G1,el("p",{class:"hb-sec",text:"Gestion"}),G2);
   const tile=(v,ic,c,title,sub,o)=>{ o=o||{}; const b=el("div",{class:"hb-t"+(o.cls?" "+o.cls:""),role:"button",tabindex:"0","data-go":v,style:"--bc:"+c,"aria-label":title+(sub?", "+sub:"")});
     b.addEventListener("click",e=>{ if(e.target.closest(".hb-ck")) return; hubGo(v); }); b.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); hubGo(v); } });
-    const ico=emoIco(HUB_EMO[v]||"✨"); b.append(ico,el("b",{text:title})); if(sub) b.append(el("span",{text:sub}));
+    const ico=emoIco(HUB_EMO[v]||"✨"); b.append(ico,el("b",{text:title})); /* (28 oct., Angel) plus d'indication sous le titre : les raccourcis de l'accueil le font */
     if(o.badge) b.append(el("em",{class:o.red?"r":"",text:String(o.badge)})); if(o.extra) b.append(o.extra); G.append(b); return b; };
   // Au quotidien : Tâches, Courses, Repas, Agenda
   const open=S.foyer.filter(t=>!t.fait).sort(sortOpen), late=open.filter(t=>t.echeance&&t.echeance<t0).length;
