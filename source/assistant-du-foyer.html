@@ -4045,6 +4045,10 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
 /* pastille des tuiles du Foyer (28 oct., Angel) : jaune habituel, chiffre bien centré */
 .hb-t>em,html.foyer-nuit .hb-t>em{background:#FFC94A;color:#1C1B2E;height:22px;min-width:22px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center;line-height:22px;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;font-feature-settings:"tnum","cv11","ss01"}
 .hb-t>em.r,html.foyer-nuit .hb-t>em.r{background:#E5484D;color:#fff}
+
+/* tuiles du Foyer sobres (28 oct., Angel : « la lueur c'est cheap ») : fond uni du thème + contour fin, comme les cartes de l'accueil */
+html.foyer-nuit .hb-t,:root[data-theme="dark"].foyer-nuit .hb-t{background:var(--surface);box-shadow:none;border:1px solid var(--line)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]).foyer-nuit .hb-t{background:var(--surface);box-shadow:none;border:1px solid var(--line)}}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
