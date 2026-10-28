@@ -2246,6 +2246,42 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .pk-back{width:38px;height:38px;border-radius:50%;border:0;background:var(--surface);box-shadow:0 2px 0 var(--shadow);color:var(--ink);font-size:22px;line-height:1;display:grid;place-items:center;cursor:pointer;flex:none;padding:0 0 2px}
 .pk-head .pk-ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:color-mix(in srgb,var(--bc) 40%,var(--surface));--stripe:var(--bc)}
 .pk-head .pk-ic svg{width:20px;height:20px}
+/* Papiers (28 oct., choix A d'Angel) : carte à la une + classeurs à emojis */
+#papHero.dz-hero{display:block;background:color-mix(in srgb,var(--c) 10%,var(--surface));color:var(--ink);border:1px solid color-mix(in srgb,var(--c) 45%,transparent);border-radius:20px;padding:14px;box-shadow:none}
+.dz-cap{font-size:12px;font-weight:800;color:var(--c);letter-spacing:.02em;margin-bottom:10px}
+.dz-hr{display:flex;align-items:center;gap:12px}
+.dz-e{flex:none;width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:19px;line-height:1;background:color-mix(in srgb,var(--c) 22%,transparent)}
+.dz-e.big{width:48px;height:48px;border-radius:14px;font-size:26px}
+.dz-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+#papHero .dz-tx b{font-family:inherit;font-size:17px;font-weight:800;letter-spacing:0;line-height:1.25;color:var(--ink)}#papHero .dz-tx b::before{content:none}
+#papHero .dz-tx small{font-size:12.5px;font-weight:600;color:var(--muted);opacity:1}
+.dz-acts{display:flex;gap:8px;margin-top:12px}
+.dz-b{flex:1;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:800;font-size:13.5px;border-radius:12px;padding:10px;cursor:pointer}
+.dz-b.y{flex:1.6;background:#FFC94A;border-color:#FFC94A;color:#1C1B2E}
+.dz-next{margin-top:10px;font-size:12.5px;color:var(--muted);line-height:1.4}.dz-next b{color:var(--ink);font-size:inherit;font-family:inherit}
+.dz-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dz-t{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer;min-width:0}
+.dz-t:active{transform:scale(.97)}
+.dz-te{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:20px;line-height:1;background:color-mix(in srgb,var(--c) 22%,transparent);margin-bottom:8px}
+.dz-tn{font-size:13.5px;font-weight:800;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dz-tk{font-size:11.5px;color:var(--muted);font-weight:600}
+.dz-st{margin-top:6px;font-size:10.5px;font-weight:800;padding:3px 7px;border-radius:99px;background:color-mix(in srgb,var(--ink) 9%,transparent);color:var(--muted);white-space:nowrap}
+.dz-st.r{background:color-mix(in srgb,#FF6B6B 18%,transparent);color:#FF8A8A}.dz-st.o{background:color-mix(in srgb,#FFC94A 16%,transparent);color:#E0A800}
+:root:not([data-theme="light"]) .dz-st.o{color:#FFD27A}
+:root[data-theme="light"] .dz-st.r{color:#C2412D}
+.pk-ic.dz-ice{font-size:18px;line-height:1;display:grid;place-items:center}
+.dz-rp{margin:0 4px 4px;font-size:13.5px;color:var(--muted)}
+#papHero .dz-e.big{font-size:26px;opacity:1}#papHero .dz-tx{opacity:1;font-size:inherit}
+#papHero .dz-next b{font-family:inherit;font-size:inherit;font-weight:800;letter-spacing:0}
+/* lignes de papiers : emoji sur carré teinté, contour fin (comme les autres pages) */
+.pap-frise .bd-doc{border:1px solid var(--line);border-left:1px solid var(--line);box-shadow:none;padding:11px 12px}
+.pap-frise .bd-ft{width:38px;height:38px;border-radius:11px;font-size:20px;line-height:1;letter-spacing:0;background:color-mix(in srgb,var(--bc) 22%,transparent);color:inherit}
+.pap-frise .bd-meta{gap:6px;color:var(--muted);font-weight:600}
+.pap-frise .bd-meta .due{background:none;padding:0;font-family:inherit;font-size:12px;font-weight:600;color:var(--muted)}
+.pap-frise .bd-meta .due.late{color:#FF8A8A}.pap-frise .bd-meta .due.soon{color:#FFD27A}
+:root[data-theme="light"] .pap-frise .bd-meta .due.late{color:#C2412D}:root[data-theme="light"] .pap-frise .bd-meta .due.soon{color:#9A6A00}
+.pap-frise .pf-days{font-size:11.5px;padding:4px 8px}
+.pk-back{font-size:0!important;padding:0!important}.pk-back::before{content:"";width:9px;height:9px;border-left:2.4px solid currentColor;border-bottom:2.4px solid currentColor;transform:rotate(45deg);margin-left:4px}
 .pk-head b{font-size:19px;flex:1}
 .pk-head span{color:var(--muted);font-size:13px}
 .wk-leg{display:flex;justify-content:center;gap:16px;margin-top:-2px;font-size:12px;font-weight:600;color:var(--muted)}
@@ -5343,6 +5379,17 @@ function renderDocPour(){
   const opts=[["foyer","Foyer",null]].concat(membres().map(m=>[m.id,m.id===me?"Moi":m.nom,m.id]));
   for(const [v,l,id] of opts) w.append(el("button",{type:"button",class:"pchip","aria-pressed":String(S.docPour===v),onclick:()=>{ S.docPour=v; renderDocPour(); updConsent(); }},id?avatar(id,20):"",l));
 }
+const DOC_EMO={identite:"🪪",sante:"💊",assurance:"🛡️",factures:"🧾",documents:"📄",voitures:"🚗",maison:"🏠",ecole:"🎒",animaux:"🐾",entretien:"🔧"};
+const docEmo=cid=>DOC_EMO[cid]||tkEmo(cid);
+/* « C'est renouvelé » (carte à la une de Papiers) : la nouvelle date d'expiration, ou plus de date */
+function docRenew(d){ if(!needMe()) return; let done=false; const t0=today(), yr=n=>iso(new Date(t0.getFullYear()+n,t0.getMonth(),t0.getDate()));
+  const end=async v=>{ if(done) return; done=true; ov.classList.add("out"); setTimeout(()=>ov.remove(),180); if(v===undefined) return;
+    d.expire=v||null; renderDocs(); try{ await S.db.collection("documents").doc(d.id).update({expire:v||null}); toast(v?"Bien noté : « "+esc(d.titre)+" » jusqu'au "+fmtDue(v)+".":"« "+esc(d.titre)+" » n'a plus de date."); }catch(e){ writeErr(e); } };
+  const da=el("input",{class:"ev-inp",type:"date",id:"renDate","aria-label":"Nouvelle date d'expiration"});
+  const qk=el("div",{class:"pchips"},...[[1,"1 an"],[5,"5 ans"],[10,"10 ans"]].map(([n,l])=>el("button",{type:"button",class:"pchip","aria-pressed":"false",onclick:e=>{ da.value=yr(n); for(const b of qk.children) b.setAttribute("aria-pressed",String(b===e.currentTarget)); }},l)));
+  const box=el("div",{class:"clp-box",role:"dialog","aria-label":"Papier renouvelé"},el("b",{class:"clp-h",text:"Renouvelé 🎉"}),el("p",{class:"dz-rp",text:"Nouvelle date d'expiration de « "+d.titre+" »"}),qk,da,
+    el("div",{class:"art-acts"},el("button",{type:"button",class:"clp-x",onclick:()=>end(null)},"Sans date"),el("button",{type:"button",class:"clp-x",onclick:()=>end(undefined)},"Annuler"),el("button",{type:"button",class:"btn art-ok",id:"renOk",onclick:()=>{ if(!da.value){ da.focus(); return; } end(da.value); }},"OK")));
+  const ov=el("div",{class:"clp-ov",onclick:e=>{ if(e.target===ov) end(undefined); }},box); document.body.append(ov); requestAnimationFrame(()=>ov.classList.add("in")); }
 /* Ouvrir Papiers directement sur un papier précis */
 function goDoc(d){ if(!d) return; S.docF=null; S.docWho=null; S.docCat=catOf(d.cat||"documents").id||"documents"; setTab("documents"); try{ renderHeader(); }catch(_){}
   const find=k=>{ const r=document.querySelector('.view[data-view="documents"] [data-key="documents:'+d.id+'"]'); if(r){ r.scrollIntoView({block:"center",behavior:"smooth"}); r.classList.remove("bd-flash"); void r.offsetWidth; r.classList.add("bd-flash"); setTimeout(()=>r.classList.remove("bd-flash"),1900); } else if(k<10) setTimeout(()=>find(k+1),80); };
@@ -5350,7 +5397,7 @@ function goDoc(d){ if(!d) return; S.docF=null; S.docWho=null; S.docCat=catOf(d.c
 function docRow(d,showWho,noCat){
   const me=meId(), c=catOf(d.cat||"documents");
   const row=el("div",{class:"bd-doc","data-key":"documents:"+d.id,style:"--bc:"+(c.c||"#A9B4C2")});
-  const ft=el("span",{class:"bd-ft",text:d.fichierType==="PDF"?"PDF":d.fichierType?"IMG":"—"});
+  const ft=el("span",{class:"bd-ft",text:docEmo(c.id||"documents")});
   const meta=el("div",{class:"bd-meta"},noCat?null:el("span",{class:"pf-cat",text:c.nom}));
   if(showWho){ const o=d.pour||"foyer"; meta.append(o==="foyer"?el("span",{class:"pf-who",text:"Foyer"}):el("span",{class:"pf-who"},avatar(o,16),o===me?"Moi":membre(o).nom)); }
   if(d.expire){ const n=daysTo(d.expire); meta.append(el("span",{class:"due"+(n<0?" late":n<=30?" soon":""),text:(n<0?"Expiré · ":"Expire ")+fmtDue(d.expire)})); }
@@ -5380,7 +5427,13 @@ function renderDocs(){
   // résumé
   const due=pool.filter(d=>d.expire&&daysTo(d.expire)<=90), late=due.filter(d=>daysTo(d.expire)<0).length;
   H.hidden=!S.docs.length;
-  if(due.length){ H.className="warn"; H.append(el("b",{text:due.length+" papier"+(due.length>1?"s":"")+" à renouveler"}),el("span",{text:late?(late===due.length?(late>1?"déjà expirés":"déjà expiré"):"dont "+late+" déjà expiré"+(late>1?"s":"")):"dans les 3 prochains mois"})); }
+  if(due.length){ const L=due.slice().sort((x,y)=>x.expire<y.expire?-1:1), d=L[0], c=catOf(d.cat||"documents"), n=daysTo(d.expire), o=d.pour||"foyer";
+    const col=n<=30?"#FF9C80":"#FFC94A", nom=d.titre+(o!=="foyer"&&o!==me&&membre(o).nom?" "+de(membre(o).nom):"");
+    H.className="dz-hero"; H.style.setProperty("--c",col);
+    H.append(el("div",{class:"dz-cap",text:"⚠️ "+(late?late+" expiré"+(late>1?"s":"")+" · ":"")+due.length+" papier"+(due.length>1?"s":"")+" à renouveler"}),
+      el("div",{class:"dz-hr"},el("span",{class:"dz-e big",style:"--c:"+(c.c||"#A9B4C2"),text:docEmo(c.id)}),el("span",{class:"dz-tx"},el("b",{text:nom}),el("small",{text:n<0?"Expiré depuis "+(-n)+" jour"+(-n>1?"s":"")+" · "+fmtDue(d.expire):n===0?"Expire aujourd'hui":"Expire dans "+n+" jour"+(n>1?"s":"")+" · "+fmtDue(d.expire)}))),
+      el("div",{class:"dz-acts"},S.readOnly||!me?null:el("button",{type:"button",class:"dz-b y",id:"docRenew",onclick:()=>docRenew(d)},"🔁 C'est renouvelé"),el("button",{type:"button",class:"dz-b",onclick:()=>{ if(d.assetId) openViewer(d); else goDoc(d); }},"Voir")));
+    if(L.length>1) H.append(el("div",{class:"dz-next"},"Ensuite : ",...L.slice(1,3).flatMap((x,i)=>{ const k=daysTo(x.expire); return [i?" · ":"",el("b",{text:x.titre})," ("+(k<0?"expiré":k+" j")+")"]; }))); }
   else H.hidden=true;
   if(!S.docs.length){ G0.append(el("div",{class:"empty"},el("strong",{text:"Aucun papier rangé"}),"Bail, carte grise, assurances, carte d'identité : range-les ici avec leur date d'expiration, Cocoon te prévient avant.")); return; }
   const showWho=owners.length>1&&!S.docWho;
@@ -5403,8 +5456,10 @@ function renderDocs(){
     if(off.length){ G0.append(el("div",{class:"pf-l"},"Terminées",el("em",{text:"· "+off.length}))); for(const g of off) G0.append(g.d?docRow(g.d,showWho):eqRow(g.eq)); }
     return; }
   const groups={}; for(const d of pool){ const c=catOf(d.cat||"documents").id||"documents"; (groups[c]=groups[c]||[]).push(d); }
-  if(S.docCat&&!groups[S.docCat]) S.docCat=null;
-  const icon=(c,cls)=>{ const x=el("span",{class:cls,style:"--bc:"+c.c}); if(c.perso){ x.classList.add("perso"); x.textContent=c.nom.charAt(0).toUpperCase(); } else x.innerHTML=GI(c.id==="voitures"?"voiture":c.id); return x; };
+  if(S.docCat&&S.docCat!=="__all"&&!groups[S.docCat]) S.docCat=null;
+  const icon=(c,cls)=>el("span",{class:cls+" dz-ice",style:"--bc:"+c.c,text:docEmo(c.id)});
+  if(S.docCat==="__all"){ G0.append(el("div",{class:"pk-head",style:"--bc:#B9A8F0"},el("button",{type:"button",class:"pk-back","aria-label":"Retour aux catégories",text:"‹",onclick:()=>{ S.docCat=null; renderDocs(); topNow(); }}),el("span",{class:"pk-ic dz-ice",style:"--bc:#B9A8F0",text:"🗂️"}),el("b",{text:"Tous les papiers"}),el("span",{text:pool.length+" papier"+(pool.length>1?"s":"")})));
+    for(const d of sortDocs(pool)) G0.append(docRow(d,showWho)); return; }
   if(S.docCat){ // une catégorie ouverte
     const c=catOf(S.docCat), ds=sortDocs(groups[S.docCat]);
     G0.append(el("div",{class:"pk-head",style:"--bc:"+c.c},el("button",{type:"button",class:"pk-back","aria-label":"Retour aux catégories",text:"‹",onclick:()=>{ S.docCat=null; renderDocs(); topNow(); }}),icon(c,"pk-ic"),el("b",{text:c.nom}),el("span",{text:ds.length+" papier"+(ds.length>1?"s":"")})));
@@ -5412,13 +5467,13 @@ function renderDocs(){
   if(!pool.length){ G0.append(el("div",{class:"bd-none",text:"Aucun papier pour "+(S.docWho===me?"toi":ownerName(S.docWho))+" pour l'instant."})); return; }
   const urg=ds=>{ const e=ds.filter(d=>d.expire).map(d=>daysTo(d.expire)); return e.length?Math.min(...e):9999; };
   const order=Object.keys(groups).sort((a,b)=>{ const ua=urg(groups[a])<=90?urg(groups[a]):9999, ub=urg(groups[b])<=90?urg(groups[b]):9999; return ua-ub||groups[b].length-groups[a].length; });
-  const grid=el("div",{class:"pap-tiles"});
+  const grid=el("div",{class:"dz-g3"});
+  const tile=(e,col,nom,sub,badge,cls,fn,lab)=>grid.append(el("button",{type:"button",class:"dz-t",style:"--c:"+col,"aria-label":lab||nom+", "+sub,onclick:fn},el("span",{class:"dz-te","aria-hidden":"true",text:e}),el("span",{class:"dz-tn",text:nom}),el("span",{class:"dz-tk",text:sub}),badge?el("span",{class:"dz-st "+(cls||""),text:badge}):null));
   for(const cid of order){ const c=catOf(cid), ds=groups[cid], lt=ds.filter(d=>d.expire&&daysTo(d.expire)<0).length, u=urg(ds);
-    const t=el("button",{type:"button",class:"pk",style:"--bc:"+c.c,"aria-label":c.nom+", "+ds.length+" papier"+(ds.length>1?"s":""),onclick:()=>{ S.docCat=cid; renderDocs(); topNow(); }},el("i",{class:"pk-tab","aria-hidden":"true"}),el("i",{class:"pk-face","aria-hidden":"true"}),icon(c,"pk-ic"),el("b",{text:c.nom}),el("span",{text:ds.length+" papier"+(ds.length>1?"s":"")}));
-    if(lt) t.append(el("em",{text:lt+" expiré"+(lt>1?"s":"")})); else if(u<=90) t.append(el("em",{class:u<=30?"":"soon",text:u<=60?u+" j":Math.round(u/30)+" mois"}));
-    grid.append(t); }
+    tile(docEmo(cid),c.c||"#A9B4C2",c.nom,ds.length+" papier"+(ds.length>1?"s":""),lt?lt+" expiré"+(lt>1?"s":""):u<=90?(u<=60?u+" j":Math.round(u/30)+" mois"):null,lt||u<=30?"r":"o",()=>{ S.docCat=cid; renderDocs(); topNow(); }); }
   if(gars.length){ const on=gars.filter(g=>daysTo(g.fin)>=0), soon=on.filter(g=>daysTo(g.fin)<=60).length;
-    G0.append(el("button",{type:"button",class:"gar-tile",onclick:()=>{ S.docCat="__gar"; renderDocs(); topNow(); }},el("span",{"aria-hidden":"true",text:"🛡"}),el("span",{},el("b",{text:"Garanties"}),el("small",{text:on.length+" en cours"+(soon?" · "+soon+" bientôt finie"+(soon>1?"s":""):"")})),el("u",{"aria-hidden":"true",text:"›"}))); }
+    tile("✅","#A8D672","Garanties",on.length+" en cours",soon?soon+" bientôt":null,"o",()=>{ S.docCat="__gar"; renderDocs(); topNow(); }); }
+  if(order.length>1) tile("🗂️","#B9A8F0","Tout voir",pool.length+" papiers",null,null,()=>{ S.docCat="__all"; renderDocs(); topNow(); });
   G0.append(grid);
 }
 function renderFeed(box){
