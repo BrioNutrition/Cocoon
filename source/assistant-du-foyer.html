@@ -2923,6 +2923,7 @@ html.cl-open .selbar{z-index:80}
 .cl-panel .c-item{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .cl-panel .c-row.c-drag{position:relative;z-index:3;background:var(--surface);box-shadow:0 10px 26px rgba(0,0,0,.35);border-radius:12px;transition:none}
 
+.art-acts{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}.art-ok{min-width:90px;background:var(--mark);color:#1C1B2E}
 .art-st{display:flex;align-items:center;gap:10px;margin:10px 0 14px}.art-st .art-q{flex:1;text-align:center;font-weight:800}
 .art-b{flex:none;width:52px;height:50px;border:0;border-radius:14px;background:var(--sunk);color:var(--ink);font-size:24px;font-weight:800;cursor:pointer}
 .clp-ov{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.45);display:grid;place-items:center;padding:20px;opacity:0;transition:opacity .18s ease}.clp-ov.in{opacity:1}.clp-ov.out{opacity:0}
@@ -9821,18 +9822,16 @@ async function addCourses(arts,extra){ const me=meId(), now=Date.now(); let n=0;
     const doc=Object.assign({nom:a.nom,qte:a.qte||null,pour:"tous",fait:false,ajoutePar:me,ajouteLe:now+(n++),rayon:rayonOf({nom:a.nom})},extra||{},a.extra||{});
     const ref=await S.db.collection("courses").add(doc); cur.push(Object.assign({id:ref&&ref.id},doc)); habNote(a.nom); } return n+S.cMerged.length; }
 const cMergedMsg=()=>S.cMerged&&S.cMerged.length?" Déjà dans la liste : "+esc(S.cMerged.join(", "))+".":"";
-/* modifier un article : nom et quantité (− / +) */
-function cArtEdit(i){ if(!needMe()) return; const U=clSheet(); clClear(U); const inn=el("div",{class:"pp-in ev-in cl-in"}); U.sheet.append(inn);
-  const nm=el("input",{class:"ev-inp",type:"text",id:"artNom",maxlength:"120","aria-label":"Article"}); nm.value=i.nom;
-  const qi=el("input",{class:"ev-inp art-q",type:"text",id:"artQte",inputmode:"decimal","aria-label":"Quantité",placeholder:"1"}); qi.value=i.qte||"";
-  const step=d=>{ const n=qNum(qi.value); if(n==null) return; qi.value=qStr(Math.max(1,n+d))||""; haptic(5); };
-  const save=async()=>{ const nom=nm.value.trim(); if(!nom){ nm.focus(); return; } const q=qi.value.trim()||null; i.nom=nom; i.qte=q; U.close(); renderCourses();
-    try{ await S.db.collection("courses").doc(i.id).update({nom,qte:q}); }catch(e){ writeErr(e); } };
-  nm.addEventListener("keydown",e=>{ if(e.key==="Enter") save(); }); qi.addEventListener("keydown",e=>{ if(e.key==="Enter") save(); });
-  inn.append(el("div",{class:"ev-top"},el("h2",{text:"Modifier l'article"})),nm,
-    el("div",{class:"art-st"},el("button",{type:"button",class:"art-b",id:"artMoins","aria-label":"Un de moins",onclick:()=>step(-1)},"−"),qi,el("button",{type:"button",class:"art-b",id:"artPlus","aria-label":"Un de plus",onclick:()=>step(1)},"+")),
-    el("button",{type:"button",class:"btn ev-cta",id:"artOk",onclick:save},"Enregistrer"),
-    el("button",{type:"button",class:"cl-skip art-del",onclick:()=>{ U.close(); cDelOne(i); }},"Retirer de la liste")); }
+/* crayon = corriger le nom seulement, dans une petite fenêtre (la quantité se change avec le sélecteur de la ligne) */
+function cArtEdit(i){ if(!needMe()) return; let done=false;
+  const end=async ok=>{ if(done) return; done=true; const nom=nm.value.trim(); ov.classList.add("out"); setTimeout(()=>ov.remove(),180);
+    if(!ok||!nom||nom===i.nom) return; i.nom=nom; renderCourses(); try{ await S.db.collection("courses").doc(i.id).update({nom}); }catch(e){ writeErr(e); } };
+  const nm=el("input",{class:"ev-inp",type:"text",id:"artNom",maxlength:"120","aria-label":"Nom de l'article",enterkeyhint:"done"}); nm.value=i.nom;
+  nm.addEventListener("keydown",e=>{ if(e.key==="Enter") end(true); if(e.key==="Escape") end(false); });
+  const box=el("div",{class:"clp-box",role:"dialog","aria-label":"Renommer"},el("b",{class:"clp-h",text:"Renommer"}),nm,
+    el("div",{class:"art-acts"},el("button",{type:"button",class:"clp-x",onclick:()=>end(false)},"Annuler"),el("button",{type:"button",class:"btn art-ok",id:"artOk",onclick:()=>end(true)},"OK")));
+  const ov=el("div",{class:"clp-ov",onclick:e=>{ if(e.target===ov) end(false); }},box); document.body.append(ov);
+  requestAnimationFrame(()=>{ ov.classList.add("in"); nm.focus(); nm.select(); }); }
 /* déplacer un article : appui long sur la ligne puis glisser ; l'ordre est enregistré (courses.ordre) */
 function cDragStart(row,it,y0){ const list=row.parentNode; if(!list) return; const rows=[...list.children]; if(rows.length<2){ return; }
   const from=rows.indexOf(row), H=row.getBoundingClientRect().height+(parseFloat(getComputedStyle(list).rowGap)||0), mids=rows.map(r=>{ const b=r.getBoundingClientRect(); return b.top+b.height/2; }); let to=from;
