@@ -2803,6 +2803,7 @@ div.pf-r{cursor:default}
 .cl-card>small{padding-right:34px}.cl-card:not(.open)>small{padding-right:0}
 .cl-card:not(.open) .ka-cnt{font-size:13.5px;margin-top:1px}
 .cl-card .ka-opt{position:absolute;top:6px;right:6px;width:36px;height:30px;border:0;border-radius:12px;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer}
+.cl-open>.cl-card:active{transform:none}.ev-pop.no-tip::before{display:none}
 .cl-card .ka-opt svg{width:18px;height:18px;fill:currentColor}.cl-card .ka-opt:active{background:var(--sunk)}
 
 ::view-transition-group(*){animation-duration:.3s;animation-timing-function:cubic-bezier(.25,.8,.3,1)}
@@ -9809,7 +9810,7 @@ function clRow(l,open){ const its=cItemsOf(l.id).slice().sort((a,b)=>(a.ajouteLe
   const cap=(l.fav?"⭐ ":"")+([l.lieu,l.date?clWhen(l.date):"",l.prive?"🔒 moi seul":"",l.recur?"🔁 chaque semaine":""].filter(Boolean).join(" · ")||"Foyer");
   const tg=()=>{ if(S.clOpenId===l.id){ const ae=document.activeElement; if(ae&&ae.blur&&CL_OPEN&&CL_OPEN.contains(ae)) ae.blur(); S.clClosing=l.id; if(CL_OPEN) CL_OPEN.style.viewTransitionName="cl-x"; clVT(()=>{ S.clOpenId=S.cListe=null; renderCourses(); S.clClosing=null; },true); } else openCList(l.id); };
   const mb=el("button",{type:"button",class:"ka-opt","aria-label":"Options de « "+(l.titre||"la liste")+" »","aria-haspopup":"menu",onclick:e=>{ e.stopPropagation(); clMenu(mb,clGet(l.id)); }}); mb.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18.5" cy="12" r="2"/></svg>';
-  return el("div",{class:"cl-card"+(open?" open":""),role:"button",tabindex:"0",style:"--c:"+clCol(l)+";view-transition-name:"+(S.clClosing===l.id?"cl-x":"clc-"+String(l.id).replace(/[^A-Za-z0-9_-]/g,"_")),"aria-expanded":String(!!open),"aria-label":(l.titre||"Liste")+", "+cap+", "+ok+" sur "+n,
+  return el("div",{class:"cl-card"+(open?" open":""),role:"button",tabindex:"0","data-vt":"clc-"+String(l.id).replace(/[^A-Za-z0-9_-]/g,"_"),style:"--c:"+clCol(l)+";view-transition-name:"+(S.clClosing===l.id?"cl-x":"clc-"+String(l.id).replace(/[^A-Za-z0-9_-]/g,"_")),"aria-expanded":String(!!open),"aria-label":(l.titre||"Liste")+", "+cap+", "+ok+" sur "+n,
       onclick:tg,onkeydown:e=>{ if(e.target===e.currentTarget&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); tg(); } }},
     open?mb:null,
     el("small",{text:cap}),el("b",{text:l.titre||"Liste de courses"}),
@@ -9824,8 +9825,9 @@ function clPanelFill(id){ if(!CL_PANEL) CL_PANEL=el("div",{class:"cl-panel"}); c
 /* à la fermeture (html.vt-close) : l'image de la liste ouverte se replie (rognée par le bloc qui rétrécit) puis la carte apparaît, l'inverse de l'ouverture */
 function clVT(fn,close){ const red=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
   if(!document.startViewTransition||red||S.tab!=="courses"){ S.clClosing=null; fn(); return; }
+  if(!close) document.querySelectorAll(".cl-card[data-vt]").forEach(c=>{ if(c.style.viewTransitionName==="cl-x") c.style.viewTransitionName=c.dataset.vt; });
   const H=document.documentElement; H.classList.toggle("vt-close",!!close);
-  try{ const t=document.startViewTransition(fn); t.finished.finally(()=>{ H.classList.remove("vt-close"); S.clClosing=null; }); }catch(_){ H.classList.remove("vt-close"); fn(); } }
+  try{ const t=document.startViewTransition(fn); t.ready.catch(()=>{}); t.finished.finally(()=>{ H.classList.remove("vt-close"); S.clClosing=null; }); }catch(_){ H.classList.remove("vt-close"); fn(); } }
 /* liste déroulée = un seul bloc (.cl-open : la carte + le contenu) : pas de traits entre les deux, et il glisse d'un seul tenant */
 let CL_GRID=null, CL_OPEN=null;
 function renderCHome(){ const H=$("cHome"); if(!H) return; if(!meId()){ clStash(); H.innerHTML=""; return; }
@@ -9903,7 +9905,7 @@ function clMenu(btn,l){ if(!l) return; const acts=[["edit","✏️","Modifier",(
   const del=item("🗑","Supprimer la liste",()=>{ close(); clDel(l); },"danger");
   for(const [,ic,t,fn] of acts) pop.append(item(ic,t,()=>{ close(); fn(); })); pop.append(el("hr"),del);
   const rb=btn.getBoundingClientRect(), sr=sheet.getBoundingClientRect(), up=sheet.classList.contains("cl-panel");
-  if(card){ pop.style.position="fixed"; pop.style.top=Math.min(rb.bottom+6,innerHeight-260)+"px"; pop.style.right=(innerWidth-rb.right)+"px"; pop.style.zIndex="60"; }
+  if(card){ pop.classList.add("no-tip"); pop.style.position="fixed"; pop.style.top=Math.min(rb.bottom+6,innerHeight-260)+"px"; pop.style.right=(innerWidth-rb.right)+"px"; pop.style.zIndex="60"; }
   else if(up){ pop.style.bottom=(sr.bottom-rb.top+8)+"px"; pop.style.top="auto"; } else pop.style.top=(rb.bottom-sr.top+sheet.scrollTop+8)+"px"; if(!card) pop.style.right=(sr.right-rb.right)+"px";
   sheet.append(pop); requestAnimationFrame(()=>pop.classList.add("in")); setTimeout(()=>document.addEventListener("pointerdown",away,true),0); }
 async function clNew(base,arts,open){ const me=meId(); const ref=await S.db.collection("listes").add(Object.assign({titre:base.titre||"Liste de courses",couleur:clCol(base),date:base.date||null,lieu:base.lieu||null,qui:base.qui||null,prive:!!base.prive,recur:base.recur||null},{par:me,creeLe:Date.now(),fini:false,fav:!!base.fav}));
@@ -9924,7 +9926,9 @@ function openCListPick(){ const F=clFavs(); if(!F.length){ openCListForm(null); 
   for(const l of F){ const a=clFavArts(l), n=a.length;
     box.append(el("button",{type:"button",class:"cl-fav-r",style:"--c:"+clCol(l),onclick:()=>clReprendre(l)},el("span",{class:"cl-fav-t"},el("b",{text:l.titre||"Liste"}),el("small",{text:[l.lieu,n+" article"+(n>1?"s":""),l.fini?"":"en cours"].filter(Boolean).join(" · ")})),el("span",{class:"cl-fav-go",text:l.fini?"Reprendre":"Ouvrir"}))); }
   inn.append(box); }
-async function clDel(l){ try{ const its=cItemsOf(l.id); S.clOpenId=null; if(S.cListe===l.id) S.cListe=null; for(const i of its) await S.db.collection("courses").doc(i.id).delete(); if(!l.virt) await S.db.collection("listes").doc(l.id).delete(); toast("Liste supprimée."); }catch(e){ writeErr(e); } }
+async function clDel(l){ try{ const its=cItemsOf(l.id), ids=new Set(its.map(i=>i.id)); S.clOpenId=null; if(S.cListe===l.id) S.cListe=null;
+  S.courses=(S.courses||[]).filter(i=>!ids.has(i.id)); if(!l.virt) S.listes=(S.listes||[]).filter(x=>x.id!==l.id); renderCourses(); haptic(10); toast("Liste supprimée.");
+  await Promise.all(its.map(i=>S.db.collection("courses").doc(i.id).delete())); if(!l.virt) await S.db.collection("listes").doc(l.id).delete(); }catch(e){ writeErr(e); } }
 /* valider (complète ou non) : « Combien ça a coûté ? » → dépense dans Budget ; la liste passe dans « Terminées » ; ce qui n'a pas été pris retourne dans la liste principale (ou dans celle de la semaine suivante) */
 /* valider : une petite fenêtre « Combien ça a coûté ? » (aussi ouverte toute seule quand le dernier article passe au caddie) */
 function clValidate(l){ if(!l) return; const its=cItemsOf(l.id), left=its.filter(i=>!i.fait).length, fin=its.length&&!left;
@@ -9939,11 +9943,12 @@ function clValidate(l){ if(!l) return; const its=cItemsOf(l.id), left=its.filter
   setTimeout(()=>am.focus(),350); }
 async function clDone(l,montant,quiet){ const me=meId(), its=cItemsOf(l.id), now=Date.now();
   try{ const rec={titre:l.titre||"Liste de courses",couleur:clCol(l),lieu:l.lieu||null,qui:l.qui||null,prive:!!l.prive,date:l.date||null,fini:true,finiLe:now,montant:montant||null,articles:its.map(i=>({nom:i.nom,qte:i.qte||null,pris:!!i.fait}))};
+    { const ids=new Set(its.map(i=>i.id)); S.courses=(S.courses||[]).filter(i=>!ids.has(i.id)); const lo=(S.listes||[]).find(x=>x.id===l.id); if(lo) lo.fini=true;
+      S.clOpenId=null; S.cListe=null; if(S.clSheet&&!S.clSheet._gone&&!quiet) S.clSheet.close(); renderCourses(); haptic(12); if(!quiet) toast("✓ Liste validée"+(montant>0?" · "+money(montant)+" dans le Budget":"")+"."); }
+    await Promise.all(its.map(i=>S.db.collection("courses").doc(i.id).delete()));
     let rid=l.id; if(l.id===CL_DEF) rid=(await S.db.collection("listes").add(Object.assign(rec,{par:me,creeLe:now}))).id; else await S.db.collection("listes").doc(l.id).set(Object.assign({},Object.fromEntries(Object.entries(l).filter(([k])=>k!=="id")),rec));
     let nxt=null; if(l.recur){ const d=l.date?new Date(parse(l.date).getTime()+7*864e5):new Date(today().getTime()+7*864e5); nxt=await clNew(Object.assign({},l,{date:iso(d)}),its.map(i=>({nom:i.nom,qte:i.qte,pour:i.pour})),0); }
-    for(const i of its) await S.db.collection("courses").doc(i.id).delete();
     if(montant>0) await budgetAdd((l.titre||"Courses")+(l.lieu?" · "+l.lieu:""),montant,"courses");
-    S.clOpenId=null; S.cListe=null; if(S.clSheet&&!S.clSheet._gone&&!quiet) S.clSheet.close(); renderCourses(); haptic(12); if(!quiet) toast("✓ Liste validée"+(montant>0?" · "+money(montant)+" dans le Budget":"")+(nxt?" · celle de la semaine prochaine est prête":"")+".");
     return rid;
   }catch(e){ writeErr(e); } }
 /* tout est au caddie : la liste part dans « Terminées » tout de suite, puis « Combien ça a coûté ? » (facultatif) */
