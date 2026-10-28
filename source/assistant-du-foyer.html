@@ -3819,6 +3819,30 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
 .tk-trh{margin:0 2px 8px;font-size:12.5px;color:var(--muted);line-height:1.35}
 .tk-go{width:100%;padding:14px;font-size:15.5px;font-weight:800;border-radius:16px;margin-top:2px}
 .tk-go:disabled{opacity:.5}
+/* Nouvelle tâche : grille des catégories + lignes qui se déplient */
+.tk-in .ev-top{margin-bottom:2px}
+.tk-in .tk-ti{font-size:18px;font-weight:700;min-height:52px;border:1.5px solid var(--line)}
+.tk-types .tk-more{background:none;box-shadow:inset 0 0 0 1.5px var(--line);color:var(--muted)}
+.tk-types .tk-more.on{box-shadow:inset 0 0 0 1.5px var(--ink);color:var(--ink)}
+.tk-in .tk-nc{margin-top:-2px}
+.tk-g2{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.tk-r{display:flex;align-items:center;gap:11px;width:100%;padding:10px 14px;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);font:inherit;font-size:14.5px;text-align:left;cursor:pointer;min-height:54px}
+.tk-r:first-child{border-top:0}
+.tk-r .ic{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-size:17px;line-height:1;background:color-mix(in srgb,var(--c) 22%,transparent)}
+.tk-r b{flex:none;font-weight:700}
+.tk-r em{flex:1;min-width:0;justify-content:flex-end;font-style:normal;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tk-r em .av{width:20px;height:20px;font-size:9px;flex:none}
+.tk-r .chev{flex:none;display:grid;place-items:center;width:16px;height:16px;color:var(--muted);transition:transform .2s}
+.tk-r .chev svg,.tk-chv{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;display:block}
+.tk-types .tk-more i{height:24px;display:grid;place-items:center}.tk-types .tk-chv{width:22px;height:22px}
+.tk-in .tk-ti::placeholder{font-weight:500}
+.tk-r.open .chev{transform:rotate(90deg)}
+.tk-rb{display:flex;flex-direction:column;gap:8px;padding:0 12px 12px}
+.tk-rb .pchip .av{width:20px;height:20px;font-size:9px;flex:none}
+.tk-rb .tk-trh{margin:2px 2px 0}
+.tk-rb .rec-pick{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tk-rb .rec-pick select,.tk-rb .rec-pick input{font:inherit;font-size:14px;padding:7px 9px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.tk-rb .rec-pick .rp-n{width:62px}
 .hello{margin:2px 0 0;font:800 30px/1.05 var(--f-display);letter-spacing:-.03em}
 .hello .hello-g{font-weight:560}
 .hello-sub{margin:5px 0 0;font-size:14px;color:var(--muted);font-weight:500}
@@ -7359,7 +7383,7 @@ const persoCol=()=>S.db.doc("data/users/"+S.uid+"/espace").collection("taches");
 const colFor=t=>t.prive?persoCol():S.db.collection("taches");
 function needMe(){ if(!meId()){ toast(S.uid?"Crée d'abord ton espace, en haut de la page.":"Connecte-toi à Claude pour agir dans le foyer."); window.scrollTo({top:0,behavior:"smooth"}); return false; } return true; }
 function writeErr(e){ if(e&&e.code==="invalid_argument"){ S.readOnly=true; banner("Tu peux consulter le foyer mais pas le modifier. Demande à Angel de t'inviter comme Éditeur."); renderAll(); } else if(e&&e.code==="quota_exceeded"){ toast("Le foyer est plein : supprime d'anciennes tâches faites."); } else toast("L'enregistrement n'a pas abouti. Réessaie dans un instant."); }
-async function addTask({titre,cat,catNom,catC,where,echeance,recur,silent,tour}){
+async function addTask({titre,cat,catNom,catC,where,echeance,recur,silent,tour,routine}){
   if(!S.db){ toast("Le stockage partagé n'est pas disponible sur cette vue."); return false; }
   if(!needMe()) return false;
   const me=meId(), g=guess(titre); let concerne=null, pour=where||"tous";
@@ -7367,7 +7391,7 @@ async function addTask({titre,cat,catNom,catC,where,echeance,recur,silent,tour})
   if(!isAdmin()&&!pour.startsWith("concerne:")&&pour!=="perso"&&pour!=="tous"&&pour!==me){ toast("Seuls les admins peuvent confier une tâche à un membre."); return false; }
   if(pour.startsWith("concerne:")){ concerne=pour.slice(9); pour="tous"; }
   if(!concerne&&/\bchat\b/i.test(titre)) concerne=(animaux()[0]||{}).id||null;
-  const doc={titre,cat:cat||g.cat||(concerne?"animaux":"maison"),pour:prive?me:pour,concerne,echeance:echeance||null,recur:recur!=null?recur:(g.rec?g.rec.m:0),recurMsg:g.rec?g.rec.next:null,fait:false,creePar:me,creeLe:Date.now()}; if(catNom){ doc.catNom=catNom; doc.catC=catC||"#A9B4C2"; } if(Array.isArray(tour)&&tour.length>1) doc.tour=tour;
+  const doc={titre,cat:cat||g.cat||(concerne?"animaux":"maison"),pour:prive?me:pour,concerne,echeance:echeance||null,recur:recur!=null?recur:(g.rec?g.rec.m:0),recurMsg:g.rec?g.rec.next:null,fait:false,creePar:me,creeLe:Date.now()}; if(catNom){ doc.catNom=catNom; doc.catC=catC||"#A9B4C2"; } if(routine) doc.routine=routine; if(Array.isArray(tour)&&tour.length>1) doc.tour=tour;
   try{ const ref=await (prive?persoCol():S.db.collection("taches")).add(doc);
     if(!prive&&pour!=="tous"&&pour!==me&&doc.echeance&&daysTo(doc.echeance)>=0&&daysTo(doc.echeance)<=1&&window.cocoonHost&&cocoonHost.push) cocoonHost.push.event({type:"tache",pour,titre:doc.titre,echeance:doc.echeance,id:ref&&ref.id||null});
     const rec=recNorm(doc.recur)?" · se répète "+recText(doc.recur):"";
@@ -7649,65 +7673,85 @@ function setTab(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; 
   { const vs=document.querySelector('.view[data-view="'+name+'"] .viewseg'); if(vs) segAnim(vs,"viewseg"); } if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  if(prevTab&&prevTab!==name) renderAllNow(); else renderAll(); }
 $("tabs").addEventListener("click",e=>{ const b=e.target.closest(".tab"); if(b&&b.dataset.tab){ const same=S.tab===b.dataset.tab; closeSheet(); setTab(b.dataset.tab); renderHeader(); if(same) window.scrollTo({top:0,behavior:"smooth"}); } });
 /* ---------- Nouvelle tâche : une feuille à elle, tout en pastilles (le grand menu « Ajouter » reste sur l'accueil) ---------- */
+/* « Nouvelle tâche » (28 oct., Angel : catégories en grille comme « Nouveau rendez-vous », le reste en lignes qui se déplient) */
 function openTaskSheet(o){ o=o||{}; if(!needMe()) return; const me=meId();
-  S.tkCatX=0; const U=upSheet("taskPage","Nouvelle tâche"); U.sheet.classList.add("ing-sheet","tk-sheet");
-  const inn=el("form",{class:"pp-in tk-in",autocomplete:"off"}); U.sheet.append(inn);
-  const st={where:o.where||"tous",when:null,due:"",cat:o.cat||null,rec:null}, touched={};
+  const U=upSheet("taskPage","Nouvelle tâche"); U.sheet.classList.add("ev-sheet","tk-sheet");
+  const inn=el("form",{class:"pp-in ev-in tk-in",autocomplete:"off"}); U.sheet.append(inn);
+  const st={where:o.where||"tous",when:null,due:"",cat:o.cat||null,rec:null,routine:null,open:null,more:false}, touched={};
   const t0=today(), plus=n=>iso(new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+n));
   const wkend=()=>{ const d=t0.getDay(); return plus(d===6||d===0?0:6-d); };
-  const ti=el("input",{type:"text",class:"tk-ti",maxlength:"120",placeholder:"Ex. : Sortir les poubelles","aria-label":"La tâche",enterkeyhint:"done"});
-  const chip=(on,label,fn,extra)=>el("button",{type:"button",class:"tk-ch"+(on?" on":"")+(extra?" "+extra:""),"aria-pressed":String(!!on),onclick:()=>{ haptic(5); fn(); draw(); }},...[].concat(label));
-  const groups=el("div",{class:"tk-groups"});
-  const dateIn=el("input",{type:"date",class:"tk-date","aria-label":"Date d'échéance"}); dateIn.addEventListener("change",()=>{ st.due=dateIn.value; st.when=dateIn.value?"date":null; touched.when=1; draw(); });
-  const recIn=el("input",{type:"hidden",value:"0"}); const recBox=recPicker(recIn,v=>{ st.rec=v; touched.rec=1; });
-  const draw=()=>{ groups.innerHTML="";
-    const g=(lab,...kids)=>groups.append(el("div",{class:"tk-g",role:"group","aria-label":lab},el("div",{class:"tk-lb",text:lab}),el("div",{class:"tk-row"},...kids)));
-    const W=(v,label)=>chip(st.where===v,label,()=>{ st.where=v; touched.where=1; });
-    const who=[W("tous",[uic("home"),"Le foyer"]),W(me,[avatar(me,20),"Moi"])];
-    if(isAdmin()) for(const h of humains()) if(h.id!==me) who.push(W(h.id,[avatar(h.id,20),h.nom]));
-    who.push(W("perso",[uic("lock"),"Perso"]));
-    if(isAdmin()&&humains().length>1) who.push(chip(st.where==="tour",[uic("repeat"),"À tour de rôle"],()=>{ st.where="tour"; touched.where=1; if(!st.tour) st.tour=humains().map(h=>h.id); if(!st.rec||st.rec===0){ st.rec="1s"; st.recOther=false; } },"tk-tour"));
-    g("Pour qui",...who);
-    if(st.where==="tour"){ const tr=st.tour||[], row=el("div",{class:"tk-tr"});
-      row.append(el("p",{class:"tk-trh",text:tr.length>1?"Qui participe ? Le premier commence, puis chacun son tour à chaque fois que la tâche est faite.":"Choisis au moins deux personnes."}));
-      const order=el("div",{class:"tk-row"}); humains().forEach(h=>{ const k=tr.indexOf(h.id), on=k>=0;
-        order.append(chip(on,[avatar(h.id,20),(h.id===me?"Moi":h.nom)+(on?" · "+(k+1):"")],()=>{ const a=(st.tour||[]).slice(), j=a.indexOf(h.id); if(j>=0) a.splice(j,1); else a.push(h.id); st.tour=a; touched.where=1; })); });
-      row.append(order); groups.lastChild.append(row); }
-    const N=(k,label,d)=>chip(st.when===k,label,()=>{ if(st.when===k){ st.when=null; st.due=""; } else { st.when=k; st.due=d; } touched.when=1; });
-    const whenKids=[N("auj","Aujourd'hui",plus(0)),N("dem","Demain",plus(1)),N("we","Ce week-end",wkend()),chip(st.when==="date",[uic("calendar"),st.when==="date"&&st.due?fmtDue(st.due):"Date…"],()=>{ st.when="date"; touched.when=1; setTimeout(()=>{ try{ dateIn.showPicker(); }catch(_){ dateIn.focus(); } },30); })];
-    g("Quand",...whenKids); if(st.when==="date") groups.lastChild.append(dateIn);
-    const C=(id)=>{ const c=CAT[id], i=el("i",{class:"tk-ci","aria-hidden":"true"}); i.innerHTML=GI(id); const bg="color-mix(in srgb,"+c.c+" 45%,var(--surface))"; i.style.background=bg; i.style.setProperty("--gbg",bg); return chip(st.cat===id,[i,c.nom],()=>{ st.cat=st.cat===id?null:id; touched.cat=1; }); };
-    const persos=Object.values(CAT).filter(c=>c.perso);
-    g("Catégorie",chip(!st.cat,[uic("sparkles"),"Auto"],()=>{ st.cat=null; touched.cat=1; }),chip(st.newCat,"＋ Nouvelle",()=>{ st.newCat=!st.newCat; if(st.newCat) setTimeout(()=>{ const x=inn.querySelector(".tk-nci"); if(x) x.focus(); },40); },"tk-new"),...persos.map(c=>C(c.id)),...CATS.map(c=>C(c.id)));
-    if(st.newCat){ const nci=el("input",{type:"text",class:"tk-nci",maxlength:"24",placeholder:"Nom : Bébé, Travail, Vélo…","aria-label":"Nom de la catégorie"}); nci.value=st.ncNom||"";
-      const sw=el("div",{class:"tk-sw",role:"radiogroup","aria-label":"Couleur"}); st.ncC=st.ncC||DCOLS[0];
-      for(const c of DCOLS) sw.append(el("button",{type:"button",class:"tk-dot"+(st.ncC===c?" on":""),style:"--c:"+c,role:"radio","aria-checked":String(st.ncC===c),"aria-label":"Couleur",onclick:()=>{ st.ncNom=nci.value; st.ncC=c; draw(); }}));
-      const ok=()=>{ const nm=nci.value.trim(); if(!nm){ nci.focus(); return; }
-        const ex=Object.values(CAT).find(c=>norm(c.nom)===norm(nm));
-        if(ex) st.cat=ex.id; else { const id="tc-"+slug(nm).slice(0,18)+"-"+Date.now().toString(36).slice(-4); CAT[id]={id,nom:nm.replace(/^./,x=>x.toUpperCase()),c:st.ncC,perso:true,neuve:true}; st.cat=id; }
-        touched.cat=1; st.newCat=false; st.ncNom=""; S.tkCatX=0; haptic(8); draw(); };
-      nci.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); ok(); } });
-      groups.lastChild.append(el("div",{class:"tk-nc"},el("div",{class:"tk-ncr"},nci,el("button",{type:"button",class:"btn tk-nok",onclick:ok},"Créer")),sw)); }
-    { const r=groups.lastChild.querySelector(".tk-row"); r.classList.add("tk-sc"); const sl=st.cat&&r.querySelector(".tk-ch.on"); r.scrollLeft=S.tkCatX||0; r.addEventListener("scroll",()=>{ S.tkCatX=r.scrollLeft; },{passive:true}); }
-    const rk=st.rec==null||st.rec===0?"0":String(st.rec), R=(v,label)=>chip(rk===String(v)&&!st.recOther,label,()=>{ st.rec=v; st.recOther=false; touched.rec=1; });
-    g("Se répète",R(0,"Non"),R("1s","Chaque semaine"),R(1,"Chaque mois"),R(12,"Chaque année"),chip(!!st.recOther,"Autre…",()=>{ st.recOther=true; touched.rec=1; recIn.value=String(st.rec||"2s"); st.rec=recParse(recIn.value); if(recIn._sync) recIn._sync(); }));
-    if(st.recOther) groups.lastChild.append(recBox);
-    const n=ti.value.trim(); go.disabled=!n; };
-  /* ce qu'on écrit règle les pastilles qu'on n'a pas encore touchées (« demain », « chaque mardi », « pour Emma »…) */
+  const sub=el("p"), ti=el("input",{type:"text",class:"ev-inp tk-ti",maxlength:"120",placeholder:"Ex. : Sortir les poubelles","aria-label":"La tâche",enterkeyhint:"done"});
+  const grid=el("div",{class:"ev-types tk-types",role:"radiogroup","aria-label":"Catégorie"}), ncw=el("div"), rows=el("div",{class:"tk-g2"});
+  const dateIn=el("input",{type:"date",class:"ev-inp tk-date","aria-label":"Date d'échéance"}); dateIn.addEventListener("change",()=>{ st.due=dateIn.value; st.when=dateIn.value?"date":null; touched.when=1; drawRows(); });
+  const recIn=el("input",{type:"hidden",value:"0"}); const recBox=recPicker(recIn,v=>{ st.rec=v; touched.rec=1; drawRows(); });
+  const go=el("button",{type:"submit",class:"btn ev-cta tk-go",text:"Ajouter la tâche",disabled:true});
+  /* les catégories : Auto + les plus utilisées (2 rangées), « Plus » montre tout et « Nouvelle » */
+  const drawGrid=()=>{ grid.innerHTML=""; const use=new Map(); for(const t of S.foyer.concat(S.perso||[])) use.set(tkCatOf(t),(use.get(tkCatOf(t))||0)+1);
+    let L=Object.values(CAT).filter(c=>c.perso).concat(CATS.slice().sort((a,b)=>(use.get(b.id)||0)-(use.get(a.id)||0)));
+    const tile=(e,lab,col,on,fn,cls)=>grid.append(el("button",{type:"button",class:"ev-type"+(cls?" "+cls:""),role:cls?null:"radio","aria-checked":cls?null:String(!!on),style:"--ec:"+col,onclick:()=>{ haptic(5); fn(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); if(e.startsWith("<svg")) i.innerHTML=e; else i.textContent=e; return i; })(),el("span",{text:lab})));
+    const pick=id=>()=>{ st.cat=id; touched.cat=1; st.newCat=false; drawGrid(); };
+    if(!st.more){ L=L.slice(0,6); if(st.cat&&CAT[st.cat]&&!L.some(c=>c.id===st.cat)) L[5]=CAT[st.cat]; }
+    tile("✨","Auto","#FFC94A",!st.cat,pick(null));
+    for(const c of L) tile(tkEmo(c.id),c.nom,c.c,st.cat===c.id,pick(c.id));
+    if(st.more) tile("＋","Nouvelle","#A3A0BE",st.newCat,()=>{ st.newCat=!st.newCat; drawGrid(); if(st.newCat) setTimeout(()=>{ const x=inn.querySelector(".tk-nci"); if(x) x.focus(); },40); },"tk-more"+(st.newCat?" on":""));
+    tile('<svg class="tk-chv" viewBox="0 0 24 24"><path d="'+(st.more?"M6 15l6-6 6 6":"M6 9l6 6 6-6")+'"/></svg>',st.more?"Moins":"Plus","#A3A0BE",false,()=>{ st.more=!st.more; if(!st.more) st.newCat=false; drawGrid(); },"tk-more");
+    ncw.innerHTML=""; if(!st.newCat) return;
+    const nci=el("input",{type:"text",class:"tk-nci",maxlength:"24",placeholder:"Nom : Bébé, Travail, Vélo…","aria-label":"Nom de la catégorie"}); nci.value=st.ncNom||"";
+    const sw=el("div",{class:"tk-sw",role:"radiogroup","aria-label":"Couleur"}); st.ncC=st.ncC||DCOLS[0];
+    for(const c of DCOLS) sw.append(el("button",{type:"button",class:"tk-dot"+(st.ncC===c?" on":""),style:"--c:"+c,role:"radio","aria-checked":String(st.ncC===c),"aria-label":"Couleur",onclick:()=>{ st.ncNom=nci.value; st.ncC=c; drawGrid(); }}));
+    const ok=()=>{ const nm=nci.value.trim(); if(!nm){ nci.focus(); return; }
+      const ex=Object.values(CAT).find(c=>norm(c.nom)===norm(nm));
+      if(ex) st.cat=ex.id; else { const id="tc-"+slug(nm).slice(0,18)+"-"+Date.now().toString(36).slice(-4); CAT[id]={id,nom:nm.replace(/^./,x=>x.toUpperCase()),c:st.ncC,perso:true,neuve:true}; st.cat=id; }
+      touched.cat=1; st.newCat=false; st.ncNom=""; haptic(8); drawGrid(); };
+    nci.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); ok(); } });
+    ncw.append(el("div",{class:"tk-nc"},el("div",{class:"tk-ncr"},nci,el("button",{type:"button",class:"btn tk-nok",onclick:ok},"Créer")),sw)); };
+  /* les lignes : Quand, Pour qui, Se répète, Routine ; une seule ouverte à la fois, un choix la referme */
+  const nm=id=>id===me?"Moi":membre(id).nom;
+  const drawRows=()=>{ rows.innerHTML=""; sub.textContent=st.where==="perso"?"Elle reste visible par toi seul.":"Elle s'affiche dans les tâches du foyer.";
+    const pcs=items=>el("div",{class:"pchips"},...items.filter(Boolean).map(([lab,on,fn,keep])=>el("button",{type:"button",class:"pchip","aria-pressed":String(!!on),onclick:()=>{ haptic(5); fn(); if(!keep) st.open=null; drawRows(); }},...[].concat(lab))));
+    const row=(k,e,col,lab,val,body)=>{ const on=st.open===k;
+      rows.append(el("button",{type:"button",class:"tk-r"+(on?" open":""),"aria-expanded":String(on),style:"--c:"+col,onclick:()=>{ st.open=on?null:k; haptic(5); drawRows(); }},
+        el("span",{class:"ic","aria-hidden":"true",text:e}),el("b",{text:lab}),el("em",{},...[].concat(val)),(()=>{ const i=el("i",{class:"chev","aria-hidden":"true"}); i.innerHTML='<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>'; return i; })()));
+      if(on) rows.append(el("div",{class:"tk-rb"},...[].concat(body()))); };
+    /* Quand */
+    const W=k=>({auj:"Aujourd'hui",dem:"Demain",we:"Ce week-end"})[k];
+    const N=(k,label,d)=>[label,st.when===k,()=>{ st.when=k; st.due=d; dateIn.value=d; touched.when=1; }];
+    row("quand","📅","#8FB8FF","Quand",st.due?(W(st.when)||fmtDue(st.due).replace(/^./,x=>x.toUpperCase())):"Pas de date",()=>[pcs([["Sans date",!st.due,()=>{ st.when=null; st.due=""; dateIn.value=""; touched.when=1; }],N("auj","Aujourd'hui",plus(0)),N("dem","Demain",plus(1)),N("we","Week-end",wkend()),
+      ["📅 Date",st.when==="date",()=>{ st.when="date"; touched.when=1; setTimeout(()=>{ try{ dateIn.showPicker(); }catch(_){ dateIn.focus(); } },30); },true]]),st.when==="date"?dateIn:null].filter(Boolean));
+    /* Pour qui */
+    const Wh=(v,label)=>[label,st.where===v,()=>{ st.where=v; touched.where=1; }];
+    const who=[Wh("tous","🏠 Le foyer"),Wh(me,[avatar(me,20),"Moi"])];
+    if(isAdmin()) for(const h of humains()) if(h.id!==me) who.push(Wh(h.id,[avatar(h.id,20),h.nom]));
+    who.push(Wh("perso","🔒 Moi seul"));
+    const canTour=isAdmin()&&humains().length>1;
+    if(canTour) who.push(["🔄 À tour de rôle",st.where==="tour",()=>{ st.where="tour"; touched.where=1; if(!st.tour) st.tour=humains().map(h=>h.id); if(!recNorm(st.rec)){ st.rec="1s"; st.recOther=false; } },true]);
+    const tr=st.tour||[];
+    row("qui","👤","#FFC94A","Pour qui",st.where==="tous"?"Le foyer":st.where==="perso"?"🔒 Moi seul":st.where==="tour"?(tr.length>1?"🔄 "+tr.map(nm).join(", "):"🔄 À tour de rôle"):[avatar(st.where,20),nm(st.where)],()=>{ const out=[pcs(who)];
+      if(st.where==="tour") out.push(el("p",{class:"tk-trh",text:tr.length>1?"Le premier commence, puis chacun son tour à chaque fois que la tâche est faite.":"Choisis au moins deux personnes."}),
+        pcs(humains().map(h=>{ const k=tr.indexOf(h.id); return [[avatar(h.id,20),nm(h.id)+(k>=0?" · "+(k+1):"")],k>=0,()=>{ const a=tr.slice(), j=a.indexOf(h.id); if(j>=0) a.splice(j,1); else a.push(h.id); st.tour=a; touched.where=1; },true]; })));
+      return out; });
+    /* Se répète */
+    const rk=st.rec==null||st.rec===0?"0":String(st.rec), R=(v,label)=>[label,rk===String(v)&&!st.recOther,()=>{ st.rec=v; st.recOther=false; touched.rec=1; if(!v) st.routine=null; }];
+    row("rec","🔁","#C79BFF","Se répète",recNorm(st.rec)?recText(st.rec).replace(/^./,x=>x.toUpperCase()):"Non",()=>[pcs([R(0,"Non"),R("1j","Chaque jour"),R("1s","Chaque semaine"),R(1,"Chaque mois"),R(12,"Chaque année"),
+      ["Autre…",!!st.recOther,()=>{ st.recOther=true; touched.rec=1; recIn.value=String(st.rec||"2s"); st.rec=recParse(recIn.value); if(recIn._sync) recIn._sync(); },true]]),st.recOther?recBox:null].filter(Boolean));
+    /* Routine (seulement si elle revient) */
+    if(recNorm(st.rec)){ const auto=tkRoutine({recur:st.rec}), A=RT.find(r=>r[0]===auto), cur=RT.find(r=>r[0]===st.routine);
+      row("rt","🧹","#7FD39A","Routine",st.routine==="aucune"?"Aucune":cur?cur[1]+" "+cur[2]:A?"Auto · "+A[2]:"Aucune",()=>pcs([["Auto",!st.routine,()=>{ st.routine=null; }],...RT.map(([k,e,l])=>[e+" "+l,st.routine===k,()=>{ st.routine=k; }]),["Aucune",st.routine==="aucune",()=>{ st.routine="aucune"; }]])); }
+    go.disabled=!ti.value.trim(); };
+  /* ce qu'on écrit règle ce qu'on n'a pas encore touché (« demain », « chaque mardi », « pour Emma »…) */
   ti.addEventListener("input",()=>{ const v=ti.value.trim(); const p=v?parseQuick(v):{};
     if(!touched.when){ if(p.echeance){ st.due=p.echeance; st.when=p.echeance===plus(0)?"auj":p.echeance===plus(1)?"dem":"date"; dateIn.value=p.echeance; } else { st.when=null; st.due=""; } }
-    if(!touched.rec){ st.rec=p.recur||null; st.recOther=!!(p.recur&&!["1s","1",1,"12",12].includes(p.recur)); if(st.recOther){ recIn.value=String(p.recur); if(recIn._sync) recIn._sync(); } }
+    if(!touched.rec){ st.rec=p.recur||null; st.recOther=!!(p.recur&&!["1j","1s","1",1,"12",12].includes(p.recur)); if(st.recOther){ recIn.value=String(p.recur); if(recIn._sync) recIn._sync(); } }
     if(!touched.where&&p.where) st.where=p.where;
-    draw(); });
-  const go=el("button",{type:"submit",class:"btn tk-go",text:"Ajouter la tâche",disabled:true});
-  inn.append(el("h2",{class:"tk-h",text:"Nouvelle tâche"}),ti,groups,go);
+    drawRows(); });
+  inn.append(el("div",{class:"ev-top"},el("h2",{class:"tk-h",text:"Nouvelle tâche"}),sub),grid,ncw,ti,rows,go);
   inn.addEventListener("submit",async e=>{ e.preventDefault(); const v=ti.value.trim(); if(!v){ ti.focus(); return; } go.disabled=true;
     const p=parseQuick(v), titre=(p.titre||v).replace(/^./,c=>c.toUpperCase());
     const pc=st.cat&&CAT[st.cat]&&CAT[st.cat].perso?CAT[st.cat]:null;
-    const isTour=st.where==="tour"&&(st.tour||[]).length>1; if(st.where==="tour"&&!isTour){ toast("Choisis au moins deux personnes pour le tour de rôle."); go.disabled=false; return; }
-    const ok=await addTask({titre,cat:st.cat||p.cat||null,catNom:pc?pc.nom:null,catC:pc?pc.c:null,where:isTour?st.tour[0]:st.where,tour:isTour?st.tour:null,echeance:st.due||null,recur:touched.rec||st.rec!=null?(st.rec||0):null});
+    const isTour=st.where==="tour"&&(st.tour||[]).length>1; if(st.where==="tour"&&!isTour){ toast("Choisis au moins deux personnes pour le tour de rôle."); st.open="qui"; drawRows(); go.disabled=false; return; }
+    const ok=await addTask({titre,cat:st.cat||p.cat||null,catNom:pc?pc.nom:null,catC:pc?pc.c:null,where:isTour?st.tour[0]:st.where,tour:isTour?st.tour:null,echeance:st.due||null,recur:touched.rec||st.rec!=null?(st.rec||0):null,routine:recNorm(st.rec)?st.routine:null});
     if(ok){ haptic(12); U.close(); } else go.disabled=false; });
-  draw(); setTimeout(()=>{ try{ ti.focus({preventScroll:true}); }catch(_){} },360); }
+  drawGrid(); drawRows(); setTimeout(()=>{ try{ ti.focus({preventScroll:true}); }catch(_){} },360); }
 function openSheet(o){ if(!meId()){ needMe(); return; } o=(o&&(o.where||o.text))?o:{}; resetQuick();
   if(o.where){ fillWhere($("qWhere"),o.where); $("qWhere").value=o.where; $("qWhere").dataset.touched="1"; if(o.where!=="perso"&&o.where!=="tous") S.qSel.add(o.where); }
   if(o.text) $("quickTitle").value=o.text;
