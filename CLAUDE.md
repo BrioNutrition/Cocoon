@@ -33,6 +33,9 @@ clés de publication Apple → secrets GitHub. `config.js` ne contient que l'URL
 Grouper les demandes, 2–3 propositions en texte plutôt que 5 maquettes (maquettes seulement si le design compte),
 tests ciblés.
 
+## Police
+**Inter partout** (28 oct., Angel, remplace Bricolage Grotesque et Fredoka) : lien Google Fonts `Inter:opsz,wght@14..32,300..900` dans la source et `build.py`, variables `--f-display/--f-body/--f-mono`, écrans de connexion du runtime, écran de lancement `#cxIntro` ; corps `letter-spacing:-.011em` et `font-feature-settings:"cv11","ss01"`. (La page de présentation et les images App Store gardent leurs polices d'avant.)
+
 ## Repères dans le code source
 `el()` crée un élément ; `S` = état global ; `setTab()` ; `renderAllNow()` ; `upSheet(id,label)` → feuille du bas `{P,sheet,close}` ;
 `needMe()`, `meId()`, `membre()`, `humains()`, `isAdmin()` ; `toast()` ; `haptic()`. Données : table Supabase `cocoon_docs`
@@ -143,7 +146,7 @@ Catégories de tâches perso : `CAT[id]` avec `perso:true`, retrouvées via `cat
   effacé à la suppression du compte. Le faux Supabase des tests garde maintenant ses comptes (`mockU`).
   **Tous les écrans de connexion** ont la même affiche (connexion, création de compte, mot de passe oublié, code, nouveau mot de passe,
   foyer à créer/rejoindre) : `poster(mode)` dans le runtime déplace le contenu dans la feuille blanche (`TAGS` = phrase en blanc par écran) ;
-  « Cocoon » en Bricolage 800 comme la barre du haut de l'app.
+  « Cocoon » en Inter 800 comme la barre du haut de l'app.
   Création de compte avec une adresse déjà prise (`cocoon_email_exists`, erreur « already registered » ou utilisateur sans identité) :
   `taken(em)` → « Cette adresse e-mail est déjà utilisée… » + « Me connecter à ce compte » (connexion, e-mail prérempli) et « Mot de passe oublié ? ».
 - **Thème sombre par défaut partout** (demandé par Angel, connexion et questionnaire compris) : script tout en haut du `<head>` (source et
