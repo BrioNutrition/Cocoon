@@ -9869,7 +9869,6 @@ function openCListForm(l){ if(!needMe()) return; const me=meId(), edit=!!l;
   const tg=(txt,key)=>{ const b=el("button",{type:"button",class:"cl-tg",role:"switch","aria-checked":String(!!F[key]),onclick:()=>{ F[key]=key==="recur"?(F.recur?null:"semaine"):!F[key]; b.setAttribute("aria-checked",String(!!F[key])); haptic(5); }},el("span",{text:txt}),el("u",{"aria-hidden":"true"})); return b; };
   const lab=(t,...k)=>el("div",{class:"ev-lab"},el("span",{text:t}),...k);
   inn.append(lab("Titre",ti),lab("Couleur",em),lab("Quand",qd,da),lab("Où",lc,li),lab("Qui y va",qw),lab("Visible par",vis),tg("🔁 Refaire chaque semaine","recur"));
-  if(!edit) inn.append(tg("🍽️ Ajouter les ingrédients des repas prévus","ing"));
   const go=el("button",{type:"button",class:"btn ev-cta",id:"clGo",text:edit?"Enregistrer":"Créer la liste",onclick:async()=>{ if(!needMe()) return;
     const doc={titre:(F.titre||"").trim()||(edit?l.titre:"Liste de courses"),couleur:F.couleur,date:F.date||null,lieu:(F.lieu||"").trim()||null,qui:F.qui||null,prive:!!F.prive,recur:F.recur||null};
     go.disabled=true;
