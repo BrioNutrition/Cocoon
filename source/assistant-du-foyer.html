@@ -9825,7 +9825,12 @@ const cMergedMsg=()=>S.cMerged&&S.cMerged.length?" Déjà dans la liste : "+esc(
 /* crayon = corriger le nom seulement, dans une petite fenêtre (la quantité se change avec le sélecteur de la ligne) */
 function cArtEdit(i){ if(!needMe()) return; let done=false;
   const end=async ok=>{ if(done) return; done=true; const nom=nm.value.trim(); ov.classList.add("out"); setTimeout(()=>ov.remove(),180);
-    if(!ok||!nom||nom===i.nom) return; i.nom=nom; renderCourses(); try{ await S.db.collection("courses").doc(i.id).update({nom}); }catch(e){ writeErr(e); } };
+    if(!ok||!nom||nom===i.nom) return;
+    /* même nom qu'un autre article de la liste (pas coché) : on les réunit, quantités additionnées (Angel) */
+    const k=foodSg(cKey(nom)), same=!i.fait&&cItemsOf(S.cListe||CL_DEF).find(x=>x.id!==i.id&&!x.fait&&foodSg(cKey(x.nom))===k), qa=qNum(i.qte), qb=same?qNum(same.qte):null;
+    try{ if(same&&qa!=null&&qb!=null){ const q=qStr(qa+qb); same.qte=q; S.cHideIt.add(i.id); renderCourses(); toast("Réuni avec « "+esc(same.nom)+" » : × "+(q||"1")+".");
+        await S.db.collection("courses").doc(same.id).update({qte:q}); await S.db.collection("courses").doc(i.id).delete(); return; }
+      i.nom=nom; renderCourses(); await S.db.collection("courses").doc(i.id).update({nom}); }catch(e){ writeErr(e); } };
   const nm=el("input",{class:"ev-inp",type:"text",id:"artNom",maxlength:"120","aria-label":"Nom de l'article",enterkeyhint:"done"}); nm.value=i.nom;
   nm.addEventListener("keydown",e=>{ if(e.key==="Enter") end(true); if(e.key==="Escape") end(false); });
   const box=el("div",{class:"clp-box",role:"dialog","aria-label":"Renommer"},el("b",{class:"clp-h",text:"Renommer"}),nm,
