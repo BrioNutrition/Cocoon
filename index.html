@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 11:09";</script>
+<script>window.COCOON_BUILD="28/10 11:11";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -9792,7 +9792,7 @@ const FOOD_EMO=[["lait de coco","🥥"],["coco","🥥"],["lait","🥛"],["yaourt
 const foodSg=t=>t.split(" ").map(w=>w.length>3?w.replace(/[sx]$/,""):w).join(" ");
 const FOOD_SG=FOOD_EMO.map(([k,e])=>[" "+foodSg(k)+" ",e]);
 function foodEmo(nom){ const raw=String(nom||"").trim(); if(!raw||/^\p{Extended_Pictographic}/u.test(raw)) return ""; const t=" "+foodSg(cKey(raw).replace(/\b(d|l)\s/g,""))+" ";
-  for(const [k,e] of FOOD_SG) if(t.includes(k)) return e; return ""; }
+  for(const [k,e] of FOOD_SG) if(t.includes(k)) return e; return "🛍️"; }
 function guessRayon(nom){ const t=" "+cKey(nom)+" "; for(const [k,r] of RKEYS){ if(t.includes(" "+k+" ")||t.includes(" "+k+"s ")||t.includes(" "+k+"x ")) return r; } return "autre"; }
 function rayonOf(i){ const k=cKey(i.nom), p=S.rayonsPerso||{}; return p[k.replace(/ /g,"-")]||i.rayon||guessRayon(i.nom); }
 function parseArticle(p){ const q=p.trim().match(/^(\d+(?:[.,]\d+)?\s*(?:x|kg|g|l|cl|ml|paquets?|bo[iî]tes?|bouteilles?|packs?|sachets?|tranches?|pots?)?)\s+(?:d[e'’]\s*)?(.+)$/i); const nom=(q?q[2]:p).trim(); return {nom:nom.replace(/^./,c=>c.toUpperCase()),qte:q?q[1]:null}; }
