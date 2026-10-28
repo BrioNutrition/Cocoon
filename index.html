@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 12:09";</script>
+<script>window.COCOON_BUILD="28/10 12:19";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3028,6 +3028,15 @@ html.cl-open .selbar{z-index:80}
 .act-row{display:flex;gap:10px;align-items:flex-start;padding:8px 2px;border-bottom:1px solid var(--line)}.act-row:last-child{border-bottom:0}
 .act-row.new{background:color-mix(in srgb,#FFC94A 8%,transparent);border-radius:10px;padding-left:6px;padding-right:6px}
 .act-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:13.5px;line-height:1.35}.act-t q{font-weight:700}.act-t small{color:var(--muted);font-size:11.5px}
+.check.dn-ok{background:#3CC37A!important;border-color:#3CC37A!important;position:relative;overflow:visible}.check.dn-ok svg{opacity:1!important;transform:none!important}
+.dn-fx{position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none;z-index:2}
+.dn-glow{position:absolute;left:-28px;top:-28px;width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,rgba(60,195,122,.55) 0%,rgba(60,195,122,.18) 45%,rgba(60,195,122,0) 70%);z-index:-1;animation:dnGlow .85s ease-out both}
+.dn-b{position:absolute;left:var(--x);top:var(--y);width:0;height:0}
+.dn-b i{position:absolute;left:-1px;top:-7px;width:2px;height:5px;border-radius:2px;background:var(--c);transform-origin:1px 7px;opacity:0;animation:dnRay .55s cubic-bezier(.2,.7,.3,1) var(--dl) both}
+@keyframes dnRay{0%{opacity:0;transform:rotate(var(--r)) translateY(0) scaleY(.3)}25%{opacity:1}100%{opacity:0;transform:rotate(var(--r)) translateY(-7px) scaleY(1)}}
+@keyframes dnGlow{0%{opacity:0;transform:scale(.4)}35%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.3)}}
+.dn-anim{animation:dnOut .95s ease forwards;overflow:visible!important}.dn-anim .check{overflow:visible}
+@keyframes dnOut{0%,75%{opacity:1}100%{opacity:0}}
 .np-seg{display:flex;gap:4px;margin:2px 14px 8px;padding:3px;border-radius:12px;background:var(--sunk)}
 .np-seg button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-size:13px;font-weight:800;padding:7px;border-radius:9px;cursor:pointer}
 .np-seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}
@@ -4692,7 +4701,7 @@ let TK_OPEN=null;
 function tkStash(){ const f=$("tQa"), v=document.querySelector('.view[data-view="foyer"]'), wf=$("whoFilter"); if(f&&v&&wf&&f.parentNode!==v){ v.insertBefore(f,wf); } if(f) f.hidden=true; }
 function tkCard(cat,ts,open){ const c=CAT[cat]||CAT.maison, late=ts.filter(t=>t.echeance&&daysTo(t.echeance)<0).length, n=ts.length;
   const tg=()=>{ if(S.tkOpen===cat){ const ae=document.activeElement; if(ae&&ae.blur&&TK_OPEN&&TK_OPEN.contains(ae)) ae.blur(); S.clClosing="tk:"+cat; if(TK_OPEN) TK_OPEN.style.viewTransitionName="cl-x"; clVT(()=>{ S.tkOpen=null; renderFoyer(); S.clClosing=null; },true); }
-    else clVT(()=>{ S.tkOpen=cat; renderFoyer(); setTimeout(()=>{ if(TK_OPEN&&TK_OPEN.isConnected){ const r=TK_OPEN.getBoundingClientRect().top; if(r<70||r>innerHeight*.55) TK_OPEN.scrollIntoView({block:"start",behavior:"smooth"}); } },60); }); };
+    else clVT(()=>{ S.tkOpen=cat; S.tkOpenAt=Date.now(); renderFoyer(); setTimeout(()=>{ if(TK_OPEN&&TK_OPEN.isConnected){ const r=TK_OPEN.getBoundingClientRect().top; if(r<70||r>innerHeight*.55) TK_OPEN.scrollIntoView({block:"start",behavior:"smooth"}); } },60); }); };
   const vt="tkc-"+String(cat).replace(/[^A-Za-z0-9_-]/g,"_");
   return el("div",{class:"cl-card tk-card"+(open?" open":""),role:"button",tabindex:"0","data-vt":vt,style:"--c:"+c.c+";view-transition-name:"+(S.clClosing==="tk:"+cat?"cl-x":vt),"aria-expanded":String(!!open),"aria-label":c.nom+", "+n+" à faire"+(late?", "+late+" en retard":""),
       onclick:tg,onkeydown:e=>{ if(e.target===e.currentTarget&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); tg(); } }},
@@ -6049,13 +6058,17 @@ function okPop(x,y){
   b.animate([{transform:"translate(-50%,-50%) scale(.3)",opacity:0},{transform:"translate(-50%,-50%) scale(1.15)",opacity:1,offset:.3},{transform:"translate(-50%,-50%) scale(1)",opacity:1,offset:.55},{transform:"translate(-50%,-90%) scale(.95)",opacity:0}],{duration:850,easing:"cubic-bezier(.3,.8,.4,1)"}).onfinish=()=>b.remove();
 }
 /* Petite animation de validation sur la case de la tâche */
+/* validation d'une tâche (Angel, 28 oct.) : le rond devient vert, petite lueur verte derrière, 2-3 petits feux d'artifice de chaque côté, puis la ligne s'efface */
+const DN_B=[[-24,-10,"#FFC94A",0],[-31,8,"#3CC37A",.07],[-15,19,"#F28DB8",.13],[24,-12,"#F28DB8",.03],[31,6,"#FFC94A",.1],[17,19,"#3CC37A",.16]];
 function doneAnim(tasks){
   const reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches; let any=false;
   for(const t of tasks){ const k=(t.prive?"ptaches:":"taches:")+t.id;
-    document.querySelectorAll('[data-key="'+k+'"]').forEach(row=>{ any=true; const ck=row.querySelector(".check"); if(ck) ck.classList.remove("sel");
-      const fill=el("span",{class:"done-fill","aria-hidden":"true"}); const ic=el("span",{class:"done-ic"}); ic.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'; const wk=el("span",{class:"done-wk"}); for(let i=0;i<6;i++){ const a=i*60+(i%2?18:-8), d=Math.round(28+30*Math.abs(Math.sin(a*Math.PI/180))); const w=document.createElement("i"); w.style.cssText="--a:"+a+"deg;--d:"+d+"px;--dl:"+(0.3+i*0.045).toFixed(3)+"s;--s:"+(i%3===0?1.15:0.85); w.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 1.8 14.6 9.4 22.2 12 14.6 14.6 12 22.2 9.4 14.6 1.8 12 9.4 9.4Z" fill="#fff" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>'; wk.append(w); } ic.append(wk); fill.append(ic);
-      row.classList.add("done-anim"); row.append(fill); }); }
-  return new Promise(res=>setTimeout(res,any&&!reduced?1050:0));
+    document.querySelectorAll('[data-key="'+k+'"]').forEach(row=>{ any=true; const ck=row.querySelector(".check"); row.classList.remove("selected"); if(!ck) return; ck.classList.remove("sel"); ck.classList.add("dn-ok");
+      if(reduced) return;
+      const fx=el("span",{class:"dn-fx","aria-hidden":"true"},el("span",{class:"dn-glow"}));
+      for(const [x,y,c,dl] of DN_B){ const b=el("span",{class:"dn-b",style:"--x:"+x+"px;--y:"+y+"px;--c:"+c}); for(let r=0;r<6;r++){ const i=document.createElement("i"); i.style.cssText="--r:"+(r*60+(x>0?15:0))+"deg;--dl:"+(.12+dl)+"s"; b.append(i); } fx.append(b); }
+      ck.append(fx); row.classList.add("dn-anim"); }); }
+  return new Promise(res=>setTimeout(res,any&&!reduced?950:0));
 }
 /* ===== Budget (V2) ===== */
 const BCATS=[{id:"courses",nom:"Courses",c:"#7FD39A"},{id:"logement",nom:"Logement",c:"#7FCDB9"},{id:"energie",nom:"Énergie",c:"#FFC94A"},{id:"internet",nom:"Internet & mobile",c:"#8FB8FF"},{id:"streaming",nom:"Streaming",c:"#E79ADB"},{id:"assurance",nom:"Assurances",c:"#B9A8F0"},{id:"transport",nom:"Transport",c:"#A9B4C2"},{id:"loisirs",nom:"Loisirs",c:"#FF9C80"},{id:"sante",nom:"Santé",c:"#7CCFE0"},{id:"animaux",nom:"Animaux",c:"#F4A7A7"},{id:"enfants",nom:"Enfants",c:"#A8D672"},{id:"autre",nom:"Autre",c:"#C9C7DD"}];
@@ -7285,7 +7298,7 @@ async function restoreTask(t,btn){
 async function toggleDone(t){
   if(!S.db||!needMe()) return;
   const key=(t.prive?"p:":"f:")+t.id;
-  if(!t.fait){ S.sel.has(key)?S.sel.delete(key):S.sel.add(key); S.selJust=key; renderTaskViews(); S.selJust=null; renderSelBar(); return; }
+  if(!t.fait){ if(S.validating&&S.validating.has(key)) return; (S.validating=S.validating||new Set()).add(key); haptic(10); try{ await validateTasks([t]); } finally{ S.validating.delete(key); } return; }
   try{ await colFor(t).doc(t.id).update({fait:false,faitPar:null,faitLe:null,nextMsg:null}); }catch(e){ writeErr(e); }
 }
 function renderSelBar(){
@@ -7313,15 +7326,21 @@ $("selDel").addEventListener("click",()=>{
 $("selOk").addEventListener("click",async()=>{
   if(cSelMode()) return cSelOk();
   const tasks=[...S.sel].map(findTask).filter(t=>t&&!t.fait); if(!tasks.length) return;
-  const msgs=[]; S.sel.clear(); renderSelBar();
+  S.sel.clear(); renderSelBar(); validateTasks(tasks); });
+/* valider des tâches (le rond d'une tâche valide tout de suite, Angel 28 oct.) */
+async function validateTasks(tasks){
+  const msgs=[];
   await doneAnim(tasks);
   const me=meId(), now=Date.now(); for(const t of tasks){ t.fait=true; t.faitPar=me; t.faitLe=now; }
   renderAllNow();
+  /* dernière tâche d'une catégorie ouverte : elle se referme toute seule */
+  /* (les tâches qui reviennent créent leur prochaine fois : on ne compte que celles qui étaient là avant) */
+  if(S.tab==="foyer"&&S.tkOpen&&!S.foyer.concat(S.perso||[]).some(t=>!t.fait&&(CAT[t.cat]?t.cat:"maison")===S.tkOpen&&!(t.auto&&(t.creeLe||0)>=(S.tkOpenAt||0)))){ const c0=S.tkOpen; setTimeout(()=>{ const card=document.querySelector("#openList .tk-card.open"); if(card&&S.tkOpen===c0) card.click(); },300); }
   try{ const res=await Promise.all(tasks.map(t=>completeTask(t))); for(const m of res) if(m) msgs.push(m); }
   catch(e){ writeErr(e); }
   const n=tasks.length;
   toast((n>1?n+" tâches validées.":"Fait. Bien joué.")+(msgs.length?" <b>"+esc(msgs[0])+"</b>"+(msgs.length>1?" (+"+(msgs.length-1)+" autre"+(msgs.length>2?"s":"")+" rappel"+(msgs.length>2?"s":"")+")":"")+" — ajouté aux rappels.":""));
-});
+}
 async function completeTask(t){ const _r=await completeTaskInner(t); coconTick(); starEarn(t); return _r; }
 /* ---------- Étoiles des enfants ----------
    Une tâche du foyer faite pour un enfant (pour = l'enfant) rapporte une étoile (collection etoiles). Cochée par un adulte : acquise ;
