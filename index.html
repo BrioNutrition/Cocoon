@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 11:19";</script>
+<script>window.COCOON_BUILD="28/10 11:27";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -3014,6 +3014,19 @@ html.cl-open .selbar{z-index:80}
 .cl-fav-main{flex:1;min-width:0;display:flex;align-items:center;gap:12px;text-align:left;font:inherit;color:var(--ink);background:none;border:0;padding:8px 6px 8px 14px;cursor:pointer}
 .cl-fav-x{flex:none;width:38px;height:38px;border:0;background:none;color:var(--muted);font-size:20px;cursor:pointer;border-radius:12px}
 .cl-in #clGo{margin-top:24px}
+/* Tâches façon Courses */
+.tk-sec{display:flex;align-items:baseline;gap:8px}.tk-late{font-style:normal;color:#FF7B7B;font-size:12px;font-weight:800;margin-left:6px;letter-spacing:0;text-transform:none}
+.tk-now{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}
+.tk-card .ka-li.late{color:#FF8A8A}
+.tk-open{margin-bottom:10px}
+.tk-panel .c-add{position:relative;display:block;margin:12px 0 8px}
+.tk-panel .c-add input[type=text]{width:100%;padding:13px 14px 13px 14px;border-radius:14px;background:var(--bg);border:1px solid var(--line);font-size:16px}
+.tk-panel .c-add .btn{display:none}
+.tk-list .item{border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;background:none!important;box-shadow:none!important;padding-left:2px;padding-right:2px}
+.tk-list .item:last-child{border-bottom:0!important}
+.tk-list .item[data-key]{grid-template-columns:auto minmax(0,1fr) auto auto auto}.tk-list .item[data-key] .tk-del{order:4}
+.tk-del{flex:none;width:32px;height:36px;border:0;background:none;color:var(--muted);font-size:20px;cursor:pointer;align-self:center}
+.tk-none{color:var(--muted);font-size:13.5px;margin:6px 2px 10px}
 html.boot-lock,html.boot-lock body{overflow:hidden!important;overscroll-behavior:none;touch-action:none}
 .cl-fav-none{color:var(--muted);font-size:13.5px;margin:4px 2px}
 .cl-fav-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.cl-fav-t b{font-size:16px;font-weight:800;color:var(--c);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cl-fav-t small{font-size:12.5px;color:var(--muted)}
@@ -4586,6 +4599,7 @@ function taskRow(t,opts={}){
   more.innerHTML='<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M15.6 3.1a2.6 2.6 0 0 1 3.7 0l1.6 1.6a2.6 2.6 0 0 1 0 3.7L19.5 9.8 14.2 4.5zM12.8 5.9l5.3 5.3-9.9 9.9c-.3.3-.7.5-1.1.6l-4.1.9c-.8.2-1.4-.5-1.3-1.3l.9-4.1c.1-.4.3-.8.6-1.1z"/></svg>';
   if(!editable||t.fait) more.hidden=true;
   if(!t.fait) row.append(more);
+  if(opts.del&&!t.fait&&editable&&!S.readOnly&&meId()) row.append(el("button",{type:"button",class:"tk-del","aria-label":"Supprimer « "+t.titre+" »",text:"×",onclick:async ev=>{ await rowOut(ev.currentTarget.closest(".item"),"del"); softDelete([taskEntry(t)],"« "+esc(t.titre)+" » supprimée."); }}));
   if(editable&&S.editing===key) row.append(taskEditor(t,key));
   return row;
 }
@@ -4609,7 +4623,7 @@ function renderMine(){
 }
 function renderFoyer(){
   const me=meId();
-  renderTiles();
+  S.catF=null; { const tl=$("tiles"); if(tl){ tl.innerHTML=""; tl.hidden=true; } }
   const wf=$("whoFilter"); wf.innerHTML="";
   { const op=S.foyer.filter(t=>!t.fait&&(!S.catF||t.cat===S.catF)), hs=humains(); const L=[{id:null,nom:"Tous",l:"Toutes les tâches"},{id:"tous",nom:"Foyer",l:"Pour tout le foyer"},...hs.filter(m=>m.id===me).concat(hs.filter(m=>m.id!==me)).map(m=>({id:m.id,nom:m.id===me?"Moi":m.nom,l:"Pour "+(m.id===me?"moi":m.nom)}))];
     const opP=S.perso.filter(t=>!t.fait&&(!S.catF||t.cat===S.catF));
@@ -4620,12 +4634,51 @@ function renderFoyer(){
   const open=pool.filter(t=>!t.fait&&match(t)).sort(sortOpen);
   const done=pool.filter(t=>t.fait&&match(t)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0)).slice(0,40);
   if(!S.loaded.t){ $("openList").innerHTML=""; $("openList").append(el("div",{class:"empty",text:"Chargement des tâches du foyer…"})); }
-  else fillList($("openList"),open,[S.foyer.length?"Rien à faire ici":"Aucune tâche pour le foyer",S.foyer.length?"Change de filtre ou écris une tâche dans le champ en haut.":"Ajoute la première : « Acheter filtre VMC », « Vermifuge du chat »…"]);
+  else if(!open.length&&!S.tkOpen){ tkStash(); fillList($("openList"),open,[S.foyer.length?"Rien à faire ici":"Aucune tâche pour le foyer",S.foyer.length?"Change de filtre ou touche le + en haut.":"Ajoute la première : « Acheter filtre VMC », « Vermifuge du chat »…"]); }
+  else renderTkHome(open);
   const dl=$("doneList"); dl.innerHTML=""; { const h=histHead(done); if(h) dl.append(h); } for(const t of done) dl.append(taskRow(t));
   $("doneWrap").hidden=!done.length; $("doneSummary").textContent="Tâches réalisées ("+done.length+")";
   $("nFoyer").textContent=""; $("nFoyer").hidden=!hubHasNews();
   renderFeed();
 }
+/* ---------- Tâches façon Courses (28 oct., Angel) : « Aujourd'hui » (retards + du jour) puis une carte par catégorie, qui se déroule ---------- */
+const TK_EMO={factures:"💶",entretien:"🔧",courses:"🛒",colis:"📦",animaux:"🐾",rdv:"📅",maison:"🏠",documents:"📄",voitures:"🚗",enfants:"🧸",menage:"🧹",jardin:"🌿",sante:"💊",ecole:"🎒",loisirs:"🎉",travaux:"🛠️"};
+const tkEmo=c=>(CAT[c]&&CAT[c].emoji)||TK_EMO[c]||"🏷️";
+let TK_OPEN=null;
+/* le champ « Ajouter une tâche » vit dans la catégorie ouverte ; rangé à sa place d'origine sinon */
+function tkStash(){ const f=$("tQa"), v=document.querySelector('.view[data-view="foyer"]'), wf=$("whoFilter"); if(f&&v&&wf&&f.parentNode!==v){ v.insertBefore(f,wf); } if(f) f.hidden=true; }
+function tkCard(cat,ts,open){ const c=CAT[cat]||CAT.maison, late=ts.filter(t=>t.echeance&&daysTo(t.echeance)<0).length, n=ts.length;
+  const tg=()=>{ if(S.tkOpen===cat){ const ae=document.activeElement; if(ae&&ae.blur&&TK_OPEN&&TK_OPEN.contains(ae)) ae.blur(); S.clClosing="tk:"+cat; if(TK_OPEN) TK_OPEN.style.viewTransitionName="cl-x"; clVT(()=>{ S.tkOpen=null; renderFoyer(); S.clClosing=null; },true); }
+    else clVT(()=>{ S.tkOpen=cat; renderFoyer(); setTimeout(()=>{ if(TK_OPEN&&TK_OPEN.isConnected){ const r=TK_OPEN.getBoundingClientRect().top; if(r<70||r>innerHeight*.55) TK_OPEN.scrollIntoView({block:"start",behavior:"smooth"}); } },60); }); };
+  const vt="tkc-"+String(cat).replace(/[^A-Za-z0-9_-]/g,"_");
+  return el("div",{class:"cl-card tk-card"+(open?" open":""),role:"button",tabindex:"0","data-vt":vt,style:"--c:"+c.c+";view-transition-name:"+(S.clClosing==="tk:"+cat?"cl-x":vt),"aria-expanded":String(!!open),"aria-label":c.nom+", "+n+" à faire"+(late?", "+late+" en retard":""),
+      onclick:tg,onkeydown:e=>{ if(e.target===e.currentTarget&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); tg(); } }},
+    el("small",{text:tkEmo(cat)+" "+(()=>{ const f=ts.map(t=>t.echeance).filter(Boolean).sort()[0]; return f?dueLabel(f):n?"Sans date":"Catégorie"; })()}),el("b",{text:c.nom}),
+    el("span",{class:"ka-pv ka-cnt"},(n?"✓ "+n+" à faire":"✓ À jour"),late?el("em",{class:"tk-late",text:late+" en retard"}):null),
+    open?null:(n?el("span",{class:"ka-ul"},...ts.slice(0,3).map(t=>el("span",{class:"ka-li"+(t.echeance&&daysTo(t.echeance)<0?" late":"")},el("i",{text:t.titre}))),n>3?el("span",{class:"ka-more",text:"+ "+(n-3)+" autre"+(n>4?"s":"")}):null):null)); }
+function renderTkHome(open){ const box=$("openList"), cat0=S.tkOpen;
+  const byCat=new Map(); for(const t of open){ const k=CAT[t.cat]?t.cat:"maison"; if(!byCat.has(k)) byCat.set(k,[]); byCat.get(k).push(t); }
+  if(cat0&&!byCat.has(cat0)) byCat.set(cat0,[]);
+  const keep=!!(cat0&&TK_OPEN&&TK_OPEN.parentNode===box&&TK_OPEN._cat===cat0);
+  if(keep){ [...box.childNodes].forEach(n=>{ if(n!==TK_OPEN) n.remove(); }); } else { tkStash(); box.innerHTML=""; }
+  const before=[], after=[];
+  /* Aujourd'hui : en retard + du jour, à cocher sans ouvrir de catégorie */
+  const now=open.filter(t=>t.echeance&&daysTo(t.echeance)<=0);
+  if(now.length&&!cat0){ const late=now.filter(t=>daysTo(t.echeance)<0).length; before.push(el("p",{class:"cl-sec tk-sec"},"Aujourd'hui",late?el("em",{class:"tk-late",text:late+" en retard"}):null)); const L=el("div",{class:"tk-now"}); for(const t of now) L.append(taskRow(t)); before.push(L); }
+  /* catégories : « Cette semaine » (une tâche dans les 7 jours ou en retard) puis « Plus tard » */
+  const first=ts=>ts.reduce((m,t)=>t.echeance&&t.echeance<m?t.echeance:m,"9999");
+  const cats=[...byCat.keys()].filter(k=>k!==cat0).sort((a,b)=>first(byCat.get(a))<first(byCat.get(b))?-1:1);
+  const wk=cats.filter(k=>{ const f=first(byCat.get(k)); return f!=="9999"&&daysTo(f)<=7; }), lt=cats.filter(k=>!wk.includes(k));
+  for(const [lab,ks] of [["Cette semaine",wk],["Plus tard",lt]]) if(ks.length){ after.push(el("p",{class:"cl-sec",text:lab})); const G=el("div",{class:"cl-grid"}); for(const k of ks) G.append(tkCard(k,byCat.get(k),false)); after.push(G); }
+  if(cat0){ const ts=byCat.get(cat0)||[], card=tkCard(cat0,ts,true);
+    if(!keep){ TK_OPEN=el("div",{class:"cl-open tk-open"}); const f=$("tQa"); const P=el("div",{class:"cl-panel tk-panel"}); if(f){ f.hidden=false; P.append(f); } P.append(el("div",{class:"tk-list"})); TK_OPEN.append(card,P); TK_OPEN._cat=cat0; }
+    else TK_OPEN.firstChild.replaceWith(card);
+    TK_OPEN.style.viewTransitionName=card.style.viewTransitionName||""; card.style.viewTransitionName="none";
+    const inp=$("tQaIn"); if(inp) inp.placeholder="Ajouter une tâche "+((CAT[cat0]||{}).nom?"· "+CAT[cat0].nom:"")+"…";
+    const L=TK_OPEN.querySelector(".tk-list"); L.innerHTML=""; if(!ts.length) L.append(el("p",{class:"tk-none",text:"Rien à faire ici pour l'instant."})); for(const t of ts) L.append(taskRow(t,{del:true}));
+    if(!keep) box.append(TK_OPEN); }
+  else TK_OPEN=null;
+  if(TK_OPEN&&TK_OPEN.parentNode===box){ for(const n of before) box.insertBefore(n,TK_OPEN); for(const n of after) box.append(n); } else for(const n of before.concat(after)) box.append(n); }
 /* ---------- Page d'un animal : carnet de soins ---------- */
 const CARE=[
   {k:"puces",l:"Anti-puces",ic:"assurance",re:/puce|pipette|antiparasit/i,m:1,t:n=>"Pipette anti-puces "+de(n)},
@@ -7539,10 +7592,10 @@ $("agSyncBtn").addEventListener("click",e=>{ e.stopPropagation(); openCalSheet()
 document.querySelectorAll(".hub-add").forEach(b=>b.addEventListener("click",e=>{ e.stopPropagation(); fabAct(b.dataset.add,b); }));
 window.addEventListener("scroll",()=>{ const M=$("addMenu"); if(M&&!M.hidden&&M.style.top) M.hidden=true; },{passive:true});
 /* Champs d'ajout rapide en haut des rubriques */
-async function qaTask(inp,where){ const v=inp.value.trim(); if(!v){ openSheet(where==="perso"?{where:"perso"}:undefined); return; } if(!needMe()) return;
-  const p=parseQuick(v); const ok=await addTask({titre:p.titre||v,where:where==="perso"?"perso":(p.where||"tous"),echeance:p.echeance,recur:p.recur!=null?p.recur:undefined,cat:p.cat||undefined});
+async function qaTask(inp,where,cat){ const v=inp.value.trim(); if(!v){ openSheet(where==="perso"?{where:"perso"}:undefined); return; } if(!needMe()) return;
+  const p=parseQuick(v); const ok=await addTask({titre:p.titre||v,where:where==="perso"?"perso":(p.where||"tous"),echeance:p.echeance,recur:p.recur!=null?p.recur:undefined,cat:cat||p.cat||undefined});
   if(ok!==false){ inp.value=""; } }
-$("tQa").addEventListener("submit",e=>{ e.preventDefault(); qaTask($("tQaIn"),"tous"); });
+$("tQa").addEventListener("submit",e=>{ e.preventDefault(); qaTask($("tQaIn"),"tous",S.tkOpen||null); });
 $("pQa").addEventListener("submit",e=>{ e.preventDefault(); qaTask($("pQaIn"),"perso"); });
 /* Barre « Dis-le à Cocoony » du Foyer */
 const HUB_SUG=[["tache","Une tâche","Ex. Payer la cantine vendredi"],["courses","Des courses","Ex. pain, lait, œufs"],["rdv","Un rendez-vous","Ex. Dentiste jeudi à 15h"],["repas","Un repas","Ex. Lasagnes ce soir"],["dep","Une dépense","Ex. 45 € de courses"]];
@@ -10029,7 +10082,7 @@ function clPanelFill(id){ if(!CL_PANEL) CL_PANEL=el("div",{class:"cl-panel"}); c
 /* déroulé / replié en douceur : les cartes glissent à leur place (View Transitions quand le navigateur sait faire) */
 /* à la fermeture (html.vt-close) : l'image de la liste ouverte se replie (rognée par le bloc qui rétrécit) puis la carte apparaît, l'inverse de l'ouverture */
 function clVT(fn,close){ const red=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(!document.startViewTransition||red||S.tab!=="courses"){ S.clClosing=null; fn(); return; }
+  if(!document.startViewTransition||red||(S.tab!=="courses"&&S.tab!=="foyer")){ S.clClosing=null; fn(); return; }
   if(!close) document.querySelectorAll(".cl-card[data-vt]").forEach(c=>{ if(c.style.viewTransitionName==="cl-x") c.style.viewTransitionName=c.dataset.vt; });
   const H=document.documentElement; H.classList.toggle("vt-close",!!close);
   try{ const t=document.startViewTransition(fn); t.ready.catch(()=>{}); t.finished.finally(()=>{ H.classList.remove("vt-close"); S.clClosing=null; }); }catch(_){ H.classList.remove("vt-close"); fn(); } }

@@ -49,6 +49,8 @@ async def main():
     await pg.screenshot(path='/tmp/dk/ev/h_list.png')
     # ouvrir depuis une notification : « C'est fait » sur une tâche, puis lien vers l'événement
     await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.wait_for_timeout(600)
+    # page Tâches en cartes par catégorie : sans tâche du jour, on ouvre la première carte
+    await pg.evaluate("!document.querySelector('.item[data-key^=\"taches:\"]')&&document.querySelector('.tk-card')&&document.querySelector('.tk-card').click()"); await pg.wait_for_timeout(900)
     key=await pg.evaluate("(document.querySelector('.item[data-key^=\"taches:\"]')||{}).dataset?.key||''"); tid=key[7:]; tt=await pg.evaluate("(document.querySelector('.item[data-key^=\"taches:\"]')||{}).textContent||''"); print('tâche',tid,tt[:40])
     assert tid
     await pg.goto('http://localhost:8765/?n=1#t-done='+tid); await pg.wait_for_timeout(5000)
