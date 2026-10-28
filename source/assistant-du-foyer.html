@@ -2917,6 +2917,7 @@ html.cl-open .selbar{z-index:80}
 .cl-fav-main{flex:1;min-width:0;display:flex;align-items:center;gap:12px;text-align:left;font:inherit;color:var(--ink);background:none;border:0;padding:8px 6px 8px 14px;cursor:pointer}
 .cl-fav-x{flex:none;width:38px;height:38px;border:0;background:none;color:var(--muted);font-size:20px;cursor:pointer;border-radius:12px}
 .cl-in #clGo{margin-top:24px}
+html.boot-lock,html.boot-lock body{overflow:hidden!important;overscroll-behavior:none;touch-action:none}
 .cl-fav-none{color:var(--muted);font-size:13.5px;margin:4px 2px}
 .cl-fav-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.cl-fav-t b{font-size:16px;font-weight:800;color:var(--c);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cl-fav-t small{font-size:12.5px;color:var(--muted)}
 .cl-fav-go{flex:none;font-size:13px;font-weight:800;padding:7px 12px;border-radius:99px;background:var(--sunk)}
@@ -10836,7 +10837,11 @@ async function flySplash(b,logo){ try{ spBackCheck(); }catch(_){}
     tn.animate([{opacity:0,transform:"translateY(10px)"},{opacity:1,transform:"none"}],{duration:500,easing:"ease-out",fill:"backwards"}); },560);
   await fly;
 }
-async function bootOut(){
+/* pas de défilement pendant l'animation d'entrée : on ne peut défiler qu'une fois le logo posé en haut à gauche (Angel) */
+const bootNoTouch=e=>{ if(e.cancelable) e.preventDefault(); };
+function bootLock(on){ document.documentElement.classList.toggle("boot-lock",on); if(on) document.addEventListener("touchmove",bootNoTouch,{passive:false}); else document.removeEventListener("touchmove",bootNoTouch); }
+async function bootOut(){ bootLock(true); try{ await bootOutInner(); } finally{ bootLock(false); } }
+async function bootOutInner(){
   const b=$("boot"), logo=$("bootLogo"), reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
   const sp=$("splash"), splashOn=sp&&!sp.hidden, wiz=$("wizard")&&!$("wizard").hidden;
   window.scrollTo({top:0});
@@ -10862,6 +10867,7 @@ async function bootOut(){
   await fly;
   b.remove(); endArrive(W);
 }
+if($("boot")){ bootLock(true); setTimeout(()=>{ if(!$("boot")) bootLock(false); },9000); }
 bootCheck();
 })();
 </script>
