@@ -42,7 +42,11 @@ async def main():
     print('lien ouvrir:',await pg.evaluate("(document.querySelector('.bd-eye')||{}).href"))
     # modif à distance (Emma)
     await pg.evaluate("""(()=>{const t=__mock.T.cocoon_docs.find(r=>r.path==='taches'&&r.data.titre==='Appeler le plombier'); const r=JSON.parse(JSON.stringify(t)); r.data.titre='Appeler le plombier (Emma)'; r.updated_by='emma'; __mock.remote(r);})()""")
-    await pg.wait_for_timeout(400); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="foyer"]'); await pg.wait_for_timeout(300)
+    await pg.wait_for_timeout(400); 
+    for _ in range(3):  # le retour remonte d'un niveau (classeur → Papiers → Foyer)
+      if await pg.is_visible('.hb-t[data-go="foyer"]'): break
+      await pg.click('section:not([hidden]) .hub-back'); await pg.wait_for_timeout(200)
+    await pg.click('.hb-t[data-go="foyer"]'); await pg.wait_for_timeout(300)
     print('remote visible:', await pg.locator('text=Appeler le plombier (Emma)').count()>0)
     # suppression d'un papier → fichier supprimé
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(300)

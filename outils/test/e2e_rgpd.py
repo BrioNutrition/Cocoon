@@ -39,7 +39,7 @@ async def main():
     print('mention santé:', await pg.is_visible('.d-sante'))
     await pg.click('.hub-add[data-add=documents]'); await pg.click('#docAddMain'); await pg.fill('#dTitle','Carte identité'); await pg.set_input_files('#dFile','test/tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(800)
     ref=await pg.evaluate("(__mock.T.cocoon_docs.find(r=>r.path==='documents'&&r.data.assetId)||{data:{}}).data.assetId"); print('référence enregistrée:', ref)
-    eye=pg.locator('.bd-eye').first; print('œil = bouton:', await eye.evaluate("e=>e.tagName"))
+    eye=pg.locator('.dg-t:has-text("Carte identité")').first; print('œil = bouton:', await eye.evaluate("e=>e.tagName"))
     await eye.click(); await pg.wait_for_selector('.vw'); print('visionneuse ouverte:', await pg.is_visible('.vw'))
     async with ctx.expect_page() as np: await pg.click('.vw-bar .vw-b[aria-label^="Ouvrir"]')
     w=await np.value; await w.wait_for_timeout(300); print('lien ouvert:', w.url[:120]); await w.close()

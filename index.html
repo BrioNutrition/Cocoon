@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fredoka:wdth,wght@75..125,300..700&display=swap">
-<script>window.COCOON_BUILD="28/10 16:12";</script>
+<script>window.COCOON_BUILD="28/10 16:41";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -2404,6 +2404,10 @@ button.bd-eye{border:0;padding:0;font:inherit;cursor:pointer}
 .pk-head .pk-back{width:36px;height:36px;padding:0;border:1px solid var(--line);box-shadow:none;background:var(--surface);display:grid;place-items:center;flex:none}
 .pk-back svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 .pk-back:active{transform:scale(.92)}
+/* le nom du classeur est dans la barre du haut : ici, son emoji et le nombre de papiers */
+.pk-head>span:last-child{font-size:14px;font-weight:700;color:var(--muted)}
+/* Maison : le nom de la sous-page est dans la barre du haut, on garde seulement la phrase */
+.view[data-view="maison"] .sub>.sec-title h2{display:none}
 /* grille façon Fichiers d'Apple */
 .dg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 10px;margin-top:4px}
 .dg-t{display:flex;flex-direction:column;align-items:center;border:0;background:none;color:var(--ink);font:inherit;padding:0;cursor:pointer;text-align:center;min-width:0;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
@@ -5610,6 +5614,7 @@ function renderDocs(){
   f.hidden=owners.length<2; f.className="seg docwho";
   if(owners.length>1){ f.append(el("button",{type:"button","aria-pressed":String(!S.docWho),text:"Tout le foyer",onclick:()=>{ S.docWho=null; renderDocs(); }}));
     for(const o of owners) f.append(el("button",{type:"button","aria-pressed":String(S.docWho===o),onclick:()=>{ S.docWho=S.docWho===o?null:o; renderDocs(); }},o!=="foyer"?avatar(o,18):"",ownerName(o))); }
+  hubTitle("documents",S.docCat==="__all"?"Tous les papiers":S.docCat==="__gar"?"Garanties":S.docCat?catOf(S.docCat).nom:"Papiers");
   const H=$("papHero"), G0=$("docGrid"); G0.innerHTML=""; G0.className="pap-frise"; H.innerHTML=""; H.className="";
   { let Q=$("papQuota"); if(!Q){ Q=el("div",{id:"papQuota"}); H.before(Q); } Q.innerHTML=""; Q.hidden=pmActif()||!S.loaded.d||pmUsed("docs")<PM_LIM.docs-3; if(!Q.hidden) Q.append(pmLimitCard("docs")); }
   if(!S.loaded.d){ H.hidden=true; G0.append(el("div",{class:"empty",text:"Chargement des documents…"})); return; }
@@ -5639,7 +5644,7 @@ function renderDocs(){
   /* Garanties : toutes les factures avec garantie + les équipements de Maison, de la plus proche de la fin à la plus lointaine */
   const gars=pool.filter(d=>d.garantieFin).map(d=>({d,fin:d.garantieFin})).concat(S.docWho?[]:(S.equip||[]).filter(x=>x.garantieFin).map(x=>({eq:x,fin:x.garantieFin})));
   if(S.docCat==="__gar"){ const on=gars.filter(g=>daysTo(g.fin)>=0).sort((a,b)=>a.fin<b.fin?-1:1), off=gars.filter(g=>daysTo(g.fin)<0).sort((a,b)=>a.fin<b.fin?1:-1);
-    G0.append(el("div",{class:"pk-head",style:"--bc:#7FCDB9"},pkBack(),el("span",{class:"pk-ic",style:"--bc:#7FCDB9;font-size:18px;display:grid;place-items:center",text:"🛡"}),el("b",{text:"Garanties"}),el("span",{text:on.length+" en cours"})));
+    G0.append(el("div",{class:"pk-head",style:"--bc:#7FCDB9"},el("span",{class:"pk-ic dz-ice",style:"--bc:#A8D672",text:"✅"}),el("span",{text:on.length+" en cours"})));
     const eqRow=x=>{ const n=daysTo(x.garantieFin); return el("button",{type:"button",class:"dg-t",onclick:()=>{ S.mSec="equip"; setTab("maison"); topNow(); }},el("span",{class:"dg-pv",style:"--bc:#FF9C80"},el("span",{class:"dg-ph","aria-hidden":"true",text:"🔧"})),el("span",{class:"dg-n",text:x.nom||"Équipement"}),el("span",{class:"dg-d"+(n<0?"":n<=60?" soon":""),text:n<0?"Garantie terminée":"Garantie → "+fmtDue(x.garantieFin)}),el("span",{class:"dg-w",text:"Maison"})); };
     if(!gars.length) G0.append(el("div",{class:"bd-none",text:"Aucune garantie pour l'instant. En rangeant la facture d'un achat, ouvre « Facture d'un achat ? » pour noter sa garantie : Cocoon te prévient avant la fin."}));
     const gg=L=>{ const g=el("div",{class:"dg-grid"}); for(const x of L) g.append(x.d?docTile(x.d,showWho):eqRow(x.eq)); return g; };
@@ -5649,11 +5654,11 @@ function renderDocs(){
   const groups={}; for(const d of pool){ const c=catOf(d.cat||"documents").id||"documents"; (groups[c]=groups[c]||[]).push(d); }
   if(S.docCat&&S.docCat!=="__all"&&!groups[S.docCat]) S.docCat=null;
   const icon=(c,cls)=>el("span",{class:cls+" dz-ice",style:"--bc:"+c.c,text:docEmo(c.id)});
-  if(S.docCat==="__all"){ G0.append(el("div",{class:"pk-head",style:"--bc:#B9A8F0"},pkBack(),el("span",{class:"pk-ic dz-ice",style:"--bc:#B9A8F0",text:"🗂️"}),el("b",{text:"Tous les papiers"}),el("span",{text:pool.length+" papier"+(pool.length>1?"s":"")})));
+  if(S.docCat==="__all"){ G0.append(el("div",{class:"pk-head",style:"--bc:#B9A8F0"},el("span",{class:"pk-ic dz-ice",style:"--bc:#B9A8F0",text:"🗂️"}),el("span",{text:pool.length+" papier"+(pool.length>1?"s":"")})));
     G0.append(docGrid(sortDocs(pool),showWho)); return; }
   if(S.docCat){ // une catégorie ouverte
     const c=catOf(S.docCat), ds=sortDocs(groups[S.docCat]);
-    G0.append(el("div",{class:"pk-head",style:"--bc:"+c.c},pkBack(),icon(c,"pk-ic"),el("b",{text:c.nom}),el("span",{text:ds.length+" papier"+(ds.length>1?"s":"")})));
+    G0.append(el("div",{class:"pk-head",style:"--bc:"+c.c},icon(c,"pk-ic"),el("span",{text:ds.length+" papier"+(ds.length>1?"s":"")})));
     G0.append(docGrid(ds,showWho)); return; }
   if(!pool.length){ G0.append(el("div",{class:"bd-none",text:"Aucun papier pour "+(S.docWho===me?"toi":ownerName(S.docWho))+" pour l'instant."})); return; }
   const urg=ds=>{ const e=ds.filter(d=>d.expire).map(d=>daysTo(d.expire)); return e.length?Math.min(...e):9999; };
@@ -7261,7 +7266,13 @@ $("sgDep").addEventListener("click",()=>{ closeSheet(); openBForm("dep"); });
 $("sgRdv").addEventListener("click",()=>{ closeSheet(); if(!needMe()) return; setTab("agenda"); S.rdvForm={pour:[meId()]}; renderRdv(); setTimeout(()=>{ const w=$("rdvWrap"); if(w) w.scrollIntoView({behavior:"smooth",block:"start"}); },60); });
 $("sgSub").addEventListener("click",()=>{ closeSheet(); openBForm("sub"); });
 document.querySelectorAll('.tab[data-tab="moi"]').forEach(b=>b.addEventListener("click",()=>{ if(S.moiSec){ S.moiSec=null; renderMoiNav(); } }));
-document.querySelectorAll(".hub-back").forEach(b=>b.addEventListener("click",()=>{ setTab("hub"); window.scrollTo({top:0}); }));
+document.querySelectorAll(".hub-back").forEach(b=>b.addEventListener("click",()=>{
+  /* un seul retour, en haut à gauche (Angel, 28 oct.) : il remonte d'un niveau, sous-page → page → Foyer */
+  if(S.tab==="maison"&&S.mSec){ mOpen(null); return; }
+  if(S.tab==="documents"&&S.docCat){ S.docCat=null; renderDocs(); topNow(); return; }
+  setTab("hub"); window.scrollTo({top:0}); }));
+/* titre de la barre du haut : le nom de la sous-page quand on y est */
+function hubTitle(tab,t){ const b=document.querySelector('.view[data-view="'+tab+'"] .hub-bar .hb-title'); if(b&&b.textContent!==t) b.textContent=t; const sec=tab==="maison"?!!S.mSec:!!S.docCat; document.querySelectorAll('.view[data-view="'+tab+'"] .hub-bar .hub-back').forEach(x=>x.setAttribute("aria-label",sec?"Retour":"Retour au foyer")); }
 /* ===== Maison & véhicules (V3) ===== */
 const MI=p=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
 const EQ_TYPES=[["chaudiere","Chaudière",12,'<rect x="6" y="3" width="12" height="18" rx="2"/><path d="M10 15c0-2 2-2.5 2-4.5 1 1 2 2 2 4a2 2 0 0 1-4 .5z"/>'],["pac","Pompe à chaleur",24,'<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="9" cy="12" r="3.5"/><path d="M15 10h3M15 14h3"/>'],["vmc","VMC",6,'<circle cx="12" cy="12" r="8"/><path d="M12 12c0-4 2-5 4-4-1 2-2 3-4 4zm0 0c4 0 5 2 4 4-2-1-3-2-4-4zm0 0c0 4-2 5-4 4 1-2 2-3 4-4zm0 0c-4 0-5-2-4-4 2 1 3 2 4 4z"/>'],["cheminee","Cheminée ou poêle",12,'<path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-5a3 3 0 0 1 6 0v5"/>'],["clim","Climatisation",12,'<rect x="3" y="5" width="18" height="8" rx="2"/><path d="M7 17l-1 3M12 17v3M17 17l1 3"/>'],["chauffeeau","Chauffe-eau",24,'<rect x="7" y="3" width="10" height="18" rx="5"/><path d="M12 8v5"/>'],["electromenager","Électroménager",0,'<rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M8 6h2"/>'],["detecteur","Détecteur de fumée",12,'<circle cx="12" cy="10" r="7"/><path d="M9 21h6M12 17v4"/>'],["radiateurs","Radiateurs",12,""],["four","Four",3,""],["plaques","Plaques de cuisson",0,""],["hotte","Hotte",3,""],["lavevaisselle","Lave-vaisselle",1,""],["lavelinge","Lave-linge",3,""],["sechelinge","Sèche-linge",3,""],["frigo","Frigo ou congélateur",6,""],["fosse","Fosse septique",48,""],["autre","Autre équipement",0,'<path d="M14.5 6.5a4 4 0 0 0-5 5L4 17l3 3 5.5-5.5a4 4 0 0 0 5-5l-2.5 2.5-3-3z"/>']];
@@ -7323,7 +7334,7 @@ function renderMaison(){
     if(last&&prev){ const days=Math.max(1,Math.round((parse(last.date)-parse(prev.date))/864e5)); const per=(last.valeur-prev.valeur)/days; b.append(el("span",{text:"≈ "+nf.format(Math.round(per*10)/10)+" "+M.u+"/jour"})); }
     else b.append(el("span",{text:last?"relevé le "+fmtDue(last.date):"aucun relevé"}));
     row.append(b); }
-  mt.append(el("div",{class:"sec-title"},el("h2",{text:"Compteurs"}),el("button",{type:"button",class:"btn ghost",style:"padding:6px 12px;font-size:13px",text:"+ Relevé",onclick:()=>openMForm("releve",{compteur:S.mMeter||"elec"})})),row);
+  mt.append(el("div",{class:"sec-title"},el("h2",{text:"Compteurs"}),el("span",{class:"muted",style:"font-size:13px",text:"Le + en haut pour un nouveau relevé"})),row);
   if(S.mMeter){ const M=METERS.find(x=>x.id===S.mMeter); const rs=S.releves.filter(r=>r.compteur===M.id).sort((a,b)=>a.date<b.date?1:-1).slice(0,8);
     const hl=el("div",{class:"pdetail"}); if(!rs.length) hl.append(el("div",{class:"dl"},el("span",{class:"muted",text:"Aucun relevé pour l'instant."})));
     rs.forEach((r,i)=>{ const p=rs[i+1]; hl.append(el("div",{class:"dl"},el("span",{},fmtDue(r.date)+" ",el("small",{text:p?"+"+nf.format(Math.round((r.valeur-p.valeur)*10)/10)+" "+M.u:""})),el("b",{text:nf.format(r.valeur)+" "+M.u}))); });
@@ -7338,7 +7349,7 @@ function mOpen(sec){ S.mSec=sec||null; renderMaison(); topNow(); }
 /* le + d'un sous-menu de Maison ajoute directement ce qu'il contient */
 function mAddIn(sec){ if(sec==="contacts"){ S.ctForm={role:"",nom:"",tel:"",note:"",c:"#C9C7DD"}; renderContacts(); }
   else if(sec==="bins"){ S.binForm={nom:"",c:"#59606B",jours:[],freq:1,veille:true,qui:["tous"],tour:false}; renderBins(); }
-  else if(sec==="equip") openMForm("equip"); else if(sec==="meters") openMForm("releve",{compteur:"elec"}); }
+  else if(sec==="equip") openMForm("equip"); else if(sec==="meters") openMForm("releve",{compteur:S.mMeter||"elec"}); }
 /* Maison (28 oct., Angel) : chaque formulaire s'ouvre dans une feuille qui monte du bas, au lieu de s'insérer dans la page.
    on = l'objet du formulaire en cours (null = fermé) ; la feuille n'est refaite que si ce formulaire change (le clavier et la saisie restent) */
 const MX={};
@@ -7426,9 +7437,9 @@ function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; co
   document.querySelectorAll('.hub-add[data-add="maison"]').forEach(b=>b.hidden=!sec);
   $("mHome").hidden=!!sec; T.hidden=!!sec;
   if(sec){ const m=MSECS.find(x=>x[0]===sec); D.className="m-dash is-sub";
-    D.append((()=>{ const b=el("button",{type:"button",class:"m-back","aria-label":"Retour à la maison",onclick:()=>mOpen(null)},el("span",{"aria-hidden":"true",class:"m-bk"}),"La maison"); b.firstChild.innerHTML='<svg viewBox="0 0 24 24"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg>'; return b; })());
+    hubTitle("maison",m?m[1]:"Maison");
     return; }
-  D.className="m-dash mz";
+  D.className="m-dash mz"; hubTitle("maison","Maison");
   /* ce qui compte (28 oct., choix A d'Angel) : la prochaine chose à faire en grand, puis « Bientôt » */
   const al=[], h=new Date().getHours(), goSec=k=>()=>mOpen(k);
   for(const b of (S.bins||[])){ const nx=binNext(b); if(!nx) continue; const d=iso(nx.sortie); if(d!==t0&&d!==iso(new Date(today().getTime()+864e5))) continue;
