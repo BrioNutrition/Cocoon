@@ -4001,6 +4001,39 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
 @keyframes pbCatUp{0%{transform:translateY(120%) rotate(0)}55%{transform:translateY(-4%) rotate(-6deg)}75%{transform:translateY(12%) rotate(-14deg)}100%{transform:translateY(8%) rotate(-12deg)}}
 @keyframes pbCatLook{0%,62%,100%{transform:translateY(8%) rotate(-12deg)}70%{transform:translateY(2%) rotate(-4deg)}80%{transform:translateY(6%) rotate(-16deg)}90%{transform:translateY(8%) rotate(-11deg)}}
 @media (prefers-reduced-motion:reduce){.hb-cat,.hb-pban.seen .hb-cat{animation:none;transform:translateY(8%) rotate(-12deg)}}
+
+/* « Nouveau papier » (28 oct.) : feuille du bas façon « Nouvelle tâche » */
+.dz-form{display:flex;flex-direction:column;gap:14px}
+.dz-form[hidden]{display:none}
+.dz-src{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dz-src[hidden]{display:none}
+.dz-sb{display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;border:1.5px dashed var(--line);background:var(--surface);color:var(--ink);border-radius:18px;padding:14px;font:inherit;cursor:pointer;min-height:110px}
+.dz-sb i{font-style:normal;font-size:26px;line-height:1}
+.dz-sb b{display:block;font-size:14.5px;font-weight:800}
+.dz-sb small{display:block;font-size:12px;color:var(--muted);line-height:1.35;margin-top:2px}
+.dz-sb:active{transform:scale(.98)}
+.dz-files{display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px}
+.dz-files[hidden]{display:none}
+.dz-f{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;min-width:0}
+.dz-f i{font-style:normal;font-size:20px}
+.dz-f span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dz-f small{color:var(--muted);font-size:12px;flex:none}
+.dz-fx{align-self:flex-start;border:0;background:none;color:var(--danger,#E5484D);font:inherit;font-size:13px;font-weight:700;padding:4px 0;cursor:pointer}
+.dz-ai{align-self:stretch;border-radius:14px}
+.dz-form .newcat{background:var(--surface);border:1px solid var(--line)}
+.dz-r>summary{list-style:none}.dz-r>summary::-webkit-details-marker{display:none}
+.dz-r:first-child>summary{border-top:0}
+.dz-r+.dz-r>summary{border-top:1px solid var(--line)}
+.dz-r[open]>summary .chev{transform:rotate(90deg)}
+.dz-form .d-gar{background:none;border-radius:0;padding:0}
+.dz-form .d-gar summary{font-size:14.5px;margin:0!important}
+.dz-form .d-gar .d-garq button{background:var(--sunk)}
+.dz-form .tk-rb .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0}
+.dz-form .tk-rb .opts label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.dz-form textarea.ev-inp{min-height:76px;resize:vertical}
+.dz-h,.dz-form .d-sante{margin:0;font-size:12.5px;color:var(--muted);line-height:1.4}
+.dz-form #docPour{flex-wrap:wrap}
+.dz-form .ev-cta:disabled{opacity:.45}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -4201,26 +4234,41 @@ html.native-tabs .px2{padding-bottom:calc(var(--ntab) + 16px)}
     <div id="papHero"></div>
     <label class="pap-search" for="papQ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg><input type="search" id="papQ" placeholder="Chercher : bail, mutuelle, carte grise…" aria-label="Chercher un papier" autocomplete="off" enterkeyhint="search"></label>
     <button type="button" class="pap-add" id="papAdd" aria-expanded="false"><span class="pa-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v9A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.6"/></svg></span><span class="pa-t"><b>Ranger un papier</b><small>Photo, PDF, ou juste une date à ne pas oublier</small></span><span class="pa-x" aria-hidden="true">+</span></button>
-    <form class="quick" id="docForm" autocomplete="off" hidden>
-      <div class="quick-row">
-        <input type="text" id="dTitle" placeholder="Nom du document : bail, carte grise, contrat box…" aria-label="Nom du document" required>
-        <button class="btn" type="submit" id="dSubmit">Ranger</button>
+    <div id="docStash" hidden>
+    <form class="dz-form" id="docForm" autocomplete="off" hidden>
+      <div class="ev-top"><h2>Nouveau papier</h2><p>Photo, PDF, ou juste une date à ne pas oublier.</p></div>
+      <div class="dz-src" id="dSrc">
+        <button type="button" class="dz-sb" id="docAddPhoto"><i aria-hidden="true">📸</i><span><b>Prendre en photo</b><small id="dSrcPh">La photo est rangée avec sa fiche</small></span></button>
+        <button type="button" class="dz-sb" id="docAddFile"><i aria-hidden="true">📎</i><span><b>Choisir un fichier</b><small>PDF ou photo du téléphone</small></span></button>
       </div>
-      <div class="opts">
-        <label for="dCat">Catégorie<select id="dCat"></select></label>
-        <label for="dExp">Expire / à renouveler le<input type="date" id="dExp"></label>
+      <div class="dz-files" id="dFiles" hidden></div>
+      <label class="file-in" id="fileWrap" for="dFile" hidden>Fichiers <input type="file" id="dFile" multiple accept="application/pdf,image/png,image/jpeg,image/webp"></label>
+      <input type="text" class="ev-inp tk-ti" id="dTitle" maxlength="80" placeholder="Nom : bail, carte grise, contrat box…" aria-label="Nom du papier" enterkeyhint="done" required>
+      <div class="ev-types tk-types dz-cats" id="dCats" role="radiogroup" aria-label="Classeur"></div>
+      <select id="dCat" hidden aria-hidden="true" tabindex="-1"></select>
+      <div class="newcat" id="dNewCat" hidden><input type="text" class="ev-inp" id="dCatNom" maxlength="28" placeholder="Nom du classeur : Impôts, Travail…" aria-label="Nom du nouveau classeur"><div class="nc-sw" id="dCatCol" role="radiogroup" aria-label="Couleur du classeur"></div></div>
+      <div class="tk-g2 dz-rows">
+        <details class="dz-r" id="dExpBox" style="--c:#8FB8FF"><summary class="tk-r"><span class="ic" aria-hidden="true">📅</span><b>Expire</b><em id="dExpBoxV">Pas de date</em><i class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></i></summary><div class="tk-rb">
+          <div class="pchips" id="dExpQ"></div>
+          <input type="date" class="ev-inp" id="dExp" aria-label="Date d'expiration ou de renouvellement">
+        </div></details>
+        <details class="dz-r" id="docPourWrap" style="--c:#FFC94A"><summary class="tk-r"><span class="ic" aria-hidden="true">🗂️</span><b>Classeur de</b><em id="docPourWrapV">Foyer</em><i class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></i></summary><div class="tk-rb">
+          <div class="pchips" id="docPour"></div>
+        </div></details>
+        <details class="dz-r d-gar" id="dGarBox" style="--c:#7FD39A"><summary class="tk-r"><span class="ic" aria-hidden="true">🛡️</span><b>Garantie</b><em id="dGarBoxV">Non</em><i class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></i></summary><div class="tk-rb">
+          <p class="dz-h">Pour une facture d'achat : tu seras prévenu avant la fin.</p>
+          <div class="opts"><label for="dAchat">Acheté le<input type="date" class="ev-inp" id="dAchat"></label><label for="dGar">Garantie jusqu'au<input type="date" class="ev-inp" id="dGar"></label></div>
+          <div class="d-garq" id="dGarQ" role="group" aria-label="Durée de garantie"></div>
+        </div></details>
+        <details class="dz-r" id="dNoteBox" style="--c:#C79BFF"><summary class="tk-r"><span class="ic" aria-hidden="true">📝</span><b>Note</b><em id="dNoteBoxV">Aucune</em><i class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></i></summary><div class="tk-rb">
+          <textarea class="ev-inp" id="dNote" placeholder="N° de contrat, où est l'original, qui contacter…" aria-label="Note"></textarea>
+          <p class="d-sante">N'écris jamais ton numéro de sécurité sociale, tes codes ou mots de passe dans les notes.</p>
+        </div></details>
       </div>
-      <details class="d-gar" id="dGarBox"><summary>🛡 Facture d'un achat ? Ajouter la garantie</summary>
-        <div class="opts"><label for="dAchat">Acheté le<input type="date" id="dAchat"></label><label for="dGar">Garantie jusqu'au<input type="date" id="dGar"></label></div>
-        <div class="d-garq" id="dGarQ" role="group" aria-label="Durée de garantie"></div>
-      </details>
-      <div class="newcat" id="dNewCat" hidden><input type="text" id="dCatNom" maxlength="28" placeholder="Nom de la catégorie : Santé, Impôts, Travail…" aria-label="Nom de la nouvelle catégorie"><div class="nc-sw" id="dCatCol" role="radiogroup" aria-label="Couleur du classeur"></div></div>
-      <div class="field" id="docPourWrap">Classeur de<div class="pchips" id="docPour"></div></div>
-      <textarea id="dNote" placeholder="Note : n° de contrat, où est l'original, qui contacter…" aria-label="Note"></textarea>
       <label class="d-consent" id="dConsent" hidden><input type="checkbox" id="dConsentCk"><span><b>Papier de santé</b> J'accepte que ce papier de santé soit gardé dans Cocoon. Il sera visible par <em id="dConsentWho">tout le foyer</em>, et je peux le supprimer à tout moment. Facultatif : sans cette case, ne l'ajoute pas.</span></label>
-      <p class="d-sante">N'écris jamais ton numéro de sécurité sociale, tes codes ou mots de passe dans les notes.</p>
-      <label class="file-in" id="fileWrap" for="dFile">Fichiers (PDF ou photos, 20 Mo max chacun) <input type="file" id="dFile" multiple accept="application/pdf,image/png,image/jpeg,image/webp"></label>
+      <button class="btn ev-cta" type="submit" id="dSubmit" disabled>Ranger le papier</button>
     </form>
+    </div>
     <div class="chips" id="docFilter"></div>
     <div class="docs" id="docGrid"></div>
   </section>
@@ -5431,7 +5479,7 @@ function renderReminders(){
 function renderDocPour(){
   const w=$("docPour"); if(!w) return; w.innerHTML=""; const me=meId(); if(!S.docPour) S.docPour="foyer";
   const opts=[["foyer","Foyer",null]].concat(membres().map(m=>[m.id,m.id===me?"Moi":m.nom,m.id]));
-  for(const [v,l,id] of opts) w.append(el("button",{type:"button",class:"pchip","aria-pressed":String(S.docPour===v),onclick:()=>{ S.docPour=v; renderDocPour(); updConsent(); }},id?avatar(id,20):"",l));
+  for(const [v,l,id] of opts) w.append(el("button",{type:"button",class:"pchip","aria-pressed":String(S.docPour===v),onclick:()=>{ S.docPour=v; renderDocPour(); updConsent(); const b=$("docPourWrap"); if(b) b.open=false; dzSync(); }},id?avatar(id,20):"",l));
 }
 /* ---------- Papiers façon Fichiers d'Apple (28 oct., Angel) : grille d'aperçus (photo ou 1re page du PDF), nom, date, à qui ---------- */
 /* aperçus gardés sur l'appareil (cocoon.dthumbs, effacés à la déconnexion), fabriqués un par un */
@@ -7813,7 +7861,7 @@ $("docForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||
   if(!pmCan("docs",Math.max(1,$("dFile").files.length))) return;
   const btn=$("dSubmit"); btn.disabled=true; btn.textContent="Envoi…";
   let cat=$("dCat").value, catNom=null, catC=null;
-  if(cat==="__new"){ const nm=$("dCatNom").value.trim(); if(!nm){ toast("Donne un nom à ta nouvelle catégorie."); $("dCatNom").focus(); btn.disabled=false; btn.textContent="Ranger"; return; }
+  if(cat==="__new"){ const nm=$("dCatNom").value.trim(); if(!nm){ toast("Donne un nom à ta nouvelle catégorie."); $("dCatNom").focus(); btn.disabled=false; btn.textContent="Ranger le papier"; return; }
     const ex=Object.values(CAT).concat(Object.values(docCustom())).find(c=>c.nom.toLowerCase()===nm.toLowerCase());
     if(ex) cat=ex.id; else { cat="c-"+nm.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,24)+"-"+Date.now().toString(36).slice(-4); catNom=nm; catC=S.dCatC||DCOLS[0]; } }
   else if(!CAT[cat]){ const cc=docCustom()[cat]; if(cc){ catNom=cc.nom; catC=cc.c; } }
@@ -7832,9 +7880,9 @@ $("docForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||
       try{ await S.db.collection("taches").add({titre:"Renouveler « "+titre+" »",cat:"documents",pour:doc.pour&&doc.pour!=="foyer"?doc.pour:"tous",concerne:null,echeance:due,recur:0,recurMsg:null,fait:false,creePar:meId(),creeLe:Date.now(),suggere:true}); }catch(_){} }
     $("docForm").reset(); S.dCatC=null; S.docPour="foyer"; $("dNewCat").hidden=true; fillDocCats(); updConsent(); closeDocForm(); toast((files.length>1?files.length+" documents rangés dans « "+esc((catNom||catOf(doc.cat).nom))+" »":catNom?"Nouvelle catégorie « "+esc(catNom)+" » créée, document rangé":"Document rangé")+(doc.expire?(daysTo(doc.expire)>1?" · rappel deux mois avant l'expiration":" · expire "+fmtDue(doc.expire)):"")+"."); if(evBack){ S.docEv=null; setTimeout(()=>openEvent(evBack,"pap"),500); }
   }catch(err){ if(err&&err.code==="too_large") toast("Fichier trop lourd (20 Mo max)."); else if(err&&err.code==="unsupported_type") toast("Format non pris en charge : PDF, JPG, PNG ou WebP."); else writeErr(err); }
-  finally{ btn.disabled=false; btn.textContent="Ranger"; }
+  finally{ btn.disabled=false; btn.textContent="Ranger le papier"; dzSync(); }
 });
-$("dTitle").addEventListener("input",e=>{ const v=$("dCat").value; if(v==="__new"||!(CAT[v]||DOCX[v])) return; const g=docGuess(e.target.value); if(g) $("dCat").value=g; });
+$("dTitle").addEventListener("input",e=>{ const v=$("dCat").value; if(v==="__new"||!(CAT[v]||DOCX[v])) return; const g=docGuess(e.target.value); if(g){ $("dCat").value=g; dzSync(); } });
 
 /* Onglets */
 const TABS=["accueil","moi","foyer","courses","repas","rappels","documents","budget","maison"];
@@ -8042,25 +8090,62 @@ $("sheetBg").addEventListener("click",closeSheet);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("sheet").hidden) closeSheet(); });
 $("sgEquip").addEventListener("click",()=>{ closeSheet(); openMForm("equip"); });
 $("searchBtn").addEventListener("click",openSearch);
-function closeDocForm(){ S.docEv=null; const f=$("docForm"); if(f) f.hidden=true; $("papAdd").setAttribute("aria-expanded","false"); document.querySelectorAll('.hub-add[data-add="documents"]').forEach(b=>b.setAttribute("aria-expanded","false")); try{ document.activeElement&&document.activeElement.blur(); }catch(_){} }
-function openDocForm(){ if(!pmCan("docs")){ setTab("documents"); return; } setTab("documents"); window.scrollTo({top:0}); const f=$("docForm"); f.hidden=false; $("papAdd").setAttribute("aria-expanded","true"); document.querySelectorAll('.hub-add[data-add="documents"]').forEach(b=>b.setAttribute("aria-expanded","true")); setTimeout(()=>{ try{ $("dTitle").focus(); }catch(_){} },80); }
+/* « Nouveau papier » (28 oct., Angel) : une seule feuille du bas comme « Nouvelle tâche ». Le formulaire #docForm (et tout son câblage :
+   lecture par Cocoony, accord santé, fichiers, garantie) est déplacé dans la feuille, puis rangé dans #docStash à la fermeture. */
+let DZ=null;
+function closeDocForm(){ S.docEv=null; const f=$("docForm"); if(f) f.hidden=true; document.querySelectorAll('.hub-add[data-add="documents"]').forEach(b=>b.setAttribute("aria-expanded","false")); try{ document.activeElement&&document.activeElement.blur(); }catch(_){} if(DZ){ const u=DZ; DZ=null; u.close(); } }
+const DZF=$("docForm");
+function dzPark(){ const st=$("docStash"); if(st&&DZF.parentNode!==st){ DZF.hidden=true; st.append(DZF); } }
+function openDocForm(o){ o=o||{}; if(!needMe()) return; if(!pmCan("docs")){ setTab("documents"); return; } if(S.tab!=="documents") setTab("documents");
+  if(DZ){ if(o.pick) dzPick(o.pick==="photo"); return; } dzPark(); const f=$("docForm");
+  const U=upSheet("docNewPage","Nouveau papier",()=>{ if(DZ===U) DZ=null; const fm=$("docForm"); if(fm&&!fm.hidden){ fm.reset(); S.dCatC=null; S.docPour="foyer"; S.docEv=null; $("dNewCat").hidden=true; S.dzMore=false; try{ fillDocCats(); updConsent(); }catch(_){} } setTimeout(()=>{ if(!DZ) dzPark(); },310); document.querySelectorAll('.hub-add[data-add="documents"]').forEach(b=>b.setAttribute("aria-expanded","false")); });
+  DZ=U; U.sheet.classList.add("ev-sheet","tk-sheet");
+  const inn=el("div",{class:"pp-in ev-in tk-in"}); U.sheet.append(inn); inn.append(f); f.hidden=false;
+  document.querySelectorAll('.hub-add[data-add="documents"]').forEach(b=>b.setAttribute("aria-expanded","true"));
+  if(o.cat){ const c=$("dCat"); if([...c.options].some(x=>x.value===o.cat)) c.value=o.cat; }
+  renderDocPour(); renderDocAI(); dzSync();
+  if(o.pick) dzPick(o.pick==="photo"); }
+function openDocAdd(){ openDocForm(); }
 $("sgDoc").addEventListener("click",()=>{ closeSheet(); openDocAdd(); });
-/* « + » des Papiers : un menu comme « Ajouter à l'agenda » (photo lue par Cocoony, fichier, à la main, facture avec garantie) */
-function openDocAdd(){ if(!needMe()) return; if(!pmCan("docs")){ setTab("documents"); return; }
-  const U=upSheet("docAddPage","Ajouter un papier"); U.sheet.classList.add("ev-sheet");
-  const inn=el("div",{class:"pp-in ev-in"}); U.sheet.append(inn);
-  inn.append(el("div",{class:"ev-top"},el("h2",{text:"Ajouter un papier"})));
+const dzD=v=>parse(v).toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"});
+$("docAddPhoto").addEventListener("click",()=>dzPick(true)); $("docAddFile").addEventListener("click",()=>dzPick(false));
+$("dFile").addEventListener("change",()=>dzSync()); $("dTitle").addEventListener("input",()=>dzSync());
+for(const id of ["dExp","dAchat","dGar"]) $(id).addEventListener("change",()=>dzSync()); $("dNote").addEventListener("input",()=>dzSync());
+/* une facture avec garantie va dans « Factures » (sauf si un classeur a déjà été choisi) */
+for(const id of ["dAchat","dGar"]) $(id).addEventListener("change",()=>{ const c=$("dCat"); if(c.value==="documents"){ c.value="factures"; dzSync(); } });
+$("dGarQ").addEventListener("click",()=>{ const c=$("dCat"); if(c.value==="documents"){ c.value="factures"; dzSync(); } });
+/* une seule ligne ouverte à la fois */
+document.querySelectorAll("#docForm details.dz-r").forEach(d=>d.addEventListener("toggle",()=>{ if(d.open) document.querySelectorAll("#docForm details.dz-r").forEach(x=>{ if(x!==d) x.open=false; }); }));
+function dzPick(photo){ const f=$("dFile"); if(photo) f.setAttribute("capture","environment"); else f.removeAttribute("capture");
+  f.setAttribute("accept",photo?"image/*":"application/pdf,image/png,image/jpeg,image/webp");
   const ai=secOn()&&S.sampleLimits&&S.sampleLimits.images;
-  const pick=(capture,lire)=>{ const f=$("dFile"); if(capture) f.setAttribute("capture","environment"); else f.removeAttribute("capture");
-    f.setAttribute("accept",capture?"image/*":"application/pdf,image/png,image/jpeg,image/webp");
-    if(lire&&ai) f.addEventListener("change",()=>{ setTimeout(()=>{ const b=$("dAI"); if(b&&!b.hidden) readDocAI(); },50); },{once:true});
-    f.click(); };
-  const opt=(id,ic,bg,t,sub,fn,cls)=>el("button",{type:"button",id,class:"ev-opt"+(cls?" "+cls:""),onclick:()=>{ U.close(); openDocForm(); fn(); }},el("i",{"aria-hidden":"true",style:"background:"+bg,text:ic}),el("span",{},el("b",{text:t}),el("small",{text:sub})));
-  inn.append(opt("docAddPhoto","📸","color-mix(in srgb,#FF9CB0 40%,var(--surface))","Prendre en photo",ai?"Cocoony lit le papier et remplit la fiche":"La photo est rangée avec sa fiche",()=>pick(true,true),"hot"),
-    opt("docAddFile","📎","color-mix(in srgb,#8FB8FF 40%,var(--surface))","Importer un fichier","Un PDF ou une photo déjà sur le téléphone",()=>pick(false,true)),
-    opt("docAddMain","✍️","color-mix(in srgb,#FFC94A 40%,var(--surface))","Remplir à la main","Nom, catégorie, date d'expiration",()=>{}),
-    opt("docAddGar","🛡️","color-mix(in srgb,#7FD39A 40%,var(--surface))","Une facture d'achat","Pour garder sa garantie et être prévenu avant la fin",()=>{ const g=$("dGarBox"); if(g) g.open=true; })); }
-
+  if(ai) f.addEventListener("change",()=>{ setTimeout(()=>{ const b=$("dAI"); if(b&&!b.hidden) readDocAI(); },50); },{once:true});
+  f.click(); }
+const DZ_MAIN=["identite","sante","assurance","factures","maison","voitures","documents"];
+/* la feuille suit les champs : classeurs en emojis, fichiers choisis (en français), résumé de chaque ligne */
+function dzSync(){ const f=$("docForm"); if(!f) return; const sel=$("dCat"), cur=sel.value;
+  const grid=$("dCats"); grid.innerHTML="";
+  const all=[...sel.options].map(o=>o.value).filter(v=>v!=="__new");
+  let L=S.dzMore?all:DZ_MAIN.filter(v=>all.includes(v)); if(!S.dzMore&&cur&&cur!=="__new"&&!L.includes(cur)) L=L.slice(0,6).concat(cur);
+  const tile=(e,lab,col,on,fn,cls)=>grid.append(el("button",{type:"button",class:"ev-type"+(cls?" "+cls:""),role:cls?null:"radio","aria-checked":cls?null:String(!!on),style:"--ec:"+col,onclick:()=>{ haptic(5); fn(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); if(e.startsWith("<svg")) i.innerHTML=e; else i.textContent=e; return i; })(),el("span",{text:lab})));
+  const set=v=>()=>{ sel.value=v; sel.dispatchEvent(new Event("change")); dzSync(); };
+  for(const v of L){ const c=catOf(v)||{}, cu=docCustom()[v]; tile(DOC_EMO[v]||(cu?"🗂️":docEmo(v)),v==="documents"?"Autres":(cu||c).nom||v,(cu||c).c||"#A9B4C2",cur===v,set(v)); }
+  if(S.dzMore) tile("＋","Nouveau","#A3A0BE",cur==="__new",()=>{ if(cur==="__new"){ set("documents")(); return; } set("__new")(); },"tk-more"+(cur==="__new"?" on":""));
+  tile('<svg class="tk-chv" viewBox="0 0 24 24"><path d="'+(S.dzMore?"M6 15l6-6 6 6":"M6 9l6 6 6-6")+'"/></svg>',S.dzMore?"Moins":"Plus","#A3A0BE",false,()=>{ S.dzMore=!S.dzMore; if(!S.dzMore&&sel.value==="__new"){ sel.value="documents"; sel.dispatchEvent(new Event("change")); } dzSync(); },"tk-more");
+  /* fichiers choisis */
+  const fl=[...$("dFile").files], fw=$("dFiles"); fw.innerHTML=""; fw.hidden=!fl.length; $("dSrc").hidden=!!fl.length;
+  for(const x of fl) fw.append(el("div",{class:"dz-f"},el("i",{"aria-hidden":"true",text:/pdf$/i.test(x.type||x.name)?"📄":"🖼️"}),el("span",{text:x.name}),el("small",{text:x.size>=1e6?(x.size/1e6).toFixed(1).replace(".",",")+" Mo":Math.max(1,Math.round(x.size/1e3))+" Ko"})));
+  if(fl.length) fw.append(el("button",{type:"button",class:"dz-fx","aria-label":"Retirer "+(fl.length>1?"les fichiers":"le fichier"),onclick:()=>{ $("dFile").value=""; renderDocAI(); dzSync(); }},"Retirer"));
+  { const ai=secOn()&&S.sampleLimits&&S.sampleLimits.images; $("dSrcPh").textContent=ai?"Cocoony lit le papier et remplit la fiche":"La photo est rangée avec sa fiche"; }
+  /* lignes */
+  const ex=$("dExp").value; $("dExpBoxV").textContent=ex?dzD(ex):"Pas de date";
+  const q=$("dExpQ"); if(!q.childElementCount){ const t0=today(), yr=n=>iso(new Date(t0.getFullYear()+n,t0.getMonth(),t0.getDate()));
+    for(const [l,v] of [["Sans date",""],["Dans 1 an",1],["5 ans",5],["10 ans",10]]) q.append(el("button",{type:"button",class:"pchip","data-v":String(v),onclick:()=>{ haptic(5); $("dExp").value=v===""?"":yr(v); $("dExpBox").open=false; updConsent(); dzSync(); }},l)); }
+  q.querySelectorAll(".pchip").forEach(b=>{ const v=b.dataset.v; b.setAttribute("aria-pressed",String(v===""?!ex:false)); });
+  const pr=S.docPour||"foyer"; const pv=$("docPourWrapV"); pv.innerHTML=""; if(pr==="foyer") pv.textContent="Foyer"; else pv.append(avatar(pr,20),pr===meId()?"Moi":(membre(pr)||{}).nom||"");
+  const g=$("dGar").value; $("dGarBoxV").textContent=g?"Jusqu'au "+dzD(g):"Non";
+  const nt=$("dNote").value.trim(); $("dNoteBoxV").textContent=nt?nt:"Aucune";
+  $("dSubmit").disabled=!$("dTitle").value.trim(); }
 { const bh=$("brandHome"); const goHome=()=>{ if(typeof closeNotifs==="function") closeNotifs(); closeSheet(); if(S.tab!=="accueil"){ setTab("accueil"); renderHeader(); } else window.scrollTo({top:0,behavior:"smooth"}); };
   bh.addEventListener("click",goHome); bh.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); goHome(); } }); }
 $("bellBtn").addEventListener("click",()=>{ closeCoc(); $("npanel").hidden?openNotifs():closeNotifs(); });
@@ -9588,7 +9673,7 @@ function renderDocAI(){
   const w=$("fileWrap"); if(!w) return; let btn=$("dAI");
   const can=secOn()&&S.sampleLimits&&S.sampleLimits.images;
   if(!can){ if(btn) btn.hidden=true; return; }
-  if(!btn){ btn=el("button",{type:"button",class:"btn ghost",id:"dAI",hidden:true,text:"Lire avec le secrétaire",onclick:readDocAI}); w.after(btn); }
+  if(!btn){ btn=el("button",{type:"button",class:"btn ghost dz-ai",id:"dAI",hidden:true,text:"✨ Lire avec Cocoony",onclick:readDocAI}); $("dFiles").after(btn); }
   const f=$("dFile").files[0]; btn.hidden=!(f&&/^image\//.test(f.type));
 }
 async function readDocAI(){
@@ -9598,20 +9683,20 @@ async function readDocAI(){
     const r=await S.sample.json("Voici la photo d'un papier administratif d'un foyer français. Extrais-en les infos pour le ranger. Réponds uniquement avec un objet JSON : {\"titre\": nom court du document (ex. « Assurance habitation MAIF »), \"categorie\": un parmi "+CATS.map(c=>'"'+c.id+'"').join(", ")+", \"expire\": date d'expiration, d'échéance ou de renouvellement au format AAAA-MM-JJ ou null, \"note\": infos utiles en une ou deux lignes (organisme, n° de contrat ou de client, montant, contact) ou null, \"achat\": si c'est la facture ou le ticket d'achat d'un objet (appareil, meuble, vélo…), sa date d'achat au format AAAA-MM-JJ, sinon null, \"garantie_ans\": durée de garantie en années si elle est indiquée, sinon null}. N'invente rien : mets null si une info n'est pas lisible.",{images:f,modelTier:"default",cache:false});
     if(r&&typeof r==="object"){
       if(r.titre&&!$("dTitle").value.trim()) $("dTitle").value=String(r.titre).slice(0,80);
-      if(CAT[r.categorie]) $("dCat").value=r.categorie;
+      if(CAT[r.categorie]||DOCX[r.categorie]) $("dCat").value=r.categorie;
       if(/^\d{4}-\d{2}-\d{2}$/.test(String(r.expire||""))) $("dExp").value=r.expire;
       if(r.note&&!$("dNote").value.trim()) $("dNote").value=String(r.note).slice(0,300);
-      if(/^\d{4}-\d{2}-\d{2}$/.test(String(r.achat||""))){ $("dGarBox").open=true; $("dAchat").value=r.achat; const ga=Number(r.garantie_ans); $("dGar").value=garFrom(r.achat,ga>0&&ga<=10?ga:2); }
-      toast("Le secrétaire a rempli la fiche : vérifie puis touche Ranger."); pmUse("photos");
+      if(/^\d{4}-\d{2}-\d{2}$/.test(String(r.achat||""))){ $("dAchat").value=r.achat; const ga=Number(r.garantie_ans); $("dGar").value=garFrom(r.achat,ga>0&&ga<=10?ga:2); }
+      dzSync(); toast("Cocoony a rempli la fiche : vérifie puis touche « Ranger le papier »."); pmUse("photos");
     }
   }catch(e){ const c=e&&e.code; if(["not_granted","sampling_disabled","not_declared","capability_disabled"].includes(c)){ S.sampleOff=true; } toast(c==="image_rejected"?"Cette image n'a pas pu être lue.":c==="rate_limited"?"Trop de demandes, réessaie dans un moment.":c==="not_granted"?"Claude n'est pas autorisé sur cette page.":"Je n'ai pas réussi à lire ce papier."); }
-  finally{ btn.disabled=false; btn.textContent="Lire avec le secrétaire"; renderDocAI(); }
+  finally{ btn.disabled=false; btn.textContent="✨ Lire avec Cocoony"; renderDocAI(); }
 }
 $("dFile").addEventListener("change",renderDocAI);
-$("docForm").addEventListener("reset",()=>setTimeout(()=>{ renderDocAI(); $("dGarBox").open=false; },0));
+$("docForm").addEventListener("reset",()=>setTimeout(()=>{ renderDocAI(); document.querySelectorAll("#docForm details").forEach(d=>d.open=false); dzSync(); },0));
 /* garantie : 2 ans (garantie légale en France), 3 ou 5 ans à partir de la date d'achat (ou d'aujourd'hui) */
 const garFrom=(achat,ans)=>iso(addMonths(achat?parse(achat):today(),12*ans));
-for(const a of [1,2,3,5]) $("dGarQ").append(el("button",{type:"button",text:a+" an"+(a>1?"s":"")+(a===2?" (légale)":""),onclick:()=>{ if(!$("dAchat").value) $("dAchat").value=iso(today()); $("dGar").value=garFrom($("dAchat").value,a); }}));
+for(const a of [1,2,3,5]) $("dGarQ").append(el("button",{type:"button",text:a+" an"+(a>1?"s":"")+(a===2?" (légale)":""),onclick:()=>{ if(!$("dAchat").value) $("dAchat").value=iso(today()); $("dGar").value=garFrom($("dAchat").value,a); dzSync(); }}));
 
 { const lg=document.querySelector(".brand-logo"); if(lg) document.documentElement.style.setProperty("--logo-url",'url("'+lg.src+'")'); }
 /* ===== Grande entrée : fin du profil → arrivée dans l'app ===== */
@@ -10150,7 +10235,7 @@ function evBud(body,ev,I,V){ const T=evT(ev), spent=I.d.reduce((s,d)=>s+(d.monta
 function evPap(body,ev,I,V){ const T=evT(ev);
   if(I.p.length){ const c=el("div",{class:"ev-list"}); for(const d of I.p) c.append(el("button",{type:"button",class:"ev-it ev-doc",onclick:()=>{ if(S.evClose) S.evClose(); setTimeout(()=>goDoc(d),340); }},el("i",{class:"ev-di","aria-hidden":"true",text:"📄"}),el("span",{class:"ev-tt"},d.titre||"Papier",el("small",{text:[d.fichierType||"Note",catOf(d.cat||"documents").nom].join(" · ")})),el("span",{class:"evx-go","aria-hidden":"true",text:"›"}))); body.append(c); }
   else body.append(el("p",{class:"ev-note",text:"Devis, factures, billets, réservations : range ici les papiers de l'événement."}));
-  if(!S.readOnly){ body.append(el("button",{type:"button",class:"ev-add",onclick:()=>{ if(S.evClose) S.evClose(); setTimeout(()=>{ openDocForm(); S.docEv=ev.id; const c=$("dCat"); if(c&&[...c.options].some(o=>o.value===T.dcat)) c.value=T.dcat; toast("Ce papier sera relié à « "+esc(ev.titre||T.n)+" »."); },340); }},"+ Ajouter un papier"));
+  if(!S.readOnly){ body.append(el("button",{type:"button",class:"ev-add",onclick:()=>{ if(S.evClose) S.evClose(); setTimeout(()=>{ openDocForm({cat:T.dcat}); S.docEv=ev.id; toast("Ce papier sera relié à « "+esc(ev.titre||T.n)+" »."); },340); }},"+ Ajouter un papier"));
     const others=(S.docs||[]).filter(d=>d.ev!==ev.id);
     if(others.length){ if(!V.link) body.append(el("button",{type:"button",class:"ev-link",onclick:()=>{ V.link=true; evRender(false); }},"Relier un papier déjà rangé"));
       else { const c=el("div",{class:"ev-list"}); for(const d of others.slice().sort((a,b)=>(b.ajouteLe||0)-(a.ajouteLe||0)).slice(0,30)) c.append(el("button",{type:"button",class:"ev-it ev-doc",onclick:async()=>{ try{ await S.db.collection("documents").doc(d.id).update({ev:ev.id}); d.ev=ev.id; V.link=false; evRender(false); }catch(e){ writeErr(e); } }},el("i",{class:"ev-di","aria-hidden":"true",text:"＋"}),el("span",{class:"ev-tt"},d.titre||"Papier",el("small",{text:catOf(d.cat||"documents").nom})))); body.append(el("div",{class:"ev-sec"},el("span",{text:"Choisis un papier"}),el("button",{type:"button",class:"ev-link",onclick:()=>{ V.link=false; evRender(false); }},"Fermer")),c); } } }
