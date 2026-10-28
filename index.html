@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="28/10 19:39";</script>
+<script>window.COCOON_BUILD="28/10 19:52";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4150,6 +4150,21 @@ html.foyer-nuit .hb-t{background:var(--surface);box-shadow:none;border:0}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]).foyer-nuit .hb-t{background:#232232;box-shadow:none;border:0}}
 .hb-t>.hb-cv{position:absolute;top:13px;right:12px;width:15px;height:15px;color:var(--muted);opacity:.7;display:grid;place-items:center}
 .hb-t>.hb-cv svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;display:block}
+
+/* Photo du foyer en haut de l'onglet Foyer (28 oct., choix 2 d'Angel) */
+section[data-view="hub"]{position:relative}
+.hub-ph{display:none}
+section[data-view="hub"].has-ph .hub-ph{display:block;position:absolute;z-index:0;left:50%;width:100vw;max-width:100vw;transform:translateX(-50%);top:calc(-1 * var(--hph-top,0px));height:calc(var(--hph-top,0px) + 250px);background-size:cover;background-position:center 40%;pointer-events:none;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 100%);mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 100%)}
+section[data-view="hub"].has-ph .hub-ph:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,.05) 40%,rgba(0,0,0,.28) 80%,rgba(0,0,0,0))}
+section[data-view="hub"]>*:not(.hub-ph){position:relative;z-index:1}
+.hub-h{display:flex;align-items:center;gap:10px}
+.hub-h h2{flex:1;min-width:0}
+section[data-view="hub"].has-ph .hub-h{padding-top:132px}
+section[data-view="hub"].has-ph .hub-h h2{color:#fff;font-size:30px;text-shadow:0 2px 14px rgba(0,0,0,.55)}
+.hub-phb{flex:none;width:36px;height:36px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;color:var(--muted);background:var(--surface)}
+.hub-phb svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -4413,7 +4428,8 @@ html.foyer-nuit .hb-t{background:var(--surface);box-shadow:none;border:0}
 
   <!-- BUDGET (V2) -->
   <section class="view" data-view="hub" hidden>
-    <div class="hub-h"><h2>Le foyer</h2></div>
+    <div class="hub-ph" id="hubPh" aria-hidden="true"></div>
+    <div class="hub-h"><h2>Le foyer</h2><button type="button" class="hub-phb" id="hubPhB" hidden aria-label="Photo du foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v9A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.6"/></svg></button></div>
     <div class="hub" id="hubGrid"></div>
   </section>
 
@@ -9103,20 +9119,35 @@ function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const
   if(!mt){ const eq=(S.equip||[]).map(x=>[x,eqNext(x)]).filter(x=>x[1]).sort((a,b)=>a[1]<b[1]?-1:1)[0]; if(eq&&daysTo(eq[1])<=45) mt="Entretien "+(eq[0].nom||"équipement").toLowerCase()+" "+dueLabel(eq[1]); }
   tile("maison","","#7FCDB9","Maison",mt||"tout le logement",{gly:"maison"});
   { const ne=evNext(); tile("evenements","","#FF9C80","Événements",ne?evJ(ne)+" · "+(ne.titre||evT(ne).n):"anniv, travaux, vacances…",{gly:"evenements"}); }
-  /* Cocoon Plus en grand, au-dessus du titre « Le foyer » */
-  { const sec=H.closest("section"), old=sec&&sec.querySelector(".hb-pban"); if(old) old.remove();
-    if(sec){ const pa=!!(S.prefs&&S.prefs.premiumInteret), ic=el("i",{"aria-hidden":"true"}); ic.innerHTML='<svg viewBox="0 -4 64 64" aria-hidden="true"><path d="M32 4c2.6 15 9 21.4 24 24-15 2.6-21.4 9-24 24-2.6-15-9-21.4-24-24 15-2.6 21.4-9 24-24z" fill="#FFE7A0"/></svg>';
-      const bn=el("button",{type:"button",class:"hb-pban","data-go":"premium","aria-label":"Cocoon Plus"+(pa?", on te prévient à l'ouverture":", 1 mois offert"),onclick:()=>hubGo("premium")},ic,
-        el("span",{class:"hb-pbt"},el("b",{text:"Cocoon Plus"}),el("small",{text:pa?"On te prévient à l'ouverture":"1 mois offert · papiers en photo, Cocoony et plus"})),el("span",{class:"hb-pbg","aria-hidden":"true",text:"›"}));
-      /* Cocoony monte du bas de la bannière et regarde « Cocoon Plus » (l'arrivée une fois par visite, puis il penche la tête de temps en temps) */
-      { let src=""; try{ src=(secIdent()||{}).src||""; }catch(_){} if(!src){ const lg=document.querySelector(".brand-logo"); if(lg) src=lg.src; }
-        if(src){ bn.classList.add("has-cat"); const cat=el("span",{class:"hb-cat","aria-hidden":"true"},el("img",{src,alt:""}));
-          /* l'arrivée démarre à la première ouverture du Foyer ; un redessin pendant l'animation la poursuit au lieu de la relancer */
-          if(S.tab==="hub"&&!S.pbanT) S.pbanT=Date.now();
-          if(S.pbanT){ const t=(Date.now()-S.pbanT)/1000; if(t>1.6) bn.classList.add("seen"); else cat.style.animationDelay=(.45-t)+"s,"+(1.8-t)+"s"; }
-          bn.append(cat); } }
-      sec.insertBefore(bn,sec.querySelector(".hub-h")); } }
+  /* (28 oct., Angel) plus de bannière Cocoon Plus ici (elle reste dans Moi et Réglages) ; à la place, la photo du foyer en haut */
+  { const sec=H.closest("section"), old=sec&&sec.querySelector(".hb-pban"); if(old) old.remove(); }
+  hubPhoto();
 }
+
+/* Photo du foyer (28 oct., choix 2 d'Angel) : en haut du Foyer, nette, qui se fond dans le fond de l'app vers les tuiles.
+   Une pour tout le foyer (foyer/config.fondFoyer, posée par l'admin) ; copie réduite gardée sur l'appareil (cocoon.fond) pour l'afficher tout de suite. */
+var FOND=(()=>{ try{ return JSON.parse(localStorage.getItem("cocoon.fond")||"null"); }catch(_){ return null; } })()||{};
+async function fondCache(ref,url){ if(!ref||FOND.ref===ref||FOND.q===ref) return; FOND.q=ref;
+  try{ const r=await fetch(url); if(!r.ok) throw 0; const bm=await createImageBitmap(await r.blob()); const k=Math.min(1,900/bm.width), c=document.createElement("canvas");
+    c.width=Math.round(bm.width*k); c.height=Math.round(bm.height*k); c.getContext("2d").drawImage(bm,0,0,c.width,c.height);
+    FOND.ref=ref; FOND.data=c.toDataURL("image/jpeg",.8); try{ localStorage.setItem("cocoon.fond",JSON.stringify({ref,data:FOND.data})); }catch(_){} hubPhoto(); }catch(_){} FOND.q=null; }
+function hubPhoto(){ const L=$("hubPh"), B=$("hubPhB"); if(!L||!FOND) return; const sec=L.closest("section"), ref=S.config&&S.config.fondFoyer;
+  const u=ref?(FOND.ref===ref&&FOND.data)||imgUrl(ref):null; if(ref&&u&&FOND.ref!==ref&&!/^data:/.test(u)) fondCache(ref,u);
+  sec.classList.toggle("has-ph",!!u); if(u&&!sec.hidden){ const y=Math.round(sec.getBoundingClientRect().top+window.scrollY); if(y>0) sec.style.setProperty("--hph-top",y+"px"); } if(u){ const css='url("'+u+'")'; if(L._u!==u){ L._u=u; L.style.backgroundImage=css; } } else { L._u=null; L.style.backgroundImage=""; }
+  if(B) B.hidden=!(isAdmin()&&!S.readOnly&&S.assets); }
+async function fondSet(ref){ if(!S.db) return; S.config=Object.assign({},S.config||{},{fondFoyer:ref||null});
+  try{ await S.db.doc("foyer/config").set(S.config); }catch(e){ writeErr(e); } hubPhoto(); }
+function fondPick(){ const inp=el("input",{type:"file",accept:"image/*",hidden:true}); document.body.append(inp);
+  inp.addEventListener("change",async()=>{ const f=inp.files[0]; inp.remove(); if(!f) return; toast("Envoi de la photo…");
+    try{ const ref=await uploadImg(f,1600); await fondSet(ref); toast("Photo du foyer changée."); }catch(e){ imgErr(e); } },{once:true}); inp.click(); }
+function fondMenu(){ if(!(S.config&&S.config.fondFoyer)){ fondPick(); return; }
+  let done=false; const close=()=>{ if(done) return; done=true; ov.classList.add("out"); setTimeout(()=>ov.remove(),180); };
+  const o=(e,l,fn,cls)=>el("button",{type:"button",class:"clp-o dg-mo"+(cls?" "+cls:""),onclick:()=>{ close(); fn(); }},el("b",{"aria-hidden":"true",text:e}),el("span",{text:l}));
+  const box=el("div",{class:"clp-box",role:"dialog","aria-label":"Photo du foyer"},el("b",{class:"clp-h",text:"Photo du foyer"}),
+    o("🖼️","Choisir une autre photo",fondPick),o("🗑️","Retirer la photo",()=>fondSet(null),"del"),el("button",{type:"button",class:"clp-x",onclick:close},"Annuler"));
+  const ov=el("div",{class:"clp-ov",onclick:e=>{ if(e.target===ov) close(); }},box); document.body.append(ov); requestAnimationFrame(()=>ov.classList.add("in")); }
+$("hubPhB").addEventListener("click",()=>{ haptic(5); fondMenu(); });
+window.addEventListener("resize",()=>{ if(S.tab==="hub") hubPhoto(); });
 
 /* Mini-fiche d'un membre (toucher une bulle de l'accueil) */
 function openMemberSheet(id){ const m=membre(id); if(!m) return; const me=meId(), isMe=id===me, ani=typeOf(m)==="animal", t0=iso(today()), ws=weekStart();
