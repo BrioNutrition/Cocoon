@@ -110,7 +110,7 @@
    "  if(user){ S.isOwner=await user.isOwner(); try{ S.canEdit=(await user.canEdit())!==false; }catch(_){ S.canEdit=true; } S.uid=await user.id(); const w=await user.can(\"data.write\"); if(w===false){ S.readOnly=true; banner(\"Tu peux consulter le foyer mais pas le modifier. Demande à Angel de t'inviter comme Éditeur.\"); } }",
    "  if(!S.uid){ banner(\"Connecte-toi à Claude pour avoir ton espace perso dans le foyer.\"); S.loaded.p=true; }",
    "  else { try{ const s=await db.doc(\"data/users/\"+S.uid+\"/moi\").get(); if(s.exists&&s.data().membre) S.legacyMe=s.data().membre; }catch(_){} subscribePerso(); }",
-   "  db.doc(\"foyer/config\").onSnapshot(s=>{ S.config=s.exists?s.data():null; S.foyerNom=(S.config&&S.config.nom)||\"\"; S.configLoaded=true; renderAll(); },()=>{ S.configLoaded=true; });",
+   "  db.doc(\"foyer/config\").onSnapshot(s=>{ S.config=s.exists?s.data():null; S.foyerNom=(S.config&&S.config.nom)||\"\"; S.configLoaded=true; try{ fondPrefetch(); }catch(_){} renderAll(); },()=>{ S.configLoaded=true; });",
    "  db.collection(\"membres\").onSnapshot(s=>{",
    "    S.membresRaw=s.docs.map(d=>Object.assign({id:d.id},d.data())); mergeMembres();",
    "    S.membresLoaded=true; renderAll(); autoClaimLegacy(); autoClaimEmail();",

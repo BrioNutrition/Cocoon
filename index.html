@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="28/10 19:52";</script>
+<script>window.COCOON_BUILD="29/10 10:08";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4165,6 +4165,8 @@ section[data-view="hub"].has-ph .hub-h h2{color:#fff;font-size:30px;text-shadow:
 .hub-phb{flex:none;width:36px;height:36px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;color:var(--muted);background:var(--surface)}
 .hub-phb svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+
+.hub-ph.ph-mini{filter:blur(14px);transform:translateX(-50%) scale(1.08)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -4617,7 +4619,7 @@ async function signFlush(){ SIGN_T=0; if(!S.assets||!S.assets.sign){ SIGN_T=setT
   try{ o=await S.assets.sign(refs)||{}; }catch(_){}
   const now=Date.now(); let got=false;
   for(const r of refs){ if(o[r]){ SIGNED.set(r,{url:o[r],exp:now+50*60*1000}); got=true; } else SIGNED.set(r,{url:(SIGNED.get(r)||{}).url||null,exp:now+5*60*1000}); }
-  if(got){ saveSigned(); renderAll(); } }
+  if(got){ saveSigned(); try{ fondPrefetch(); }catch(_){} renderAll(); } }
 const seedSigned=up=>{ if(up&&up.id&&up.url){ SIGNED.set(up.id,{url:up.url,exp:Date.now()+50*60*1000}); saveSigned(); } };
 /* ===== Visionneuse de papiers : photo ou PDF, dans l'app, avec zoom ===== */
 let _pdfjsP=null;
@@ -9127,19 +9129,29 @@ function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const
 /* Photo du foyer (28 oct., choix 2 d'Angel) : en haut du Foyer, nette, qui se fond dans le fond de l'app vers les tuiles.
    Une pour tout le foyer (foyer/config.fondFoyer, posée par l'admin) ; copie réduite gardée sur l'appareil (cocoon.fond) pour l'afficher tout de suite. */
 var FOND=(()=>{ try{ return JSON.parse(localStorage.getItem("cocoon.fond")||"null"); }catch(_){ return null; } })()||{};
+/* (29 oct., Angel : « bien plus vite ») 1) copie 900 px sur l'appareil, montrée dès l'ouverture, avant même la base ;
+   2) mini-photo de 48 px dans foyer/config (fondMini), floutée, sur les autres téléphones en attendant la vraie ;
+   3) la vraie est téléchargée dès que la base arrive, quel que soit l'onglet ; 4) celui qui choisit la photo la voit tout de suite. */
+async function fondData(src,max,q){ const bm=await createImageBitmap(src), k=Math.min(1,max/Math.max(bm.width,bm.height)), c=document.createElement("canvas");
+  c.width=Math.max(1,Math.round(bm.width*k)); c.height=Math.max(1,Math.round(bm.height*k)); c.getContext("2d").drawImage(bm,0,0,c.width,c.height); return c.toDataURL("image/jpeg",q); }
+function fondKeep(ref,data){ FOND.ref=ref; FOND.data=data; try{ localStorage.setItem("cocoon.fond",JSON.stringify({ref,data})); }catch(_){} }
 async function fondCache(ref,url){ if(!ref||FOND.ref===ref||FOND.q===ref) return; FOND.q=ref;
-  try{ const r=await fetch(url); if(!r.ok) throw 0; const bm=await createImageBitmap(await r.blob()); const k=Math.min(1,900/bm.width), c=document.createElement("canvas");
-    c.width=Math.round(bm.width*k); c.height=Math.round(bm.height*k); c.getContext("2d").drawImage(bm,0,0,c.width,c.height);
-    FOND.ref=ref; FOND.data=c.toDataURL("image/jpeg",.8); try{ localStorage.setItem("cocoon.fond",JSON.stringify({ref,data:FOND.data})); }catch(_){} hubPhoto(); }catch(_){} FOND.q=null; }
-function hubPhoto(){ const L=$("hubPh"), B=$("hubPhB"); if(!L||!FOND) return; const sec=L.closest("section"), ref=S.config&&S.config.fondFoyer;
-  const u=ref?(FOND.ref===ref&&FOND.data)||imgUrl(ref):null; if(ref&&u&&FOND.ref!==ref&&!/^data:/.test(u)) fondCache(ref,u);
+  try{ const r=await fetch(url); if(!r.ok) throw 0; fondKeep(ref,await fondData(await r.blob(),900,.8)); hubPhoto(); }catch(_){} FOND.q=null; }
+function fondPrefetch(){ if(!FOND) return; const ref=S.config&&S.config.fondFoyer; if(!ref||FOND.ref===ref) return; const u=imgUrl(ref); if(u&&!/^data:/.test(u)) fondCache(ref,u); }
+function hubPhoto(){ const L=$("hubPh"), B=$("hubPhB"); if(!L||!FOND) return; const sec=L.closest("section");
+  /* base pas encore là : la copie gardée sur l'appareil */
+  const ref=S.configLoaded?(S.config&&S.config.fondFoyer):FOND.ref, mini=S.config&&S.config.fondMini;
+  let u=ref?(FOND.ref===ref&&FOND.data)||null:null, blur=false;
+  if(ref&&!u){ const r=imgUrl(ref); if(r&&!/^data:/.test(r)) fondCache(ref,r); if(mini){ u=mini; blur=true; } else u=r; }
+  L.classList.toggle("ph-mini",blur);
   sec.classList.toggle("has-ph",!!u); if(u&&!sec.hidden){ const y=Math.round(sec.getBoundingClientRect().top+window.scrollY); if(y>0) sec.style.setProperty("--hph-top",y+"px"); } if(u){ const css='url("'+u+'")'; if(L._u!==u){ L._u=u; L.style.backgroundImage=css; } } else { L._u=null; L.style.backgroundImage=""; }
   if(B) B.hidden=!(isAdmin()&&!S.readOnly&&S.assets); }
-async function fondSet(ref){ if(!S.db) return; S.config=Object.assign({},S.config||{},{fondFoyer:ref||null});
+async function fondSet(ref,mini){ if(!S.db) return; S.config=Object.assign({},S.config||{},{fondFoyer:ref||null,fondMini:ref?mini||null:null});
   try{ await S.db.doc("foyer/config").set(S.config); }catch(e){ writeErr(e); } hubPhoto(); }
 function fondPick(){ const inp=el("input",{type:"file",accept:"image/*",hidden:true}); document.body.append(inp);
-  inp.addEventListener("change",async()=>{ const f=inp.files[0]; inp.remove(); if(!f) return; toast("Envoi de la photo…");
-    try{ const ref=await uploadImg(f,1600); await fondSet(ref); toast("Photo du foyer changée."); }catch(e){ imgErr(e); } },{once:true}); inp.click(); }
+  inp.addEventListener("change",async()=>{ const f=inp.files[0]; inp.remove(); if(!f) return; let big=null, mini=null; try{ [big,mini]=await Promise.all([fondData(f,900,.8),fondData(f,48,.6)]); }catch(_){}
+    const L=$("hubPh"); if(big&&L){ L.closest("section").classList.add("has-ph"); L.classList.remove("ph-mini"); L._u=big; L.style.backgroundImage='url("'+big+'")'; }
+    try{ const ref=await uploadImg(f,1280); if(big) fondKeep(ref,big); await fondSet(ref,mini); toast("Photo du foyer changée."); }catch(e){ imgErr(e); hubPhoto(); } },{once:true}); inp.click(); }
 function fondMenu(){ if(!(S.config&&S.config.fondFoyer)){ fondPick(); return; }
   let done=false; const close=()=>{ if(done) return; done=true; ov.classList.add("out"); setTimeout(()=>ov.remove(),180); };
   const o=(e,l,fn,cls)=>el("button",{type:"button",class:"clp-o dg-mo"+(cls?" "+cls:""),onclick:()=>{ close(); fn(); }},el("b",{"aria-hidden":"true",text:e}),el("span",{text:l}));
@@ -11511,7 +11523,7 @@ async function autoClaimLegacy(){
   if(user){ S.isOwner=await user.isOwner(); try{ S.canEdit=(await user.canEdit())!==false; }catch(_){ S.canEdit=true; } S.uid=await user.id(); const w=await user.can("data.write"); if(w===false){ S.readOnly=true; banner("Tu peux consulter le foyer mais pas le modifier. Demande à Angel de t'inviter comme Éditeur."); } }
   if(!S.uid){ banner("Connecte-toi à Claude pour avoir ton espace perso dans le foyer."); S.loaded.p=true; }
   else { try{ const s=await db.doc("data/users/"+S.uid+"/moi").get(); if(s.exists&&s.data().membre) S.legacyMe=s.data().membre; }catch(_){} subscribePerso(); }
-  db.doc("foyer/config").onSnapshot(s=>{ S.config=s.exists?s.data():null; S.foyerNom=(S.config&&S.config.nom)||""; S.configLoaded=true; renderAll(); },()=>{ S.configLoaded=true; });
+  db.doc("foyer/config").onSnapshot(s=>{ S.config=s.exists?s.data():null; S.foyerNom=(S.config&&S.config.nom)||""; S.configLoaded=true; try{ fondPrefetch(); }catch(_){} renderAll(); },()=>{ S.configLoaded=true; });
   db.collection("membres").onSnapshot(s=>{
     S.membresRaw=s.docs.map(d=>Object.assign({id:d.id},d.data())); mergeMembres();
     S.membresLoaded=true; renderAll(); autoClaimLegacy(); autoClaimEmail();
