@@ -7137,7 +7137,7 @@ function renderBudget(){
   { const P0=new Date(M0.getFullYear(),M0.getMonth()-1,1), pDim=new Date(P0.getFullYear(),P0.getMonth()+1,0).getDate(), lim=cur?Math.min(today().getDate(),pDim):pDim;
     const pEnd=new Date(P0.getFullYear(),P0.getMonth(),lim+1).getTime(), prevT=deps.filter(d=>{ const t=parse(d.date).getTime(); return t>=P0.getTime()&&t<pEnd; }).reduce((a,d)=>a+amtOf(d),0);
     const pm=new Intl.DateTimeFormat("fr-FR",{month:"long"}).format(P0), cmp=el("div",{class:"bz-cmp"});
-    if(prevT>0&&hTot>0){ const pc=Math.round((hTot-prevT)/prevT*100); cmp.append(el("b",{class:pc>0?"up":"down",text:(pc>0?"▲ ":pc<0?"▼ ":"= ")+Math.abs(pc)+" %"})," par rapport à "+pm+(cur?" à la même date":"")); }
+    if(prevT>0&&hTot>0){ const pc=Math.round((hTot-prevT)/prevT*100); cmp.append(el("b",{class:pc>0?"up":"down",text:(pc>0?"▲ ":pc<0?"▼ ":"= ")+Math.abs(pc)+"%"})," par rapport à "+pm+(cur?" à la même date":"")); }
     else cmp.append(mine.length?mine.length+" dépense"+(mine.length>1?"s":"")+" "+quand:(cur?"Rien de noté ce mois-ci":"Rien de noté "+quand));
     h.append(cmp); }
   { const by={}; for(const d of mine){ const c=BCAT[d.cat]?d.cat:"autre"; by[c]=(by[c]||0)+amtOf(d); } const L=Object.entries(by).sort((a,b)=>b[1]-a[1]);
@@ -7168,7 +7168,7 @@ function renderBudget(){
       for(const [c,v] of L){ const C=BCAT[c], goal=who==="foyer"?obj[c]||0:0, pc=goal?v/goal:(hTot?v/hTot:0);
         g.append(el("button",{type:"button",class:"bz-e"+(fCur===c?" on":""),style:"--c:"+C.c,"aria-pressed":String(fCur===c),onclick:()=>{ S.bc=Object.assign(S.bc||{},{f:fCur===c?"all":"c:"+c}); haptic(5); renderBudget(); }},
           el("span",{class:"bz-eh"},el("i",{"aria-hidden":"true",text:BEMO[c]||"💶"}),el("b",{text:C.nom})),
-          el("span",{class:"bz-ea"},moneyR(v),goal?el("small",{text:" / "+moneyR(goal)}):el("small",{text:hTot?" · "+Math.round(v/hTot*100)+" % du mois":""})),
+          el("span",{class:"bz-ea"},moneyR(v),goal?el("small",{text:" / "+moneyR(goal)}):el("small",{text:hTot?" · "+Math.round(v/hTot*100)+"% du mois":""})),
           el("span",{class:"bz-eb"},el("i",{class:goal&&pc>=1?"over":goal&&pc>=.8?"near":"",style:"width:"+Math.max(3,Math.min(100,Math.round(pc*100)))+"%"})))); }
       ew.append(el("p",{class:"bz-sec"},el("span",{text:"Enveloppes"}),isAdmin()&&!S.readOnly?el("button",{type:"button",class:"bz-lnk",text:Object.keys(obj).some(k=>obj[k]>0)?"Plafonds ›":"Fixer des plafonds ›",onclick:()=>{ const v=$("bVolCat"); if(v){ v.open=true; setTimeout(()=>v.scrollIntoView({behavior:"smooth",block:"start"}),60); } }}):null),g); } }
   // récurrent (volet)
@@ -7184,7 +7184,8 @@ function renderBudget(){
     if(n) meta.append(el("span",{class:"due"+(dd<=3?" soon":""),text:dd===0?"prélevé aujourd'hui":dd===1?"prélevé demain":dd<7?"prélevé dans "+dd+" j":fmtDue(n)}));
     const v=fut&&who==="moi"?Math.round(shareOf(a,me)):a.montant;
     return el("div",{class:"item b-row"+(fut?" fut":""),"data-bid":(fut?"fut:":"sub:")+a.id,role:"button",tabindex:"0","aria-label":"Modifier "+a.nom,onclick:()=>{ S.bFormSrc=fut?"frise":"vol"; openBForm("sub",a); }},bIcon(a.cat,a.nom),el("div",{class:"t-body"},el("div",{class:"t-title",text:a.nom}),meta),el("div",{class:"b-amt"},money(v),el("small",{text:fut?(v!==a.montant?"ta part":"à venir"):(FREQ[a.freq]||FREQ.mensuel).l}))); };
-  if(!sorted.length) sl.append(el("div",{class:"b-empty"},el("strong",{text:"Rien de récurrent pour l'instant"}),"Loyer, box, électricité, Netflix, assurances… Ajoute-les : Cocoon les inscrit au budget à chaque échéance et te prévient avant."));
+  /* un crédit est aussi un récurrent : pas de « Rien de récurrent » s'il y en a un (30 oct., Angel) */
+  if(!sorted.length&&!crN) sl.append(el("div",{class:"b-empty"},el("strong",{text:"Rien de récurrent pour l'instant"}),"Loyer, box, électricité, Netflix, assurances… Ajoute-les : Cocoon les inscrit au budget à chaque échéance et te prévient avant."));
   for(const {a,n} of sorted){ if(S.bForm&&S.bForm.id===a.id&&S.bForm.kind==="sub"&&S.bFormSrc!=="frise"){ sl.append(BF); continue; } sl.append(subRow(a,n,false)); }
   // le fil du mois : à venir, aujourd'hui, puis ce qui est payé (du plus récent au plus ancien)
   const fC=((S.bc&&S.bc.f)||"all").startsWith("c:")?S.bc.f.slice(2):null;
