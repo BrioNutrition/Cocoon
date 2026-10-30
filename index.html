@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="29/10 10:08";</script>
+<script>window.COCOON_BUILD="30/10 11:51";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4167,6 +4167,57 @@ section[data-view="hub"].has-ph .hub-h h2{color:#fff;font-size:30px;text-shadow:
 section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 
 .hub-ph.ph-mini{filter:blur(14px);transform:translateX(-50%) scale(1.08)}
+
+/* Budget « relevé de compte » + enveloppes (30 oct., choix A d'Angel avec les enveloppes de la B) */
+.view[data-view="budget"] .b-hero{background:var(--surface)!important;color:var(--ink);border:0!important;border-radius:22px;padding:14px 16px 16px;box-shadow:none!important;gap:0}
+.view[data-view="budget"] .b-hero .b-who{margin-bottom:10px}
+.bz-mn{display:flex;align-items:center;gap:6px}
+.bz-mn b{font-size:15.5px;font-weight:800}
+.bz-mn button{border:0;background:none;color:var(--muted);font:inherit;font-size:20px;line-height:1;width:30px;height:30px;border-radius:50%;cursor:pointer}
+.bz-mn button:disabled{opacity:.3;cursor:default}
+.bz-big{font-size:40px;font-weight:800;letter-spacing:-.03em;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.bz-big.z{font-size:28px;color:var(--muted)}
+.bz-cmp{font-size:13px;color:var(--muted)}
+.bz-cmp b{font-weight:800}.bz-cmp b.down{color:var(--ok)}.bz-cmp b.up{color:var(--late)}
+.bz-stk{display:flex;gap:2px;height:10px;border-radius:6px;overflow:hidden;margin:14px 0 8px}
+.bz-stk i{display:block;min-width:3px}
+.bz-lg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted)}
+.bz-lg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+#bBalanceWrap .bal{display:flex;flex-direction:column;gap:8px;background:none;padding:0;border:0}
+#bBalanceWrap .bal-row{background:var(--surface);border-radius:16px;padding:10px 12px;display:flex;align-items:center;gap:10px;font-size:14px;border:0}
+#bBalanceWrap .bal-row>span:not(.av){flex:1}
+#bBalanceWrap .bal-row>.av{flex:none}
+#bBalanceWrap .bal-row .btn{background:var(--accent)!important;color:var(--accent-ink)!important;border:0!important;border-radius:999px;font-weight:800}
+.bz-sec{display:flex;align-items:center;justify-content:space-between;margin:18px 4px 8px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.bz-lnk{border:0;background:none;color:var(--accent);font:inherit;font-size:13px;font-weight:700;letter-spacing:0;text-transform:none;cursor:pointer;padding:4px 0}
+.bz-env{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bz-e{display:flex;flex-direction:column;align-items:stretch;gap:6px;text-align:left;border:0;border-radius:16px;padding:11px 12px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;min-width:0}
+.bz-e.on{outline:2px solid var(--c);outline-offset:-2px}
+.bz-e:active{transform:scale(.98)}
+.bz-eh{display:flex;align-items:center;gap:7px;min-width:0}
+.bz-eh i{font-style:normal;font-size:18px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.bz-eh b{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bz-ea{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+.bz-ea small{font-size:11.5px;font-weight:600;color:var(--muted)}
+.bz-eb{display:block;height:5px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.bz-eb i{display:block;height:100%;border-radius:3px;background:var(--c)}
+.bz-eb i.near{background:#FFB547}.bz-eb i.over{background:#FF6B6B}
+#bDeps.b-frise{padding:0}
+#bDeps .b-fut-l{margin:4px 4px 6px}
+.bz-card{background:var(--surface);border-radius:18px;overflow:hidden}
+.bz-card+.bz-card{margin-top:10px}
+.bz-fut .bz-am{color:var(--muted)}
+.bz-dh{font-size:12.5px;font-weight:700;color:var(--muted);padding:11px 14px 3px}
+.bz-r{display:flex;align-items:center;gap:11px;padding:9px 14px;border-top:1px solid var(--line);cursor:pointer;min-height:56px}
+.bz-dh+.bz-r,.bz-card>.bz-r:first-child{border-top:0}
+.bz-r:active{background:var(--sunk)}
+.bz-ic{font-style:normal;font-size:22px;width:28px;text-align:center;flex:none;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.bz-rt{flex:1;min-width:0}
+.bz-rt b{display:block;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bz-rt small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bz-r .av{flex:none}
+.bz-am{font-weight:800;font-size:15px;text-align:right;font-variant-numeric:tabular-nums;flex:none}
+.bz-am small{display:block;font-size:11px;font-weight:600;color:var(--muted)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -4439,6 +4490,7 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
     <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Budget</b><span class="hb-act"><button type="button" class="hub-add" data-add="budget" aria-label="Ajouter"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
     <div class="b-hero" id="bHero"></div>
     <div class="sub b-owe" id="bBalanceWrap"></div>
+    <div class="bz-envw" id="bEnvW"></div>
     <div class="b-actions">
       <button type="button" class="b-add" id="bAddDep"><span style="--stripe:#FF9C80"><svg class="gly" viewBox="0 0 24 24" aria-hidden="true"><circle class="gb" cx="12" cy="12" r="10"/><path class="gl" d="M15.6 8.4a4.6 4.6 0 1 0 0 7.2M7.2 10.8h6M7.2 13.2h6"/></svg></span><b>Dépense</b><small>Achat ponctuel</small></button>
       <button type="button" class="b-add" id="bAddSub"><span style="--stripe:#8FB8FF"><svg class="gly" viewBox="0 0 24 24" aria-hidden="true"><path class="gb" d="M4.01 9.09A8.5 8.5 0 0 1 18.96 7.12L16.83 8.62A5.9 5.9 0 0 0 6.46 9.98zM19.70 6.61L20.19 11.15L16.10 9.13zM19.99 14.91A8.5 8.5 0 0 1 5.04 16.88L7.17 15.38A5.9 5.9 0 0 0 17.54 14.02zM4.30 17.39L3.81 12.85L7.90 14.87z"/></svg></span><b>Récurrent</b><small>Chaque mois</small></button>
@@ -6547,6 +6599,8 @@ function doneAnim(tasks){
 /* ===== Budget (V2) ===== */
 const BCATS=[{id:"courses",nom:"Courses",c:"#7FD39A"},{id:"logement",nom:"Logement",c:"#7FCDB9"},{id:"energie",nom:"Énergie",c:"#FFC94A"},{id:"internet",nom:"Internet & mobile",c:"#8FB8FF"},{id:"streaming",nom:"Streaming",c:"#E79ADB"},{id:"assurance",nom:"Assurances",c:"#B9A8F0"},{id:"transport",nom:"Transport",c:"#A9B4C2"},{id:"loisirs",nom:"Loisirs",c:"#FF9C80"},{id:"sante",nom:"Santé",c:"#7CCFE0"},{id:"animaux",nom:"Animaux",c:"#F4A7A7"},{id:"enfants",nom:"Enfants",c:"#A8D672"},{id:"autre",nom:"Autre",c:"#C9C7DD"}];
 const BCAT=Object.fromEntries(BCATS.map(c=>[c.id,c]));
+const moneyR=x=>money(x).replace(/,00(?=\s*€)/,"");
+const BEMO={courses:"🛒",logement:"🏠",energie:"⚡",internet:"📱",streaming:"📺",assurance:"🛡️",transport:"🚗",loisirs:"🎬",sante:"💊",animaux:"🐾",enfants:"🧸",autre:"💶"};
 const FREQ={mensuel:{l:"par mois",short:"/mois",perMonth:1,months:1},trimestriel:{l:"par trimestre",short:"/trim.",perMonth:1/3,months:3},annuel:{l:"par an",short:"/an",perMonth:1/12,months:12},hebdo:{l:"par semaine",short:"/sem.",perMonth:52/12,weeks:1}};
 const PRESETS=[["Loyer","logement","mensuel"],["Électricité","energie","mensuel"],["Gaz","energie","mensuel"],["Eau","energie","mensuel"],["Box internet","internet","mensuel"],["Forfait mobile","internet","mensuel"],["Netflix","streaming","mensuel"],["Spotify","streaming","mensuel"],["Disney+","streaming","mensuel"],["Assurance habitation","assurance","mensuel"],["Assurance auto","assurance","mensuel"],["Mutuelle","sante","mensuel"],["Salle de sport","loisirs","mensuel"]];
 const EUR=new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR"});
@@ -7153,9 +7207,19 @@ function renderBudget(){
   const mois=new Intl.DateTimeFormat("fr-FR",M0.getFullYear()===today().getFullYear()?{month:"long"}:{month:"long",year:"numeric"}).format(M0), quand=cur?"ce mois-ci":"en "+mois;
   const mine=month.filter(d=>amtOf(d)>0), hTot=mine.reduce((a,d)=>a+amtOf(d),0);
   if(duo) h.append(segAnim(el("div",{class:"b-who",role:"group","aria-label":"Budget affiché"},...[["foyer","Foyer"],["moi","Moi"]].map(([k,l])=>el("button",{type:"button","aria-pressed":String(who===k),text:l,onclick:()=>{ S.bWho=k; renderBudget(); }}))),"who"));
-  h.append(el("div",{class:"b-mnav"},el("button",{type:"button","aria-label":"Mois précédent",text:"‹",disabled:off<=-36||null,onclick:()=>{ S.bMonth=off-1; renderBudget(); }}),el("span",{class:"label",text:(who==="moi"?"Ta part · ":"Budget du foyer · ")+mois}),el("button",{type:"button","aria-label":"Mois suivant",text:"›",disabled:cur||null,onclick:()=>{ S.bMonth=Math.min(0,off+1); renderBudget(); }})),
-    el("div",{},el("div",{class:"b-big"+(hTot?"":" z"),text:hTot?money(hTot):"Aucune dépense"}),el("div",{class:"b-sub",text:(mine.length?mine.length+" dépense"+(mine.length>1?"s":"")+" "+quand:(cur?"rien de noté ce mois-ci":"rien de noté "+quand))})));
-  if(month.length||deps.length) h.append(budgetCurve(off));
+  /* Budget « relevé de compte » (30 oct., choix A d'Angel) : mois, total, comparaison avec le mois d'avant à la même date, barre des catégories */
+  h.append(el("div",{class:"bz-mn"},el("button",{type:"button","aria-label":"Mois précédent",text:"‹",disabled:off<=-36||null,onclick:()=>{ S.bMonth=off-1; renderBudget(); }}),
+    el("b",{text:mois.replace(/^./,x=>x.toUpperCase())+(who==="moi"?" · ta part":"")}),el("button",{type:"button","aria-label":"Mois suivant",text:"›",disabled:cur||null,onclick:()=>{ S.bMonth=Math.min(0,off+1); renderBudget(); }})));
+  h.append(el("div",{class:"bz-big"+(hTot?"":" z"),text:hTot?money(hTot):"Aucune dépense"}));
+  { const P0=new Date(M0.getFullYear(),M0.getMonth()-1,1), pDim=new Date(P0.getFullYear(),P0.getMonth()+1,0).getDate(), lim=cur?Math.min(today().getDate(),pDim):pDim;
+    const pEnd=new Date(P0.getFullYear(),P0.getMonth(),lim+1).getTime(), prevT=deps.filter(d=>{ const t=parse(d.date).getTime(); return t>=P0.getTime()&&t<pEnd; }).reduce((a,d)=>a+amtOf(d),0);
+    const pm=new Intl.DateTimeFormat("fr-FR",{month:"long"}).format(P0), cmp=el("div",{class:"bz-cmp"});
+    if(prevT>0&&hTot>0){ const pc=Math.round((hTot-prevT)/prevT*100); cmp.append(el("b",{class:pc>0?"up":"down",text:(pc>0?"▲ ":pc<0?"▼ ":"= ")+Math.abs(pc)+" %"})," par rapport à "+pm+(cur?" à la même date":"")); }
+    else cmp.append(mine.length?mine.length+" dépense"+(mine.length>1?"s":"")+" "+quand:(cur?"Rien de noté ce mois-ci":"Rien de noté "+quand));
+    h.append(cmp); }
+  { const by={}; for(const d of mine){ const c=BCAT[d.cat]?d.cat:"autre"; by[c]=(by[c]||0)+amtOf(d); } const L=Object.entries(by).sort((a,b)=>b[1]-a[1]);
+    if(L.length){ h.append(el("div",{class:"bz-stk","aria-hidden":"true"},...L.map(([c,v])=>{ const i=el("i"); i.style.flex=String(v); i.style.background=BCAT[c].c; return i; })),
+      el("div",{class:"bz-lg"},...L.slice(0,4).map(([c])=>el("span",{},el("i",{style:"background:"+BCAT[c].c}),BCAT[c].nom)))); } }
   $("nBudget").textContent=soon.length; $("nBudget").hidden=!soon.length;
   setTimeout(bookRecurring,0);
   renderCredits();
@@ -7168,10 +7232,22 @@ function renderBudget(){
         const row=t.a===me?el("div",{class:"bal-row"},avatar(t.de,30),el("span",{text:membre(t.de).nom+" te doit"}),el("b",{text:money(t.montant)})):el("div",{class:"bal-row"},avatar(t.de,30),el("span",{text:(t.de===me?"Tu dois":membre(t.de).nom+" doit")+" à"}),avatar(t.a,30),el("span",{text:membre(t.a).nom}),el("b",{text:money(t.montant)}));
         if(me&&(t.de===me||t.a===me||isAdmin())) row.append(el("button",{type:"button",class:"btn ghost",style:"padding:6px 12px;font-size:13px",text:"C'est réglé",onclick:async(e)=>{ try{ await S.db.collection("depenses").add({type:"rembt",titre:"Remboursement",montant:t.montant,payePar:t.de,partage:[t.a],date:iso(today()),cat:"autre",creePar:me,creeLe:Date.now()}); const r=e.target.getBoundingClientRect(); confetti(r.left+r.width/2,r.top); toast("Comptes réglés entre "+esc(membre(t.de).nom)+" et "+esc(membre(t.a).nom)+"."); }catch(err){ writeErr(err); } }}));
         box.append(row); }
-      bw.append(el("div",{class:"sec-title"},el("h2",{text:"Qui doit quoi"})),box); } }
+      bw.append(box); } }
   bw.hidden=!bw.childNodes.length;
   // catégories (volet)
   renderBudgetCats(month,tot,mois); $("bCatMois").textContent="";
+  /* enveloppes (30 oct., Angel : « au moins c'est classé ») : une carte par catégorie du mois, jauge vers le plafond (objectifs) ; toucher = ne voir qu'elle */
+  { const ew=$("bEnvW"); ew.innerHTML=""; const obj=(S.config&&S.config.objectifs)||{}, fCur=((S.bc&&S.bc.f)||"all").startsWith("c:")?S.bc.f.slice(2):null;
+    const by={}; for(const d of mine){ const c=BCAT[d.cat]?d.cat:"autre"; by[c]=(by[c]||0)+amtOf(d); }
+    for(const k of Object.keys(obj)) if(obj[k]>0&&BCAT[k]&&!(k in by)&&who==="foyer") by[k]=0;
+    const L=Object.entries(by).sort((a,b)=>b[1]-a[1]);
+    if(L.length){ const g=el("div",{class:"bz-env"});
+      for(const [c,v] of L){ const C=BCAT[c], goal=who==="foyer"?obj[c]||0:0, pc=goal?v/goal:(hTot?v/hTot:0);
+        g.append(el("button",{type:"button",class:"bz-e"+(fCur===c?" on":""),style:"--c:"+C.c,"aria-pressed":String(fCur===c),onclick:()=>{ S.bc=Object.assign(S.bc||{},{f:fCur===c?"all":"c:"+c}); haptic(5); renderBudget(); }},
+          el("span",{class:"bz-eh"},el("i",{"aria-hidden":"true",text:BEMO[c]||"💶"}),el("b",{text:C.nom})),
+          el("span",{class:"bz-ea"},moneyR(v),goal?el("small",{text:" / "+moneyR(goal)}):el("small",{text:hTot?" · "+Math.round(v/hTot*100)+" %":""})),
+          el("span",{class:"bz-eb"},el("i",{class:goal&&pc>=1?"over":goal&&pc>=.8?"near":"",style:"width:"+Math.max(3,Math.min(100,Math.round(pc*100)))+"%"})))); }
+      ew.append(el("p",{class:"bz-sec"},el("span",{text:"Enveloppes"}),isAdmin()&&!S.readOnly?el("button",{type:"button",class:"bz-lnk",text:Object.keys(obj).some(k=>obj[k]>0)?"Plafonds ›":"Fixer des plafonds ›",onclick:()=>{ const v=$("bVolCat"); if(v){ v.open=true; setTimeout(()=>v.scrollIntoView({behavior:"smooth",block:"start"}),60); } }}):null),g); } }
   // récurrent (volet)
   const crN=(S.credits||[]).length;
   $("bSubsTotal").textContent=subs.length||crN?(subs.length?money(subTot)+" / mois":"")+(crN?(subs.length?" · ":"")+crN+" crédit"+(crN>1?"s":""):""):"";
@@ -7195,19 +7271,34 @@ function renderBudget(){
   const dl=$("bDeps"); dl.innerHTML="";
   $("bDepTitle").textContent=cur?"Le fil du mois":"Dépenses "+de(mois);
   $("bDepCount").textContent=[past.length?past.length+" dépense"+(past.length>1?"s":""):"",fut.length?fut.length+" à venir":""].filter(Boolean).join(" · ");
-  if(fut.length){ dl.append(el("div",{class:"b-fut-l",text:"À venir ce mois-ci"})); for(const {a,n} of fut){ if(S.bForm&&S.bForm.id===a.id&&S.bForm.kind==="sub"&&S.bFormSrc==="frise"){ dl.append(BF); continue; } dl.append(subRow(a,n,true)); } }
-  if(cur) dl.append(el("div",{class:"b-today",text:"Aujourd'hui · "+new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"short"}).format(tNow)}));
+  if(fut.length){ const fc=el("div",{class:"bz-card bz-fut"},el("div",{class:"bz-dh",text:"À venir ce mois-ci"})); dl.append(fc);
+    for(const {a,n} of fut.slice().reverse()){ if(S.bForm&&S.bForm.id===a.id&&S.bForm.kind==="sub"&&S.bFormSrc==="frise"){ fc.append(BF); continue; }
+      const dd=daysTo(n), v=who==="moi"?Math.round(shareOf(a,me)):a.montant;
+      fc.append(el("div",{class:"bz-r","data-bid":"fut:"+a.id,role:"button",tabindex:"0","aria-label":"Modifier "+a.nom,onclick:()=>{ S.bFormSrc="frise"; openBForm("sub",a); }},
+        el("i",{class:"bz-ic","aria-hidden":"true",text:BEMO[a.cat]||"💶"}),el("span",{class:"bz-rt"},el("b",{text:a.nom}),el("small",{text:(dd===1?"prélevé demain":dd<7?"prélevé dans "+dd+" jours":"prélevé "+fmtDue(n))+(a.auto!==false?" · ↻ auto":"")})),
+        el("span",{class:"bz-am"},money(v),el("small",{text:v!==a.montant?"ta part":"à venir"})))); } }
+
   if(!past.length&&cur&&!fC){ const L=cocLine("bud-vide","Je fais les comptes 💶","+ Dépense",()=>openBForm("dep")); if(L) dl.append(L); }
-  else if(!past.length) dl.append(el("div",{class:"b-empty"},el("strong",{text:fC?"Rien dans cette catégorie":cur?"Aucune dépense pour l'instant":"Aucune dépense en "+mois}),fC?"Touche « Tout » sous la courbe pour tout revoir.":"Note les courses, le plein, le véto… Cocoon calcule qui doit quoi à qui."));
+  else if(!past.length) dl.append(el("div",{class:"b-empty"},el("strong",{text:fC?"Rien dans cette catégorie":cur?"Aucune dépense pour l'instant":"Aucune dépense en "+mois}),fC?"Touche à nouveau l'enveloppe pour tout revoir.":"Note les courses, le plein, le véto… Cocoon calcule qui doit quoi à qui."));
+  /* lignes fines dans une carte, avec le jour en tête de groupe (30 oct., choix A) */
+  const card=el("div",{class:"bz-card"}); let lastD=null; const yday=iso(new Date(tNow.getFullYear(),tNow.getMonth(),tNow.getDate()-1));
+  const dayLab=d=>d===iso(tNow)?"Aujourd'hui":d===yday?"Hier":new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(parse(d)).replace(/^./,x=>x.toUpperCase());
+  if(past.length) dl.append(card);
   for(const d of past){ const rb=d.type==="rembt";
+    if(d.date!==lastD){ lastD=d.date; card.append(el("div",{class:"bz-dh",text:dayLab(d.date)})); }
     const meta=el("div",{class:"meta"});
     meta.append(el("span",{class:"tag"},d.payePar==="chacun"?null:avatar(d.payePar,16),(rb?(d.payePar===me?"tu as remboursé ":membre(d.payePar).nom+" a remboursé ")+(d.partage&&d.partage[0]===me?"toi":membre((d.partage||[])[0]).nom):(d.payePar==="chacun"?"chacun paie sa part":"payé par "+(d.payePar===me?"toi":membre(d.payePar).nom)))));
     meta.append(el("span",{text:fmtDue(d.date)}));
     if(!rb){ const pt=partsText(d); if(pt) meta.append(el("span",{text:pt})); }
     if(d.auto) meta.append(el("span",{class:"rec",text:"↻ auto"}));
-    if(S.bForm&&S.bForm.id===d.id&&S.bForm.kind==="dep"){ dl.append(BF); continue; }
-    const v=who==="moi"&&!rb?shareOf(d,me):d.montant;
-    dl.append(el("div",{class:"item b-row","data-bid":"dep:"+d.id,role:"button",tabindex:"0","aria-label":"Modifier "+d.titre,onclick:()=>openBForm("dep",d)},bIcon(rb?"autre":d.cat,rb?"↔":d.titre),el("div",{class:"t-body"},el("div",{class:"t-title",text:d.titre}),meta),el("div",{class:"b-amt"},money(v),v!==d.montant?el("small",{class:"of",text:"sur "+money(d.montant)}):null))); }
+    if(S.bForm&&S.bForm.id===d.id&&S.bForm.kind==="dep"){ card.append(BF); continue; }
+    const v=who==="moi"&&!rb?shareOf(d,me):d.montant, pt=rb?"":partsText(d);
+    const sub=rb?(d.payePar===me?"tu as remboursé ":membre(d.payePar).nom+" a remboursé ")+(d.partage&&d.partage[0]===me?"toi":membre((d.partage||[])[0]).nom)
+      :d.payePar==="chacun"?"chacun paie sa part":"payé par "+(d.payePar===me?"toi":membre(d.payePar).nom)+(pt&&/^partagé à/.test(pt)?" · "+pt.split(" · ")[0]:"")+(d.auto?" · ↻ auto":"");
+    card.append(el("div",{class:"bz-r","data-bid":"dep:"+d.id,role:"button",tabindex:"0","aria-label":"Modifier "+d.titre,onclick:()=>openBForm("dep",d)},
+      el("i",{class:"bz-ic","aria-hidden":"true",text:rb?"↔️":BEMO[d.cat]||"💶"}),el("span",{class:"bz-rt"},el("b",{text:d.titre}),el("small",{text:sub})),
+      d.payePar&&d.payePar!=="chacun"&&membre(d.payePar)?avatar(d.payePar,20):null,
+      el("span",{class:"bz-am"},money(v),v!==d.montant?el("small",{text:"sur "+money(d.montant)}):null))); }
 }
 function subDue(a){
   if(!a.debut||a.actif===false||a.auto===false) return [];
