@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="30/10 12:08";</script>
+<script>window.COCOON_BUILD="30/10 12:11";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -6653,6 +6653,7 @@ function crRemain(c){ /* {du, interets} pour le crédit entier, ou null si on ne
 }
 /* (30 oct., Angel) chaque mensualité entre dans le budget du mois, le jour du prélèvement (crédit.jour, sinon le jour de la 1re échéance) :
    dépense auto « cr_<id>_<date> », catégorie Crédits, payée par le titulaire (à deux : chacun sa part) ; jamais avant le mois où le crédit a été ajouté */
+const depPerso=d=>!!(d.crId&&(Array.isArray(d.partage)?d.partage:[]).length<2);
 const crDay=c=>c.jour||(c.debut?parse(c.debut).getDate():1);
 function crOn(c,Y,M){ const dim=new Date(Y,M+1,0).getDate(), d=iso(new Date(Y,M,Math.min(crDay(c),dim))); return (!c.debut||d>=c.debut)&&(!c.fin||d<=c.fin)?d:null; }
 function crDue(c){ if(!c.mensualite||!c.debut) return []; const t=iso(today()), cr=c.creeLe?new Date(c.creeLe):today(), out=[];
@@ -7222,7 +7223,9 @@ function renderBudget(){
   // héro
   const h=$("bHero"); h.innerHTML="";
   const duo=adults().length>1&&!!me, who=duo&&S.bWho==="moi"?"moi":"foyer"; if(!duo) S.bWho=null;
-  const amtOf=d=>who==="moi"?shareOf(d,me):d.montant;
+  /* (30 oct., Angel) un crédit remboursé par une seule personne va dans son budget à elle, pas dans celui du foyer (s'il y a deux adultes) */
+  const persoOut=d=>duo&&who==="foyer"&&depPerso(d);
+  const amtOf=d=>persoOut(d)?0:who==="moi"?shareOf(d,me):d.montant;
   const mois=new Intl.DateTimeFormat("fr-FR",M0.getFullYear()===today().getFullYear()?{month:"long"}:{month:"long",year:"numeric"}).format(M0), quand=cur?"ce mois-ci":"en "+mois;
   const mine=month.filter(d=>amtOf(d)>0), hTot=mine.reduce((a,d)=>a+amtOf(d),0);
   if(duo) h.append(segAnim(el("div",{class:"b-who",role:"group","aria-label":"Budget affiché"},...[["foyer","Foyer"],["moi","Moi"]].map(([k,l])=>el("button",{type:"button","aria-pressed":String(who===k),text:l,onclick:()=>{ S.bWho=k; renderBudget(); }}))),"who"));
@@ -7254,7 +7257,7 @@ function renderBudget(){
       bw.append(box); } }
   bw.hidden=!bw.childNodes.length;
   // catégories (volet)
-  renderBudgetCats(month,tot,mois); $("bCatMois").textContent="";
+  renderBudgetCats(month.filter(d=>!persoOut(d)),tot,mois); $("bCatMois").textContent="";
   /* enveloppes (30 oct., Angel : « au moins c'est classé ») : une carte par catégorie du mois, jauge vers le plafond (objectifs) ; toucher = ne voir qu'elle */
   { const ew=$("bEnvW"); ew.innerHTML=""; const obj=(S.config&&S.config.objectifs)||{}, fCur=((S.bc&&S.bc.f)||"all").startsWith("c:")?S.bc.f.slice(2):null;
     const by={}; for(const d of mine){ const c=BCAT[d.cat]?d.cat:"autre"; by[c]=(by[c]||0)+amtOf(d); }
@@ -7264,7 +7267,7 @@ function renderBudget(){
       for(const [c,v] of L){ const C=BCAT[c], goal=who==="foyer"?obj[c]||0:0, pc=goal?v/goal:(hTot?v/hTot:0);
         g.append(el("button",{type:"button",class:"bz-e"+(fCur===c?" on":""),style:"--c:"+C.c,"aria-pressed":String(fCur===c),onclick:()=>{ S.bc=Object.assign(S.bc||{},{f:fCur===c?"all":"c:"+c}); haptic(5); renderBudget(); }},
           el("span",{class:"bz-eh"},el("i",{"aria-hidden":"true",text:BEMO[c]||"💶"}),el("b",{text:C.nom})),
-          el("span",{class:"bz-ea"},moneyR(v),goal?el("small",{text:" / "+moneyR(goal)}):el("small",{text:hTot?" · "+Math.round(v/hTot*100)+" %":""})),
+          el("span",{class:"bz-ea"},moneyR(v),goal?el("small",{text:" / "+moneyR(goal)}):el("small",{text:hTot?" · "+Math.round(v/hTot*100)+" % du mois":""})),
           el("span",{class:"bz-eb"},el("i",{class:goal&&pc>=1?"over":goal&&pc>=.8?"near":"",style:"width:"+Math.max(3,Math.min(100,Math.round(pc*100)))+"%"})))); }
       ew.append(el("p",{class:"bz-sec"},el("span",{text:"Enveloppes"}),isAdmin()&&!S.readOnly?el("button",{type:"button",class:"bz-lnk",text:Object.keys(obj).some(k=>obj[k]>0)?"Plafonds ›":"Fixer des plafonds ›",onclick:()=>{ const v=$("bVolCat"); if(v){ v.open=true; setTimeout(()=>v.scrollIntoView({behavior:"smooth",block:"start"}),60); } }}):null),g); } }
   // récurrent (volet)
@@ -7284,13 +7287,13 @@ function renderBudget(){
   for(const {a,n} of sorted){ if(S.bForm&&S.bForm.id===a.id&&S.bForm.kind==="sub"&&S.bFormSrc!=="frise"){ sl.append(BF); continue; } sl.append(subRow(a,n,false)); }
   // le fil du mois : à venir, aujourd'hui, puis ce qui est payé (du plus récent au plus ancien)
   const fC=((S.bc&&S.bc.f)||"all").startsWith("c:")?S.bc.f.slice(2):null;
-  const keepD=d=>{ if(d.type==="rembt") return !fC&&(who==="foyer"||d.payePar===me||(d.partage||[]).includes(me)); return (!fC||(d.cat||"autre")===fC)&&(who==="foyer"||shareOf(d,me)>0); };
+  const keepD=d=>{ if(d.type==="rembt") return !fC&&(who==="foyer"||d.payePar===me||(d.partage||[]).includes(me)); return !persoOut(d)&&(!fC||(d.cat||"autre")===fC)&&(who==="foyer"||shareOf(d,me)>0); };
   const past=S.depenses.filter(d=>d.date&&inM(d)&&keepD(d)).sort((x,y)=>(y.date||"")<(x.date||"")?-1:(y.date||"")>(x.date||"")?1:(y.creeLe||0)-(x.creeLe||0));
   const tNow=today(), fut=cur?subs.map(a=>({a,n:subNext(a)})).filter(x=>{ if(!x.n) return false; const d=parse(x.n); return d>tNow&&d.getTime()<mEnd&&(!fC||(x.a.cat||"autre")===fC)&&(who==="foyer"||shareOf(x.a,me)>0); }).sort((x,y)=>x.n<y.n?1:-1):[];
   const dl=$("bDeps"); dl.innerHTML="";
   $("bDepTitle").textContent=cur?"Le fil du mois":"Dépenses "+de(mois);
   $("bDepCount").textContent=[past.length?past.length+" dépense"+(past.length>1?"s":""):"",fut.length?fut.length+" à venir":""].filter(Boolean).join(" · ");
-  const futC=cur&&(!fC||fC==="credit")?(S.credits||[]).map(c=>({c,n:crOn(c,M0.getFullYear(),M0.getMonth())})).filter(x=>x.n&&x.n>iso(tNow)&&x.c.mensualite&&(who==="foyer"||crShare(x.c,me)>0)).sort((x,y)=>x.n<y.n?-1:1):[];
+  const futC=cur&&(!fC||fC==="credit")?(S.credits||[]).map(c=>({c,n:crOn(c,M0.getFullYear(),M0.getMonth())})).filter(x=>x.n&&x.n>iso(tNow)&&x.c.mensualite&&(who==="foyer"?!duo||(x.c.titulaires||[]).length>1:crShare(x.c,me)>0)).sort((x,y)=>x.n<y.n?-1:1):[];
   if(futC.length) $("bDepCount").textContent=[past.length?past.length+" dépense"+(past.length>1?"s":""):"",(fut.length+futC.length)+" à venir"].filter(Boolean).join(" · ");
   if(fut.length||futC.length){ const fc=el("div",{class:"bz-card bz-fut"},el("div",{class:"bz-dh",text:"À venir ce mois-ci"})); dl.append(fc);
     for(const {c,n} of futC){ const dd=daysTo(n), v=who==="moi"?crShare(c,me):c.mensualite;
