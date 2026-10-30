@@ -9150,7 +9150,7 @@ function renderMoiNav(){ const V=document.querySelector('.view[data-view="moi"]'
   box.append(rrow("✨","#FFC94A","Cocoon Plus",(S.prefs&&S.prefs.premiumInteret)?"Tu seras prévenu·e du lancement":"Papiers en photo, Cocoony intelligent, et plus",()=>openPremium()));
   RG.append(el("h2",{class:"rg-h",text:"Réglages"}),el("div",{class:"ms-gl",text:"Préférences"}),box); }
 /* Foyer : toutes les rubriques en tuiles (bento) */
-function hubGo(v){ if(v==="premium"){ openPremium(); return; } if(v==="evenements"){ const n=(S.evs||[]).filter(e=>evEnd(e)>=iso(today())); if(n.length===1) openEvent(n[0].id); else openEvents(); return; } if(v==="maison") S.mSec=null; setTab(v); window.scrollTo({top:0}); }
+function hubGo(v){ if(v==="premium"){ openPremium(); return; } if(v==="evenements"){ /* (30 oct., Angel) toujours la page Événements, même avec un seul événement en cours */ openEvents(); return; } if(v==="maison") S.mSec=null; setTab(v); window.scrollTo({top:0}); }
 // Emoji des tuiles : dessiné une fois sur un canevas puis recadré sur ses pixels réels, pour être pile au centre de son carré
 // quelle que soit la police emoji (iPhone, Windows, Android n'ont pas les mêmes marges). Repli : l'emoji en texte.
 const EMO_IMG={};
