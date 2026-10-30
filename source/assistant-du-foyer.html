@@ -4171,6 +4171,50 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
 
 .evz-dh{cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:16px}
 .evz-dh:active{opacity:.75}
+
+/* « + » du Calendrier façon Apple (30 oct.) */
+.ap-sheet .pp-in{padding-top:6px}
+.ap-hd{display:flex;align-items:center;gap:10px;margin:0 0 16px}
+.ap-cb{flex:none;width:46px;height:46px;border-radius:50%;border:0;display:grid;place-items:center;background:var(--sunk);color:var(--ink);cursor:pointer}
+.ap-cb svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.ap-cb.ap-ok{background:var(--accent);color:var(--accent-ink)}
+.ap-cb:disabled{opacity:.5}
+.ap-seg{flex:1;display:flex;background:var(--sunk);border-radius:999px;padding:4px;min-width:0}
+.ap-seg button{flex:1;border:0;background:none;color:var(--ink);font:inherit;font-size:15px;font-weight:600;padding:10px 4px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.ap-seg button.on{background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.25);font-weight:700}
+.ap-ttl{flex:1;text-align:center;font-size:17px}
+.ap-main{position:relative;display:flex;flex-direction:column;gap:10px;padding-left:16px}
+.ap-main:before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:4px;border-radius:3px;background:#5AA9F0}
+.ap-main.rp:before{background:var(--accent)}
+.ap-ti{width:100%;box-sizing:border-box;border:0;border-radius:22px;background:var(--sunk);color:var(--ink);font:inherit;font-size:17px;padding:15px 18px;min-height:54px}
+.ap-ti:focus{outline:2px solid color-mix(in srgb,var(--ink) 25%,transparent)}
+.ap-dt{display:flex;align-items:center;justify-content:space-between;gap:10px;border-radius:22px;background:var(--sunk);padding:15px 18px;font-size:16.5px;min-height:54px;font-variant-numeric:tabular-nums}
+.ap-hrs{display:flex;align-items:center;gap:3px}
+.ap-pk{position:relative;display:inline-block;cursor:pointer}
+.ap-pk>input,.ap-pk>select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;border:0;margin:0;-webkit-appearance:none;appearance:none}
+.ap-types{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:12px -2px 0 14px;padding:0 2px 2px}
+.ap-types::-webkit-scrollbar{display:none}
+.ap-ty{flex:none;border:0;border-radius:999px;background:var(--sunk);color:var(--ink);font:inherit;font-size:13px;font-weight:600;padding:7px 11px;cursor:pointer;white-space:nowrap}
+.ap-sec{margin:22px 4px 8px;font-size:15px;font-weight:700;color:var(--muted)}
+.ap-f{display:flex;align-items:center;gap:12px;border-radius:22px;background:var(--sunk);padding:12px 16px;min-height:54px}
+.ap-f input,.ap-f textarea{flex:1;min-width:0;border:0;background:none;color:var(--ink);font:inherit;font-size:16.5px;outline:none;resize:vertical}
+.ap-ic{flex:none;width:24px;height:24px;color:var(--muted);display:grid;place-items:center}
+.ap-ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ap-who{flex-wrap:wrap}
+.ap-notes{align-items:flex-start}.ap-notes .ap-ic{margin-top:2px}
+.ap-opt{border-radius:22px;background:var(--sunk);overflow:hidden}
+.ap-r{display:flex;align-items:center;gap:12px;padding:12px 16px;min-height:56px;font-size:16.5px}
+.ap-r+.ap-r{border-top:1px solid var(--line);margin-left:52px;padding-left:0}
+.ap-r b{flex:1;font-weight:500}
+.ap-r .ap-pk{color:var(--muted);padding-right:20px}
+.ap-r .ap-pk:after{content:"";position:absolute;right:0;top:50%;width:13px;height:17px;margin-top:-8.5px;background:currentColor;pointer-events:none;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 17'%3E%3Cpath d='M2.5 6.5l4-4 4 4M2.5 10.5l4 4 4-4' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 17'%3E%3Cpath d='M2.5 6.5l4-4 4 4M2.5 10.5l4 4 4-4' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.ap-sw{flex:none;width:58px;height:34px;border-radius:999px;border:0;background:color-mix(in srgb,var(--ink) 25%,transparent);position:relative;cursor:pointer;transition:background .2s}
+.ap-sw i{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
+.ap-sw.on{background:#34C759}.ap-sw.on i{transform:translateX(24px)}
+.ap-hint{margin:8px 6px 0;font-size:13px;color:var(--muted)}
+.ap-del{display:block;width:100%;margin-top:22px;border:0;border-radius:22px;background:var(--sunk);color:var(--late);font:inherit;font-weight:700;padding:15px;cursor:pointer}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -6840,42 +6884,83 @@ function renderRdvAlert(){ try{ renderEvAlert(); }catch(_){} const w=$("rdvAlert
     el("span",{},el("b",{text:soon.titre+(on?" · en cours":mins<60?" dans "+mins+" min":" à "+heureTxt(soon.heure))}),el("small",{text:[soon.lieu,on&&soon.heureFin?"jusqu'à "+heureTxt(soon.heureFin):null].filter(Boolean).join(" · ")||"Événement"})),el("u",{"aria-hidden":"true",text:"›"}))); }
 /* types de rendez-vous : même grille que les événements ; un type remplit le titre s'il est vide */
 const RDV_TYPES=[["Médecin","🩺","#8FB8FF"],["Dentiste","🦷","#7FCDB9"],["Véto","🐾","#7FD39A"],["Garage","🚗","#FFC94A"],["École","🏫","#B9A8F0"],["Coiffeur","✂️","#E79ADB"],["Travail","💼","#FF9C80"],["Sport","⚽","#7CCFE0"],["Sortie","🎟️","#F4A7A7"],["Fête","🥳","#FFB547"],["Autre","✨","#C9C7DD"]];
-function openRdvSheet(){ const F=S.rdvForm; if(!F) return;
-  const U=upSheet("rdvPage",F.id?"Modifier l'événement":"Nouvel événement",()=>{ S.rdvForm=null; }); U.sheet.classList.add("ev-sheet");
-  const inn=el("div",{class:"pp-in ev-in rdv-in"}); U.sheet.append(inn);
-  /* arrivé depuis « Ajouter à l'agenda » : retour vers ce menu (la feuille redescend, le menu remonte) */
-  if(F.fromPick!=null&&!F.id){ const d=F.fromPick; inn.append(evBk(()=>{ U.close(); setTimeout(()=>openEvents({v:"pick",day:d}),340); })); }
-  inn.append(el("div",{class:"ev-top"},el("h2",{text:F.id?"Modifier l'événement":"Nouvel événement"}),el("p",{text:"Il s'affiche dans le calendrier de chacun, avec un rappel la veille."})));
-  const ti=el("input",{class:"ev-inp",type:"text",id:"rdvTitre",maxlength:"80",placeholder:"Dentiste, foot de Léo, ciné…","aria-label":"Quoi"}); ti.value=F.titre||""; ti.addEventListener("input",()=>{ F.titre=ti.value; paintT(); });
-  const grid=el("div",{class:"ev-types",role:"radiogroup","aria-label":"Type d'événement"});
-  /* le type suit ce qui est écrit : un texte qui ne commence pas par un type = « Autre » ; toucher un type remplace le texte */
-  const typeOf_=()=>{ const cur=norm((F.titre||"").trim()); if(!cur) return F.autre?"Autre":null; const x=RDV_TYPES.find(r=>r[0]!=="Autre"&&cur.startsWith(norm(r[0]))); return x?x[0]:"Autre"; };
-  const paintT=()=>{ grid.innerHTML=""; const sel=typeOf_();
-    for(const [t,e,c] of RDV_TYPES){ const on=sel===t; grid.append(el("button",{type:"button",role:"radio","aria-checked":String(on),class:"ev-type",style:"--ec:"+c,onclick:()=>{ F.titre=t==="Autre"?"":t; F.autre=t==="Autre"; ti.value=F.titre; paintT(); haptic(5); ti.focus(); }},el("i",{"aria-hidden":"true",text:e}),el("span",{text:t}))); } };
-  paintT();
-  const da=el("input",{class:"ev-inp",type:"date",id:"rdvDate",required:true,"aria-label":"Date"}); da.value=F.date||""; da.addEventListener("input",()=>F.date=da.value);
-  const he=el("input",{class:"ev-inp",type:"time",id:"rdvHeure","aria-label":"Début"}); he.value=F.heure||""; const hf=el("input",{class:"ev-inp",type:"time",id:"rdvFin","aria-label":"Fin"}); hf.value=F.heureFin||"";
-  he.addEventListener("input",()=>{ const old=F.heure; F.heure=he.value; if(F.heure&&(!F.heureFin||(old&&F.heureFin<=F.heure))){ const [H,M]=F.heure.split(":").map(Number), t=Math.min(23*60+59,H*60+M+60); F.heureFin=String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0"); hf.value=F.heureFin; } });
-  hf.addEventListener("input",()=>F.heureFin=hf.value);
-  const li=el("input",{class:"ev-inp",type:"text",id:"rdvLieu",maxlength:"80",placeholder:"Adresse, cabinet… (facultatif)","aria-label":"Où"}); li.value=F.lieu||""; li.addEventListener("input",()=>F.lieu=li.value);
-  const who=el("div",{class:"pchips"});
-  const paintW=()=>{ who.innerHTML=""; for(const m of membres()){ const on=(F.pour||[]).includes(m.id); who.append(el("button",{type:"button",class:"pchip","aria-pressed":String(on),onclick:()=>{ F.pour=on?F.pour.filter(x=>x!==m.id):(F.pour||[]).concat(m.id); paintW(); }},avatar(m.id,20),m.id===meId()?"Moi":m.nom)); } };
-  paintW();
-  const lab=(t,i)=>el("label",{class:"ev-lab"},el("span",{text:t}),i);
-  inn.append(grid,lab("Quoi",ti),lab("Date",da),el("div",{class:"ev-two"},lab("Début",he),lab("Fin",hf)),lab("Où",li),el("div",{class:"ev-lab"},el("span",{text:"Pour qui"}),who));
-  const go=el("button",{type:"button",class:"btn ev-cta",id:"rdvGo",text:F.id?"Enregistrer":"Ajouter l'événement",onclick:async()=>{ if(!needMe()) return;
-    if(!(F.titre||"").trim()){ toast("Donne un nom à l'événement."); ti.focus(); return; } if(!F.date){ toast("Choisis la date."); da.focus(); return; }
-    if(!F.heure){ toast("Indique l'heure de l'événement."); he.focus(); return; }
-    if(!F.heureFin){ toast("Indique l'heure de fin de l'événement."); hf.focus(); return; }
-    if(F.heureFin<=F.heure){ toast("L'heure de fin doit être après l'heure de début."); hf.focus(); return; }
-    { const when=new Date(F.date+"T"+F.heure); if(when.getTime()<Date.now()){ toast(F.heure&&F.date===iso(today())?"Cette heure est déjà passée : choisis une heure ou une date à venir.":"Cette date est déjà passée : choisis une date à venir."); (F.heure&&F.date===iso(today())?he:da).focus(); return; } }
-    const doc={titre:F.titre.trim(),date:F.date,heure:F.heure||null,heureFin:F.heureFin||null,lieu:(F.lieu||"").trim()||null,pour:(F.pour||[]).slice()};
+/* « + » du Calendrier façon Calendrier d'Apple (30 oct., Angel) : ✕ · Événement | Rappel · ✓, titre et date/heure dans un bloc
+   à liseré de couleur, puis Localisation, Personnes invitées, Options (Alerte, Privé), Détails (Notes). « Rappel » = une tâche datée. */
+const RDV_ALERTE=[["veille","La veille"],["aucune","Aucune"]];
+const RP_REC=[[0,"Jamais"],["1j","Chaque jour"],["1s","Chaque semaine"],[1,"Chaque mois"],[12,"Chaque année"]];
+function openRdvSheet(){ const F=S.rdvForm; if(!F) return; const me=meId(), t0=iso(today());
+  if(!F.mode) F.mode="ev"; if(!F.date) F.date=S.agDay&&S.agDay>=t0?S.agDay:t0;
+  if(!F.id&&!F.heure){ const n=new Date(); let h=n.getHours()+1; if(h>22){ h=9; if(F.date===t0) F.date=evAdd(t0,1); } F.heure=String(h).padStart(2,"0")+":00"; F.heureFin=String(h+1).padStart(2,"0")+":00"; }
+  if(!F.alerte) F.alerte="veille"; if(F.rpPour==null) F.rpPour=me; if(F.rpRec==null) F.rpRec=0;
+  const U=upSheet("rdvPage",F.id?"Modifier l'événement":"Nouvel événement",()=>{ S.rdvForm=null; }); U.sheet.classList.add("ev-sheet","ap-sheet");
+  const inn=el("div",{class:"pp-in ap-in rdv-in"}); U.sheet.append(inn);
+  const D=new Intl.DateTimeFormat("fr-FR",{weekday:"short",day:"numeric",month:"short",year:"numeric"});
+  const svg=d=>{ const i=el("i",{class:"ap-ic","aria-hidden":"true"}); i.innerHTML='<svg viewBox="0 0 24 24">'+d+'</svg>'; return i; };
+  const sec=t=>el("p",{class:"ap-sec",text:t});
+  const pick=(lab,input)=>{ const w=el("span",{class:"ap-pk"},el("span",{text:lab})); w.append(input); return w; };
+  const sw=(on,fn,lab)=>el("button",{type:"button",class:"ap-sw"+(on?" on":""),role:"switch","aria-checked":String(!!on),"aria-label":lab,onclick:()=>{ haptic(5); fn(!on); draw(); }},el("i"));
+  let go;
+  const save=async()=>{ if(!needMe()) return; const titre=(F.titre||"").trim();
+    if(!titre){ toast(F.mode==="rp"?"Écris le rappel.":"Donne un nom à l'événement."); const x=$("rdvTitre"); if(x) x.focus(); return; }
+    if(!F.date){ toast("Choisis la date."); return; }
+    if(F.mode==="rp"){ go.disabled=true;
+      const ok=await addTask({titre:titre.replace(/^./,c=>c.toUpperCase()),where:F.rpPrive?"perso":F.rpPour||"tous",echeance:F.date,recur:F.rpRec||0});
+      if(ok){ S.rdvForm=null; U.close(); } else go.disabled=false; return; }
+    if(!F.heure||!F.heureFin){ toast("Indique l'heure de début et de fin."); return; }
+    if(F.heureFin<=F.heure){ toast("L'heure de fin doit être après l'heure de début."); return; }
+    if(new Date(F.date+"T"+F.heure).getTime()<Date.now()&&!F.id){ toast(F.date===t0?"Cette heure est déjà passée : choisis une heure à venir.":"Cette date est déjà passée : choisis une date à venir."); return; }
+    const doc={titre,date:F.date,heure:F.heure,heureFin:F.heureFin,lieu:(F.lieu||"").trim()||null,pour:F.prive?[me]:(F.pour||[]).slice(),notes:(F.notes||"").trim()||null,alerte:F.alerte||"veille",prive:!!F.prive};
     go.disabled=true;
-    try{ if(F.id) await S.db.collection("rdv").doc(F.id).update(doc); else await S.db.collection("rdv").add(Object.assign(doc,{par:meId(),le:Date.now()}));
-      S.rdvForm=null; U.close(); toast(F.id?"Événement modifié.":"Événement ajouté : rappel la veille."); S.agDay=doc.date; renderAgenda(); renderRdv(); }catch(err){ go.disabled=false; writeErr(err); } }});
-  inn.append(go);
-  if(F.id){ const item=(S.rdvs||[]).find(x=>x.id===F.id); if(item) inn.append(el("button",{type:"button",class:"btn ghost st-del",text:"Supprimer l'événement",onclick:()=>{ S.rdvForm=null; U.close(); softDelete([{key:"rdv:"+item.id,arr:"rdvs",item,run:()=>S.db.collection("rdv").doc(item.id).delete()}],"Événement supprimé."); }})); }
-  if(!F.id&&!F.titre) setTimeout(()=>{ let touch=false; try{ touch=matchMedia("(pointer: coarse)").matches; }catch(_){} if(!touch) try{ ti.focus({preventScroll:true}); }catch(_){} },360); }
+    try{ if(F.id) await S.db.collection("rdv").doc(F.id).update(doc); else await S.db.collection("rdv").add(Object.assign(doc,{par:me,le:Date.now()}));
+      S.rdvForm=null; U.close(); toast(F.id?"Événement modifié.":doc.alerte==="aucune"?"Événement ajouté.":"Événement ajouté : rappel la veille."); S.agDay=doc.date; renderAgenda(); renderRdv(); }catch(err){ go.disabled=false; writeErr(err); } };
+  function draw(){ const y=U.sheet.scrollTop; inn.innerHTML=""; const rp=F.mode==="rp";
+    /* en-tête : fermer, Événement | Rappel, valider */
+    const x=el("button",{type:"button",class:"ap-cb","aria-label":"Fermer",onclick:()=>U.close()}); x.innerHTML='<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    go=el("button",{type:"button",class:"ap-cb ap-ok",id:"rdvGo","aria-label":F.id?"Enregistrer":rp?"Ajouter le rappel":"Ajouter l'événement",onclick:save}); go.innerHTML='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+    const mid=F.id?el("b",{class:"ap-ttl",text:"Modifier"}):el("div",{class:"ap-seg",role:"tablist"},...[["ev","Événement"],["rp","Rappel"]].map(([k,l])=>el("button",{type:"button",role:"tab","aria-selected":String(F.mode===k),class:F.mode===k?"on":"",onclick:()=>{ if(F.mode===k) return; F.mode=k; haptic(5); draw(); }},l)));
+    inn.append(el("div",{class:"ap-hd"},x,mid,go));
+    /* titre + date / heure */
+    const ti=el("input",{type:"text",class:"ap-ti",id:"rdvTitre",maxlength:"80",placeholder:rp?"Ex. : rappeler le plombier":"Titre ou description","aria-label":"Titre",enterkeyhint:"done"}); ti.value=F.titre||""; ti.addEventListener("input",()=>{ F.titre=ti.value; });
+    const da=el("input",{type:"date",id:"rdvDate","aria-label":"Date"}); da.value=F.date||""; da.addEventListener("change",()=>{ F.date=da.value||F.date; draw(); });
+    const dt=el("div",{class:"ap-dt"},pick(F.date?D.format(parse(F.date)):"Date",da));
+    if(!rp){ const he=el("input",{type:"time",id:"rdvHeure","aria-label":"Début"}), hf=el("input",{type:"time",id:"rdvFin","aria-label":"Fin"}); he.value=F.heure||""; hf.value=F.heureFin||"";
+      he.addEventListener("change",()=>{ const old=F.heure; F.heure=he.value; if(F.heure&&(!F.heureFin||(old&&F.heureFin<=F.heure))){ const [H,M]=F.heure.split(":").map(Number), t=Math.min(23*60+59,H*60+M+60); F.heureFin=String(Math.floor(t/60)).padStart(2,"0")+":"+String(t%60).padStart(2,"0"); } draw(); });
+      hf.addEventListener("change",()=>{ F.heureFin=hf.value; draw(); });
+      dt.append(el("span",{class:"ap-hrs"},pick(F.heure||"--:--",he),el("span",{text:"–"}),pick(F.heureFin||"--:--",hf))); }
+    else dt.append(el("span",{class:"ap-hrs muted",text:"Toute la journée"}));
+    inn.append(el("div",{class:"ap-main"+(rp?" rp":"")},ti,dt));
+    if(!rp){ /* types : un toucher remplit le titre */
+      const ty=el("div",{class:"ap-types"}); for(const [t,e] of RDV_TYPES) if(t!=="Autre") ty.append(el("button",{type:"button",class:"ap-ty",onclick:()=>{ F.titre=t; ti.value=t; haptic(5); ti.focus(); }},e+" "+t)); inn.append(ty);
+      inn.append(sec("Localisation"));
+      const li=el("input",{type:"text",id:"rdvLieu",maxlength:"80",placeholder:"Lieu ou appel vidéo","aria-label":"Lieu"}); li.value=F.lieu||""; li.addEventListener("input",()=>F.lieu=li.value);
+      inn.append(el("label",{class:"ap-f"},svg('<path d="M20 4L3 11l7 2 2 7z"/>'),li));
+      if(!F.prive){ inn.append(sec("Personnes invitées")); const who=el("div",{class:"ap-f ap-who"},svg('<circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.2c2.6.2 4.6 1.8 5 4.8"/>'));
+        for(const m of membres()){ const on=(F.pour||[]).includes(m.id); who.append(el("button",{type:"button",class:"pchip","aria-pressed":String(on),onclick:()=>{ F.pour=on?F.pour.filter(z=>z!==m.id):(F.pour||[]).concat(m.id); draw(); }},avatar(m.id,20),m.id===me?"Moi":m.nom)); }
+        inn.append(who); }
+      inn.append(sec("Options"));
+      const al=el("select",{"aria-label":"Alerte"}); for(const [v,l] of RDV_ALERTE) al.append(el("option",{value:v,text:l})); al.value=F.alerte; al.addEventListener("change",()=>{ F.alerte=al.value; draw(); });
+      inn.append(el("div",{class:"ap-opt"},
+        el("div",{class:"ap-r"},svg('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>'),el("b",{text:"Alerte"}),pick((RDV_ALERTE.find(a=>a[0]===F.alerte)||RDV_ALERTE[0])[1],al)),
+        el("div",{class:"ap-r"},svg('<path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/>'),el("b",{text:"Privé"}),sw(F.prive,v=>{ F.prive=v; },"Privé"))));
+      if(F.prive) inn.append(el("p",{class:"ap-hint",text:"Visible par toi seul."}));
+      inn.append(sec("Détails"));
+      const no=el("textarea",{id:"rdvNotes",rows:"3",placeholder:"Notes","aria-label":"Notes"}); no.value=F.notes||""; no.addEventListener("input",()=>F.notes=no.value);
+      inn.append(el("label",{class:"ap-f ap-notes"},svg('<path d="M4 7h16M4 12h16M4 17h10"/>'),no)); }
+    else { /* rappel = une tâche datée */
+      if(!F.rpPrive){ inn.append(sec("Pour qui")); const who=el("div",{class:"ap-f ap-who"},svg('<circle cx="12" cy="8" r="3.4"/><path d="M5 20c.7-3.6 3.4-5.6 7-5.6s6.3 2 7 5.6"/>'));
+        const opts=[["tous","🏠 Le foyer"],[me,"Moi"]].concat(isAdmin()?humains().filter(h=>h.id!==me).map(h=>[h.id,h.nom]):[]);
+        for(const [v,l] of opts) who.append(el("button",{type:"button",class:"pchip","aria-pressed":String(F.rpPour===v),onclick:()=>{ F.rpPour=v; draw(); }},v&&v!=="tous"?avatar(v,20):"",l));
+        inn.append(who); }
+      inn.append(sec("Options"));
+      const rc=el("select",{"aria-label":"Se répète"}); RP_REC.forEach(([v,l],i)=>rc.append(el("option",{value:String(i),text:l}))); rc.value=String(Math.max(0,RP_REC.findIndex(r=>String(r[0])===String(F.rpRec)))); rc.addEventListener("change",()=>{ F.rpRec=RP_REC[Number(rc.value)][0]; draw(); });
+      inn.append(el("div",{class:"ap-opt"},
+        el("div",{class:"ap-r"},svg('<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/>'),el("b",{text:"Se répète"}),pick((RP_REC.find(r=>String(r[0])===String(F.rpRec))||RP_REC[0])[1],rc)),
+        el("div",{class:"ap-r"},svg('<path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/>'),el("b",{text:"Privé"}),sw(F.rpPrive,v=>{ F.rpPrive=v; },"Privé"))));
+      inn.append(el("p",{class:"ap-hint",text:F.rpPrive?"Visible par toi seul, dans tes tâches.":"Il arrive dans les tâches, à cocher le jour venu."})); }
+    if(F.id){ const item=(S.rdvs||[]).find(z=>z.id===F.id); if(item) inn.append(el("button",{type:"button",class:"ap-del",text:"Supprimer l'événement",onclick:()=>{ S.rdvForm=null; U.close(); softDelete([{key:"rdv:"+item.id,arr:"rdvs",item,run:()=>S.db.collection("rdv").doc(item.id).delete()}],"Événement supprimé."); }})); }
+    U.sheet.scrollTop=y; }
+  draw();
+  if(!F.id&&!F.titre) setTimeout(()=>{ let touch=false; try{ touch=matchMedia("(pointer: coarse)").matches; }catch(_){} if(!touch) try{ $("rdvTitre").focus({preventScroll:true}); }catch(_){} },360); }
 function segAnim(box,key){
   const run=()=>{ const on=box.querySelector('button[aria-pressed="true"]'); if(!on||!on.offsetWidth) return;
     let pill=box.querySelector(":scope > .seg-pill"); if(!pill){ pill=el("span",{class:"seg-pill","aria-hidden":"true"}); box.prepend(pill); }
@@ -10044,7 +10129,9 @@ $("qRecBox").append(recPicker($("qRec")));
    Chacun écrit sa propre fiche dans profils/<son id>, que l'app superpose au profil préparé. */
 const PROFIL_KEYS=["nom","surnom","photo","banniere","c","bio","infos","naissance"];
 function profilFields(d){ const o={}; for(const k of PROFIL_KEYS) if(d[k]!==undefined) o[k]=d[k]; return o; }
-function mergeMembres(){
+/* un événement « Privé » n'est montré qu'à celui qui l'a créé */
+function rdvVis(L){ const me=meId(); return L.filter(r=>!r.prive||(me&&r.par===me)); }
+function mergeMembres(){ if(S.rdvsRaw) setTimeout(()=>{ S.rdvs=rdvVis(live(S.rdvsRaw,"rdv")); },0);
   const raw=S.membresRaw||[], pf=S.profils||[], pid=p=>p.membre||("u-"+String(p.id).slice(0,12));
   const by={}; for(const p of pf) by[pid(p)]=p;
   const out=raw.map(m=>{ const p=by[m.id]; return p?Object.assign({},m,profilFields(p),{uid:p.id,inscritLe:m.inscritLe||p.inscritLe,invite:false}):m; });
@@ -11453,7 +11540,7 @@ function binFormEl(){
 function calEvents(){
   const me=meId(), ev=[], BY=["SU","MO","TU","WE","TH","FR","SA"];
   for(const t of allTasks()) if(!t.fait&&t.echeance&&daysTo(t.echeance)>=-1&&(t.prive||!t.pour||t.pour==="tous"||t.pour===me)) ev.push({uid:"t-"+t.id,titre:t.titre,date:t.echeance,desc:(t.prive?"Perso":"Foyer")+" · "+(CAT[t.cat]||CAT.maison).nom,alarm:true});
-  for(const r of (S.rdvs||[])) if(r.date&&!r.fait&&daysTo(r.date)>=0) ev.push({uid:"r-"+r.id,titre:(r.heure?heureTxt(r.heure)+" · ":"")+r.titre,date:r.date,desc:"Rendez-vous"+(r.lieu?" · "+r.lieu:""),alarm:true});
+  for(const r of (S.rdvs||[])) if(r.date&&!r.fait&&daysTo(r.date)>=0) ev.push({uid:"r-"+r.id,titre:(r.heure?heureTxt(r.heure)+" · ":"")+r.titre,date:r.date,desc:"Événement"+(r.lieu?" · "+r.lieu:""),alarm:r.alerte!=="aucune"});
   for(const d of S.docs) if(d.expire&&daysTo(d.expire)>=0) ev.push({uid:"d-"+d.id,titre:d.titre+" expire",date:d.expire,desc:"Papier à renouveler",alarm:true});
   for(const x of S.equip){ const n=eqNext(x); if(n&&daysTo(n)>=0) ev.push({uid:"e-"+x.id,titre:"Entretien : "+(x.nom||"équipement"),date:n,alarm:true}); }
   for(const v of S.vehic){ if(v.ctProchain&&daysTo(v.ctProchain)>=0) ev.push({uid:"ct-"+v.id,titre:"Contrôle technique : "+(v.nom||"véhicule"),date:v.ctProchain,alarm:true});
@@ -11471,7 +11558,7 @@ function calEventsAll(){
   const shared=[], perso=[];
   for(const t of allTasks()) if(!t.fait&&t.echeance&&daysTo(t.echeance)>=-1){ const e={uid:"t-"+t.id,titre:t.titre,date:t.echeance,desc:(t.prive?"Perso":"Foyer")+" · "+(CAT[t.cat]||CAT.maison).nom,alarm:true};
     if(t.prive) perso.push(e); else { if(t.pour&&t.pour!=="tous") e.pour=[t.pour]; shared.push(e); } }
-  for(const r of (S.rdvs||[])) if(r.date&&!r.fait&&daysTo(r.date)>=0){ const e={uid:"r-"+r.id,titre:(r.heure?heureTxt(r.heure)+" · ":"")+r.titre+(r.lieu?" ("+r.lieu+")":""),date:r.date,desc:"Rendez-vous"+(r.lieu?" · "+r.lieu:""),alarm:true}; const p=(Array.isArray(r.pour)?r.pour:r.pour?[r.pour]:[]).filter(x=>x&&x!=="tous"); if(p.length) e.pour=p; shared.push(e); }
+  for(const r of (S.rdvs||[])) if(r.date&&!r.fait&&daysTo(r.date)>=0){ const e={uid:"r-"+r.id,titre:(r.heure?heureTxt(r.heure)+" · ":"")+r.titre+(r.lieu?" ("+r.lieu+")":""),date:r.date,desc:"Événement"+(r.lieu?" · "+r.lieu:""),alarm:r.alerte!=="aucune"}; if(r.prive){ perso.push(e); continue; } const p=(Array.isArray(r.pour)?r.pour:r.pour?[r.pour]:[]).filter(x=>x&&x!=="tous"); if(p.length) e.pour=p; shared.push(e); }
   for(const d of S.docs) if(d.expire&&daysTo(d.expire)>=0) shared.push({uid:"d-"+d.id,titre:d.titre+" expire",date:d.expire,desc:"Papier à renouveler",alarm:true});
   for(const x of S.equip){ const n=eqNext(x); if(n&&daysTo(n)>=0) shared.push({uid:"e-"+x.id,titre:"Entretien : "+(x.nom||"équipement"),date:n,alarm:true}); }
   for(const v of S.vehic){ if(v.ctProchain&&daysTo(v.ctProchain)>=0) perso.push({uid:"ct-"+v.id,titre:"Contrôle technique : "+(v.nom||"véhicule"),date:v.ctProchain,alarm:true});
@@ -11664,7 +11751,7 @@ async function autoClaimLegacy(){
   db.collection("releves").onSnapshot(s=>{ S.releves=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("depenses").onSnapshot(s=>{ S.depenses=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"depenses"); renderAll(); },()=>{});
   db.collection("mots").onSnapshot(s=>{ S.mots=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"mots"); renderAll(); },()=>{});
-  db.collection("rdv").onSnapshot(s=>{ S.rdvs=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"rdv"); renderAll(); },()=>{});
+  db.collection("rdv").onSnapshot(s=>{ S.rdvsRaw=s.docs.map(d=>Object.assign({id:d.id},d.data())); S.rdvs=rdvVis(live(S.rdvsRaw,"rdv")); renderAll(); },()=>{});
   db.collection("cocon").onSnapshot(s=>{ S.cocon=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("mercis").onSnapshot(s=>{ S.mercis=s.docs.map(d=>Object.assign({id:d.id},d.data())); renderAll(); },()=>{});
   db.collection("credits").onSnapshot(s=>{ S.credits=live(s.docs.map(d=>Object.assign({id:d.id},d.data())),"credits"); renderAll(); },()=>{});

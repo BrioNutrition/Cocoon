@@ -124,7 +124,7 @@ function buildEvening({ shared, mine, moi, today }) {
   const forMe = (e) => !e.pour || !e.pour.length || !moi || e.pour.includes(moi);
   for (const e of (shared || []).concat(mine || [])) {
     const id = String(e.uid || ""), t = String(e.titre || "").trim(); if (!t) continue;
-    if (id.startsWith("r-")) { if (e.date === tomorrow && forMe(e)) rdv.push(t); continue; }
+    if (id.startsWith("r-")) { if (e.date === tomorrow && forMe(e) && e.alarm !== false) rdv.push(t); continue; } // alerte « Aucune » = pas de rappel
     if (id.startsWith("bin-")) {
       if (e.tourDe && moi && e.tourDe !== moi) continue;
       if (!e.tourDe && !forMe(e)) continue;
