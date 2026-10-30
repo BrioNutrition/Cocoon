@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="30/10 17:30";</script>
+<script>window.COCOON_BUILD="30/10 17:40";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4280,28 +4280,31 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
 .ap-seg button{flex:1;border:0;background:none;color:var(--ink);font:inherit;font-size:15px;font-weight:600;padding:10px 4px;border-radius:999px;cursor:pointer;white-space:nowrap}
 .ap-seg button.on{background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.25);font-weight:700}
 .ap-ttl{flex:1;text-align:center;font-size:17px}
-.ap-main{position:relative;display:flex;flex-direction:column;gap:10px;padding-left:16px}
-.ap-main:before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:4px;border-radius:3px;background:#5AA9F0}
+.ap-main{position:relative;display:flex;flex-direction:column;border-radius:22px;background:var(--sunk);overflow:hidden}
+.ap-main:before{content:"";position:absolute;left:14px;top:16px;bottom:16px;width:4px;border-radius:3px;background:#5AA9F0}
 .ap-main.rp:before{background:var(--accent)}
-.ap-ti{width:100%;box-sizing:border-box;border:0;border-radius:22px;background:var(--sunk);color:var(--ink);font:inherit;font-size:17px;padding:15px 18px;min-height:54px}
-.ap-ti:focus{outline:2px solid color-mix(in srgb,var(--ink) 25%,transparent)}
-.ap-dt{display:flex;align-items:center;justify-content:space-between;gap:10px;border-radius:22px;background:var(--sunk);padding:15px 18px;font-size:16.5px;min-height:54px;font-variant-numeric:tabular-nums}
+.ap-ti{display:block;width:100%;box-sizing:border-box;border:0!important;border-radius:0;background:none!important;box-shadow:none!important;color:var(--ink);font:inherit;font-size:17px;font-weight:600;padding:16px 18px 16px 32px;min-height:56px;margin:0}
+.ap-ti:focus{outline:none}
+.ap-f input,.ap-f textarea{padding:0!important;margin:0;box-shadow:none!important;background:none!important;border:0!important;min-height:0}
+.ap-main .ap-ti{padding:16px 18px 16px 32px!important;min-height:56px!important;border-radius:0!important}
+.ap-dt{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px 16px 32px;font-size:16.5px;min-height:56px;font-variant-numeric:tabular-nums}
+.ap-dt:before{content:"";position:absolute;top:0;left:32px;right:0;border-top:1px solid var(--line)}
 .ap-hrs{display:flex;align-items:center;gap:3px}
 .ap-pk{position:relative;display:inline-block;cursor:pointer}
 .ap-pk>input,.ap-pk>select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;border:0;margin:0;-webkit-appearance:none;appearance:none}
-.ap-types{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:12px -2px 0 14px;padding:0 2px 2px}
-.ap-types::-webkit-scrollbar{display:none}
-.ap-ty{flex:none;border:0;border-radius:999px;background:var(--sunk);color:var(--ink);font:inherit;font-size:13px;font-weight:600;padding:7px 11px;cursor:pointer;white-space:nowrap}
-.ap-sec{margin:22px 4px 8px;font-size:15px;font-weight:700;color:var(--muted)}
+.ap-sec{margin:22px 16px 8px;font-size:13px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--muted)}
 .ap-f{display:flex;align-items:center;gap:12px;border-radius:22px;background:var(--sunk);padding:12px 16px;min-height:54px}
 .ap-f input,.ap-f textarea{flex:1;min-width:0;border:0;background:none;color:var(--ink);font:inherit;font-size:16.5px;outline:none;resize:vertical}
 .ap-ic{flex:none;width:24px;height:24px;color:var(--muted);display:grid;place-items:center}
 .ap-ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.ap-who{flex-wrap:wrap}
+.ap-who{align-items:flex-start;padding-top:10px;padding-bottom:10px}.ap-who>.ap-ic{margin-top:7px}
+.ap-chips{flex:1;min-width:0;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:6px}
+.ap-chips .pchip{flex:none;margin:0}
 .ap-notes{align-items:flex-start}.ap-notes .ap-ic{margin-top:2px}
 .ap-opt{border-radius:22px;background:var(--sunk);overflow:hidden}
 .ap-r{display:flex;align-items:center;gap:12px;padding:12px 16px;min-height:56px;font-size:16.5px}
-.ap-r+.ap-r{border-top:1px solid var(--line);margin-left:52px;padding-left:0}
+.ap-r{position:relative}
+.ap-r+.ap-r:before{content:"";position:absolute;top:0;left:52px;right:0;border-top:1px solid var(--line)}
 .ap-r b{flex:1;font-weight:500}
 .ap-r .ap-pk{color:var(--muted);padding-right:20px}
 .ap-r .ap-pk:after{content:"";position:absolute;right:0;top:50%;width:13px;height:17px;margin-top:-8.5px;background:currentColor;pointer-events:none;
@@ -4310,7 +4313,7 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
 .ap-sw{flex:none;width:58px;height:34px;border-radius:999px;border:0;background:color-mix(in srgb,var(--ink) 25%,transparent);position:relative;cursor:pointer;transition:background .2s}
 .ap-sw i{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
 .ap-sw.on{background:#34C759}.ap-sw.on i{transform:translateX(24px)}
-.ap-hint{margin:8px 6px 0;font-size:13px;color:var(--muted)}
+.ap-hint{margin:8px 16px 0;font-size:13px;color:var(--muted)}
 .ap-del{display:block;width:100%;margin-top:22px;border:0;border-radius:22px;background:var(--sunk);color:var(--late);font:inherit;font-weight:700;padding:15px;cursor:pointer}
 </style>
 
@@ -7028,13 +7031,13 @@ function openRdvSheet(){ const F=S.rdvForm; if(!F) return; const me=meId(), t0=i
       dt.append(el("span",{class:"ap-hrs"},pick(F.heure||"--:--",he),el("span",{text:"–"}),pick(F.heureFin||"--:--",hf))); }
     else dt.append(el("span",{class:"ap-hrs muted",text:"Toute la journée"}));
     inn.append(el("div",{class:"ap-main"+(rp?" rp":"")},ti,dt));
-    if(!rp){ /* types : un toucher remplit le titre */
-      const ty=el("div",{class:"ap-types"}); for(const [t,e] of RDV_TYPES) if(t!=="Autre") ty.append(el("button",{type:"button",class:"ap-ty",onclick:()=>{ F.titre=t; ti.value=t; haptic(5); ti.focus(); }},e+" "+t)); inn.append(ty);
+    if(!rp){
       inn.append(sec("Localisation"));
       const li=el("input",{type:"text",id:"rdvLieu",maxlength:"80",placeholder:"Lieu ou appel vidéo","aria-label":"Lieu"}); li.value=F.lieu||""; li.addEventListener("input",()=>F.lieu=li.value);
       inn.append(el("label",{class:"ap-f"},svg('<path d="M20 4L3 11l7 2 2 7z"/>'),li));
       if(!F.prive){ inn.append(sec("Personnes invitées")); const who=el("div",{class:"ap-f ap-who"},svg('<circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.2c2.6.2 4.6 1.8 5 4.8"/>'));
-        for(const m of membres()){ const on=(F.pour||[]).includes(m.id); who.append(el("button",{type:"button",class:"pchip","aria-pressed":String(on),onclick:()=>{ F.pour=on?F.pour.filter(z=>z!==m.id):(F.pour||[]).concat(m.id); draw(); }},avatar(m.id,20),m.id===me?"Moi":m.nom)); }
+        const wc=el("div",{class:"ap-chips"}); who.append(wc);
+        for(const m of humains()){ const on=(F.pour||[]).includes(m.id); wc.append(el("button",{type:"button",class:"pchip","aria-pressed":String(on),onclick:()=>{ F.pour=on?F.pour.filter(z=>z!==m.id):(F.pour||[]).concat(m.id); draw(); }},avatar(m.id,20),m.id===me?"Moi":m.nom)); }
         inn.append(who); }
       inn.append(sec("Options"));
       const al=el("select",{"aria-label":"Alerte"}); for(const [v,l] of RDV_ALERTE) al.append(el("option",{value:v,text:l})); al.value=F.alerte; al.addEventListener("change",()=>{ F.alerte=al.value; draw(); });
@@ -7048,7 +7051,8 @@ function openRdvSheet(){ const F=S.rdvForm; if(!F) return; const me=meId(), t0=i
     else { /* rappel = une tâche datée */
       if(!F.rpPrive){ inn.append(sec("Pour qui")); const who=el("div",{class:"ap-f ap-who"},svg('<circle cx="12" cy="8" r="3.4"/><path d="M5 20c.7-3.6 3.4-5.6 7-5.6s6.3 2 7 5.6"/>'));
         const opts=[["tous","🏠 Le foyer"],[me,"Moi"]].concat(isAdmin()?humains().filter(h=>h.id!==me).map(h=>[h.id,h.nom]):[]);
-        for(const [v,l] of opts) who.append(el("button",{type:"button",class:"pchip","aria-pressed":String(F.rpPour===v),onclick:()=>{ F.rpPour=v; draw(); }},v&&v!=="tous"?avatar(v,20):"",l));
+        const wc=el("div",{class:"ap-chips"}); who.append(wc);
+        for(const [v,l] of opts) wc.append(el("button",{type:"button",class:"pchip","aria-pressed":String(F.rpPour===v),onclick:()=>{ F.rpPour=v; draw(); }},v&&v!=="tous"?avatar(v,20):"",l));
         inn.append(who); }
       inn.append(sec("Options"));
       const rc=el("select",{"aria-label":"Se répète"}); RP_REC.forEach(([v,l],i)=>rc.append(el("option",{value:String(i),text:l}))); rc.value=String(Math.max(0,RP_REC.findIndex(r=>String(r[0])===String(F.rpRec)))); rc.addEventListener("change",()=>{ F.rpRec=RP_REC[Number(rc.value)][0]; draw(); });
