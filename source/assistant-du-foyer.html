@@ -2936,7 +2936,7 @@ html.vt-close::view-transition-new(cl-x){object-fit:fill;animation:vtCloseIn .4s
 .cl-panel .cl-more{flex:none;width:44px;border:0;border-radius:14px;background:var(--sunk);color:var(--ink);display:grid;place-items:center;cursor:pointer}.cl-panel .cl-more svg{width:20px;height:20px;fill:currentColor}
 .cl-panel .ev-pop{position:absolute}
 .cl-panel .cl-val{margin-top:12px}
-.cl-left{font-size:13px;color:var(--muted);margin:8px 2px 0;line-height:1.4}.cl-skip{display:block;width:100%;border:0;background:none;color:var(--muted);font:inherit;font-size:14px;font-weight:700;padding:12px;cursor:pointer}
+.cl-left{font-size:13px;color:var(--muted);margin:8px 2px 0;line-height:1.4}.cl-payw{margin:14px 0 4px}.cl-payt{font-size:13px;font-weight:700;color:var(--muted);margin:0 2px 8px}.cl-skip{display:block;width:100%;border:0;background:none;color:var(--muted);font:inherit;font-size:14px;font-weight:700;padding:12px;cursor:pointer}
 .cl-new{--c:#9C9AB5;border-style:dashed;background:none;align-items:flex-start;justify-content:center}.cl-plus{width:34px;height:34px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-size:22px;font-weight:700}
 .cl-done{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:8px}
 .cl-done .cl-ring{width:36px;height:36px}.cl-done .cl-ring b{width:28px;height:28px}
@@ -7541,9 +7541,9 @@ function statusPill(date,labelOk,prefix){ if(!date) return el("span",{class:"m-p
 function lastRev(v){ return (v.entretiens||[]).filter(x=>x.type==="revision").sort((a,b)=>a.date<b.date?1:-1)[0]||null; }
 function revNext(v){ const r=lastRev(v); if(!r) return null; return {date:iso(addMonths(parse(r.date),12)),km:r.km?r.km+(Number(v.revisionKm)||15000):null}; }
 /* partage selon le réglage du foyer (foyer/config.partage) ; sans réglage, rien n'est partagé : chacun choisit (demandé par Angel) */
-function budgetAdd(titre,montant,cat,solo){ const ad=adults().map(m=>m.id), me=meId(), pc=S.config&&S.config.partage; let partage=[me], parts=null;
+function budgetAdd(titre,montant,cat,solo,payeur){ const ad=adults().map(m=>m.id), me=meId(), pc=S.config&&S.config.partage, pay=payeur||me; let partage=[pay], parts=null;
   if(!solo&&pc&&ad.length>1){ if(pc.mode==="egal") partage=ad; else if(pc.mode==="prorata"&&pc.pct){ const ids=ad.filter(id=>(pc.pct[id]||0)>0); if(ids.length>1){ const p={}; ids.forEach(id=>p[id]=pc.pct[id]); partage=ids; parts=pctParts(montant,p); } } }
-  return S.db.collection("depenses").add({titre,montant,cat,payePar:me,partage,parts,date:iso(today()),creePar:me,creeLe:Date.now()}); }
+  return S.db.collection("depenses").add({titre,montant,cat,payePar:pay,partage,parts,date:iso(today()),creePar:me,creeLe:Date.now()}); }
 const vehCol=()=>S.db.doc("data/users/"+S.uid+"/espace").collection("vehicules");
 function renderMaison(){
   if(!$("mHome")) return; const me=meId(), q=(S.config&&S.config.questionnaire)||{}, L=(S.config&&S.config.logement)||{};
@@ -11023,14 +11023,17 @@ async function clDel(l){ const its=cItemsOf(l.id); S.clOpenId=null; if(S.cListe=
 function clValidate(l){ if(!l) return; const its=cItemsOf(l.id), left=its.filter(i=>!i.fait).length, fin=its.length&&!left;
   const U=clSheet(); clClear(U); const inn=el("div",{class:"pp-in ev-in cl-in"}); U.sheet.append(inn);
   const am=el("input",{class:"ev-inp",type:"text",inputmode:"decimal",id:"clMontant",placeholder:"Montant en €","aria-label":"Montant"});
-  const go=async(m,b)=>{ b.disabled=true; await clDone(l,m); };
+  const ad=adults(); let pay=meId(); const pp=ad.length>1?el("div",{class:"pchips cl-pay",id:"clPay"}):null;
+  const ppDraw=()=>{ if(!pp) return; pp.innerHTML=""; for(const m of ad) pp.append(el("button",{type:"button",class:"pchip","data-id":m.id,"aria-pressed":String(pay===m.id),onclick:()=>{ pay=m.id; haptic(6); ppDraw(); }},avatar(m.id),m.id===meId()?"Moi":m.nom)); };
+  ppDraw();
+  const go=async(m,b)=>{ b.disabled=true; await clDone(l,m,false,pay); };
   const ok=el("button",{type:"button",class:"btn ev-cta",id:"clValOk",onclick:e=>{ const m=parseMoney(am.value)||0; if(!m){ toast("Indique le montant, ou « Sans montant »."); am.focus(); return; } go(m,e.currentTarget); }},"Valider");
   am.addEventListener("keydown",e=>{ if(e.key==="Enter") ok.click(); });
   inn.append(el("div",{class:"ev-top"},el("h2",{text:fin?"Liste terminée 🎉":"Valider « "+(l.titre||"la liste")+" »"}),el("p",{text:"Combien ça a coûté ? Le montant part dans le Budget, catégorie Courses."})),
-    am,
+    am,...(pp?[el("div",{class:"cl-payw"},el("div",{class:"cl-payt",text:"Qui a payé ?"}),pp)]:[]),
     ok,el("button",{type:"button",class:"cl-skip",id:"clValSans",onclick:e=>go(0,e.currentTarget)},"Sans montant"));
   setTimeout(()=>am.focus(),350); }
-async function clDone(l,montant,quiet){ const me=meId(), its=cItemsOf(l.id), now=Date.now();
+async function clDone(l,montant,quiet,payeur){ const me=meId(), its=cItemsOf(l.id), now=Date.now();
   const rec={titre:l.titre||"Liste de courses",couleur:clCol(l),lieu:l.lieu||null,qui:l.qui||null,prive:!!l.prive,date:l.date||null,fini:true,finiLe:now,montant:montant||null,articles:its.map(i=>({nom:i.nom,qte:i.qte||null,pris:!!i.fait}))};
   S.clOpenId=null; S.cListe=null; if(S.clSheet&&!S.clSheet._gone&&!quiet) S.clSheet.close(); haptic(12);
   clUndoable("✓ Liste validée"+(montant>0?" · "+money(montant)+" dans le Budget":"")+".",l.virt?[]:[l.id],its.map(i=>i.id),async()=>{
@@ -11038,7 +11041,7 @@ async function clDone(l,montant,quiet){ const me=meId(), its=cItemsOf(l.id), now
     await Promise.all(its.map(i=>S.db.collection("courses").doc(i.id).delete()));
     if(l.id===CL_DEF) await S.db.collection("listes").add(Object.assign(rec,{par:me,creeLe:now})); else await S.db.collection("listes").doc(l.id).set(Object.assign({},Object.fromEntries(Object.entries(l).filter(([k])=>k!=="id")),rec));
     if(l.recur){ const d=l.date?new Date(parse(l.date).getTime()+7*864e5):new Date(today().getTime()+7*864e5); await clNew(Object.assign({},l,{date:iso(d)}),its.map(i=>({nom:i.nom,qte:i.qte,pour:i.pour})),0); }
-    if(montant>0) await budgetAdd((l.titre||"Courses")+(l.lieu?" · "+l.lieu:""),montant,"courses"); }); }
+    if(montant>0) await budgetAdd((l.titre||"Courses")+(l.lieu?" · "+l.lieu:""),montant,"courses",false,payeur); }); }
 /* tout est au caddie : la liste part dans « Terminées » tout de suite, puis « Combien ça a coûté ? » (facultatif) */
 async function clFinish(l){ const rid=await clDone(l,0,true); if(!rid) return; const titre=l.titre||"Courses", lieu=l.lieu;
   const U=clSheet(); clClear(U); const inn=el("div",{class:"pp-in ev-in cl-in"}); U.sheet.append(inn);
