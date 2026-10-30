@@ -4434,6 +4434,11 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
     <div class="hub" id="hubGrid"></div>
   </section>
 
+  <section class="view" data-view="evenements" hidden>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Événements</b><span class="hb-act"><button type="button" class="hub-add" data-add="evenements" aria-label="Nouvel événement"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
+    <div class="ev-in evz-page" id="evView"></div>
+  </section>
+
   <section class="view" data-view="budget" hidden>
     <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Budget</b><span class="hb-act"><button type="button" class="hub-add" data-add="budget" aria-label="Ajouter"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
     <div class="b-hero" id="bHero"></div>
@@ -7430,6 +7435,7 @@ document.querySelectorAll(".hub-back").forEach(b=>b.addEventListener("click",()=
   /* un seul retour, en haut à gauche (Angel, 28 oct.) : il remonte d'un niveau, sous-page → page → Foyer */
   if(S.tab==="maison"&&S.mSec){ mOpen(null); return; }
   if(S.tab==="documents"&&S.docCat){ S.docCat=null; renderDocs(); topNow(); return; }
+  if(S.tab==="evenements"&&S.evOpen&&S.evOpen.v==="ev"){ evGo({v:"list"}); return; }
   setTab("hub"); window.scrollTo({top:0}); }));
 /* titre de la barre du haut : le nom de la sous-page quand on y est */
 function hubTitle(tab,t){ const b=document.querySelector('.view[data-view="'+tab+'"] .hub-bar .hb-title'); if(b&&b.textContent!==t) b.textContent=t; const sec=tab==="maison"?!!S.mSec:!!S.docCat; document.querySelectorAll('.view[data-view="'+tab+'"] .hub-bar .hub-back').forEach(x=>x.setAttribute("aria-label",sec?"Retour":"Retour au foyer")); }
@@ -8092,7 +8098,7 @@ $("docForm").addEventListener("submit",async e=>{ e.preventDefault(); if(!S.db||
 $("dTitle").addEventListener("input",e=>{ const v=$("dCat").value; if(v==="__new"||!(CAT[v]||DOCX[v])) return; const g=docGuess(e.target.value); if(g){ $("dCat").value=g; dzSync(); } });
 
 /* Onglets */
-const TABS=["accueil","moi","foyer","courses","repas","rappels","documents","budget","maison"];
+const TABS=["accueil","moi","foyer","courses","repas","rappels","documents","budget","maison","evenements"];
 /* Quitter une rubrique en plein ajout : tout revient à la normale au retour */
 function resetForms(){ try{
   S.bForm=S.binForm=S.crForm=S.ctForm=S.mForm=S.motForm=S.objForm=S.rdvForm=null; S.rEdit=null; S.editing=null;
@@ -8108,7 +8114,7 @@ function resetForms(){ try{
 function calReset(from){ const R={accueil:()=>{ S.accDay=null; S.accOpen=false; S.accMo=null; },agenda:()=>{ S.agDay=null; S.agM=0; },repas:()=>{ S.rDay=null; S.rWeek=0; S.rOpen=false; S.rMo=null; },budget:()=>{ S.bMonth=0; }};
   if(from&&R[from]) R[from](); else if(!from) Object.values(R).forEach(f=>f()); S.wkDay=null; }
 document.addEventListener("visibilitychange",()=>{ if(document.hidden){ S._hidAt=Date.now(); return; } if(S._hidAt&&Date.now()-S._hidAt>5*60e3){ calReset(null); try{ renderAll(); }catch(_){} } });
-function setTab(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; const prevTab=S.tab; if(prevTab&&prevTab!==name) calReset(prevTab); if(prevTab&&prevTab!==name&&!["profil","fiche"].includes(name)&&!["profil","fiche"].includes(prevTab)) resetForms(); S.tab=name; document.documentElement.classList.toggle("foyer-nuit",name==="hub"); if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["hub","foyer","documents","maison","courses","repas","agenda","budget","moi","cocoony"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({foyer:"hub",documents:"hub",maison:"hub",courses:"hub",repas:"hub",agenda:"hub",budget:"hub"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name); if(name==="agenda"&&prevTab!=="agenda") maybeAgSheet();
+function setTab(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; const prevTab=S.tab; if(prevTab&&prevTab!==name) calReset(prevTab); if(prevTab&&prevTab!==name&&!["profil","fiche"].includes(name)&&!["profil","fiche"].includes(prevTab)) resetForms(); S.tab=name; document.documentElement.classList.toggle("foyer-nuit",name==="hub"); if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["hub","foyer","documents","maison","courses","repas","agenda","budget","moi","cocoony","evenements"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({foyer:"hub",documents:"hub",maison:"hub",courses:"hub",repas:"hub",agenda:"hub",budget:"hub",evenements:"hub"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name); if(name==="agenda"&&prevTab!=="agenda") maybeAgSheet();
   if(prevTab&&prevTab!==name&&!document.querySelector(".wrap.arrive")){ const v=document.querySelector('.view[data-view="'+name+'"]'); if(v){ v.classList.remove("vin"); void v.offsetWidth; v.classList.add("vin"); clearTimeout(S._vinT); S._vinT=setTimeout(()=>v.classList.remove("vin"),320); } }
   { const vs=document.querySelector('.view[data-view="'+name+'"] .viewseg'); if(vs) segAnim(vs,"viewseg"); } if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  if(prevTab&&prevTab!==name) renderAllNow(); else renderAll(); }
 $("tabs").addEventListener("click",e=>{ const b=e.target.closest(".tab"); if(b&&b.dataset.tab){ const same=S.tab===b.dataset.tab; closeSheet(); setTab(b.dataset.tab); renderHeader(); if(same) window.scrollTo({top:0,behavior:"smooth"}); } });
@@ -9284,6 +9290,7 @@ function nativeizeMenu(M,title){ if(!window.__nt) return false; const bs=[...M.q
 function fabAct(v0,anchor){ const me=meId(), v=v0||S.tab;
   const go=(sel)=>setTimeout(()=>{ const e=$(sel)||document.querySelector(sel); if(e) e.scrollIntoView({block:"center",behavior:"smooth"}); },80);
   if(v==="courses"){ if(!needMe()) return; openCListPick(); return; }
+  if(v==="evenements"){ if(!needMe()) return; evGo({v:"new",type:"anniv",pick:null}); return; }
   if(v==="repas"){ if(!needMe()) return; const [d,sl]=nextFreeMeal(), t0=weekStartOf(today()); S.rWeek=Math.round((weekStartOf(parse(d))-t0)/(7*864e5)); S.rDay=d; setTab("repas"); renderRepas(); openRepas(d,sl); return; }
   if(v==="agenda"){ if(!needMe()) return; const day=S.agDay&&S.agDay>=iso(today())?S.agDay:"";  S.rdvForm={pour:[S.agWho||me],date:day}; renderRdv(); return; }
   if(v==="documents"){ if(S.tab==="documents"&&!$("docForm").hidden){ closeDocForm(); return; } openDocAdd(); return; }
@@ -10260,17 +10267,30 @@ function evRing(ev,size){ const T=evT(ev), P=evProg(ev), h=size/2, r=h-4, C=2*Ma
 function evPill(ev){ const j=evJ(ev); return el("span",{class:"ev-j"+(j==="Terminé"?" off":""),style:"--ec:"+evT(ev).c,text:j}); }
 
 /* La feuille : liste → création → détail (onglets) → réglages, dans le même panneau */
-function openEvents(view){ S.evListPick=null; const U=upSheet("evPage","Événements"); U.sheet.classList.add("ev-sheet"); { const gb=U.sheet.querySelector(".pp-grab"); if(gb) gb.addEventListener("click",U.close); } U.sheet.append(el("div",{class:"pp-in ev-in"})); S.evClose=U.close; S.evOpen=view||{v:"list"}; evRender(true); }
+/* (30 oct., Angel) Événements = une page comme les autres (retour en haut à gauche, « + » à droite) : la liste et la fiche dans la page,
+   la création, la modification et « Ajouter à l'agenda » dans une feuille du bas */
+const EV_SHEET=["new","edit","pick"];
+S.evClose=()=>{ if(S.evSheetClose) S.evSheetClose(); };
+function openEvents(view){ S.evListPick=null; view=view||{v:"list"};
+  if(EV_SHEET.includes(view.v)){ S.evSV=view; const P=$("evPage");
+    if(!P||P.hidden||!S.evSheetClose){ const U=upSheet("evPage",view.v==="edit"?"Modifier l'événement":"Nouvel événement",()=>{ S.evSV=null; S.evSheetClose=null; }); U.sheet.classList.add("ev-sheet");
+      { const gb=U.sheet.querySelector(".pp-grab"); if(gb) gb.addEventListener("click",U.close); } U.sheet.append(el("div",{class:"pp-in ev-in"})); S.evSheetClose=U.close; }
+    evRender(true); const sh=document.querySelector("#evPage .pp-sheet"); if(sh) sh.scrollTop=0; return; }
+  if(S.evSheetClose) S.evSheetClose();
+  S.evOpen=view; if(S.tab!=="evenements") setTab("evenements"); else evRender(true); try{ window.scrollTo({top:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } }
 function openEvent(id,tab){ openEvents({v:"ev",id,tab:tab||"frise"}); }
-function evGo(view){ S.evOpen=view; evRender(true); const sh=document.querySelector("#evPage .pp-sheet"); if(sh) sh.scrollTop=0; }
-function evRefresh(){ const P=$("evPage"); if(!S.evOpen) return; if(!P||P.hidden){ S.evOpen=null; return; }
-  const a=document.activeElement; if(a&&P.contains(a)&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)){ S.evDirty=true; return; }
-  if(S.evOpen.v==="new"||S.evOpen.v==="edit"||S.evOpen.v==="pick") return; if(S.evHold) return; evRender(false); }
-function evRender(first){ const P=$("evPage"), inn=P&&P.querySelector(".ev-in"); if(!inn) return; const sh=P.querySelector(".pp-sheet"), y=sh?sh.scrollTop:0;
-  const V=S.evOpen||{v:"list"}; inn.innerHTML=""; S.evDirty=false;
-  if(V.v==="ev"&&!evById(V.id)){ if(S.evs) S.evOpen={v:"list"}; else return; }
-  ({list:evList,new:evNew,ev:evDetail,edit:evEdit,pick:evPick}[S.evOpen.v]||evList)(inn,S.evOpen);
-  if(!first&&sh) sh.scrollTop=y; }
+function evGo(view){ openEvents(view); }
+function evRefresh(){ const P=$("evPage"), pg=$("evView"), a=document.activeElement;
+  if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&((pg&&pg.contains(a))||(P&&P.contains(a)))){ S.evDirty=true; return; }
+  if(S.evHold) return; evRender(false,true); }
+function evRender(first,pageOnly){
+  const pg=$("evView");
+  if(pg&&S.tab==="evenements"){ const V=S.evOpen||(S.evOpen={v:"list"}); S.evDirty=false;
+    if(V.v==="ev"&&!evById(V.id)){ if(S.evs) S.evOpen={v:"list"}; else return; }
+    pg.innerHTML=""; (S.evOpen.v==="ev"?evDetail:evList)(pg,S.evOpen); }
+  if(pageOnly) return;
+  const P=$("evPage"), inn=P&&!P.hidden&&P.querySelector(".ev-in");
+  if(inn&&S.evSV){ const sh=P.querySelector(".pp-sheet"), y=sh?sh.scrollTop:0; inn.innerHTML=""; ({new:evNew,edit:evEdit,pick:evPick}[S.evSV.v]||evNew)(inn,S.evSV); if(!first&&sh) sh.scrollTop=y; } }
 document.addEventListener("focusout",()=>{ setTimeout(()=>{ if(S.evDirty) evRefresh(); },120); });
 
 function evBk(fn){ const b=el("button",{type:"button",class:"ev-back","aria-label":"Retour",onclick:fn}); b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4.5 7.5 12l7.5 7.5"/></svg>'; return b; }
@@ -10290,8 +10310,7 @@ function evRowZ(ev){ const T=evT(ev), P=evProg(ev), j=evJ(ev);
     el("span",{class:"evz-rt"},el("b",{text:ev.titre||T.n}),el("small",{text:evDates(ev)+(P.tot?" · "+P.done+"/"+P.tot+" prêts":"")})),el("span",{class:"evz-rj"+(j==="Terminé"?" off":""),text:j==="Terminé"?"›":j})); }
 function evList(inn){ const t0=iso(today()), L=evAll(), cur=L.filter(e=>evEnd(e)>=t0), past=L.filter(e=>evEnd(e)<t0).reverse();
   /* arrivé depuis « Ajouter à l'agenda » : un retour vers ce menu */
-  if(S.evListPick!=null) inn.append(evBk(()=>{ const d=S.evListPick; S.evListPick=null; evGo({v:"pick",day:d}); }));
-  inn.append(el("div",{class:"ev-top"},el("h2",{text:"Événements"})));
+
   if(cur.length){ const h=cur[0], T=evT(h), P=evProg(h), nx=evNextStep(h);
     const hero=el("button",{type:"button",class:"evz-hero",style:"--ec:"+T.c,onclick:()=>evGo({v:"ev",id:h.id,tab:"frise",from:"list"})},
       el("span",{class:"evz-hh"},el("span",{class:"evz-emo"},emoIco(T.e)),el("span",{class:"evz-cd",text:evJ(h)})),
@@ -10301,13 +10320,13 @@ function evList(inn){ const t0=iso(today()), L=evAll(), cur=L.filter(e=>evEnd(e)
     inn.append(hero);
     if(cur.length>1){ inn.append(el("p",{class:"evz-sec",text:"En préparation"})); const c=el("div",{class:"evz-card"}); cur.slice(1).forEach(e=>c.append(evRowZ(e))); inn.append(c); } }
   else inn.append(el("div",{class:"ev-empty"},el("div",{class:"ev-emo","aria-hidden":"true",text:"🎂 🛠️ 🏖️"}),el("b",{text:"Aucun événement en préparation"}),el("span",{text:"Choisis un modèle : les étapes se rangent toutes seules jusqu'au jour J."})));
-  if(!S.readOnly) inn.append(el("button",{type:"button",class:"btn ev-cta",onclick:()=>evGo({v:"new",type:"anniv",pick:null})},"+ Nouvel événement"));
+  if(!S.readOnly&&!cur.length) inn.append(el("button",{type:"button",class:"btn ev-cta",onclick:()=>evGo({v:"new",type:"anniv",pick:null})},"+ Nouvel événement"));
   if(past.length){ inn.append(el("p",{class:"evz-sec",text:"Terminés"})); const c=el("div",{class:"evz-card"}); past.slice(0,S.evPastAll?99:3).forEach(e=>c.append(evRowZ(e))); inn.append(c);
     if(past.length>3&&!S.evPastAll) inn.append(el("button",{type:"button",class:"ev-link",onclick:()=>{ S.evPastAll=true; evRender(false); }},"Voir les "+past.length)); } }
 
 function evNew(inn,V){ const T=EV_TYPES[V.type]||EV_TYPES.anniv, t0=iso(today());
   V.titre=V.titre!=null?V.titre:""; V.debut=V.debut||evAdd(t0,21); if(V.fin===undefined) V.fin=""; if(V.budget===undefined) V.budget="";
-  const back=evBk(()=>evGo(V.from==="pick"?{v:"pick",day:V.pickDay||""}:{v:"list"}));
+  const back=V.from==="pick"?evBk(()=>evGo({v:"pick",day:V.pickDay||""})):"";
   inn.append(back,el("div",{class:"ev-top"},el("h2",{text:"Nouvel événement"}),el("p",{text:"Un modèle prépare les étapes pour toi."})));
   const grid=el("div",{class:"ev-types",role:"radiogroup","aria-label":"Type d'événement"});
   for(const [k,t] of Object.entries(EV_TYPES)) grid.append(el("button",{type:"button",role:"radio","aria-checked":String(k===V.type),class:"ev-type",style:"--ec:"+t.c,onclick:()=>{ if(k===V.type) return; V.type=k; V.pick=null; evRender(false); }},el("i",{"aria-hidden":"true",text:t.e}),el("span",{text:t.n})));
@@ -10366,7 +10385,6 @@ function evAddItem(id,k,titre,date,n,heure){ const me=meId(), now=Date.now()+(n|
 function evDetail(inn,V){ const ev=evById(V.id), T=evT(ev), P=evProg(ev), I=evItems(ev);
   const j=evJ(ev), head=el("div",{class:"ev-head evz-dh",style:"--ec:"+T.c},el("span",{class:"evz-emo big"},emoIco(T.e)),el("div",{class:"ev-ht"},el("h2",{text:ev.titre||T.n}),el("small",{},evLong(ev)+" · ",el("b",{class:"evz-cdt"+(j==="Terminé"?" off":""),text:j}))));
   if(!S.readOnly){ const mb=el("button",{type:"button",class:"ev-more","aria-label":"Options de l'événement","aria-haspopup":"menu","aria-expanded":"false",onclick:e=>{ e.stopPropagation(); evMenu(mb,ev,V); }}); mb.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18.5" cy="12" r="2"/></svg>'; head.append(mb); }
-  if(V.from==="list") inn.append(evBk(()=>evGo({v:"list"})));
   inn.append(head);
   if(P.tot) inn.append(el("div",{class:"evz-pb2",style:"--ec:"+T.c},el("span",{class:"evz-pb"},el("i",{style:"width:"+Math.max(2,P.p)+"%"})),el("span",{text:P.done+"/"+P.tot})));
   const tabs=[["frise","Étapes"],["ach","Achats"],["bud","Budget"],["pap","Papiers"]], seg=el("div",{class:"ev-seg",role:"tablist"});
@@ -10378,13 +10396,13 @@ function evDetail(inn,V){ const ev=evById(V.id), T=evT(ev), P=evProg(ev), I=evIt
 function evMenu(btn,ev,V){ { const nm=nativeMenu(ev.titre||"Événement",[{id:"edit",title:"Modifier",icon:"pencil"},{id:"dates",title:"Changer les dates",icon:"calendar"},{id:"del",title:"Supprimer l'événement",icon:"trash",destructive:true}]);
     if(nm){ nm.then(id=>{ if(id==="edit"||id==="dates") evGo({v:"edit",id:ev.id,back:V.tab}); else if(id==="del") nativeMenu("Supprimer « "+(ev.titre||"cet événement")+" » ? Ses dépenses et ses papiers sont gardés.",[{id:"ok",title:"Supprimer",icon:"trash",destructive:true}]).then(c=>{ if(c==="ok") evDelete(ev); }); }); return; } }
   const old=document.querySelector(".ev-pop"); if(old){ old._close(); if(old._btn===btn) return; }
-  const sheet=btn.closest(".pp-sheet"); if(!sheet) return; const pop=el("div",{class:"ev-pop",role:"menu"}); pop._btn=btn; btn.setAttribute("aria-expanded","true");
+  const host=btn.closest(".pp-sheet"), sheet=host||document.body; const pop=el("div",{class:"ev-pop",role:"menu"}); pop._btn=btn; btn.setAttribute("aria-expanded","true");
   const close=()=>{ if(pop._gone) return; pop._gone=true; btn.setAttribute("aria-expanded","false"); pop.classList.add("out"); document.removeEventListener("pointerdown",away,true); setTimeout(()=>pop.remove(),160); };
   pop._close=close; const away=e=>{ if(!pop.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)) close(); };
   const item=(ic,t,fn,cls)=>el("button",{type:"button",role:"menuitem",class:"ev-pi"+(cls?" "+cls:""),onclick:fn},el("i",{"aria-hidden":"true",text:ic}),el("span",{text:t}));
   const del=item("🗑","Supprimer l'événement",()=>{ if(!del.classList.contains("sure")){ del.classList.add("sure"); del.lastChild.textContent="Confirmer la suppression"; return; } close(); evDelete(ev); },"danger");
   pop.append(item("✏️","Modifier",()=>{ close(); evGo({v:"edit",id:ev.id,back:V.tab}); }),item("📅","Changer les dates",()=>{ close(); evGo({v:"edit",id:ev.id,back:V.tab}); }),el("hr"),del);
-  const r=btn.getBoundingClientRect(), sr=sheet.getBoundingClientRect(); pop.style.top=(r.bottom-sr.top+sheet.scrollTop+8)+"px"; pop.style.right=(sr.right-r.right)+"px";
+  const r=btn.getBoundingClientRect(); if(host){ const sr=sheet.getBoundingClientRect(); pop.style.top=(r.bottom-sr.top+sheet.scrollTop+8)+"px"; pop.style.right=(sr.right-r.right)+"px"; } else { pop.style.position="fixed"; pop.style.zIndex="80"; pop.style.top=(r.bottom+8)+"px"; pop.style.right=(innerWidth-r.right)+"px"; }
   sheet.append(pop); requestAnimationFrame(()=>pop.classList.add("in")); setTimeout(()=>document.addEventListener("pointerdown",away,true),0); }
 async function evDelete(ev){ const I=evItems(ev);
   try{ await Promise.all([].concat(I.t.filter(o=>!o.fait).map(o=>S.db.collection("taches").doc(o.id).delete()),I.a.filter(o=>!o.fait).map(o=>S.db.collection("courses").doc(o.id).delete()),I.r.filter(o=>!o.fait).map(o=>S.db.collection("rdv").doc(o.id).delete()),
@@ -10499,7 +10517,7 @@ function evPap(body,ev,I,V){ const T=evT(ev);
       else { const c=el("div",{class:"ev-list"}); for(const d of others.slice().sort((a,b)=>(b.ajouteLe||0)-(a.ajouteLe||0)).slice(0,30)) c.append(el("button",{type:"button",class:"ev-it ev-doc",onclick:async()=>{ try{ await S.db.collection("documents").doc(d.id).update({ev:ev.id}); d.ev=ev.id; V.link=false; evRender(false); }catch(e){ writeErr(e); } }},el("i",{class:"ev-di","aria-hidden":"true",text:"＋"}),el("span",{class:"ev-tt"},d.titre||"Papier",el("small",{text:catOf(d.cat||"documents").nom})))); body.append(el("div",{class:"ev-sec"},el("span",{text:"Choisis un papier"}),el("button",{type:"button",class:"ev-link",onclick:()=>{ V.link=false; evRender(false); }},"Fermer")),c); } } }
   body.append(el("div",{class:"ev-info"},el("i",{"aria-hidden":"true",text:"📁"}),el("span",{},"Ils restent aussi rangés dans ",el("b",{text:"Papiers"}),T.dcat==="maison"?" → Maison : la garantie se retrouve dans dix ans.":"."))); }
 function evEdit(inn,V){ const ev=evById(V.id); if(!ev){ evGo({v:"list"}); return; } const T=evT(ev);
-  inn.append(evBk(()=>evGo({v:"ev",id:ev.id,tab:V.back||"frise"})),el("div",{class:"ev-top"},el("h2",{text:"Modifier l'événement"})));
+  inn.append(el("div",{class:"ev-top"},el("h2",{text:"Modifier l'événement"})));
   const nm=el("input",{class:"ev-inp",type:"text",maxlength:"60",value:ev.titre||"","aria-label":"Nom"}), d1=el("input",{class:"ev-inp",type:"date",value:ev.debut||""}), d2=el("input",{class:"ev-inp",type:"date",value:ev.fin||""});
   inn.append(el("label",{class:"ev-lab"},el("span",{text:"Nom"}),nm),el("div",{class:"ev-two"},el("label",{class:"ev-lab"},el("span",{text:"Début"}),d1),el("label",{class:"ev-lab"},el("span",{text:"Fin (facultatif)"}),d2)));
   inn.append(el("p",{class:"ev-note",text:"Changer la date ne déplace pas les étapes déjà prévues."}));
