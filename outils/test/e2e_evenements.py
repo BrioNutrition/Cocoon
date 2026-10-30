@@ -36,7 +36,7 @@ async def main():
     await pg.click('.tab[data-tab="accueil"]'); await pg.wait_for_timeout(1500)
     await pg.click('.tab[data-tab="hub"]'); await pg.wait_for_timeout(500)
     await pg.click('.hb-t[data-go="evenements"]'); await pg.wait_for_timeout(700)
-    await pg.click('#evPage .ev-cta:has-text("Nouvel événement")'); await pg.click('.ev-type:has-text("Anniversaire")'); await pg.fill('#evNom','Anniv de Patoune'); await pg.fill('#evDeb','2030-05-10')
+    await pg.click('#evPage .ev-cta:has-text("Nouvel événement")'); await pg.click('.ev-type:has-text("Anniversaire")'); await pg.fill('#evNom','Anniv de Patoune'); await pg.click('#evPage .tk-r:has-text("Date")'); await pg.fill('#evDeb','2030-05-10')
     await pg.click('#evCreate'); await pg.wait_for_selector('.ev-frise', timeout=8000); await pg.wait_for_timeout(1500)
     for _ in range(25):
       n=await pg.evaluate("document.querySelectorAll('.ev-frise .ev-it').length")
