@@ -2936,7 +2936,7 @@ html.vt-close::view-transition-new(cl-x){object-fit:fill;animation:vtCloseIn .4s
 .cl-panel .cl-more{flex:none;width:44px;border:0;border-radius:14px;background:var(--sunk);color:var(--ink);display:grid;place-items:center;cursor:pointer}.cl-panel .cl-more svg{width:20px;height:20px;fill:currentColor}
 .cl-panel .ev-pop{position:absolute}
 .cl-panel .cl-val{margin-top:12px}
-.cl-left{font-size:13px;color:var(--muted);margin:8px 2px 0;line-height:1.4}.cl-payw{margin:14px 0 4px}.cl-payt{font-size:13px;font-weight:700;color:var(--muted);margin:0 2px 8px}.cl-skip{display:block;width:100%;border:0;background:none;color:var(--muted);font:inherit;font-size:14px;font-weight:700;padding:12px;cursor:pointer}
+.cl-left{font-size:13px;color:var(--muted);margin:8px 2px 0;line-height:1.4}.cl-payw{margin:14px 0 4px}.cl-split{display:flex;flex-direction:column;gap:8px;margin-top:10px}.cl-split:empty{display:none}.cl-sp{display:flex;align-items:center;gap:10px;font-weight:600}.cl-sp>.av{flex:none!important;width:26px!important;height:26px!important}.cl-sp>span:not(.av){flex:1}.cl-sp .cl-sp-in{width:110px;flex:none;text-align:right;margin:0}.cl-sp>i{font-style:normal;color:var(--muted)}.cl-payt{font-size:13px;font-weight:700;color:var(--muted);margin:0 2px 8px}.cl-skip{display:block;width:100%;border:0;background:none;color:var(--muted);font:inherit;font-size:14px;font-weight:700;padding:12px;cursor:pointer}
 .cl-new{--c:#9C9AB5;border-style:dashed;background:none;align-items:flex-start;justify-content:center}.cl-plus{width:34px;height:34px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-size:22px;font-weight:700}
 .cl-done{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:8px}
 .cl-done .cl-ring{width:36px;height:36px}.cl-done .cl-ring b{width:28px;height:28px}
@@ -11006,14 +11006,29 @@ async function clDel(l){ const its=cItemsOf(l.id); S.clOpenId=null; if(S.cListe=
 function clValidate(l){ if(!l) return; const its=cItemsOf(l.id), left=its.filter(i=>!i.fait).length, fin=its.length&&!left;
   const U=clSheet(); clClear(U); const inn=el("div",{class:"pp-in ev-in cl-in"}); U.sheet.append(inn);
   const am=el("input",{class:"ev-inp",type:"text",inputmode:"decimal",id:"clMontant",placeholder:"Montant en €","aria-label":"Montant"});
-  const ad=adults(); let pay=meId(); const pp=ad.length>1?el("div",{class:"pchips cl-pay",id:"clPay"}):null;
-  const ppDraw=()=>{ if(!pp) return; pp.innerHTML=""; for(const m of ad) pp.append(el("button",{type:"button",class:"pchip","data-id":m.id,"aria-pressed":String(pay===m.id),onclick:()=>{ pay=m.id; haptic(6); ppDraw(); }},avatar(m.id),m.id===meId()?"Moi":m.nom)); };
+  /* « Qui a payé ? » : une ou plusieurs personnes ; à plusieurs, la part de chacun (moitié-moitié au départ, modifiable) */
+  const ad=adults(); let pays=[meId()], parts={}, edited=null; const pp=ad.length>1?el("div",{class:"pchips cl-pay",id:"clPay"}):null, sw=el("div",{class:"cl-split",id:"clSplit"});
+  const eu=c=>(c/100).toFixed(2).replace(".",",");
+  const reSplit=()=>{ const tot=parseMoney(am.value)||0, n=pays.length; parts={}; pays.forEach((id,i)=>parts[id]=Math.floor(tot/n)+(i<tot%n?1:0)); edited=null; };
+  const swDraw=()=>{ sw.innerHTML=""; if(pays.length<2) return;
+    for(const id of pays){ const inp=el("input",{class:"ev-inp cl-sp-in",type:"text",inputmode:"decimal","data-id":id,"aria-label":"Part de "+(id===meId()?"moi":membre(id).nom)}); inp.value=parts[id]?eu(parts[id]):"";
+      inp.addEventListener("input",()=>{ const tot=parseMoney(am.value)||0, v=parseMoney(inp.value)||0; parts[id]=v; edited=id;
+        /* la dernière autre personne prend le reste */
+        const rest=pays.filter(x=>x!==id), last=rest[rest.length-1], others=rest.slice(0,-1).reduce((a,x)=>a+(parts[x]||0),0);
+        if(last){ parts[last]=Math.max(0,tot-v-others); const o=sw.querySelector('.cl-sp-in[data-id="'+last+'"]'); if(o) o.value=eu(parts[last]); } });
+      sw.append(el("label",{class:"cl-sp"},avatar(id,22),el("span",{text:id===meId()?"Moi":membre(id).nom}),inp,el("i",{text:"€"}))); } };
+  const ppDraw=()=>{ if(!pp) return; pp.innerHTML=""; for(const m of ad) pp.append(el("button",{type:"button",class:"pchip","data-id":m.id,"aria-pressed":String(pays.includes(m.id)),onclick:()=>{
+      if(pays.includes(m.id)){ if(pays.length===1) return; pays=pays.filter(x=>x!==m.id); } else pays=pays.concat(m.id);
+      haptic(6); reSplit(); ppDraw(); swDraw(); }},avatar(m.id),m.id===meId()?"Moi":m.nom)); };
   ppDraw();
-  const go=async(m,b)=>{ b.disabled=true; await clDone(l,m,false,pay); };
+  am.addEventListener("input",()=>{ if(pays.length>1){ reSplit(); swDraw(); } });
+  const go=async(m,b)=>{ let payeur=pays[0];
+    if(m>0&&pays.length>1){ const sum=pays.reduce((a,id)=>a+(parts[id]||0),0); if(sum!==m){ toast("Les parts font "+money(sum)+" au lieu de "+money(m)+"."); return; } payeur=Object.assign({},parts); }
+    b.disabled=true; await clDone(l,m,false,payeur); };
   const ok=el("button",{type:"button",class:"btn ev-cta",id:"clValOk",onclick:e=>{ const m=parseMoney(am.value)||0; if(!m){ toast("Indique le montant, ou « Sans montant »."); am.focus(); return; } go(m,e.currentTarget); }},"Valider");
   am.addEventListener("keydown",e=>{ if(e.key==="Enter") ok.click(); });
   inn.append(el("div",{class:"ev-top"},el("h2",{text:fin?"Liste terminée 🎉":"Valider « "+(l.titre||"la liste")+" »"}),el("p",{text:"Combien ça a coûté ? Le montant part dans le Budget, catégorie Courses."})),
-    am,...(pp?[el("div",{class:"cl-payw"},el("div",{class:"cl-payt",text:"Qui a payé ?"}),pp)]:[]),
+    am,...(pp?[el("div",{class:"cl-payw"},el("div",{class:"cl-payt",text:"Qui a payé ? (une ou plusieurs personnes)"}),pp,sw)]:[]),
     ok,el("button",{type:"button",class:"cl-skip",id:"clValSans",onclick:e=>go(0,e.currentTarget)},"Sans montant"));
   setTimeout(()=>am.focus(),350); }
 async function clDone(l,montant,quiet,payeur){ const me=meId(), its=cItemsOf(l.id), now=Date.now();
@@ -11024,7 +11039,10 @@ async function clDone(l,montant,quiet,payeur){ const me=meId(), its=cItemsOf(l.i
     await Promise.all(its.map(i=>S.db.collection("courses").doc(i.id).delete()));
     if(l.id===CL_DEF) await S.db.collection("listes").add(Object.assign(rec,{par:me,creeLe:now})); else await S.db.collection("listes").doc(l.id).set(Object.assign({},Object.fromEntries(Object.entries(l).filter(([k])=>k!=="id")),rec));
     if(l.recur){ const d=l.date?new Date(parse(l.date).getTime()+7*864e5):new Date(today().getTime()+7*864e5); await clNew(Object.assign({},l,{date:iso(d)}),its.map(i=>({nom:i.nom,qte:i.qte,pour:i.pour})),0); }
-    if(montant>0) await budgetAdd((l.titre||"Courses")+(l.lieu?" · "+l.lieu:""),montant,"courses",false,payeur); }); }
+    if(montant>0){ const ti=(l.titre||"Courses")+(l.lieu?" · "+l.lieu:"");
+      /* plusieurs payeurs : une dépense par personne, chacune de sa part (le partage du foyer s'applique à chacune) */
+      if(payeur&&typeof payeur==="object"){ for(const [id,c] of Object.entries(payeur)) if(c>0) await budgetAdd(ti,c,"courses",false,id); }
+      else await budgetAdd(ti,montant,"courses",false,payeur); } }); }
 /* tout est au caddie : la liste part dans « Terminées » tout de suite, puis « Combien ça a coûté ? » (facultatif) */
 async function clFinish(l){ const rid=await clDone(l,0,true); if(!rid) return; const titre=l.titre||"Courses", lieu=l.lieu;
   const U=clSheet(); clClear(U); const inn=el("div",{class:"pp-in ev-in cl-in"}); U.sheet.append(inn);
