@@ -4192,8 +4192,9 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
 .ap-tour{margin:10px 2px 0}.cl-lsheet{height:calc(100% - env(safe-area-inset-top,0px) - 10px)}
 .cl-lin.cl-panel{position:static;background:none!important;border:0!important;border-radius:0!important;margin:0!important;animation:none!important;padding:6px 16px 0!important;display:flex;flex-direction:column;min-height:100%;box-sizing:border-box}
 .cl-lhd{position:sticky;top:0;z-index:4;background:var(--bg);margin:0 -16px;padding:6px 16px 8px;border-bottom:1px solid var(--line)}
-.cl-lhd .ap-hd{margin-bottom:10px}.cl-lhd .ap-ttl{color:var(--c);font-size:18px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cl-lmore{width:40px;height:40px}.cl-lmore svg{width:20px;height:20px}
+.cl-lhd .ap-hd{margin-bottom:10px;position:relative;gap:8px}.cl-lhd .ap-hd>.ap-cb:first-child{margin-right:auto}
+.cl-lhd .ap-ttl{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);margin:0 auto;max-width:calc(100% - 216px);text-align:center;pointer-events:none;color:var(--c);font-size:17px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cl-lmore svg{width:22px;height:22px}
 .cl-lmeta{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px;font-weight:600}.cl-lmeta small{font-weight:500;font-size:12.5px;max-width:45%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cl-lbar{flex:1;height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}.cl-lbar i{display:block;height:100%;background:#34C759;transition:width .35s ease}
 .cl-seg{display:flex;background:var(--sunk);border-radius:12px;padding:3px;margin:12px 0 2px}
@@ -11096,6 +11097,8 @@ function clLSync(){ const U=S.clLU; if(!U||U._gone) return; const l=clGet(S.clOp
   const cap=[l.lieu,l.date?clWhen(l.date):"",l.prive?"🔒 moi seul":"",l.recur?"🔁 chaque semaine":""].filter(Boolean).join(" · ");
   const seg=el("div",{class:"cl-seg",role:"tablist"},...[[false,"À prendre · "+(n-ok)],[true,"Tout · "+n]].map(([v,t])=>el("button",{type:"button",role:"tab","aria-selected":String(!!S.cShowAll===v),class:!!S.cShowAll===v?"on":"",onclick:()=>{ if(!!S.cShowAll===v) return; S.cShowAll=v; haptic(5); renderCourses(); }},t)));
   U.hdW.innerHTML=""; U.hdW.style.setProperty("--c",clCol(l));
+  /* titre centré sur la feuille : un nom long rétrécit (jusqu'à 13 px) avant d'être coupé */
+  requestAnimationFrame(()=>{ const t=H.hd.querySelector(".ap-ttl"); if(!t) return; let fs=17; t.style.fontSize=""; while(t.scrollWidth>t.clientWidth+1&&fs>13){ fs--; t.style.fontSize=fs+"px"; } });
   U.hdW.append(H.hd,el("div",{class:"cl-lmeta"},el("span",{text:"🛒 "+ok+" / "+n}),el("span",{class:"cl-lbar"},el("i",{style:"width:"+(n?Math.round(ok/n*100):0)+"%"})),cap?el("small",{text:cap}):null),seg);
   const [cForm,cRepas,cHab,cPour,cLists]=CL_NODES;
   for(const x of [cRepas,cHab,cPour,cLists]) if(x&&x.parentNode!==U.bodyW) U.bodyW.append(x);
