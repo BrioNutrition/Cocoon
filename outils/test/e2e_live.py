@@ -51,7 +51,7 @@ async def main():
     print('flash:', await pg.locator('.c-item.flash').count(), '| caddie avatar emma:', await pg.locator('.c-list.done .c-by').count(), '| nouveau:', await pg.locator('.c-new').count())
     await pg.add_style_tag(content='.toast{display:none!important}')
     await pg.evaluate("scrollTo(0,0)"); await pg.screenshot(path='/tmp/dk/lv1.png',clip={'x':0,'y':0,'width':400,'height':820})
-    await pg.evaluate("(()=>{const g=document.querySelector('#clPage .pp-grab'); if(g) g.click();})()"); await pg.wait_for_timeout(700); await pg.click('.tab[data-tab="accueil"]'); await pg.wait_for_timeout(300); print('accueil:', [t for t in (await pg.inner_text('.secretary')).split('\n') if 'courses' in t])
+    await pg.evaluate("(()=>{const g=document.querySelector('#clListPage .pp-grab'); if(g) g.click();})()"); await pg.wait_for_timeout(700); await pg.click('.tab[data-tab="accueil"]'); await pg.wait_for_timeout(300); print('accueil:', [t for t in (await pg.inner_text('.secretary')).split('\n') if 'courses' in t])
     await pg.evaluate("document.getElementById('bellBtn').click()"); await pg.wait_for_timeout(400); print('cloche:', (await pg.inner_text('#npanel'))[:120].replace('\n',' | ')); await pg.keyboard.press('Escape'); await pg.wait_for_timeout(300)
     # Repas puis hors connexion
     await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="repas"]'); await pg.wait_for_timeout(200)

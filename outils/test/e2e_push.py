@@ -55,7 +55,7 @@ async def main():
     # événements
     await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="courses"]'); await pg.click('section[data-view="courses"] .hub-add'); await pg.wait_for_timeout(700); await pg.fill('#clTitre','Courses'); await pg.click('#clGo'); await pg.wait_for_timeout(1000); await pg.fill('#cNom','lait'); await pg.press('#cNom','Enter'); await pg.wait_for_timeout(400)
     # « Je fais les courses » (en direct) retiré de la page Courses (27 oct.) : on ferme la liste ouverte
-    await pg.evaluate("(()=>{const g=document.querySelector('#clPage .pp-grab'); if(g) g.click();})()"); await pg.wait_for_timeout(700)
+    await pg.evaluate("(()=>{const g=document.querySelector('#clListPage .pp-grab'); if(g) g.click();})()"); await pg.wait_for_timeout(700)
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(300)
     if not await pg.is_visible('#cxNotif'): await pg.click('.ms-tile:has-text("Notifications")'); await pg.wait_for_timeout(300)
     await pg.click('#cxNotif [data-a="off"]'); await pg.wait_for_timeout(500)
