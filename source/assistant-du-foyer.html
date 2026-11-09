@@ -4181,10 +4181,36 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
 .ap-cb:disabled{opacity:.5}
 .ap-ttl{flex:1;text-align:center;font-size:17px;font-weight:700}
 .ap-main{position:relative;display:flex;flex-direction:column;border-radius:22px;background:var(--sunk);overflow:hidden}
-.ap-main:before{content:"";position:absolute;left:14px;top:16px;bottom:16px;width:4px;border-radius:3px;background:#5AA9F0}
+.ap-main:before{content:"";position:absolute;left:14px;top:16px;bottom:16px;width:4px;border-radius:3px;background:var(--apc,#5AA9F0)}
 .ap-ti{display:block;width:100%;box-sizing:border-box;border:0!important;border-radius:0;background:none!important;box-shadow:none!important;color:var(--ink);font:inherit;font-size:17px;font-weight:600;padding:16px 18px 16px 32px;min-height:56px;margin:0}
 .ap-ti:focus{outline:none}
 .ap-f input,.ap-f textarea{padding:0!important;margin:0;box-shadow:none!important;background:none!important;border:0!important;min-height:0}
+.ap-main .ap-r{padding-left:32px}.ap-main .ap-r:before{content:"";position:absolute;top:0;left:32px;right:0;border-top:1px solid var(--line)}
+.ap-r.ap-sub{padding-left:52px!important;min-height:48px}.ap-r.ap-sub b{color:var(--muted)}
+.ap-rec{flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
+.ap-in .ap-opt+.ap-opt,.ap-in .ap-f+.ap-opt,.ap-in .ap-opt+.ap-f{margin-top:12px}
+.ap-tour{margin:10px 2px 0}.mx-in .b-form{display:block!important;background:none!important;box-shadow:none!important;padding:0!important;margin:0!important;gap:0!important;border:0!important}
+.mx-in .mx-grp+.mx-grp,.mx-in .mx-grp+*,.mx-in *+.mx-grp{margin-top:12px}
+.mx-grp>*{position:relative;display:flex!important;align-items:center;flex-wrap:wrap;gap:6px 12px;padding:10px 16px!important;min-height:52px;margin:0!important;background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;font-size:16px;font-weight:500;color:var(--ink)}
+.mx-grp>*+*:before{content:"";position:absolute;top:0;left:16px;right:0;border-top:1px solid var(--line)}
+.mx-grp>.field>input,.mx-grp>.field>select{flex:1;min-width:120px;text-align:right;border:0!important;background:none!important;box-shadow:none!important;color:var(--muted);font:inherit;font-size:16px;font-weight:400;padding:4px 0!important;margin:0!important;min-height:0!important;-webkit-appearance:none;appearance:none;outline:none;text-align-last:right}
+.mx-grp>.field>input:focus{color:var(--ink)}.mx-grp>.field>input::placeholder{color:color-mix(in srgb,var(--muted) 70%,transparent)}
+.mx-grp>.field:not(.mx-stack){flex-direction:row!important;flex-wrap:nowrap;text-align:left!important;justify-content:space-between}
+.mx-grp>.field.mx-stack{text-align:left!important;flex-direction:column!important;align-items:stretch;gap:8px;padding-top:12px!important;padding-bottom:12px!important}
+.mx-grp>.field.mx-stack textarea{border:0!important;background:none!important;box-shadow:none!important;color:var(--ink);font:inherit;font-weight:400;padding:0!important;min-height:44px;resize:vertical;outline:none}
+.mx-grp .pchips:not(:has(.day)){justify-content:flex-start}.mx-grp .pchips:not(:has(.day)) .pchip{flex:0 0 auto}
+.mx-grp>.check-row,.mx-grp>.mf-check{justify-content:flex-start;flex-wrap:nowrap;cursor:pointer}.ap-steps .ap-r{gap:12px;cursor:pointer;min-height:50px}.ap-steps .ap-r b{font-size:15.5px}.ap-steps .ap-r.off b{color:var(--muted)}.ap-steps .ap-r+.ap-r:before{left:52px}.ap-steps .ev-when{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}.ap-in .ev-sans{display:block;margin:16px auto 4px}.ap-r[hidden],.ap-in [hidden]{display:none!important}.ap-in .dz-form{display:block!important;gap:0!important}
+.ap-in .dz-src{display:block!important;padding:0!important;gap:0!important}.ap-in .d-gar{background:var(--sunk)!important;border-radius:22px!important;padding:0!important;border:0!important;margin:0!important}
+.ap-in .dz-src .dz-sb{width:100%;display:flex!important;flex-direction:row!important;align-items:center;gap:12px;border:0;border-radius:0;background:none!important;box-shadow:none!important;color:var(--ink);font:inherit;font-size:16.5px;text-align:left;cursor:pointer;margin:0;padding:12px 16px;min-height:56px}
+.ap-in .dz-src .dz-sb>.ap-ic{display:grid!important;width:24px!important;height:24px!important;font-size:inherit!important;background:none!important;margin:0!important}.ap-in .dz-src .dz-sb b{flex:1;font-weight:500;font-size:16.5px}.ap-in .dz-src .dz-sb small{color:var(--muted);font-size:13px;text-align:right;max-width:46%}
+.ap-in .dz-files{margin-top:10px}.ap-in .d-sante{margin-top:8px}.ap-in .d-consent{margin-top:14px}
+.ap-in .ap-notes textarea{min-height:44px}
+.ap-in .newcat{display:flex;flex-direction:column;gap:8px}.ap-in .newcat[hidden]{display:none}.ap-colr{padding-top:12px!important;padding-bottom:12px!important}.ap-colr .ap-cols{flex:1;display:flex;justify-content:flex-start;gap:10px;flex-wrap:wrap;margin:0;padding:0}.ap-colr .ap-cols button{width:26px;height:26px;flex:none}.ap-in.cl-in .ap-hd #clGo{margin:0}.ap-sugg{margin:8px -16px 0}.ap-pre{margin:0 -16px 12px;padding:0 16px;flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none}.ap-pre::-webkit-scrollbar{display:none}.ap-pre .pchip{background:var(--sunk);white-space:nowrap}
+.ap-num{width:96px;flex:none;text-align:right;border:0!important;background:var(--surface)!important;border-radius:10px;padding:8px 10px!important;font:inherit;font-size:16px;color:var(--ink);min-height:0!important}.ap-eur{font-style:normal;color:var(--muted)}
+.ap-in .b-form{display:block;margin:0;padding:0;border:0;background:none;box-shadow:none}.ap-tour .ap-chips{margin-top:8px}
+.ap-nc{padding:4px 18px 14px 32px}
+.ap-amt{display:block;width:100%;box-sizing:border-box;border:0!important;background:none!important;box-shadow:none!important;color:var(--ink);font:inherit;font-size:34px!important;font-weight:800;letter-spacing:-.02em;padding:0 18px 12px 32px!important;margin:0;min-height:0!important;outline:none}
+.ap-amt::placeholder{color:color-mix(in srgb,var(--muted) 60%,transparent)}
 .ap-main .ap-ti{padding:16px 18px 16px 32px!important;min-height:56px!important;border-radius:0!important}
 .ap-dt{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px 16px 32px;font-size:16.5px;min-height:56px;font-variant-numeric:tabular-nums}
 .ap-dt:before{content:"";position:absolute;top:0;left:32px;right:0;border-top:1px solid var(--line)}
@@ -4416,37 +4442,38 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
     <button type="button" class="pap-add" id="papAdd" aria-expanded="false"><span class="pa-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v9A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.6"/></svg></span><span class="pa-t"><b>Ranger un papier</b><small>Photo, PDF, ou juste une date à ne pas oublier</small></span><span class="pa-x" aria-hidden="true">+</span></button>
     <div id="docStash" hidden>
     <form class="dz-form" id="docForm" autocomplete="off" hidden>
-      <div class="ev-top"><h2>Nouveau papier</h2><p>Photo, PDF, ou juste une date à ne pas oublier.</p></div>
-      <div class="dz-src" id="dSrc">
-        <button type="button" class="dz-sb" id="docAddPhoto"><i aria-hidden="true">📸</i><span><b>Prendre en photo</b><small id="dSrcPh">La photo est rangée avec sa fiche</small></span></button>
-        <button type="button" class="dz-sb" id="docAddFile"><i aria-hidden="true">📎</i><span><b>Choisir un fichier</b><small>PDF ou photo du téléphone</small></span></button>
+      <div class="ap-hd"><button type="button" class="ap-cb" id="dzClose" aria-label="Fermer"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button><b class="ap-ttl">Nouveau papier</b><button class="ap-cb ap-ok" type="submit" id="dSubmit" disabled aria-label="Ranger le papier"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>
+      <div class="ap-main" id="dzMain">
+        <input type="text" class="ap-ti" id="dTitle" maxlength="80" placeholder="Nom : bail, carte grise, contrat box…" aria-label="Nom du papier" enterkeyhint="done" required>
+        <div id="dCats"></div>
+        <select id="dCat" hidden aria-hidden="true" tabindex="-1"></select>
+      <div class="newcat ap-nc" id="dNewCat" hidden><input type="text" class="ev-inp" id="dCatNom" maxlength="28" placeholder="Nom du classeur : Impôts, Travail…" aria-label="Nom du nouveau classeur"><div class="nc-sw" id="dCatCol" role="radiogroup" aria-label="Couleur du classeur"></div></div>
+      </div>
+      <p class="ap-sec">Fichier</p>
+      <div class="ap-opt dz-src" id="dSrc">
+        <button type="button" class="ap-r dz-sb" id="docAddPhoto"><i class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h2l1.5-2h5L16 6h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.5"/></svg></i><b>Prendre en photo</b><small id="dSrcPh">La photo est rangée avec sa fiche</small></button>
+        <button type="button" class="ap-r dz-sb" id="docAddFile"><i class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 11.5l-8 8a5 5 0 0 1-7-7l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7L9.7 17a1.7 1.7 0 0 1-2.4-2.4L15 7"/></svg></i><b>Choisir un fichier</b><small>PDF ou photo</small></button>
       </div>
       <div class="dz-files" id="dFiles" hidden></div>
       <label class="file-in" id="fileWrap" for="dFile" hidden>Fichiers <input type="file" id="dFile" multiple accept="application/pdf,image/png,image/jpeg,image/webp"></label>
-      <input type="text" class="ev-inp tk-ti" id="dTitle" maxlength="80" placeholder="Nom : bail, carte grise, contrat box…" aria-label="Nom du papier" enterkeyhint="done" required>
-      <div class="ev-types tk-types dz-cats" id="dCats" role="radiogroup" aria-label="Classeur"></div>
-      <select id="dCat" hidden aria-hidden="true" tabindex="-1"></select>
-      <div class="newcat" id="dNewCat" hidden><input type="text" class="ev-inp" id="dCatNom" maxlength="28" placeholder="Nom du classeur : Impôts, Travail…" aria-label="Nom du nouveau classeur"><div class="nc-sw" id="dCatCol" role="radiogroup" aria-label="Couleur du classeur"></div></div>
-      <div class="tk-g2 dz-rows">
-        <details class="dz-r" id="dExpBox" style="--c:#8FB8FF"><summary class="tk-r"><span class="ic" aria-hidden="true">📅</span><b>Expire</b><em id="dExpBoxV">Pas de date</em><i class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></i></summary><div class="tk-rb">
-          <div class="pchips" id="dExpQ"></div>
-          <input type="date" class="ev-inp" id="dExp" aria-label="Date d'expiration ou de renouvellement">
-        </div></details>
-        <details class="dz-r" id="docPourWrap" style="--c:#FFC94A"><summary class="tk-r"><span class="ic" aria-hidden="true">🗂️</span><b>Classeur de</b><em id="docPourWrapV">Foyer</em><i class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></i></summary><div class="tk-rb">
-          <div class="pchips" id="docPour"></div>
-        </div></details>
-        <details class="dz-r d-gar" id="dGarBox" style="--c:#7FD39A"><summary class="tk-r"><span class="ic" aria-hidden="true">🛡️</span><b>Garantie</b><em id="dGarBoxV">Non</em><i class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></i></summary><div class="tk-rb">
-          <p class="dz-h">Pour une facture d'achat : tu seras prévenu avant la fin.</p>
-          <div class="opts"><label for="dAchat">Acheté le<input type="date" class="ev-inp" id="dAchat"></label><label for="dGar">Garantie jusqu'au<input type="date" class="ev-inp" id="dGar"></label></div>
-          <div class="d-garq" id="dGarQ" role="group" aria-label="Durée de garantie"></div>
-        </div></details>
-        <details class="dz-r" id="dNoteBox" style="--c:#C79BFF"><summary class="tk-r"><span class="ic" aria-hidden="true">📝</span><b>Note</b><em id="dNoteBoxV">Aucune</em><i class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></i></summary><div class="tk-rb">
-          <textarea class="ev-inp" id="dNote" placeholder="N° de contrat, où est l'original, qui contacter…" aria-label="Note"></textarea>
-          <p class="d-sante">N'écris jamais ton numéro de sécurité sociale, tes codes ou mots de passe dans les notes.</p>
-        </div></details>
+      <p class="ap-sec">Dates</p>
+      <div class="ap-opt">
+        <div class="ap-r"><i class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></i><b>Expire</b><span id="dExpQ"></span></div>
+        <div class="ap-r ap-sub" id="dExpDay" hidden><b>Le</b><span class="ap-pk"><span id="dExpL"></span><input type="date" id="dExp" aria-label="Date d'expiration ou de renouvellement"></span></div>
       </div>
+      <p class="ap-sec">Classeur de</p>
+      <div class="ap-f ap-who" id="docPourWrap"><i class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c.7-3.6 3.4-5.6 7-5.6s6.3 2 7 5.6"/></svg></i><div class="ap-chips" id="docPour"></div></div>
+      <p class="ap-sec">Garantie</p>
+      <div class="ap-opt d-gar" id="dGarBox">
+        <div class="ap-r"><i class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg></i><b>Garantie</b><span id="dGarSel"></span></div>
+        <div class="ap-r ap-sub dz-gr" hidden><b>Acheté le</b><span class="ap-pk"><span id="dAchatL"></span><input type="date" id="dAchat" aria-label="Acheté le"></span></div>
+        <div class="ap-r ap-sub dz-gr" hidden><b>Jusqu'au</b><span class="ap-pk"><span id="dGarL"></span><input type="date" id="dGar" aria-label="Garantie jusqu'au"></span></div>
+      </div>
+      <div class="d-garq" id="dGarQ" hidden></div>
+      <p class="ap-sec">Note</p>
+      <label class="ap-f ap-notes" id="dNoteBox"><i class="ap-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></i><textarea id="dNote" rows="2" placeholder="N° de contrat, où est l'original, qui contacter…" aria-label="Note"></textarea></label>
+      <p class="ap-hint d-sante">N'écris jamais ton numéro de sécurité sociale, tes codes ou mots de passe dans les notes.</p>
       <label class="d-consent" id="dConsent" hidden><input type="checkbox" id="dConsentCk"><span><b>Papier de santé</b> J'accepte que ce papier de santé soit gardé dans Cocoon. Il sera visible par <em id="dConsentWho">tout le foyer</em>, et je peux le supprimer à tout moment. Facultatif : sans cette case, ne l'ajoute pas.</span></label>
-      <button class="btn ev-cta" type="submit" id="dSubmit" disabled>Ranger le papier</button>
     </form>
     </div>
     <div class="chips" id="docFilter"></div>
@@ -5670,7 +5697,7 @@ function renderReminders(){
 function renderDocPour(){
   const w=$("docPour"); if(!w) return; w.innerHTML=""; const me=meId(); if(!S.docPour) S.docPour="foyer";
   const opts=[["foyer","Foyer",null]].concat(membres().map(m=>[m.id,m.id===me?"Moi":m.nom,m.id]));
-  for(const [v,l,id] of opts) w.append(el("button",{type:"button",class:"pchip","aria-pressed":String(S.docPour===v),onclick:()=>{ S.docPour=v; renderDocPour(); updConsent(); const b=$("docPourWrap"); if(b) b.open=false; dzSync(); }},id?avatar(id,20):"",l));
+  for(const [v,l,id] of opts) w.append(el("button",{type:"button",class:"pchip","aria-pressed":String(S.docPour===v),onclick:()=>{ S.docPour=v; renderDocPour(); updConsent(); dzSync(); }},id?avatar(id,20):"",l));
 }
 /* ---------- Papiers façon Fichiers d'Apple (28 oct., Angel) : grille d'aperçus (photo ou 1re page du PDF), nom, date, à qui ---------- */
 /* aperçus gardés sur l'appareil (cocoon.dthumbs, effacés à la déconnexion), fabriqués un par un */
@@ -6886,6 +6913,36 @@ const RDV_TYPES=[["Médecin","🩺","#8FB8FF"],["Dentiste","🦷","#7FCDB9"],["V
 /* « + » du Calendrier façon Calendrier d'Apple (30 oct., Angel) : ✕ · Événement | Rappel · ✓, titre et date/heure dans un bloc
    à liseré de couleur, puis Localisation, Personnes invitées, Options (Alerte, Privé), Détails (Notes). « Rappel » = une tâche datée. */
 const RDV_ALERTE=[["veille","La veille"],["aucune","Aucune"]];
+/* ---------- Feuilles façon Calendrier (choix A d'Angel, 9 nov.) : en-tête ✕ · titre · ✓, cartes groupées, lignes à menus déroulants ---------- */
+const AP_IC={cal:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',rep:'<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',tag:'<path d="M3.5 12.5V4.5a1 1 0 0 1 1-1h8l8.5 8.5-9 9z"/><circle cx="8" cy="8" r="1.4"/>',
+  user:'<circle cx="12" cy="8" r="3.4"/><path d="M5 20c.7-3.6 3.4-5.6 7-5.6s6.3 2 7 5.6"/>',users:'<circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.2c2.6.2 4.6 1.8 5 4.8"/>',
+  eye:'<path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/>',note:'<path d="M4 7h16M4 12h16M4 17h10"/>',pin:'<path d="M20 4L3 11l7 2 2 7z"/>',
+  bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  folder:'<path d="M3 7.5a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',shield:'<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/>',
+  shop:'<path d="M3.5 5h2l2.2 10.5h10.2L20 8.5H7"/><circle cx="9.5" cy="19.3" r="1.3"/><circle cx="16.5" cy="19.3" r="1.3"/>',scale:'<path d="M12 4v16M7 20h10M5 7h14M5 7l-2.5 6a2.5 2.5 0 0 0 5 0zM19 7l-2.5 6a2.5 2.5 0 0 0 5 0z"/>',
+  card:'<rect x="3" y="6" width="18" height="12" rx="2.5"/><path d="M3 10h18M7 14.5h3"/>',lock:'<rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>',
+  steps:'<path d="M9 7h11M9 12h11M9 17h11"/><path d="M4 7l1 1 2-2M4 12l1 1 2-2M4 17l1 1 2-2"/>',euro:'<path d="M17.5 6.8A6.5 6.5 0 1 0 17.5 17.2"/><path d="M4.5 10.5h8.5M4.5 13.5h8.5"/>',
+  home:'<path d="M4 11l8-7 8 7v8.5a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/>',phone:'<path d="M6.5 3.5h3l1.5 4.5-2 1.5a11 11 0 0 0 5.5 5.5l1.5-2 4.5 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/>',
+  wrench:'<path d="M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3l7.5-7.5a4 4 0 0 1-2-2z"/>',file:'<path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/>',
+  cam:'<path d="M4 8a2 2 0 0 1 2-2h2l1.5-2h5L16 6h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.5" r="3.5"/>',clip:'<path d="M20 11.5l-8 8a5 5 0 0 1-7-7l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7L9.7 17a1.7 1.7 0 0 1-2.4-2.4L15 7"/>',
+  gauge:'<path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/>',trash:'<path d="M5 7h14M10 7V4.5h4V7M7 7l1 13h8l1-13"/>'};
+const AP_DF=new Intl.DateTimeFormat("fr-FR",{weekday:"short",day:"numeric",month:"short",year:"numeric"});
+function apDate(d){ return d?AP_DF.format(parse(d)):"Choisir"; }
+function apIc(k){ const i=el("i",{class:"ap-ic","aria-hidden":"true"}); i.innerHTML='<svg viewBox="0 0 24 24">'+(AP_IC[k]||k)+'</svg>'; return i; }
+function apSec(t){ return el("p",{class:"ap-sec",text:t}); }
+function apPick(lab,input){ const w=el("span",{class:"ap-pk"},el("span",{text:lab})); w.append(input); return w; }
+/* menu déroulant natif sous la valeur affichée (roue sur iPhone) */
+function apSel(opts,val,fn,aria,id){ const v0=String(val==null?"":val), s=el("select",{"aria-label":aria,id:id||null}); for(const [v,l] of opts) s.append(el("option",{value:String(v),text:l})); s.value=v0;
+  s.addEventListener("change",()=>fn(s.value)); const c=opts.find(o=>String(o[0])===v0); return apPick(c?c[1]:"—",s); }
+function apRow(ic,lab,right,cls){ return el("div",{class:"ap-r"+(cls?" "+cls:"")},ic?apIc(ic):null,el("b",{text:lab}),right||null); }
+function apSw(on,fn,lab,id){ return el("button",{type:"button",id:id||null,class:"ap-sw"+(on?" on":""),role:"switch","aria-checked":String(!!on),"aria-label":lab,onclick:()=>{ haptic(5); fn(!on); }},el("i")); }
+function apCard(...rows){ return el("div",{class:"ap-opt"},...rows.filter(Boolean)); }
+function apWho(ic,chips,extra){ return el("div",{class:"ap-f ap-who"},apIc(ic),el("div",{class:"ap-chips"},...chips.filter(Boolean)),...[].concat(extra||[])); }
+function apChip(lab,on,fn,cls){ return el("button",{type:"button",class:"pchip"+(cls?" "+cls:""),"aria-pressed":String(!!on),onclick:()=>{ haptic(5); fn(); }},...[].concat(lab)); }
+function apHead(title,close,o){ o=o||{}; const x=el("button",{type:"button",class:"ap-cb","aria-label":"Fermer",onclick:close}); x.innerHTML='<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  const ok=el("button",{type:o.submit?"submit":"button",class:"ap-cb ap-ok",id:o.id||null,"aria-label":o.label||"Enregistrer",onclick:o.onOk||null}); ok.innerHTML='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  return {hd:el("div",{class:"ap-hd"},x,el("b",{class:"ap-ttl",text:title}),ok),ok}; }
 function openRdvSheet(){ const F=S.rdvForm; if(!F) return; const me=meId(), t0=iso(today());
   if(!F.date) F.date=S.agDay&&S.agDay>=t0?S.agDay:t0;
   if(!F.id&&!F.heure){ const n=new Date(); let h=n.getHours()+1; if(h>22){ h=9; if(F.date===t0) F.date=evAdd(t0,1); } F.heure=String(h).padStart(2,"0")+":00"; F.heureFin=String(h+1).padStart(2,"0")+":00"; }
@@ -7388,65 +7445,66 @@ function openBForm(kind,item){
   S.bForm={kind,id:item?item.id:null,confirm:false,d:item?(x=>{ if(Array.isArray(x.partage)&&x.partage.length===1&&x.partage[0]===x.payePar) x.partage=[]; return x; })(Object.assign(JSON.parse(JSON.stringify(item)),{splitMode:item.parts?"perso":"egal"})):(kind==="dep"?{titre:"",montant:null,cat:"courses",payePar:me,date:iso(today()),partage:[],freq:"once"}:{nom:"",montant:null,cat:"streaming",freq:"mensuel",debut:iso(today()),payePar:me,partage:[],rappel:true,actif:true,auto:true})};
   if(!item){ const pc=S.config&&S.config.partage, d=S.bForm.d; if(pc&&ad.length>1){ if(pc.mode==="egal") d.partage=ad.slice(); else if(pc.mode==="prorata"&&pc.pct){ const ids=ad.filter(id=>(pc.pct[id]||0)>0); if(ids.length>1){ d.partage=ids; d.splitMode="pct"; } } } }
   if(S.tab!=="budget") setTab("budget");
-  if(!item){ bfHome(); S.bFormSrc=null; } else if(kind==="dep") S.bFormSrc=null; renderBudget(); renderBForm(); { const dt=BF.closest("details"); if(dt) dt.open=true; } setTimeout(()=>{ if(BF.isConnected) (item?(()=>{ const r=BF.getBoundingClientRect(); if(r.top<70) window.scrollBy({top:r.top-80,behavior:"smooth"}); })():BF.scrollIntoView({behavior:"smooth",block:"start"})); const i=$("bfName"); if(i&&!item) i.focus(); },60);
+  if(kind==="dep") S.bFormSrc=null; renderBudget();
+  /* le formulaire s'ouvre dans une feuille du bas façon Calendrier (choix A d'Angel, 9 nov.) */
+  if(!S.bfU||S.bfU._gone){ clearTimeout(S.bfPark); const U=upSheet("bPage",kind==="dep"?"Dépense":"Abonnement",()=>{ U._gone=true; if(S.bForm) closeBForm(true); });
+    U.sheet.classList.add("ev-sheet","ap-sheet","bf-sheet"); const inn=el("div",{class:"pp-in ap-in"}); inn.append(BF); U.sheet.append(inn); S.bfU=U; }
+  renderBForm(); setTimeout(()=>{ const i=$("bfName"); if(i&&!item&&BF.isConnected) try{ i.focus({preventScroll:true}); }catch(_){} },360);
 }
 const BF=document.getElementById("bForm"), BF_HOME=BF.nextElementSibling;
 function bfHome(){ if(BF_HOME&&BF_HOME.parentNode&&BF.nextElementSibling!==BF_HOME) BF_HOME.parentNode.insertBefore(BF,BF_HOME); }
-function closeBForm(){ const B=S.bForm, y=B&&B.id&&BF.isConnected&&!BF.hidden?BF.getBoundingClientRect().top:null; S.bForm=null; BF.hidden=true; BF.innerHTML=""; bfHome();
-  if(B&&B.id){ renderBudget(); const r=document.querySelector('[data-bid="'+B.kind+":"+B.id+'"]'); if(r&&y!=null){ const dy=r.getBoundingClientRect().top-Math.min(Math.max(y,90),innerHeight-200); if(Math.abs(dy)>1) window.scrollBy(0,dy); } } }
+function closeBForm(fromSheet){ const B=S.bForm, U=S.bfU; S.bForm=null; S.bfU=null;
+  /* la feuille se referme en glissant : le formulaire est vidé et remis à sa place une fois sortie */
+  const park=()=>{ BF.hidden=true; BF.innerHTML=""; bfHome(); };
+  if(U&&!U._gone){ U._gone=true; U.close(); } if(U){ clearTimeout(S.bfPark); S.bfPark=setTimeout(()=>{ if(!S.bForm) park(); },330); } else park();
+  if(B&&B.id) renderBudget(); void fromSheet; }
 function renderBForm(){
   const B=S.bForm, f=$("bForm"); if(!B){ f.hidden=true; return; } f.hidden=false; f.innerHTML="";
-  const d=B.d, dep=B.kind==="dep", me=meId();
-  f.append(el("h3",{text:(B.id?"Modifier ":dep?"Nouvelle ":"Nouvel ")+(dep?"dépense":"abonnement")}));
-  if(!dep&&!B.id){ const pr=el("div",{class:"presets"}); for(const [n,c,fq] of PRESETS) pr.append(el("button",{type:"button",style:"--stripe:"+BCAT[c].c,text:n,onclick:()=>{ d.nom=n; d.cat=c; d.freq=fq; renderBForm(); const m=$("bfAmt"); if(m) m.focus(); }})); f.append(pr); }
-  const name=el("input",{type:"text",id:"bfName",maxlength:"60",placeholder:dep?"Courses Leclerc, plein d'essence, croquettes…":"Netflix, électricité, box…"}); name.value=dep?(d.titre||""):(d.nom||""); name.addEventListener("input",()=>{ if(dep) d.titre=name.value; else d.nom=name.value; });
-  const amt=el("input",{type:"text",inputmode:"decimal",id:"bfAmt",class:"amount-in",placeholder:"0,00 €"}); amt.value=d.montant?String((d.montant/100).toFixed(2)).replace(".",","):""; amt.addEventListener("input",()=>{ d.montant=parseMoney(amt.value); const sm=document.querySelector("#bForm .split-sum"); if(sm&&d.splitMode==="perso"){ const tot=(d.partage||[]).reduce((a,id)=>a+((d.parts||{})[id]||0),0), diff=(d.montant||0)-tot; sm.textContent=d.montant?(Math.abs(diff)<=1?"Réparti : "+money(tot)+" sur "+money(d.montant)+", c'est juste.":diff>0?"Reste à répartir : "+money(diff):"Trop réparti de "+money(-diff)):"Indique d'abord le montant total."; sm.className="split-sum "+(d.montant&&Math.abs(diff)<=1?"ok":"bad"); } });
-  f.append(el("div",{class:"frow"},el("label",{class:"field",for:"bfName"},dep?"Quoi":"Abonnement",name),el("label",{class:"field",for:"bfAmt"},"Montant",amt)));
-  const cat=el("select",{id:"bfCat"}); for(const c of BCATS) cat.append(el("option",{value:c.id,text:c.nom})); cat.value=d.cat||"autre"; cat.addEventListener("change",()=>d.cat=cat.value);
-  const row=el("div",{class:"frow"},el("label",{class:"field",for:"bfCat"},"Catégorie",cat));
-  if(dep){ const dt=el("input",{type:"date",id:"bfDate"}); dt.value=d.date||iso(today()); dt.addEventListener("input",()=>d.date=dt.value); row.append(el("label",{class:"field",for:"bfDate"},"Date",dt));
-    if(!B.id){ const rp=el("select",{id:"bfRep"}); for(const [k,l] of [["once","Une seule fois"],["mensuel","Tous les mois"],["trimestriel","Tous les trimestres"],["annuel","Tous les ans"],["hebdo","Toutes les semaines"]]) rp.append(el("option",{value:k,text:l})); rp.value=d.freq||"once"; rp.addEventListener("change",()=>{ d.freq=rp.value; renderBForm(); });
-      row.append(el("label",{class:"field",for:"bfRep"},"Se répète",rp)); } }
-  else { const fq=el("select",{id:"bfFreq"}); for(const [k,v] of Object.entries(FREQ)) fq.append(el("option",{value:k,text:({mensuel:"Tous les mois",trimestriel:"Tous les trimestres",annuel:"Tous les ans",hebdo:"Toutes les semaines"})[k]})); fq.value=d.freq||"mensuel"; fq.addEventListener("change",()=>d.freq=fq.value);
-    const nx=el("input",{type:"date",id:"bfNext"}); nx.value=(B.id?subNext(d):null)||d.debut||iso(today()); nx.addEventListener("input",()=>d.debut=nx.value);
-    row.append(el("label",{class:"field",for:"bfFreq"},"Fréquence",fq),el("label",{class:"field",for:"bfNext"},"Prochain prélèvement",nx)); }
-  f.append(row);
+  const d=B.d, dep=B.kind==="dep", me=meId(), ttl=B.id?(dep?"Modifier la dépense":"Modifier l'abonnement"):dep?"Nouvelle dépense":"Nouvel abonnement";
+  if(S.bfU&&S.bfU.sheet) S.bfU.sheet.setAttribute("aria-label",ttl);
+  f.append(apHead(ttl,()=>closeBForm(),{submit:true,label:B.id?"Enregistrer":"Ajouter"}).hd);
+  if(!dep&&!B.id){ const pr=el("div",{class:"ap-chips ap-pre"}); for(const [n,c,fq] of PRESETS) pr.append(apChip((BEMO[c]||"")+" "+n,d.nom===n,()=>{ d.nom=n; d.cat=c; d.freq=fq; renderBForm(); const m=$("bfAmt"); if(m) m.focus(); })); f.append(pr); }
+  /* nom, montant, catégorie */
+  const name=el("input",{type:"text",id:"bfName",class:"ap-ti",maxlength:"60",placeholder:dep?"Courses Leclerc, plein d'essence…":"Netflix, électricité, box…","aria-label":dep?"Quoi":"Abonnement"}); name.value=dep?(d.titre||""):(d.nom||""); name.addEventListener("input",()=>{ if(dep) d.titre=name.value; else d.nom=name.value; });
+  const amt=el("input",{type:"text",inputmode:"decimal",id:"bfAmt",class:"ap-amt amount-in",placeholder:"0,00 €","aria-label":"Montant"}); amt.value=d.montant?String((d.montant/100).toFixed(2)).replace(".",","):""; amt.addEventListener("input",()=>{ d.montant=parseMoney(amt.value); const sm=document.querySelector("#bForm .split-sum"); if(sm&&d.splitMode==="perso"){ const tot=(d.partage||[]).reduce((a,id)=>a+((d.parts||{})[id]||0),0), diff=(d.montant||0)-tot; sm.textContent=d.montant?(Math.abs(diff)<=1?"Réparti : "+money(tot)+" sur "+money(d.montant)+", c'est juste.":diff>0?"Reste à répartir : "+money(diff):"Trop réparti de "+money(-diff)):"Indique d'abord le montant total."; sm.className="split-sum "+(d.montant&&Math.abs(diff)<=1?"ok":"bad"); } });
+  const cat=apSel(BCATS.map(c=>[c.id,(BEMO[c.id]||"")+" "+c.nom]),d.cat||"autre",v=>{ d.cat=v; renderBForm(); },"Catégorie","bfCat");
+  f.append(el("div",{class:"ap-main",style:"--apc:"+((BCAT[d.cat]||BCAT.autre).c)},name,amt,apRow("tag","Catégorie",cat)));
+  /* quand */
+  if(dep){ const dt=el("input",{type:"date",id:"bfDate","aria-label":"Date"}); dt.value=d.date||iso(today()); dt.addEventListener("input",()=>d.date=dt.value); dt.addEventListener("change",()=>{ d.date=dt.value; renderBForm(); });
+    f.append(apSec("Quand"),apCard(apRow("cal","Date",apPick(apDate(d.date||iso(today())),dt)),
+      !B.id?apRow("rep","Se répète",apSel([["once","Une seule fois"],["mensuel","Tous les mois"],["trimestriel","Tous les trimestres"],["annuel","Tous les ans"],["hebdo","Toutes les semaines"]],d.freq||"once",v=>{ d.freq=v; renderBForm(); },"Se répète","bfRep")):null)); }
+  else { const nx=el("input",{type:"date",id:"bfNext","aria-label":"Prochain prélèvement"}); nx.value=(B.id?subNext(d):null)||d.debut||iso(today()); nx.addEventListener("input",()=>d.debut=nx.value); nx.addEventListener("change",()=>{ d.debut=nx.value; renderBForm(); });
+    f.append(apSec("Prélèvement"),apCard(apRow("rep","Fréquence",apSel(Object.keys(FREQ).map(k=>[k,({mensuel:"Tous les mois",trimestriel:"Tous les trimestres",annuel:"Tous les ans",hebdo:"Toutes les semaines"})[k]]),d.freq||"mensuel",v=>{ d.freq=v; renderBForm(); },"Fréquence","bfFreq")),
+      apRow("cal","Prochain",apPick(apDate(nx.value),nx)))); }
+  /* payé par, partagé entre */
   const ad=adults();
   if(ad.length>1){
-    const pp=el("div",{class:"pchips"}); for(const m of ad) pp.append(el("button",{type:"button",class:"pchip","aria-pressed":String(d.payePar===m.id),onclick:()=>{ d.payePar=m.id; renderBForm(); }},avatar(m.id),m.id===me?"Moi":m.nom));
-    if((d.partage||[]).length>1) pp.append(el("button",{type:"button",class:"pchip","aria-pressed":String(d.payePar==="chacun"),onclick:()=>{ d.payePar="chacun"; renderBForm(); }},"Chacun paie sa part"));
-    f.append(el("div",{class:"field"},"Payé par",pp));
-    { const sp=el("div",{class:"pchips"}); d.partage=Array.isArray(d.partage)?d.partage:[];
-      for(const m of ad) sp.append(el("button",{type:"button",class:"pchip","aria-pressed":String(d.partage.includes(m.id)),onclick:()=>{ d.partage=d.partage.includes(m.id)?d.partage.filter(x=>x!==m.id):d.partage.concat(m.id); if(d.parts) for(const k of Object.keys(d.parts)) if(!d.partage.includes(k)) delete d.parts[k]; if(d.partage.length<2&&d.payePar==="chacun") d.payePar=me; renderBForm(); }},avatar(m.id),m.id===me?"Moi":m.nom));
-      const n=d.partage.length; f.append(el("div",{class:"field"},n?"Partagé entre"+(d.montant?" · "+money(Math.round(d.montant/n))+" chacun"+(dep&&d.freq==="once"?"":" à chaque échéance"):""):"Partagé avec (facultatif)",sp));
-      if(d.partage.length>1){
-        const mode=d.splitMode||"egal";
-        const sg=el("div",{class:"seg seg-split",role:"group","aria-label":"Répartition"});
-        const PC=S.config&&S.config.partage&&S.config.partage.mode==="prorata"&&S.config.partage.pct;
-        for(const [k,l] of [["egal","À parts égales"]].concat(PC?[["pct","Au prorata"]]:[],[["perso","Montants personnalisés"]])) sg.append(el("button",{type:"button","aria-pressed":String(mode===k),text:l,onclick:()=>{ d.splitMode=k; if(k==="perso"){ d.parts=d.parts||{}; const eq=d.montant?Math.floor(d.montant/d.partage.length):0; d.partage.forEach((id,i)=>{ if(d.parts[id]==null) d.parts[id]=i===0&&d.montant?d.montant-eq*(d.partage.length-1):eq; }); } else d.parts=null; renderBForm(); }}));
-        f.append(el("div",{class:"field"},"Répartition",sg));
-        if(mode==="pct"&&PC) f.append(el("p",{class:"muted",style:"margin:-4px 0 0;font-size:13px",text:d.partage.map(id=>(id===me?"Toi":membre(id).nom)+" "+(PC[id]||0)+" %").join(" · ")+(d.montant?" → "+d.partage.map(id=>money(Math.round(d.montant*(PC[id]||0)/100))).join(" / "):"")}));
-        if(mode==="perso"){
-          const box=el("div",{class:"split-rows"}), sum=el("div",{class:"split-sum"});
-          const upd=()=>{ const tot=d.partage.reduce((a,id)=>a+((d.parts||{})[id]||0),0), diff=(d.montant||0)-tot;
-            sum.textContent=d.montant?(Math.abs(diff)<=1?"Réparti : "+money(tot)+" sur "+money(d.montant)+", c'est juste.":diff>0?"Reste à répartir : "+money(diff):"Trop réparti de "+money(-diff)):"Indique d'abord le montant total.";
-            sum.className="split-sum "+(d.montant&&Math.abs(diff)<=1?"ok":"bad"); };
-          for(const id of d.partage){ const inp=el("input",{type:"text",inputmode:"decimal",id:"bfPart"+id,"aria-label":"Part "+de(membre(id).nom),placeholder:"0,00"});
-            const v=(d.parts||{})[id]; inp.value=v?String((v/100).toFixed(2)).replace(".",","):"";
-            inp.addEventListener("input",()=>{ d.parts=d.parts||{}; d.parts[id]=parseMoney(inp.value)||0; upd(); });
-            box.append(el("label",{class:"split-row",for:"bfPart"+id},avatar(id),el("span",{text:id===me?"Moi":membre(id).nom}),inp)); }
-          upd(); f.append(box,sum);
-        }
-      } }
+    const pp=ad.map(m=>apChip([avatar(m.id,20),m.id===me?"Moi":m.nom],d.payePar===m.id,()=>{ d.payePar=m.id; renderBForm(); }));
+    if((d.partage||[]).length>1) pp.push(apChip("Chacun paie sa part",d.payePar==="chacun",()=>{ d.payePar="chacun"; renderBForm(); }));
+    f.append(apSec("Payé par"),apWho("card",pp));
+    d.partage=Array.isArray(d.partage)?d.partage:[];
+    const sp=ad.map(m=>apChip([avatar(m.id,20),m.id===me?"Moi":m.nom],d.partage.includes(m.id),()=>{ d.partage=d.partage.includes(m.id)?d.partage.filter(x=>x!==m.id):d.partage.concat(m.id); if(d.parts) for(const k of Object.keys(d.parts)) if(!d.partage.includes(k)) delete d.parts[k]; if(d.partage.length<2&&d.payePar==="chacun") d.payePar=me; renderBForm(); }));
+    const n=d.partage.length; f.append(apSec(n?"Partagé entre"+(d.montant?" · "+money(Math.round(d.montant/n))+" chacun":""):"Partagé avec (facultatif)"),apWho("users",sp));
+    if(n>1){ const mode=d.splitMode||"egal", PC=S.config&&S.config.partage&&S.config.partage.mode==="prorata"&&S.config.partage.pct;
+      const rows=[apRow("scale","Répartition",apSel([["egal","À parts égales"]].concat(PC?[["pct","Au prorata"]]:[],[["perso","Montants choisis"]]),mode,k=>{ d.splitMode=k; if(k==="perso"){ d.parts=d.parts||{}; const eq=d.montant?Math.floor(d.montant/d.partage.length):0; d.partage.forEach((id,i)=>{ if(d.parts[id]==null) d.parts[id]=i===0&&d.montant?d.montant-eq*(d.partage.length-1):eq; }); } else d.parts=null; renderBForm(); },"Répartition"))];
+      let after=null;
+      if(mode==="pct"&&PC) after=el("p",{class:"ap-hint",text:d.partage.map(id=>(id===me?"Toi":membre(id).nom)+" "+(PC[id]||0)+" %").join(" · ")+(d.montant?" → "+d.partage.map(id=>money(Math.round(d.montant*(PC[id]||0)/100))).join(" / "):"")});
+      if(mode==="perso"){ const sum=el("p",{class:"split-sum ap-hint"});
+        const upd=()=>{ const tot=d.partage.reduce((a,id)=>a+((d.parts||{})[id]||0),0), diff=(d.montant||0)-tot;
+          sum.textContent=d.montant?(Math.abs(diff)<=1?"Réparti : "+money(tot)+" sur "+money(d.montant)+", c'est juste.":diff>0?"Reste à répartir : "+money(diff):"Trop réparti de "+money(-diff)):"Indique d'abord le montant total.";
+          sum.className="split-sum ap-hint "+(d.montant&&Math.abs(diff)<=1?"ok":"bad"); };
+        for(const id of d.partage){ const inp=el("input",{type:"text",inputmode:"decimal",id:"bfPart"+id,class:"ap-num","aria-label":"Part "+de(membre(id).nom),placeholder:"0,00"});
+          const v=(d.parts||{})[id]; inp.value=v?String((v/100).toFixed(2)).replace(".",","):"";
+          inp.addEventListener("input",()=>{ d.parts=d.parts||{}; d.parts[id]=parseMoney(inp.value)||0; upd(); });
+          rows.push(el("label",{class:"ap-r ap-sub",for:"bfPart"+id},avatar(id,22),el("b",{text:id===me?"Moi":membre(id).nom}),inp,el("i",{class:"ap-eur",text:"€"}))); }
+        upd(); after=sum; }
+      f.append(apCard(...rows)); if(after) f.append(after); }
   }
-  if(!dep){ const cb=el("input",{type:"checkbox",id:"bfRappel"}); cb.checked=d.rappel!==false; cb.addEventListener("change",()=>d.rappel=cb.checked);
-    f.append(el("label",{class:"check-row",for:"bfRappel"},cb,el("span",{text:"Me prévenir dans les rappels avant chaque prélèvement"})));
-    const ab=el("input",{type:"checkbox",id:"bfAuto"}); ab.checked=d.auto!==false; ab.addEventListener("change",()=>d.auto=ab.checked);
-    f.append(el("label",{class:"check-row",for:"bfAuto"},ab,el("span",{},el("b",{text:"Inscrire automatiquement au budget"}),el("br"),el("span",{class:"muted",text:"À chaque échéance, la dépense s'ajoute toute seule, partagée comme indiqué."})))); }
-  if(dep&&d.freq&&d.freq!=="once") f.append(el("div",{class:"hint",text:"Elle sera ajoutée au budget aujourd'hui puis automatiquement à chaque échéance. Tu la retrouves dans « Dépenses récurrentes »."}));
-  const btns=el("div",{class:"row-btns",style:"display:flex;gap:8px;flex-wrap:wrap;align-items:center"},el("button",{type:"submit",class:"btn",text:B.id?"Enregistrer":"Ajouter"}),el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:closeBForm}));
-  if(B.id) btns.append(el("span",{style:"flex:1"}),el("button",{type:"button",class:"btn ghost",style:"color:var(--late)",text:"Supprimer",onclick:delBItem}));
-  f.append(btns);
+  if(!dep) f.append(apSec("Options"),apCard(apRow("bell","Me prévenir avant",apSw(d.rappel!==false,v=>{ d.rappel=v; renderBForm(); },"Me prévenir avant chaque prélèvement","bfRappel")),
+    apRow("euro","Inscrire au budget",apSw(d.auto!==false,v=>{ d.auto=v; renderBForm(); },"Inscrire automatiquement au budget","bfAuto"))),
+    el("p",{class:"ap-hint",text:"À chaque échéance, la dépense s'ajoute toute seule, partagée comme indiqué."}));
+  if(dep&&d.freq&&d.freq!=="once") f.append(el("p",{class:"ap-hint",text:"Elle sera ajoutée au budget aujourd'hui puis automatiquement à chaque échéance. Tu la retrouves dans « Dépenses récurrentes »."}));
+  if(B.id) f.append(el("button",{type:"button",class:"ap-del",text:dep?"Supprimer la dépense":"Supprimer l'abonnement",onclick:delBItem}));
 }
 async function saveBForm(e){
   e.preventDefault(); const B=S.bForm; if(!B) return; const d=B.d, dep=B.kind==="dep", me=meId();
@@ -7594,8 +7652,18 @@ function mxSync(key,on,build,title,sub,reset,always){ const cur=MX[key];
   if(!on){ if(cur){ delete MX[key]; cur.U.close(); } return; }
   if(!always&&cur&&cur.sig===on&&cur.U.sheet.isConnected) return;
   let C=cur&&cur.U.sheet.isConnected?cur:null;
-  if(!C){ const U=upSheet("mx-"+key,title,()=>{ if(MX[key]&&MX[key].U===U){ delete MX[key]; reset(); } }); U.sheet.classList.add("ev-sheet","mx-sheet"); const inn=el("div",{class:"pp-in ev-in mx-in"}); U.sheet.append(inn); C=MX[key]={U,inn}; }
-  C.sig=on; C.inn.innerHTML=""; C.inn.append(el("div",{class:"ev-top"},el("h2",{text:title}),sub?el("p",{text:sub}):null),build()); }
+  if(!C){ const U=upSheet("mx-"+key,title,()=>{ if(MX[key]&&MX[key].U===U){ delete MX[key]; reset(); } }); U.sheet.classList.add("ev-sheet","ap-sheet","mx-sheet"); const inn=el("div",{class:"pp-in ap-in mx-in"}); U.sheet.append(inn); C=MX[key]={U,inn}; }
+  /* façon Calendrier (choix A d'Angel, 9 nov.) : ✕ · titre · ✓ (envoie le formulaire), champs regroupés en cartes */
+  const c=C, H=apHead(title,()=>c.U.close(),{label:"Enregistrer",onOk:()=>{ const fm=c.inn.querySelector("form"); if(fm) fm.requestSubmit(); }});
+  C.sig=on; C.inn.innerHTML=""; const f=build(); C.inn.append(H.hd,f); mxSkin(f); if(sub) C.inn.append(el("p",{class:"ap-hint",text:sub})); }
+/* habille un formulaire de la Maison : plus de titre ni de boutons en bas (le ✓ du haut enregistre), « Supprimer » en bas,
+   lignes consécutives réunies dans une carte, champs à pastilles ou à texte long empilés */
+function mxSkin(f){ if(!f||!f.closest||!f.closest(".mx-in")) return;
+  const h=f.querySelector(":scope>h3"); if(h) h.remove();
+  f.querySelectorAll(".row-btns").forEach(rb=>{ const del=[...rb.querySelectorAll("button")].find(b=>/Supprimer/.test(b.textContent)); if(del){ del.className="ap-del"; del.removeAttribute("style"); rb.replaceWith(del); } else rb.remove(); });
+  f.querySelectorAll(":scope>.frow").forEach(r=>r.replaceWith(...r.children));
+  let grp=null; for(const c of [...f.children]){ if(c.matches(".field,.check-row,.mf-check")){ if(!grp){ grp=el("div",{class:"ap-opt mx-grp"}); c.before(grp); } grp.append(c); } else grp=null; }
+  f.querySelectorAll(".mx-grp>.field").forEach(fl=>{ if(fl.querySelector(".pchips,.seg,.swatches,textarea")) fl.classList.add("mx-stack"); }); }
 /* ---------- Fiche baby-sitter ----------
    Une fiche pour la personne qui garde les enfants ou les animaux : qui garder (âge, infos publiques des profils), contacts,
    adresse, Wi-Fi, consignes. Rangée dans fiches/garde ; partagée par un lien vers fiche/ (page à part, sans compte) :
@@ -7796,7 +7864,7 @@ function renderMForm(){
   if(F.id&&(F.kind==="equip"||F.kind==="vehic")) btns.append(el("span",{style:"flex:1"}),el("button",{type:"button",class:"btn ghost",style:"color:var(--late)",text:"Supprimer",onclick:()=>{
     const eq=F.kind==="equip", arr=eq?"equip":"vehic", col=eq?"equipements":"vehicules", item=S[arr].find(x=>x.id===F.id); closeMForm(); if(!item) return;
     softDelete([{key:col+":"+item.id,arr,item,run:()=>(eq?S.db.collection("equipements"):vehCol()).doc(item.id).delete()}],"« "+esc(item.nom||"Élément")+" » supprimé."); }}));
-  f.append(btns);
+  f.append(btns); mxSkin(f);
 }
 const numv=v=>{ const n=parseFloat(String(v||"").replace(/\s/g,"").replace(",",".")); return isFinite(n)?n:null; };
 async function saveMForm(e){
@@ -8195,83 +8263,73 @@ $("tabs").addEventListener("click",e=>{ const b=e.target.closest(".tab"); if(b&&
 const TK_EX={factures:"Payer la facture d'électricité",entretien:"Détartrer la bouilloire",courses:"Racheter du café",colis:"Récupérer le colis au relais",animaux:"Vermifuge de Moka",rdv:"Prendre rendez-vous chez le dentiste",maison:"Changer l'ampoule du couloir",documents:"Renouveler la carte d'identité",voitures:"Faire le contrôle technique",ecole:"Signer le carnet de liaison",jardin:"Tondre la pelouse"};
 const tkEx=id=>"Ex. : "+(TK_EX[id]||(id&&CAT[id]&&CAT[id].perso?CAT[id].nom+" : …":"Sortir les poubelles"));
 function openTaskSheet(o){ o=o||{}; if(!needMe()) return; const me=meId();
-  const U=upSheet("taskPage","Nouvelle tâche"); U.sheet.classList.add("ev-sheet","tk-sheet");
-  const inn=el("form",{class:"pp-in ev-in tk-in",autocomplete:"off"}); U.sheet.append(inn);
-  const st={where:o.where||"tous",when:null,due:"",cat:o.cat||null,rec:null,routine:null,open:null,more:false}, touched={};
+  const U=upSheet("taskPage","Nouvelle tâche"); U.sheet.classList.add("ev-sheet","ap-sheet","tk-sheet");
+  const inn=el("form",{class:"pp-in ap-in tk-in",autocomplete:"off"}); U.sheet.append(inn);
+  const st={where:o.where||"tous",when:null,due:"",cat:o.cat||null,rec:null,routine:null}, touched={};
   const t0=today(), plus=n=>iso(new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+n));
   const wkend=()=>{ const d=t0.getDay(); return plus(d===6||d===0?0:6-d); };
-  const sub=el("p"), ti=el("input",{type:"text",class:"ev-inp tk-ti",maxlength:"120",placeholder:tkEx(o.cat),"aria-label":"La tâche",enterkeyhint:"done"});
-  const grid=el("div",{class:"ev-types tk-types",role:"radiogroup","aria-label":"Catégorie"}), ncw=el("div"), rows=el("div",{class:"tk-g2"});
-  const dateIn=el("input",{type:"date",class:"ev-inp tk-date","aria-label":"Date d'échéance"}); dateIn.addEventListener("change",()=>{ st.due=dateIn.value; st.when=dateIn.value?"date":null; touched.when=1; drawRows(); });
-  const recIn=el("input",{type:"hidden",value:"0"}); const recBox=recPicker(recIn,v=>{ st.rec=v; touched.rec=1; drawRows(); });
-  const go=el("button",{type:"submit",class:"btn ev-cta tk-go",text:"Ajouter la tâche",disabled:true});
-  /* les catégories : Auto + les plus utilisées (2 rangées), « Plus » montre tout et « Nouvelle » */
-  const drawGrid=()=>{ grid.innerHTML=""; const use=new Map(); for(const t of S.foyer.concat(S.perso||[])) use.set(tkCatOf(t),(use.get(tkCatOf(t))||0)+1);
-    let L=Object.values(CAT).filter(c=>c.perso).concat(CATS.slice().sort((a,b)=>(use.get(b.id)||0)-(use.get(a.id)||0)));
-    const tile=(e,lab,col,on,fn,cls)=>grid.append(el("button",{type:"button",class:"ev-type"+(cls?" "+cls:""),role:cls?null:"radio","aria-checked":cls?null:String(!!on),style:"--ec:"+col,onclick:()=>{ haptic(5); fn(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); if(e.startsWith("<svg")) i.innerHTML=e; else i.textContent=e; return i; })(),el("span",{text:lab})));
-    const pick=id=>()=>{ st.cat=id; touched.cat=1; st.newCat=false; ti.placeholder=tkEx(id); drawGrid(); };
-    if(!st.more){ L=L.slice(0,6); if(st.cat&&CAT[st.cat]&&!L.some(c=>c.id===st.cat)) L[5]=CAT[st.cat]; }
-    tile("✨","Auto","#FFC94A",!st.cat,pick(null));
-    for(const c of L) tile(tkEmo(c.id),c.nom,c.c,st.cat===c.id,pick(c.id));
-    if(st.more) tile("＋","Nouvelle","#A3A0BE",st.newCat,()=>{ st.newCat=!st.newCat; drawGrid(); if(st.newCat) setTimeout(()=>{ const x=inn.querySelector(".tk-nci"); if(x) x.focus(); },40); },"tk-more"+(st.newCat?" on":""));
-    tile('<svg class="tk-chv" viewBox="0 0 24 24"><path d="'+(st.more?"M6 15l6-6 6 6":"M6 9l6 6 6-6")+'"/></svg>',st.more?"Moins":"Plus","#A3A0BE",false,()=>{ st.more=!st.more; if(!st.more) st.newCat=false; drawGrid(); },"tk-more");
-    ncw.innerHTML=""; if(!st.newCat) return;
+  const ti=el("input",{type:"text",class:"ap-ti tk-ti",maxlength:"120",placeholder:tkEx(o.cat),"aria-label":"La tâche",enterkeyhint:"done"});
+  const H=apHead("Nouvelle tâche",()=>U.close(),{submit:true,id:"tkGo",label:"Ajouter la tâche"}), go=H.ok; go.disabled=true;
+  const main=el("div",{class:"ap-main"}), catW=el("div"), body=el("div");
+  const dateIn=el("input",{type:"date","aria-label":"Date d'échéance"}); dateIn.addEventListener("change",()=>{ st.due=dateIn.value; st.when=dateIn.value?"date":null; touched.when=1; draw(); });
+  const recIn=el("input",{type:"hidden",value:"0"}); const recBox=recPicker(recIn,v=>{ st.rec=v; touched.rec=1; draw(); });
+  const nm=id=>id===me?"Moi":membre(id).nom;
+  /* catégorie : menu déroulant (Auto, les plus utilisées d'abord, « Nouvelle catégorie… ») */
+  const drawCat=()=>{ catW.innerHTML=""; const use=new Map(); for(const t of S.foyer.concat(S.perso||[])) use.set(tkCatOf(t),(use.get(tkCatOf(t))||0)+1);
+    const L=Object.values(CAT).filter(c=>c.perso).concat(CATS.slice().sort((a,b)=>(use.get(b.id)||0)-(use.get(a.id)||0)));
+    main.style.setProperty("--apc",st.cat&&CAT[st.cat]?CAT[st.cat].c:"#FFC94A");
+    catW.append(apRow("tag","Catégorie",apSel([["","✨ Auto"]].concat(L.map(c=>[c.id,tkEmo(c.id)+" "+c.nom]),[["__new","＋ Nouvelle catégorie…"]]),st.newCat?"__new":(st.cat||""),v=>{
+      if(v==="__new") st.newCat=true; else { st.cat=v||null; st.newCat=false; touched.cat=1; ti.placeholder=tkEx(st.cat); } haptic(5); drawCat();
+      if(st.newCat) setTimeout(()=>{ const x=catW.querySelector(".tk-nci"); if(x) x.focus(); },40); },"Catégorie")));
+    if(!st.newCat) return;
     const nci=el("input",{type:"text",class:"tk-nci",maxlength:"24",placeholder:"Nom : Bébé, Travail, Vélo…","aria-label":"Nom de la catégorie"}); nci.value=st.ncNom||"";
     const sw=el("div",{class:"tk-sw",role:"radiogroup","aria-label":"Couleur"}); st.ncC=st.ncC||DCOLS[0];
-    for(const c of DCOLS) sw.append(el("button",{type:"button",class:"tk-dot"+(st.ncC===c?" on":""),style:"--c:"+c,role:"radio","aria-checked":String(st.ncC===c),"aria-label":"Couleur",onclick:()=>{ st.ncNom=nci.value; st.ncC=c; drawGrid(); }}));
-    const ok=()=>{ const nm=nci.value.trim(); if(!nm){ nci.focus(); return; }
-      const ex=Object.values(CAT).find(c=>norm(c.nom)===norm(nm));
-      if(ex) st.cat=ex.id; else { const id="tc-"+slug(nm).slice(0,18)+"-"+Date.now().toString(36).slice(-4); CAT[id]={id,nom:nm.replace(/^./,x=>x.toUpperCase()),c:st.ncC,perso:true,neuve:true}; st.cat=id; }
-      touched.cat=1; st.newCat=false; st.ncNom=""; ti.placeholder=tkEx(st.cat); haptic(8); drawGrid(); };
+    for(const c of DCOLS) sw.append(el("button",{type:"button",class:"tk-dot"+(st.ncC===c?" on":""),style:"--c:"+c,role:"radio","aria-checked":String(st.ncC===c),"aria-label":"Couleur",onclick:()=>{ st.ncNom=nci.value; st.ncC=c; drawCat(); }}));
+    const ok=()=>{ const nmc=nci.value.trim(); if(!nmc){ nci.focus(); return; }
+      const ex=Object.values(CAT).find(c=>norm(c.nom)===norm(nmc));
+      if(ex) st.cat=ex.id; else { const id="tc-"+slug(nmc).slice(0,18)+"-"+Date.now().toString(36).slice(-4); CAT[id]={id,nom:nmc.replace(/^./,x=>x.toUpperCase()),c:st.ncC,perso:true,neuve:true}; st.cat=id; }
+      touched.cat=1; st.newCat=false; st.ncNom=""; ti.placeholder=tkEx(st.cat); haptic(8); drawCat(); };
     nci.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); ok(); } });
-    ncw.append(el("div",{class:"tk-nc"},el("div",{class:"tk-ncr"},nci,el("button",{type:"button",class:"btn tk-nok",onclick:ok},"Créer")),sw)); };
-  /* les lignes : Quand, Pour qui, Se répète, Routine ; une seule ouverte à la fois, un choix la referme */
-  const nm=id=>id===me?"Moi":membre(id).nom;
-  const drawRows=()=>{ rows.innerHTML=""; sub.textContent=st.where==="perso"?"Elle reste visible par toi seul.":"Elle s'affiche dans les tâches du foyer.";
-    const pcs=items=>el("div",{class:"pchips"},...items.filter(Boolean).map(([lab,on,fn,keep])=>el("button",{type:"button",class:"pchip","aria-pressed":String(!!on),onclick:()=>{ haptic(5); fn(); if(!keep) st.open=null; drawRows(); }},...[].concat(lab))));
-    const row=(k,e,col,lab,val,body)=>{ const on=st.open===k;
-      rows.append(el("button",{type:"button",class:"tk-r"+(on?" open":""),"aria-expanded":String(on),style:"--c:"+col,onclick:()=>{ st.open=on?null:k; haptic(5); drawRows(); }},
-        el("span",{class:"ic","aria-hidden":"true",text:e}),el("b",{text:lab}),el("em",{},...[].concat(val)),(()=>{ const i=el("i",{class:"chev","aria-hidden":"true"}); i.innerHTML='<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>'; return i; })()));
-      if(on) rows.append(el("div",{class:"tk-rb"},...[].concat(body()))); };
-    /* Quand */
-    const W=k=>({auj:"Aujourd'hui",dem:"Demain",we:"Ce week-end"})[k];
-    const N=(k,label,d)=>[label,st.when===k,()=>{ st.when=k; st.due=d; dateIn.value=d; touched.when=1; }];
-    row("quand","📅","#8FB8FF","Quand",st.due?(W(st.when)||fmtDue(st.due).replace(/^./,x=>x.toUpperCase())):"Pas de date",()=>[pcs([["Sans date",!st.due,()=>{ st.when=null; st.due=""; dateIn.value=""; touched.when=1; }],N("auj","Aujourd'hui",plus(0)),N("dem","Demain",plus(1)),N("we","Week-end",wkend()),
-      ["📅 Date",st.when==="date",()=>{ st.when="date"; touched.when=1; setTimeout(()=>{ try{ dateIn.showPicker(); }catch(_){ dateIn.focus(); } },30); },true]]),st.when==="date"?dateIn:null].filter(Boolean));
+    catW.append(el("div",{class:"tk-nc ap-nc"},el("div",{class:"tk-ncr"},nci,el("button",{type:"button",class:"btn tk-nok",onclick:ok},"Créer")),sw)); };
+  /* Quand, Se répète, Routine (menus déroulants), Pour qui (pastilles) */
+  const draw=()=>{ body.innerHTML="";
+    const W=[["","Pas de date"],["auj","Aujourd'hui"],["dem","Demain"],["we","Ce week-end"],["date",st.when==="date"&&st.due?fmtDue(st.due).replace(/^./,x=>x.toUpperCase()):"Une date…"]];
+    const dRow=apRow("cal","Date",apSel(W,st.due?(st.when||"date"):"",v=>{ touched.when=1; st.when=v||null; st.due=v==="auj"?plus(0):v==="dem"?plus(1):v==="we"?wkend():v==="date"?(st.due||plus(0)):""; dateIn.value=st.due; draw();
+      if(v==="date") setTimeout(()=>{ try{ dateIn.showPicker(); }catch(_){} },30); },"Date"));
+    const dayRow=st.when==="date"?apRow(null,"Le",apPick(apDate(st.due),dateIn),"ap-sub"):null;
+    const RC=[["0","Non"],["1j","Chaque jour"],["1s","Chaque semaine"],["1","Chaque mois"],["12","Chaque année"],["autre","Autre…"]];
+    const rk=st.recOther?"autre":recNorm(st.rec)?(RC.some(r=>r[0]===String(st.rec))?String(st.rec):"autre"):"0";
+    const rRow=apRow("rep","Se répète",apSel(RC,rk,v=>{ touched.rec=1;
+      if(v==="autre"){ st.recOther=true; recIn.value=String(st.rec||"2s"); st.rec=recParse(recIn.value); if(recIn._sync) recIn._sync(); }
+      else { st.recOther=false; st.rec=v==="0"?0:v==="1"?1:v==="12"?12:v; if(!st.rec) st.routine=null; } draw(); },"Se répète"));
+    let rtRow=null; if(recNorm(st.rec)){ const A=RT.find(r=>r[0]===tkRoutine({recur:st.rec}));
+      rtRow=apRow("sun","Routine",apSel([["","Auto"+(A?" · "+A[1]+" "+A[2]:"")]].concat(RT.map(([k,e,l])=>[k,e+" "+l]),[["aucune","Aucune"]]),st.routine||"",v=>{ st.routine=v||null; draw(); },"Routine")); }
+    body.append(apSec("Quand"),apCard(dRow,dayRow,rRow,st.recOther?el("div",{class:"ap-r ap-sub ap-rec"},recBox):null,rtRow));
     /* Pour qui */
-    const Wh=(v,label)=>[label,st.where===v,()=>{ st.where=v; touched.where=1; }];
+    const Wh=(v,lab)=>apChip(lab,st.where===v,()=>{ st.where=v; touched.where=1; draw(); });
     const who=[Wh("tous","🏠 Le foyer"),Wh(me,[avatar(me,20),"Moi"])];
     if(isAdmin()) for(const h of humains()) if(h.id!==me) who.push(Wh(h.id,[avatar(h.id,20),h.nom]));
     who.push(Wh("perso","🔒 Moi seul"));
-    const canTour=isAdmin()&&humains().length>1;
-    if(canTour) who.push(["🔄 À tour de rôle",st.where==="tour",()=>{ st.where="tour"; touched.where=1; if(!st.tour) st.tour=humains().map(h=>h.id); if(!recNorm(st.rec)){ st.rec="1s"; st.recOther=false; } },true]);
-    const tr=st.tour||[];
-    row("qui","👤","#FFC94A","Pour qui",st.where==="tous"?"Le foyer":st.where==="perso"?"🔒 Moi seul":st.where==="tour"?(tr.length>1?"🔄 "+tr.map(nm).join(", "):"🔄 À tour de rôle"):[avatar(st.where,20),nm(st.where)],()=>{ const out=[pcs(who)];
-      if(st.where==="tour") out.push(el("p",{class:"tk-trh",text:tr.length>1?"Le premier commence, puis chacun son tour à chaque fois que la tâche est faite.":"Choisis au moins deux personnes."}),
-        pcs(humains().map(h=>{ const k=tr.indexOf(h.id); return [[avatar(h.id,20),nm(h.id)+(k>=0?" · "+(k+1):"")],k>=0,()=>{ const a=tr.slice(), j=a.indexOf(h.id); if(j>=0) a.splice(j,1); else a.push(h.id); st.tour=a; touched.where=1; },true]; })));
-      return out; });
-    /* Se répète */
-    const rk=st.rec==null||st.rec===0?"0":String(st.rec), R=(v,label)=>[label,rk===String(v)&&!st.recOther,()=>{ st.rec=v; st.recOther=false; touched.rec=1; if(!v) st.routine=null; }];
-    row("rec","🔁","#C79BFF","Se répète",recNorm(st.rec)?recText(st.rec).replace(/^./,x=>x.toUpperCase()):"Non",()=>[pcs([R(0,"Non"),R("1j","Chaque jour"),R("1s","Chaque semaine"),R(1,"Chaque mois"),R(12,"Chaque année"),
-      ["Autre…",!!st.recOther,()=>{ st.recOther=true; touched.rec=1; recIn.value=String(st.rec||"2s"); st.rec=recParse(recIn.value); if(recIn._sync) recIn._sync(); },true]]),st.recOther?recBox:null].filter(Boolean));
-    /* Routine (seulement si elle revient) */
-    if(recNorm(st.rec)){ const auto=tkRoutine({recur:st.rec}), A=RT.find(r=>r[0]===auto), cur=RT.find(r=>r[0]===st.routine);
-      row("rt","🧹","#7FD39A","Routine",st.routine==="aucune"?"Aucune":cur?cur[1]+" "+cur[2]:A?"Auto · "+A[2]:"Aucune",()=>pcs([["Auto",!st.routine,()=>{ st.routine=null; }],...RT.map(([k,e,l])=>[e+" "+l,st.routine===k,()=>{ st.routine=k; }]),["Aucune",st.routine==="aucune",()=>{ st.routine="aucune"; }]])); }
+    if(isAdmin()&&humains().length>1) who.push(apChip("🔄 À tour de rôle",st.where==="tour",()=>{ st.where="tour"; touched.where=1; if(!st.tour) st.tour=humains().map(h=>h.id); if(!recNorm(st.rec)){ st.rec="1s"; st.recOther=false; } draw(); }));
+    const tr=st.tour||[], extra=st.where==="tour"?[el("p",{class:"ap-hint tk-trh",text:tr.length>1?"Le premier commence, puis chacun son tour à chaque fois que la tâche est faite.":"Choisis au moins deux personnes."}),
+      el("div",{class:"ap-chips"},...humains().map(h=>{ const k=tr.indexOf(h.id); return apChip([avatar(h.id,20),nm(h.id)+(k>=0?" · "+(k+1):"")],k>=0,()=>{ const a=tr.slice(), j=a.indexOf(h.id); if(j>=0) a.splice(j,1); else a.push(h.id); st.tour=a; touched.where=1; draw(); }); }))]:null;
+    body.append(apSec("Pour qui"),apWho("user",who),...(extra?[el("div",{class:"ap-tour"},...extra)]:[]),
+      el("p",{class:"ap-hint",text:st.where==="perso"?"Elle reste visible par toi seul.":"Elle s'affiche dans les tâches du foyer."}));
     go.disabled=!ti.value.trim(); };
   /* ce qu'on écrit règle ce qu'on n'a pas encore touché (« demain », « chaque mardi », « pour Emma »…) */
   ti.addEventListener("input",()=>{ const v=ti.value.trim(); const p=v?parseQuick(v):{};
     if(!touched.when){ if(p.echeance){ st.due=p.echeance; st.when=p.echeance===plus(0)?"auj":p.echeance===plus(1)?"dem":"date"; dateIn.value=p.echeance; } else { st.when=null; st.due=""; } }
     if(!touched.rec){ st.rec=p.recur||null; st.recOther=!!(p.recur&&!["1j","1s","1",1,"12",12].includes(p.recur)); if(st.recOther){ recIn.value=String(p.recur); if(recIn._sync) recIn._sync(); } }
     if(!touched.where&&p.where) st.where=p.where;
-    drawRows(); });
-  inn.append(el("div",{class:"ev-top"},el("h2",{class:"tk-h",text:"Nouvelle tâche"}),sub),grid,ncw,ti,rows,go);
+    draw(); });
+  main.append(ti,catW); inn.append(H.hd,main,body);
   inn.addEventListener("submit",async e=>{ e.preventDefault(); const v=ti.value.trim(); if(!v){ ti.focus(); return; } go.disabled=true;
     const p=parseQuick(v), titre=(p.titre||v).replace(/^./,c=>c.toUpperCase());
     const pc=st.cat&&CAT[st.cat]&&CAT[st.cat].perso?CAT[st.cat]:null;
-    const isTour=st.where==="tour"&&(st.tour||[]).length>1; if(st.where==="tour"&&!isTour){ toast("Choisis au moins deux personnes pour le tour de rôle."); st.open="qui"; drawRows(); go.disabled=false; return; }
+    const isTour=st.where==="tour"&&(st.tour||[]).length>1; if(st.where==="tour"&&!isTour){ toast("Choisis au moins deux personnes pour le tour de rôle."); draw(); go.disabled=false; return; }
     const ok=await addTask({titre,cat:st.cat||p.cat||null,catNom:pc?pc.nom:null,catC:pc?pc.c:null,where:isTour?st.tour[0]:st.where,tour:isTour?st.tour:null,echeance:st.due||null,recur:touched.rec||st.rec!=null?(st.rec||0):null,routine:recNorm(st.rec)?st.routine:null});
     if(ok){ haptic(12); U.close(); } else go.disabled=false; });
-  drawGrid(); drawRows(); setTimeout(()=>{ try{ ti.focus({preventScroll:true}); }catch(_){} },360); }
+  drawCat(); draw(); setTimeout(()=>{ try{ ti.focus({preventScroll:true}); }catch(_){} },360); }
 function openSheet(o){ if(!meId()){ needMe(); return; } o=(o&&(o.where||o.text))?o:{}; resetQuick();
   if(o.where){ fillWhere($("qWhere"),o.where); $("qWhere").value=o.where; $("qWhere").dataset.touched="1"; if(o.where!=="perso"&&o.where!=="tous") S.qSel.add(o.where); }
   if(o.text) $("quickTitle").value=o.text;
@@ -8386,8 +8444,8 @@ function dzPark(){ const st=$("docStash"); if(st&&DZF.parentNode!==st){ DZF.hidd
 function openDocForm(o){ o=o||{}; if(!needMe()) return; if(!pmCan("docs")){ setTab("documents"); return; } if(S.tab!=="documents") setTab("documents");
   if(DZ){ if(o.pick) dzPick(o.pick==="photo"); return; } dzPark(); const f=$("docForm");
   const U=upSheet("docNewPage","Nouveau papier",()=>{ if(DZ===U) DZ=null; const fm=$("docForm"); if(fm&&!fm.hidden){ fm.reset(); S.dCatC=null; S.docPour="foyer"; S.docEv=null; $("dNewCat").hidden=true; S.dzMore=false; try{ fillDocCats(); updConsent(); }catch(_){} } setTimeout(()=>{ if(!DZ) dzPark(); },310); document.querySelectorAll('.hub-add[data-add="documents"]').forEach(b=>b.setAttribute("aria-expanded","false")); });
-  DZ=U; U.sheet.classList.add("ev-sheet","tk-sheet");
-  const inn=el("div",{class:"pp-in ev-in tk-in"}); U.sheet.append(inn); inn.append(f); f.hidden=false;
+  DZ=U; U.sheet.classList.add("ev-sheet","ap-sheet");
+  const inn=el("div",{class:"pp-in ap-in"}); U.sheet.append(inn); inn.append(f); f.hidden=false;
   document.querySelectorAll('.hub-add[data-add="documents"]').forEach(b=>b.setAttribute("aria-expanded","true"));
   if(o.cat){ const c=$("dCat"); if([...c.options].some(x=>x.value===o.cat)) c.value=o.cat; }
   renderDocPour(); renderDocAI(); dzSync();
@@ -8397,6 +8455,7 @@ $("sgDoc").addEventListener("click",()=>{ closeSheet(); openDocAdd(); });
 const dzD=v=>parse(v).toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"});
 $("docAddPhoto").addEventListener("click",()=>dzPick(true)); $("docAddFile").addEventListener("click",()=>dzPick(false));
 $("dFile").addEventListener("change",()=>dzSync()); $("dTitle").addEventListener("input",()=>dzSync());
+$("dzClose").addEventListener("click",()=>{ if(DZ) DZ.close(); }); $("dCat").addEventListener("change",()=>dzSync());
 for(const id of ["dExp","dAchat","dGar"]) $(id).addEventListener("change",()=>dzSync()); $("dNote").addEventListener("input",()=>dzSync());
 /* une facture avec garantie va dans « Factures » (sauf si un classeur a déjà été choisi) */
 for(const id of ["dAchat","dGar"]) $(id).addEventListener("change",()=>{ const c=$("dCat"); if(c.value==="documents"){ c.value="factures"; dzSync(); } });
@@ -8411,27 +8470,28 @@ function dzPick(photo){ const f=$("dFile"); if(photo) f.setAttribute("capture","
 const DZ_MAIN=["identite","sante","assurance","factures","maison","voitures","documents"];
 /* la feuille suit les champs : classeurs en emojis, fichiers choisis (en français), résumé de chaque ligne */
 function dzSync(){ const f=$("docForm"); if(!f) return; const sel=$("dCat"), cur=sel.value;
-  const grid=$("dCats"); grid.innerHTML="";
-  const all=[...sel.options].map(o=>o.value).filter(v=>v!=="__new");
-  let L=S.dzMore?all:DZ_MAIN.filter(v=>all.includes(v)); if(!S.dzMore&&cur&&cur!=="__new"&&!L.includes(cur)) L=L.slice(0,6).concat(cur);
-  const tile=(e,lab,col,on,fn,cls)=>grid.append(el("button",{type:"button",class:"ev-type"+(cls?" "+cls:""),role:cls?null:"radio","aria-checked":cls?null:String(!!on),style:"--ec:"+col,onclick:()=>{ haptic(5); fn(); }},(()=>{ const i=el("i",{"aria-hidden":"true"}); if(e.startsWith("<svg")) i.innerHTML=e; else i.textContent=e; return i; })(),el("span",{text:lab})));
-  const set=v=>()=>{ sel.value=v; sel.dispatchEvent(new Event("change")); dzSync(); };
-  for(const v of L){ const c=catOf(v)||{}, cu=docCustom()[v]; tile(DOC_EMO[v]||(cu?"🗂️":docEmo(v)),v==="documents"?"Autres":(cu||c).nom||v,(cu||c).c||"#A9B4C2",cur===v,set(v)); }
-  if(S.dzMore) tile("＋","Nouveau","#A3A0BE",cur==="__new",()=>{ if(cur==="__new"){ set("documents")(); return; } set("__new")(); },"tk-more"+(cur==="__new"?" on":""));
-  tile('<svg class="tk-chv" viewBox="0 0 24 24"><path d="'+(S.dzMore?"M6 15l6-6 6 6":"M6 9l6 6 6-6")+'"/></svg>',S.dzMore?"Moins":"Plus","#A3A0BE",false,()=>{ S.dzMore=!S.dzMore; if(!S.dzMore&&sel.value==="__new"){ sel.value="documents"; sel.dispatchEvent(new Event("change")); } dzSync(); },"tk-more");
+  /* classeur : menu déroulant dans la carte du haut (façon Calendrier, 9 nov.) */
+  const grid=$("dCats"); grid.innerHTML=""; sel.hidden=false; sel.removeAttribute("aria-hidden"); sel.removeAttribute("tabindex"); sel.setAttribute("aria-label","Classeur");
+  const o=sel.selectedOptions[0], cu=docCustom()[cur], lab=o?o.text.replace(/^[+＋]\s*/,""):"Classeur";
+  const em=cur==="__new"?"＋":/^\p{Extended_Pictographic}/u.test(lab)?"":(DOC_EMO[cur]||(cu?"🗂️":docEmo(cur)));
+  grid.append(apRow("folder","Classeur",apPick((em?em+" ":"")+lab,sel)));
+  $("dzMain").style.setProperty("--apc",(cu||catOf(cur)||{}).c||"#A9B4C2");
   /* fichiers choisis */
   const fl=[...$("dFile").files], fw=$("dFiles"); fw.innerHTML=""; fw.hidden=!fl.length; $("dSrc").hidden=!!fl.length;
   for(const x of fl) fw.append(el("div",{class:"dz-f"},el("i",{"aria-hidden":"true",text:/pdf$/i.test(x.type||x.name)?"📄":"🖼️"}),el("span",{text:x.name}),el("small",{text:x.size>=1e6?(x.size/1e6).toFixed(1).replace(".",",")+" Mo":Math.max(1,Math.round(x.size/1e3))+" Ko"})));
   if(fl.length) fw.append(el("button",{type:"button",class:"dz-fx","aria-label":"Retirer "+(fl.length>1?"les fichiers":"le fichier"),onclick:()=>{ $("dFile").value=""; renderDocAI(); dzSync(); }},"Retirer"));
   { const ai=secOn()&&S.sampleLimits&&S.sampleLimits.images; $("dSrcPh").textContent=ai?"Cocoony lit le papier et remplit la fiche":"La photo est rangée avec sa fiche"; }
-  /* lignes */
-  const ex=$("dExp").value; $("dExpBoxV").textContent=ex?dzD(ex):"Pas de date";
-  const q=$("dExpQ"); if(!q.childElementCount){ const t0=today(), yr=n=>iso(new Date(t0.getFullYear()+n,t0.getMonth(),t0.getDate()));
-    for(const [l,v] of [["Sans date",""],["Dans 1 an",1],["5 ans",5],["10 ans",10]]) q.append(el("button",{type:"button",class:"pchip","data-v":String(v),onclick:()=>{ haptic(5); $("dExp").value=v===""?"":yr(v); $("dExpBox").open=false; updConsent(); dzSync(); }},l)); }
-  q.querySelectorAll(".pchip").forEach(b=>{ const v=b.dataset.v; b.setAttribute("aria-pressed",String(v===""?!ex:false)); });
-  const pr=S.docPour||"foyer"; const pv=$("docPourWrapV"); pv.innerHTML=""; if(pr==="foyer") pv.textContent="Foyer"; else pv.append(avatar(pr,20),pr===meId()?"Moi":(membre(pr)||{}).nom||"");
-  const g=$("dGar").value; $("dGarBoxV").textContent=g?"Jusqu'au "+dzD(g):"Non";
-  const nt=$("dNote").value.trim(); $("dNoteBoxV").textContent=nt?nt:"Aucune";
+  /* dates : expire, garantie (menus déroulants, puis la date exacte) */
+  const ex=$("dExp").value, t0=today(), yr=n=>iso(new Date(t0.getFullYear()+n,t0.getMonth(),t0.getDate()));
+  const ek=!ex?"":String([1,5,10].find(n=>yr(n)===ex)||"date"), q=$("dExpQ"); q.innerHTML="";
+  q.append(apSel([["","Pas de date"],["1","Dans 1 an"],["5","Dans 5 ans"],["10","Dans 10 ans"],["date",ek==="date"?dzD(ex):"Une date…"]],ek,v=>{ const d=$("dExp");
+    if(v==="date"){ if(!d.value||ek!=="date") d.value=iso(t0); setTimeout(()=>{ try{ d.showPicker(); }catch(_){} },30); } else d.value=v?yr(+v):""; updConsent(); dzSync(); },"Expire"));
+  $("dExpDay").hidden=ek!=="date"; $("dExpL").textContent=apDate(ex);
+  const g=$("dGar").value, a=$("dAchat").value, gf=n=>iso(addMonths(a?parse(a):t0,12*n)), gk=!g?"":String([1,2,3,5].find(n=>gf(n)===g)||"date"), gs=$("dGarSel"); gs.innerHTML="";
+  gs.append(apSel([["","Non"],["1","1 an"],["2","2 ans (légale)"],["3","3 ans"],["5","5 ans"],["date",gk==="date"?"Jusqu'au "+dzD(g):"Une autre date…"]],gk,v=>{ const A=$("dAchat"), G=$("dGar");
+    if(!v){ G.value=""; A.value=""; } else { if(!A.value) A.value=iso(t0); if(v==="date"){ if(!G.value||gk!=="date") G.value=iso(addMonths(parse(A.value),24)); setTimeout(()=>{ try{ G.showPicker(); }catch(_){} },30); } else G.value=iso(addMonths(parse(A.value),12*v));
+      const c=$("dCat"); if(c.value==="documents") c.value="factures"; } dzSync(); },"Garantie"));
+  document.querySelectorAll("#docForm .dz-gr").forEach(r=>r.hidden=!g); $("dAchatL").textContent=apDate(a); $("dGarL").textContent=apDate(g);
   $("dSubmit").disabled=!$("dTitle").value.trim(); }
 { const bh=$("brandHome"); const goHome=()=>{ if(typeof closeNotifs==="function") closeNotifs(); closeSheet(); if(S.tab!=="accueil"){ setTab("accueil"); renderHeader(); } else window.scrollTo({top:0,behavior:"smooth"}); };
   bh.addEventListener("click",goHome); bh.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); goHome(); } }); }
@@ -10006,7 +10066,7 @@ async function readDocAI(){
   finally{ btn.disabled=false; btn.textContent="✨ Lire avec Cocoony"; renderDocAI(); }
 }
 $("dFile").addEventListener("change",renderDocAI);
-$("docForm").addEventListener("reset",()=>setTimeout(()=>{ renderDocAI(); document.querySelectorAll("#docForm details").forEach(d=>d.open=false); dzSync(); },0));
+$("docForm").addEventListener("reset",()=>setTimeout(()=>{ renderDocAI(); dzSync(); },0));
 /* garantie : 2 ans (garantie légale en France), 3 ou 5 ans à partir de la date d'achat (ou d'aujourd'hui) */
 const garFrom=(achat,ans)=>iso(addMonths(achat?parse(achat):today(),12*ans));
 for(const a of [1,2,3,5]) $("dGarQ").append(el("button",{type:"button",text:a+" an"+(a>1?"s":"")+(a===2?" (légale)":""),onclick:()=>{ if(!$("dAchat").value) $("dAchat").value=iso(today()); $("dGar").value=garFrom($("dAchat").value,a); dzSync(); }}));
@@ -10399,47 +10459,34 @@ function evList(inn){ const t0=iso(today()), L=evAll(), cur=L.filter(e=>evEnd(e)
 
 function evNew(inn,V){ const T=EV_TYPES[V.type]||EV_TYPES.anniv, t0=iso(today());
   V.titre=V.titre!=null?V.titre:""; V.debut=V.debut||evAdd(t0,21); if(V.fin===undefined) V.fin=""; if(V.budget===undefined) V.budget="";
-  const back=V.from==="pick"?evBk(()=>evGo({v:"pick",day:V.pickDay||""})):"";
-  inn.append(back,el("div",{class:"ev-top"},el("h2",{text:"Nouvel événement spécial"}),el("p",{text:"Un modèle prépare les étapes pour toi."})));
-  const grid=el("div",{class:"ev-types",role:"radiogroup","aria-label":"Type d'événement"});
-  for(const [k,t] of Object.entries(EV_TYPES)) grid.append(el("button",{type:"button",role:"radio","aria-checked":String(k===V.type),class:"ev-type",style:"--ec:"+t.c,onclick:()=>{ if(k===V.type) return; V.type=k; V.pick=null; evRender(false); }},el("i",{"aria-hidden":"true",text:t.e}),el("span",{text:t.n})));
-  inn.append(grid);
-  const nm=el("input",{class:"ev-inp",id:"evNom",type:"text",maxlength:"60",placeholder:T.ph,value:V.titre,"aria-label":"Nom"}); nm.addEventListener("input",()=>V.titre=nm.value);
-  const d1=el("input",{class:"ev-inp",id:"evDeb",type:"date",value:V.debut,"aria-label":"Début"}), d2=el("input",{class:"ev-inp",id:"evFin",type:"date",value:V.fin,"aria-label":"Fin (facultatif)"});
-  d1.addEventListener("change",()=>{ V.debut=d1.value||V.debut; if(V.fin&&V.fin<V.debut){ V.fin=""; d2.value=""; } evRender(false); }); d2.addEventListener("change",()=>{ V.fin=d2.value; evRender(false); });
-  const bu=el("input",{class:"ev-inp",id:"evBud",type:"text",inputmode:"decimal",placeholder:"Facultatif",value:V.budget,"aria-label":"Budget prévu"}); bu.addEventListener("input",()=>V.budget=bu.value); bu.addEventListener("change",()=>evRender(false));
-  /* (30 oct., choix A) comme « Nouvelle tâche » : le nom, puis des lignes qui se déplient (une seule ouverte) */
-  nm.classList.add("tk-ti"); inn.append(nm);
-  const rows=el("div",{class:"tk-g2 evz-rows"}); inn.append(rows);
+  /* façon Calendrier (choix A d'Angel, 9 nov.) : ✕ · titre · ✓, carte du haut (nom + type), Quand, Budget, Options, Étapes du modèle */
+  inn.classList.add("ap-in");
   const tpl=EV_TPL[V.type]||[]; if(!V.pick) V.pick=tpl.map(()=>true);
-  const box=el("div",{class:"ev-tpl"});
-  function paintTpl(){ box.innerHTML=""; if(!tpl.length){ box.append(el("p",{class:"ev-note",text:"Page vide : tu ajouteras tes étapes ensuite."})); return; }
-    box.append(el("div",{class:"ev-sec"},el("span",{text:"Le modèle prépare"}),el("span",{text:V.pick.filter(Boolean).length+"/"+tpl.length})));
-    const c=el("div",{class:"ev-list"}); tpl.forEach(([k,t,off],i)=>{ const dt=evTplDate({debut:V.debut,fin:V.fin},off), n=evDiff(dt,V.debut);
-      const lab=n<0?"J"+n:n===0?(V.fin&&V.fin>V.debut?"Début":"Jour J"):(off+"").startsWith("f+")&&V.fin?"Fin":"J+"+n;
-      const ck=el("button",{type:"button",class:"ev-ck"+(V.pick[i]?" on":""),role:"checkbox","aria-checked":String(!!V.pick[i]),"aria-label":t});
-      /* toute la ligne coche / décoche (la case reste le bouton pour le clavier et les lecteurs d'écran) */
-      c.append(el("div",{class:"ev-it ev-tap"+(V.pick[i]?"":" off"),onclick:()=>{ V.pick[i]=!V.pick[i]; haptic(5); evRender(false); }},ck,el("span",{class:"ev-tt",text:t}),k!=="t"?el("em",{class:"ev-tag "+k},uic(k==="a"?"cart":"calendar"),k==="a"?"achat":"rdv"):"",el("small",{class:"ev-when",text:lab}))); });
-    box.append(c); }
-  const fmtD=d=>d?new Intl.DateTimeFormat("fr-FR",{weekday:"short",day:"numeric",month:"short"}).format(parse(d)).replace(/^./,c=>c.toUpperCase()):"";
-  const row=(k,e,col,lab,val,body)=>{ const on=V.open===k;
-    rows.append(el("button",{type:"button",class:"tk-r"+(on?" open":""),"aria-expanded":String(on),style:"--c:"+col,onclick:()=>{ V.open=on?null:k; haptic(5); evRender(false); }},
-      el("span",{class:"ic","aria-hidden":"true",text:e}),el("b",{text:lab}),el("em",{text:val}),(()=>{ const i=el("i",{class:"chev","aria-hidden":"true"}); i.innerHTML='<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>'; return i; })()));
-    const b=el("div",{class:"tk-rb"},...[].concat(body)); if(!on) b.hidden=true; rows.append(b); };
-  const one=V.type==="anniv"||V.type==="noel";
-  row("date","📅","#8FB8FF",one?"Date":"Dates",fmtD(V.debut)+(V.fin&&V.fin>V.debut?" → "+fmtD(V.fin):""),[el("label",{class:"ev-lab"},el("span",{text:one?"Date":"Début"}),d1),one?"":el("label",{class:"ev-lab"},el("span",{text:"Fin (facultatif)"}),d2)].filter(Boolean));
-  row("bud","💶","#7FD39A","Budget",V.budget?String(V.budget).replace(/[^0-9,.]/g,"")+" €":"Aucun",[bu]);
-  if(tpl.length) row("tpl","✅","#FFC94A","Étapes du modèle",V.pick.filter(Boolean).length+" sur "+tpl.length,[box]);
-  if(V.type==="anniv") row("an","🔁","#E79ADB","Chaque année",V.annuel===false?"Non":"Oui",[el("div",{class:"pchips"},...[["Oui",true],["Non",false]].map(([l,v])=>el("button",{type:"button",class:"pchip","aria-pressed":String((V.annuel!==false)===v),onclick:()=>{ V.annuel=v; V.open=null; evRender(false); }},l)))]);
-  paintTpl();
   /* sans=true : l'événement est créé vide, sans les étapes du modèle (bouton « Continuer sans utiliser le modèle ») */
   const create=async(btn,sans)=>{ if(!S.db||!needMe()) return; const titre=(V.titre||"").trim()||T.n;
-      if(!V.debut){ toast("Choisis une date."); return; } const lab=btn.textContent; go.disabled=true; if(alt) alt.disabled=true; btn.textContent="Préparation…";
+      if(!V.debut){ toast("Choisis une date."); return; } go.disabled=true; if(alt) alt.disabled=true; const lab=alt&&btn===alt?alt.textContent:null; if(lab) alt.textContent="Préparation…";
       try{ await evCreate(Object.assign({titre,type:V.type,debut:V.debut,fin:V.fin&&V.fin>V.debut?V.fin:null,budget:parseMoney(V.budget)},V.type==="anniv"?{idees:V.idees||[],annuel:V.annuel!==false}:{}),sans?[]:tpl.filter((_,i)=>V.pick[i])); }
-      catch(e){ writeErr(e); go.disabled=false; if(alt) alt.disabled=false; btn.textContent=lab; } };
-  const go=el("button",{type:"button",class:"btn ev-cta",id:"evCreate",onclick:()=>create(go,false)},"Créer l'événement");
-  const alt=tpl.length?el("button",{type:"button",class:"ev-sans",id:"evCreateSans",onclick:()=>create(alt,true)},"Sans modèle"):null;
-  inn.append(go); if(alt) inn.append(alt); }
+      catch(e){ writeErr(e); go.disabled=false; if(alt){ alt.disabled=false; if(lab) alt.textContent=lab; } } };
+  const H=apHead("Nouvel événement spécial",()=>{ if(V.from==="pick") evGo({v:"pick",day:V.pickDay||""}); else S.evClose(); },{id:"evCreate",label:"Créer l'événement",onOk:()=>create(go,false)}), go=H.ok;
+  const nm=el("input",{class:"ap-ti",id:"evNom",type:"text",maxlength:"60",placeholder:T.ph,value:V.titre,"aria-label":"Nom"}); nm.addEventListener("input",()=>V.titre=nm.value);
+  const ty=apSel(Object.entries(EV_TYPES).map(([k,t])=>[k,t.e+" "+t.n]),V.type,k=>{ if(k===V.type) return; V.type=k; V.pick=null; haptic(5); evRender(false); },"Type d'événement","evType");
+  inn.append(H.hd,el("div",{class:"ap-main",style:"--apc:"+T.c},nm,apRow("tag","Type",ty)));
+  const d1=el("input",{id:"evDeb",type:"date",value:V.debut,"aria-label":"Début"}), d2=el("input",{id:"evFin",type:"date",value:V.fin,"aria-label":"Fin (facultatif)"});
+  d1.addEventListener("change",()=>{ V.debut=d1.value||V.debut; if(V.fin&&V.fin<V.debut){ V.fin=""; d2.value=""; } evRender(false); }); d2.addEventListener("change",()=>{ V.fin=d2.value; evRender(false); });
+  const one=V.type==="anniv"||V.type==="noel";
+  inn.append(apSec("Quand"),apCard(apRow("cal",one?"Date":"Début",apPick(apDate(V.debut),d1)),one?null:apRow(null,"Fin",apPick(V.fin?apDate(V.fin):"Facultatif",d2),"ap-sub")));
+  const bu=el("input",{id:"evBud",type:"text",inputmode:"decimal",placeholder:"Budget prévu (facultatif)",value:V.budget,"aria-label":"Budget prévu"}); bu.addEventListener("input",()=>V.budget=bu.value);
+  inn.append(apSec("Budget"),el("label",{class:"ap-f"},apIc("euro"),bu,el("i",{class:"ap-eur",text:"€"})));
+  if(V.type==="anniv") inn.append(apSec("Options"),apCard(apRow("rep","Le rappeler chaque année",apSw(V.annuel!==false,v=>{ V.annuel=v; evRender(false); },"Le rappeler chaque année"))));
+  /* étapes du modèle : toute la ligne coche / décoche */
+  if(tpl.length){ const c=el("div",{class:"ap-opt ap-steps"});
+    tpl.forEach(([k,t,off],i)=>{ const dt=evTplDate({debut:V.debut,fin:V.fin},off), n=evDiff(dt,V.debut);
+      const lab=n<0?"J"+n:n===0?(V.fin&&V.fin>V.debut?"Début":"Jour J"):(off+"").startsWith("f+")&&V.fin?"Fin":"J+"+n;
+      const ck=el("button",{type:"button",class:"ev-ck"+(V.pick[i]?" on":""),role:"checkbox","aria-checked":String(!!V.pick[i]),"aria-label":t});
+      c.append(el("div",{class:"ap-r ev-tap"+(V.pick[i]?"":" off"),onclick:()=>{ V.pick[i]=!V.pick[i]; haptic(5); evRender(false); }},ck,el("b",{text:t}),k!=="t"?el("em",{class:"ev-tag "+k},uic(k==="a"?"cart":"calendar"),k==="a"?"achat":"rdv"):"",el("small",{class:"ev-when",text:lab}))); });
+    inn.append(apSec("Étapes du modèle · "+V.pick.filter(Boolean).length+" sur "+tpl.length),c); }
+  const alt=tpl.length?el("button",{type:"button",class:"ev-sans",id:"evCreateSans",onclick:()=>create(alt,true)},"Créer sans les étapes du modèle"):null;
+  if(alt) inn.append(alt); }
 async function evCreate(base,steps,o){ const me=meId(), now=Date.now(), t0=iso(today());
   const ref=await S.db.collection("evenements").add(Object.assign({},base,{creePar:me,creeLe:now})); const id=ref.id;
   S.evs=(S.evs||[]).filter(e=>e.id!==id).concat([Object.assign({id},base,{creePar:me,creeLe:now})]);
@@ -10920,25 +10967,29 @@ function renderCHome(){ const H=$("cHome"); if(!H) return; if(!meId()){ clStash(
 function openCListForm(l){ if(!needMe()) return; const me=meId(), edit=!!l;
   const F=edit?{titre:l.titre||"",couleur:clCol(l),date:l.date||null,lieu:l.lieu||"",qui:l.qui||null,prive:!!l.prive,recur:l.recur||null}:{titre:"",couleur:CL_COLS[0],date:null,lieu:"",qui:null,prive:false,recur:null,ing:false};
   const U=clSheet(); clClear(U);
-  const inn=el("div",{class:"pp-in ev-in cl-in"}); U.sheet.append(inn);
-
-  inn.append(el("div",{class:"ev-top"},el("h2",{text:edit?"Modifier la liste":"Nouvelle liste"}),el("p",{text:"Elle s'affiche sur la page Courses."})));
-  const ti=el("input",{class:"ev-inp",type:"text",id:"clTitre",maxlength:"60",placeholder:"Courses de la semaine, anniversaire, pharmacie…","aria-label":"Titre"}); ti.value=F.titre; ti.addEventListener("input",()=>F.titre=ti.value);
-  const em=el("div",{class:"cl-cols",role:"radiogroup","aria-label":"Couleur"}); const paintE=()=>{ em.innerHTML=""; for(const col of CL_COLS) em.append(el("button",{type:"button",role:"radio","aria-checked":String(F.couleur===col),"aria-label":"Couleur "+col,style:"--c:"+col,onclick:()=>{ F.couleur=col; paintE(); haptic(5); }})); }; paintE();
-  const t0=iso(today()), t1=iso(new Date(today().getTime()+864e5)), da=el("input",{class:"ev-inp",type:"date",id:"clDate","aria-label":"Date"}); da.value=F.date||"";
-  const qd=el("div",{class:"pchips"}); const paintD=()=>{ qd.innerHTML=""; for(const [l2,v] of [["Aujourd'hui",t0],["Demain",t1],["Sans date",null]]) qd.append(el("button",{type:"button",class:"pchip","aria-pressed":String(F.date===v),onclick:()=>{ F.date=v; da.value=v||""; paintD(); }},l2)); }; paintD();
-  da.addEventListener("input",()=>{ F.date=da.value||null; paintD(); });
+  const inn=el("div",{class:"pp-in ap-in cl-in"}); U.sheet.append(inn); U.sheet.classList.add("ap-sheet");
+  /* façon Calendrier (choix A d'Angel, 9 nov.) : titre + couleur dans la carte du haut, puis Quand, Magasin, Qui y va, Options */
+  const ti=el("input",{class:"ap-ti",type:"text",id:"clTitre",maxlength:"60",placeholder:"Courses de la semaine, pharmacie…","aria-label":"Titre"}); ti.value=F.titre; ti.addEventListener("input",()=>F.titre=ti.value);
+  const main=el("div",{class:"ap-main"}), colW=el("div"), body=el("div");
+  const paintE=()=>{ main.style.setProperty("--apc",F.couleur); colW.innerHTML=""; const em=el("div",{class:"cl-cols ap-cols",role:"radiogroup","aria-label":"Couleur"});
+    for(const col of CL_COLS) em.append(el("button",{type:"button",role:"radio","aria-checked":String(F.couleur===col),"aria-label":"Couleur "+col,style:"--c:"+col,onclick:()=>{ F.couleur=col; paintE(); haptic(5); }}));
+    colW.append(el("div",{class:"ap-r ap-colr"},em)); };
+  const t0=iso(today()), t1=iso(new Date(today().getTime()+864e5)), da=el("input",{type:"date",id:"clDate","aria-label":"Date"}); da.value=F.date||"";
+  da.addEventListener("change",()=>{ F.date=da.value||null; F.dk=F.date?"date":""; draw(); });
   const lieux=[...new Set((S.listes||[]).map(x=>(x.lieu||"").trim()).filter(Boolean))].slice(0,6);
-  const li=el("input",{class:"ev-inp",type:"text",id:"clLieu",maxlength:"60",placeholder:"Magasin (facultatif)","aria-label":"Où"}); li.value=F.lieu;
-  const lc=el("div",{class:"pchips"}); lc.hidden=!lieux.length; const paintL=()=>{ lc.innerHTML=""; for(const x of lieux) lc.append(el("button",{type:"button",class:"pchip","aria-pressed":String(F.lieu===x),onclick:()=>{ F.lieu=F.lieu===x?"":x; li.value=F.lieu; paintL(); }},x)); }; paintL();
-  li.addEventListener("input",()=>{ F.lieu=li.value; paintL(); });
-  const qw=el("div",{class:"pchips"}); const paintQ=()=>{ qw.innerHTML=""; qw.append(el("button",{type:"button",class:"pchip","aria-pressed":String(!F.qui),onclick:()=>{ F.qui=null; paintQ(); }},"Peu importe"));
-    for(const m of humains()) qw.append(el("button",{type:"button",class:"pchip","aria-pressed":String(F.qui===m.id),onclick:()=>{ F.qui=F.qui===m.id?null:m.id; paintQ(); }},avatar(m.id,20),m.id===me?"Moi":m.nom)); }; paintQ();
-  const vis=el("div",{class:"pchips"}); const paintV=()=>{ vis.innerHTML=""; for(const [l2,v] of [["Tout le foyer",false],["Moi seul",true]]) vis.append(el("button",{type:"button",class:"pchip","aria-pressed":String(F.prive===v),onclick:()=>{ F.prive=v; paintV(); }},l2)); }; paintV();
-  const tg=(txt,key)=>{ const b=el("button",{type:"button",class:"cl-tg",role:"switch","aria-checked":String(!!F[key]),onclick:()=>{ F[key]=key==="recur"?(F.recur?null:"semaine"):!F[key]; b.setAttribute("aria-checked",String(!!F[key])); haptic(5); }},el("span",{text:txt}),el("u",{"aria-hidden":"true"})); return b; };
-  const lab=(t,...k)=>el("div",{class:"ev-lab"},el("span",{text:t}),...k);
-  inn.append(lab("Titre",ti),lab("Couleur",em),lab("Quand",qd,da),lab("Où",lc,li),lab("Qui y va",qw),lab("Visible par",vis),tg("🔁 Refaire chaque semaine","recur"));
-  const go=el("button",{type:"button",class:"btn ev-cta",id:"clGo",text:edit?"Enregistrer":"Créer la liste",onclick:async()=>{ if(!needMe()) return;
+  const li=el("input",{type:"text",id:"clLieu",maxlength:"60",placeholder:"Magasin (facultatif)","aria-label":"Où"}); li.value=F.lieu; li.addEventListener("input",()=>{ F.lieu=li.value; });
+  const draw=()=>{ body.innerHTML="";
+    const dk=F.dk!=null?F.dk:!F.date?"":F.date===t0?"auj":F.date===t1?"dem":"date";
+    body.append(apSec("Quand"),apCard(apRow("cal","Date",apSel([["","Sans date"],["auj","Aujourd'hui"],["dem","Demain"],["date",dk==="date"&&F.date?apDate(F.date):"Une date…"]],dk,v=>{ F.dk=v; F.date=v==="auj"?t0:v==="dem"?t1:v==="date"?(F.date||t0):null; da.value=F.date||""; draw();
+        if(v==="date") setTimeout(()=>{ try{ da.showPicker(); }catch(_){} },30); },"Date")),
+      dk==="date"?apRow(null,"Le",apPick(apDate(F.date),da),"ap-sub"):null));
+    body.append(apSec("Magasin"),el("label",{class:"ap-f"},apIc("pin"),li));
+    if(lieux.length) body.append(el("div",{class:"ap-chips ap-pre ap-sugg"},...lieux.map(x=>apChip(x,F.lieu===x,()=>{ F.lieu=F.lieu===x?"":x; li.value=F.lieu; draw(); }))));
+    body.append(apSec("Qui y va"),apWho("user",[apChip("Peu importe",!F.qui,()=>{ F.qui=null; draw(); })].concat(humains().map(m=>apChip([avatar(m.id,20),m.id===me?"Moi":m.nom],F.qui===m.id,()=>{ F.qui=F.qui===m.id?null:m.id; draw(); })))));
+    body.append(apSec("Options"),apCard(apRow("lock","Visible par moi seul",apSw(F.prive,v=>{ F.prive=v; draw(); },"Visible par moi seul")),
+      apRow("rep","Refaire chaque semaine",apSw(!!F.recur,v=>{ F.recur=v?"semaine":null; draw(); },"Refaire chaque semaine"))),
+      el("p",{class:"ap-hint",text:F.prive?"Elle n'apparaît que chez toi.":"Elle s'affiche sur la page Courses de tout le foyer."})); };
+  const H=apHead(edit?"Modifier la liste":"Nouvelle liste",()=>U.close(),{id:"clGo",label:edit?"Enregistrer":"Créer la liste",onOk:async()=>{ if(!needMe()) return;
     const doc={titre:(F.titre||"").trim()||(edit?l.titre:"Liste de courses"),couleur:F.couleur,date:F.date||null,lieu:(F.lieu||"").trim()||null,qui:F.qui||null,prive:!!F.prive,recur:F.recur||null};
     go.disabled=true;
     try{ let id;
@@ -10946,8 +10997,8 @@ function openCListForm(l){ if(!needMe()) return; const me=meId(), edit=!!l;
       else { const ref=await S.db.collection("listes").add(Object.assign(doc,{par:me,creeLe:Date.now(),fini:false})); id=ref.id;
         if(F.ing){ const n=await clAddIng(id,doc.date); if(n) toast(n+" ingrédient"+(n>1?"s":"")+" des repas ajouté"+(n>1?"s":"")+"."); } }
       openCList(id); if(edit) toast("Liste enregistrée.");
-    }catch(e){ go.disabled=false; writeErr(e); } }});
-  inn.append(go); setTimeout(()=>{ if(!edit) ti.focus(); },350); }
+    }catch(e){ go.disabled=false; writeErr(e); } }}), go=H.ok;
+  paintE(); draw(); main.append(ti,colW); inn.append(H.hd,main,body); setTimeout(()=>{ if(!edit) ti.focus(); },350); }
 /* ingrédients des repas prévus d'ici la date de la liste (7 jours sans date) */
 async function clAddIng(id,date){ const t0=iso(today()), end=date&&date>=t0?date:iso(new Date(today().getTime()+7*864e5)); const have=new Set(cItemsOf(id).map(i=>cKey(i.nom))), arts=[];
   for(const m of (S.repas||[])){ if(!m.plat||!m.date||m.date<t0||m.date>end) continue; for(const x of platIng(m.plat)){ const k=cKey(x); if(have.has(k)) continue; have.add(k); const a=parseArticle(x); a.extra={repas:m.plat}; arts.push(a); } }
