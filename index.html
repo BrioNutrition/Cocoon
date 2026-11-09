@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="09/11 13:07";</script>
+<script>window.COCOON_BUILD="09/11 13:14";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4286,7 +4286,7 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
 .ap-r.ap-sub{padding-left:52px!important;min-height:48px}.ap-r.ap-sub b{color:var(--muted)}
 .ap-rec{flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
 .ap-in .ap-opt+.ap-opt,.ap-in .ap-f+.ap-opt,.ap-in .ap-opt+.ap-f{margin-top:12px}
-.ap-tour{margin:10px 2px 0}
+.ap-tour{margin:10px 2px 0}.ap-amtw{display:flex;align-items:baseline;gap:5px;padding:0 18px 12px 32px;cursor:text}.ap-amtw .ap-amt{width:auto;flex:none;padding:0!important;max-width:calc(100% - 40px)}.ap-eur2{font-size:28px;font-weight:800;color:var(--ink)}.ap-amtw:has(.ap-amt:placeholder-shown) .ap-eur2{color:color-mix(in srgb,var(--muted) 60%,transparent)}.ap-main .ap-sum+.ap-amtw{padding-top:0}
 .ev-pop{min-width:244px;padding:0;border-radius:14px;overflow:hidden;background:color-mix(in srgb,var(--surface) 84%,transparent);-webkit-backdrop-filter:blur(30px) saturate(1.6);backdrop-filter:blur(30px) saturate(1.6);box-shadow:0 18px 50px rgba(0,0,0,.35),0 0 0 .5px color-mix(in srgb,var(--ink) 16%,transparent);transform:scale(.6);transition:transform .34s cubic-bezier(.2,1.12,.3,1),opacity .16s ease}
 .ev-pop::before{display:none!important}.ev-pop.out{transform:scale(.9);transition:transform .16s ease,opacity .16s ease}
 .ev-pop hr{height:7px;margin:0;background:color-mix(in srgb,var(--ink) 8%,transparent)}
@@ -7067,6 +7067,10 @@ function apDate(d){ return d?AP_DF.format(parse(d)):"Choisir"; }
 /* ligne d'un petit menu façon iOS (9 nov., Angel : plus d'emojis) : le texte à gauche, une icône fine à droite */
 const POP_IC={"✏️":"pencil","⧉":"dup","📤":"share","✓":"check","💾":"save","🗑":"trash","📅":"cal"};
 function popItem(ic,t,fn,cls){ const i=el("i",{"aria-hidden":"true"}); i.innerHTML='<svg viewBox="0 0 24 24">'+(AP_IC[POP_IC[ic]]||"")+'</svg>'; return el("button",{type:"button",role:"menuitem",class:"ev-pi"+(cls?" "+cls:""),onclick:fn},el("span",{text:t}),i); }
+/* montant façon Calendrier : le signe € suit le nombre tout seul (le champ prend la largeur de ce qu'on tape) */
+function apAmt(inp){ inp.placeholder="0,00"; const w=el("label",{class:"ap-amtw"},inp,el("span",{class:"ap-eur2","aria-hidden":"true",text:"€"}));
+  const fit=()=>{ try{ const c=apAmt.c||(apAmt.c=document.createElement("canvas").getContext("2d")), cs=getComputedStyle(inp); c.font=cs.fontWeight+" "+cs.fontSize+" "+cs.fontFamily; inp.style.width=Math.ceil(c.measureText(inp.value||inp.placeholder).width+2)+"px"; }catch(_){} };
+  inp.addEventListener("input",fit); requestAnimationFrame(fit); setTimeout(fit,400); return w; }
 function apIc(k){ const i=el("i",{class:"ap-ic","aria-hidden":"true"}); i.innerHTML='<svg viewBox="0 0 24 24">'+(AP_IC[k]||k)+'</svg>'; return i; }
 function apSec(t){ return el("p",{class:"ap-sec",text:t}); }
 function apPick(lab,input){ const w=el("span",{class:"ap-pk"},el("span",{text:lab})); w.append(input); return w; }
@@ -7614,7 +7618,7 @@ function renderBForm(){
   const name=el("input",{type:"text",id:"bfName",class:"ap-ti",maxlength:"60",placeholder:dep?"Courses Leclerc, plein d'essence…":"Netflix, électricité, box…","aria-label":dep?"Quoi":"Abonnement"}); name.value=dep?(d.titre||""):(d.nom||""); name.addEventListener("input",()=>{ if(dep) d.titre=name.value; else d.nom=name.value; });
   const amt=el("input",{type:"text",inputmode:"decimal",id:"bfAmt",class:"ap-amt amount-in",placeholder:"0,00 €","aria-label":"Montant"}); amt.value=d.montant?String((d.montant/100).toFixed(2)).replace(".",","):""; amt.addEventListener("input",()=>{ d.montant=parseMoney(amt.value); const sm=document.querySelector("#bForm .split-sum"); if(sm&&d.splitMode==="perso"){ const tot=(d.partage||[]).reduce((a,id)=>a+((d.parts||{})[id]||0),0), diff=(d.montant||0)-tot; sm.textContent=d.montant?(Math.abs(diff)<=1?"Réparti : "+money(tot)+" sur "+money(d.montant)+", c'est juste.":diff>0?"Reste à répartir : "+money(diff):"Trop réparti de "+money(-diff)):"Indique d'abord le montant total."; sm.className="split-sum "+(d.montant&&Math.abs(diff)<=1?"ok":"bad"); } });
   const cat=apSel(BCATS.map(c=>[c.id,(BEMO[c.id]||"")+" "+c.nom]),d.cat||"autre",v=>{ d.cat=v; renderBForm(); },"Catégorie","bfCat");
-  f.append(el("div",{class:"ap-main",style:"--apc:"+((BCAT[d.cat]||BCAT.autre).c)},name,amt,apRow("tag","Catégorie",cat)));
+  f.append(el("div",{class:"ap-main",style:"--apc:"+((BCAT[d.cat]||BCAT.autre).c)},name,apAmt(amt),apRow("tag","Catégorie",cat)));
   /* quand */
   if(dep){ const dt=el("input",{type:"date",id:"bfDate","aria-label":"Date"}); dt.value=d.date||iso(today()); dt.addEventListener("input",()=>d.date=dt.value); dt.addEventListener("change",()=>{ d.date=dt.value; renderBForm(); });
     f.append(apSec("Quand"),apCard(apRow("cal","Date",apPick(apDate(d.date||iso(today())),dt)),
@@ -11284,7 +11288,7 @@ function clValidate(l){ if(!l) return; const its=cItemsOf(l.id), left=its.filter
   /* façon Calendrier (9 nov.) : ✕ · titre · ✓, la liste et le montant en haut, « Qui a payé ? » dessous */
   const H=apHead(fin?"Liste terminée 🎉":"Valider la liste",()=>U.close(),{id:"clValOk",label:"Valider",onOk:e=>{ const m=parseMoney(am.value)||0; if(!m){ toast("Indique le montant, ou « Valider sans montant »."); am.focus(); return; } go(m,e.currentTarget); }}), ok=H.ok;
   am.addEventListener("keydown",e=>{ if(e.key==="Enter") ok.click(); });
-  inn.append(H.hd,el("div",{class:"ap-main",style:"--apc:"+clCol(l)},el("div",{class:"ap-ti ap-tt",text:l.titre||"Liste de courses"}),el("p",{class:"ap-sum",text:"🛒 "+(its.length-left)+" sur "+its.length+" au caddie"}),am),
+  inn.append(H.hd,el("div",{class:"ap-main",style:"--apc:"+clCol(l)},el("div",{class:"ap-ti ap-tt",text:l.titre||"Liste de courses"}),el("p",{class:"ap-sum",text:"🛒 "+(its.length-left)+" sur "+its.length+" au caddie"}),apAmt(am)),
     ...(pp?[apSec("Qui a payé ?"),el("div",{class:"ap-opt"},el("div",{class:"ap-r cl-payr"},apIc("card"),pp),sw)]:[]),
     el("p",{class:"ap-hint",text:"Le montant part dans le Budget, catégorie Courses."}),
     el("button",{type:"button",class:"ev-sans",id:"clValSans",onclick:e=>go(0,e.currentTarget)},"Valider sans montant"));
