@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="09/11 12:22";</script>
+<script>window.COCOON_BUILD="09/11 12:37";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4286,7 +4286,17 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
 .ap-r.ap-sub{padding-left:52px!important;min-height:48px}.ap-r.ap-sub b{color:var(--muted)}
 .ap-rec{flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
 .ap-in .ap-opt+.ap-opt,.ap-in .ap-f+.ap-opt,.ap-in .ap-opt+.ap-f{margin-top:12px}
-.ap-tour{margin:10px 2px 0}.ap-tt{cursor:default}.ap-sum{margin:-8px 0 0;padding:0 18px 14px 32px;color:var(--muted);font-size:14px}.ap-main .ap-sum+.ap-amt{padding-top:0!important}.cl-payr{padding-top:8px!important;padding-bottom:8px!important}.cl-payr .ap-chips{flex:1}.ap-in .cl-split .ap-r{position:relative}.ap-in .cl-split .ap-r:before{content:"";position:absolute;top:0;left:52px;right:0;border-top:1px solid var(--line)}.ap-in .cl-split .cl-sp-in{width:96px}.mx-in .b-form{display:block!important;background:none!important;box-shadow:none!important;padding:0!important;margin:0!important;gap:0!important;border:0!important}
+.ap-tour{margin:10px 2px 0}.ap-in .ap-sw{width:51px;height:31px;background:color-mix(in srgb,var(--ink) 22%,transparent);transition:background-color .25s ease;-webkit-tap-highlight-color:transparent}
+.ap-in .ap-sw i{top:2px;left:2px;width:27px;height:27px;box-shadow:0 3px 8px rgba(0,0,0,.15),0 3px 1px rgba(0,0,0,.06);transition:transform .3s cubic-bezier(.25,.8,.25,1.2),width .2s ease,left .2s ease}
+.ap-in .ap-sw.on{background:#34C759}.ap-in .ap-sw.on i{transform:translateX(20px)}
+.ap-in .ap-sw:active i{width:33px}.ap-in .ap-sw.on:active i{left:-4px}
+.mx-grp>.check-row,.mx-grp>.mf-check{flex-direction:row-reverse!important;justify-content:space-between!important}
+.mx-grp input[type=checkbox]{-webkit-appearance:none;appearance:none;flex:none;width:51px;height:31px;border-radius:999px;margin:0;border:0;cursor:pointer;outline:none;
+  background:color-mix(in srgb,var(--ink) 22%,transparent) radial-gradient(circle at 15.5px 50%,#fff 12.5px,transparent 13.5px) no-repeat 0 0;transition:background-color .25s ease,background-position .3s cubic-bezier(.25,.8,.25,1.2)}
+.mx-grp input[type=checkbox]:checked{background-color:#34C759;background-position:20px 0}
+.ap-dsel{display:flex;align-items:center;gap:8px}.ap-dsel .ap-pk{color:var(--ink)!important}
+.ap-x{flex:none;width:22px;height:22px;border-radius:50%;border:0;padding:0;display:grid;place-items:center;background:color-mix(in srgb,var(--ink) 16%,transparent);color:var(--ink);cursor:pointer}
+.ap-x svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.8;stroke-linecap:round}.ap-tt{cursor:default}.ap-sum{margin:-8px 0 0;padding:0 18px 14px 32px;color:var(--muted);font-size:14px}.ap-main .ap-sum+.ap-amt{padding-top:0!important}.cl-payr{padding-top:8px!important;padding-bottom:8px!important}.cl-payr .ap-chips{flex:1}.ap-in .cl-split .ap-r{position:relative}.ap-in .cl-split .ap-r:before{content:"";position:absolute;top:0;left:52px;right:0;border-top:1px solid var(--line)}.ap-in .cl-split .cl-sp-in{width:96px}.mx-in .b-form{display:block!important;background:none!important;box-shadow:none!important;padding:0!important;margin:0!important;gap:0!important;border:0!important}
 .mx-in .mx-grp+.mx-grp,.mx-in .mx-grp+*,.mx-in *+.mx-grp{margin-top:12px}
 .mx-grp>*{position:relative;display:flex!important;align-items:center;flex-wrap:wrap;gap:6px 12px;padding:10px 16px!important;min-height:52px;margin:0!important;background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;font-size:16px;font-weight:500;color:var(--ink)}
 .mx-grp>*+*:before{content:"";position:absolute;top:0;left:16px;right:0;border-top:1px solid var(--line)}
@@ -4332,7 +4342,7 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
 .ap-r .ap-pk:after{content:"";position:absolute;right:0;top:50%;width:13px;height:17px;margin-top:-8.5px;background:currentColor;pointer-events:none;
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 17'%3E%3Cpath d='M2.5 6.5l4-4 4 4M2.5 10.5l4 4 4-4' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 17'%3E%3Cpath d='M2.5 6.5l4-4 4 4M2.5 10.5l4 4 4-4' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
-.ap-sw{flex:none;width:58px;height:34px;border-radius:999px;border:0;background:color-mix(in srgb,var(--ink) 25%,transparent);position:relative;cursor:pointer;transition:background .2s}
+.ap-sw-x{}.ap-sw{flex:none;width:58px;height:34px;border-radius:999px;border:0;background:color-mix(in srgb,var(--ink) 25%,transparent);position:relative;cursor:pointer;transition:background .2s}
 .ap-sw i{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
 .ap-sw.on{background:#34C759}.ap-sw.on i{transform:translateX(24px)}
 .ap-hint{margin:8px 16px 0;font-size:13px;color:var(--muted)}
@@ -5851,11 +5861,9 @@ function docRenew(d){ if(!needMe()) return; let done=false; const t0=today(), yr
   const end=async v=>{ if(done) return; done=true; U.close(); if(v===undefined) return;
     d.expire=v||null; renderDocs(); try{ await S.db.collection("documents").doc(d.id).update({expire:v||null}); toast(v?"Bien noté : « "+esc(d.titre)+" » jusqu'au "+fmtDue(v)+".":"« "+esc(d.titre)+" » n'a plus de date."); }catch(e){ writeErr(e); } };
   const c=catOf(d.cat||"documents")||{}; let k=c.id==="identite"?"10":"1", v=yr(+k);
-  const da=el("input",{type:"date",id:"renDate","aria-label":"Nouvelle date d'expiration"}); da.addEventListener("change",()=>{ v=da.value; k=v?"date":""; draw(); });
   const H=apHead("C'est renouvelé",()=>U.close(),{id:"renOk",label:"Enregistrer",onOk:()=>end(k===""?null:v)});
-  const body=el("div"); const draw=()=>{ body.innerHTML=""; da.value=v||"";
-    body.append(apSec("Nouvelle date"),apCard(apRow("cal","Expire",apSel([["1","Dans 1 an"],["5","Dans 5 ans"],["10","Dans 10 ans"],["date",k==="date"&&v?apDate(v):"Une autre date…"],["","Sans date"]],k,x=>{ k=x; v=x==="date"?(v||yr(1)):x?yr(+x):""; draw();
-        if(x==="date") setTimeout(()=>{ try{ da.showPicker(); }catch(_){} },30); },"Expire")),k?apRow(null,"Le",apPick(apDate(v),da),"ap-sub"):null)); }; draw();
+  const body=el("div"); const draw=()=>{ body.innerHTML="";
+    body.append(apSec("Nouvelle date"),apCard(apRow("cal","Expire",apDateSel([["1",yr(1),"Dans 1 an"],["5",yr(5),"Dans 5 ans"],["10",yr(10),"Dans 10 ans"],["","","Sans date"]],k,v,(x,val)=>{ k=x; v=val||""; draw(); },"Expire","renDate")))); }; draw();
   inn.append(H.hd,el("div",{class:"ap-main",style:"--apc:"+(c.c||"#A9B4C2")},el("div",{class:"ap-ti ap-tt",text:docEmo(c.id||"documents")+" "+d.titre}),
     d.expire?el("p",{class:"ap-sum",text:(daysTo(d.expire)<0?"Expirait le ":"Expire le ")+dzD(d.expire)}):null),body); }
 /* Ouvrir Papiers directement sur un papier précis */
@@ -7037,8 +7045,16 @@ function apPick(lab,input){ const w=el("span",{class:"ap-pk"},el("span",{text:la
 /* menu déroulant natif sous la valeur affichée (roue sur iPhone) */
 function apSel(opts,val,fn,aria,id){ const v0=String(val==null?"":val), s=el("select",{"aria-label":aria,id:id||null}); for(const [v,l] of opts) s.append(el("option",{value:String(v),text:l})); s.value=v0;
   s.addEventListener("change",()=>fn(s.value)); const c=opts.find(o=>String(o[0])===v0); return apPick(c?c[1]:"—",s); }
+/* date façon Calendrier (9 nov., Angel) : un menu de raccourcis ; « Une date… » change la ligne elle-même (la date, qu'on touche pour la changer, × pour revenir au menu) */
+function apDateSel(quick,mode,val,fn,aria,id,inp){
+  if(mode==="date"&&val){ const di=inp||el("input",{type:"date",id,"aria-label":aria}); di.value=val; if(!inp) di.addEventListener("change",()=>{ if(di.value) fn("date",di.value); });
+    const x=el("button",{type:"button",class:"ap-x","aria-label":"Retirer la date",onclick:e=>{ e.preventDefault(); e.stopPropagation(); haptic(5); fn(quick[0][0],quick[0][1]); }}); x.innerHTML='<svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>';
+    return el("span",{class:"ap-dsel"},apPick(apDate(val),di),x); }
+  const q=quick.find(z=>z[0]===mode)||quick[0];
+  return apSel(quick.map(z=>[z[0],z[2]]).concat([["date","Une date…"]]),q[0],k=>{ if(k==="date"){ fn("date",val||iso(today())); setTimeout(()=>{ const d=id&&document.getElementById(id); if(d) try{ d.showPicker(); }catch(_){} },40); return; }
+    const z=quick.find(y=>y[0]===k); fn(k,z?z[1]:""); },aria); }
 function apRow(ic,lab,right,cls){ return el("div",{class:"ap-r"+(cls?" "+cls:"")},ic?apIc(ic):null,el("b",{text:lab}),right||null); }
-function apSw(on,fn,lab,id){ return el("button",{type:"button",id:id||null,class:"ap-sw"+(on?" on":""),role:"switch","aria-checked":String(!!on),"aria-label":lab,onclick:()=>{ haptic(5); fn(!on); }},el("i")); }
+function apSw(on,fn,lab,id){ let v=!!on, tm=0; const b=el("button",{type:"button",id:id||null,class:"ap-sw"+(v?" on":""),role:"switch","aria-checked":String(v),"aria-label":lab,onclick:()=>{ haptic(5); v=!v; b.classList.toggle("on",v); b.setAttribute("aria-checked",String(v)); clearTimeout(tm); tm=setTimeout(()=>fn(v),280); }},el("i")); return b; }
 function apCard(...rows){ return el("div",{class:"ap-opt"},...rows.filter(Boolean)); }
 function apWho(ic,chips,extra){ return el("div",{class:"ap-f ap-who"},apIc(ic),el("div",{class:"ap-chips"},...chips.filter(Boolean)),...[].concat(extra||[])); }
 function apChip(lab,on,fn,cls){ return el("button",{type:"button",class:"pchip"+(cls?" "+cls:""),"aria-pressed":String(!!on),onclick:()=>{ haptic(5); fn(); }},...[].concat(lab)); }
@@ -8253,15 +8269,14 @@ function openTaskEdit(t){ if(!t||!needMe()) return; const me=meId();
     catW.append(apRow("tag","Catégorie",apSel(L.map(c=>[c.id,tkEmo(c.id)+" "+c.nom]),d.cat,v=>{ d.cat=v; drawCat(); },"Catégorie"))); };
   const draw=()=>{ body.innerHTML="";
     const wk=d.wk!=null?d.wk:!d.echeance?"":d.echeance===plus(0)?"auj":d.echeance===plus(1)?"dem":"date";
-    const dRow=apRow("cal","Date",apSel([["","Pas de date"],["auj","Aujourd'hui"],["dem","Demain"],["we","Ce week-end"],["date",wk==="date"&&d.echeance?apDate(d.echeance):"Une date…"]],wk,v=>{ d.wk=v; d.echeance=v==="auj"?plus(0):v==="dem"?plus(1):v==="we"?wkend():v==="date"?(d.echeance||plus(0)):""; dateIn.value=d.echeance; draw();
-      if(v==="date") setTimeout(()=>{ try{ dateIn.showPicker(); }catch(_){} },30); },"Date"));
+    const dRow=apRow("cal","Date",apDateSel([["","","Pas de date"],["auj",plus(0),"Aujourd'hui"],["dem",plus(1),"Demain"],["we",wkend(),"Ce week-end"]],wk,d.echeance,(k,v)=>{ d.wk=k; d.echeance=v||""; dateIn.value=d.echeance; draw(); },"Date","teDate"));
     const RC=[["0","Non"],["1j","Chaque jour"],["1s","Chaque semaine"],["1","Chaque mois"],["12","Chaque année"],["autre","Autre…"]];
     const rk=d.recOther?"autre":recNorm(d.recur)?(RC.some(r=>r[0]===String(d.recur))?String(d.recur):"autre"):"0";
     const rRow=apRow("rep","Se répète",apSel(RC,rk,v=>{ if(v==="autre"){ d.recOther=true; recIn.value=String(d.recur||"2s"); d.recur=recParse(recIn.value); if(recIn._sync) recIn._sync(); }
       else { d.recOther=false; d.recur=v==="0"?0:v==="1"?1:v==="12"?12:v; if(!d.recur) d.routine=null; } draw(); },"Se répète"));
     let rtRow=null; if(recNorm(d.recur)){ const A=RT.find(r=>r[0]===tkRoutine({recur:d.recur}));
       rtRow=apRow("sun","Routine",apSel([["","Auto"+(A?" · "+A[1]+" "+A[2]:"")]].concat(RT.map(([k,e,l])=>[k,e+" "+l]),[["aucune","Aucune"]]),d.routine||"",v=>{ d.routine=v||null; draw(); },"Routine")); }
-    body.append(apSec("Quand"),apCard(dRow,wk==="date"?apRow(null,"Le",apPick(apDate(d.echeance),dateIn),"ap-sub"):null,rRow,d.recOther?el("div",{class:"ap-r ap-sub ap-rec"},recBox):null,rtRow));
+    body.append(apSec("Quand"),apCard(dRow,rRow,d.recOther?el("div",{class:"ap-r ap-sub ap-rec"},recBox):null,rtRow));
     const Wh=(v,lab)=>apChip(lab,d.where===v,()=>{ d.where=v; draw(); }), who=[];
     if(t.prive||t.creePar===me) who.push(Wh("perso","🔒 Moi seul"));
     who.push(Wh("tous","🏠 Le foyer"));
@@ -8431,10 +8446,7 @@ function openTaskSheet(o){ o=o||{}; if(!needMe()) return; const me=meId();
     catW.append(el("div",{class:"tk-nc ap-nc"},el("div",{class:"tk-ncr"},nci,el("button",{type:"button",class:"btn tk-nok",onclick:ok},"Créer")),sw)); };
   /* Quand, Se répète, Routine (menus déroulants), Pour qui (pastilles) */
   const draw=()=>{ body.innerHTML="";
-    const W=[["","Pas de date"],["auj","Aujourd'hui"],["dem","Demain"],["we","Ce week-end"],["date",st.when==="date"&&st.due?fmtDue(st.due).replace(/^./,x=>x.toUpperCase()):"Une date…"]];
-    const dRow=apRow("cal","Date",apSel(W,st.due?(st.when||"date"):"",v=>{ touched.when=1; st.when=v||null; st.due=v==="auj"?plus(0):v==="dem"?plus(1):v==="we"?wkend():v==="date"?(st.due||plus(0)):""; dateIn.value=st.due; draw();
-      if(v==="date") setTimeout(()=>{ try{ dateIn.showPicker(); }catch(_){} },30); },"Date"));
-    const dayRow=st.when==="date"?apRow(null,"Le",apPick(apDate(st.due),dateIn),"ap-sub"):null;
+    const dRow=apRow("cal","Date",apDateSel([["","","Pas de date"],["auj",plus(0),"Aujourd'hui"],["dem",plus(1),"Demain"],["we",wkend(),"Ce week-end"]],st.due?(st.when||"date"):"",st.due,(k,v)=>{ touched.when=1; st.when=k||null; st.due=v||""; dateIn.value=st.due; draw(); },"Date","tkDate")), dayRow=null;
     const RC=[["0","Non"],["1j","Chaque jour"],["1s","Chaque semaine"],["1","Chaque mois"],["12","Chaque année"],["autre","Autre…"]];
     const rk=st.recOther?"autre":recNorm(st.rec)?(RC.some(r=>r[0]===String(st.rec))?String(st.rec):"autre"):"0";
     const rRow=apRow("rep","Se répète",apSel(RC,rk,v=>{ touched.rec=1;
@@ -8607,6 +8619,7 @@ function dzPick(photo){ const f=$("dFile"); if(photo) f.setAttribute("capture","
   f.click(); }
 const DZ_MAIN=["identite","sante","assurance","factures","maison","voitures","documents"];
 /* la feuille suit les champs : classeurs en emojis, fichiers choisis (en français), résumé de chaque ligne */
+let DZDX=null; const dzDX=()=>DZDX||(DZDX=document.getElementById("dExp"));
 function dzSync(){ const f=$("docForm"); if(!f) return; const sel=$("dCat"), cur=sel.value;
   /* classeur : menu déroulant dans la carte du haut (façon Calendrier, 9 nov.) */
   const grid=$("dCats"); grid.innerHTML=""; sel.hidden=false; sel.removeAttribute("aria-hidden"); sel.removeAttribute("tabindex"); sel.setAttribute("aria-label","Classeur");
@@ -8621,10 +8634,9 @@ function dzSync(){ const f=$("docForm"); if(!f) return; const sel=$("dCat"), cur
   { const ai=secOn()&&S.sampleLimits&&S.sampleLimits.images; $("dSrcPh").textContent=ai?"Cocoony lit le papier et remplit la fiche":"La photo est rangée avec sa fiche"; }
   /* dates : expire, garantie (menus déroulants, puis la date exacte) */
   const ex=$("dExp").value, t0=today(), yr=n=>iso(new Date(t0.getFullYear()+n,t0.getMonth(),t0.getDate()));
-  const ek=!ex?"":String([1,5,10].find(n=>yr(n)===ex)||"date"), q=$("dExpQ"); q.innerHTML="";
-  q.append(apSel([["","Pas de date"],["1","Dans 1 an"],["5","Dans 5 ans"],["10","Dans 10 ans"],["date",ek==="date"?dzD(ex):"Une date…"]],ek,v=>{ const d=$("dExp");
-    if(v==="date"){ if(!d.value||ek!=="date") d.value=iso(t0); setTimeout(()=>{ try{ d.showPicker(); }catch(_){} },30); } else d.value=v?yr(+v):""; updConsent(); dzSync(); },"Expire"));
-  $("dExpDay").hidden=ek!=="date"; $("dExpL").textContent=apDate(ex);
+  const ek=!ex?"":String([1,5,10].find(n=>yr(n)===ex)||"date"), q=$("dExpQ"), DX=dzDX(); $("dExpL").after(DX); q.innerHTML="";
+  q.append(apDateSel([["","","Pas de date"],["1",yr(1),"Dans 1 an"],["5",yr(5),"Dans 5 ans"],["10",yr(10),"Dans 10 ans"]],ek,ex,(k,v)=>{ DX.value=v||""; updConsent(); dzSync(); },"Expire","dExp",DX));
+  $("dExpDay").hidden=true;
   const g=$("dGar").value, a=$("dAchat").value, gf=n=>iso(addMonths(a?parse(a):t0,12*n)), gk=!g?"":String([1,2,3,5].find(n=>gf(n)===g)||"date"), gs=$("dGarSel"); gs.innerHTML="";
   gs.append(apSel([["","Non"],["1","1 an"],["2","2 ans (légale)"],["3","3 ans"],["5","5 ans"],["date",gk==="date"?"Jusqu'au "+dzD(g):"Une autre date…"]],gk,v=>{ const A=$("dAchat"), G=$("dGar");
     if(!v){ G.value=""; A.value=""; } else { if(!A.value) A.value=iso(t0); if(v==="date"){ if(!G.value||gk!=="date") G.value=iso(addMonths(parse(A.value),24)); setTimeout(()=>{ try{ G.showPicker(); }catch(_){} },30); } else G.value=iso(addMonths(parse(A.value),12*v));
@@ -11114,14 +11126,11 @@ function openCListForm(l){ if(!needMe()) return; const me=meId(), edit=!!l;
   const paintE=()=>{ main.style.setProperty("--apc",F.couleur); colW.innerHTML=""; const em=el("div",{class:"cl-cols ap-cols",role:"radiogroup","aria-label":"Couleur"});
     for(const col of CL_COLS) em.append(el("button",{type:"button",role:"radio","aria-checked":String(F.couleur===col),"aria-label":"Couleur "+col,style:"--c:"+col,onclick:()=>{ F.couleur=col; paintE(); haptic(5); }}));
     colW.append(el("div",{class:"ap-r ap-colr"},em)); };
-  const t0=iso(today()), t1=iso(new Date(today().getTime()+864e5)), da=el("input",{type:"date",id:"clDate","aria-label":"Date"}); da.value=F.date||"";
-  da.addEventListener("change",()=>{ F.date=da.value||null; F.dk=F.date?"date":""; draw(); });
+  const t0=iso(today()), t1=iso(new Date(today().getTime()+864e5));
   const li=el("input",{type:"text",id:"clLieu",maxlength:"60",placeholder:"Magasin (facultatif)","aria-label":"Où"}); li.value=F.lieu; li.addEventListener("input",()=>{ F.lieu=li.value; });
   const draw=()=>{ body.innerHTML="";
     const dk=F.dk!=null?F.dk:!F.date?"":F.date===t0?"auj":F.date===t1?"dem":"date";
-    body.append(apSec("Quand"),apCard(apRow("cal","Date",apSel([["","Sans date"],["auj","Aujourd'hui"],["dem","Demain"],["date",dk==="date"&&F.date?apDate(F.date):"Une date…"]],dk,v=>{ F.dk=v; F.date=v==="auj"?t0:v==="dem"?t1:v==="date"?(F.date||t0):null; da.value=F.date||""; draw();
-        if(v==="date") setTimeout(()=>{ try{ da.showPicker(); }catch(_){} },30); },"Date")),
-      dk==="date"?apRow(null,"Le",apPick(apDate(F.date),da),"ap-sub"):null));
+    body.append(apSec("Quand"),apCard(apRow("cal","Date",apDateSel([["","","Sans date"],["auj",t0,"Aujourd'hui"],["dem",t1,"Demain"]],dk,F.date,(k,v)=>{ F.dk=k; F.date=v||null; draw(); },"Date","clDate"))));
     body.append(apSec("Magasin"),el("label",{class:"ap-f"},apIc("pin"),li));
     body.append(apSec("Qui y va"),apWho("user",[apChip("Peu importe",!F.qui,()=>{ F.qui=null; draw(); })].concat(humains().map(m=>apChip([avatar(m.id,20),m.id===me?"Moi":m.nom],F.qui===m.id,()=>{ F.qui=F.qui===m.id?null:m.id; draw(); })))));
     body.append(apSec("Options"),apCard(apRow("lock","Visible par moi seul",apSw(F.prive,v=>{ F.prive=v; draw(); },"Visible par moi seul")),
@@ -11223,8 +11232,12 @@ function clValidate(l){ if(!l) return; const its=cItemsOf(l.id), left=its.filter
   setTimeout(()=>am.focus(),350); }
 async function clDone(l,montant,quiet,payeur){ const me=meId(), its=cItemsOf(l.id), now=Date.now();
   const rec={titre:l.titre||"Liste de courses",couleur:clCol(l),lieu:l.lieu||null,qui:l.qui||null,prive:!!l.prive,date:l.date||null,fini:true,finiLe:now,montant:montant||null,articles:its.map(i=>({nom:i.nom,qte:i.qte||null,pris:!!i.fait}))};
-  S.clOpenId=null; S.cListe=null; if(S.clSheet&&!S.clSheet._gone&&!quiet) S.clSheet.close(); haptic(12);
-  clUndoable("✓ Liste validée"+(montant>0?" · "+money(montant)+" dans le Budget":"")+".",l.virt?[]:[l.id],its.map(i=>i.id),async()=>{
+  if(S.clSheet&&!S.clSheet._gone&&!quiet) S.clSheet.close(); haptic(12);
+  const W=!quiet&&CL_OPEN&&CL_OPEN.isConnected&&CL_OPEN._id===l.id?CL_OPEN:null, red=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const gone=fn=>{ if(!W||red){ S.clOpenId=null; S.cListe=null; fn(); return; } W.style.pointerEvents="none";
+    W.animate([{opacity:1,transform:"none"},{opacity:0,transform:"scale(.96) translateY(6px)"}],{duration:200,easing:"cubic-bezier(.4,0,.2,1)",fill:"forwards"});
+    setTimeout(()=>clVT(()=>{ S.clOpenId=null; S.cListe=null; fn(); }),170); };
+  gone(()=>clUndoable("✓ Liste validée"+(montant>0?" · "+money(montant)+" dans le Budget":"")+".",l.virt?[]:[l.id],its.map(i=>i.id),async()=>{
     /* articles d'abord (sinon ils repasseraient un instant dans la liste principale), puis la liste, la suivante si chaque semaine, la dépense */
     await Promise.all(its.map(i=>S.db.collection("courses").doc(i.id).delete()));
     if(l.id===CL_DEF) await S.db.collection("listes").add(Object.assign(rec,{par:me,creeLe:now})); else await S.db.collection("listes").doc(l.id).set(Object.assign({},Object.fromEntries(Object.entries(l).filter(([k])=>k!=="id")),rec));
@@ -11232,7 +11245,7 @@ async function clDone(l,montant,quiet,payeur){ const me=meId(), its=cItemsOf(l.i
     if(montant>0){ const ti=(l.titre||"Courses")+(l.lieu?" · "+l.lieu:"");
       /* plusieurs payeurs : une dépense par personne, chacune de sa part (le partage du foyer s'applique à chacune) */
       if(payeur&&typeof payeur==="object"){ for(const [id,c] of Object.entries(payeur)) if(c>0) await budgetAdd(ti,c,"courses",false,id); }
-      else await budgetAdd(ti,montant,"courses",false,payeur); } }); }
+      else await budgetAdd(ti,montant,"courses",false,payeur); } })); }
 /* tout est au caddie : la liste part dans « Terminées » tout de suite, puis « Combien ça a coûté ? » (facultatif) */
 async function clFinish(l){ const rid=await clDone(l,0,true); if(!rid) return; const titre=l.titre||"Courses", lieu=l.lieu;
   const U=clSheet(); clClear(U); const inn=el("div",{class:"pp-in ev-in cl-in"}); U.sheet.append(inn);
