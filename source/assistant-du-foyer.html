@@ -11107,14 +11107,15 @@ function clMenu(btn,l){ if(!l) return; const acts=[["edit","✏️","Modifier",(
   { const nm=nativeMenu(l.titre||"Liste",acts.map(([id,,t])=>({id,title:t})).concat([{id:"del",title:"Supprimer la liste",destructive:true}]));
     if(nm){ nm.then(id=>{ const a=acts.find(x=>x[0]===id); if(a) a[3](); else if(id==="del") clDel(l); }); return; } }
   const old=document.querySelector(".ev-pop"); if(old){ old._close(); if(old._btn===btn) return; }
-  const card=btn.closest(".cl-card"), sheet=card?document.body:btn.closest(".pp-sheet,.cl-panel"); if(!sheet) return; const pop=el("div",{class:"ev-pop",role:"menu"}); pop._btn=btn;
+  /* en-tête de la liste ouverte (9 nov.) : comme sur une carte, le menu s'ouvre juste sous le « ⋯ », au-dessus de la feuille */
+  const inHd=!!btn.closest(".cl-lhd"), card=btn.closest(".cl-card")||(inHd?btn:null), sheet=card?document.body:btn.closest(".pp-sheet,.cl-panel"); if(!sheet) return; const pop=el("div",{class:"ev-pop",role:"menu"}); pop._btn=btn;
   const close=()=>{ if(pop._gone) return; pop._gone=true; pop.classList.add("out"); document.removeEventListener("pointerdown",away,true); setTimeout(()=>pop.remove(),160); };
   pop._close=close; const away=e=>{ if(!pop.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)) close(); };
   const item=(ic,t,fn,cls)=>el("button",{type:"button",role:"menuitem",class:"ev-pi"+(cls?" "+cls:""),onclick:fn},el("i",{"aria-hidden":"true",text:ic}),el("span",{text:t}));
   const del=item("🗑","Supprimer la liste",()=>{ close(); clDel(l); },"danger");
   for(const [,ic,t,fn] of acts) pop.append(item(ic,t,()=>{ close(); fn(); })); pop.append(el("hr"),del);
   const rb=btn.getBoundingClientRect(), sr=sheet.getBoundingClientRect(), up=sheet.classList.contains("cl-panel");
-  if(card){ pop.classList.add("no-tip"); pop.style.position="fixed"; pop.style.top=Math.min(rb.bottom+6,innerHeight-260)+"px"; pop.style.right=(innerWidth-rb.right)+"px"; pop.style.zIndex="60"; }
+  if(card){ pop.classList.add("no-tip"); pop.style.position="fixed"; pop.style.top=Math.min(rb.bottom+6,innerHeight-260)+"px"; pop.style.right=(innerWidth-rb.right)+"px"; pop.style.zIndex=inHd?"90":"60"; }
   else if(up){ pop.style.bottom=(sr.bottom-rb.top+8)+"px"; pop.style.top="auto"; } else pop.style.top=(rb.bottom-sr.top+sheet.scrollTop+8)+"px"; if(!card) pop.style.right=(sr.right-rb.right)+"px";
   sheet.append(pop); requestAnimationFrame(()=>pop.classList.add("in")); setTimeout(()=>document.addEventListener("pointerdown",away,true),0); }
 async function clNew(base,arts,open){ const me=meId(); const ref=await S.db.collection("listes").add(Object.assign({titre:base.titre||"Liste de courses",couleur:clCol(base),date:base.date||null,lieu:base.lieu||null,qui:base.qui||null,prive:!!base.prive,recur:base.recur||null},{par:me,creeLe:Date.now(),fini:false}));
