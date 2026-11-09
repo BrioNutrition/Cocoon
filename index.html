@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="09/11 15:28";</script>
+<script>window.COCOON_BUILD="09/11 17:43";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4399,6 +4399,40 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
 .ap-sw i{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
 .ap-sw.on{background:#34C759}.ap-sw.on i{transform:translateX(24px)}
 .ap-hint{margin:8px 16px 0;font-size:13px;color:var(--muted)}
+/* (9 nov.) dernières fenêtres façon Calendrier : frigo, réserves, focus, routines, vacances, fiche baby-sitter, crédit, Personnaliser */
+.ap-v{color:var(--muted);font-size:15px;text-align:right;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%}
+.ap-go b{flex:1;min-width:0}.ap-go:active{background:color-mix(in srgb,var(--ink) 6%,transparent)}.ap-go:disabled{opacity:.6}
+.ap-inr{cursor:text}.ap-inr b{flex:none!important}
+.ap-r input.ap-iv{flex:1;min-width:0;width:auto!important;text-align:right;border:0!important;background:none!important;box-shadow:none!important;padding:0!important;margin:0!important;min-height:0!important;color:var(--ink);font:inherit;font-size:16.5px;outline:none}
+.ap-r input.ap-iv::placeholder{color:var(--muted);opacity:.8}
+.fr-ti{display:flex;align-items:center;gap:8px;padding-right:14px}.fr-ti .ap-ti{flex:1;width:auto;min-width:0}
+.ap-main .fr-have{padding-top:10px;padding-bottom:12px}
+.fr-chips{gap:6px}.fr-chips .fr-chip{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:7px 10px 7px 12px;background:var(--surface);color:var(--ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.fr-chips .fr-chip i{font-style:normal;color:var(--muted);font-size:16px;line-height:1}
+.fr-sug{margin:0 4px}
+.fr-ie{flex:none;width:30px;font-size:24px;line-height:1;text-align:center}
+.fr-it{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.fr-it b{font-weight:600;font-size:16.5px;overflow-wrap:anywhere}.fr-it small{color:var(--muted);font-size:13px}
+.fr-card+.fr-card{margin-top:12px}.ap-r.fr-m{padding-left:58px;min-height:0;padding-top:0;font-size:14px;color:var(--muted)}.ap-r.fr-m:before{display:none}
+.fr-card .ap-go{min-height:50px}
+.st-in .st-seg{margin:0 0 14px}
+.st-list .stk-row{gap:12px}.st-list .ap-r+.ap-r:before{left:58px}
+.stk-d.soon{color:#E8A33D!important;font-weight:700}.stk-d.late{color:var(--late)!important;font-weight:700}
+.stk-ok{flex:none;border:0;border-radius:999px;padding:7px 12px;background:var(--surface);color:var(--ink);font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.fx-in .fx-cnt{margin:0 0 8px;text-align:center}.fx-in .fx-card,.fx-in .fx-end{padding:16px 0 4px}.fx-in .fx-card .fx-cap{display:block;padding:0 18px 4px 32px;color:var(--muted);font-size:13.5px;font-weight:600}.fx-in .fx-cap.late{color:var(--late)}
+.fx-in .fx-t{display:block;padding:2px 18px 14px 32px;font-size:24px;font-weight:800;line-height:1.2;letter-spacing:-.01em;overflow-wrap:anywhere}
+.fx-in .fx-meta{gap:10px}.fx-in .fx-meta b{font-size:15px}
+.fx-in .fx-end{align-items:flex-start}.fx-in .fx-end .fx-big-e{padding:0 0 6px 32px;font-size:40px}.fx-in .fx-end .ap-sum{margin:0}
+.fx-in .fx-tip{margin-bottom:12px}.fx-in .fx-pick{padding:4px 16px 12px 52px;flex-wrap:wrap}
+.fx-in .fx-nx{min-height:48px}.fx-in .fx-nx b{font-size:15.5px}.fx-in .fx-nx .tkl-dot,.rtg-in .tkl-dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--c,#A9B4C2);margin:0 7px}
+.fx-in .fx-card.fx-out{transition:transform .23s,opacity .23s;transform:translateX(-30px);opacity:0}
+.rtg-in .rtg-row{gap:10px}.rtg-in .rtg-row .ap-pk{flex:none;max-width:46%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rtg-in .rtg-top{margin:0 4px 6px}
+.gd-in .gd-top{margin:0 4px 6px}.gd-in .gd-r{gap:12px}.gd-in .gd-r .ap-ic{width:30px}.gd-in .ap-opt .ap-r+.ap-r:before{left:58px}.gd-in .ap-notes textarea{min-height:66px}
+.gd-in .gd-out{width:100%;margin-top:10px}
+.ap-del.ap-ok2{color:var(--ink)}
+.cr-in .cr-pm{margin:-6px 0 0;padding:0 18px 12px 32px}.cr-in .ap-main .ap-amtw{padding-top:4px}
+.pal-in .pal-main{padding-top:4px}.pal-in .pal-sec{display:flex;align-items:center;gap:4px;padding:10px 14px 4px 30px}.pal-in .pal-sec .pal-sec-av{flex:none;width:44px;height:44px;border-radius:50%;object-fit:cover}
+.pal-in .pal-sec .ap-ti{padding-left:10px}.pal-in .pal-pr{padding-top:12px;padding-bottom:14px}.pal-in .pal-pr .pal-pics{margin:0;flex:1}
+.pal-in .pal-cols{padding:12px}.pal-in .pal-cols .pal-grid{margin:0}
 .ap-del{display:block;width:100%;margin-top:22px;border:0;border-radius:22px;background:var(--sunk);color:var(--late);font:inherit;font-weight:700;padding:15px;cursor:pointer}
 </style>
 
@@ -5311,36 +5345,44 @@ function focusQueue(pool,me){ me=me||meId(); pool=pool||(S.whoF&&S.whoF===me?S.f
   const whoOk=t=>!S.whoF||t.pour===S.whoF||(t.prive&&S.whoF===me), catOk=t=>!S.catF||tkCatOf(t)===S.catF, t0=iso(today());
   return pool.filter(t=>tkShown(t)&&whoOk(t)&&catOk(t)&&(t.echeance?t.echeance<=t0:rtState(t)==="todo"))
     .sort((a,b)=>{ const la=a.echeance&&a.echeance<t0?0:1, lb=b.echeance&&b.echeance<t0?0:1; return la-lb||sortOpen(a,b); }); }
-function openFocus(){ if(!needMe()) return; const U=upSheet("focusPage","Mode focus"); U.sheet.classList.add("fx-sheet"); const inn=el("div",{class:"pp-in fx-in"}); U.sheet.append(inn); let doneN=0;
+function openFocus(){ if(!needMe()) return; const U=upSheet("focusPage","Mode focus"); U.sheet.classList.add("fx-sheet","ev-sheet","ap-sheet"); const inn=el("div",{class:"pp-in ap-in fx-in"}); U.sheet.append(inn); let doneN=0;
+  /* (9 nov., façon Calendrier) ✕ · Mode focus · ✓ = c'est fait */
   const draw=()=>{ inn.innerHTML=""; const q=focusQueue(), t=q[0], tot=q.length+doneN;
-    inn.append(el("p",{class:"fx-cnt"},q.length?el("b",{text:"Encore "+q.length}):el("b",{text:"Tout est fait"})," aujourd'hui"));
+    const H=apHead("Mode focus",()=>U.close(),{id:"fxOk",label:t?"C'est fait":"Fermer",onOk:()=>{ if(!t){ U.close(); return; } go(async()=>{ doneN++; haptic(12); t.fait=true; t.faitPar=meId(); t.faitLe=Date.now(); renderAllNow(); try{ await completeTask(t); }catch(e){ writeErr(e); } }); }});
+    inn.append(H.hd,el("p",{class:"fx-cnt"},q.length?el("b",{text:"Encore "+q.length}):el("b",{text:"Tout est fait"})," aujourd'hui"));
     const pr=el("div",{class:"fx-prog","aria-hidden":"true"}); if(tot<=12) for(let k=0;k<tot;k++) pr.append(el("i",{class:k<doneN?"on":""})); else pr.append(el("span",{class:"fx-pbar"},el("i",{style:"width:"+Math.round(doneN/tot*100)+"%"}))); inn.append(pr);
-    if(!t){ inn.append(el("div",{class:"fx-card fx-end"},el("div",{class:"fx-big-e",text:"🎉"}),el("b",{text:doneN?"Bravo, c'est fini pour aujourd'hui !":"Rien d'autre pour aujourd'hui."}),el("p",{text:"Le reste attend son jour dans la liste."})),el("button",{type:"button",class:"btn fx-b fx-ok",onclick:()=>U.close()},"Fermer")); return; }
+    if(!t){ inn.append(el("div",{class:"ap-main fx-end",style:"--apc:#34C759"},el("div",{class:"fx-big-e",text:"🎉"}),el("b",{class:"fx-t",text:doneN?"Bravo, c'est fini pour aujourd'hui !":"Rien d'autre pour aujourd'hui."}),el("p",{class:"ap-sum",text:"Le reste attend son jour dans la liste."}))); return; }
     const c=CAT[tkCatOf(t)]||CAT.maison, n=t.echeance?daysTo(t.echeance):0, rt=tkRoutine(t), R0=RT.find(r=>r[0]===rt);
     const when=n<0?(n===-1?"en retard d'1 jour":"en retard de "+(-n)+" jours"):R0?R0[2].toLowerCase():"aujourd'hui";
-    const card=el("div",{class:"fx-card",style:"--c:"+c.c},el("small",{text:tkEmo(tkCatOf(t))+" "+c.nom+" · "+when}),el("b",{class:"fx-t",text:t.titre}),
-      el("p",{text:[R0?"Routine "+R0[2].toLowerCase():"",recNorm(t.recur)?recText(t.recur):"",t.concerne&&membre(t.concerne).nom?membre(t.concerne).nom:""].filter(Boolean).join(" · ")||"Une fois"}),
-      el("div",{class:"fx-who"},t.pour&&t.pour!=="tous"&&membre(t.pour).nom?avatar(t.pour,22):el("span",{class:"fx-all",text:"🏠"}),el("span",{text:t.prive?"Pour toi (perso)":t.pour&&t.pour!=="tous"&&membre(t.pour).nom?"Pour "+(t.pour===meId()?"toi":membre(t.pour).nom):"Pour tout le foyer"})));
-    const go=async fn=>{ card.classList.add("fx-out"); await new Promise(r=>setTimeout(r,230)); await fn(); draw(); };
-    inn.append(card,el("div",{class:"fx-stack"}),el("div",{class:"fx-stack s2"}),
-      el("button",{type:"button",class:"btn fx-b fx-ok",id:"fxOk",onclick:()=>go(async()=>{ doneN++; haptic(12); t.fait=true; t.faitPar=meId(); t.faitLe=Date.now(); renderAllNow(); try{ await completeTask(t); }catch(e){ writeErr(e); } })},"✓ C'est fait"),
-      el("button",{type:"button",class:"btn fx-b",id:"fxLater",onclick:()=>go(async()=>{ const d=iso(new Date(today().getTime()+864e5)); t.echeance=d; renderAllNow(); try{ await colFor(t).doc(t.id).update({echeance:d}); }catch(e){ writeErr(e); } })},"⏰ Plus tard (demain)"),
-      t.prive?null:el("button",{type:"button",class:"btn fx-b",id:"fxOther",onclick:e=>fxWho(e.currentTarget,t,()=>go(async()=>{}))},"🙋 Quelqu'un d'autre ?"));
-    if(q.length>1) inn.append(el("p",{class:"fx-next",text:"Ensuite : "+q.slice(1,3).map(x=>x.titre).join(" · ")})); };
+    const who=t.prive?"Pour toi (perso)":t.pour&&t.pour!=="tous"&&membre(t.pour).nom?"Pour "+(t.pour===meId()?"toi":membre(t.pour).nom):"Pour tout le foyer";
+    const card=el("div",{class:"ap-main fx-card",style:"--apc:"+c.c},el("small",{class:"fx-cap"+(n<0?" late":""),text:tkEmo(tkCatOf(t))+" "+c.nom+" · "+when}),el("b",{class:"fx-t",text:t.titre}),
+      el("div",{class:"ap-r fx-meta"},t.pour&&t.pour!=="tous"&&membre(t.pour).nom?avatar(t.pour,24):el("span",{class:"fx-all",text:"🏠"}),el("b",{text:who}),el("span",{class:"ap-v",text:[R0?"Routine "+R0[2].toLowerCase():"",recNorm(t.recur)?recText(t.recur):""].filter(Boolean).join(" · ")||"Une fois"})));
+    var go=async fn=>{ card.classList.add("fx-out"); await new Promise(r=>setTimeout(r,230)); await fn(); draw(); };
+    const opts=apCard(apGo("clock","Plus tard","Demain",()=>go(async()=>{ const d=iso(new Date(today().getTime()+864e5)); t.echeance=d; renderAllNow(); try{ await colFor(t).doc(t.id).update({echeance:d}); }catch(e){ writeErr(e); } }),"",
+      "fxLater"),
+      t.prive?null:apGo("users","Quelqu'un d'autre ?","",e=>fxWho(e.currentTarget,t,()=>go(async()=>{})),"","fxOther"));
+    inn.append(card,el("p",{class:"ap-hint fx-tip",text:"Touche ✓ quand c'est fait."}),opts);
+    if(q.length>1) inn.append(apSec("Ensuite"),apCard(...q.slice(1,4).map(x=>el("div",{class:"ap-r fx-nx"},el("span",{class:"tkl-dot",style:"--c:"+((CAT[tkCatOf(x)]||CAT.maison).c)}),el("b",{text:x.titre}))))); };
   draw(); }
 function fxWho(btn,t,after){ const me=meId(), box=el("div",{class:"fx-pick"});
   const pick=async id=>{ t.pour=id; renderAllNow(); try{ await colFor(t).doc(t.id).update({pour:id}); toast(id==="tous"?"Proposée à tout le foyer.":"Confiée à "+esc(membre(id).nom)+"."); }catch(e){ writeErr(e); } after(); };
   for(const h of humains().filter(h=>h.id!==t.pour)) box.append(el("button",{type:"button",class:"fx-pk",onclick:()=>pick(h.id)},avatar(h.id,22),h.id===me?"Moi":h.nom));
   if(t.pour!=="tous") box.append(el("button",{type:"button",class:"fx-pk",onclick:()=>pick("tous")},el("span",{class:"fx-all",text:"🏠"}),"Tout le foyer (qui veut)"));
-  const old=btn.parentNode.querySelector(".fx-pick"); if(old){ old.remove(); return; } btn.after(box); }
+  const old=btn.parentNode.querySelector(".fx-pick"); if(old){ old.remove(); return; } btn.after(box); box.classList.add("ap-chips"); }
 /* « Gérer » les routines : chaque tâche qui revient, dans quelle routine (ou aucune) */
-function openRoutines(){ if(!needMe()) return; const U=upSheet("rtPage","Routines"); U.sheet.classList.add("rtg-sheet"); const inn=el("div",{class:"pp-in rtg-in"}); U.sheet.append(inn);
-  const draw=()=>{ inn.innerHTML=""; inn.append(el("div",{class:"ev-top"},el("h2",{text:"Routines"}),el("p",{text:"Choisis où ranger chaque tâche qui revient. Une routine se remet à zéro toute seule à chaque période."})));
+function openRoutines(){ if(!needMe()) return; const U=upSheet("rtPage","Routines"); U.sheet.classList.add("rtg-sheet","ev-sheet","ap-sheet"); const inn=el("div",{class:"pp-in ap-in rtg-in"}); U.sheet.append(inn);
+  /* (9 nov., façon Calendrier) une ligne par tâche qui revient, la routine en menu à droite */
+  const draw=()=>{ const y=U.sheet.scrollTop; inn.innerHTML=""; const H=apHead("Routines",()=>U.close(),{id:"rtgOk",label:"Terminé",onOk:()=>U.close()});
+    inn.append(H.hd,el("p",{class:"ap-hint rtg-top",text:"Range chaque tâche qui revient dans une routine : elle se remet à zéro toute seule à chaque période."}));
     const L=S.foyer.filter(t=>!t.fait&&recNorm(t.recur)).sort((a,b)=>(a.titre||"").localeCompare(b.titre||""));
-    if(!L.length){ inn.append(el("p",{class:"rtg-none",text:"Aucune tâche qui revient pour l'instant. Donne une fréquence à une tâche (chaque jour, chaque semaine…) et elle viendra ici."})); return; }
-    for(const t of L){ const cur=tkRoutine(t)||"aucune", c=CAT[tkCatOf(t)]||CAT.maison;
-      const opts=el("div",{class:"rtg-opts"}); for(const [k,e,lab] of RT.concat([["aucune","🗓️","Aucune (dans la liste)"]])) opts.append(el("button",{type:"button",class:"rtg-o","aria-pressed":String(cur===k),onclick:async()=>{ haptic(5); t.routine=k; draw(); renderTaskViews(); try{ await colFor(t).doc(t.id).update({routine:k}); }catch(err){ writeErr(err); } }},e+" "+lab));
-      inn.append(el("div",{class:"rtg-t",style:"--c:"+c.c},el("div",{class:"rtg-th"},el("span",{class:"tkl-dot"}),el("b",{text:t.titre}),el("small",{text:recText(t.recur)})),opts)); } };
+    if(!L.length){ inn.append(el("p",{class:"ap-hint",text:"Aucune tâche qui revient pour l'instant. Donne une fréquence à une tâche (chaque jour, chaque semaine…) et elle viendra ici."})); return; }
+    const opts=RT.map(([k,e,lab])=>[k,lab]).concat([["aucune","Aucune"]]);
+    const by=new Map(); for(const t of L){ const k=tkRoutine(t)||"aucune"; if(!by.has(k)) by.set(k,[]); by.get(k).push(t); }
+    for(const [k,e,lab] of RT.concat([["aucune","🗓️","Dans la liste"]])){ const ts=by.get(k); if(!ts) continue;
+      inn.append(apSec(lab),apCard(...ts.map(t=>{ const c=CAT[tkCatOf(t)]||CAT.maison;
+        return el("div",{class:"ap-r rtg-row",style:"--c:"+c.c},el("span",{class:"tkl-dot"}),el("span",{class:"fr-it"},el("b",{text:t.titre}),el("small",{text:recText(t.recur)})),
+          apSel(opts,tkRoutine(t)||"aucune",async v=>{ haptic(5); t.routine=v; draw(); renderTaskViews(); try{ await colFor(t).doc(t.id).update({routine:v}); }catch(err){ writeErr(err); } },"Routine de "+t.titre)); }))); }
+    U.sheet.scrollTop=y; };
   draw(); }
 /* ---------- Tâches façon Courses (28 oct., Angel) : « Aujourd'hui » (retards + du jour) puis une carte par catégorie, qui se déroule ---------- */
 const TK_EMO={factures:"💶",entretien:"🔧",courses:"🛒",colis:"📦",animaux:"🐾",rdv:"📅",maison:"🏠",documents:"📄",voitures:"🚗",enfants:"🧸",menage:"🧹",jardin:"🌿",sante:"💊",ecole:"🎒",loisirs:"🎉",travaux:"🛠️"};
@@ -6869,8 +6911,8 @@ function renderCredits(){
   w.append(el("div",{class:"sec-title"},el("h2",{text:"Crédits"})));
   const ppl=adults().filter(m=>list.some(c=>crShare(c,m.id)>0));
   const row=el("div",{class:"people"});
-  if(F&&!F._id){ const nc=el("div",{class:"pcard-b cr-card editing"},creditFormEl()); row.append(nc); }
-  if(!list.length&&!(F&&!F._id)){ w.innerHTML=""; w.hidden=true; return; } w.hidden=false;
+  crSync();
+  if(!list.length){ w.innerHTML=""; w.hidden=true; return; } w.hidden=false;
   for(const m of ppl){
     const mine=list.filter(c=>crShare(c,m.id)>0).sort((a,b)=>(a.fin||"9")<(b.fin||"9")?-1:1), act=mine.filter(crActive);
     const mois=act.reduce((a,c)=>a+crShare(c,m.id),0);
@@ -6878,14 +6920,13 @@ function renderCredits(){
     for(const c of act){ const r=crRemain(c), f=(c.mensualite?crShare(c,m.id)/c.mensualite:0); if(!r){ allTaux=false; continue; } reste+=Math.round(r.total*f); if(r.du==null) allTaux=false; else du+=Math.round(r.du*f); }
     const last=act.map(c=>c.fin).filter(Boolean).sort().pop();
     const edits=mine.filter(cr=>can&&(isAdmin()||cr.creePar===me)), picking=S.crPick===m.id&&edits.length>1;
-    const topPen=edits.length&&!(F&&F._in===m.id)?pencilBtn(()=>{ if(edits.length===1){ S.crPick=null; S.crForm=Object.assign({},edits[0],{_id:edits[0].id,_typed:true,_in:m.id}); } else S.crPick=picking?null:m.id; renderBudget(); },edits.length===1?"Modifier "+(edits[0].nom||"le crédit"):"Choisir le crédit à modifier"):null;
+    const topPen=edits.length?pencilBtn(()=>{ if(edits.length===1){ S.crPick=null; S.crForm=Object.assign({},edits[0],{_id:edits[0].id,_typed:true,_in:m.id}); } else S.crPick=picking?null:m.id; renderBudget(); },edits.length===1?"Modifier "+(edits[0].nom||"le crédit"):"Choisir le crédit à modifier"):null;
     if(topPen&&picking){ topPen.classList.add("on"); topPen.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>'; topPen.setAttribute("aria-label","Fermer"); }
     const card=el("div",{class:"pcard-b cr-card"},
       el("div",{class:"pb-top"},avatar(m.id),el("b",{text:m.id===me?"Toi":m.nom}),topPen?el("span",{style:"flex:1"}):"",topPen||""),
       picking?el("div",{class:"cr-hint",text:"Quel crédit modifier ?"}):"",
       el("div",{},el("div",{class:"pb-big",text:money(mois)}),el("div",{class:"pb-lbl",text:"remboursés chaque mois · "+act.length+" crédit"+(act.length>1?"s":"")+" en cours"})));
     for(const cr of mine){
-      if(F&&F._id===cr.id&&F._in===m.id){ const fb=el("div",{class:"cr-mini editing"},creditFormEl()); card.append(fb); continue; }
       const tot=crTotalMonths(cr), left=crMonthsLeft(cr), pct=tot&&left!=null?Math.min(100,Math.max(0,Math.round((tot-left)/tot*100))):null, done=!crActive(cr);
       const rr=crRemain(cr), fr=cr.mensualite?crShare(cr,m.id)/cr.mensualite:0;
       const editable=can&&(isAdmin()||cr.creePar===me);
@@ -6910,36 +6951,42 @@ function renderCredits(){
   }
   if(row.childNodes.length) w.append(row);
 }
-function creditFormEl(){
-  const F=S.crForm, f=el("form",{class:"b-form",autocomplete:"off"});
-  f.append(el("h3",{text:F._id?"Modifier · "+(F.nom||"crédit"):"Nouveau crédit"}));
-  const nom=el("input",{type:"text",id:"crNom",maxlength:"60",placeholder:"Prêt maison, crédit voiture…"}); nom.value=F.nom||""; nom.addEventListener("input",()=>{ F.nom=nom.value; if(!F._typed){ const v=nom.value.toLowerCase(), g=/maison|immo|appart|logement|résidence|residence/.test(v)?"immo":/voiture|auto|moto|scooter|véhicule|vehicule/.test(v)?"auto":/travaux|rénov|renov|cuisine|toit/.test(v)?"travaux":/étud|etud/.test(v)?"etudiant":/conso|perso|revolving|cuisine|canap|télé|tele/.test(v)?"conso":null; if(g){ F.type=g; const t=$("crType"); if(t) t.value=g; } } });
-  const ty=el("select",{id:"crType"}); for(const [v,l] of CR_TYPES) ty.append(el("option",{value:v,text:l})); ty.value=F.type||"autre"; ty.addEventListener("change",()=>{ F.type=ty.value; F._typed=true; });
-  const mens=el("input",{type:"text",inputmode:"decimal",id:"crMens",class:"amount-in",placeholder:"0,00 €"}); if(F.mensualite) mens.value=String(F.mensualite/100).replace(".",","); mens.addEventListener("input",()=>F.mensualite=parseMoney(mens.value));
-  const deb=el("input",{type:"date",id:"crDeb",required:true}); deb.value=F.debut||""; deb.addEventListener("input",()=>F.debut=deb.value||null);
-  const fin=el("input",{type:"date",id:"crFin",required:true}); fin.value=F.fin||""; fin.addEventListener("input",()=>F.fin=fin.value||null);
+/* (9 nov., façon Calendrier) le crédit s'ouvre dans une feuille du bas, dès que S.crForm est posé */
+function crSync(){ if(S.crForm&&!S.crU) openCrSheet(); else if(!S.crForm&&S.crU){ const u=S.crU; S.crU=null; u.close(); } }
+function openCrSheet(){ const F=S.crForm; if(!F) return;
+  const U=upSheet("crPage",F._id?"Modifier le crédit":"Nouveau crédit",()=>{ S.crU=null; if(S.crForm){ S.crForm=null; S.crPick=null; setTimeout(renderBudget,0); } }); S.crU=U; U.sheet.classList.add("ev-sheet","ap-sheet");
+  const f=el("form",{class:"pp-in ap-in cr-in",autocomplete:"off"}); U.sheet.append(f);
+  const done=msg=>{ S.crForm=null; S.crPick=null; S.crU=null; U.close(); if(msg) toast(msg); renderBudget(); };
+  const H=apHead(F._id?"Modifier le crédit":"Nouveau crédit",()=>U.close(),{submit:true,id:"crGo",label:F._id?"Enregistrer":"Ajouter"});
+  const nom=el("input",{type:"text",id:"crNom",class:"ap-ti",maxlength:"60",placeholder:"Prêt maison, crédit voiture…","aria-label":"Nom du crédit"}); nom.value=F.nom||"";
+  const mens=el("input",{type:"text",inputmode:"decimal",id:"crMens",class:"ap-amt amount-in","aria-label":"Mensualité"}); if(F.mensualite) mens.value=String((F.mensualite/100).toFixed(2)).replace(".",","); mens.addEventListener("input",()=>F.mensualite=parseMoney(mens.value));
   const cap=el("input",{type:"text",inputmode:"decimal",id:"crCap",placeholder:"Facultatif"}); if(F.capital) cap.value=String(F.capital/100).replace(".",","); cap.addEventListener("input",()=>F.capital=parseMoney(cap.value));
-  const tx=el("input",{type:"text",inputmode:"decimal",id:"crTaux",placeholder:"Ex. 3,9 · facultatif"}); if(F.taux!=null&&F.taux!=="") tx.value=String(F.taux).replace(".",","); tx.addEventListener("input",()=>{ const v=parseFloat(tx.value.replace(",",".").replace("%","")); F.taux=isFinite(v)&&v>=0&&v<50?v:null; });
-  const jr=el("select",{id:"crJour","aria-label":"Jour du prélèvement"}); jr.append(el("option",{value:"",text:"Le jour de la 1re échéance"})); for(let d=1;d<=31;d++) jr.append(el("option",{value:String(d),text:"Le "+(d===1?"1er":d)+" du mois"}));
-  jr.value=F.jour?String(F.jour):""; jr.addEventListener("change",()=>{ F.jour=jr.value?Number(jr.value):null; });
-  const who=el("div",{class:"pchips"});
-  for(const m of adults()){ const on=(F.titulaires||[]).includes(m.id); who.append(el("button",{type:"button",class:"pchip","aria-pressed":String(on),onclick:()=>{ F.titulaires=on?F.titulaires.filter(x=>x!==m.id):(F.titulaires||[]).concat(m.id); renderBudget(); }},avatar(m.id,20),m.id===meId()?"Moi":m.nom)); }
-  const fld=(l,i)=>el("label",{class:"field"},l,i);
-  f.append(fld("Nom",nom),el("div",{class:"frow"},fld("Type",ty),fld("Mensualité",mens)),el("div",{class:"frow"},fld("1re échéance",deb),fld("Dernière échéance",fin)),fld("Prélevé",jr),el("div",{class:"frow"},fld("Montant emprunté",cap),fld("Taux (TAEG, %)",tx)),
-    el("div",{class:"field"},"Qui rembourse"+((F.titulaires||[]).length>1?" · moitié-moitié":""),who));
-  const bt=el("div",{style:"display:flex;gap:8px;flex-wrap:wrap;align-items:center"},el("button",{type:"submit",class:"btn",text:F._id?"Enregistrer":"Ajouter"}),el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>{ S.crForm=null; renderBudget(); }}));
-  if(F._id){ const cr=(S.credits||[]).find(x=>x.id===F._id); if(cr) bt.append(el("span",{style:"flex:1"}),el("button",{type:"button",class:"btn ghost",style:"color:var(--late)",text:"Supprimer",onclick:()=>{ S.crForm=null; softDelete([{key:"credits:"+cr.id,arr:"credits",item:cr,run:()=>S.db.collection("credits").doc(cr.id).delete()}],"Crédit « "+esc(cr.nom||"")+" » supprimé."); }})); }
-  f.append(bt);
+  const tx=el("input",{type:"text",inputmode:"decimal",id:"crTaux",placeholder:"Ex. 3,9"}); if(F.taux!=null&&F.taux!=="") tx.value=String(F.taux).replace(".",","); tx.addEventListener("input",()=>{ const v=parseFloat(tx.value.replace(",",".").replace("%","")); F.taux=isFinite(v)&&v>=0&&v<50?v:null; });
+  const body=el("div");
+  const draw=()=>{ const y=U.sheet.scrollTop; body.innerHTML="";
+    const deb=el("input",{type:"date",id:"crDeb","aria-label":"1re échéance"}); deb.value=F.debut||""; deb.addEventListener("change",()=>{ F.debut=deb.value||null; draw(); });
+    const fin=el("input",{type:"date",id:"crFin","aria-label":"Dernière échéance"}); fin.value=F.fin||""; fin.addEventListener("change",()=>{ F.fin=fin.value||null; draw(); });
+    const jours=[["","Le jour de la 1re échéance"]]; for(let d=1;d<=31;d++) jours.push([String(d),"Le "+(d===1?"1er":d)+" du mois"]);
+    const tot=crTotalMonths(F);
+    body.append(apSec("Échéances"),apCard(apRow("cal","1re échéance",apPick(F.debut?apDate(F.debut):"Choisir",deb)),apRow("<g/>","Dernière",apPick(F.fin?apDate(F.fin):"Choisir",fin)),
+        tot?el("div",{class:"ap-r ap-sub"},el("b",{text:tot+" mensualité"+(tot>1?"s":"")})):null,apRow("rep","Prélevé",apSel(jours,F.jour?String(F.jour):"",v=>{ F.jour=v?Number(v):null; draw(); },"Jour du prélèvement","crJour"))),
+      apSec("Qui rembourse"+((F.titulaires||[]).length>1?" · moitié-moitié":"")),apWho("users",adults().map(m=>{ const on=(F.titulaires||[]).includes(m.id); return apChip([avatar(m.id,20),m.id===meId()?"Moi":m.nom],on,()=>{ F.titulaires=on?F.titulaires.filter(x=>x!==m.id):(F.titulaires||[]).concat(m.id); draw(); }); })),
+      apSec("Facultatif"),apCard(apIn("euro","Montant emprunté",cap),apIn("<g/>","Taux (TAEG, %)",tx)));
+    if(F._id){ const cr=(S.credits||[]).find(x=>x.id===F._id); if(cr) body.append(el("button",{type:"button",class:"ap-del",text:"Supprimer le crédit",onclick:()=>{ done(); softDelete([{key:"credits:"+cr.id,arr:"credits",item:cr,run:()=>S.db.collection("credits").doc(cr.id).delete()}],"Crédit « "+esc(cr.nom||"")+" » supprimé."); }})); }
+    U.sheet.scrollTop=y; };
+  const tyRow=()=>apRow("tag","Type",apSel(CR_TYPES,F.type||"autre",v=>{ F.type=v; F._typed=true; const r=f.querySelector(".cr-ty"); if(r) r.replaceWith(tyRow()); },"Type de crédit","crType"),"cr-ty");
+  nom.addEventListener("input",()=>{ F.nom=nom.value; if(!F._typed){ const v=nom.value.toLowerCase(), g=/maison|immo|appart|logement|résidence|residence/.test(v)?"immo":/voiture|auto|moto|scooter|véhicule|vehicule/.test(v)?"auto":/travaux|rénov|renov|cuisine|toit/.test(v)?"travaux":/étud|etud/.test(v)?"etudiant":/conso|perso|revolving|cuisine|canap|télé|tele/.test(v)?"conso":null; if(g&&g!==F.type){ F.type=g; const r=f.querySelector(".cr-ty"); if(r) r.replaceWith(tyRow()); } } });
+  f.append(H.hd,el("div",{class:"ap-main",style:"--apc:#8FA6FF"},nom,apAmt(mens),el("p",{class:"ap-sum cr-pm",text:"par mois"}),tyRow()),body); draw();
   f.addEventListener("submit",async e=>{ e.preventDefault(); if(!needMe()) return;
     if(!F.mensualite){ toast("Indique la mensualité."); mens.focus(); return; }
     if(!(F.titulaires||[]).length){ toast("Choisis qui rembourse."); return; }
-    if(!F.debut||!F.fin){ toast("Indique la première et la dernière échéance."); (F.debut?fin:deb).focus(); return; }
-    if(F.debut&&F.fin&&F.fin<F.debut){ toast("La dernière échéance est avant la première."); return; }
+    if(!F.debut||!F.fin){ toast("Indique la première et la dernière échéance."); const d=$(F.debut?"crFin":"crDeb"); if(d) try{ d.showPicker(); }catch(_){ d.focus(); } return; }
+    if(F.fin<F.debut){ toast("La dernière échéance est avant la première."); return; }
     const doc={nom:(F.nom||"").trim()||CR_T[F.type]||"Crédit",type:F.type||"autre",mensualite:F.mensualite,debut:F.debut||null,fin:F.fin||null,capital:F.capital||null,taux:F.taux!=null&&F.taux!==""?F.taux:null,titulaires:F.titulaires.slice(),jour:F.jour||null};
+    H.ok.disabled=true;
     try{ if(F._id) await S.db.collection("credits").doc(F._id).update(doc); else await S.db.collection("credits").add(Object.assign(doc,{creePar:meId(),creeLe:Date.now()}));
-      S.crForm=null; toast(F._id?"Crédit modifié.":"Crédit ajouté."); renderBudget(); }catch(err){ writeErr(err); } });
-  return f;
-}
+      done(F._id?"Crédit modifié.":"Crédit ajouté."); }catch(err){ H.ok.disabled=false; writeErr(err); } });
+  setTimeout(()=>{ if(!F._id) try{ nom.focus({preventScroll:true}); }catch(_){} },360); }
 /* ===== Accueil : mot du foyer, rendez-vous, budget du mois, qui fait quoi ===== */
 function agoTxt(ms){ const m=Math.round((Date.now()-ms)/6e4); if(m<1) return "à l'instant"; if(m<60) return "il y a "+m+" min"; const h=Math.round(m/60); if(h<24) return "il y a "+h+" h"; const d=Math.round(h/24); return d===1?"hier":"il y a "+d+" jours"; }
 const MOTC=[{id:"jaune",n:"Jaune",bg:"#FFF1A8",pin:"#F2B705",lbl:"#946500"},{id:"rose",n:"Rose",bg:"#FFD9E3",pin:"#E94F7A",lbl:"#B23256"},{id:"peche",n:"Pêche",bg:"#FFDCC8",pin:"#F07A3E",lbl:"#A8481A"},{id:"vert",n:"Vert",bg:"#D5F3D8",pin:"#3FAE5A",lbl:"#277338"},{id:"bleu",n:"Bleu",bg:"#D8E8FF",pin:"#3D7BD9",lbl:"#2A58A3"},{id:"lilas",n:"Lilas",bg:"#E7DFFF",pin:"#7B5CD6",lbl:"#5639AE"}];
@@ -7122,6 +7169,9 @@ function apDateSel(quick,mode,val,fn,aria,id,inp){
 function apRow(ic,lab,right,cls){ return el("div",{class:"ap-r"+(cls?" "+cls:"")},ic?apIc(ic):null,el("b",{text:lab}),right||null); }
 function apSw(on,fn,lab,id){ let v=!!on, tm=0; const b=el("button",{type:"button",id:id||null,class:"ap-sw"+(v?" on":""),role:"switch","aria-checked":String(v),"aria-label":lab,onclick:()=>{ haptic(5); v=!v; b.classList.toggle("on",v); b.setAttribute("aria-checked",String(v)); clearTimeout(tm); tm=setTimeout(()=>fn(v),280); }},el("i")); return b; }
 function apCard(...rows){ return el("div",{class:"ap-opt"},...rows.filter(Boolean)); }
+/* ligne qui ouvre quelque chose (icône, texte, valeur grise, ›) et ligne de saisie (libellé à gauche, champ à droite) */
+function apGo(ic,lab,val,fn,cls,id){ return el("button",{type:"button",id:id||null,class:"ap-r ap-go"+(cls?" "+cls:""),onclick:fn},ic?apIc(ic):null,el("b",{text:lab}),val?el("span",{class:"ap-v",text:val}):null,apIc("chev")); }
+function apIn(ic,lab,inp,cls){ inp.classList.add("ap-iv"); return el("label",{class:"ap-r ap-inr"+(cls?" "+cls:""),for:inp.id||null},ic?apIc(ic):null,el("b",{text:lab}),inp); }
 function apWho(ic,chips,extra){ return el("div",{class:"ap-f ap-who"},apIc(ic),el("div",{class:"ap-chips"},...chips.filter(Boolean)),...[].concat(extra||[])); }
 function apChip(lab,on,fn,cls){ return el("button",{type:"button",class:"pchip"+(cls?" "+cls:""),"aria-pressed":String(!!on),onclick:()=>{ haptic(5); fn(); }},...[].concat(lab)); }
 function apHead(title,close,o){ o=o||{}; const x=el("button",{type:"button",class:"ap-cb","aria-label":"Fermer",onclick:close}); x.innerHTML='<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
@@ -7863,29 +7913,29 @@ async function gardeLien(G){ const kids=membres().filter(m=>typeOf(m)!=="adulte"
   try{ if(window.CompressionStream){ const cs=new Blob([raw]).stream().pipeThrough(new CompressionStream("deflate-raw")); bytes=new Uint8Array(await new Response(cs).arrayBuffer()); pre="z"; } }catch(_){ bytes=raw; pre="j"; }
   let b=""; for(let i=0;i<bytes.length;i++) b+=String.fromCharCode(bytes[i]);
   return GARDE_URL+"#"+pre+btoa(b).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
-function openGarde(){ if(!needMe()) return; const U=upSheet("gardePage","Fiche baby-sitter"), inn=el("div",{class:"pp-in gd-in"}); U.sheet.append(inn);
+function openGarde(){ if(!needMe()) return; const U=upSheet("gardePage","Fiche baby-sitter"); U.sheet.classList.add("ev-sheet","ap-sheet"); const inn=el("div",{class:"pp-in ap-in gd-in"}); U.sheet.append(inn);
+  /* (9 nov., façon Calendrier) tout s'enregistre au fur et à mesure ; ✓ referme */
   const G=Object.assign({qui:{},cts:{}},((S.garde||{}).data)||{});
   const save=()=>{ if(!S.db) return; clearTimeout(save._t); save._t=setTimeout(()=>S.db.collection("fiches").doc("garde").set(G).catch(writeErr),500); };
-  const txt=(id,lab,k,ph,area)=>{ const i=el(area?"textarea":"input",area?{id,rows:"4",placeholder:ph}:{type:"text",id,placeholder:ph,autocomplete:"off"}); i.value=G[k]||""; i.addEventListener("input",()=>{ G[k]=i.value; save(); }); return el("label",{class:"field",for:id},lab,i); };
+  const inp=(id,k,ph,o)=>{ const i=el("input",Object.assign({type:"text",id,placeholder:ph,autocomplete:"off"},o||{})); i.value=G[k]||""; i.addEventListener("input",()=>{ G[k]=i.value; save(); }); return i; };
+  const area=(id,k,ph,lab)=>{ const i=el("textarea",{id,rows:"3",placeholder:ph,"aria-label":lab}); i.value=G[k]||""; i.addEventListener("input",()=>{ G[k]=i.value; save(); }); return el("div",{class:"ap-f ap-notes"},apIc("note"),i); };
   const kids=membres().filter(m=>typeOf(m)!=="adulte"), cts=(S.contacts||[]).filter(c=>c.tel);
-  const ck=(on,lab,sub,fn)=>{ const b=el("button",{type:"button",class:"gd-ck"+(on?" on":""),role:"checkbox","aria-checked":String(on),onclick:()=>{ on=!on; b.classList.toggle("on",on); b.setAttribute("aria-checked",String(on)); fn(on); save(); }},el("i",{"aria-hidden":"true"}),el("span",{},el("b",{text:lab}),sub?el("small",{text:sub}):null)); return b; };
-  inn.append(el("div",{class:"gd-h"},el("b",{text:"Fiche baby-sitter"}),el("span",{text:"Tout ce qu'il faut savoir pour garder les enfants ou les animaux. Remplis une fois, partage le lien quand quelqu'un vient."})));
-  if(kids.length){ const g=el("div",{class:"gd-g"}); for(const m of kids) g.append(ck(G.qui[m.id]!==false,m.nom,[typeOf(m)==="animal"?m.espece||"Animal":"",ageText(m),(m.infos||[]).filter(x=>x&&x.v).length?"ses infos de profil":""].filter(Boolean).join(" · "),on=>{ G.qui[m.id]=on; }));
-    inn.append(el("div",{class:"ms-gl",text:"Qui garder"}),g); }
-  else inn.append(el("p",{class:"gd-nb",text:"Ajoute les enfants et les animaux dans le Foyer : leurs âges et infos (allergies, école, véto…) apparaîtront ici."}));
-  if(cts.length){ const g=el("div",{class:"gd-g"}); for(const c of cts) g.append(ck(!!G.cts[c.id],c.nom||c.role,[c.nom?c.role:"",telFmt(c.tel)].filter(Boolean).join(" · "),on=>{ G.cts[c.id]=on; }));
-    inn.append(el("div",{class:"ms-gl",text:"Contacts à joindre"}),g); }
-  inn.append(el("p",{class:"gd-nb",text:"Les téléphones des parents (renseignés dans leur profil) et les numéros d'urgence (15, 18, 17, 112) sont ajoutés tout seuls."}));
-  inn.append(el("div",{class:"ms-gl",text:"La maison"}),txt("gdAdr","Adresse","adresse","12 rue des Lilas, 2e étage, code 4512B"),
-    el("div",{class:"frow"},txt("gdWn","Wi-Fi : réseau","wifiNom","Livebox-1234"),txt("gdWp","Wi-Fi : mot de passe","wifiMdp","")),
-    el("div",{class:"ms-gl",text:"Consignes"}),txt("gdC","Coucher, repas, écrans, habitudes…","consignes","Bain à 19h, dodo à 20h30 avec le doudou lapin. Pas d'écran après le dîner.",true),
-    txt("gdN","Autres infos (animaux, clés, voisins…)","notes","Croquettes : 1 dose le soir. La clé de secours est chez Mme Martin, au 3e.",true));
-  const share=el("button",{type:"button",class:"btn pp-cta",text:"Partager le lien",onclick:async()=>{ const url=await gardeLien(G);
-    try{ if(navigator.share){ await navigator.share({title:"Fiche baby-sitter"+(S.foyerNom?" · "+S.foyerNom:""),url}); return; } }catch(e){ if(e&&e.name==="AbortError") return; }
-    try{ await navigator.clipboard.writeText(url); toast("Lien copié : envoie-le par SMS ou WhatsApp."); }catch(_){ out.hidden=false; out.value=url; out.focus(); out.select(); toast("Copie le lien affiché."); } }});
+  const swRow=(left,lab,sub,on,fn)=>el("div",{class:"ap-r gd-r"},left,el("span",{class:"fr-it"},el("b",{text:lab}),sub?el("small",{text:sub}):null),apSw(on,v=>{ fn(v); save(); },lab));
+  const H=apHead("Fiche baby-sitter",()=>U.close(),{id:"gdOk",label:"Terminé",onOk:()=>U.close()});
+  inn.append(H.hd,el("p",{class:"ap-hint gd-top",text:"Tout ce qu'il faut savoir pour garder les enfants ou les animaux. Remplis une fois, partage le lien quand quelqu'un vient."}));
+  if(kids.length) inn.append(apSec("Qui garder"),apCard(...kids.map(m=>swRow(avatar(m.id,30),m.nom,[typeOf(m)==="animal"?m.espece||"Animal":"",ageText(m),(m.infos||[]).filter(x=>x&&x.v).length?"ses infos de profil":""].filter(Boolean).join(" · "),G.qui[m.id]!==false,v=>{ G.qui[m.id]=v; }))));
+  else inn.append(el("p",{class:"ap-hint",text:"Ajoute les enfants et les animaux dans le Foyer : leurs âges et infos (allergies, école, véto…) apparaîtront ici."}));
+  if(cts.length) inn.append(apSec("Contacts à joindre"),apCard(...cts.map(c=>swRow(apIc("phone"),c.nom||c.role,[c.nom?c.role:"",telFmt(c.tel)].filter(Boolean).join(" · "),!!G.cts[c.id],v=>{ G.cts[c.id]=v; }))));
+  inn.append(el("p",{class:"ap-hint",text:"Les téléphones des parents (renseignés dans leur profil) et les numéros d'urgence (15, 18, 17, 112) sont ajoutés tout seuls."}));
+  inn.append(apSec("La maison"),apCard(apIn("home","Adresse",inp("gdAdr","adresse","12 rue des Lilas, code 4512B")),apIn("<g/>","Wi-Fi",inp("gdWn","wifiNom","Livebox-1234")),apIn("lock","Mot de passe",inp("gdWp","wifiMdp","Mot de passe du Wi-Fi"))),
+    apSec("Consignes"),area("gdC","consignes","Coucher, repas, écrans, habitudes… Ex. bain à 19h, dodo à 20h30 avec le doudou lapin.","Consignes"),
+    apSec("Autres infos"),area("gdN","notes","Animaux, clés, voisins… Ex. croquettes : 1 dose le soir.","Autres infos"));
   const out=el("textarea",{class:"gd-out",readonly:true,rows:"3",hidden:true,"aria-label":"Lien de la fiche"});
-  inn.append(el("div",{class:"gd-b"},share,el("a",{class:"btn ghost",href:"#",onclick:async e=>{ e.preventDefault(); const u=await gardeLien(G); const a=el("a",{href:u,target:"_blank",rel:"noopener"}); document.body.append(a); a.click(); a.remove(); }},"Voir la fiche")),out,
-    el("small",{class:"gd-nb",text:"La fiche voyage dans le lien : rien n'est mis en ligne ailleurs. Toute personne qui a le lien peut la lire, envoie-le seulement à qui garde."})); }
+  inn.append(apSec("Partager"),apCard(apGo("share","Partager le lien","",async()=>{ const url=await gardeLien(G);
+      try{ if(navigator.share){ await navigator.share({title:"Fiche baby-sitter"+(S.foyerNom?" · "+S.foyerNom:""),url}); return; } }catch(e){ if(e&&e.name==="AbortError") return; }
+      try{ await navigator.clipboard.writeText(url); toast("Lien copié : envoie-le par SMS ou WhatsApp."); }catch(_){ out.hidden=false; out.value=url; out.focus(); out.select(); toast("Copie le lien affiché."); } },"gd-share"),
+    apGo("eye","Voir la fiche","",async()=>{ const u=await gardeLien(G); const a=el("a",{href:u,target:"_blank",rel:"noopener"}); document.body.append(a); a.click(); a.remove(); })),out,
+    el("p",{class:"ap-hint",text:"La fiche voyage dans le lien : rien n'est mis en ligne ailleurs. Toute personne qui a le lien peut la lire, envoie-le seulement à qui garde."})); }
 /* ---------- Mode vacances ----------
    vacances/actuel = {debut, fin, par}. Pendant l'absence : aucune sortie de poubelles (binNext saute ces dates). Au départ, les
    tâches qui reviennent et tombent pendant l'absence sont décalées au lendemain du retour ; une liste « avant de partir » devient
@@ -7893,31 +7943,37 @@ function openGarde(){ if(!needMe()) return; const U=upSheet("gardePage","Fiche b
 const enVac=d=>!!(S.vac&&S.vac.debut&&S.vac.fin&&d>=S.vac.debut&&d<=S.vac.fin);
 const vacOn=()=>enVac(iso(today()));
 const VAC_LIST=[["Vider le frigo des produits frais",1],["Sortir les poubelles",1],["Fermer l'arrivée d'eau",1],["Débrancher les appareils (box, télé…)",1],["Mettre le chauffage en hors-gel",0],["Faire arroser les plantes",0],["Prévenir un voisin",0],["Faire suivre ou garder le courrier",0],["Confier les clés",0],["Préparer les médicaments",0]];
-function openVac(){ if(!needMe()) return; const U=upSheet("vacPage","Vacances"), inn=el("div",{class:"pp-in vac-in"}); U.sheet.append(inn);
-  const V=S.vac||{}, t1=iso(new Date(today().getTime()+864e5));
-  if(V.debut&&V.fin&&V.fin>=iso(today())){ const on=vacOn();
-    inn.append(el("div",{class:"vac-hero"},el("span",{"aria-hidden":"true",text:"🏖"}),el("div",{},el("b",{text:on?"Bonnes vacances !":"Vacances prévues"}),el("small",{text:"Du "+fmtDue(V.debut)+" au "+fmtDue(V.fin)+(on?" · retour "+dueLabel(V.fin):"")}))),
-      el("p",{class:"gd-nb",text:"Pendant l'absence, pas de rappel de poubelles. Les tâches qui reviennent ont été décalées après le retour."}),
-      el("button",{type:"button",class:"btn ghost",text:"🧸 Envoyer la fiche baby-sitter",onclick:()=>{ U.close(); setTimeout(openGarde,340); }}),
-      el("button",{type:"button",class:"btn pp-cta",text:on?"On est rentrés !":"Annuler ces vacances",onclick:async()=>{ try{ await S.db.collection("vacances").doc("actuel").delete(); S.vac=null; U.close(); toast(on?"Bon retour à la maison !":"Vacances annulées."); renderAll(); }catch(e){ writeErr(e); } }}));
+function openVac(){ if(!needMe()) return; const U=upSheet("vacPage","Vacances"); U.sheet.classList.add("ev-sheet","ap-sheet"); const inn=el("div",{class:"pp-in ap-in vac-in"}); U.sheet.append(inn);
+  /* (9 nov., façon Calendrier) ✕ · Vacances · ✓ = partir */
+  const V=S.vac||{}, t0=iso(today()), t1=iso(new Date(today().getTime()+864e5)), fiche=apCard(apGo("users","Fiche baby-sitter","À envoyer",()=>{ U.close(); setTimeout(openGarde,340); }));
+  if(V.debut&&V.fin&&V.fin>=t0){ const on=vacOn();
+    const H=apHead("Vacances",()=>U.close(),{id:"vacOk",label:"Fermer",onOk:()=>U.close()});
+    inn.append(H.hd,el("div",{class:"ap-main",style:"--apc:#5AA9F0"},el("div",{class:"ap-ti ap-tt",text:"🏖 "+(on?"Bonnes vacances !":"Vacances prévues")}),
+        apRow("cal","Départ",el("span",{class:"ap-v",text:apDate(V.debut)})),apRow("<g/>","Retour",el("span",{class:"ap-v",text:apDate(V.fin)+(on?" · "+dueLabel(V.fin):"")}))),
+      el("p",{class:"ap-hint",text:"Pendant l'absence, pas de rappel de poubelles. Les tâches qui reviennent ont été décalées après le retour."}),apSec("Pour la garde"),fiche,
+      el("button",{type:"button",class:"ap-del"+(on?" ap-ok2":""),id:"vacEnd",text:on?"On est rentrés !":"Annuler ces vacances",onclick:async()=>{ try{ await S.db.collection("vacances").doc("actuel").delete(); S.vac=null; U.close(); toast(on?"Bon retour à la maison !":"Vacances annulées."); renderAll(); }catch(e){ writeErr(e); } }}));
     return; }
-  const di=el("input",{type:"date",id:"vacD",min:iso(today())}), fi=el("input",{type:"date",id:"vacF",min:iso(today())}); di.value=t1; fi.value=iso(new Date(today().getTime()+8*864e5));
-  const pick=new Set(VAC_LIST.filter(x=>x[1]).map(x=>x[0])), list=el("div",{class:"gd-g"});
-  for(const [t] of VAC_LIST){ let on=pick.has(t); const b=el("button",{type:"button",class:"gd-ck"+(on?" on":""),role:"checkbox","aria-checked":String(on),onclick:()=>{ on=!on; on?pick.add(t):pick.delete(t); b.classList.toggle("on",on); b.setAttribute("aria-checked",String(on)); }},el("i",{"aria-hidden":"true"}),el("span",{},el("b",{text:t}))); list.append(b); }
-  const nbRec=()=>S.foyer.filter(t=>!t.fait&&t.recur&&t.echeance&&t.echeance>=di.value&&t.echeance<=fi.value).length;
-  const recTxt=el("small",{class:"gd-nb"}); const upd=()=>{ const n=nbRec(); recTxt.textContent=n?n+" tâche"+(n>1?"s":"")+" qui revien"+(n>1?"nent":"t")+" pendant l'absence ser"+(n>1?"ont":"a")+" décalée"+(n>1?"s":"")+" au lendemain du retour.":"Aucune tâche qui revient pendant ces dates."; };
-  di.addEventListener("change",()=>{ if(fi.value<di.value) fi.value=di.value; upd(); }); fi.addEventListener("change",upd); upd();
-  inn.append(el("div",{class:"gd-h"},el("b",{text:"On part en vacances"}),el("span",{text:"Cocoon met le foyer en pause et prépare le départ."})),
-    el("div",{class:"frow"},el("label",{class:"field",for:"vacD"},"Départ",di),el("label",{class:"field",for:"vacF"},"Retour",fi)),recTxt,
-    el("div",{class:"ms-gl",text:"Avant de partir"}),list,el("p",{class:"gd-nb",text:"Les éléments cochés deviennent des tâches pour la veille du départ."}),
-    el("button",{type:"button",class:"btn pp-cta",text:"Partir en vacances",onclick:async e=>{ const debut=di.value, fin=fi.value; if(!debut||!fin||fin<debut){ toast("Choisis la date de départ et celle du retour."); return; }
-      const b=e.currentTarget; b.disabled=true; const me=meId(), now=Date.now(), veille=iso(new Date(parse(debut).getTime()-864e5)), apres=iso(new Date(parse(fin).getTime()+864e5));
-      try{ await S.db.collection("vacances").doc("actuel").set({debut,fin,par:me,le:now}); S.vac={debut,fin,par:me};
-        let dec=0; for(const t of S.foyer.filter(t=>!t.fait&&t.recur&&t.echeance&&t.echeance>=debut&&t.echeance<=fin)){ await S.db.collection("taches").doc(t.id).update({echeance:apres}); dec++; }
-        let k=0; for(const t of pick) await S.db.collection("taches").add({titre:t,cat:"maison",pour:"tous",echeance:veille<iso(today())?iso(today()):veille,fait:false,creePar:me,creeLe:now+(k++),vacances:true});
-        U.close(); toast("🏖 Vacances notées"+(dec?" · "+dec+" tâche"+(dec>1?"s":"")+" décalée"+(dec>1?"s":""):"")+(k?" · "+k+" chose"+(k>1?"s":"")+" à faire avant de partir":"")+"."); renderAll(); }
-      catch(err){ b.disabled=false; writeErr(err); } }}),
-    el("button",{type:"button",class:"btn ghost",text:"🧸 Préparer la fiche baby-sitter",onclick:()=>{ U.close(); setTimeout(openGarde,340); }})); }
+  let debut=t1, fin=iso(new Date(today().getTime()+8*864e5)); const pick=new Set(VAC_LIST.filter(x=>x[1]).map(x=>x[0]));
+  const nbRec=()=>S.foyer.filter(t=>!t.fait&&t.recur&&t.echeance&&t.echeance>=debut&&t.echeance<=fin).length;
+  const leave=async()=>{ if(!debut||!fin||fin<debut){ toast("Choisis la date de départ et celle du retour."); return; }
+    H.ok.disabled=true; const me=meId(), now=Date.now(), veille=iso(new Date(parse(debut).getTime()-864e5)), apres=iso(new Date(parse(fin).getTime()+864e5));
+    try{ await S.db.collection("vacances").doc("actuel").set({debut,fin,par:me,le:now}); S.vac={debut,fin,par:me};
+      let dec=0; for(const t of S.foyer.filter(t=>!t.fait&&t.recur&&t.echeance&&t.echeance>=debut&&t.echeance<=fin)){ await S.db.collection("taches").doc(t.id).update({echeance:apres}); dec++; }
+      let k=0; for(const t of pick) await S.db.collection("taches").add({titre:t,cat:"maison",pour:"tous",echeance:veille<t0?t0:veille,fait:false,creePar:me,creeLe:now+(k++),vacances:true});
+      U.close(); toast("🏖 Vacances notées"+(dec?" · "+dec+" tâche"+(dec>1?"s":"")+" décalée"+(dec>1?"s":""):"")+(k?" · "+k+" chose"+(k>1?"s":"")+" à faire avant de partir":"")+"."); renderAll(); }
+    catch(err){ H.ok.disabled=false; writeErr(err); } };
+  const H=apHead("Vacances",()=>U.close(),{id:"vacGo",label:"Partir en vacances",onOk:leave}); const body=el("div"); inn.append(H.hd,body);
+  const draw=()=>{ const y=U.sheet.scrollTop; body.innerHTML="";
+    const di=el("input",{type:"date",id:"vacD",min:t0,"aria-label":"Départ"}), fi=el("input",{type:"date",id:"vacF",min:t0,"aria-label":"Retour"}); di.value=debut; fi.value=fin;
+    di.addEventListener("change",()=>{ if(!di.value) return; debut=di.value; if(fin<debut) fin=debut; draw(); }); fi.addEventListener("change",()=>{ if(!fi.value) return; fin=fi.value<debut?debut:fi.value; draw(); });
+    const n=nbRec();
+    body.append(el("div",{class:"ap-main",style:"--apc:#5AA9F0"},el("div",{class:"ap-ti ap-tt",text:"🏖 On part en vacances"}),apRow("cal","Départ",apPick(apDate(debut),di)),apRow("<g/>","Retour",apPick(apDate(fin),fi))),
+      el("p",{class:"ap-hint",text:(n?n+" tâche"+(n>1?"s":"")+" qui revien"+(n>1?"nent":"t")+" pendant l'absence ser"+(n>1?"ont":"a")+" décalée"+(n>1?"s":"")+" au lendemain du retour. ":"")+"Pas de rappel de poubelles pendant l'absence."}),
+      apSec("Avant de partir · "+pick.size),el("div",{class:"ap-opt ap-steps"},...VAC_LIST.map(([t])=>{ const on=pick.has(t);
+        return el("div",{class:"ap-r"+(on?"":" off"),role:"checkbox","aria-checked":String(on),tabindex:"0",onclick:()=>{ haptic(5); on?pick.delete(t):pick.add(t); draw(); }},el("span",{class:"ing-ck"+(on?" on":""),"aria-hidden":"true"}),el("b",{text:t})); })),
+      el("p",{class:"ap-hint",text:"Ce qui est coché devient des tâches pour la veille du départ."}),apSec("Pour la garde"),fiche);
+    U.sheet.scrollTop=y; };
+  draw(); }
 function meterLast(){ const rs=(S.releves||[]).slice().sort((a,b)=>a.date<b.date?1:-1); return rs[0]||null; }
 function renderMDash(){ const D=$("mDash"), T=$("mTiles"); if(!D||!T) return; const sec=S.mSec||null, me=meId(), t0=iso(today());
   D.innerHTML=""; T.innerHTML="";
@@ -10011,7 +10067,7 @@ function secHowTo(raw){
   if(has("notif"))
     return T("Pour les notifications :",["Va dans Moi, rubrique Notifications.","Active-les et choisis ce que tu veux recevoir : rappel du matin, courses, tâches confiées.","Le silence de nuit évite d'être dérangé le soir."],{l:"Ouvrir mon espace",ghost:true,run:cocoGo("moi")});
   if(has("theme","sombre","clair","couleur"))
-    return T("Pour changer le thème ou les couleurs :",["Va dans Moi, tuile « Apparence ».","Choisis Automatique, Clair ou Sombre, puis tes couleurs. Tu peux aussi me renommer et changer ma photo.","Touche « Enregistrer »."],{l:"Ouvrir l'apparence",run:()=>{ setTab("moi"); setTimeout(()=>openPalette(),150); }});
+    return T("Pour changer le thème ou les couleurs :",["Va dans Moi, tuile « Apparence ».","Choisis Automatique, Clair ou Sombre, puis tes couleurs. Tu peux aussi me renommer et changer ma photo.","Touche ✓ en haut à droite."],{l:"Ouvrir l'apparence",run:()=>{ setTab("moi"); setTimeout(()=>openPalette(),150); }});
   if(has("tache","rappel","faire"))
     return T("Pour ajouter une tâche :",["Va dans Foyer › Tâches et écris-la dans le champ en haut (ou écris-la-moi directement).","Écris la tâche ; tu peux ajouter la date dans la phrase, par exemple « Payer la cantine vendredi ».","Choisis « Pour moi » (privé) ou « Pour le foyer », puis « Ajouter ».","Plus rapide : écris-moi « Rappelle-moi d'appeler le plombier demain »."],{l:"Ajouter une tâche",run:()=>openSheet({})});
   return null;
@@ -10201,29 +10257,29 @@ function applySecIdent(over){ const I=secIdent(over);
 function openPalette(){ const was={pal:palGet(),theme:curTheme(),sec:{secNom:(secIdent().nom),secPhoto:(Object.assign({},S.prefs||{},S.secIdLocal||{})).secPhoto||null}}, cur={pal:Object.assign({},was.pal),theme:was.theme,sec:Object.assign({},was.sec)};
   /* même feuille que Cocoon Plus (montée depuis le bas, poignée, glisser pour fermer) ; fermée sans « Enregistrer » : on annule les essais */
   let saved=false; const U=upSheet("palPage","Personnaliser",()=>{ if(!saved){ applyPalette(was.pal); applyTheme(was.theme); applySecIdent(); } });
-  U.sheet.classList.add("pal-sheet"); const pn=el("div",{class:"pp-in pal-in"}); U.sheet.append(pn);
+  U.sheet.classList.add("pal-sheet","ev-sheet","ap-sheet"); const pn=el("div",{class:"pp-in ap-in pal-in"}); U.sheet.append(pn);
   const close=keep=>{ if(keep) saved=true; U.close(); };
-  const draw=()=>{ pn.innerHTML="";
-    pn.append(el("div",{class:"pal-h"},el("b",{text:"Personnaliser"})));
+  const draw=()=>{ const y=U.sheet.scrollTop; pn.innerHTML="";
+    const H=apHead("Personnaliser",()=>close(false),{id:"palGo",label:"Enregistrer",onOk:()=>{ savePalette(cur.pal); if(cur.theme!==was.theme) setTheme(cur.theme); const sn=String(cur.sec.secNom||"").trim(); const sid={secNom:sn&&sn!=="Cocoony"?sn:null,secPhoto:cur.sec.secPhoto||null}; S.secIdLocal=sid; S.prefs=Object.assign({},S.prefs||{},sid); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); applySecIdent(); toast("Personnalisation enregistrée."); close(true); }});
+    pn.append(H.hd);
     { const I=secIdent(cur.sec); const fi=el("input",{type:"file",accept:"image/*",hidden:true});
       fi.addEventListener("change",async()=>{ const f=fi.files[0]; fi.value=""; if(!f) return; try{ const cv=await cropImage(f,{out:160,title:"Recadrer la photo de "+(secIdent(cur.sec).nom||"ton secrétaire")}); if(!cv) return; cur.sec.secPhoto=cv.toDataURL("image/jpeg",.85); applySecIdent(cur.sec); draw(); }catch(_){ toast("Cette image n'a pas pu être lue."); } });
-      const nm=el("input",{type:"text",id:"palSecNom",maxlength:"20",placeholder:"Cocoony","aria-label":"Nom du secrétaire"}); nm.value=cur.sec.secNom==="Cocoony"?"":cur.sec.secNom||""; nm.addEventListener("input",()=>{ cur.sec.secNom=nm.value; applySecIdent(cur.sec); });
+      const nm=el("input",{type:"text",id:"palSecNom",class:"ap-ti",maxlength:"20",placeholder:"Cocoony","aria-label":"Nom du secrétaire"}); nm.value=cur.sec.secNom==="Cocoony"?"":cur.sec.secNom||""; nm.addEventListener("input",()=>{ cur.sec.secNom=nm.value; applySecIdent(cur.sec); });
       const pics=el("div",{class:"pal-pics"});
       const opt=(val,src,lab)=>{ const on=(cur.sec.secPhoto||null)===val; const b=el("button",{type:"button",class:"pal-pic"+(on?" on":""),"aria-label":lab,"aria-pressed":String(on),onclick:()=>{ cur.sec.secPhoto=val; applySecIdent(cur.sec); draw(); }}); b.append(el("img",{alt:"",src})); return b; };
       { const lg=document.querySelector(".brand-logo"); pics.append(opt(null,lg?lg.src:"","Logo Cocoon")); }
       SEC_EMO.forEach((e,i)=>pics.append(opt("emo:"+i,emoSrc(...e),"Avatar "+e[0])));
       const own=cur.sec.secPhoto&&!String(cur.sec.secPhoto).startsWith("emo:");
       const up=el("button",{type:"button",class:"pal-pic up"+(own?" on":""),"aria-label":"Choisir une photo",onclick:()=>fi.click()}); if(own) up.append(el("img",{alt:"",src:cur.sec.secPhoto})); else up.append(el("span",{text:"+"})); pics.append(up,fi);
-      pn.append(el("span",{class:"pal-l",text:"Ton secrétaire"}),el("div",{class:"pal-sec"},el("img",{class:"pal-sec-av",alt:"",src:I.src}),el("label",{class:"pal-sec-n",for:"palSecNom"},el("span",{text:"Son nom"}),nm)),pics); }
-    const th=el("div",{class:"seg pal-seg"}); for(const [v,l] of [["auto","Automatique"],["light","Clair"],["dark","Sombre"]]) th.append(el("button",{type:"button","aria-pressed":String(cur.theme===v),text:l,onclick:()=>{ cur.theme=v; applyTheme(v); draw(); }}));
-    pn.append(el("span",{class:"pal-l",text:"Thème"}),th);
-    { const cur0=textSizeGet(), ts=el("div",{class:"seg pal-seg",role:"group","aria-label":"Taille du texte"}); for(const [v,l] of TSIZES) ts.append(el("button",{type:"button","aria-pressed":String(cur0===v),text:l,onclick:()=>{ try{ localStorage.setItem("cocoon.textSize",v); }catch(_){} applyTextSize(v); draw(); }}));
-      pn.append(el("span",{class:"pal-l",text:"Taille du texte"}),ts); }
+      pn.append(el("div",{class:"ap-main pal-main",style:"--apc:var(--accent)"},el("div",{class:"pal-sec"},el("img",{class:"pal-sec-av",alt:"",src:I.src}),nm),el("div",{class:"ap-r pal-pr"},pics)),
+        el("p",{class:"ap-hint",text:"Le nom et l'image de ton secrétaire (Cocoony par défaut)."})); }
+    pn.append(apSec("Apparence"),apCard(
+      apRow("sun","Thème",apSel([["auto","Automatique"],["light","Clair"],["dark","Sombre"]],cur.theme,v=>{ cur.theme=v; applyTheme(v); draw(); },"Thème","palTheme")),
+      apRow("note","Taille du texte",apSel(TSIZES,textSizeGet(),v=>{ try{ localStorage.setItem("cocoon.textSize",v); }catch(_){} applyTextSize(v); draw(); },"Taille du texte","palSize")),
+      apRow("eye","Tes bulles",apSel(BULLES,cur.pal.bulle,v=>{ cur.pal.bulle=v; applyPalette(cur.pal); draw(); },"Tes bulles dans la discussion","palBul"))));
     const g=el("div",{class:"pal-grid"}); for(const P of PALS){ const on=cur.pal.id===P.id; g.append(el("button",{type:"button",class:"pal-sw"+(on?" on":""),"aria-pressed":String(on),onclick:()=>{ cur.pal.id=P.id; applyPalette(cur.pal); draw(); }},el("span",{class:"pal-dot",style:"background:linear-gradient(135deg,"+P.g[0]+","+P.g[1]+" 55%,"+P.g[2]+")"}),el("span",{text:P.n}))); }
-    pn.append(el("span",{class:"pal-l",text:"Couleurs"}),g);
-    const bl=el("div",{class:"seg pal-seg"}); for(const [v,l] of BULLES) bl.append(el("button",{type:"button","aria-pressed":String(cur.pal.bulle===v),text:l,onclick:()=>{ cur.pal.bulle=v; applyPalette(cur.pal); draw(); }}));
-    pn.append(el("span",{class:"pal-l",text:"Tes bulles dans la discussion"}),bl);
-    pn.append(el("div",{class:"pal-btns"},el("button",{type:"button",class:"btn",text:"Enregistrer",onclick:()=>{ savePalette(cur.pal); if(cur.theme!==was.theme) setTheme(cur.theme); const sn=String(cur.sec.secNom||"").trim(); const sid={secNom:sn&&sn!=="Cocoony"?sn:null,secPhoto:cur.sec.secPhoto||null}; S.secIdLocal=sid; S.prefs=Object.assign({},S.prefs||{},sid); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); applySecIdent(); toast("Personnalisation enregistrée."); close(true); }}),el("button",{type:"button",class:"btn ghost",text:"Annuler",onclick:()=>close(false)})));
+    pn.append(apSec("Couleurs"),el("div",{class:"ap-opt pal-cols"},g));
+    U.sheet.scrollTop=y;
   };
   draw(); }
 function secAv(){ const im=el("img",{class:"sec-av",alt:"","aria-hidden":"true"}); const I=secIdent(); if(I.src) im.src=I.src; return im; }
@@ -11422,40 +11478,47 @@ function frigoLocal(have){ const H=have.map(x=>cKey(parseArticle(x).nom));
   const has=g=>{ const k=cKey(parseArticle(g).nom); return H.some(h=>h&&(k.includes(h)||h.includes(k))); };
   return platsConnus().filter(p=>!p.matin).map(p=>{ const ing=(p.ing&&p.ing.length?p.ing:platIng(p.nom)).filter(g=>!inPlacard(g)); const ok=ing.filter(has); return {nom:p.nom,ok:ok.length,manque:ing.filter(g=>!has(g)),tot:ing.length}; })
     .filter(x=>x.ok>0).sort((a,b)=>b.ok/b.tot-a.ok/a.tot||b.ok-a.ok).slice(0,3).map(x=>({nom:x.nom,manque:x.manque,note:x.ok+" ingrédient"+(x.ok>1?"s":"")+" sur "+x.tot+" déjà là"})); }
-function openFrigo(pre){ if(!needMe()) return; const U=upSheet("frigoPage","Avec ce qu'il y a dans le frigo"), inn=el("div",{class:"pp-in fr-in"}); U.sheet.classList.add("ing-sheet"); U.sheet.append(inn);
-  /* la liste repart vide à chaque ouverture (rien n'est gardé quand on quitte) */
-  let have=Array.isArray(pre)?pre.slice():[]; try{ localStorage.removeItem("cocoon.frigo"); }catch(_){}
-  const keep=()=>{};
-  const chips=el("div",{class:"fr-chips"}), res=el("div",{class:"fr-res"});
-  const draw=()=>{ chips.innerHTML=""; for(const g of have) chips.append(el("button",{type:"button",class:"fr-chip","aria-label":"Retirer "+g,onclick:()=>{ have=have.filter(x=>x!==g); keep(); draw(); }},g,el("i",{"aria-hidden":"true",text:"×"}))); go.disabled=!have.length; };
-  const inp=el("input",{type:"text",id:"frIn",placeholder:"Poulet, courgettes, riz, crème…",autocomplete:"off","aria-label":"Ce qu'il y a dans le frigo"});
-  const add=()=>{ const v=inp.value.split(/[,;\n]/).map(x=>x.trim()).filter(Boolean); for(const x of v) if(!have.some(h=>norm(h)===norm(x))) have.push(x.replace(/^./,c=>c.toUpperCase())); inp.value=""; keep(); draw(); };
-  inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); add(); } });
-  /* suggestions : ce qui a été acheté ces 10 derniers jours */
+function openFrigo(pre){ if(!needMe()) return; const U=upSheet("frigoPage","Avec ce qu'il y a dans le frigo"); U.sheet.classList.add("ev-sheet","ap-sheet","ing-sheet");
+  const inn=el("div",{class:"pp-in ap-in fr-in"}); U.sheet.append(inn);
+  /* (9 nov., façon Calendrier) ✕ · titre · ✓ = trouver 3 idées ; la liste repart vide à chaque ouverture */
+  let have=Array.isArray(pre)?pre.slice():[], ideas=null, ia=false, busyOn=false; try{ localStorage.removeItem("cocoon.frigo"); }catch(_){}
   const res0=(S.stock||[]).slice().sort((a,b)=>(a.dlc||"9999")<(b.dlc||"9999")?-1:1).map(x=>x.nom);
-  const recent=[...new Set(res0.concat((S.coursesAll||S.courses||[]).filter(i=>i.fait&&i.faitLe&&Date.now()-i.faitLe<10*864e5).map(i=>parseArticle(i.nom).nom)))].filter(x=>!have.some(h=>norm(h)===norm(x))).slice(0,14);
-  const sug=el("div",{class:"fr-sug"}); for(const r of recent) sug.append(el("button",{type:"button",text:"+ "+r,onclick:e=>{ if(!have.some(h=>norm(h)===norm(r))){ have.push(r); keep(); draw(); } e.currentTarget.remove(); }}));
-  /* pendant la recherche : la fenêtre reste ouverte, floutée, avec Cocoony qui cherche (au moins 0,9 s pour qu'on le voie) */
+  const recent=[...new Set(res0.concat((S.coursesAll||S.courses||[]).filter(i=>i.fait&&i.faitLe&&Date.now()-i.faitLe<10*864e5).map(i=>parseArticle(i.nom).nom)))].slice(0,20);
+  const inp=el("input",{type:"text",id:"frIn",class:"ap-ti",placeholder:"Poulet, courgettes, riz, crème…",autocomplete:"off","aria-label":"Ce qu'il y a dans le frigo"});
+  const has=x=>have.some(h=>norm(h)===norm(x));
+  const add=()=>{ const v=inp.value.split(/[,;\n]/).map(x=>x.trim()).filter(Boolean); for(const x of v) if(!has(x)) have.push(x.replace(/^./,c=>c.toUpperCase())); inp.value=""; draw(); };
+  inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); add(); setTimeout(()=>{ try{ inp.focus({preventScroll:true}); }catch(_){} },20); } });
+  inp.addEventListener("input",()=>{ H.ok.disabled=busyOn||(!have.length&&!inp.value.trim()); });
   const busy=()=>{ let src=""; try{ src=(secIdent()||{}).src||""; }catch(_){}
     const o=el("div",{class:"fr-busy",role:"status","aria-live":"polite"},el("div",{class:"fr-bc"},src?el("img",{src,alt:""}):el("span",{class:"fr-be",text:"🍳"}),el("b",{text:"Cocoony cherche des idées…"}),el("span",{class:"dots","aria-hidden":"true"},el("i"),el("i"),el("i"))));
     document.body.append(o); requestAnimationFrame(()=>o.classList.add("on")); const t0=Date.now();
     return async()=>{ const w=900-(Date.now()-t0); if(w>0) await sleep(w); o.classList.remove("on"); setTimeout(()=>o.remove(),220); }; };
-  const go=el("button",{type:"button",class:"btn pp-cta",text:"Trouver 3 idées",onclick:async()=>{ add(); if(!have.length) return; go.disabled=true; const done=busy();
-    let ideas=null, ia=false;
+  const find=async()=>{ add(); if(!have.length||busyOn) return; busyOn=true; H.ok.disabled=true; const done=busy(); let r2=null; ia=false;
     if(secOn()&&pmLeft("questions")>0){ try{ const r=await S.sample.json("Un foyer français a ceci dans son frigo et ses placards : "+have.join(", ")+". Propose 3 plats simples du quotidien à cuisiner ce soir en utilisant surtout ces ingrédients. Réponds uniquement avec un tableau JSON de 3 objets : [{\"nom\": nom court du plat, \"temps\": durée totale en minutes (nombre), \"manque\": [ingrédients indispensables à acheter, sans sel, poivre, huile, épices], \"astuce\": une phrase courte}]",{modelTier:"quick",cache:false});
-        if(Array.isArray(r)&&r.length){ ideas=r.slice(0,3).map(x=>({nom:String(x.nom||"").slice(0,60),manque:(Array.isArray(x.manque)?x.manque:[]).map(String).slice(0,8),note:[x.temps?x.temps+" min":"",x.astuce||""].filter(Boolean).join(" · ")})).filter(x=>x.nom); ia=true; pmUse("questions"); } }catch(_){ ideas=null; } }
-    if(!ideas||!ideas.length) ideas=frigoLocal(have);
-    await done(); res.innerHTML=""; go.disabled=false; go.textContent="Trouver d'autres idées";
-    if(!ideas.length){ res.append(el("p",{class:"fr-nb",text:"Aucun plat connu avec ces ingrédients. Ajoute-en quelques-uns de plus"+(secOn()?".":", ou utilise Cocoony intelligent dans claude.ai.")})); return; }
-    const [fd,fs]=nextFreeMeal(true);
-    for(const x of ideas){ const card=el("div",{class:"fr-card"},el("b",{},platEmoji(x.nom,"soir")+" "+x.nom),x.note?el("small",{text:x.note}):null,
-        el("span",{class:"fr-m",text:x.manque.length?"À acheter : "+x.manque.join(", "):"Tu as tout ce qu'il faut."}));
-      const acts=el("div",{class:"fr-acts"},el("button",{type:"button",class:"btn",text:"Au menu · "+mealWhen(fd,fs).toLowerCase(),onclick:()=>{ U.close(); setTimeout(()=>openRepas(fd,fs,x.nom),340); }}));
-      if(x.manque.length) acts.append(el("button",{type:"button",class:"btn ghost",text:"Ajouter aux courses",onclick:async e=>{ const b=e.currentTarget; b.disabled=true; const n=await ingToCourses(x.manque.filter(g=>!ingState(g).on),x.nom); b.textContent=n?"✓ "+n+" ajouté"+(n>1?"s":""):"Déjà sur la liste"; }}));
-      card.append(acts); res.append(card); }
-    if(!ia) res.append(el("p",{class:"fr-nb",text:"Idées tirées des plats que Cocoon connaît."})); }});
-  inn.append(el("div",{class:"gd-h"},el("b",{text:"Qu'est-ce qu'on mange ?"}),el("span",{text:"Note ce qu'il reste, Cocoony propose 3 plats."})),
-    el("div",{class:"fr-add"},inp,el("button",{type:"button",class:"btn",text:"Ajouter",onclick:add})),chips,recent.length?el("div",{class:"ms-gl",text:res0.length?"Dans tes réserves et tes derniers achats":"Acheté ces derniers jours"}):"",recent.length?sug:"",go,res);
+        if(Array.isArray(r)&&r.length){ r2=r.slice(0,3).map(x=>({nom:String(x.nom||"").slice(0,60),manque:(Array.isArray(x.manque)?x.manque:[]).map(String).slice(0,8),note:[x.temps?x.temps+" min":"",x.astuce||""].filter(Boolean).join(" · ")})).filter(x=>x.nom); ia=true; pmUse("questions"); } }catch(_){ r2=null; } }
+    if(!r2||!r2.length) r2=frigoLocal(have);
+    await done(); busyOn=false; ideas=r2; draw(); setTimeout(()=>{ const x=inn.querySelector(".fr-res"); if(x) x.scrollIntoView({behavior:"smooth",block:"start"}); },60); };
+  const H=apHead("Avec le frigo",()=>U.close(),{id:"frGo",label:"Trouver 3 idées",onOk:find});
+  const body=el("div"); inn.append(H.hd,body);
+  function draw(){ body.innerHTML=""; H.ok.disabled=busyOn||(!have.length&&!inp.value.trim()); H.ok.setAttribute("aria-label",ideas?"Trouver d'autres idées":"Trouver 3 idées");
+    const pb=el("button",{type:"button",class:"ap-addb","aria-label":"Ajouter",onclick:()=>{ add(); try{ inp.focus({preventScroll:true}); }catch(_){} }}); pb.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';
+    const main=el("div",{class:"ap-main",style:"--apc:#7FD6A4"},el("div",{class:"fr-ti"},inp,pb));
+    if(have.length){ const chips=el("div",{class:"ap-chips fr-chips"}); for(const g of have) chips.append(el("button",{type:"button",class:"fr-chip","aria-label":"Retirer "+g,onclick:()=>{ have=have.filter(x=>x!==g); draw(); }},(foodEmo(g)?foodEmo(g)+" ":"")+g,el("i",{"aria-hidden":"true",text:"×"})));
+      main.append(el("div",{class:"ap-r fr-have"},chips)); }
+    body.append(main,el("p",{class:"ap-hint",text:have.length?"Touche ✓ : Cocoony propose 3 plats avec ça.":"Note ce qu'il reste, Cocoony propose 3 plats."}));
+    const sug=recent.filter(r=>!has(r)).slice(0,14);
+    if(sug.length) body.append(apSec(res0.length?"Réserves et derniers achats":"Acheté ces derniers jours"),el("div",{class:"ap-chips fr-sug"},...sug.map(r=>apChip("+ "+r,false,()=>{ if(!has(r)) have.push(r); draw(); }))));
+    if(!ideas) return;
+    const res=el("div",{class:"fr-res"}); body.append(res);
+    if(!ideas.length){ res.append(el("p",{class:"ap-hint",text:"Aucun plat connu avec ces ingrédients. Ajoute-en quelques-uns de plus"+(secOn()?".":", ou utilise Cocoony intelligent dans claude.ai.")})); return; }
+    const [fd,fs]=nextFreeMeal(true); res.append(apSec("3 idées"));
+    for(const x of ideas){ const c=el("div",{class:"ap-opt fr-card"},
+        el("div",{class:"ap-r fr-ih"},el("span",{class:"fr-ie","aria-hidden":"true",text:platEmoji(x.nom,"soir")}),el("span",{class:"fr-it"},el("b",{text:x.nom}),x.note?el("small",{text:x.note}):null)),
+        el("div",{class:"ap-r fr-m"},el("span",{text:x.manque.length?"À acheter : "+x.manque.join(", "):"Tu as tout ce qu'il faut."})),
+        apGo("cal","Au menu",mealWhen(fd,fs),()=>{ U.close(); setTimeout(()=>openRepas(fd,fs,x.nom),340); }));
+      if(x.manque.length){ const b=apGo("shop","Ajouter aux courses",x.manque.length+" article"+(x.manque.length>1?"s":""),async()=>{ b.disabled=true; const n=await ingToCourses(x.manque.filter(g=>!ingState(g).on),x.nom); b.querySelector("b").textContent=n?"✓ "+n+" ajouté"+(n>1?"s":"")+" aux courses":"Déjà sur la liste"; const v=b.querySelector(".ap-v"); if(v) v.remove(); }); c.append(b); }
+      res.append(c); }
+    if(!ia) res.append(el("p",{class:"ap-hint",text:"Idées tirées des plats que Cocoon connaît."})); }
   draw(); setTimeout(()=>{ try{ inp.focus({preventScroll:true}); }catch(_){} },360); }
 /* ---------- Réserves : frigo, congélateur, placard ----------
    collection stock {nom, lieu: frigo|congel|placard, dlc: AAAA-MM-JJ|null}. Rappel avant la date (2 j frigo/placard, 7 j congélateur),
@@ -11463,25 +11526,31 @@ function openFrigo(pre){ if(!needMe()) return; const U=upSheet("frigoPage","Avec
 const STOCK_L=[["frigo","Frigo","🧊"],["congel","Congélateur","❄️"],["placard","Placard","🥫"]];
 const stockJ=x=>x&&x.dlc?daysTo(x.dlc):null;
 const stockAlerte=x=>x&&x.lieu==="congel"?7:2;
-function openStock(){ if(!needMe()) return; const U=upSheet("stockPage","Frigo, congélateur, placard"), inn=el("div",{class:"pp-in st-in"}); U.sheet.classList.add("ing-sheet"); U.sheet.append(inn);
-  let lieu=S.stockLieu||"frigo";
-  const draw=()=>{ inn.innerHTML=""; S.stockLieu=lieu;
-    const seg=el("div",{class:"seg st-seg",role:"group","aria-label":"Où"}); for(const [k,l,e] of STOCK_L){ const n=(S.stock||[]).filter(x=>x.lieu===k).length; seg.append(el("button",{type:"button","aria-pressed":String(lieu===k),onclick:()=>{ lieu=k; draw(); }},e+" "+l+(n?" · "+n:""))); }
-    const nm=el("input",{type:"text",id:"stkNom",placeholder:lieu==="congel"?"Steaks hachés, petits pois…":lieu==="placard"?"Pâtes, conserve de thon…":"Yaourts, jambon, crème…",autocomplete:"off","aria-label":"Produit"});
-    const dl=el("input",{type:"date",id:"stkDlc","aria-label":"À consommer avant le"});
-    const q=el("div",{class:"d-garq"}); for(const [l,j] of (lieu==="congel"?[["1 mois",30],["3 mois",91],["6 mois",182]]:lieu==="placard"?[["1 mois",30],["6 mois",182],["1 an",365]]:[["Demain",1],["3 jours",3],["1 semaine",7]])) q.append(el("button",{type:"button",text:l,onclick:()=>{ dl.value=iso(new Date(today().getTime()+j*864e5)); }}));
-    const add=async()=>{ const n=nm.value.trim(); if(!n){ nm.focus(); return; } try{ await S.db.collection("stock").add({nom:n.replace(/^./,c=>c.toUpperCase()),lieu,dlc:dl.value||null,par:meId(),le:Date.now()}); haptic(8); setTimeout(draw,300); }catch(e){ writeErr(e); } };
-    nm.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); add(); } });
-    inn.append(el("div",{class:"gd-h"},el("b",{text:"Mes réserves"}),el("span",{text:"Ce qui est rangé, et ce qu'il faut manger en premier."})),seg,
-      el("div",{class:"st-add"},nm,el("label",{class:"field",for:"stkDlc"},"À consommer avant le",dl),q,el("button",{type:"button",class:"btn",text:"Ajouter",onclick:add})));
-    const L=(S.stock||[]).filter(x=>x.lieu===lieu).sort((a,b)=>(a.dlc||"9999")<(b.dlc||"9999")?-1:1), list=el("div",{class:"gd-g"});
-    for(const x of L){ const j=stockJ(x), cls=j==null?"":j<0?" late":j<=stockAlerte(x)?" soon":"";
-      list.append(el("div",{class:"stk-row"},el("span",{class:"stk-n"},el("b",{text:x.nom}),j!=null?el("small",{class:"stk-d"+cls,text:j<0?"date passée":j===0?"aujourd'hui":j===1?"demain":"avant le "+fmtDue(x.dlc)}):el("small",{text:"sans date"})),
-        el("button",{type:"button",class:"btn ghost stk-ok",text:"Consommé",onclick:async()=>{ try{ await S.db.collection("stock").doc(x.id).delete(); haptic(8); setTimeout(draw,250); }catch(e){ writeErr(e); } }}))); }
-    if(!L.length) list.append(el("p",{class:"gd-nb",style:"padding:14px",text:"Rien de noté ici pour l'instant."}));
-    inn.append(list);
+function openStock(){ if(!needMe()) return; const U=upSheet("stockPage","Frigo, congélateur, placard"); U.sheet.classList.add("ev-sheet","ap-sheet","ing-sheet");
+  const inn=el("div",{class:"pp-in ap-in st-in"}); U.sheet.append(inn);
+  let lieu=S.stockLieu||"frigo", dk="", dv="", nmV="";
+  const H=apHead("Réserves",()=>U.close(),{id:"stkOk",label:"Terminé",onOk:()=>U.close()}); const body=el("div"); inn.append(H.hd,body);
+  const quick=()=>{ const t=j=>iso(new Date(today().getTime()+j*864e5)); return [["","","Sans date"]].concat((lieu==="congel"?[["30","1 mois"],["91","3 mois"],["182","6 mois"]]:lieu==="placard"?[["30","1 mois"],["182","6 mois"],["365","1 an"]]:[["1","Demain"],["3","Dans 3 jours"],["7","Dans 1 semaine"]]).map(([j,l])=>[j,t(+j),l])); };
+  const add=async()=>{ const n=nmV.trim(); if(!n){ const x=$("stkNom"); if(x) x.focus(); return; } try{ await S.db.collection("stock").add({nom:n.replace(/^./,c=>c.toUpperCase()),lieu,dlc:dv||null,par:meId(),le:Date.now()}); haptic(8); nmV=""; dk=""; dv=""; setTimeout(()=>{ draw(); const x=$("stkNom"); if(x) try{ x.focus({preventScroll:true}); }catch(_){} },300); }catch(e){ writeErr(e); } };
+  const draw=()=>{ const y=U.sheet.scrollTop; body.innerHTML=""; S.stockLieu=lieu;
+    const seg=el("div",{class:"seg st-seg",role:"group","aria-label":"Où"}); for(const [k,l,e] of STOCK_L){ const n=(S.stock||[]).filter(x=>x.lieu===k).length; seg.append(el("button",{type:"button","aria-pressed":String(lieu===k),onclick:()=>{ lieu=k; dk=""; dv=""; draw(); }},e+" "+l+(n?" · "+n:""))); }
+    const nm=el("input",{type:"text",id:"stkNom",class:"ap-ti",placeholder:lieu==="congel"?"Steaks hachés, petits pois…":lieu==="placard"?"Pâtes, conserve de thon…":"Yaourts, jambon, crème…",autocomplete:"off","aria-label":"Produit"}); nm.value=nmV;
+    nm.addEventListener("input",()=>{ nmV=nm.value; }); nm.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); add(); } });
+    const pb=el("button",{type:"button",class:"ap-addb","aria-label":"Ajouter",onclick:add}); pb.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';
+    const L0=STOCK_L.find(z=>z[0]===lieu);
+    body.append(seg,el("div",{class:"ap-main",style:"--apc:"+(lieu==="congel"?"#7FC8FF":lieu==="placard"?"#E8B26A":"#7FD6A4")},el("div",{class:"fr-ti"},nm,pb),
+      apRow("cal","À consommer avant",apDateSel(quick(),dk,dv,(k,v)=>{ dk=k; dv=v||""; draw(); },"À consommer avant le","stkDlc"))));
+    const L=(S.stock||[]).filter(x=>x.lieu===lieu).sort((a,b)=>(a.dlc||"9999")<(b.dlc||"9999")?-1:1);
+    body.append(apSec((L0?L0[1]:"")+(L.length?" · "+L.length:"")));
+    if(!L.length) body.append(el("p",{class:"ap-hint",text:"Rien de noté ici pour l'instant."}));
+    else{ const list=el("div",{class:"ap-opt st-list"});
+      for(const x of L){ const j=stockJ(x), cls=j==null?"":j<0?" late":j<=stockAlerte(x)?" soon":"";
+        list.append(el("div",{class:"ap-r stk-row"},el("span",{class:"fr-ie","aria-hidden":"true",text:foodEmo(x.nom)||L0[2]}),el("span",{class:"fr-it"},el("b",{text:x.nom}),el("small",{class:"stk-d"+cls,text:j==null?"sans date":j<0?"date passée":j===0?"à finir aujourd'hui":j===1?"à finir demain":"avant le "+fmtDue(x.dlc)})),
+          el("button",{type:"button",class:"stk-ok",text:"Consommé",onclick:async()=>{ try{ await S.db.collection("stock").doc(x.id).delete(); haptic(8); setTimeout(draw,250); }catch(e){ writeErr(e); } }}))); }
+      body.append(list); }
     const soon=(S.stock||[]).filter(x=>stockJ(x)!=null&&stockJ(x)<=stockAlerte(x));
-    if(soon.length) inn.append(el("button",{type:"button",class:"btn pp-cta",text:"🍳 Une idée avec ce qui périme bientôt",onclick:()=>{ U.close(); setTimeout(()=>openFrigo(soon.map(x=>x.nom)),340); }})); };
+    if(soon.length) body.append(el("div",{class:"ap-opt",style:"margin-top:12px"},apGo("chef","Une idée avec ce qui périme bientôt",soon.length+" produit"+(soon.length>1?"s":""),()=>{ U.close(); setTimeout(()=>openFrigo(soon.map(x=>x.nom)),340); })));
+    U.sheet.scrollTop=y; };
   draw(); }
 function repasOf(date,slot){ return (S.repas||[]).find(r=>r.date===date&&r.slot===slot&&r.plat); }
 /* ===== Des repas aux courses : on ne propose que, on n'ajoute rien sans accord ===== */
