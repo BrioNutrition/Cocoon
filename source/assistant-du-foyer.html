@@ -4336,6 +4336,26 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
 .pal-in .pal-main{padding-top:4px}.pal-in .pal-sec{display:flex;align-items:center;gap:4px;padding:10px 14px 4px 30px}.pal-in .pal-sec .pal-sec-av{flex:none;width:44px;height:44px;border-radius:50%;object-fit:cover}
 .pal-in .pal-sec .ap-ti{padding-left:10px}.pal-in .pal-pr{padding-top:12px;padding-bottom:14px}.pal-in .pal-pr .pal-pics{margin:0;flex:1}
 .pal-in .pal-cols{padding:12px}.pal-in .pal-cols .pal-grid{margin:0}
+/* (9 nov.) fiche profil façon Calendrier */
+#ficheForm.ap-in,#ficheForm .ap-main{--x:0}
+#ficheForm .fi-type{margin:0 0 14px}
+.fi-top{display:flex;align-items:center;gap:6px;padding:12px 12px 4px 30px}.fi-top .ap-ti{flex:1;width:auto;min-width:0;padding-left:8px!important}
+.fi-av{position:relative;flex:none;cursor:pointer;border-radius:50%}.fi-av input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;font-size:0}
+.fi-cam{position:absolute;right:-3px;bottom:-3px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;border:2px solid var(--sunk)}
+.fi-cam svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.fi-rmph b{color:var(--late)}
+.fi-kv{gap:8px}.fi-kv input{border:0!important;background:none!important;box-shadow:none!important;padding:0!important;margin:0!important;min-height:0!important;color:var(--ink);font:inherit;font-size:16px;outline:none}
+.fi-kv input:first-child{flex:0 0 36%;font-weight:600}.fi-kv input:nth-child(2){flex:1;min-width:0;text-align:right;color:var(--muted)}
+.fi-kv .fi-lk,.fi-kv .fi-rm{flex:none;width:30px;height:30px;border-radius:50%;border:0;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
+.fi-kv .fi-lk.on{color:var(--accent)}.fi-kv svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.fi-kv+.fi-kv:before{left:16px!important}
+.fi-sugg{margin:10px 4px 0}
+:root .wrap.finishing .fiche.fi-fin.ap-in input:not([type=checkbox]):not([type=radio]):not([type=color]),:root .wrap.finishing .fiche.fi-fin.ap-in textarea{background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;color:var(--ink)!important}
+.fi-sugg .pchip{background:var(--sunk);border:0;border-radius:999px;padding:7px 12px;font-size:14px}.fi-fin .fi-sugg .pchip{background:var(--surface)}
+.ap-del.fi-del.on{background:color-mix(in srgb,var(--late) 16%,var(--sunk))}
+#ficheForm.fi-in{display:block}.wrap.finishing .fiche.fi-fin,.fiche.fi-fin{gap:0!important;background:none!important;border:0!important;padding:0!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}.fi-fin .fiche-actions{margin-top:22px}.fi-fin .ap-opt,.fi-fin .ap-main,.fi-fin .ap-f{background:var(--surface)}#ficheForm .ap-sw:disabled{opacity:.5}
+.inv-in .ap-sec{margin-top:6px}.inv-in .inv-go{width:100%;border:0;background:none;font:inherit;text-align:left;cursor:pointer;color:var(--accent)}.inv-in .inv-go b{color:var(--accent);font-weight:700}.inv-in .inv-go .ap-ic{color:var(--accent)}
+.inv-in .inv-p{gap:12px}.inv-in .inv-open{flex-direction:column;align-items:stretch;gap:10px;padding-top:4px}.inv-in .inv-open:before{display:none}.inv-in .inv-msg{width:100%;min-height:110px;border-radius:14px}.inv-in .inv-steps{margin:0;padding-left:20px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:6px}.inv-in .inv-steps b{color:var(--ink)}
 .ap-del{display:block;width:100%;margin-top:22px;border:0;border-radius:22px;background:var(--sunk);color:var(--late);font:inherit;font-weight:700;padding:15px;cursor:pointer}
 </style>
 
@@ -5509,8 +5529,14 @@ function openEditor(id,type){
   if(S.tab!=="fiche") S.editPrev=S.tab;
   S.edit={id:id||null,d,confirmDel:false,busy:false,finish:!!S.editFinish}; S.editFinish=false;
   document.querySelector(".wrap").classList.toggle("finishing",S.edit.finish); $("ficheBack").hidden=S.edit.finish;
+  if(!S.edit.finish){ ficheSheet(); return; }
   setTab("fiche"); buildEditor(); window.scrollTo({top:0,behavior:"instant"});
 }
+/* (9 nov., Angel) modifier ou créer un profil = feuille du bas façon Calendrier ; le formulaire #ficheForm y est déplacé puis rangé à sa place */
+function ficheSheet(){ const E=S.edit, f=$("ficheForm"); if(!E||!f) return; if(S.tab==="fiche") S.editPrev=S.editPrev||"accueil";
+  const U=upSheet("fichePage",E.id?"Modifier le profil":"Nouveau profil",()=>{ const e=S.edit; if(e&&e.U===U){ if(e.theme0!=null&&!e.themeOk) applyTheme(e.theme0); S.edit=null; }
+    setTimeout(()=>{ const sec=document.querySelector('section[data-view="fiche"]'); if(sec&&f.parentNode!==sec){ f.innerHTML=""; f.className="fiche"; sec.append(f); } },300); });
+  E.U=U; E.sheet=true; U.sheet.classList.add("ev-sheet","ap-sheet"); f.className="pp-in ap-in fi-in"; U.sheet.append(f); buildEditor(); }
 function pencilBtn(onclick,label){ const b=el("button",{type:"button",class:"pencil-btn","aria-label":label||"Personnaliser le profil",title:"Personnaliser",onclick}); b.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.6 3.1a2.6 2.6 0 0 1 3.7 0l1.6 1.6a2.6 2.6 0 0 1 0 3.7L19.5 9.8 14.2 4.5zM12.8 5.9l5.3 5.3-9.9 9.9c-.3.3-.7.5-1.1.6l-4.1.9c-.8.2-1.4-.5-1.3-1.3l.9-4.1c.1-.4.3-.8.6-1.1z"/></svg>'; return b; }
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function warmup(lines,minMs,work,sub,swap){
@@ -5585,116 +5611,83 @@ async function uploadImg(file,max){
 }
 function imgErr(e){ const c=e&&e.code; toast(c==="no_assets"?"L'ajout de photos demande d'être Éditeur de la page.":c==="too_large"?"Image trop lourde (20 Mo max).":c==="unsupported_type"?"Format non pris en charge : JPG, PNG ou WebP.":"La photo n'a pas pu être envoyée. Réessaie."); }
 function buildEditor(){
-  const E=S.edit, d=E.d, f=$("ficheForm"); f.innerHTML="";
+  const E=S.edit, d=E.d, f=$("ficheForm"), y=E.sheet&&E.U?E.U.sheet.scrollTop:0; f.innerHTML=""; if(!E.sheet) f.className="fiche ap-in fi-fin";
   const me=meId(), self=E.self||(E.id&&E.id===me), t=typeOf(d), admin=isAdmin()&&!E.self;
-  const field=(label,input)=>el("label",{class:"field"},label,input);
   const bind=(input,key,after)=>{ input.addEventListener("input",()=>{ d[key]=input.value; refreshPreview(); if(after) after(); }); return input; };
-
-  // Titre
-  if(!E.finish) f.append(el("div",{class:"fgroup fi-head"},el("h3",{text:E.id&&E.id===meId()?"Ton profil":E.id?"Profil "+de(membre(E.id).nom||""):"Nouveau profil"})));
+  /* (9 nov., Angel) même style que le « + » du Calendrier : ✕ · titre · ✓ dans la feuille ; à l'inscription, le titre et « Terminer » restent */
+  if(E.sheet) f.append(apHead(E.id&&E.id===me?"Mon profil":E.id?"Profil "+de(membre(E.id).nom||""):"Nouveau profil",closeEditor,{submit:true,id:"fiSave",label:E.id?"Enregistrer":"Créer le profil"}).hd);
   if(E.finish) f.append(el("div",{class:"fgroup fi-head"},el("span",{class:"step-tag",style:"align-self:flex-start",text:E.self?"Étape 2 sur 2 · Ton profil":"Ton profil"}),
-    el("h3",{style:"font-size:26px;font-weight:800;letter-spacing:-.02em",text:E.self?"Crée ton profil":"Personnalise ton profil"}),el("span",{class:"muted",style:"font-size:14px",text:E.self?(membres().length?"Ton prénom, ta photo, ta bannière, ta couleur. Il est relié à ton compte : tu ne le feras qu'une fois.":"Tu seras l'admin de ton foyer. Prénom, photo, bannière, couleur : tout reste modifiable plus tard."):"Photo, bannière, couleur, infos pratiques. Tout reste modifiable plus tard."})));
+    el("h3",{style:"font-size:26px;font-weight:800;letter-spacing:-.02em",text:E.self?"Crée ton profil":"Personnalise ton profil"}),el("span",{class:"muted",style:"font-size:14px",text:E.self?(membres().length?"Ton prénom, ta photo, ta couleur. Il est relié à ton compte : tu ne le feras qu'une fois.":"Tu seras l'admin de ton foyer. Prénom, photo, couleur : tout reste modifiable plus tard."):"Photo, couleur, infos pratiques. Tout reste modifiable plus tard."})));
   if(E.self){
     const free=humains().filter(m=>!m.uid&&(m.invite||typeOf(m)==="adulte"));
-    if(free.length){ const cl=el("div",{class:"claims"});
-      for(const m of free) cl.append(el("button",{type:"button",class:"claim","aria-pressed":String(E.claimId===m.id),style:E.claimId===m.id?"border-color:var(--ink)":"",onclick:()=>{ if(E.claimId===m.id){ E.claimId=null; E.d={type:"adulte",c:COLORS[membres().length%COLORS.length],infos:[]}; } else { E.claimId=m.id; const c=JSON.parse(JSON.stringify(m)); delete c.id; c.infos=Array.isArray(c.infos)?c.infos:[]; E.d=c; } buildEditor(); }},avatar(m.id),"Je suis "+m.nom));
-      f.append(el("div",{class:"fgroup"},el("span",{class:"label",text:"Ton profil a été préparé ? Choisis-le"}),cl,el("span",{class:"muted",style:"font-size:13px",text:E.claimId?"Tu reprends ce profil : complète-le ou garde-le tel quel.":"Sinon, remplis simplement le formulaire ci-dessous."}))); }
+    if(free.length){ f.append(apSec("Ton profil a été préparé ?"),apWho("user",free.map(m=>apChip([avatar(m.id,20),"Je suis "+m.nom],E.claimId===m.id,()=>{ if(E.claimId===m.id){ E.claimId=null; E.d={type:"adulte",c:COLORS[membres().length%COLORS.length],infos:[]}; } else { E.claimId=m.id; const c=JSON.parse(JSON.stringify(m)); delete c.id; c.infos=Array.isArray(c.infos)?c.infos:[]; E.d=c; } buildEditor(); },"claim"))),
+      el("p",{class:"ap-hint",text:E.claimId?"Tu reprends ce profil : complète-le ou garde-le tel quel.":"Sinon, remplis simplement le formulaire ci-dessous."})); }
   }
-  else f.append(el("div",{class:"fgroup"},el("span",{class:"label",text:E.id?(self?"Ma fiche":"Fiche "+de((membre(E.id).nom||""))):"Nouveau profil"}),
-    el("h3",{text:E.id?"Personnaliser le profil":"Créer un profil pour le foyer"})));
-
   // Type (admin, profil sans compte)
-  if(admin&&!d.uid){
-    const seg=el("div",{class:"seg",role:"group","aria-label":"Type de profil"});
+  if(admin&&!d.uid){ const seg=el("div",{class:"seg fi-type",role:"group","aria-label":"Type de profil"});
     for(const [v,l] of [["adulte","Adulte"],["enfant","Enfant"],["animal","Animal"]]) seg.append(el("button",{type:"button","aria-pressed":String(t===v),text:l,onclick:()=>{ d.type=v; if(v==="animal"&&!d.espece) d.espece="Chat"; if(v!=="adulte") delete d.role; buildEditor(); }}));
-    f.append(el("div",{class:"fgroup"},el("span",{class:"label",text:"Type"}),seg));
-  }
-
-  // Identité
-  const nom=bind(el("input",{type:"text",id:"fiNom",maxlength:"30",required:true,placeholder:t==="animal"?"Moka, Rex…":t==="enfant"?"Léo, Jade…":"Prénom"}),"nom"); nom.value=d.nom||"";
+    f.append(seg); }
+  // Identité : photo + prénom en haut, puis les lignes
+  const phIn=el("input",{type:"file",id:"fiPhoto",accept:"image/png,image/jpeg,image/webp","aria-label":d.photo?"Changer la photo":"Choisir une photo"});
+  phIn.addEventListener("change",async()=>{ const file0=phIn.files[0]; phIn.value=""; if(!file0) return; const cv=await cropImage(file0,{out:640,title:"Recadrer la photo"}); if(!cv) return; const bl=await canvasBlob(cv,.9); const file=bl?new File([bl],"photo.jpg",{type:"image/jpeg"}):file0; toast("Envoi de la photo…"); try{ d.photo=await uploadImg(file,640); refreshPreview(); buildEditor(); }catch(e){ imgErr(e); } });
+  const av=el("label",{class:"fi-av",title:"Photo"},avatarFor(Object.assign({},d),52),el("span",{class:"fi-cam","aria-hidden":"true"}),phIn); av.querySelector(".fi-cam").innerHTML='<svg viewBox="0 0 24 24">'+AP_IC.cam+'</svg>';
+  const nom=bind(el("input",{type:"text",id:"fiNom",class:"ap-ti",maxlength:"30",required:true,"aria-label":t==="animal"?"Nom":"Prénom",placeholder:t==="animal"?"Nom (Moka, Rex…)":t==="enfant"?"Prénom (Léo, Jade…)":"Prénom"}),"nom",()=>{ if(!d.photo) av.firstChild.replaceWith(avatarFor(Object.assign({},d),52)); }); nom.value=d.nom||"";
   const sur=bind(el("input",{type:"text",id:"fiSurnom",maxlength:"30",placeholder:"Facultatif"}),"surnom"); sur.value=d.surnom||"";
-  const needBirth=!!(E.self||(E.id&&E.id===meId()))&&t!=="animal"; const nais=el("input",{type:"date",id:"fiNaissance"}); nais.value=d.naissance||""; nais.classList.toggle("vide",!nais.value); nais.addEventListener("input",()=>{ d.naissance=nais.value||null; nais.classList.toggle("vide",!nais.value); refreshPreview(); });
-  const row=el("div",{class:"frow"},field(t==="animal"?"Nom *":"Prénom *",nom),field("Surnom",sur),field(t==="animal"?"Date de naissance (ou d'adoption)":needBirth?"Date de naissance *":"Date de naissance",nais));
-  if(t==="animal"){
-    const esp=el("select",{id:"fiEspece"}); for(const e of ESPECES) esp.append(el("option",{value:e,text:e})); esp.value=d.espece||"Chat";
-    esp.addEventListener("change",()=>{ d.espece=esp.value; refreshPreview(); });
-    const race=bind(el("input",{type:"text",id:"fiRace",maxlength:"40",placeholder:"Européen, Golden retriever…"}),"race"); race.value=d.race||"";
-    row.append(field("Espèce",esp),field("Race",race));
-  }
-  f.append(el("div",{class:"fgroup"},el("h3",{text:"Identité"}),row));
-
-  // Photo
-  const phStatus=el("span",{class:"upl"});
-  const phIn=el("input",{type:"file",id:"fiPhoto",accept:"image/png,image/jpeg,image/webp","aria-label":"Choisir une photo"});
-  phIn.addEventListener("change",async()=>{ const file0=phIn.files[0]; phIn.value=""; if(!file0) return; const cv=await cropImage(file0,{out:640,title:"Recadrer ta photo"}); if(!cv) return; const bl=await canvasBlob(cv,.9); const file=bl?new File([bl],"photo.jpg",{type:"image/jpeg"}):file0; phStatus.textContent="Envoi de la photo…"; try{ d.photo=await uploadImg(file,640); phStatus.textContent="Photo ajoutée."; refreshPreview(); buildEditor(); }catch(e){ phStatus.textContent=""; imgErr(e); } });
-  const phPick=el("div",{class:"pick"},avatarFor(Object.assign({},d),56),el("span",{class:"btn ghost filebtn"},d.photo?"Changer la photo":"Choisir une photo",phIn));
-  if(d.photo) phPick.append(el("button",{class:"btn ghost",type:"button",text:"Retirer",onclick:()=>{ d.photo=null; refreshPreview(); buildEditor(); }}));
-  phPick.append(phStatus);
-  f.append(el("div",{class:"fgroup"},el("h3",{text:"Photo de profil"}),phPick));
-
-  // Bannière
-  const bans=el("div",{class:"swatches"});
-  const bdef=el("button",{type:"button",class:"bsw","aria-label":"Couleur du profil","aria-pressed":String(!d.banniere)}); paintBanner(bdef,{c:d.c}); bdef.addEventListener("click",()=>{ d.banniere=null; refreshPreview(); buildEditor(); }); bans.append(bdef);
-  for(const b of BANNERS){ const x=el("button",{type:"button",class:"bsw","aria-label":"Motif "+b.id,"aria-pressed":String(d.banniere==="preset:"+b.id)}); x.style.background=b.css; x.addEventListener("click",()=>{ d.banniere="preset:"+b.id; refreshPreview(); buildEditor(); }); bans.append(x); }
-  const custom=d.banniere&&!d.banniere.startsWith("preset:");
-  if(custom){ const x=el("button",{type:"button",class:"bsw","aria-label":"Ma photo de bannière","aria-pressed":"true"}); paintBanner(x,{banniere:d.banniere}); bans.append(x); }
-  const bnStatus=el("span",{class:"upl"});
-  const bnIn=el("input",{type:"file",id:"fiBanniere",accept:"image/png,image/jpeg,image/webp","aria-label":"Choisir une image de bannière"});
-  bnIn.addEventListener("change",async()=>{ const file=bnIn.files[0]; if(!file) return; bnStatus.textContent="Envoi de l'image…"; try{ d.banniere=await uploadImg(file,1400); refreshPreview(); buildEditor(); }catch(e){ bnStatus.textContent=""; imgErr(e); } });
-
-
+  const needBirth=!!(E.self||(E.id&&E.id===me))&&t!=="animal";
+  const nais=el("input",{type:"date",id:"fiNaissance","aria-label":"Date de naissance"}); nais.value=d.naissance||"";
+  const naisP=apPick(d.naissance?apDate(d.naissance):needBirth?"À indiquer":"Facultatif",nais);
+  nais.addEventListener("input",()=>{ d.naissance=nais.value||null; naisP.firstChild.textContent=d.naissance?apDate(d.naissance):needBirth?"À indiquer":"Facultatif"; refreshPreview(); });
+  const main=el("div",{class:"ap-main fi-main",style:"--apc:"+(d.c||"#A9B4C2")},el("div",{class:"fi-top"},av,nom),
+    apIn("<g/>","Surnom",sur),apRow("cal",t==="animal"?"Naissance ou adoption":"Naissance"+(needBirth?" *":""),naisP));
+  if(t==="animal"){ main.append(apRow("<g/>","Espèce",apSel(ESPECES.map(e=>[e,e]),d.espece||"Chat",v=>{ d.espece=v; refreshPreview(); buildEditor(); },"Espèce","fiEspece")));
+    const race=bind(el("input",{type:"text",id:"fiRace",maxlength:"40",placeholder:"Européen, golden…"}),"race"); race.value=d.race||""; main.append(apIn("<g/>","Race",race)); }
+  if(d.photo) main.append(el("button",{type:"button",class:"ap-r ap-go fi-rmph",onclick:()=>{ d.photo=null; refreshPreview(); buildEditor(); }},apIc("cam"),el("b",{text:"Retirer la photo"})));
+  f.append(main);
   // Couleur
-  const cols=el("div",{class:"swatches"});
-  for(const c of COLORS) cols.append(el("button",{type:"button",class:"sw",style:"background:"+c,"aria-label":"Couleur "+c,"aria-pressed":String(d.c===c),onclick:()=>{ d.c=c; refreshPreview(); buildEditor(); }}));
-  f.append(el("div",{class:"fgroup"},el("h3",{text:"Couleur"}),cols));
-
+  const cols=el("div",{class:"cl-cols ap-cols",role:"radiogroup","aria-label":"Couleur"});
+  for(const c of COLORS) cols.append(el("button",{type:"button",role:"radio","aria-checked":String(d.c===c),"aria-label":"Couleur "+c,style:"--c:"+c,onclick:()=>{ haptic(5); d.c=c; refreshPreview(); buildEditor(); }}));
+  f.append(apSec("Couleur"),el("div",{class:"ap-opt"},el("div",{class:"ap-r ap-colr"},cols)));
   // Bio
-  const bio=bind(el("textarea",{id:"fiBio",maxlength:"240",placeholder:t==="animal"?"Adore les boîtes en carton, déteste l'aspirateur…":t==="enfant"?"Fan de dinosaures, foot le mercredi…":"Quelques mots sur toi…"}),"bio"); bio.value=d.bio||"";
-  f.append(el("div",{class:"fgroup"},el("h3",{text:"Quelques mots"}),bio));
-
+  const bio=bind(el("textarea",{id:"fiBio",maxlength:"240",rows:"2","aria-label":"Quelques mots",placeholder:t==="animal"?"Adore les boîtes en carton, déteste l'aspirateur…":t==="enfant"?"Fan de dinosaures, foot le mercredi…":"Quelques mots sur toi…"}),"bio"); bio.value=d.bio||"";
+  f.append(apSec("Quelques mots"),el("div",{class:"ap-f ap-notes"},apIc("note"),bio));
   // Infos pratiques
-  const kvBox=el("div",{class:"fgroup"});
-  const drawKv=()=>{ kvBox.innerHTML="";
+  const kvBox=el("div");
+  const drawKv=()=>{ kvBox.innerHTML=""; const card=el("div",{class:"ap-opt fi-kvs"});
     d.infos.forEach((x,i)=>{ const l=el("input",{type:"text",id:"fiL"+i,maxlength:"30",placeholder:"Libellé","aria-label":"Libellé"}); l.value=x.l||""; l.addEventListener("input",()=>{ x.l=l.value; refreshPreview(); });
       const v=el("input",{type:"text",id:"fiV"+i,maxlength:"80",placeholder:"Valeur","aria-label":"Valeur"}); v.value=x.v||""; v.addEventListener("input",()=>{ x.v=v.value; refreshPreview(); });
-      const lk=el("button",{class:"kv-lock",type:"button","aria-pressed":String(!!x.p),"aria-label":x.p?"Visible par moi seulement":"Visible par tout le foyer",title:x.p?"Visible par moi seulement":"Visible par tout le foyer",text:x.p?"🔒":"👁",onclick:()=>{ x.p=!x.p; drawKv(); }});
-      kvBox.append(el("div",{class:"kv kv3"},l,v,S.edit&&S.edit.self?el("span"):lk,el("button",{class:"more",type:"button","aria-label":"Retirer cette info",text:"×",onclick:()=>{ d.infos.splice(i,1); drawKv(); refreshPreview(); }}))); });
-    const sg=el("div",{class:"sugg"});
-    for(const s of SUGG[t]) if(!d.infos.some(x=>x.l===s)) sg.append(el("button",{type:"button",text:"+ "+s,onclick:()=>{ d.infos.push({l:s,v:""}); drawKv(); const last=$("fiV"+(d.infos.length-1)); if(last) last.focus(); }}));
-    sg.append(el("button",{type:"button",text:"+ Autre info",onclick:()=>{ d.infos.push({l:"",v:""}); drawKv(); const last=$("fiL"+(d.infos.length-1)); if(last) last.focus(); }}));
+      const lk=el("button",{class:"fi-lk"+(x.p?" on":""),type:"button","aria-pressed":String(!!x.p),"aria-label":x.p?"Visible par moi seulement":"Visible par tout le foyer",title:x.p?"Visible par moi seulement":"Visible par tout le foyer",onclick:()=>{ haptic(5); x.p=!x.p; drawKv(); }}); lk.innerHTML='<svg viewBox="0 0 24 24">'+(x.p?AP_IC.lock:AP_IC.eye)+'</svg>';
+      const rm=el("button",{class:"fi-rm",type:"button","aria-label":"Retirer cette info",onclick:()=>{ d.infos.splice(i,1); drawKv(); refreshPreview(); }}); rm.innerHTML='<svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>';
+      card.append(el("div",{class:"ap-r fi-kv"},l,v,E.self?null:lk,rm)); });
+    if(d.infos.length) kvBox.append(card);
+    const sg=el("div",{class:"ap-chips fi-sugg"});
+    for(const s2 of SUGG[t]) if(!d.infos.some(x=>x.l===s2)) sg.append(apChip("+ "+s2,false,()=>{ d.infos.push({l:s2,v:""}); drawKv(); const last=$("fiV"+(d.infos.length-1)); if(last) last.focus(); }));
+    sg.append(apChip("+ Autre info",false,()=>{ d.infos.push({l:"",v:""}); drawKv(); const last=$("fiL"+(d.infos.length-1)); if(last) last.focus(); }));
     kvBox.append(sg); };
   drawKv();
-  f.append(el("div",{class:"fgroup"},el("h3",{text:"Infos pratiques"}),el("span",{class:"muted",style:"font-size:13px",text:"Tout ce qu'on cherche au mauvais moment : pointure, n° de puce, école, vétérinaire… Touche 👁 pour qu'une info ne soit visible que par toi (🔒)."}),kvBox));
-
+  f.append(apSec("Infos pratiques"),kvBox,el("p",{class:"ap-hint",text:"Pointure, n° de puce, école, vétérinaire…"+(E.self?"":" L'œil devient un cadenas : l'info n'est plus visible que par toi.")}));
   // Apparence (sa propre fiche)
-  if(self){ const cur=E.theme||curTheme(), sg=el("div",{class:"seg",role:"group","aria-label":"Apparence"});
-    for(const [v,l] of [["auto","Automatique"],["light","Clair"],["dark","Sombre"]]) sg.append(el("button",{type:"button","aria-pressed":String(cur===v),text:l,onclick:()=>{ if(E.theme0==null) E.theme0=curTheme(); E.theme=v; applyTheme(v); buildEditor(); }}));
-    f.append(el("div",{class:"fgroup"},el("h3",{text:"Apparence"}),el("span",{class:"muted",style:"font-size:13px",text:"Automatique suit le réglage de ton téléphone. Le mode sombre tamise les couleurs le soir."}),sg)); }
+  if(self){ const cur=E.theme||curTheme();
+    f.append(apSec("Apparence"),apCard(apRow("sun","Thème",apSel([["auto","Automatique"],["light","Clair"],["dark","Sombre"]],cur,v=>{ if(E.theme0==null) E.theme0=curTheme(); E.theme=v; applyTheme(v); buildEditor(); },"Apparence","fiTheme"))),
+      el("p",{class:"ap-hint",text:"Automatique suit le réglage de ton téléphone."})); }
   // Rôle
   if(admin&&t==="adulte"){
-    const admins=membres().filter(m=>m.role==="admin");
-    const lastAdmin=self&&d.role==="admin"&&admins.length<=1;
-    const cb=el("input",{type:"checkbox",id:"fiAdmin"}); cb.checked=d.role==="admin"; if(lastAdmin) cb.disabled=true;
-    cb.addEventListener("change",()=>{ d.role=cb.checked?"admin":"membre"; refreshPreview(); });
-    f.append(el("div",{class:"fgroup"},el("h3",{text:"Rôle"}),el("label",{class:"check-row",for:"fiAdmin"},cb,el("span",{},el("b",{text:"Administrateur du foyer"}),el("br"),el("span",{class:"muted",text:lastAdmin?"Tu es le seul admin : nomme quelqu'un d'autre avant de quitter ce rôle.":"Crée et personnalise tous les profils, et modifie toutes les tâches du foyer, y compris celles des enfants et des animaux. Donne-lui aussi le rôle Éditeur dans le menu Partager : sans ça, ses droits d'admin ne sont pas actifs."})))));
+    const admins=membres().filter(m=>m.role==="admin"), lastAdmin=self&&d.role==="admin"&&admins.length<=1;
+    const sw=apSw(d.role==="admin",v=>{ d.role=v?"admin":"membre"; refreshPreview(); },"Administrateur du foyer","fiAdmin"); if(lastAdmin) sw.disabled=true;
+    f.append(apSec("Rôle"),apCard(apRow("shield","Administrateur du foyer",sw)),el("p",{class:"ap-hint",text:lastAdmin?"Tu es le seul admin : nomme quelqu'un d'autre avant de quitter ce rôle.":"Crée et modifie tous les profils et toutes les tâches du foyer, y compris celles des enfants et des animaux."}));
   }
-
-  // Actions
-  const act=el("div",{class:"fiche-actions"},el("button",{class:"btn"+(E.finish?" big":""),type:"submit",id:"fiSave",text:E.finish?"Terminer":E.id?"Enregistrer":"Créer le profil",disabled:E.busy||null}),(E.self?null:el("button",{class:"btn ghost",type:"button",text:E.finish?"Passer":"Annuler",onclick:closeEditor})));
-  if(E.id&&admin&&!self){
-    const dz=el("div",{class:"danger-zone"});
-    if(E.confirmDel) dz.append("Supprimer "+(membre(E.id).nom)+" du foyer ?",el("button",{class:"btn ghost",type:"button",text:"Non",onclick:()=>{E.confirmDel=false;buildEditor();}}),el("button",{class:"btn danger",type:"button",text:"Oui, supprimer",onclick:deleteProfile}));
-    else dz.append(el("button",{class:"btn ghost",type:"button",style:"color:var(--late)",text:"Supprimer ce profil",onclick:()=>{E.confirmDel=true;buildEditor();}}));
-    act.append(dz);
-  }
-  f.append(act);
+  // Supprimer
+  if(E.id&&admin&&!self) f.append(el("button",{type:"button",class:"ap-del fi-del"+(E.confirmDel?" on":""),text:E.confirmDel?"Toucher encore pour supprimer "+(membre(E.id).nom||"ce profil"):"Supprimer ce profil",onclick:()=>{ if(E.confirmDel){ deleteProfile(); return; } E.confirmDel=true; buildEditor(); }}));
+  // Inscription : le gros bouton reste en bas
+  if(E.finish) f.append(el("div",{class:"fiche-actions"},el("button",{class:"btn big",type:"submit",id:"fiSave",text:"Terminer",disabled:E.busy||null}),(E.self?null:el("button",{class:"btn ghost",type:"button",text:"Passer",onclick:closeEditor}))));
   /* en-tête (étape, titre, phrase) sur toute la largeur, au-dessus du formulaire et de la carte */
   const fh=$("fHead"); if(fh){ fh.innerHTML=""; const h=f.querySelector(".fi-head"); if(h) fh.append(h); }
+  if(E.sheet&&E.U) E.U.sheet.scrollTop=y;
   refreshPreview();
 }
 function finishFlow(res){ document.querySelector(".wrap").classList.remove("finishing"); S.edit=null; S.flow=false; setTab("accueil"); renderAll(); window.scrollTo({top:0}); requestAnimationFrame(()=>{ try{ onboardGate(); if(!S.cguOpen&&!S.tourOn&&!S.tourPending&&!needCgu()) startTour(); }catch(_){} });
   toast("Bienvenue dans ton cocon !"+(res&&(res.nT||res.nP)?" "+res.nT+" rappel"+(res.nT>1?"s":"")+(res.nP?" et "+res.nP+" profil"+(res.nP>1?"s":""):"")+((res.nT+res.nP)>1?" prêts.":" prêt."):"")); }
 function closeEditor(){ if(S.edit&&S.edit.finish){ finishFlow(); return; }
+  if(S.edit&&S.edit.sheet){ S.edit.U.close(); return; }
   /* apparence essayée sans enregistrer : on remet l'ancienne */
   if(S.edit&&S.edit.theme0!=null&&!S.edit.themeOk) applyTheme(S.edit.theme0); const back=S.editPrev&&S.editPrev!=="fiche"?S.editPrev:"accueil"; S.edit=null; document.querySelector(".wrap").classList.remove("finishing"); setTab(back); renderAll(); }
 async function saveProfile(){
@@ -5708,7 +5701,7 @@ async function saveProfile(){
   for(const k of Object.keys(d)) if(d[k]===undefined) delete d[k];
   if(E.theme){ const tv=E.theme; E.themeOk=true; setTimeout(()=>setTheme(tv),0); }
   if(E.self){ await saveSelf(E); return; }
-  if(S.canEdit===false&&E.id===meId()){ E.busy=true; try{ const cur=(S.profils||[]).find(p=>p.id===S.uid); await saveOwnProfil(d,cur?cur.membre:(String(E.id).startsWith("u-")?null:E.id)); await savePriv(E.id); toast("Profil enregistré."); S.edit=null; setTab("moi"); renderAll(); }catch(e){ E.busy=false; writeErr(e); } return; }
+  if(S.canEdit===false&&E.id===meId()){ E.busy=true; try{ const cur=(S.profils||[]).find(p=>p.id===S.uid); await saveOwnProfil(d,cur?cur.membre:(String(E.id).startsWith("u-")?null:E.id)); await savePriv(E.id); toast("Profil enregistré."); S.edit=null; if(E.sheet) E.U.close(); else setTab("moi"); renderAll(); }catch(e){ E.busy=false; writeErr(e); } return; }
   if(!isAdmin()){ const cur=membre(E.id); d.role=cur.role||null; d.type=cur.type; }
   E.busy=true;
   try{
@@ -5720,7 +5713,8 @@ async function saveProfile(){
     if(E.finish){ finishFlow(); return; }
     toast(E.id?"Profil enregistré.":"Profil de <b>"+esc(d.nom)+"</b> créé.");
     S.edit=null;
-    if(id===meId()){ setTab("moi"); renderAll(); } else { S.prevTab=S.editPrev; openProfile(id); }
+    if(E.sheet){ E.themeOk=true; E.U.close(); if(!E.id&&id!==meId()){ S.prevTab=S.tab; openProfile(id); } else renderAll(); }
+    else if(id===meId()){ setTab("moi"); renderAll(); } else { S.prevTab=S.editPrev; openProfile(id); }
   }catch(e){ E.busy=false; writeErr(e); }
 }
 /* âge (demandé par Angel) : 18 ans pour créer un foyer ; avant 15 ans, seulement en reprenant un profil préparé par un adulte du foyer
@@ -5757,7 +5751,7 @@ async function saveSelf(E){
 }
 async function deleteProfile(){
   const E=S.edit; if(!E||!E.id) return;
-  try{ await S.db.collection("membres").doc(E.id).delete(); toast("Profil supprimé."); S.edit=null; S.profil=null; setTab("accueil"); renderAll(); }catch(e){ writeErr(e); }
+  try{ await S.db.collection("membres").doc(E.id).delete(); toast("Profil supprimé."); S.edit=null; if(E.sheet) E.U.close(); S.profil=null; setTab("accueil"); renderAll(); }catch(e){ writeErr(e); }
 }
 $("ficheForm").addEventListener("submit",e=>{ e.preventDefault(); saveProfile(); });
 $("ficheBack").addEventListener("click",closeEditor);
@@ -6655,46 +6649,37 @@ async function sendInviteMail(email,nom,id){
 function inviteText(m){ return "Rejoins notre foyer sur Cocoon"+(S.foyerNom?" ("+S.foyerNom+")":"")+" : "+APP_URL+"\nConnecte-toi avec ton compte Claude, puis choisis « Je suis "+m.nom+" » à l'arrivée."; }
 async function copyText(txt,area){ try{ await navigator.clipboard.writeText(txt); toast("Message copié. Colle-le dans un SMS ou sur WhatsApp."); }catch(_){ if(area){ area.focus(); area.select(); } toast("Sélectionne le message et copie-le."); } }
 function renderInvite(){
-  const b=$("invBody"); if(!b||S.tab!=="inviter") return; b.innerHTML="";
+  const b=$("invBody"); if(!b||S.tab!=="inviter") return; b.innerHTML=""; b.classList.add("ap-in","inv-in");
   const I=S.invite;
-  // 1. Quelqu'un qui aura l'app
-  const c1=el("div",{class:"inv-card"},el("h3",{text:"Quelqu'un qui utilisera l'app"}),el("p",{text:"Tu prépares son profil, puis tu lui envoies le lien. À son arrivée, il choisit son prénom et répond au questionnaire."}));
+  /* (9 nov., Angel) façon Réglages / Calendrier : lignes groupées */
   const nm=el("input",{type:"text",id:"invNom",maxlength:"30",placeholder:"Son prénom"}); nm.value=I.nom||""; nm.addEventListener("input",()=>I.nom=nm.value);
-  const ty=el("select",{id:"invType"}); ty.append(el("option",{value:"adulte",text:"Adulte"}),el("option",{value:"enfant",text:"Enfant ou ado avec son téléphone"})); ty.value=I.type||"adulte"; ty.addEventListener("change",()=>I.type=ty.value);
-  c1.append(el("div",{class:"frow"},el("label",{class:"field",for:"invNom"},"Prénom",nm),el("label",{class:"field",for:"invType"},"Profil",ty)));
-  const im=mailInput("invMail",I.email,v=>I.email=v);
-  c1.append(el("label",{class:"field",for:"invMail"},"Son e-mail pour l'inviter (facultatif) : "+MAIL_HINT(),im));
-  c1.append(el("button",{type:"button",class:"btn",text:"Créer l'invitation",onclick:async()=>{
+  const im=mailInput("invMail",I.email,v=>I.email=v); im.placeholder="Facultatif";
+  const create=async()=>{
     const nom=(I.nom||"").trim(); if(!nom){ toast("Indique son prénom."); nm.focus(); return; }
     let id=slug(nom); const taken=new Set(membres().map(m=>m.id)); let i=2; while(taken.has(id)) id=slug(nom)+"-"+(i++);
     const mail=(I.email||"").trim().toLowerCase(); if(mail&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){ toast("Cette adresse e-mail ne semble pas valide."); if(im) im.focus(); return; }
     try{ await S.db.collection("membres").doc(id).set({nom,type:I.type||"adulte",role:"membre",email:mail||null,c:COLORS[membres().length%COLORS.length],invite:true,ordre:Date.now(),creePar:meId(),creeLe:Date.now()});
-      S.invite={focus:id}; if(mail&&canMail()) sendInviteMail(mail,nom,id); else toast("Invitation prête pour "+esc(nom)+"."); renderInvite(); }catch(e){ writeErr(e); } }}));
-  b.append(c1);
+      S.invite={focus:id}; if(mail&&canMail()) sendInviteMail(mail,nom,id); else toast("Invitation prête pour "+esc(nom)+"."); renderInvite(); }catch(e){ writeErr(e); } };
+  b.append(el("div",{},apSec("Quelqu'un qui utilisera l'app"),apCard(apIn("user","Prénom",nm),
+      apRow("users","Profil",apSel([["adulte","Adulte"],["enfant","Enfant ou ado"]],I.type||"adulte",v=>{ I.type=v; renderInvite(); },"Profil","invType")),
+      apIn("<g/>","E-mail",im),el("button",{type:"button",class:"ap-r inv-go",onclick:create},apIc("<path d='M12 5v14M5 12h14'/>"),el("b",{text:"Créer l'invitation"}))),
+    el("p",{class:"ap-hint",text:"Tu prépares son profil, puis tu lui envoies le lien. E-mail : "+MAIL_HINT()+"."})));
   // invitations en attente
   const pend=humains().filter(m=>!m.uid&&(m.invite||typeOf(m)==="adulte"));
-  if(pend.length){
-    const c2=el("div",{class:"inv-card"},el("h3",{text:"Invitations en attente"}));
-    for(const m of pend){
-      const open=I.focus===m.id;
-      c2.append(el("div",{class:"pending"},avatar(m.id,34),el("span",{text:m.nom}),el("button",{type:"button",class:"btn ghost",text:open?"Masquer":"Voir l'invitation",onclick:()=>{ I.focus=open?null:m.id; renderInvite(); }})));
-      if(open){
-        const area=el("textarea",{class:"inv-msg",id:"invMsg",readonly:true}); area.value=inviteText(m);
-        const rb=el("div",{class:"row-btns",style:"display:flex;gap:8px;flex-wrap:wrap"},el("button",{type:"button",class:"btn",text:"Copier le message",onclick:()=>copyText(area.value,area)}));
-        if(m.email&&canMail()) rb.append(el("button",{type:"button",class:"btn ghost",text:"Renvoyer l'e-mail à "+m.email,onclick:()=>sendInviteMail(m.email,m.nom,m.id)}));
-        c2.append(area,rb);
-        const ol=el("ol",{class:"inv-steps"});
-        ol.append(el("li",{},el("b",{text:"Envoie-lui ce message"})," par SMS, WhatsApp ou e-mail."));
-        ol.append(el("li",{},el("b",{text:"Donne-lui l'accès : "}),"en haut de la page, menu Partager, ajoute son adresse e-mail avec le rôle Contributeur (ou Éditeur s'il doit être admin du foyer). Sans cette étape, le lien ne s'ouvrira pas pour lui."));
-        ol.append(el("li",{},el("b",{text:"À son arrivée, "}),"il choisit « Je suis "+m.nom+" », ajoute sa photo et répond au questionnaire."));
-        c2.append(ol);
-      }
-    }
-    b.append(c2);
-  }
-  // 3. Sans téléphone
-  b.append(el("div",{class:"inv-card"},el("h3",{text:"Un enfant ou un animal, sans téléphone"}),el("p",{text:"Son profil est géré par les admins : tu lui confies des tâches, tu suis ses soins et ses rendez-vous."}),
-    el("div",{style:"display:flex;gap:8px;flex-wrap:wrap"},el("button",{type:"button",class:"btn ghost",text:"Ajouter un enfant",onclick:()=>openEditor(null,"enfant")}),el("button",{type:"button",class:"btn ghost",text:"Ajouter un animal",onclick:()=>openEditor(null,"animal")}))));
+  if(pend.length){ const card=el("div",{class:"ap-opt"});
+    for(const m of pend){ const open=I.focus===m.id;
+      card.append(el("div",{class:"ap-r inv-p"},avatar(m.id,30),el("b",{text:m.nom}),el("button",{type:"button",class:"stk-ok",text:open?"Masquer":"Voir l'invitation",onclick:()=>{ I.focus=open?null:m.id; renderInvite(); }})));
+      if(open){ const area=el("textarea",{class:"inv-msg",id:"invMsg",readonly:true}); area.value=inviteText(m);
+        const box=el("div",{class:"ap-r inv-open"},area,
+          el("div",{class:"ap-chips"},apChip("Copier le message",false,()=>copyText(area.value,area)),m.email&&canMail()?apChip("Renvoyer l'e-mail à "+m.email,false,()=>sendInviteMail(m.email,m.nom,m.id)):null),
+          el("ol",{class:"inv-steps"},el("li",{},el("b",{text:"Envoie-lui ce message"})," par SMS, WhatsApp ou e-mail."),
+            el("li",{},el("b",{text:"Donne-lui l'accès : "}),"en haut de la page, menu Partager, ajoute son adresse e-mail avec le rôle Contributeur (ou Éditeur s'il doit être admin du foyer). Sans cette étape, le lien ne s'ouvrira pas pour lui."),
+            el("li",{},el("b",{text:"À son arrivée, "}),"il choisit « Je suis "+m.nom+" », ajoute sa photo et répond au questionnaire.")));
+        card.append(box); } }
+    b.append(el("div",{},apSec("Invitations en attente"),card)); }
+  // sans téléphone
+  b.append(el("div",{},apSec("Sans téléphone"),apCard(apGo("<path d='M12 5v14M5 12h14'/>","Ajouter un enfant","",()=>openEditor(null,"enfant")),apGo("<path d='M12 5v14M5 12h14'/>","Ajouter un animal","",()=>openEditor(null,"animal"))),
+    el("p",{class:"ap-hint",text:"Son profil est géré par les admins : tu lui confies des tâches, tu suis ses soins et ses rendez-vous."})));
 }
 function weekStart(){ const d=today(); const wd=(d.getDay()+6)%7; d.setDate(d.getDate()-wd); return d.getTime(); }
 const FLAME='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-2.5 1.2-4 2.5-5.5C9.8 9.5 10 11 11 12c.3-3.5-.5-6.5 1-10z"/></svg>';

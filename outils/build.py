@@ -26,9 +26,8 @@ rep('const APP_URL="https://claude.ai/artifact/Xu9LzXYTYJVDHX4aZPyFkN";',
     'const APP_URL=location.origin+location.pathname;')
 rep('" : "+APP_URL+"\\nConnecte-toi avec ton compte Claude, puis choisis',
     '" : "+(window.cocoonHost?cocoonHost.inviteUrl():APP_URL)+"\\nCrée ton compte avec ton e-mail, puis choisis')
-a = s.index('ol.append(el("li",{},el("b",{text:"Donne-lui l\'accès : "})')
-b = s.index("\n", a)
-s = s[:a] + 'ol.append(el("li",{},el("b",{text:"Ce lien ouvre ton foyer : "}),"ne l\'envoie qu\'aux membres. Il crée son compte avec son e-mail et arrive directement chez vous."));' + s[b:]
+rep('el("li",{},el("b",{text:"Donne-lui l\'accès : "}),"en haut de la page, menu Partager, ajoute son adresse e-mail avec le rôle Contributeur (ou Éditeur s\'il doit être admin du foyer). Sans cette étape, le lien ne s\'ouvrira pas pour lui."),',
+    'el("li",{},el("b",{text:"Ce lien ouvre ton foyer : "}),"ne l\'envoie qu\'aux membres. Il crée son compte avec son e-mail et arrive directement chez vous."),')
 
 # Carte « Mon compte » en bas de l'onglet Moi
 rep('<details class="done-list ms-sub" id="mDoneWrap">',
