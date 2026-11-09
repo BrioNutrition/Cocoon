@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="09/11 18:07";</script>
+<script>window.COCOON_BUILD="09/11 18:25";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4453,6 +4453,51 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
 #ficheForm.fi-in{display:block}.wrap.finishing .fiche.fi-fin,.fiche.fi-fin{gap:0!important;background:none!important;border:0!important;padding:0!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}.fi-fin .fiche-actions{margin-top:22px}.fi-fin .ap-opt,.fi-fin .ap-main,.fi-fin .ap-f{background:var(--surface)}#ficheForm .ap-sw:disabled{opacity:.5}
 .inv-in .ap-sec{margin-top:6px}.inv-in .inv-go{width:100%;border:0;background:none;font:inherit;text-align:left;cursor:pointer;color:var(--accent)}.inv-in .inv-go b{color:var(--accent);font-weight:700}.inv-in .inv-go .ap-ic{color:var(--accent)}
 .inv-in .inv-p{gap:12px}.inv-in .inv-open{flex-direction:column;align-items:stretch;gap:10px;padding-top:4px}.inv-in .inv-open:before{display:none}.inv-in .inv-msg{width:100%;min-height:110px;border-radius:14px}.inv-in .inv-steps{margin:0;padding-left:20px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:6px}.inv-in .inv-steps b{color:var(--ink)}
+/* (9 nov.) Cocoony : accueil + conversation façon Messages */
+html #cxView .secretary.sec-chat{background:none!important;box-shadow:none!important;border:0!important;border-radius:0!important;padding:0!important;gap:8px}
+html #cxView .sec-head{flex-direction:column;justify-content:center;gap:3px;padding:2px 0 10px;margin:0;border-bottom:1px solid var(--line);position:relative;text-align:center}
+html #cxView .sec-head>div{display:flex;flex-direction:column;align-items:center}
+html #cxView .sec-ring{padding:0;background:none}html #cxView .sec-big{width:42px;height:42px;border-radius:13px;border:0}
+html #cxView .sec-name{font-size:15.5px;font-weight:700;letter-spacing:-.01em;background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--ink)!important}
+html #cxView .sec-sub{font-size:12px;font-weight:500;color:var(--muted)}
+html #cxView .sec-head .pal-btn{position:absolute;right:0;top:6px}
+html #cxView .sec-thread{order:1}html #cxView .sec-chips{order:2}
+html #cxView .cx-empty .sec-head{border-bottom-color:transparent}
+html #cxView .cx-empty .sec-head{display:none}
+html #cxView .sec-thread{gap:6px;padding:4px 2px 6px}
+html #cxView .sec-row{gap:8px}html #cxView .sec-av{width:30px;height:30px;border-radius:10px;box-shadow:none}
+html #cxView .sec-row.bot .sec-bub{flex:0 1 auto;max-width:82%;background:var(--sunk)!important;box-shadow:none!important;border-radius:20px 20px 20px 6px;padding:10px 14px;overflow:hidden}
+html #cxView .sec-row.bot .sec-bub,html #cxView .sec-row.bot .sec-bub *{color:var(--ink)!important}
+html #cxView .sec-row.me{padding-left:60px}
+html #cxView .sec-row.me .sec-bub{background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB)!important;color:#1C1B2E!important;border-radius:20px 20px 6px 20px;font-size:15.5px;padding:9px 14px}
+html #cxView .sec-text{font-size:15.5px;font-weight:400;line-height:1.38}
+html #cxView .sec-bub h2{font-size:16px!important;font-weight:700!important}
+html #cxView .sec-bub ul{font-size:15px}html #cxView .sec-bub li::before{background:var(--muted)!important;width:5px;height:5px}
+html #cxView .sec-bub .acts{display:flex;flex-wrap:nowrap;gap:0;margin:10px -14px -10px;border-top:1px solid var(--line)}
+html #cxView .sec-bub .acts .btn{flex:1 1 0;min-width:0;background:none!important;border:0!important;border-radius:0;color:#E8A800!important;font-weight:700;font-size:14.5px;line-height:1.25;padding:11px 8px;box-shadow:none!important;white-space:normal}
+:root:not([data-theme="light"]) html #cxView .sec-bub .acts .btn:not(.ghost),html[data-theme="dark"] #cxView .sec-bub .acts .btn:not(.ghost){color:#FFC94A!important}
+html #cxView .sec-bub .acts .btn.ghost{color:var(--muted)!important}
+html #cxView .sec-bub .acts .btn+.btn{border-left:1px solid var(--line)!important}
+html #cxView .sec-bub .acts .btn:disabled{opacity:.6}
+html #cxView .sec-seen{margin:-2px 6px 2px 0}
+html #cxView .sec-new{margin-top:6px;color:var(--muted)}
+html #cxView .sec-chips{flex-wrap:nowrap!important;overflow-x:auto;margin:0 -16px!important;padding:2px 16px!important;gap:8px}
+html #cxView .sec-chips button{flex:none;background:var(--sunk)!important;border:0!important;color:var(--ink)!important;font-size:14px;padding:8px 13px}
+html #cxView .sec-ask{order:3;margin:2px 0 0!important;gap:0;align-items:center;border:1px solid var(--line);border-radius:24px;padding:4px 4px 4px 0;background:var(--surface)}
+html #cxView .sec-ask input[type=text]{background:none!important;border:0!important;box-shadow:none!important;outline:none!important;font-size:16px;padding:8px 14px}
+html #cxView .sec-ask:focus-within{border-color:#FF9C80}
+html #cxView .sec-ask button{width:36px;height:36px;background:#FFC94A!important;color:#1C1B2E!important;box-shadow:none!important}
+html #cxView .sec-ask button svg{width:18px;height:18px;transform:rotate(-90deg)}
+html #cxView .cx-empty #secFirst,html #cxView .cx-empty #secChips,html #cxView .cx-empty .sec-ans{display:none!important}
+.cx-hello{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:18px 0 4px;margin:auto 0}
+.cx-hav{width:76px;height:76px;border-radius:22px}
+.cx-hi{margin:0;font-size:26px;font-weight:800;line-height:1.15;letter-spacing:-.02em;color:var(--ink)}
+.cx-hi em{font-style:normal;background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cx-today{align-self:stretch;margin-top:6px;text-align:left}.cx-today .cx-tr{width:100%;border:0;background:none;font:inherit;color:var(--ink);text-align:left;cursor:pointer;min-height:48px;padding:10px 16px}
+.cx-today .cx-tr b{font-size:15px;font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cx-te{flex:none;width:24px;font-size:19px;text-align:center}
+.cx-qs{align-self:stretch;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:2px}
+.cx-q{display:flex;flex-direction:column;align-items:flex-start;gap:5px;text-align:left;border:1px solid var(--line);border-radius:18px;background:var(--surface);color:var(--ink);font:inherit;padding:11px 12px;cursor:pointer}
+.cx-q b{font-size:19px;line-height:1}.cx-q span{font-size:14.5px;font-weight:600;line-height:1.25}.cx-q:active{transform:scale(.97)}
 .ap-del{display:block;width:100%;margin-top:22px;border:0;border-radius:22px;background:var(--sunk);color:var(--late);font:inherit;font-weight:700;padding:15px;cursor:pointer}
 </style>
 
@@ -10181,6 +10226,10 @@ function secCreatePlan0(raw){
   // Repas
   if(/( on mange | au menu | repas | pour le diner | pour le dejeuner | petit dej| pour ce soir | pour le petit)/.test(q)&&(hasVerb||/ on mange /.test(q))){
     const slot=/(petit dej|petit-dej|matin|petit dejeuner)/.test(q)?"matin":/( midi|dejeuner)/.test(q)?"midi":"soir";
+    /* « on mange quoi ce soir ? » est une question, pas un plat (9 nov. : ça ajoutait un repas « Quoi ») */
+    if(/ (quoi|qu est ce|quel|quelle|quels|une idee|des idees|idee) /.test(q)||/\?\s*$/.test(txt)){ const d0=iso(today()), sl0=/ demain /.test(q)?null:slot, R=sl0?(S.repas||[]).find(r=>r.date===d0&&r.slot===sl0&&r.plat):null, mo={matin:"ce matin",midi:"ce midi",soir:"ce soir"}[slot];
+      return {run:async()=>R?secA("Au menu "+mo+" : "+platEmoji(R.plat,slot)+" "+R.plat+".",[],[{l:"Voir les repas",ghost:true,run:cocoGo("repas")}])
+        :secA("Rien de prévu "+mo+". Je te propose 3 idées avec ce qu'il y a dans le frigo ?",[],[{l:"🍳 Trouver des idées",run:async()=>{ openFrigo(); return "done"; }},{l:"Voir les repas",ghost:true,run:cocoGo("repas")}])}; }
     let rest=txt.replace(verb,"").replace(/\bce\s+(?=soir|midi|matin)/gi," ").replace(/\bon mange\b/i," ").replace(/\b(?:au menu|pour le repas|au repas|pour le (?:dîner|diner|déjeuner|dejeuner|petit[- ]d[ée]j(?:euner)?)|du (?:soir|midi))\b/gi," ").replace(/\b(?:midi|soir|matin)\b/gi," ");
     const p=parseQuick(rest); const date=p.echeance||iso(today()); const plat=cocoStrip(String(p.titre||"").replace(/\s+(?:de|du|pour|au|à)\s*$/i,"").replace(/^(?:ce|de|pour)\s+/i,""));
     if(!plat) return null; if(date<iso(today())) return null;
@@ -10285,11 +10334,28 @@ function secBotRow(X){ const bub=el("div",{class:"sec-bub"});
     bub.append(a); }
   if(X.r.note) bub.append(el("span",{class:"v4",text:X.r.note}));
   return el("div",{class:"sec-row bot"+(X.popped?"":" pop")},secAv(),bub); }
+/* (9 nov., choix A + B d'Angel) écran de Cocoony : accueil quand la discussion est vide (bonjour, le point du jour, 4 questions),
+   puis une conversation façon Messages (bulles, réponses avec leurs boutons en bas de la bulle, suggestions sur une ligne) */
+const CX_EMO={"Poubelles":"🗑️","Document":"📄","Véhicule":"🚗","Maison":"🔧","Anniversaire":"🎂","Événement":"📅","Événement spécial":"🎉","Prélèvement":"💳","Réserves":"🥫","Courses":"🛒","Budget":"💶","Perso":"🙋"};
+function cxHello(on){ const card=document.querySelector(".secretary.sec-chat"), th=$("secThread"); if(!card||!th) return; card.classList.toggle("cx-empty",!!on);
+  let h=$("cxHello"); if(!on){ if(h) h.remove(); return; } if(!h){ h=el("div",{id:"cxHello",class:"cx-hello"}); th.prepend(h); } h.innerHTML="";
+  const m=meM(), hr=new Date().getHours(), I=(()=>{ try{ return secIdent(); }catch(_){ return {}; } })(), src=I.src||((document.querySelector(".brand-logo")||{}).src)||"";
+  h.append(el("img",{class:"cx-hav",alt:"",src}),el("h2",{class:"cx-hi"},(hr>=18||hr<4?"Bonsoir":"Bonjour")+(m&&m.nom?" "+m.nom:"")+",",el("br"),el("em",{text:"je m'occupe de quoi ?"})));
+  /* le point du jour : 3 lignes au plus */
+  const rows=[]; try{ const rs=reminders().filter(r=>daysTo(r.date)<=7).sort((a,b)=>a.date<b.date?-1:1);
+    for(const r of rs.slice(0,3)) rows.push([CX_EMO[r.kind]||(r.kind==="Perso"?"🙋":"✅"),r.titre,dueLabel(r.date),r.go||null]);
+    const ce=(S.repas||[]).find(r=>r.date===iso(today())&&r.slot==="soir"&&r.plat);
+    if(hr<21){ if(ce) rows.splice(Math.min(rows.length,2),0,[platEmoji(ce.plat,"soir"),"Ce soir : "+ce.plat,"au menu",()=>{ setTab("repas"); }]); else rows.splice(Math.min(rows.length,2),0,["🍽️","Rien de prévu pour le repas","Une idée ›",()=>openFrigo()]); }
+  }catch(_){}
+  if(rows.length) h.append(el("div",{class:"ap-opt cx-today"},...rows.slice(0,3).map(([e,t,v,fn])=>el(fn?"button":"div",{type:fn?"button":null,class:"ap-r cx-tr",onclick:fn||null},el("span",{class:"cx-te","aria-hidden":"true",text:e}),el("b",{text:t}),el("span",{class:"ap-v",text:v})))));
+  const Q=[["🍳","On mange quoi ce soir ?","On mange quoi ce soir ?"],["🛒","Ajoute du lait aux courses","@Ajoute "],["📄","Qu'est-ce qui expire bientôt ?","Quels papiers expirent bientôt ?"],
+    adults().length>1?["💶","Qui doit quoi ce mois-ci ?","Qui doit quoi ?"]:["💶","Combien on a dépensé ce mois-ci ?","Combien on a dépensé ce mois-ci ?"]];
+  h.append(el("div",{class:"cx-qs"},...Q.map(([e,t,q])=>el("button",{type:"button",class:"cx-q",onclick:()=>{ haptic(5); if(q[0]==="@"){ const i=$("secQ"); i.value=q.slice(1); i.focus(); try{ i.setSelectionRange(i.value.length,i.value.length); }catch(_){} return; } hubAsk(q); }},el("b",{"aria-hidden":"true",text:e}),el("span",{text:t}))))); }
 function renderSecAns(){
   try{ applySecIdent(); }catch(_){}
   { const g=$("secBig"), lg0=document.querySelector(".brand-logo"); if(g&&!g.getAttribute("src")&&lg0) g.src=lg0.src; } { const f=document.querySelector("#secFirst .sec-av"); if(f&&!f.getAttribute("src")){ const lg=document.querySelector(".brand-logo"); if(lg) f.src=lg.src; } }
   const b=$("secAns"); if(!b) return; const X=S.secAns, H=S.secHist||[]; b.innerHTML=""; b.hidden=!X&&!H.length;
-  
+  try{ cxHello(!X&&!H.length); }catch(_){}
   if(!X&&!H.length) return;
   for(const h of H){ if(h.q) b.append(el("div",{class:"sec-row me"},el("div",{class:"sec-bub"},h.q))); h.popped=true; b.append(secBotRow(Object.assign({},h,{popped:true}))); }
   if(X){ b.append(el("div",{class:"sec-row me"+(X.fresh?" pop":"")},el("div",{class:"sec-bub"},X.q)),el("span",{class:"sec-seen"+(X.fresh?"":" on"),text:"Lu"}));
