@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="09/11 12:06";</script>
+<script>window.COCOON_BUILD="09/11 12:22";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4286,7 +4286,7 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
 .ap-r.ap-sub{padding-left:52px!important;min-height:48px}.ap-r.ap-sub b{color:var(--muted)}
 .ap-rec{flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
 .ap-in .ap-opt+.ap-opt,.ap-in .ap-f+.ap-opt,.ap-in .ap-opt+.ap-f{margin-top:12px}
-.ap-tour{margin:10px 2px 0}.mx-in .b-form{display:block!important;background:none!important;box-shadow:none!important;padding:0!important;margin:0!important;gap:0!important;border:0!important}
+.ap-tour{margin:10px 2px 0}.ap-tt{cursor:default}.ap-sum{margin:-8px 0 0;padding:0 18px 14px 32px;color:var(--muted);font-size:14px}.ap-main .ap-sum+.ap-amt{padding-top:0!important}.cl-payr{padding-top:8px!important;padding-bottom:8px!important}.cl-payr .ap-chips{flex:1}.ap-in .cl-split .ap-r{position:relative}.ap-in .cl-split .ap-r:before{content:"";position:absolute;top:0;left:52px;right:0;border-top:1px solid var(--line)}.ap-in .cl-split .cl-sp-in{width:96px}.mx-in .b-form{display:block!important;background:none!important;box-shadow:none!important;padding:0!important;margin:0!important;gap:0!important;border:0!important}
 .mx-in .mx-grp+.mx-grp,.mx-in .mx-grp+*,.mx-in *+.mx-grp{margin-top:12px}
 .mx-grp>*{position:relative;display:flex!important;align-items:center;flex-wrap:wrap;gap:6px 12px;padding:10px 16px!important;min-height:52px;margin:0!important;background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;font-size:16px;font-weight:500;color:var(--ink)}
 .mx-grp>*+*:before{content:"";position:absolute;top:0;left:16px;right:0;border-top:1px solid var(--line)}
@@ -5063,12 +5063,11 @@ function taskRow(t,opts={}){
   row.append(first,el("div",{class:"t-body"},el("div",{class:"t-title",text:opts.petName?stripPet(t.titre,opts.petName):t.titre}),meta)); if(whoAv) row.append(whoAv);
   const key=(t.prive?"p:":"f:")+t.id;
   const editable=canEditTask(t);
-  const more=el("button",{class:"more",type:"button","aria-label":"Modifier « "+t.titre+" »",title:"Modifier",onclick:()=>{ if(S.editing===key){ S.editing=null; S.tdraft=null; } else { S.editing=key; S.tdraft=null; S.confirm=null; } renderTaskViews(); }});
+  const more=el("button",{class:"more",type:"button","aria-label":"Modifier « "+t.titre+" »",title:"Modifier",onclick:()=>openTaskEdit(t)});
   more.innerHTML='<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M15.6 3.1a2.6 2.6 0 0 1 3.7 0l1.6 1.6a2.6 2.6 0 0 1 0 3.7L19.5 9.8 14.2 4.5zM12.8 5.9l5.3 5.3-9.9 9.9c-.3.3-.7.5-1.1.6l-4.1.9c-.8.2-1.4-.5-1.3-1.3l.9-4.1c.1-.4.3-.8.6-1.1z"/></svg>';
   if(!editable||t.fait) more.hidden=true;
   if(!t.fait) row.append(more);
   if(opts.del&&!t.fait&&editable&&!S.readOnly&&meId()) row.append(el("button",{type:"button",class:"tk-del","aria-label":"Supprimer « "+t.titre+" »",text:"×",onclick:async ev=>{ await rowOut(ev.currentTarget.closest(".item"),"del"); softDelete([taskEntry(t)],"« "+esc(t.titre)+" » supprimée."); }}));
-  if(editable&&S.editing===key) row.append(taskEditor(t,key));
   return row;
 }
 function fillList(box,tasks,empty,opts){ box.innerHTML=""; if(!tasks.length) box.append(el("div",{class:"empty"},el("strong",{text:empty[0]}),empty[1])); else for(const t of tasks) box.append(taskRow(t,opts)); }
@@ -5199,13 +5198,12 @@ function tkLine(t,o){ o=o||{}; const me=meId(), c=CAT[tkCatOf(t)]||CAT.maison, k
   if(!isDone&&!t.prive&&(t.pour==="tous"||!t.pour)&&humains().length>1&&ed) right.push(el("button",{type:"button",class:"tkl-take",onclick:async()=>{ haptic(8); t.pour=me; renderTaskViews(); try{ await colFor(t).doc(t.id).update({pour:me}); toast("C'est pour toi : « "+esc(t.titre)+" »."); }catch(e){ writeErr(e); } }},"Je prends"));
   else if(!isDone&&!t.prive&&t.pour&&t.pour!=="tous"&&membre(t.pour).nom) right.push(el("span",{class:"tkl-av",title:"Pour "+membre(t.pour).nom},avatar(t.pour,22)));
   /* (30 oct., Angel) plus de crayon : toucher la tâche ouvre sa modification */
-  const canOpen=ed&&!isDone, openEd=()=>{ S.editing=S.editing===key?null:key; S.tdraft=null; S.confirm=null; renderTaskViews(); };
+  const canOpen=ed&&!isDone, openEd=()=>openTaskEdit(t);
   const row=el("div",{class:"tkl"+(isDone?" done":"")+(late?" late":"")+(canOpen?" tap":""),"data-key":tkKey(t),style:"--c:"+c.c},ck,el("span",{class:"tkl-dot","aria-hidden":"true"}),
     el("span",{class:"tkl-tx"},el("b",{text:t.titre}),sub.length?el("small",{text:sub.join(" · ")}):null),...right);
-  if(canOpen){ row.setAttribute("role","button"); row.tabIndex=0; row.setAttribute("aria-label","Modifier « "+t.titre+" »"); row.setAttribute("aria-expanded",String(S.editing===key));
+  if(canOpen){ row.setAttribute("role","button"); row.tabIndex=0; row.setAttribute("aria-label","Modifier « "+t.titre+" »");
     row.addEventListener("click",e=>{ if(e.target.closest("button,a,input,select")) return; haptic(5); openEd(); });
     row.addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ")&&e.target===row){ e.preventDefault(); openEd(); } }); }
-  if(ed&&S.editing===key) return el("div",{class:"tkl-w"},row,taskEditor(t,key));
   return row; }
 function renderTk2(pool,me){ const box=$("openList"); box.innerHTML="";
   const whoOk=t=>!S.whoF||t.pour===S.whoF||(t.prive&&S.whoF===me), catOk=t=>!S.catF||tkCatOf(t)===S.catF;
@@ -5848,13 +5846,18 @@ const DOC_EMO={identite:"🪪",sante:"💊",assurance:"🛡️",factures:"🧾",
 const docEmo=cid=>DOC_EMO[cid]||tkEmo(cid);
 /* « C'est renouvelé » (carte à la une de Papiers) : la nouvelle date d'expiration, ou plus de date */
 function docRenew(d){ if(!needMe()) return; let done=false; const t0=today(), yr=n=>iso(new Date(t0.getFullYear()+n,t0.getMonth(),t0.getDate()));
-  const end=async v=>{ if(done) return; done=true; ov.classList.add("out"); setTimeout(()=>ov.remove(),180); if(v===undefined) return;
+  /* feuille courte façon Calendrier (9 nov.) : le papier, puis la nouvelle date en menu (1, 5, 10 ans, une date, sans date) */
+  const U=upSheet("renPage","C'est renouvelé",()=>{ done=true; }); U.sheet.classList.add("ev-sheet","ap-sheet"); const inn=el("div",{class:"pp-in ap-in"}); U.sheet.append(inn);
+  const end=async v=>{ if(done) return; done=true; U.close(); if(v===undefined) return;
     d.expire=v||null; renderDocs(); try{ await S.db.collection("documents").doc(d.id).update({expire:v||null}); toast(v?"Bien noté : « "+esc(d.titre)+" » jusqu'au "+fmtDue(v)+".":"« "+esc(d.titre)+" » n'a plus de date."); }catch(e){ writeErr(e); } };
-  const da=el("input",{class:"ev-inp",type:"date",id:"renDate","aria-label":"Nouvelle date d'expiration"});
-  const qk=el("div",{class:"pchips"},...[[1,"1 an"],[5,"5 ans"],[10,"10 ans"]].map(([n,l])=>el("button",{type:"button",class:"pchip","aria-pressed":"false",onclick:e=>{ da.value=yr(n); for(const b of qk.children) b.setAttribute("aria-pressed",String(b===e.currentTarget)); }},l)));
-  const box=el("div",{class:"clp-box",role:"dialog","aria-label":"Papier renouvelé"},el("b",{class:"clp-h",text:"Renouvelé 🎉"}),el("p",{class:"dz-rp",text:"Nouvelle date d'expiration de « "+d.titre+" »"}),qk,da,
-    el("div",{class:"art-acts"},el("button",{type:"button",class:"clp-x",onclick:()=>end(null)},"Sans date"),el("button",{type:"button",class:"clp-x",onclick:()=>end(undefined)},"Annuler"),el("button",{type:"button",class:"btn art-ok",id:"renOk",onclick:()=>{ if(!da.value){ da.focus(); return; } end(da.value); }},"OK")));
-  const ov=el("div",{class:"clp-ov",onclick:e=>{ if(e.target===ov) end(undefined); }},box); document.body.append(ov); requestAnimationFrame(()=>ov.classList.add("in")); }
+  const c=catOf(d.cat||"documents")||{}; let k=c.id==="identite"?"10":"1", v=yr(+k);
+  const da=el("input",{type:"date",id:"renDate","aria-label":"Nouvelle date d'expiration"}); da.addEventListener("change",()=>{ v=da.value; k=v?"date":""; draw(); });
+  const H=apHead("C'est renouvelé",()=>U.close(),{id:"renOk",label:"Enregistrer",onOk:()=>end(k===""?null:v)});
+  const body=el("div"); const draw=()=>{ body.innerHTML=""; da.value=v||"";
+    body.append(apSec("Nouvelle date"),apCard(apRow("cal","Expire",apSel([["1","Dans 1 an"],["5","Dans 5 ans"],["10","Dans 10 ans"],["date",k==="date"&&v?apDate(v):"Une autre date…"],["","Sans date"]],k,x=>{ k=x; v=x==="date"?(v||yr(1)):x?yr(+x):""; draw();
+        if(x==="date") setTimeout(()=>{ try{ da.showPicker(); }catch(_){} },30); },"Expire")),k?apRow(null,"Le",apPick(apDate(v),da),"ap-sub"):null)); }; draw();
+  inn.append(H.hd,el("div",{class:"ap-main",style:"--apc:"+(c.c||"#A9B4C2")},el("div",{class:"ap-ti ap-tt",text:docEmo(c.id||"documents")+" "+d.titre}),
+    d.expire?el("p",{class:"ap-sum",text:(daysTo(d.expire)<0?"Expirait le ":"Expire le ")+dzD(d.expire)}):null),body); }
 /* Ouvrir Papiers directement sur un papier précis */
 function goDoc(d){ if(!d) return; S.docF=null; S.docWho=null; S.docCat=catOf(d.cat||"documents").id||"documents"; setTab("documents"); try{ renderHeader(); }catch(_){}
   const find=k=>{ const r=document.querySelector('.view[data-view="documents"] [data-key="documents:'+d.id+'"]'); if(r){ r.scrollIntoView({block:"center",behavior:"smooth"}); r.classList.remove("bd-flash"); void r.offsetWidth; r.classList.add("bd-flash"); setTimeout(()=>r.classList.remove("bd-flash"),1900); } else if(k<10) setTimeout(()=>find(k+1),80); };
@@ -8233,6 +8236,41 @@ function taskEditor(t,key){
   if(S.focusTitle===key){ S.focusTitle=null; setTimeout(()=>{ try{ ti.focus(); }catch(_){} },0); }
   return box;
 }
+/* modifier une tâche : même feuille que « Nouvelle tâche », déjà remplie (façon Calendrier, 9 nov.) */
+function openTaskEdit(t){ if(!t||!needMe()) return; const me=meId();
+  const d=S.tdraft={key:t.id,titre:t.titre,cat:t.cat||"maison",where:t.prive?"perso":t.concerne?"concerne:"+t.concerne:(t.pour||"tous"),echeance:t.echeance||"",recur:t.recur||0,routine:t.routine||null};
+  d.recOther=!!(recNorm(d.recur)&&!["1j","1s","1","12"].includes(String(d.recur)));
+  const U=upSheet("taskEditPage","Modifier la tâche",()=>{ if(S.tdraft===d) S.tdraft=null; if(S.teU===U) S.teU=null; }); S.teU=U;
+  U.sheet.classList.add("ev-sheet","ap-sheet"); const inn=el("div",{class:"pp-in ap-in"}); U.sheet.append(inn);
+  const H=apHead("Modifier la tâche",()=>U.close(),{id:"teGo",label:"Enregistrer",onOk:()=>saveTask(t)});
+  const ti=el("input",{type:"text",class:"ap-ti",id:"teTitre",maxlength:"120","aria-label":"Titre"}); ti.value=d.titre; ti.addEventListener("input",()=>d.titre=ti.value);
+  const main=el("div",{class:"ap-main"}), catW=el("div"), body=el("div");
+  const t0=today(), plus=n=>iso(new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+n)), wkend=()=>{ const x=t0.getDay(); return plus(x===6||x===0?0:6-x); };
+  const dateIn=el("input",{type:"date","aria-label":"Échéance"}); dateIn.value=d.echeance; dateIn.addEventListener("change",()=>{ d.echeance=dateIn.value; d.wk=dateIn.value?"date":""; draw(); });
+  const recIn=el("input",{type:"hidden",value:String(d.recur||0)}); const recBox=recPicker(recIn,v=>{ d.recur=v; draw(); });
+  const drawCat=()=>{ catW.innerHTML=""; main.style.setProperty("--apc",(CAT[d.cat]||{}).c||"#FFC94A");
+    const L=CATS.slice(); if(d.cat&&CAT[d.cat]&&!L.some(c=>c.id===d.cat)) L.unshift(CAT[d.cat]);
+    catW.append(apRow("tag","Catégorie",apSel(L.map(c=>[c.id,tkEmo(c.id)+" "+c.nom]),d.cat,v=>{ d.cat=v; drawCat(); },"Catégorie"))); };
+  const draw=()=>{ body.innerHTML="";
+    const wk=d.wk!=null?d.wk:!d.echeance?"":d.echeance===plus(0)?"auj":d.echeance===plus(1)?"dem":"date";
+    const dRow=apRow("cal","Date",apSel([["","Pas de date"],["auj","Aujourd'hui"],["dem","Demain"],["we","Ce week-end"],["date",wk==="date"&&d.echeance?apDate(d.echeance):"Une date…"]],wk,v=>{ d.wk=v; d.echeance=v==="auj"?plus(0):v==="dem"?plus(1):v==="we"?wkend():v==="date"?(d.echeance||plus(0)):""; dateIn.value=d.echeance; draw();
+      if(v==="date") setTimeout(()=>{ try{ dateIn.showPicker(); }catch(_){} },30); },"Date"));
+    const RC=[["0","Non"],["1j","Chaque jour"],["1s","Chaque semaine"],["1","Chaque mois"],["12","Chaque année"],["autre","Autre…"]];
+    const rk=d.recOther?"autre":recNorm(d.recur)?(RC.some(r=>r[0]===String(d.recur))?String(d.recur):"autre"):"0";
+    const rRow=apRow("rep","Se répète",apSel(RC,rk,v=>{ if(v==="autre"){ d.recOther=true; recIn.value=String(d.recur||"2s"); d.recur=recParse(recIn.value); if(recIn._sync) recIn._sync(); }
+      else { d.recOther=false; d.recur=v==="0"?0:v==="1"?1:v==="12"?12:v; if(!d.recur) d.routine=null; } draw(); },"Se répète"));
+    let rtRow=null; if(recNorm(d.recur)){ const A=RT.find(r=>r[0]===tkRoutine({recur:d.recur}));
+      rtRow=apRow("sun","Routine",apSel([["","Auto"+(A?" · "+A[1]+" "+A[2]:"")]].concat(RT.map(([k,e,l])=>[k,e+" "+l]),[["aucune","Aucune"]]),d.routine||"",v=>{ d.routine=v||null; draw(); },"Routine")); }
+    body.append(apSec("Quand"),apCard(dRow,wk==="date"?apRow(null,"Le",apPick(apDate(d.echeance),dateIn),"ap-sub"):null,rRow,d.recOther?el("div",{class:"ap-r ap-sub ap-rec"},recBox):null,rtRow));
+    const Wh=(v,lab)=>apChip(lab,d.where===v,()=>{ d.where=v; draw(); }), who=[];
+    if(t.prive||t.creePar===me) who.push(Wh("perso","🔒 Moi seul"));
+    who.push(Wh("tous","🏠 Le foyer"));
+    for(const m of humains()) if(isAdmin()||m.id===me||m.id===d.where) who.push(Wh(m.id,[avatar(m.id,20),m.id===me?"Moi":m.nom]));
+    for(const m of animaux()) if(isAdmin()||"concerne:"+m.id===d.where) who.push(Wh("concerne:"+m.id,[avatar(m.id,20),m.nom]));
+    body.append(apSec("Pour qui"),apWho("user",who));
+    if(!t.prive&&(isManaged(t.pour)||isManaged(t.concerne))) body.append(el("p",{class:"ap-hint",text:"Tâche d'un profil géré : seuls les admins ("+(admins().map(a=>a.nom).join(", ")||"aucun")+") et la personne qui l'a ajoutée peuvent la modifier."}));
+    body.append(el("button",{type:"button",class:"ap-del",text:"Supprimer la tâche",onclick:()=>{ U.close(); S.tdraft=null; softDelete([taskEntry(t)],"« "+esc(t.titre)+" » supprimée."); }})); };
+  drawCat(); draw(); main.append(ti,catW); inn.append(H.hd,main,body); }
 async function saveTask(t){
   const d=S.tdraft; if(!d) return; const titre=(d.titre||"").trim(); if(!titre){ toast("Le titre ne peut pas être vide."); return; }
   const me=meId(); let pour=d.where, concerne=null; const toPrive=pour==="perso";
@@ -8240,11 +8278,12 @@ async function saveTask(t){
   if(!isAdmin()&&!toPrive&&((pour!=="tous"&&pour!==me)||concerne)&&!(t.pour===pour&&(t.concerne||null)===concerne)){ toast("Seuls les admins peuvent confier une tâche à un membre."); return; }
   const g=guess(titre);
   const fields={titre,cat:d.cat,pour:toPrive?me:pour,concerne,echeance:d.echeance||null,recur:d.recur||0,recurMsg:t.recurMsg||(g.rec?g.rec.next:null),modifiePar:me,modifieLe:Date.now()};
+  if("routine" in d) fields.routine=recNorm(d.recur)?(d.routine||null):null;
   try{
     if(!!t.prive===toPrive){ await colFor(t).doc(t.id).update(fields); }
     else { const base=Object.assign({},t); delete base.id; delete base.prive; const doc=Object.assign(base,fields);
       await (toPrive?persoCol():S.db.collection("taches")).add(doc); await colFor(t).doc(t.id).delete(); }
-    S.editing=null; S.tdraft=null; toast("Tâche modifiée."); renderTaskViews();
+    S.editing=null; S.tdraft=null; if(S.teU){ const u=S.teU; S.teU=null; u.close(); } toast("Tâche modifiée."); renderTaskViews();
   }catch(e){ writeErr(e); }
 }
 async function delDoc(d){ await S.db.collection("documents").doc(d.id).delete(); if(d.assetId&&S.assets){ try{ await S.assets.delete(d.assetId); }catch(_){} } }
@@ -10939,20 +10978,22 @@ async function addCourses(arts,extra){ const me=meId(), now=Date.now(); let n=0;
     const ref=await S.db.collection("courses").add(doc); cur.push(Object.assign({id:ref&&ref.id},doc)); habNote(a.nom); } return n+S.cMerged.length; }
 const cMergedMsg=()=>S.cMerged&&S.cMerged.length?" Déjà dans la liste : "+esc(S.cMerged.join(", "))+".":"";
 /* crayon = corriger le nom seulement, dans une petite fenêtre (la quantité se change avec le sélecteur de la ligne) */
-function cArtEdit(i){ if(!needMe()) return; let done=false;
-  const end=async ok=>{ if(done) return; done=true; const nom=nm.value.trim(); ov.classList.add("out"); setTimeout(()=>ov.remove(),180);
-    if(!ok||!nom||nom===i.nom) return;
-    /* même nom qu'un autre article de la liste (pas coché) : on les réunit, quantités additionnées (Angel) */
-    const k=foodSg(cKey(nom)), same=!i.fait&&cItemsOf(S.cListe||CL_DEF).find(x=>x.id!==i.id&&!x.fait&&foodSg(cKey(x.nom))===k), qa=qNum(i.qte), qb=same?qNum(same.qte):null;
-    try{ if(same&&qa!=null&&qb!=null){ const q=qStr(qa+qb); same.qte=q; S.cHideIt.add(i.id); renderCourses(); toast("Réuni avec « "+esc(same.nom)+" » : × "+(q||"1")+".");
-        await S.db.collection("courses").doc(same.id).update({qte:q}); await S.db.collection("courses").doc(i.id).delete(); return; }
-      i.nom=nom; renderCourses(); await S.db.collection("courses").doc(i.id).update({nom}); }catch(e){ writeErr(e); } };
-  const nm=el("input",{class:"ev-inp",type:"text",id:"artNom",maxlength:"120","aria-label":"Nom de l'article",enterkeyhint:"done"}); nm.value=i.nom;
-  nm.addEventListener("keydown",e=>{ if(e.key==="Enter") end(true); if(e.key==="Escape") end(false); });
-  const box=el("div",{class:"clp-box",role:"dialog","aria-label":"Renommer"},el("b",{class:"clp-h",text:"Renommer"}),nm,
-    el("div",{class:"art-acts"},el("button",{type:"button",class:"clp-x",onclick:()=>end(false)},"Annuler"),el("button",{type:"button",class:"btn art-ok",id:"artOk",onclick:()=>end(true)},"OK")));
-  const ov=el("div",{class:"clp-ov",onclick:e=>{ if(e.target===ov) end(false); }},box); document.body.append(ov);
-  requestAnimationFrame(()=>{ ov.classList.add("in"); nm.focus(); nm.select(); }); }
+function cArtEdit(i){ if(!needMe()) return; let done=false; const numQ=qNum(i.qte)!=null; let q=numQ?qNum(i.qte):null;
+  /* feuille courte façon Calendrier (9 nov.) : le nom et la quantité ; même nom qu'un autre article pas coché de la liste = réunis */
+  const U=upSheet("artPage","Renommer",()=>{ done=true; }); U.sheet.classList.add("ev-sheet","ap-sheet"); const inn=el("div",{class:"pp-in ap-in"}); U.sheet.append(inn);
+  const end=async ok=>{ if(done) return; done=true; const nom=nm.value.trim(); U.close();
+    if(!ok||!nom) return; const nq=numQ?qStr(q):i.qte, qCh=numQ&&(nq||null)!==(i.qte||null); if(nom===i.nom&&!qCh) return;
+    const k=foodSg(cKey(nom)), same=nom!==i.nom&&!i.fait&&cItemsOf(S.cListe||CL_DEF).find(x=>x.id!==i.id&&!x.fait&&foodSg(cKey(x.nom))===k), qb=same?qNum(same.qte):null;
+    try{ if(same&&q!=null&&qb!=null){ const qs=qStr(q+qb); same.qte=qs; S.cHideIt.add(i.id); renderCourses(); toast("Réuni avec « "+esc(same.nom)+" » : × "+(qs||"1")+".");
+        await S.db.collection("courses").doc(same.id).update({qte:qs}); await S.db.collection("courses").doc(i.id).delete(); return; }
+      i.nom=nom; if(qCh) i.qte=nq; renderCourses(); await S.db.collection("courses").doc(i.id).update(Object.assign({nom},qCh?{qte:nq||null}:{})); }catch(e){ writeErr(e); } };
+  const H=apHead("Renommer",()=>U.close(),{id:"artOk",label:"Enregistrer",onOk:()=>end(true)});
+  const nm=el("input",{class:"ap-ti",type:"text",id:"artNom",maxlength:"120","aria-label":"Nom de l'article",enterkeyhint:"done"}); nm.value=i.nom;
+  nm.addEventListener("keydown",e=>{ if(e.key==="Enter") end(true); });
+  const qW=el("div"); const qDraw=()=>{ qW.innerHTML=""; if(!numQ) return; const o=[]; for(let n=1;n<=30;n++) o.push([String(n),n===1?"1":"× "+n]); if(q>30||q%1) o.push([String(q),"× "+qStr(q)]);
+    qW.append(apRow("tag","Quantité",apSel(o,String(q),v=>{ q=+v; qDraw(); },"Quantité"))); }; qDraw();
+  inn.append(H.hd,el("div",{class:"ap-main",style:"--apc:var(--accent)"},nm,qW),el("p",{class:"ap-hint",text:"Si un autre article de la liste porte ce nom, les deux sont réunis."}));
+  setTimeout(()=>{ try{ nm.focus({preventScroll:true}); nm.select(); }catch(_){} },350); }
 /* déplacer un article : appui long sur la ligne puis glisser ; l'ordre est enregistré (courses.ordre) */
 function cDragStart(row,it,y0){ const list=row.parentNode; if(!list) return; const rows=[...list.children]; if(rows.length<2){ return; }
   const from=rows.indexOf(row), H=row.getBoundingClientRect().height+(parseFloat(getComputedStyle(list).rowGap)||0), mids=rows.map(r=>{ const b=r.getBoundingClientRect(); return b.top+b.height/2; }); let to=from;
@@ -11075,7 +11116,6 @@ function openCListForm(l){ if(!needMe()) return; const me=meId(), edit=!!l;
     colW.append(el("div",{class:"ap-r ap-colr"},em)); };
   const t0=iso(today()), t1=iso(new Date(today().getTime()+864e5)), da=el("input",{type:"date",id:"clDate","aria-label":"Date"}); da.value=F.date||"";
   da.addEventListener("change",()=>{ F.date=da.value||null; F.dk=F.date?"date":""; draw(); });
-  const lieux=[...new Set((S.listes||[]).map(x=>(x.lieu||"").trim()).filter(Boolean))].slice(0,6);
   const li=el("input",{type:"text",id:"clLieu",maxlength:"60",placeholder:"Magasin (facultatif)","aria-label":"Où"}); li.value=F.lieu; li.addEventListener("input",()=>{ F.lieu=li.value; });
   const draw=()=>{ body.innerHTML="";
     const dk=F.dk!=null?F.dk:!F.date?"":F.date===t0?"auj":F.date===t1?"dem":"date";
@@ -11083,11 +11123,9 @@ function openCListForm(l){ if(!needMe()) return; const me=meId(), edit=!!l;
         if(v==="date") setTimeout(()=>{ try{ da.showPicker(); }catch(_){} },30); },"Date")),
       dk==="date"?apRow(null,"Le",apPick(apDate(F.date),da),"ap-sub"):null));
     body.append(apSec("Magasin"),el("label",{class:"ap-f"},apIc("pin"),li));
-    if(lieux.length) body.append(el("div",{class:"ap-chips ap-pre ap-sugg"},...lieux.map(x=>apChip(x,F.lieu===x,()=>{ F.lieu=F.lieu===x?"":x; li.value=F.lieu; draw(); }))));
     body.append(apSec("Qui y va"),apWho("user",[apChip("Peu importe",!F.qui,()=>{ F.qui=null; draw(); })].concat(humains().map(m=>apChip([avatar(m.id,20),m.id===me?"Moi":m.nom],F.qui===m.id,()=>{ F.qui=F.qui===m.id?null:m.id; draw(); })))));
     body.append(apSec("Options"),apCard(apRow("lock","Visible par moi seul",apSw(F.prive,v=>{ F.prive=v; draw(); },"Visible par moi seul")),
-      apRow("rep","Refaire chaque semaine",apSw(!!F.recur,v=>{ F.recur=v?"semaine":null; draw(); },"Refaire chaque semaine"))),
-      el("p",{class:"ap-hint",text:F.prive?"Elle n'apparaît que chez toi.":"Elle s'affiche sur la page Courses de tout le foyer."})); };
+      apRow("rep","Refaire chaque semaine",apSw(!!F.recur,v=>{ F.recur=v?"semaine":null; draw(); },"Refaire chaque semaine")))); };
   const H=apHead(edit?"Modifier la liste":"Nouvelle liste",()=>U.close(),{id:"clGo",label:edit?"Enregistrer":"Créer la liste",onOk:async()=>{ if(!needMe()) return;
     const doc={titre:(F.titre||"").trim()||(edit?l.titre:"Liste de courses"),couleur:F.couleur,date:F.date||null,lieu:(F.lieu||"").trim()||null,qui:F.qui||null,prive:!!F.prive,recur:F.recur||null};
     go.disabled=true;
@@ -11154,19 +11192,19 @@ async function clDel(l){ const its=cItemsOf(l.id); S.clOpenId=null; if(S.cListe=
 /* valider (complète ou non) : « Combien ça a coûté ? » → dépense dans Budget ; la liste passe dans « Terminées » ; ce qui n'a pas été pris retourne dans la liste principale (ou dans celle de la semaine suivante) */
 /* valider : une petite fenêtre « Combien ça a coûté ? » (aussi ouverte toute seule quand le dernier article passe au caddie) */
 function clValidate(l){ if(!l) return; const its=cItemsOf(l.id), left=its.filter(i=>!i.fait).length, fin=its.length&&!left;
-  const U=clSheet(); clClear(U); const inn=el("div",{class:"pp-in ev-in cl-in"}); U.sheet.append(inn);
-  const am=el("input",{class:"ev-inp",type:"text",inputmode:"decimal",id:"clMontant",placeholder:"Montant en €","aria-label":"Montant"});
+  const U=clSheet(); clClear(U); U.sheet.classList.add("ap-sheet"); const inn=el("div",{class:"pp-in ap-in cl-in"}); U.sheet.append(inn);
+  const am=el("input",{class:"ap-amt",type:"text",inputmode:"decimal",id:"clMontant",placeholder:"0,00 €","aria-label":"Montant"});
   /* « Qui a payé ? » : une ou plusieurs personnes ; à plusieurs, la part de chacun (moitié-moitié au départ, modifiable) */
-  const ad=adults(); let pays=[meId()], parts={}, edited=null; const pp=ad.length>1?el("div",{class:"pchips cl-pay",id:"clPay"}):null, sw=el("div",{class:"cl-split",id:"clSplit"});
+  const ad=adults(); let pays=[meId()], parts={}, edited=null; const pp=ad.length>1?el("div",{class:"ap-chips cl-pay",id:"clPay"}):null, sw=el("div",{class:"cl-split",id:"clSplit"});
   const eu=c=>(c/100).toFixed(2).replace(".",",");
   const reSplit=()=>{ const tot=parseMoney(am.value)||0, n=pays.length; parts={}; pays.forEach((id,i)=>parts[id]=Math.floor(tot/n)+(i<tot%n?1:0)); edited=null; };
   const swDraw=()=>{ sw.innerHTML=""; if(pays.length<2) return;
-    for(const id of pays){ const inp=el("input",{class:"ev-inp cl-sp-in",type:"text",inputmode:"decimal","data-id":id,"aria-label":"Part de "+(id===meId()?"moi":membre(id).nom)}); inp.value=parts[id]?eu(parts[id]):"";
+    for(const id of pays){ const inp=el("input",{class:"ap-num cl-sp-in",type:"text",inputmode:"decimal","data-id":id,"aria-label":"Part de "+(id===meId()?"moi":membre(id).nom)}); inp.value=parts[id]?eu(parts[id]):"";
       inp.addEventListener("input",()=>{ const tot=parseMoney(am.value)||0, v=parseMoney(inp.value)||0; parts[id]=v; edited=id;
         /* la dernière autre personne prend le reste */
         const rest=pays.filter(x=>x!==id), last=rest[rest.length-1], others=rest.slice(0,-1).reduce((a,x)=>a+(parts[x]||0),0);
         if(last){ parts[last]=Math.max(0,tot-v-others); const o=sw.querySelector('.cl-sp-in[data-id="'+last+'"]'); if(o) o.value=eu(parts[last]); } });
-      sw.append(el("label",{class:"cl-sp"},avatar(id,22),el("span",{text:id===meId()?"Moi":membre(id).nom}),inp,el("i",{text:"€"}))); } };
+      sw.append(el("label",{class:"ap-r ap-sub cl-sp"},avatar(id,22),el("b",{text:id===meId()?"Moi":membre(id).nom}),inp,el("i",{class:"ap-eur",text:"€"}))); } };
   const ppDraw=()=>{ if(!pp) return; pp.innerHTML=""; for(const m of ad) pp.append(el("button",{type:"button",class:"pchip","data-id":m.id,"aria-pressed":String(pays.includes(m.id)),onclick:()=>{
       if(pays.includes(m.id)){ if(pays.length===1) return; pays=pays.filter(x=>x!==m.id); } else pays=pays.concat(m.id);
       haptic(6); reSplit(); ppDraw(); swDraw(); }},avatar(m.id),m.id===meId()?"Moi":m.nom)); };
@@ -11175,11 +11213,13 @@ function clValidate(l){ if(!l) return; const its=cItemsOf(l.id), left=its.filter
   const go=async(m,b)=>{ let payeur=pays[0];
     if(m>0&&pays.length>1){ const sum=pays.reduce((a,id)=>a+(parts[id]||0),0); if(sum!==m){ toast("Les parts font "+money(sum)+" au lieu de "+money(m)+"."); return; } payeur=Object.assign({},parts); }
     b.disabled=true; await clDone(l,m,false,payeur); };
-  const ok=el("button",{type:"button",class:"btn ev-cta",id:"clValOk",onclick:e=>{ const m=parseMoney(am.value)||0; if(!m){ toast("Indique le montant, ou « Sans montant »."); am.focus(); return; } go(m,e.currentTarget); }},"Valider");
+  /* façon Calendrier (9 nov.) : ✕ · titre · ✓, la liste et le montant en haut, « Qui a payé ? » dessous */
+  const H=apHead(fin?"Liste terminée 🎉":"Valider la liste",()=>U.close(),{id:"clValOk",label:"Valider",onOk:e=>{ const m=parseMoney(am.value)||0; if(!m){ toast("Indique le montant, ou « Valider sans montant »."); am.focus(); return; } go(m,e.currentTarget); }}), ok=H.ok;
   am.addEventListener("keydown",e=>{ if(e.key==="Enter") ok.click(); });
-  inn.append(el("div",{class:"ev-top"},el("h2",{text:fin?"Liste terminée 🎉":"Valider « "+(l.titre||"la liste")+" »"}),el("p",{text:"Combien ça a coûté ? Le montant part dans le Budget, catégorie Courses."})),
-    am,...(pp?[el("div",{class:"cl-payw"},el("div",{class:"cl-payt",text:"Qui a payé ? (une ou plusieurs personnes)"}),pp,sw)]:[]),
-    ok,el("button",{type:"button",class:"cl-skip",id:"clValSans",onclick:e=>go(0,e.currentTarget)},"Sans montant"));
+  inn.append(H.hd,el("div",{class:"ap-main",style:"--apc:"+clCol(l)},el("div",{class:"ap-ti ap-tt",text:l.titre||"Liste de courses"}),el("p",{class:"ap-sum",text:"🛒 "+(its.length-left)+" sur "+its.length+" au caddie"}),am),
+    ...(pp?[apSec("Qui a payé ?"),el("div",{class:"ap-opt"},el("div",{class:"ap-r cl-payr"},apIc("card"),pp),sw)]:[]),
+    el("p",{class:"ap-hint",text:"Le montant part dans le Budget, catégorie Courses."}),
+    el("button",{type:"button",class:"ev-sans",id:"clValSans",onclick:e=>go(0,e.currentTarget)},"Valider sans montant"));
   setTimeout(()=>am.focus(),350); }
 async function clDone(l,montant,quiet,payeur){ const me=meId(), its=cItemsOf(l.id), now=Date.now();
   const rec={titre:l.titre||"Liste de courses",couleur:clCol(l),lieu:l.lieu||null,qui:l.qui||null,prive:!!l.prive,date:l.date||null,fini:true,finiLe:now,montant:montant||null,articles:its.map(i=>({nom:i.nom,qte:i.qte||null,pris:!!i.fait}))};
