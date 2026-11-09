@@ -38,7 +38,7 @@ async def main():
     await pg.add_style_tag(content='.toast{display:none!important}')
     if await pg.is_visible('.cx-ask-no'): await pg.click('.cx-ask-no'); await pg.wait_for_timeout(500)
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(500)
-    await pg.click('.ms-tile:has-text("Notifications")'); await pg.wait_for_timeout(300)
+    await pg.click('.ms-row:has-text("Notifications")'); await pg.wait_for_timeout(300)
     print('carte:', (await pg.inner_text('#cxNotif'))[:140].replace('\n',' | '))
     await pg.locator('#cxNotif').scroll_into_view_if_needed(); await pg.screenshot(path='/tmp/dk/pn0.png')
     await pg.evaluate("window.moiOpen&&moiOpen('notif')"); await pg.wait_for_timeout(200)
@@ -57,7 +57,7 @@ async def main():
     # « Je fais les courses » (en direct) retiré de la page Courses (27 oct.) : on ferme la liste ouverte
     await pg.evaluate("(()=>{const g=document.querySelector('#clListPage .pp-grab'); if(g) g.click();})()"); await pg.wait_for_timeout(700)
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(300)
-    if not await pg.is_visible('#cxNotif'): await pg.click('.ms-tile:has-text("Notifications")'); await pg.wait_for_timeout(300)
+    if not await pg.is_visible('#cxNotif'): await pg.click('.ms-row:has-text("Notifications")'); await pg.wait_for_timeout(300)
     await pg.click('#cxNotif [data-a="off"]'); await pg.wait_for_timeout(500)
     print('désactivé, base:', await pg.evaluate("JSON.stringify(__mock.T.cocoon_push_subs)"), '|', (await pg.inner_text('#cxNotif')).replace('\n',' | ')[:120])
     print('errors',errs)

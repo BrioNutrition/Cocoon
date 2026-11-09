@@ -51,7 +51,7 @@ async def main():
     # suppression d'un papier → fichier supprimé
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(300)
     await pg.evaluate("window.moiOpen&&moiOpen('compte')"); await pg.wait_for_timeout(200)
-    await pg.click('.ms-reg'); await pg.wait_for_timeout(250); await pg.click('.set-row:has-text("Mon compte")'); await pg.wait_for_timeout(300)
+    await pg.click('.ms-row:has-text("Réglages")'); await pg.wait_for_timeout(250); await pg.click('.set-row:has-text("Mon compte")'); await pg.wait_for_timeout(300)
     print('compte:', (await pg.inner_text('#cxAccount')).replace('\n',' | '))
     await pg.locator('#cxAccount').scroll_into_view_if_needed(); await pg.screenshot(path='/tmp/dk/w4.png')
     print('invite:', await pg.evaluate("cocoonHost.inviteUrl()"))
