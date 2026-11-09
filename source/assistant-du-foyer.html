@@ -10910,7 +10910,7 @@ function renderCourses(){
   renderHab(); box.innerHTML="";
   const all=cItemsOf(S.cListe||CL_DEF), items=clLOpen()&&!S.cShowAll?all.filter(i=>!i.fait||(S.cKeep&&S.cKeep.has(i.id))):all, todo=items.filter(i=>!i.fait), done=items.filter(i=>i.fait);
   try{ clLSync(); }catch(e){ console.error(e); }
-  if(!items.length&&all.length){ box.append(el("div",{class:"list"},el("div",{class:"empty"},el("strong",{text:"Tout est dans le caddie 🎉"}),"Il ne reste plus qu'à valider la liste.",el("button",{type:"button",class:"btn cl-val-b",id:"clValAll",style:"margin-top:12px",onclick:()=>clValidate(clGet(S.cListe))},"Valider la liste")))); return; }
+  if(!items.length&&all.length){ box.append(el("div",{class:"list"},el("div",{class:"empty"},el("strong",{text:"Tout est dans le caddie 🎉"}),"Continue de rajouter des articles ou bien valide la liste."))); return; }
   if(!items.length){ box.append(el("div",{class:"list"},el("div",{class:"empty"},el("strong",{text:"La liste est vide"}),"Écris ce qui manque juste au-dessus. Plusieurs d'un coup ? Sépare-les par des virgules."))); return; }
   /* pas de rayons ni de rubrique « Au caddie » (Angel) : la liste dans l'ordre où on l'a écrite, les articles cochés restent à leur place */
   { const list=el("div",{class:"c-list"}); for(const i of items.slice().sort((a,b)=>cOrd(a)-cOrd(b))) list.append(courseRow(i)); box.append(el("div",{class:"c-group"},list)); }
