@@ -4189,7 +4189,7 @@ section[data-view="hub"].has-ph .hub-phb{color:#fff;background:rgba(0,0,0,.32);-
 .ap-r.ap-sub{padding-left:52px!important;min-height:48px}.ap-r.ap-sub b{color:var(--muted)}
 .ap-rec{flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
 .ap-in .ap-opt+.ap-opt,.ap-in .ap-f+.ap-opt,.ap-in .ap-opt+.ap-f{margin-top:12px}
-.ap-tour{margin:10px 2px 0}.ap-amtw{display:flex;align-items:baseline;gap:5px;padding:0 18px 12px 32px;cursor:text}.ap-amtw .ap-amt{width:auto;flex:none;padding:0!important;max-width:calc(100% - 40px)}.ap-eur2{font-size:28px;font-weight:800;color:var(--ink)}.ap-amtw:has(.ap-amt:placeholder-shown) .ap-eur2{color:color-mix(in srgb,var(--muted) 60%,transparent)}.ap-main .ap-sum+.ap-amtw{padding-top:0}
+.ap-tour{margin:10px 2px 0}.ap-amtw{display:flex;align-items:baseline;gap:2px;padding:0 18px 12px 32px;cursor:text}.ap-amtw .ap-amt{width:auto;flex:none;padding:0!important;max-width:calc(100% - 40px)}.ap-eur2{font-size:34px;font-weight:800;letter-spacing:-.02em;color:var(--ink)}.ap-amtw:has(.ap-amt:placeholder-shown) .ap-eur2{color:color-mix(in srgb,var(--muted) 60%,transparent)}.ap-main .ap-sum+.ap-amtw{padding-top:0}
 .ev-pop{min-width:244px;padding:0;border-radius:14px;overflow:hidden;background:color-mix(in srgb,var(--surface) 84%,transparent);-webkit-backdrop-filter:blur(30px) saturate(1.6);backdrop-filter:blur(30px) saturate(1.6);box-shadow:0 18px 50px rgba(0,0,0,.35),0 0 0 .5px color-mix(in srgb,var(--ink) 16%,transparent);transform:scale(.6);transition:transform .34s cubic-bezier(.2,1.12,.3,1),opacity .16s ease}
 .ev-pop::before{display:none!important}.ev-pop.out{transform:scale(.9);transition:transform .16s ease,opacity .16s ease}
 .ev-pop hr{height:7px;margin:0;background:color-mix(in srgb,var(--ink) 8%,transparent)}
@@ -6970,7 +6970,7 @@ const POP_IC={"✏️":"pencil","⧉":"dup","📤":"share","✓":"check","💾":
 function popItem(ic,t,fn,cls){ const i=el("i",{"aria-hidden":"true"}); i.innerHTML='<svg viewBox="0 0 24 24">'+(AP_IC[POP_IC[ic]]||"")+'</svg>'; return el("button",{type:"button",role:"menuitem",class:"ev-pi"+(cls?" "+cls:""),onclick:fn},el("span",{text:t}),i); }
 /* montant façon Calendrier : le signe € suit le nombre tout seul (le champ prend la largeur de ce qu'on tape) */
 function apAmt(inp){ inp.placeholder="0,00"; const w=el("label",{class:"ap-amtw"},inp,el("span",{class:"ap-eur2","aria-hidden":"true",text:"€"}));
-  const fit=()=>{ try{ const c=apAmt.c||(apAmt.c=document.createElement("canvas").getContext("2d")), cs=getComputedStyle(inp); c.font=cs.fontWeight+" "+cs.fontSize+" "+cs.fontFamily; inp.style.width=Math.ceil(c.measureText(inp.value||inp.placeholder).width+2)+"px"; }catch(_){} };
+  const fit=()=>{ try{ const c=apAmt.c||(apAmt.c=document.createElement("canvas").getContext("2d")), cs=getComputedStyle(inp); c.font=cs.fontWeight+" "+cs.fontSize+" "+cs.fontFamily; inp.style.width=Math.ceil(c.measureText(inp.value||inp.placeholder).width+1)+"px"; }catch(_){} };
   inp.addEventListener("input",fit); requestAnimationFrame(fit); setTimeout(fit,400); return w; }
 function apIc(k){ const i=el("i",{class:"ap-ic","aria-hidden":"true"}); i.innerHTML='<svg viewBox="0 0 24 24">'+(AP_IC[k]||k)+'</svg>'; return i; }
 function apSec(t){ return el("p",{class:"ap-sec",text:t}); }
@@ -11122,9 +11122,10 @@ function clLSync(){ const U=S.clLU; if(!U||U._gone) return; const l=clGet(S.clOp
   const [cForm,cRepas,cHab,cPour,cLists]=CL_NODES;
   for(const x of [cRepas,cHab,cPour,cLists]) if(x&&x.parentNode!==U.bodyW) U.bodyW.append(x);
   if(cForm&&cForm.parentNode!==U.foot) U.foot.append(cForm); }
-function clMenu(btn,l){ if(!l) return; const acts=[["edit","✏️","Modifier",()=>openCListForm(l)],["dup","⧉","Dupliquer",()=>clDup(l)],["send","📤","Envoyer",()=>clShare(l)],["save","💾","Enregistrer la liste",()=>clSave(l)],["val","✓","Valider la liste",()=>clValidate(l)]];
-  { const nm=nativeMenu(l.titre||"Liste",acts.map(([id,,t])=>({id,title:t})).concat([{id:"del",title:"Supprimer la liste",destructive:true}]));
-    if(nm){ nm.then(id=>{ const a=acts.find(x=>x[0]===id); if(a) a[3](); else if(id==="del") clDel(l); }); return; } }
+function clMenu(btn,l){ if(!l) return; const acts=[["edit","✏️","Modifier",()=>openCListForm(l)],["dup","⧉","Dupliquer",()=>clDup(l)],["send","📤","Envoyer",()=>clShare(l)],["save","💾","Enregistrer la liste",()=>clSave(l)]], val=["val","✓","Valider la liste",()=>clValidate(l)];
+  /* « Valider la liste » tout en bas, sous « Supprimer » (9 nov., Angel) */
+  { const nm=nativeMenu(l.titre||"Liste",acts.map(([id,,t])=>({id,title:t})).concat([{id:"del",title:"Supprimer la liste",destructive:true},{id:"val",title:"Valider la liste"}]));
+    if(nm){ nm.then(id=>{ const a=acts.concat([val]).find(x=>x[0]===id); if(a) a[3](); else if(id==="del") clDel(l); }); return; } }
   const old=document.querySelector(".ev-pop"); if(old){ old._close(); if(old._btn===btn) return; }
   /* en-tête de la liste ouverte (9 nov.) : comme sur une carte, le menu s'ouvre juste sous le « ⋯ », au-dessus de la feuille */
   const inHd=!!btn.closest(".cl-lhd"), card=btn.closest(".cl-card")||(inHd?btn:null), sheet=card?document.body:btn.closest(".pp-sheet,.cl-panel"); if(!sheet) return; const pop=el("div",{class:"ev-pop",role:"menu"}); pop._btn=btn;
@@ -11132,7 +11133,7 @@ function clMenu(btn,l){ if(!l) return; const acts=[["edit","✏️","Modifier",(
   pop._close=close; const away=e=>{ if(!pop.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)) close(); };
   const item=popItem;
   const del=item("🗑","Supprimer la liste",()=>{ close(); clDel(l); },"danger");
-  for(const [,ic,t,fn] of acts) pop.append(item(ic,t,()=>{ close(); fn(); })); pop.append(el("hr"),del);
+  for(const [,ic,t,fn] of acts) pop.append(item(ic,t,()=>{ close(); fn(); })); pop.append(el("hr"),del,item(val[1],val[2],()=>{ close(); val[3](); }));
   const rb=btn.getBoundingClientRect(), sr=sheet.getBoundingClientRect(), up=sheet.classList.contains("cl-panel");
   if(card){ pop.classList.add("no-tip"); pop.style.position="fixed"; pop.style.top=Math.min(rb.bottom+6,innerHeight-260)+"px"; pop.style.right=(innerWidth-rb.right)+"px"; pop.style.zIndex=inHd?"90":"60"; }
   else if(up){ pop.style.bottom=(sr.bottom-rb.top+8)+"px"; pop.style.top="auto"; } else pop.style.top=(rb.bottom-sr.top+sheet.scrollTop+8)+"px"; if(!card) pop.style.right=(sr.right-rb.right)+"px";
@@ -11160,7 +11161,7 @@ function openCListPick(){ const M=clMods(); if(!M.length){ openCListForm(null); 
         el("button",{type:"button",class:"cl-fav-main",onclick:()=>clRecreer(m)},el("span",{class:"cl-fav-t"},el("b",{text:m.titre||"Liste"}),el("small",{text:[m.lieu,n+" article"+(n>1?"s":"")].filter(Boolean).join(" · ")})),el("span",{class:"cl-fav-go",text:"Recréer"})),
         el("button",{type:"button",class:"cl-fav-x","aria-label":"Oublier « "+(m.titre||"la liste")+" »",text:"×",onclick:async()=>{ S.modeles=(S.modeles||[]).filter(x=>x.id!==m.id); draw(); try{ await S.db.collection("modeles").doc(m.id).delete(); }catch(e){ writeErr(e); } }}))); } };
   draw(); inn.append(box); }
-async function clDel(l){ const its=cItemsOf(l.id); S.clOpenId=null; if(S.cListe===l.id) S.cListe=null; haptic(10);
+async function clDel(l){ const its=cItemsOf(l.id); if(clLOpen()&&S.clOpenId===l.id) S.clLU.close(); S.clOpenId=null; if(S.cListe===l.id) S.cListe=null; haptic(10);
   clUndoable("Liste supprimée.",l.virt?[]:[l.id],its.map(i=>i.id),async()=>{ await Promise.all(its.map(i=>S.db.collection("courses").doc(i.id).delete())); if(!l.virt) await S.db.collection("listes").doc(l.id).delete(); }); }
 /* valider (complète ou non) : « Combien ça a coûté ? » → dépense dans Budget ; la liste passe dans « Terminées » ; ce qui n'a pas été pris retourne dans la liste principale (ou dans celle de la semaine suivante) */
 /* valider : une petite fenêtre « Combien ça a coûté ? » (aussi ouverte toute seule quand le dernier article passe au caddie) */
