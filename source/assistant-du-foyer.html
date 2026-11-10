@@ -4468,6 +4468,9 @@ html .hb-t>i.hb-ic svg{width:100%;height:100%;fill:currentColor;display:block}
 .hb-ic .w[fill="none"]{fill:none}
 html .hb-t>em,html.foyer-nuit .hb-t>em{position:absolute!important;top:14px!important;right:14px!important;bottom:auto!important;background:#E5484D!important;color:#fff!important}
 html .hb-t>em.r,html.foyer-nuit .hb-t>em.r{background:#E5484D!important}
+/* (10 nov., Angel) Foyer : plus de titres de groupes, tuiles descendues sous la photo du foyer */
+#hubGrid{margin-top:14px}#hubGrid .hb-g2+.hb-g2{margin-top:10px}
+section[data-view="hub"].has-ph #hubGrid{margin-top:78px}
 .ap-del{display:block;width:100%;margin-top:22px;border:0;border-radius:22px;background:var(--sunk);color:var(--late);font:inherit;font-weight:700;padding:15px;cursor:pointer}
 </style>
 
@@ -9600,7 +9603,7 @@ function emoIco(e,cls){ const i=el("i",{"aria-hidden":"true",class:cls||"emo"}),
 const HUB_EMO={foyer:"✅",courses:"🛒",repas:"🍽️",agenda:"📅",budget:"💶",documents:"📄",maison:"🏠",evenements:"🎉"};
 function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const me=meId(), t0=iso(today());
   const G1=el("div",{class:"hb-g2"}), G2=el("div",{class:"hb-g2 hb-gx"}); let G=G1;
-  H.append(el("p",{class:"hb-sec",text:"Au quotidien"}),G1,el("p",{class:"hb-sec",text:"Gestion"}),G2);
+  H.append(G1,G2); /* (10 nov., Angel) plus de titres « Au quotidien » / « Gestion » */
   const tile=(v,ic,c,title,sub,o)=>{ o=o||{}; const b=el("div",{class:"hb-t"+(o.cls?" "+o.cls:""),role:"button",tabindex:"0","data-go":v,style:"--bc:"+c,"aria-label":title+(sub?", "+sub:"")});
     b.addEventListener("click",e=>{ if(e.target.closest(".hb-ck")) return; hubGo(v); }); b.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); hubGo(v); } });
     /* (10 nov., choix A d'Angel) plus d'emoji : grande icône pleine, inclinée, en fond en haut à droite ; la pastille passe en bas à droite */
