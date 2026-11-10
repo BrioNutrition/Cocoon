@@ -4443,6 +4443,13 @@ html .acc-leg .ln{background:#FFC94A}
 :root:not([data-theme]) .jn-cd{background:rgba(255,255,255,.7)}
 :root:not([data-theme]) .jx-c{background:#fff}
 }
+/* (10 nov., choix C d'Angel) raccourcis : grande icône pleine en fond, inclinée, qui déborde ; plus d'emoji */
+html .wg.wgc{isolation:isolate}
+.wgc-bg{position:absolute;right:-44px;bottom:-40px;width:150px;height:150px;transform:rotate(-12deg);z-index:-1;pointer-events:none;color:var(--wc);opacity:.16}
+.wgc-bg svg{width:100%;height:100%;fill:currentColor;display:block}
+.wg.wgc.wide .wgc-bg{right:-10px;bottom:-50px}
+:root[data-theme="light"] .wgc-bg{opacity:.3}
+@media (prefers-color-scheme:light){:root:not([data-theme]) .wgc-bg{opacity:.3}}
 .ap-del{display:block;width:100%;margin-top:22px;border:0;border-radius:22px;background:var(--sunk);color:var(--late);font:inherit;font-weight:700;padding:15px;cursor:pointer}
 </style>
 
@@ -7377,6 +7384,14 @@ const WG={
   semaine:{t:"Semaine du foyer",ic:"check",c:"#3CC37A",go:"foyer",d:"tâches faites, avec une jauge"},
   anniv:{t:"Anniversaires",ic:"cake",c:"#FFC94A",go:null,d:"le prochain"},
   evenement:{t:"Événement spécial",ic:"party",c:"#FF9C80",go:null,d:"le prochain, et ce qu'il reste à préparer"}};
+const WGF={
+  courses:'<path d="M2 3.2c0-.6.4-1 1-1h1.6c.8 0 1.5.6 1.7 1.4l.3 1.4h13.8c1 0 1.7 1 1.4 1.9l-1.8 6.4c-.3 1-1.2 1.7-2.2 1.7H8.6l.3 1.3h9.6a1 1 0 1 1 0 2H8.1c-.5 0-.9-.3-1-.8L4.4 4.2H3c-.6 0-1-.4-1-1z"/><circle cx="9.5" cy="20.3" r="1.9"/><circle cx="17" cy="20.3" r="1.9"/>',
+  papiers:'<path fill-rule="evenodd" d="M6.5 1.8h7.3l6.2 6.2v12.7c0 .8-.7 1.5-1.5 1.5h-12c-.8 0-1.5-.7-1.5-1.5V3.3c0-.8.7-1.5 1.5-1.5zM13 3.6V8c0 .5.4.9.9.9h4.4zM8.5 12.2h7v1.6h-7zm0 3.6h5v1.6h-5z"/>',
+  repas:'<path fill-rule="evenodd" d="M13.5 4.5a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm0 3.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z"/><path d="M2.4 2.5h1.1v5.3h.7V2.5h1.1v5.3h.7V2.5h1.1v6c0 1.1-.8 2-1.8 2.2V21H4.2V10.7c-1-.2-1.8-1.1-1.8-2.2z"/>',
+  budget:'<path fill-rule="evenodd" d="M5 4.5h12.5c1.4 0 2.5 1.1 2.5 2.5v.6c1.2.3 2 1.3 2 2.6v6.8c0 1.4-1.1 2.5-2.5 2.5H5c-1.7 0-3-1.3-3-3V7.5c0-1.7 1.3-3 3-3zm11.5 8.2a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2z"/>',
+  semaine:'<path fill-rule="evenodd" d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm4.6 6.3-6 6-2.9-2.9-1.4 1.4 4.3 4.3 7.4-7.4z"/>',
+  anniv:'<path d="M11 2.5c.6.8 1.6 1.7 1 2.8-.3.5-.9.7-1 .7s-.8-.2-1-.7c-.4-.9.4-1.8 1-2.8zM10.2 7h1.6v3h-1.6z"/><path d="M4 11h14a2 2 0 0 1 2 2v1.8c-1 .9-2 .9-3 0-1 .9-2 .9-3 0-1 .9-2 .9-3 0-1 .9-2 .9-3 0-1 .9-2 .9-3 0-.6.5-1.3.7-2 .5V13a2 2 0 0 1 2-2z"/><path d="M2 17c1 .6 2 .6 3 0 1 .6 2 .6 3 0 1 .6 2 .6 3 0 1 .6 2 .6 3 0 1 .6 2 .6 3 0 1 .6 2 .6 3 0V20a1.5 1.5 0 0 1-1.5 1.5h-16A1.5 1.5 0 0 1 2 20z"/>',
+  evenement:'<path d="M12 2l2.9 6.2 6.6.8-4.9 4.6 1.3 6.6L12 16.9l-5.9 3.3 1.3-6.6L2.5 9l6.6-.8z"/>'};
 const WG_DEF=[{k:"courses",l:0},{k:"papiers",l:0},{k:"budget",l:1}];
 function wgList(){ let w=(S.prefs||{}).widgets; if(!Array.isArray(w)){ try{ w=JSON.parse(localStorage.getItem("cocoon.widgets")||"null"); }catch(_){ w=null; } } if(!Array.isArray(w)) w=WG_DEF; return w.filter(x=>x&&WG[x.k]); }
 function wgSave(list,quiet){ S.prefs=Object.assign({},S.prefs||{},{widgets:list}); try{ localStorage.setItem("cocoon.widgets",JSON.stringify(list)); }catch(_){} if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); if(!quiet) renderWidgets(); }
@@ -7463,8 +7478,10 @@ function renderWidgets(){ const box=$("accBudget"); if(!box) return; if(box.quer
   const g=el("div",{class:"wg-grid"});
   const WL=wgList(); WL.forEach((x,i)=>{ const w=WG[x.k], L=WL.length%2===1&&i===WL.length-1, D=wgX(x.k);
     { const X=D, b=el("button",{type:"button",class:"wg wgc"+(L?" wide":""),"data-k":x.k,style:"--wc:"+w.c+";--gc:"+w.c,"aria-label":w.t+" : "+X.big+(X.small?", "+X.small:""),onclick:()=>wgGo(x.k,D)});
-      const top=X.ring!=null?el("span",{class:"wgc-ring",style:"--p:"+X.ring+"%"},el("b",{text:X.ring+"%"})):X.bin?el("span",{class:"wgc-bin",style:"--bc:"+X.bin,"aria-hidden":"true"}):el("span",{class:"wgc-e","aria-hidden":"true",text:X.e||"•"});
-      b.append(top);
+      /* (10 nov., choix C d'Angel) plus d'emoji : une grande icône pleine, inclinée, en fond de la tuile (WGF) */
+      const top=X.ring!=null?el("span",{class:"wgc-ring",style:"--p:"+X.ring+"%"},el("b",{text:X.ring+"%"})):X.bin?el("span",{class:"wgc-bin",style:"--bc:"+X.bin,"aria-hidden":"true"}):null;
+      { const bg=el("i",{class:"wgc-bg","aria-hidden":"true"}); bg.innerHTML='<svg viewBox="0 0 24 24">'+(WGF[x.k]||WGF.courses)+'</svg>'; b.append(bg); }
+      if(top) b.append(top);
       if(X.cd) b.append(el("span",{class:"wgc-cd"+(X.hot?" hot":""),text:X.cd}));
       b.append(el("small",{class:"wgc-cap",text:X.cap||w.t}),el("b",{class:"wgc-big",text:X.big}),X.small?el("small",{class:"wgc-s",text:X.small}):null);
       if(X.bar!=null) b.append(el("span",{class:"wgc-bar"},el("i",{style:"width:"+X.bar+"%"})));
