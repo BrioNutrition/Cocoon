@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="10/11 11:24";</script>
+<script>window.COCOON_BUILD="10/11 11:37";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4511,6 +4511,35 @@ html .fy-card{background:var(--surface)!important}
 html .story .ring.has{background:color-mix(in srgb,#FFC94A 70%,var(--surface))}
 html #homeTitle .fam{background:color-mix(in srgb,#FFC94A 18%,transparent);color:color-mix(in srgb,#FFC94A 75%,var(--ink))}
 html .acc-leg .ln{background:#FFC94A}
+/* (10 nov., choix A d'Angel) thème clair : tuiles de l'accueil en pastel plein (chaque tuile à sa couleur, unie), texte foncé */
+:root[data-theme="light"] .wg.wgc,:root[data-theme="light"] #accBudget .wg.wgc{background:color-mix(in srgb,var(--wc) 30%,#fff)!important;border-color:transparent!important;box-shadow:none!important}
+:root[data-theme="light"] .wgc-cap,:root[data-theme="light"] .wgc-s{color:color-mix(in srgb,#1C1B2E 62%,transparent)}
+:root[data-theme="light"] .wgc-chip{background:rgba(255,255,255,.75)}
+:root[data-theme="light"] .wgc-cd{background:rgba(255,255,255,.8);color:#1C1B2E}
+:root[data-theme="light"] .wgc-cd.hot{background:#FFE1DE;color:#C2412D}
+:root[data-theme="light"] .wgc-ring b{background:color-mix(in srgb,var(--wc) 30%,#fff)}
+:root[data-theme="light"] .jn,:root[data-theme="light"] #dayCard .jn{background:color-mix(in srgb,var(--c) 27%,#fff)!important;border-color:transparent!important}
+:root[data-theme="light"] .jn-h small{color:color-mix(in srgb,var(--c) 50%,#1C1B2E)}
+:root[data-theme="light"] .jn-b{background:rgba(255,255,255,.75)}
+:root[data-theme="light"] .jn-b.ok{background:#1C1B2E;color:#fff}
+:root[data-theme="light"] .jn-b.on{background:#1C1B2E;color:#fff}
+:root[data-theme="light"] .jn-cd{background:rgba(255,255,255,.7)}
+:root[data-theme="light"] .jx-c{background:#fff}
+@media (prefers-color-scheme:light){
+:root:not([data-theme]) .wg.wgc,:root:not([data-theme]) #accBudget .wg.wgc{background:color-mix(in srgb,var(--wc) 30%,#fff)!important;border-color:transparent!important;box-shadow:none!important}
+:root:not([data-theme]) .wgc-cap,:root:not([data-theme]) .wgc-s{color:color-mix(in srgb,#1C1B2E 62%,transparent)}
+:root:not([data-theme]) .wgc-chip{background:rgba(255,255,255,.75)}
+:root:not([data-theme]) .wgc-cd{background:rgba(255,255,255,.8);color:#1C1B2E}
+:root:not([data-theme]) .wgc-cd.hot{background:#FFE1DE;color:#C2412D}
+:root:not([data-theme]) .wgc-ring b{background:color-mix(in srgb,var(--wc) 30%,#fff)}
+:root:not([data-theme]) .jn,:root:not([data-theme]) #dayCard .jn{background:color-mix(in srgb,var(--c) 27%,#fff)!important;border-color:transparent!important}
+:root:not([data-theme]) .jn-h small{color:color-mix(in srgb,var(--c) 50%,#1C1B2E)}
+:root:not([data-theme]) .jn-b{background:rgba(255,255,255,.75)}
+:root:not([data-theme]) .jn-b.ok{background:#1C1B2E;color:#fff}
+:root:not([data-theme]) .jn-b.on{background:#1C1B2E;color:#fff}
+:root:not([data-theme]) .jn-cd{background:rgba(255,255,255,.7)}
+:root:not([data-theme]) .jx-c{background:#fff}
+}
 .ap-del{display:block;width:100%;margin-top:22px;border:0;border-radius:22px;background:var(--sunk);color:var(--late);font:inherit;font-weight:700;padding:15px;cursor:pointer}
 </style>
 
