@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="12/11 12:18";</script>
+<script>window.COCOON_BUILD="12/11 12:24";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4617,12 +4617,18 @@ section[data-view="hub"].has-ph .hub-ph:after{background:rgba(255,255,255,.08)!i
 section[data-view="hub"].has-ph .hub-h{padding-top:6px!important}
 section[data-view="hub"].has-ph #hubGrid{margin-top:16px!important}
 section[data-view="hub"].has-ph .hub-h h2.hb-ttl{color:#fff;text-shadow:0 2px 16px rgba(0,0,0,.35)}
-section[data-view="hub"].has-ph .hb-t{background:rgba(255,255,255,.66)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-color:rgba(255,255,255,.8)!important;box-shadow:0 6px 18px rgba(28,27,46,.1)!important}
-section[data-view="hub"].has-ph .hb-t>b,section[data-view="hub"].has-ph .hb-t>em:not(.r){color:#1C1B2E!important}
-section[data-view="hub"].has-ph .hb-t>b small{color:#6A6785}
-:root[data-theme="dark"] section[data-view="hub"].has-ph .hb-t{background:rgba(24,23,36,.55)!important;border-color:rgba(255,255,255,.12)!important;box-shadow:none!important}
-:root[data-theme="dark"] section[data-view="hub"].has-ph .hb-t>b,:root[data-theme="dark"] section[data-view="hub"].has-ph .hb-t>em:not(.r){color:#fff!important}
-:root[data-theme="dark"] section[data-view="hub"].has-ph .hb-t>b small{color:rgba(255,255,255,.72)}
+html[data-theme] section[data-view="hub"].has-ph .hb-t{background:rgba(255,255,255,.66)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-color:rgba(255,255,255,.8)!important;box-shadow:0 6px 18px rgba(28,27,46,.1)!important}
+html[data-theme] section[data-view="hub"].has-ph .hb-t>b,html[data-theme] section[data-view="hub"].has-ph .hb-t>em:not(.r){color:#1C1B2E!important}
+html[data-theme] section[data-view="hub"].has-ph .hb-t>b small{color:#6A6785}
+/* (12 nov., Angel) tuiles toujours lumineuses sur la photo, même en thème sombre ; plus d'ombre sous les textes blancs ; photo nette au choix */
+section[data-view="hub"].has-ph .hub-h h2,section[data-view="hub"].has-ph .hub-h h2 small{text-shadow:none!important}
+section[data-view="hub"].has-ph.ph-net .hub-ph{filter:none!important;transform:translateX(-50%)!important}
+section[data-view="hub"].has-ph.ph-net .hub-ph:after{background:linear-gradient(180deg,rgba(0,0,0,.28),rgba(0,0,0,0) 28%)!important}
+.fa-box{max-width:360px}.fa-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.fa-o{display:flex;flex-direction:column;align-items:flex-start;gap:2px;background:var(--surface2,rgba(127,127,127,.08));border:1px solid var(--line);border-radius:18px;padding:8px 8px 10px;cursor:pointer;color:var(--ink);text-align:left;font:inherit}
+.fa-im{display:block;width:100%;aspect-ratio:3/4;border-radius:12px;background-size:cover;background-position:center;margin-bottom:6px;overflow:hidden}
+.fa-im{position:relative}.fa-im.fl::before{content:"";position:absolute;inset:-12px;background:inherit;filter:blur(7px)}
+.fa-o b{font-size:15px;font-weight:700;padding:0 4px}.fa-o small{font-size:12px;color:var(--muted);padding:0 4px}
 .hub-ph.ph-mini{filter:blur(30px)!important}
 .ap-del{display:block;width:100%;margin-top:22px;border:0;border-radius:22px;background:var(--sunk);color:var(--late);font:inherit;font-weight:700;padding:15px;cursor:pointer}
 </style>
@@ -9825,20 +9831,25 @@ function hubPhoto(){ const L=$("hubPh"), B=$("hubPhB"); if(!L||!FOND) return; co
   const ref=S.configLoaded?(S.config&&S.config.fondFoyer):FOND.ref, mini=S.config&&S.config.fondMini;
   let u=ref?(FOND.ref===ref&&FOND.data)||null:null, blur=false;
   if(ref&&!u){ const r=imgUrl(ref); if(r&&!/^data:/.test(r)) fondCache(ref,r); if(mini){ u=mini; blur=true; } else u=r; }
-  L.classList.toggle("ph-mini",blur);
+  L.classList.toggle("ph-mini",blur); sec.classList.toggle("ph-net",!!(S.config&&S.config.fondFlou===false));
   sec.classList.toggle("has-ph",!!u); if(u&&!sec.hidden){ const y=Math.round(sec.getBoundingClientRect().top+window.scrollY); if(y>0) sec.style.setProperty("--hph-top",y+"px"); } if(u){ const css='url("'+u+'")'; if(L._u!==u){ L._u=u; L.style.backgroundImage=css; } } else { L._u=null; L.style.backgroundImage=""; }
   if(B) B.hidden=!(isAdmin()&&!S.readOnly&&S.assets); }
-async function fondSet(ref,mini){ if(!S.db) return; S.config=Object.assign({},S.config||{},{fondFoyer:ref||null,fondMini:ref?mini||null:null});
+async function fondSet(ref,mini,flou){ if(!S.db) return; S.config=Object.assign({},S.config||{},{fondFoyer:ref||null,fondMini:ref?mini||null:null},flou===undefined?{}:{fondFlou:!!flou});
   try{ await S.db.doc("foyer/config").set(S.config); }catch(e){ writeErr(e); } hubPhoto(); }
 function fondPick(){ const inp=el("input",{type:"file",accept:"image/*",hidden:true}); document.body.append(inp);
   inp.addEventListener("change",async()=>{ const f=inp.files[0]; inp.remove(); if(!f) return; let big=null, mini=null; try{ [big,mini]=await Promise.all([fondData(f,900,.8),fondData(f,48,.6)]); }catch(_){}
-    const L=$("hubPh"); if(big&&L){ L.closest("section").classList.add("has-ph"); L.classList.remove("ph-mini"); L._u=big; L.style.backgroundImage='url("'+big+'")'; }
-    try{ const ref=await uploadImg(f,1280); if(big) fondKeep(ref,big); await fondSet(ref,mini); toast("Photo du foyer changée."); }catch(e){ imgErr(e); hubPhoto(); } },{once:true}); inp.click(); }
+    const up=uploadImg(f,1280); up.catch(()=>{}); const flou=big?await fondAsk(big):true; /* (12 nov., Angel) floutée ou nette, au choix */
+    const L=$("hubPh"); if(big&&L){ const sec=L.closest("section"); sec.classList.add("has-ph"); sec.classList.toggle("ph-net",!flou); L.classList.remove("ph-mini"); L._u=big; L.style.backgroundImage='url("'+big+'")'; }
+    try{ const ref=await up; if(big) fondKeep(ref,big); await fondSet(ref,mini,flou); toast("Photo du foyer changée."); }catch(e){ imgErr(e); hubPhoto(); } },{once:true}); inp.click(); }
+function fondAsk(u){ return new Promise(res=>{ let done=false; const fin=v=>{ if(done) return; done=true; ov.classList.add("out"); setTimeout(()=>ov.remove(),180); res(v); };
+  const ch=(v,l,d)=>el("button",{type:"button",class:"fa-o",onclick:()=>{ haptic(5); fin(v); }},el("span",{class:"fa-im"+(v?" fl":""),style:'background-image:url("'+u+'")'}),el("b",{text:l}),el("small",{text:d}));
+  const box=el("div",{class:"clp-box fa-box",role:"dialog","aria-label":"Afficher la photo"},el("b",{class:"clp-h",text:"Comment afficher la photo ?"}),el("div",{class:"fa-row"},ch(true,"Floutée","Douce, tout reste lisible"),ch(false,"Nette","La photo telle quelle")));
+  const ov=el("div",{class:"clp-ov",onclick:e=>{ if(e.target===ov) fin(true); }},box); document.body.append(ov); requestAnimationFrame(()=>ov.classList.add("in")); }); }
 function fondMenu(){ if(!(S.config&&S.config.fondFoyer)){ fondPick(); return; }
   let done=false; const close=()=>{ if(done) return; done=true; ov.classList.add("out"); setTimeout(()=>ov.remove(),180); };
   const o=(e,l,fn,cls)=>el("button",{type:"button",class:"clp-o dg-mo"+(cls?" "+cls:""),onclick:()=>{ close(); fn(); }},el("b",{"aria-hidden":"true",text:e}),el("span",{text:l}));
   const box=el("div",{class:"clp-box",role:"dialog","aria-label":"Photo du foyer"},el("b",{class:"clp-h",text:"Photo du foyer"}),
-    o("🖼️","Choisir une autre photo",fondPick),o("🗑️","Retirer la photo",()=>fondSet(null),"del"),el("button",{type:"button",class:"clp-x",onclick:close},"Annuler"));
+    o("🖼️","Choisir une autre photo",fondPick),o(S.config.fondFlou===false?"🌫️":"✨",S.config.fondFlou===false?"Flouter la photo":"Rendre la photo nette",()=>fondSet(S.config.fondFoyer,S.config.fondMini,S.config.fondFlou===false)),o("🗑️","Retirer la photo",()=>fondSet(null),"del"),el("button",{type:"button",class:"clp-x",onclick:close},"Annuler"));
   const ov=el("div",{class:"clp-ov",onclick:e=>{ if(e.target===ov) close(); }},box); document.body.append(ov); requestAnimationFrame(()=>ov.classList.add("in")); }
 $("hubPhB").addEventListener("click",()=>{ haptic(5); fondMenu(); });
 window.addEventListener("resize",()=>{ if(S.tab==="hub") hubPhoto(); });
