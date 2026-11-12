@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="12/11 13:14";</script>
+<script>window.COCOON_BUILD="12/11 13:23";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4648,9 +4648,11 @@ section[data-view="hub"] .hub-pill{display:flex;gap:6px;flex:none;align-self:fle
 section[data-view="hub"] .hub-h{flex-direction:column-reverse!important;align-items:stretch!important;gap:14px!important}
 section[data-view="hub"] .hub-h h2.hb-ttl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 section[data-view="hub"] .hub-phb{width:48px!important}
-section[data-view="hub"] .hub-memb svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+section[data-view="hub"] .hub-memb svg{width:24px;height:24px;fill:currentColor;stroke:none}
 section[data-view="hub"].has-ph .hub-memb{background:rgba(30,30,26,.38)!important;-webkit-backdrop-filter:blur(26px) saturate(1.6);backdrop-filter:blur(26px) saturate(1.6);border:1px solid rgba(255,255,255,.18)!important;color:#fff!important}
-#memPage .fy-card{display:block!important;margin:4px 0 0;box-shadow:none}
+#memPage .fy-card,#fySetPage .fy-card{display:block!important;margin:4px 0 0;box-shadow:none}
+section[data-view="hub"] #hubPhB{display:none!important}
+#fySetPage .fy-card .fy-top{display:none}
 /* Accueil façon « Découvrir » de l'app Maison (12 nov., proposition 1 d'Angel) : noir profond / gris iOS, cartes #1C1C1E / blanches, texte franc, gris #8E8E93 */
 html:has(.wrap.on-home){--ad-bg:#000;--ad-card:#1C1C1E;--ad-tx:#fff;--ad-mu:#8E8E93;--ad-ln:#2C2C2E;--ad-sk:#2C2C2E;--ad-y:#FFC94A}
 html[data-theme="light"]:has(.wrap.on-home){--ad-bg:#F2F2F7;--ad-card:#fff;--ad-tx:#000;--ad-ln:#E5E5EA;--ad-sk:#EFEFF4;--ad-y:#D99A00}
@@ -4976,7 +4978,7 @@ html.acc-ph .wrap.on-home #accBudget .wg{color:#1C1B2E!important}
   <!-- BUDGET (V2) -->
   <section class="view" data-view="hub" hidden>
     <div class="hub-ph" id="hubPh" aria-hidden="true"></div>
-    <div class="hub-h"><h2 class="sr-only">Le foyer</h2><span class="hub-pill"><button type="button" class="hub-phb hub-memb" id="hubMemB" aria-label="Les membres du foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.4"/><path d="M2.8 19.5c.4-3.4 3-5.6 6.2-5.6s5.8 2.2 6.2 5.6"/><circle cx="17" cy="9.2" r="2.6"/><path d="M15.8 13.8c2.9.1 5 2 5.4 5"/></svg></button><button type="button" class="hub-phb" id="hubPhB" hidden aria-label="Photo du foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v9A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.6"/></svg></button></span></div>
+    <div class="hub-h"><h2 class="sr-only">Le foyer</h2><span class="hub-pill"><button type="button" class="hub-phb hub-memb" id="hubMemB" aria-label="Réglages du foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="18.5" cy="12" r="1.9"/></svg></button><button type="button" class="hub-phb" id="hubPhB" hidden aria-label="Photo du foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v9A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.6"/></svg></button></span></div>
     <div class="hub" id="hubGrid"></div>
   </section>
 
@@ -9953,7 +9955,21 @@ $("hubPhB").addEventListener("click",()=>{ haptic(5); fondMenu(); });
 function openMembers(){ const card=document.querySelector(".fy-card"); if(!card) return; const home=card.parentNode, next=card.nextSibling;
   const U=upSheet("memPage","Les membres du foyer",()=>setTimeout(()=>{ if(card.parentNode!==home) home.insertBefore(card,next); },300)); const inn=el("div",{class:"pp-in mem-in"}); U.sheet.append(inn); inn.append(card);
   card.addEventListener("click",function f(e){ if(e.target.closest("button")){ card.removeEventListener("click",f); setTimeout(U.close,0); } }); }
-$("hubMemB").addEventListener("click",()=>{ haptic(5); openMembers(); });
+/* (12 nov., Angel) un seul bouton « ··· » sur le Foyer → Réglages du foyer : nom, membres, photo */
+function openFoyerSettings(){ const card=document.querySelector(".fy-card"), home=card&&card.parentNode, next=card&&card.nextSibling, adm=isAdmin()&&!S.readOnly;
+  const U=upSheet("fySetPage","Réglages du foyer",()=>setTimeout(()=>{ if(card&&card.parentNode!==home) home.insertBefore(card,next); },300)); U.sheet.classList.add("ev-sheet","ap-sheet"); const inn=el("div",{class:"pp-in ap-in fys-in"}); U.sheet.append(inn);
+  const nom0=(S.config&&S.config.nom)||"", inp=el("input",{type:"text",id:"fysNom",maxlength:"40",value:nom0,placeholder:"Martin",autocomplete:"off","aria-label":"Nom du foyer"}); if(!adm) inp.disabled=true;
+  const save=async()=>{ const v=inp.value.trim(); U.close(); if(!adm||v===nom0.trim()||!S.db) return; S.config=Object.assign({},S.config||{},{nom:v}); S.foyerNom=v; renderAll(); try{ await S.db.doc("foyer/config").set(S.config); toast("Nom du foyer enregistré."); }catch(e){ writeErr(e); } };
+  inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); save(); } });
+  const H=apHead("Réglages du foyer",()=>U.close(),{id:"fysOk",label:"Enregistrer",onOk:save});
+  inn.append(H.hd,apSec("Nom du foyer"),apCard(apIn("home","Chez les",inp)));
+  if(card){ inn.append(apSec("Les membres")); inn.append(card); card.addEventListener("click",function f(e){ if(e.target.closest("button")){ card.removeEventListener("click",f); setTimeout(U.close,0); } }); }
+  if(adm&&S.assets){ const ref=S.config&&S.config.fondFoyer, mini=S.config&&S.config.fondMini, flou=!(S.config&&S.config.fondFlou===false);
+    inn.append(apSec("Photo du foyer"),apCard(apGo("cam",ref?"Changer la photo":"Choisir une photo",null,()=>{ U.close(); setTimeout(fondPick,340); }),
+      ref?apGo("eye",flou?"Rendre la photo nette":"Flouter la photo",null,()=>{ U.close(); fondSet(ref,mini,!flou); }):null,
+      ref?apGo(null,"Retirer la photo",null,()=>{ U.close(); fondSet(null); },"ap-del"):null)); }
+  if(adm) setTimeout(()=>{},0); }
+$("hubMemB").addEventListener("click",()=>{ haptic(5); openFoyerSettings(); });
 window.addEventListener("resize",()=>{ if(S.tab==="hub") hubPhoto(); });
 
 /* Mini-fiche d'un membre (toucher une bulle de l'accueil) */
