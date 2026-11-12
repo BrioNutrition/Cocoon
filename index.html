@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="12/11 15:02";</script>
+<script>window.COCOON_BUILD="12/11 15:06";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4713,9 +4713,9 @@ section[data-view="hub"] .hub-ban[hidden],section[data-view="hub"] .hub-sep[hidd
 section[data-view="hub"] .hub-sep{display:flex;align-items:center;gap:12px;margin:26px 2px 12px;font:600 13px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 section[data-view="hub"] .hub-sep:after{content:"";flex:1;height:1px;background:var(--line)}
 section[data-view="hub"] .hub-sep~#hubGrid{margin-top:0!important}
-/* (12 nov., Angel) « Chez les … » souligné, à la couleur du thème choisi (--mark, réglée dans Personnaliser) */
+/* (12 nov., Angel) nom du foyer surligné (marqueur), à la couleur du thème choisi (--mark, réglée dans Personnaliser) */
 section[data-view="hub"] .hub-h h2.hb-ttl{padding-bottom:12px!important;margin-bottom:-12px!important}
-section[data-view="hub"] .hb-ttu{text-decoration:underline;text-decoration-color:var(--mark);text-decoration-thickness:5px;text-underline-offset:7px;text-decoration-skip-ink:none}
+section[data-view="hub"] .hb-ttu{background:linear-gradient(transparent 52%,color-mix(in srgb,var(--mark) 62%,transparent) 52%,color-mix(in srgb,var(--mark) 62%,transparent) 92%,transparent 92%);padding:0 4px;margin:0 -4px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 /* Accueil façon « Découvrir » de l'app Maison (12 nov., proposition 1 d'Angel) : noir profond / gris iOS, cartes #1C1C1E / blanches, texte franc, gris #8E8E93 */
 html:has(.wrap.on-home){--ad-bg:#000;--ad-card:#1C1C1E;--ad-tx:#fff;--ad-mu:#8E8E93;--ad-ln:#2C2C2E;--ad-sk:#2C2C2E;--ad-y:#FFC94A}
 html[data-theme="light"]:has(.wrap.on-home){--ad-bg:#F2F2F7;--ad-card:#fff;--ad-tx:#000;--ad-ln:#E5E5EA;--ad-sk:#EFEFF4;--ad-y:#D99A00}
@@ -9987,7 +9987,7 @@ const HUB_EMO={foyer:"✅",courses:"🛒",repas:"🍽️",agenda:"📅",budget:"
 function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const me=meId(), t0=iso(today());
   /* (12 nov., choix H d'Angel) en-tête « Chez les … » + date, puis la carte des profils, puis les tuiles */
   { const h2=document.querySelector('section[data-view="hub"] .hub-h h2'); if(h2){ h2.classList.remove("sr-only"); h2.classList.add("hb-ttl"); const nm=S.foyerNom?"Chez les "+S.foyerNom.replace(/^(la famille|famille|les)\s+/i,""):"Le foyer"; let d=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"}); d=d.charAt(0).toUpperCase()+d.slice(1);
-      h2.replaceChildren(el("span",{class:"hb-ttu",text:nm})); /* (12 nov., Angel) souligné à la couleur du thème */ /* (12 nov.) titre seul, façon app Maison */ }
+      { const mm=/^(Chez les )(.+)$/.exec(nm); h2.replaceChildren(...(mm?[document.createTextNode(mm[1]),el("span",{class:"hb-ttu",text:mm[2]})]:[document.createTextNode(nm)])); } /* (12 nov., Angel) le nom du foyer surligné à la couleur du thème */ /* (12 nov.) titre seul, façon app Maison */ }
     /* (12 nov., Angel) profils retirés du Foyer (photo floutée en plein écran + tuiles widget) */ }
   const G1=el("div",{class:"hb-g2"}), G2=el("div",{class:"hb-g2 hb-gx"}); let G=G1;
   H.append(G1,G2); /* (10 nov., Angel) plus de titres « Au quotidien » / « Gestion » */
