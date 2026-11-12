@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="12/11 17:38";</script>
+<script>window.COCOON_BUILD="12/11 17:41";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -6097,12 +6097,17 @@ async function shrink(file,max){
   try{ const bmp=await createImageBitmap(file); const r=Math.min(1,max/Math.max(bmp.width,bmp.height)); const c=document.createElement("canvas"); c.width=Math.round(bmp.width*r); c.height=Math.round(bmp.height*r); c.getContext("2d").drawImage(bmp,0,0,c.width,c.height); const b=await new Promise(res=>c.toBlob(res,"image/jpeg",.85)); if(b) return b; }catch(_){}
   return file;
 }
+const UP_SEEN=new Map(); /* (12 nov.) même image déjà envoyée pendant cette session → on réutilise (évite la limite d'envois) */
 async function uploadImg(file,max){
   if(!S.assets) throw {code:"no_assets"};
-  const blob=await shrink(file,max); const type=blob.type||file.type;
-  const up=await S.assets.upload(blob,type?{type}:undefined); seedSigned(up); return up.id;
+  let blob=await shrink(file,max); let type=blob.type||file.type;
+  if(!/^image\/(jpeg|png|webp|gif)$/.test(type)){ type="image/jpeg"; }
+  let key=null; try{ const h=await crypto.subtle.digest("SHA-256",await blob.arrayBuffer()); key=[...new Uint8Array(h)].slice(0,12).map(b=>b.toString(16).padStart(2,"0")).join(""); if(UP_SEEN.has(key)) return UP_SEEN.get(key); }catch(_){}
+  let up=null;
+  for(let i=0;i<2;i++){ try{ up=await S.assets.upload(blob,{type}); break; }catch(e){ const c=e&&e.code; console.warn("upload",c,e&&e.message); if(i||!/^(store_unavailable|upstream_error|rate_limited|transform_error)$/.test(c||"upstream_error")) throw e; await new Promise(r=>setTimeout(r,c==="rate_limited"?4000:1500)); } }
+  seedSigned(up); if(key) UP_SEEN.set(key,up.id); return up.id;
 }
-function imgErr(e){ const c=e&&e.code; toast(c==="no_assets"?"L'ajout de photos demande d'être Éditeur de la page.":c==="too_large"?"Image trop lourde (20 Mo max).":c==="unsupported_type"?"Format non pris en charge : JPG, PNG ou WebP.":"La photo n'a pas pu être envoyée. Réessaie."); }
+function imgErr(e){ const c=e&&e.code; toast(c==="no_assets"?"L'ajout de photos demande d'être Éditeur de la page.":c==="too_large"?"Image trop lourde (20 Mo max).":c==="unsupported_type"?"Format non pris en charge : JPG, PNG ou WebP.":"La photo n'a pas pu être envoyée"+(c==="rate_limited"?" : trop d'envois d'un coup, réessaie dans une minute.":c==="quota_or_state"?" : plus de place pour les photos.":c==="upstream_auth"?" : recharge la page puis réessaie.":". Réessaie"+(c?" ("+c+")":"")+".")); }
 function buildEditor(){
   const E=S.edit, d=E.d, f=$("ficheForm"), y=E.sheet&&E.U?E.U.sheet.scrollTop:0; f.innerHTML=""; if(!E.sheet) f.className="fiche ap-in fi-fin";
   const me=meId(), self=E.self||(E.id&&E.id===me), t=typeOf(d), admin=isAdmin()&&!E.self;
