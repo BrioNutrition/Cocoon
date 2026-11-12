@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="12/11 17:19";</script>
+<script>window.COCOON_BUILD="12/11 17:25";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4716,8 +4716,8 @@ section[data-view="hub"] .hub-sep~#hubGrid{margin-top:0!important}
 /* (12 nov., choix 1 d'Angel) photo du foyer en haut de l'écran (jusqu'au bord), nom en blanc dessus, membres dessous */
 section[data-view="hub"]{position:relative}
 section[data-view="hub"] .hub-hero{display:none}
-section[data-view="hub"].has-hero .hub-hero{display:block;position:absolute;z-index:0;left:50%;transform:translateX(-50%);width:100vw;top:calc(-1 * var(--hph-top,0px));height:440px;background:var(--surface) center 35%/cover no-repeat;pointer-events:none}
-section[data-view="hub"].has-hero .hub-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.28) 0%,rgba(0,0,0,0) 24%,rgba(0,0,0,0) 46%,rgba(0,0,0,.5) 74%,rgba(0,0,0,.55) 86%,var(--bg) 100%)} /* (12 nov., Angel) voile sombre sous le texte blanc, puis fondu court vers le fond (même en clair) */
+section[data-view="hub"].has-hero .hub-hero{display:block;position:absolute;z-index:0;left:50%;transform:translateX(-50%);width:100vw;top:calc(-1 * var(--hph-top,0px));height:580px;background:var(--surface) center 30%/cover no-repeat;pointer-events:none}
+section[data-view="hub"].has-hero .hub-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.28) 0,rgba(0,0,0,0) 110px,rgba(0,0,0,0) 190px,rgba(0,0,0,.45) 300px,rgba(0,0,0,.5) 380px,color-mix(in srgb,var(--bg) 22%,rgba(0,0,0,.5)) 420px,color-mix(in srgb,var(--bg) 50%,rgba(0,0,0,.38)) 460px,color-mix(in srgb,var(--bg) 76%,rgba(0,0,0,.2)) 500px,color-mix(in srgb,var(--bg) 93%,rgba(0,0,0,.06)) 545px,var(--bg) 580px)} /* (12 nov., Angel) voile sombre sous le texte blanc, puis long fondu adouci vers le fond, sous les tuiles : pas de ligne de séparation */
 html body section[data-view="hub"].has-hero .hub-h{position:relative;z-index:2;padding-top:calc(380px - var(--hph-top,0px) - 92px)!important;margin-bottom:0!important}
 html body section[data-view="hub"].has-hero .hub-h h2.hb-ttl,html body section[data-view="hub"].has-hero .hub-h h2.hb-ttl *{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:0 2px 14px rgba(0,0,0,.35)}
 html body section[data-view="hub"].has-hero .hub-h h2.hb-ttl .hb-ttu{background:none!important;padding:0;margin:0}
