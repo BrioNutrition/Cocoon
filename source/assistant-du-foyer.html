@@ -4527,6 +4527,9 @@ html[data-theme] section[data-view="hub"].has-ph .hb-t>b small{color:#6A6785}
 section[data-view="hub"].has-ph .hub-h h2,section[data-view="hub"].has-ph .hub-h h2 small{text-shadow:none!important}
 section[data-view="hub"].has-ph.ph-net .hub-ph{filter:none!important;transform:translateX(-50%)!important}
 section[data-view="hub"].has-ph.ph-net .hub-ph:after{background:linear-gradient(180deg,rgba(0,0,0,.28),rgba(0,0,0,0) 28%)!important}
+.fc-fr{width:100%;border-radius:20px;background:#000 center/cover no-repeat;touch-action:none;cursor:grab;-webkit-mask-image:linear-gradient(180deg,#000 72%,transparent);mask-image:linear-gradient(180deg,#000 72%,transparent);margin:4px 0 14px}
+.fc-zr{display:flex;align-items:center;gap:12px;padding:0 6px;color:var(--muted);font:600 20px var(--f-body)}.fc-z{flex:1;accent-color:#FFC94A}
+.fc-tip{color:var(--muted);font-size:14px;line-height:1.4;margin:12px 6px 4px}
 .fa-box{max-width:360px}.fa-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
 .fa-o{display:flex;flex-direction:column;align-items:flex-start;gap:2px;background:var(--surface2,rgba(127,127,127,.08));border:1px solid var(--line);border-radius:18px;padding:8px 8px 10px;cursor:pointer;color:var(--ink);text-align:left;font:inherit}
 .fa-im{display:block;width:100%;aspect-ratio:3/4;border-radius:12px;background-size:cover;background-position:center;margin-bottom:6px;overflow:hidden}
@@ -4619,9 +4622,10 @@ section[data-view="hub"] .hub-sep~#hubGrid{margin-top:0!important}
 /* (12 nov., choix 1 d'Angel) photo du foyer en haut de l'écran (jusqu'au bord), nom en blanc dessus, membres dessous */
 section[data-view="hub"]{position:relative}
 section[data-view="hub"] .hub-hero{display:none}
-section[data-view="hub"].has-hero .hub-hero{display:block;position:absolute;z-index:0;left:50%;transform:translateX(-50%);width:100vw;top:calc(-1 * var(--hph-top,0px));height:580px;background:var(--surface) center 30%/cover no-repeat;pointer-events:none}
-section[data-view="hub"].has-hero .hub-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.28) 0,rgba(0,0,0,0) 110px,rgba(0,0,0,0) 190px,rgba(0,0,0,.45) 300px,rgba(0,0,0,.5) 380px,color-mix(in srgb,var(--bg) 22%,rgba(0,0,0,.5)) 420px,color-mix(in srgb,var(--bg) 50%,rgba(0,0,0,.38)) 460px,color-mix(in srgb,var(--bg) 76%,rgba(0,0,0,.2)) 500px,color-mix(in srgb,var(--bg) 93%,rgba(0,0,0,.06)) 545px,var(--bg) 580px)} /* (12 nov., Angel) voile sombre sous le texte blanc, puis long fondu adouci vers le fond, sous les tuiles : pas de ligne de séparation */
-html body section[data-view="hub"].has-hero .hub-h{position:relative;z-index:2;padding-top:calc(380px - var(--hph-top,0px) - 92px)!important;margin-bottom:0!important}
+section[data-view="hub"].has-hero .hub-hero{display:block;position:absolute;z-index:0;left:50%;transform:translateX(-50%);width:100vw;top:calc(-1 * var(--hph-top,0px));height:430px;background:var(--surface) center 30%/cover no-repeat;pointer-events:none;-webkit-mask-image:linear-gradient(180deg,#000 0,#000 310px,rgba(0,0,0,.82) 345px,rgba(0,0,0,.48) 378px,rgba(0,0,0,.18) 405px,transparent 430px);mask-image:linear-gradient(180deg,#000 0,#000 310px,rgba(0,0,0,.82) 345px,rgba(0,0,0,.48) 378px,rgba(0,0,0,.18) 405px,transparent 430px)} /* (12 nov., Angel) le bas de la photo est gommé en opacité ; les tuiles commencent en dessous */
+section[data-view="hub"].has-hero .hub-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.28) 0,rgba(0,0,0,0) 110px,rgba(0,0,0,0) 160px,rgba(0,0,0,.42) 270px,rgba(0,0,0,.48) 330px,rgba(0,0,0,0) 430px)} /* voile sombre sous le texte blanc */
+html body section[data-view="hub"].has-hero .hub-mem{margin-bottom:var(--hero-gap,64px)!important}
+html body section[data-view="hub"].has-hero .hub-h{position:relative;z-index:2;padding-top:calc(352px - var(--hph-top,0px) - 92px)!important;margin-bottom:0!important}
 html body section[data-view="hub"].has-hero .hub-h h2.hb-ttl,html body section[data-view="hub"].has-hero .hub-h h2.hb-ttl *{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:0 2px 14px rgba(0,0,0,.35)}
 html body section[data-view="hub"].has-hero .hub-h h2.hb-ttl .hb-ttu{background:none!important;padding:0;margin:0}
 html body section[data-view="hub"].has-hero .hub-pill{position:absolute;right:0;top:calc(-1 * var(--hph-top,0px) + max(env(safe-area-inset-top),12px) + 40px);z-index:3}
@@ -10058,7 +10062,28 @@ function hubBan(u){ const g=$("hubGrid"); if(!g) return; const sec=g.closest("se
   if(!h){ h=el("div",{id:"hubHero",class:"hub-hero",role:"img","aria-label":"Photo du foyer"}); sec.prepend(h); }
   sec.classList.toggle("has-hero",!!u); if(u&&h._u!==u){ h._u=u; h.style.backgroundImage='url("'+u+'")'; }
   if(u&&!sec.hidden){ const y=Math.round(sec.getBoundingClientRect().top+window.scrollY); if(y>0) sec.style.setProperty("--hph-top",y+"px"); }
-  hubMembers(); }
+  hubMembers(); if(u) fondFit(h,u,S.config&&S.config.fondPos);
+  /* (12 nov., Angel) les tuiles ne touchent jamais la photo : elles commencent 10 px sous la fin du gommage */
+  if(u&&!sec.hidden) requestAnimationFrame(()=>{ const m=$("hubMem"); if(!m||m.hidden) return; sec.style.removeProperty("--hero-gap"); const hb=h.getBoundingClientRect().bottom, gt=g.getBoundingClientRect().top, cur=parseFloat(getComputedStyle(m).marginBottom)||0; if(hb&&gt) sec.style.setProperty("--hero-gap",Math.max(12,Math.round(cur+hb+6-gt))+"px"); }); }
+/* (12 nov., Angel) cadrage de la photo : position (x, y en %) et zoom, gardés dans foyer/config.fondPos */
+const FIT_NAT={};
+function fondFit(box,u,pos){ pos=pos||{x:50,y:35,z:1}; const ap=()=>{ const n=FIT_NAT[u], W=box.clientWidth, H=box.clientHeight;
+    if(!n||!W||!H){ box.style.backgroundSize="cover"; } else { const k=Math.max(W/n[0],H/n[1])*(pos.z||1); box.style.backgroundSize=Math.ceil(n[0]*k)+"px "+Math.ceil(n[1]*k)+"px"; }
+    box.style.backgroundPosition=(pos.x==null?50:pos.x)+"% "+(pos.y==null?35:pos.y)+"%"; };
+  if(FIT_NAT[u]) return ap(); ap(); const im=new Image(); im.onload=()=>{ FIT_NAT[u]=[im.naturalWidth,im.naturalHeight]; ap(); }; im.src=u; }
+window.addEventListener("resize",()=>{ const h=$("hubHero"); if(h&&h._u) fondFit(h,h._u,S.config&&S.config.fondPos); });
+function fondCrop(u,pos0){ return new Promise(res=>{ let pos=Object.assign({x:50,y:35,z:1},pos0||{}), out=null;
+  const U=upSheet("fondCropPage","Recadrer la photo",()=>res(out)); U.sheet.classList.add("ev-sheet","ap-sheet"); const inn=el("div",{class:"pp-in ap-in fc-in"}); U.sheet.append(inn);
+  const H=apHead("Recadrer la photo",()=>U.close(),{id:"fcOk",label:"Valider le cadrage",onOk:()=>{ out=pos; U.close(); }});
+  const fr=el("div",{class:"fc-fr",style:'background-image:url("'+u+'");aspect-ratio:'+Math.max(.7,Math.min(1.6,(window.innerWidth||390)/430)).toFixed(3)});
+  const z=el("input",{type:"range",min:"1",max:"3",step:"0.01",value:String(pos.z),"aria-label":"Zoom",class:"fc-z"});
+  const draw=()=>fondFit(fr,u,pos); z.addEventListener("input",()=>{ pos.z=+z.value; draw(); });
+  let d=null; fr.addEventListener("pointerdown",e=>{ d={x:e.clientX,y:e.clientY,p:Object.assign({},pos)}; fr.setPointerCapture(e.pointerId); });
+  fr.addEventListener("pointermove",e=>{ if(!d) return; const n=FIT_NAT[u]; if(!n) return; const W=fr.clientWidth,Hh=fr.clientHeight,k=Math.max(W/n[0],Hh/n[1])*pos.z, ex=n[0]*k-W, ey=n[1]*k-Hh;
+    if(ex>1) pos.x=Math.max(0,Math.min(100,d.p.x-(e.clientX-d.x)/ex*100)); if(ey>1) pos.y=Math.max(0,Math.min(100,d.p.y-(e.clientY-d.y)/ey*100)); draw(); });
+  const up=()=>{ d=null; }; fr.addEventListener("pointerup",up); fr.addEventListener("pointercancel",up);
+  inn.append(H.hd,fr,el("div",{class:"fc-zr"},el("span",{text:"−"}),z,el("span",{text:"+"})),el("p",{class:"fc-tip",text:"Fais glisser la photo pour choisir ce qu'on voit en haut du Foyer. Le bas se fond tout seul."}));
+  requestAnimationFrame(draw); }); }
 function hubMembers(){ const g=$("hubGrid"); if(!g) return; let r=$("hubMem"); if(!r){ r=el("div",{id:"hubMem",class:"hub-mem"}); g.parentNode.insertBefore(r,g); }
   const n=membres().filter(m=>m&&m.id).length; r.hidden=!n; /* (12 nov., Angel) plus de bulles : juste le nombre de membres (toucher = Réglages du foyer) */
   r.replaceChildren(el("button",{type:"button",class:"hm-n",onclick:()=>openFoyerSettings(),text:n+" membre"+(n>1?"s":"")})); }
@@ -10072,22 +10097,19 @@ function hubPhoto(){ const L=$("hubPh"), B=$("hubPhB"); if(!L||!FOND) return; co
   /* (12 nov., Angel : « floue de base ») la photo en pleine qualité remplace la copie de l'appareil dès qu'elle est chargée */
   { const r=ref&&imgUrl(ref); if(r&&!/^data:/.test(r)&&L._u!==r&&L._fq!==r){ L._fq=r; const im=new Image(); im.onload=()=>{ const cur=S.configLoaded?(S.config&&S.config.fondFoyer):FOND.ref; if(cur===ref){ L._u=r; L.classList.remove("ph-mini"); L.style.backgroundImage='url("'+r+'")'; hubBan(r); } }; im.onerror=()=>{ L._fq=null; }; im.src=r; } }
   if(B) B.hidden=!(isAdmin()&&!S.readOnly&&S.assets); }
-async function fondSet(ref,mini,flou){ if(!S.db) return; S.config=Object.assign({},S.config||{},{fondFoyer:ref||null,fondMini:ref?mini||null:null},flou===undefined?{}:{fondFlou:!!flou});
+async function fondSet(ref,mini,flou,pos){ if(!S.db) return; S.config=Object.assign({},S.config||{},{fondFoyer:ref||null,fondMini:ref?mini||null:null},flou===undefined?{}:{fondFlou:!!flou},pos===undefined?{}:{fondPos:pos||null});
   try{ await S.db.doc("foyer/config").set(S.config); }catch(e){ writeErr(e); } hubPhoto(); accPhoto(); }
 function fondPick(){ const inp=el("input",{type:"file",accept:"image/*",hidden:true}); document.body.append(inp);
   inp.addEventListener("change",async()=>{ const f=inp.files[0]; inp.remove(); if(!f) return; let big=null, mini=null; try{ [big,mini]=await Promise.all([fondData(f,1400,.85),fondData(f,48,.6)]); }catch(_){}
-    const up=uploadImg(f,2560); /* (12 nov., Angel) pleine qualité */ up.catch(()=>{}); const flou=big?await fondAsk(big):true; /* (12 nov., Angel) floutée ou nette, au choix */
-    const L=$("hubPh"); if(big&&L){ const sec=L.closest("section"); sec.classList.toggle("ph-net",!flou); L.classList.remove("ph-mini"); L._u=big; L.style.backgroundImage='url("'+big+'")'; hubBan(big); }
-    try{ const ref=await up; if(big) fondKeep(ref,big); await fondSet(ref,mini,flou); toast("Photo du foyer changée."); }catch(e){ imgErr(e); hubPhoto(); } },{once:true}); inp.click(); }
-function fondAsk(u){ return new Promise(res=>{ let done=false; const fin=v=>{ if(done) return; done=true; ov.classList.add("out"); setTimeout(()=>ov.remove(),180); res(v); };
-  const ch=(v,l,d)=>el("button",{type:"button",class:"fa-o",onclick:()=>{ haptic(5); fin(v); }},el("span",{class:"fa-im"+(v?" fl":""),style:'background-image:url("'+u+'")'}),el("b",{text:l}),el("small",{text:d}));
-  const box=el("div",{class:"clp-box fa-box",role:"dialog","aria-label":"Afficher la photo"},el("b",{class:"clp-h",text:"Comment afficher la photo ?"}),el("div",{class:"fa-row"},ch(true,"Floutée","Douce, tout reste lisible"),ch(false,"Nette","La photo telle quelle")));
-  const ov=el("div",{class:"clp-ov",onclick:e=>{ if(e.target===ov) fin(true); }},box); document.body.append(ov); requestAnimationFrame(()=>ov.classList.add("in")); }); }
+    const up=uploadImg(f,2560); /* (12 nov., Angel) pleine qualité */ up.catch(()=>{}); const flou=false; /* (12 nov., Angel) toujours nette, plus de question ; on propose de la recadrer */ let pos=null; if(big){ pos=await fondCrop(big,null); }
+    if(big&&S.config) S.config.fondPos=pos; const L=$("hubPh"); if(big&&L){ const sec=L.closest("section"); sec.classList.toggle("ph-net",true); L.classList.remove("ph-mini"); L._u=big; L.style.backgroundImage='url("'+big+'")'; hubBan(big); }
+    try{ const ref=await up; if(big) fondKeep(ref,big); await fondSet(ref,mini,flou,pos); toast("Photo du foyer changée."); }catch(e){ imgErr(e); hubPhoto(); } },{once:true}); inp.click(); }
+async function fondReframe(){ const h=$("hubHero"), u=h&&h._u; if(!u||!S.config) return; const pos=await fondCrop(u,S.config.fondPos); if(!pos) return; S.config.fondPos=pos; fondFit(h,u,pos); await fondSet(S.config.fondFoyer,S.config.fondMini,false,pos); }
 function fondMenu(){ if(!(S.config&&S.config.fondFoyer)){ fondPick(); return; }
   let done=false; const close=()=>{ if(done) return; done=true; ov.classList.add("out"); setTimeout(()=>ov.remove(),180); };
   const o=(e,l,fn,cls)=>el("button",{type:"button",class:"clp-o dg-mo"+(cls?" "+cls:""),onclick:()=>{ close(); fn(); }},el("b",{"aria-hidden":"true",text:e}),el("span",{text:l}));
   const box=el("div",{class:"clp-box",role:"dialog","aria-label":"Photo du foyer"},el("b",{class:"clp-h",text:"Photo du foyer"}),
-    o("🖼️","Choisir une autre photo",fondPick),o(S.config.fondFlou===false?"🌫️":"✨",S.config.fondFlou===false?"Flouter la photo":"Rendre la photo nette",()=>fondSet(S.config.fondFoyer,S.config.fondMini,S.config.fondFlou===false)),o("🗑️","Retirer la photo",()=>fondSet(null),"del"),el("button",{type:"button",class:"clp-x",onclick:close},"Annuler"));
+    o("🖼️","Choisir une autre photo",fondPick),o("✂️","Recadrer la photo",fondReframe),o("🗑️","Retirer la photo",()=>fondSet(null),"del"),el("button",{type:"button",class:"clp-x",onclick:close},"Annuler"));
   const ov=el("div",{class:"clp-ov",onclick:e=>{ if(e.target===ov) close(); }},box); document.body.append(ov); requestAnimationFrame(()=>ov.classList.add("in")); }
 $("hubPhB").addEventListener("click",()=>{ haptic(5); fondMenu(); });
 /* (12 nov.) les profils ne sont plus sur l'accueil ni le Foyer : le bouton « membres » du Foyer ouvre la carte du foyer dans une feuille du bas */
@@ -10105,7 +10127,7 @@ function openFoyerSettings(){ const card=document.querySelector(".fy-card"), hom
   if(card){ inn.append(apSec("Les membres")); inn.append(card); card.addEventListener("click",function f(e){ if(e.target.closest("button")){ card.removeEventListener("click",f); setTimeout(U.close,0); } }); }
   if(adm&&S.assets){ const ref=S.config&&S.config.fondFoyer, mini=S.config&&S.config.fondMini, flou=!(S.config&&S.config.fondFlou===false);
     inn.append(apSec("Photo du foyer"),apCard(apGo("cam",ref?"Changer la photo":"Choisir une photo",null,()=>{ U.close(); setTimeout(fondPick,340); }),
-      ref?apGo("eye",flou?"Rendre la photo nette":"Flouter la photo",null,()=>{ U.close(); fondSet(ref,mini,!flou); }):null,
+      ref?apGo("eye","Recadrer la photo",null,()=>{ U.close(); setTimeout(fondReframe,340); }):null,
       ref?apGo(null,"Retirer la photo",null,()=>{ U.close(); fondSet(null); },"ap-del"):null)); }
   if(adm) setTimeout(()=>{},0); }
 $("hubMemB").addEventListener("click",e=>{ haptic(5); hubMenu(e.currentTarget); });
