@@ -54,7 +54,7 @@ async def main():
     await pg.click('.ms-row:has-text("Réglages")'); await pg.wait_for_timeout(250); await pg.click('.set-row:has-text("Mon compte")'); await pg.wait_for_timeout(300)
     print('compte:', (await pg.inner_text('#cxAccount')).replace('\n',' | '))
     await pg.locator('#cxAccount').scroll_into_view_if_needed(); await pg.screenshot(path='/tmp/dk/w4.png')
-    await pg.click('.tab[data-tab="hub"]'); await pg.wait_for_timeout(300); await pg.click('#hubMemB'); await pg.wait_for_timeout(500)
+    await pg.click('.tab[data-tab="hub"]'); await pg.wait_for_timeout(300); await pg.click('#hubMemB'); await pg.wait_for_timeout(300); await pg.click('.hub-pop .ev-pi'); await pg.wait_for_timeout(500)
     await pg.locator('button[aria-label="Fiche d\'Emma"] >> visible=true').first.click(); await pg.wait_for_timeout(700); await pg.click('#mbPage .mb-prof'); await pg.wait_for_timeout(500)
     print('crayon Emma sans compte:', await pg.evaluate("[...document.querySelectorAll('.pencil-btn,.pw-edit')].filter(e=>e.offsetParent).length"))
     await pg.evaluate("""(()=>{ const r=__mock.T.cocoon_docs.find(x=>x.path==='membres'&&x.id==='emma'); const n=JSON.parse(JSON.stringify(r)); n.data.uid='emma-uid'; n.updated_by='emma'; __mock.remote(n); })()""")

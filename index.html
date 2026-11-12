@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="12/11 13:31";</script>
+<script>window.COCOON_BUILD="12/11 13:38";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4668,6 +4668,15 @@ html[data-theme="light"] section[data-view="hub"] .hb-t>em{color:#000!important;
 html[data-theme] section[data-view="hub"] .hb-t>em.r{background:#E5484D!important;color:#fff!important}
 html:has(section[data-view="hub"]:not([hidden]):not(.has-ph)),html:has(section[data-view="hub"]:not([hidden]):not(.has-ph)) body{background:#000!important}
 html[data-theme="light"]:has(section[data-view="hub"]:not([hidden]):not(.has-ph)),html[data-theme="light"]:has(section[data-view="hub"]:not([hidden]):not(.has-ph)) body{background:#F2F2F7!important}
+/* (12 nov., Angel) cartes « Découvrir » sur 3 colonnes */
+section[data-view="hub"] #hubGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+section[data-view="hub"] #hubGrid .hb-g2{display:contents!important}
+html[data-theme] section[data-view="hub"] .hb-t,html[data-theme].foyer-nuit section[data-view="hub"] .hb-t{padding:0 0 13px!important;border-radius:20px!important;min-height:0!important}
+section[data-view="hub"] .hb-il{padding:14px 10px 2px}
+section[data-view="hub"] .hb-il svg{max-height:none}
+html[data-theme] section[data-view="hub"] .hb-t>b{padding:0 11px!important;font:700 15px/1.15 var(--f-display)!important;letter-spacing:-.015em!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html[data-theme] section[data-view="hub"] .hb-t>b small{font:400 12px/1.3 var(--f-body)!important;margin-top:3px!important;display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:normal!important}
+html[data-theme] section[data-view="hub"] .hb-t>em,html[data-theme] section[data-view="hub"] .hb-t>em.r{top:8px!important;right:8px!important;font:700 11.5px/1 var(--f-body)!important;padding:4px 7px!important;border-radius:10px!important}
 /* Accueil façon « Découvrir » de l'app Maison (12 nov., proposition 1 d'Angel) : noir profond / gris iOS, cartes #1C1C1E / blanches, texte franc, gris #8E8E93 */
 html:has(.wrap.on-home){--ad-bg:#000;--ad-card:#1C1C1E;--ad-tx:#fff;--ad-mu:#8E8E93;--ad-ln:#2C2C2E;--ad-sk:#2C2C2E;--ad-y:#FFC94A}
 html[data-theme="light"]:has(.wrap.on-home){--ad-bg:#F2F2F7;--ad-card:#fff;--ad-tx:#000;--ad-ln:#E5E5EA;--ad-sk:#EFEFF4;--ad-y:#D99A00}
@@ -7420,7 +7429,8 @@ const AP_IC={cal:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3
 const AP_DF=new Intl.DateTimeFormat("fr-FR",{weekday:"short",day:"numeric",month:"short",year:"numeric"});
 function apDate(d){ return d?AP_DF.format(parse(d)):"Choisir"; }
 /* ligne d'un petit menu façon iOS (9 nov., Angel : plus d'emojis) : le texte à gauche, une icône fine à droite */
-const POP_IC={"✏️":"pencil","⧉":"dup","📤":"share","✓":"check","💾":"save","🗑":"trash","📅":"cal"};
+AP_IC.home=AP_IC.home||'<path d="M4 11 12 4.5 20 11"/><path d="M6 9.5V19a1 1 0 0 0 1 1h3.5v-5h3v5H17a1 1 0 0 0 1-1V9.5"/>';
+const POP_IC={"🏠":"home","✏️":"pencil","⧉":"dup","📤":"share","✓":"check","💾":"save","🗑":"trash","📅":"cal"};
 function popItem(ic,t,fn,cls){ const i=el("i",{"aria-hidden":"true"}); i.innerHTML='<svg viewBox="0 0 24 24">'+(AP_IC[POP_IC[ic]]||"")+'</svg>'; return el("button",{type:"button",role:"menuitem",class:"ev-pi"+(cls?" "+cls:""),onclick:fn},el("span",{text:t}),i); }
 /* montant façon Calendrier : le signe € suit le nombre tout seul (le champ prend la largeur de ce qu'on tape) */
 function apAmt(inp){ inp.placeholder="0,00"; const w=el("label",{class:"ap-amtw"},inp,el("span",{class:"ap-eur2","aria-hidden":"true",text:"€"}));
@@ -10034,7 +10044,15 @@ function openFoyerSettings(){ const card=document.querySelector(".fy-card"), hom
       ref?apGo("eye",flou?"Rendre la photo nette":"Flouter la photo",null,()=>{ U.close(); fondSet(ref,mini,!flou); }):null,
       ref?apGo(null,"Retirer la photo",null,()=>{ U.close(); fondSet(null); },"ap-del"):null)); }
   if(adm) setTimeout(()=>{},0); }
-$("hubMemB").addEventListener("click",()=>{ haptic(5); openFoyerSettings(); });
+$("hubMemB").addEventListener("click",e=>{ haptic(5); hubMenu(e.currentTarget); });
+/* (12 nov., Angel) les « ··· » ouvrent une petite bulle iOS « Réglages du foyer » */
+function hubMenu(btn){ const old=document.querySelector(".ev-pop"); if(old){ old._close(); if(old._btn===btn) return; }
+  const pop=el("div",{class:"ev-pop no-tip hub-pop",role:"menu"}); pop._btn=btn; btn.setAttribute("aria-expanded","true");
+  const close=()=>{ if(pop._gone) return; pop._gone=true; btn.setAttribute("aria-expanded","false"); pop.classList.add("out"); document.removeEventListener("pointerdown",away,true); setTimeout(()=>pop.remove(),160); };
+  pop._close=close; const away=e=>{ if(!pop.contains(e.target)&&!btn.contains(e.target)) close(); };
+  pop.append(popItem("🏠","Réglages du foyer",()=>{ close(); openFoyerSettings(); }));
+  const r=btn.getBoundingClientRect(); pop.style.position="fixed"; pop.style.zIndex="90"; pop.style.top=(r.bottom+8)+"px"; pop.style.right=(innerWidth-r.right)+"px";
+  document.body.append(pop); requestAnimationFrame(()=>pop.classList.add("in")); setTimeout(()=>document.addEventListener("pointerdown",away,true),0); }
 window.addEventListener("resize",()=>{ if(S.tab==="hub") hubPhoto(); });
 
 /* Mini-fiche d'un membre (toucher une bulle de l'accueil) */

@@ -56,7 +56,7 @@ async def main():
     await pg.locator('#cxAccount').scroll_into_view_if_needed(); await pg.screenshot(path='/tmp/dk/w4.png')
     print('invitations envoyées:', await pg.evaluate("JSON.stringify((__mock.invites||[]).map(x=>[x[0],x[1].email,x[1].nom]))"))
     print('emma email en base:', await pg.evaluate("JSON.stringify(__mock.T.cocoon_docs.filter(r=>r.path==='membres').map(r=>r.id+':'+(r.data.email||'-')))"))
-    await pg.click('.tab[data-tab="hub"]'); await pg.wait_for_timeout(300); await pg.click('#hubMemB'); await pg.wait_for_timeout(500)
+    await pg.click('.tab[data-tab="hub"]'); await pg.wait_for_timeout(300); await pg.click('#hubMemB'); await pg.wait_for_timeout(300); await pg.click('.hub-pop .ev-pi'); await pg.wait_for_timeout(500)
     await pg.locator('button[aria-label="Ajouter un membre"] >> visible=true').first.click(); await pg.wait_for_timeout(300)
     await pg.fill('#invNom','Lucas'); await pg.fill('#invMail','lucas@test.fr'); await pg.click('button:has-text("Créer l\'invitation")'); await pg.wait_for_timeout(600)
     print('invitations après ajout:', await pg.evaluate("JSON.stringify((__mock.invites||[]).map(x=>x[1].email))"))
