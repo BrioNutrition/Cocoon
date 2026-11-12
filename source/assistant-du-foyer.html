@@ -4533,6 +4533,32 @@ section[data-view="hub"].has-ph.ph-net .hub-ph:after{background:linear-gradient(
 .fa-im{position:relative}.fa-im.fl::before{content:"";position:absolute;inset:-12px;background:inherit;filter:blur(7px)}
 .fa-o b{font-size:15px;font-weight:700;padding:0 4px}.fa-o small{font-size:12px;color:var(--muted);padding:0 4px}
 .hub-ph.ph-mini{filter:blur(30px)!important}
+/* Accueil A (12 nov., Angel) : comme le Foyer — profils et semaine retirés, date dans le bonjour, photo du foyer floutée en fond, cartes claires givrées */
+.wrap.on-home>.fy-card,[data-view="accueil"] #daySec,[data-view="accueil"] #dayBig>.jm{display:none!important}
+.wrap.on-home .brand .hello{font-size:32px}
+html .wrap.on-home .brand p.hello-l2{font:500 15.5px/1.35 var(--f-body)!important;letter-spacing:-.01em;margin-top:6px}
+[data-view="accueil"] #dayCard{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+[data-view="accueil"] #dayBig{gap:10px}
+[data-view="accueil"] .jn{background:var(--surface)!important;border:1px solid var(--line)!important;border-radius:24px;padding:16px}
+#accBg{display:none}
+html.acc-ph #accBg{display:block;position:fixed;inset:-50px;z-index:-1;background-size:cover;background-position:center;filter:blur(22px) saturate(1.2);pointer-events:none}
+html.acc-ph #accBg.mini{filter:blur(34px)}
+html.acc-ph.acc-net #accBg{filter:none;inset:0}
+html.acc-ph #accBg:after{content:"";position:absolute;inset:0;background:rgba(10,10,20,.22)}
+html.acc-ph.acc-net #accBg:after{background:linear-gradient(180deg,rgba(0,0,0,.3),rgba(0,0,0,0) 30%)}
+html.acc-ph,html.acc-ph body{background:#13121C}
+html.acc-ph body{background:transparent!important}
+html.acc-ph .wrap.on-home .brand .hello,html.acc-ph .wrap.on-home .brand p.hello-l2{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:none!important}
+html.acc-ph .wrap.on-home .brand p.hello-l2{opacity:.88}
+html.acc-ph .wrap.on-home .wg-sec,html.acc-ph .wrap.on-home .wg-sec *,html.acc-ph .wrap.on-home .jsec,html.acc-ph .wrap.on-home .acc-sec,html.acc-ph .wrap.on-home .wg-edit,html.acc-ph .wrap.on-home #accBudget>.acc-sec{color:rgba(255,255,255,.85)!important}
+html.acc-ph .wrap.on-home .jn,html.acc-ph .wrap.on-home .jx-c,html.acc-ph .wrap.on-home .jt,html.acc-ph .wrap.on-home #accBudget .wg,html.acc-ph .wrap.on-home #cocNote .cn{
+  --ink:#1C1B2E;--muted:#6A6785;--line:rgba(28,27,46,.08);--sunk:rgba(28,27,46,.07);--surface:transparent;--bg:transparent;
+  background:rgba(255,255,255,.7)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.8)!important;color:#1C1B2E!important;box-shadow:0 6px 18px rgba(28,27,46,.1)!important}
+html.acc-ph .wrap.on-home .jt{border-radius:22px;padding:4px 14px}
+html.acc-ph .wrap.on-home .jn-h small{color:color-mix(in srgb,var(--c) 55%,#1C1B2E)!important}
+html.acc-ph .wrap.on-home .jx-c{border-radius:18px}
+html.acc-ph .wrap.on-home #accBudget .wg *{color:inherit}
+html.acc-ph .wrap.on-home #accBudget .wg{color:#1C1B2E!important}
 .ap-del{display:block;width:100%;margin-top:22px;border:0;border-radius:22px;background:var(--sunk);color:var(--late);font:inherit;font-weight:700;padding:15px;cursor:pointer}
 </style>
 
@@ -6180,7 +6206,8 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
   ev.sort((a,b)=>a.m-b.m);
   /* le bonjour résume la journée (2e ligne en dégradé) */
   if(isT){ const n=open0.length+ev.filter(e=>(e.end||e.m)>nowM).length, L=$("homeL2");
-    if(L){ L.textContent=n===0?"journée calme.":n>=5?"grosse journée !":n+(n>1?" choses":" chose")+" aujourd'hui."; L.hidden=$("homeHello").hidden; } }
+    if(L){ let dt=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"}); dt=dt.charAt(0).toUpperCase()+dt.slice(1); /* (12 nov., accueil A d'Angel) date · résumé */
+      L.textContent=dt+" · "+(n===0?"journée calme":n>=5?"grosse journée":n+(n>1?" choses":" chose")+" aujourd'hui"); L.hidden=$("homeHello").hidden; } }
   // à part : anniversaires et papiers qui expirent
   const extra=[];
   const dz=isT?S.docs.filter(d=>d.expire&&daysTo(d.expire)>=0&&daysTo(d.expire)<=7):S.docs.filter(d=>d.expire===t0);
@@ -8630,7 +8657,7 @@ function calReset(from){ const R={accueil:()=>{ S.accDay=null; S.accOpen=false; 
 document.addEventListener("visibilitychange",()=>{ if(document.hidden){ S._hidAt=Date.now(); return; } if(S._hidAt&&Date.now()-S._hidAt>5*60e3){ calReset(null); try{ renderAll(); }catch(_){} } });
 function setTab(name){ if(name!=="accueil"&&(S.tourPending||S.cguOpen)) return; const prevTab=S.tab; if(prevTab&&prevTab!==name) calReset(prevTab); if(prevTab&&prevTab!==name&&!["profil","fiche"].includes(name)&&!["profil","fiche"].includes(prevTab)) resetForms(); S.tab=name; document.documentElement.classList.toggle("foyer-nuit",name==="hub"); if(name==="accueil") setTimeout(()=>{ try{ bilanAuto(); }catch(_){} try{ rythmeAuto(); }catch(_){} },0); if(prevTab!==name){ try{ window.scrollTo({top:0,left:0,behavior:"instant"}); }catch(_){ window.scrollTo(0,0); } } { const sb=document.getElementById("searchBtn"); if(sb) sb.setAttribute("aria-pressed",String(name==="recherche")); } document.querySelector(".wrap").classList.toggle("on-home",name==="accueil"); document.querySelector(".wrap").classList.toggle("keep-top",["hub","foyer","documents","maison","courses","repas","agenda","budget","moi","cocoony","evenements"].includes(name)); document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===({foyer:"hub",documents:"hub",maison:"hub",courses:"hub",repas:"hub",agenda:"hub",budget:"hub",evenements:"hub"}[name]||name)))); document.querySelectorAll(".view").forEach(v=>v.hidden=v.dataset.view!==name); if(name==="agenda"&&prevTab!=="agenda") maybeAgSheet();
   if(prevTab&&prevTab!==name&&!document.querySelector(".wrap.arrive")){ const v=document.querySelector('.view[data-view="'+name+'"]'); if(v){ v.classList.remove("vin"); void v.offsetWidth; v.classList.add("vin"); clearTimeout(S._vinT); S._vinT=setTimeout(()=>v.classList.remove("vin"),320); } }
-  { const vs=document.querySelector('.view[data-view="'+name+'"] .viewseg'); if(vs) segAnim(vs,"viewseg"); } if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  if(prevTab&&prevTab!==name) renderAllNow(); else renderAll(); }
+  { const vs=document.querySelector('.view[data-view="'+name+'"] .viewseg'); if(vs) segAnim(vs,"viewseg"); } if(!["profil","fiche","inviter","recherche"].includes(name)){ try{localStorage.setItem("foyer.tab",name);}catch(_){} }  if(prevTab&&prevTab!==name) renderAllNow(); else renderAll(); try{ accPhoto(); }catch(_){} }
 $("tabs").addEventListener("click",e=>{ const b=e.target.closest(".tab"); if(b&&b.dataset.tab){ const same=S.tab===b.dataset.tab; closeSheet(); setTab(b.dataset.tab); renderHeader(); if(same) window.scrollTo({top:0,behavior:"smooth"}); } });
 /* ---------- Nouvelle tâche : une feuille à elle, tout en pastilles (le grand menu « Ajouter » reste sur l'accueil) ---------- */
 /* « Nouvelle tâche » (28 oct., Angel : catégories en grille comme « Nouveau rendez-vous », le reste en lignes qui se déplient) */
@@ -9727,6 +9754,10 @@ function fondKeep(ref,data){ FOND.ref=ref; FOND.data=data; try{ localStorage.set
 async function fondCache(ref,url){ if(!ref||FOND.ref===ref||FOND.q===ref) return; FOND.q=ref;
   try{ const r=await fetch(url); if(!r.ok) throw 0; fondKeep(ref,await fondData(await r.blob(),900,.8)); hubPhoto(); }catch(_){} FOND.q=null; }
 function fondPrefetch(){ if(!FOND) return; const ref=S.config&&S.config.fondFoyer; if(!ref||FOND.ref===ref) return; const u=imgUrl(ref); if(u&&!/^data:/.test(u)) fondCache(ref,u); }
+function accPhoto(){ /* (12 nov., accueil A d'Angel) la photo du foyer, floutée, en fond de l'accueil aussi */
+  try{ hubPhoto(); }catch(_){} const L=$("hubPh"), u=L&&L._u; let B=$("accBg"); if(!B){ B=el("div",{id:"accBg","aria-hidden":"true"}); document.body.prepend(B); }
+  const has=S.tab==="accueil"&&!!u, R=document.documentElement; R.classList.toggle("acc-ph",has); R.classList.toggle("acc-net",has&&!!(S.config&&S.config.fondFlou===false)); B.classList.toggle("mini",!!(L&&L.classList.contains("ph-mini")));
+  if(has&&B._u!==u){ B._u=u; B.style.backgroundImage='url("'+u+'")'; } }
 function hubPhoto(){ const L=$("hubPh"), B=$("hubPhB"); if(!L||!FOND) return; const sec=L.closest("section");
   /* base pas encore là : la copie gardée sur l'appareil */
   const ref=S.configLoaded?(S.config&&S.config.fondFoyer):FOND.ref, mini=S.config&&S.config.fondMini;
@@ -9736,7 +9767,7 @@ function hubPhoto(){ const L=$("hubPh"), B=$("hubPhB"); if(!L||!FOND) return; co
   sec.classList.toggle("has-ph",!!u); if(u&&!sec.hidden){ const y=Math.round(sec.getBoundingClientRect().top+window.scrollY); if(y>0) sec.style.setProperty("--hph-top",y+"px"); } if(u){ const css='url("'+u+'")'; if(L._u!==u){ L._u=u; L.style.backgroundImage=css; } } else { L._u=null; L.style.backgroundImage=""; }
   if(B) B.hidden=!(isAdmin()&&!S.readOnly&&S.assets); }
 async function fondSet(ref,mini,flou){ if(!S.db) return; S.config=Object.assign({},S.config||{},{fondFoyer:ref||null,fondMini:ref?mini||null:null},flou===undefined?{}:{fondFlou:!!flou});
-  try{ await S.db.doc("foyer/config").set(S.config); }catch(e){ writeErr(e); } hubPhoto(); }
+  try{ await S.db.doc("foyer/config").set(S.config); }catch(e){ writeErr(e); } hubPhoto(); accPhoto(); }
 function fondPick(){ const inp=el("input",{type:"file",accept:"image/*",hidden:true}); document.body.append(inp);
   inp.addEventListener("change",async()=>{ const f=inp.files[0]; inp.remove(); if(!f) return; let big=null, mini=null; try{ [big,mini]=await Promise.all([fondData(f,900,.8),fondData(f,48,.6)]); }catch(_){}
     const up=uploadImg(f,1280); up.catch(()=>{}); const flou=big?await fondAsk(big):true; /* (12 nov., Angel) floutée ou nette, au choix */
@@ -12242,7 +12273,7 @@ async function autoClaimLegacy(){
   if(user){ S.isOwner=await user.isOwner(); try{ S.canEdit=(await user.canEdit())!==false; }catch(_){ S.canEdit=true; } S.uid=await user.id(); const w=await user.can("data.write"); if(w===false){ S.readOnly=true; banner("Tu peux consulter le foyer mais pas le modifier. Demande à Angel de t'inviter comme Éditeur."); } }
   if(!S.uid){ banner("Connecte-toi à Claude pour avoir ton espace perso dans le foyer."); S.loaded.p=true; }
   else { try{ const s=await db.doc("data/users/"+S.uid+"/moi").get(); if(s.exists&&s.data().membre) S.legacyMe=s.data().membre; }catch(_){} subscribePerso(); }
-  db.doc("foyer/config").onSnapshot(s=>{ S.config=s.exists?s.data():null; S.foyerNom=(S.config&&S.config.nom)||""; S.configLoaded=true; try{ fondPrefetch(); }catch(_){} renderAll(); },()=>{ S.configLoaded=true; });
+  db.doc("foyer/config").onSnapshot(s=>{ S.config=s.exists?s.data():null; S.foyerNom=(S.config&&S.config.nom)||""; S.configLoaded=true; try{ fondPrefetch(); }catch(_){} renderAll(); try{ accPhoto(); }catch(_){} },()=>{ S.configLoaded=true; });
   db.collection("membres").onSnapshot(s=>{
     S.membresRaw=s.docs.map(d=>Object.assign({id:d.id},d.data())); mergeMembres();
     S.membresLoaded=true; renderAll(); autoClaimLegacy(); autoClaimEmail();
