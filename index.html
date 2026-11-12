@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="12/11 13:43";</script>
+<script>window.COCOON_BUILD="12/11 13:54";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4688,6 +4688,18 @@ html[data-theme] section[data-view="hub"] .hb-t,html[data-theme].foyer-nuit sect
 html[data-theme="light"] section[data-view="hub"] .hb-t,html[data-theme="light"].foyer-nuit section[data-view="hub"] .hb-t{background:linear-gradient(150deg,color-mix(in srgb,var(--tc) 34%,#fff),color-mix(in srgb,var(--tc) 8%,#fff) 75%)!important}
 html[data-theme] section[data-view="hub"] .hb-t>b small{color:rgba(255,255,255,.62)!important}
 html[data-theme="light"] section[data-view="hub"] .hb-t>b small{color:rgba(0,0,0,.5)!important}
+/* (12 nov., Angel) dégradé « deux teintes » pastel + grande icône en fond en bas à droite, plus d'icône en haut à gauche */
+html[data-theme].foyer-nuit body section[data-view="hub"] .hb-t,html[data-theme] body section[data-view="hub"] .hb-t{background:linear-gradient(135deg,color-mix(in srgb,var(--tc) 80%,#fff),color-mix(in srgb,color-mix(in oklch shorter hue,var(--tc),#7A5CFF 55%) 80%,#fff))!important;position:relative;overflow:hidden!important;isolation:isolate;justify-content:flex-end!important}
+html[data-theme] body section[data-view="hub"] .hb-t>i.hb-ico{display:none!important}
+html[data-theme] body section[data-view="hub"] .hb-t>b,html[data-theme] body section[data-view="hub"] .hb-t>b small{color:#fff!important;-webkit-text-fill-color:#fff!important}
+html[data-theme] body section[data-view="hub"] .hb-t>b{text-shadow:0 1px 2px rgba(0,0,0,.16),0 0 12px rgba(0,0,0,.08)}
+html[data-theme] body section[data-view="hub"] .hb-t>b small{opacity:.92}
+html[data-theme] body section[data-view="hub"] .hb-t>em{background:rgba(255,255,255,.3)!important;color:#fff!important}
+section[data-view="hub"] .hb-bgi{display:block;position:absolute;z-index:-1;pointer-events:none;width:78%;height:78%;right:-16%;bottom:-14%;transform:rotate(-14deg);opacity:.26;mix-blend-mode:screen}
+section[data-view="hub"] .hb-bgi svg{width:100%;height:100%;display:block}
+section[data-view="hub"] .hb-bgi svg *{fill:#fff!important;stroke:#fff}
+section[data-view="hub"] .hb-bgi svg .w,section[data-view="hub"] .hb-bgi svg .w *{fill:#000!important;stroke:#000!important}
+section[data-view="hub"] .hb-bgi svg .o{opacity:1}
 /* Accueil façon « Découvrir » de l'app Maison (12 nov., proposition 1 d'Angel) : noir profond / gris iOS, cartes #1C1C1E / blanches, texte franc, gris #8E8E93 */
 html:has(.wrap.on-home){--ad-bg:#000;--ad-card:#1C1C1E;--ad-tx:#fff;--ad-mu:#8E8E93;--ad-ln:#2C2C2E;--ad-sk:#2C2C2E;--ad-y:#FFC94A}
 html[data-theme="light"]:has(.wrap.on-home){--ad-bg:#F2F2F7;--ad-card:#fff;--ad-tx:#000;--ad-ln:#E5E5EA;--ad-sk:#EFEFF4;--ad-y:#D99A00}
@@ -9967,7 +9979,7 @@ function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const
     b.addEventListener("click",e=>{ if(e.target.closest(".hb-ck")) return; hubGo(v); }); b.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); hubGo(v); } });
     /* (10 nov., choix A d'Angel) plus d'emoji : grande icône pleine, inclinée, en fond en haut à droite ; la pastille passe en bas à droite */
     /* (10 nov., choix B d'Angel) tuile carrée en dégradé à la couleur de la rubrique (clair en haut, soutenu en bas), texte noir, icône pleine en haut à gauche */
-    { const g=HUB_GR[v]||HUB_GR.evenements; b.style.setProperty("--ga",g[0]); b.style.setProperty("--gb",g[1]); b.style.setProperty("--tc",HUB_TC[v]||HUB_TC.evenements); const ic2=el("i",{class:"hb-ico","aria-hidden":"true"}); ic2.innerHTML='<svg viewBox="0 0 32 32">'+(HUB_IC[v]||HUB_IC.evenements)+'</svg>'; /* (12 nov., Angel) plus d'illustration : juste l'icône */ /* (12 nov.) carte façon « Découvrir » */ /* (12 nov., choix C d\'Angel « tout allumé » façon app Maison) icône blanche dans un rond de couleur */ const bt=el("b",{text:title}); if(sub) bt.append(el("small",{text:String(sub).charAt(0).toUpperCase()+String(sub).slice(1)})); b.append(ic2,bt); /* (12 nov., choix C « widget » d'Angel) titre + une info en bas */ /* (12 nov., modèle d'Angel) */ }
+    { const g=HUB_GR[v]||HUB_GR.evenements; b.style.setProperty("--ga",g[0]); b.style.setProperty("--gb",g[1]); b.style.setProperty("--tc",HUB_TC[v]||HUB_TC.evenements); const ic2=el("i",{class:"hb-ico","aria-hidden":"true"}); ic2.innerHTML='<svg viewBox="0 0 32 32">'+(HUB_IC[v]||HUB_IC.evenements)+'</svg>'; /* (12 nov., Angel) plus d'illustration : juste l'icône */ /* (12 nov.) carte façon « Découvrir » */ /* (12 nov., choix C d\'Angel « tout allumé » façon app Maison) icône blanche dans un rond de couleur */ const bt=el("b",{text:title}); if(sub) bt.append(el("small",{text:String(sub).charAt(0).toUpperCase()+String(sub).slice(1)})); b.append(ic2,bt); { const bg=el("span",{class:"hb-bgi","aria-hidden":"true"}); bg.innerHTML='<svg viewBox="0 0 32 32">'+(HUB_IC[v]||HUB_IC.evenements)+'</svg>'; b.prepend(bg); } /* (12 nov., Angel) grande icône en fond, en coin */ /* (12 nov., choix C « widget » d'Angel) titre + une info en bas */ /* (12 nov., modèle d'Angel) */ }
     if(o.badge) b.append(el("em",{class:o.red?"r":"",text:String(o.badge)})); if(o.extra) b.append(o.extra); G.append(b); return b; };
   // Au quotidien : Tâches, Courses, Repas, Agenda
   const open=S.foyer.filter(t=>!t.fait).sort(sortOpen), late=open.filter(t=>t.echeance&&t.echeance<t0).length;
