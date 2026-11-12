@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="12/11 16:41";</script>
+<script>window.COCOON_BUILD="12/11 16:50";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4757,6 +4757,12 @@ html:root body section[data-view="hub"] #hubGrid .hb-t>.hb-smi{position:absolute
 .hb-smi svg>*:not(.w),.hb-smi svg g *{fill:oklch(from var(--lb) calc(l - .2) calc(c + .03) h);opacity:.82}
 .hb-smi svg .w{fill:color-mix(in srgb,var(--la) 70%,#fff);stroke:color-mix(in srgb,var(--la) 70%,#fff);opacity:1}
 .hb-smi svg .w[fill="none"]{fill:none}
+/* (12 nov., Angel) widgets : petite icône pleine en haut à droite (comme les tuiles du Foyer), plus de grande icône en fond */
+html:root body .wrap.on-home #accBudget .wgx-bg{display:none!important}
+.wgx-h{position:relative}.wgx-h b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}html:root body .wrap.on-home #accBudget .wgx-h em{display:none}
+.wgx-sm{order:3;width:24px;height:24px;flex:none;margin-left:6px}.wgx-sm svg{width:100%;height:100%;display:block}
+.wgx-sm svg>*:not(.w),.wgx-sm svg g *{fill:oklch(from var(--lb) calc(l - .2) calc(c + .03) h);opacity:.82}
+.wgx-sm svg .w{fill:color-mix(in srgb,var(--la) 70%,#fff);stroke:color-mix(in srgb,var(--la) 70%,#fff);opacity:1}.wgx-sm svg .w[fill="none"]{fill:none}
 /* Accueil façon « Découvrir » de l'app Maison (12 nov., proposition 1 d'Angel) : noir profond / gris iOS, cartes #1C1C1E / blanches, texte franc, gris #8E8E93 */
 html:has(.wrap.on-home){--ad-bg:#000;--ad-card:#1C1C1E;--ad-tx:#fff;--ad-mu:#8E8E93;--ad-ln:#2C2C2E;--ad-sk:#2C2C2E;--ad-y:#FFC94A}
 html[data-theme="light"]:has(.wrap.on-home){--ad-bg:#F2F2F7;--ad-card:#fff;--ad-tx:#000;--ad-ln:#E5E5EA;--ad-sk:#EFEFF4;--ad-y:#D99A00}
@@ -4772,7 +4778,8 @@ button.ad-row{cursor:pointer}.ad-row+.ad-row,.ad-row+.ad-more{border-top:1px sol
 .ad-row.now .ad-h{color:var(--ad-y)}.ad-row.past{opacity:.45}
 .ad-t{flex:1;min-width:0}.ad-t b{display:block;font-size:17px;font-weight:600;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ad-t small{display:block;font-size:14px;color:var(--ad-mu);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ad-ck{width:26px;height:26px;border-radius:50%;border:2px solid var(--ad-mu);background:none;flex:none;cursor:pointer;padding:0;position:relative}
-.ad-tm{flex:none;font:600 14px var(--f-body);color:var(--ad-mu);font-variant-numeric:tabular-nums}.ad-row.now .ad-tm{color:var(--ad-y)}
+.ad-tm{flex:none;font:600 14px var(--f-body);color:var(--ad-y);font-variant-numeric:tabular-nums}
+.ad-em{width:26px;flex:none;text-align:center;font-size:21px;line-height:1}
 .ad-row:not(:has(.ad-ck)) .ad-t{padding-left:0}
 .ad-row.done .ad-t b{text-decoration:line-through;text-decoration-thickness:1.5px;opacity:.5}.ad-row.done .ad-t small,.ad-row.done .ad-h{opacity:.5}
 .ad-ck.ok{background:#34C759;border-color:#34C759}.ad-ck.ok:after{content:"";position:absolute;left:7px;top:3px;width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
@@ -6480,8 +6487,9 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
     const KI=e=>e.k==="rendez-vous"?"agenda":e.k==="bac"?"maison":e.k==="événement"||e.k==="anniversaire"?"evenements":"repas";
     const ico=k=>{ const i=el("span",{class:"ad-ci",style:"--c:"+(HUB_TC[k]||"#888"),"aria-hidden":"true"}); i.innerHTML='<svg viewBox="0 0 32 32">'+(HUB_IC[k]||"")+'</svg>'; return i; };
     const box=el("div",{class:"ad-card"}); let nowSet=false;
-    const row=(h,lead,t,sub,o={})=>{ const r=el(o.btn?"button":"div",Object.assign({class:"ad-row"+(o.now?" now":"")+(o.past?" past":"")},o.btn?{type:"button",onclick:o.fn}:{}),o.tk?lead:null,el("span",{class:"ad-t"},el("b",{text:t}),sub?el("small",{text:sub}):null),!o.tk&&h&&h!=="—"?el("span",{class:"ad-tm",text:h}):null); box.append(r); return r; }; /* (12 nov., Angel) rond et texte serrés à gauche, plus d'icônes ; l'heure passe à droite */
-    for(const e of ev.filter(e=>e.allDay)) row("Journée",ico(KI(e)),e.t,e.s,{btn:1,fn:e.fn});
+    const row=(h,lead,t,sub,o={})=>{ const r=el(o.btn?"button":"div",Object.assign({class:"ad-row"+(o.now?" now":"")+(o.past?" past":"")},o.btn?{type:"button",onclick:o.fn}:{}),lead||null,el("span",{class:"ad-t"},el("b",{text:t}),sub?el("small",{text:sub}):null),!o.tk&&h&&h!=="—"?el("span",{class:"ad-tm",text:h}):null); box.append(r); return r; }; /* (12 nov., Angel) rond et texte serrés à gauche, plus d'icônes ; l'heure passe à droite */
+    const EMO=e=>e.k==="rendez-vous"?"📅":e.k==="bac"?"🗑️":e.k==="anniversaire"?"🎂":e.k==="petit-déj"?"🥐":e.k==="événement"?((/^(\p{Extended_Pictographic}\uFE0F?)/u.exec(e.t)||[])[1]||"🎉"):"🍽️", em=x=>el("span",{class:"ad-em","aria-hidden":"true",text:x}), noEm=e=>e.k==="événement"?e.t.replace(/^\p{Extended_Pictographic}\uFE0F?\s*/u,""):e.t; /* (12 nov., Angel) un emoji à gauche des repas, événements, bacs */
+    for(const e of ev.filter(e=>e.allDay)) row("Journée",em(EMO(e)),noEm(e),e.s,{btn:1,fn:e.fn});
     for(const t of open0.slice(0,6)){ const late=t.echeance<t0, ck=el("button",{type:"button",class:"ad-ck","aria-label":"Marquer « "+t.titre+" » comme fait"}), who=t.pour&&t.pour!=="tous"&&t.pour!==me&&membre(t.pour).nom?"Pour "+membre(t.pour).nom:"";
       ck.addEventListener("click",async ev2=>{ ev2.stopPropagation(); if(!S.db||!needMe()) return; ck.classList.add("ok"); ck.disabled=true; haptic(12); try{ await completeTask(t); toast("✓ « "+esc(t.titre)+" » fait."); }catch(er){ ck.classList.remove("ok"); ck.disabled=false; writeErr(er); } });
       const isNow=!nowSet; nowSet=true; row(late?"Retard":"—",ck,t.titre,late?"En retard · "+dueLabel(t.echeance):who||(isNow?"À faire maintenant":"Aujourd'hui"),{now:isNow&&!late,tk:1}); }
@@ -6491,8 +6499,8 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
         ck.addEventListener("click",async ev2=>{ ev2.stopPropagation(); if(!S.db||!needMe()) return; ck.classList.remove("ok"); ck.disabled=true; haptic(8); try{ await toggleDone(t); }catch(er){ ck.classList.add("ok"); ck.disabled=false; writeErr(er); } });
         row("✓",ck,t.titre,by,{tk:1}).classList.add("done"); } }
     if(open0.length>6) box.append(el("button",{type:"button",class:"ad-more",text:"+ "+(open0.length-6)+" autres tâches",onclick:go("foyer")}));
-    for(const e of ev.filter(e=>!e.allDay)){ const past=(e.end||e.m+60)<=nowM, isNow=!past&&!nowSet; if(isNow) nowSet=true; row(e.h||"—",ico(KI(e)),e.t,e.s,{btn:1,fn:e.fn,now:isNow,past}); }
-    for(const [ic,tx,fn] of extra) row("Bientôt",ico("documents"),tx,"",{btn:1,fn});
+    for(const e of ev.filter(e=>!e.allDay)){ const past=(e.end||e.m+60)<=nowM, isNow=!past&&!nowSet; if(isNow) nowSet=true; row(e.h||"—",em(EMO(e)),noEm(e),e.s,{btn:1,fn:e.fn,now:isNow,past}); }
+    for(const [ic,tx,fn] of extra) row("Bientôt",em("📄"),tx,"",{btn:1,fn});
     w.append(el("h3",{class:"ad-sh",text:"Aujourd'hui"}),box.childNodes.length?box:el("div",{class:"ad-card ad-calm"},el("b",{text:"Rien de prévu pour toi aujourd'hui."}),el("small",{text:"Profite !"}))); S.urgT=open0[0]||null; return; }
   const fut=isT?ev.filter(e=>(e.end||e.m+60)>nowM):ev; let hero=null, heroT=null;
   if(!isT){ if(fut[0]) hero=fut[0]; else if(open0[0]) heroT=open0[0]; }
@@ -7964,7 +7972,7 @@ function wgRepasDays(){ const h=new Date().getHours(), sl0=repasSlots(), sl=sl0.
 function wgTile(k,w,D){ const hk=WGX_HK[k]||"foyer", c=HUB_TC[hk]||w.c;
   const b=el("button",{type:"button",class:"wg wgx wgx-"+k,"data-k":k,style:"--tc:"+c+";--la:"+(HUB_LG[hk]||HUB_LG.foyer)[0]+";--lb:"+(HUB_LG[hk]||HUB_LG.foyer)[1],"aria-label":w.t+" : "+(D.big||"")+(D.small?", "+D.small:""),onclick:()=>wgGo(k,D)});
   const bg=el("span",{class:"wgx-bg","aria-hidden":"true"}); bg.innerHTML='<svg viewBox="0 0 32 32">'+(HUB_IC[hk]||"")+'</svg>'; b.append(bg);
-  const hd=el("span",{class:"wgx-h"},el("b",{text:w.t})); if(D.cd&&k!=="papiers"&&k!=="anniv"&&k!=="evenement"&&k!=="courses"&&k!=="budget") hd.append(el("em",{class:D.hot?"hot":"",text:D.cd})); b.append(hd);
+  const hd=el("span",{class:"wgx-h"},el("b",{text:w.t})); { const sm=el("span",{class:"wgx-sm","aria-hidden":"true"}); sm.innerHTML='<svg viewBox="0 0 24 24">'+(HUB_SM[hk]||"")+'</svg>'; hd.append(sm); } /* (12 nov., Angel) petite icône comme les tuiles du Foyer */ if(D.cd&&k!=="papiers"&&k!=="anniv"&&k!=="evenement"&&k!=="courses"&&k!=="budget") hd.append(el("em",{class:D.hot?"hot":"",text:D.cd})); b.append(hd);
   const big=(t,sm)=>el("span",{class:"wgx-big"},el("strong",{text:t}),sm?el("small",{text:sm}):null), foot=t=>t?el("span",{class:"wgx-f",text:t}):null;
   if(k==="courses"){ const it=(S.courses||[]).filter(i=>!i.fait);
     b.append(big(it.length?String(it.length):"0",it.length>1?"articles":"article"));
