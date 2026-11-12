@@ -4592,7 +4592,7 @@ html[data-theme="light"] section[data-view="hub"] .hb-t,html[data-theme="light"]
 html[data-theme] section[data-view="hub"] .hb-t>b small{color:rgba(255,255,255,.62)!important}
 html[data-theme="light"] section[data-view="hub"] .hb-t>b small{color:rgba(0,0,0,.5)!important}
 /* (12 nov., Angel) dégradé « deux teintes » pastel + grande icône en fond en bas à droite, plus d'icône en haut à gauche */
-html[data-theme].foyer-nuit body section[data-view="hub"] .hb-t,html[data-theme] body section[data-view="hub"] .hb-t{background:linear-gradient(135deg,color-mix(in srgb,var(--tc) 80%,#fff),color-mix(in srgb,color-mix(in oklch shorter hue,var(--tc),#7A5CFF 55%) 80%,#fff))!important;position:relative;overflow:hidden!important;isolation:isolate;justify-content:flex-end!important}
+html[data-theme].foyer-nuit body section[data-view="hub"] .hb-t,html[data-theme] body section[data-view="hub"] .hb-t{background:linear-gradient(135deg,color-mix(in srgb,var(--tc) 90%,#fff),color-mix(in srgb,color-mix(in oklch shorter hue,var(--tc),#7A5CFF 55%) 90%,#fff))!important;position:relative;overflow:hidden!important;isolation:isolate;justify-content:flex-start!important}
 html[data-theme] body section[data-view="hub"] .hb-t>i.hb-ico{display:none!important}
 html[data-theme] body section[data-view="hub"] .hb-t>b,html[data-theme] body section[data-view="hub"] .hb-t>b small{color:#fff!important;-webkit-text-fill-color:#fff!important}
 html[data-theme] body section[data-view="hub"] .hb-t>b{text-shadow:0 1px 2px rgba(0,0,0,.16),0 0 12px rgba(0,0,0,.08)}
@@ -4603,6 +4603,8 @@ section[data-view="hub"] .hb-bgi svg{width:100%;height:100%;display:block}
 section[data-view="hub"] .hb-bgi svg *{fill:#fff!important;stroke:#fff}
 section[data-view="hub"] .hb-bgi svg .w,section[data-view="hub"] .hb-bgi svg .w *{fill:#000!important;stroke:#000!important}
 section[data-view="hub"] .hb-bgi svg .o{opacity:1}
+html[data-theme] body section[data-view="hub"] .hb-t>b small{display:none!important}
+html[data-theme] body section[data-view="hub"] .hb-t>b{padding:0!important;font-size:15px!important;letter-spacing:-.03em!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;width:auto!important;max-width:none!important;align-self:flex-start!important}
 /* Accueil façon « Découvrir » de l'app Maison (12 nov., proposition 1 d'Angel) : noir profond / gris iOS, cartes #1C1C1E / blanches, texte franc, gris #8E8E93 */
 html:has(.wrap.on-home){--ad-bg:#000;--ad-card:#1C1C1E;--ad-tx:#fff;--ad-mu:#8E8E93;--ad-ln:#2C2C2E;--ad-sk:#2C2C2E;--ad-y:#FFC94A}
 html[data-theme="light"]:has(.wrap.on-home){--ad-bg:#F2F2F7;--ad-card:#fff;--ad-tx:#000;--ad-ln:#E5E5EA;--ad-sk:#EFEFF4;--ad-y:#D99A00}
