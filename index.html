@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="12/11 13:05";</script>
+<script>window.COCOON_BUILD="12/11 13:14";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4651,6 +4651,38 @@ section[data-view="hub"] .hub-phb{width:48px!important}
 section[data-view="hub"] .hub-memb svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 section[data-view="hub"].has-ph .hub-memb{background:rgba(30,30,26,.38)!important;-webkit-backdrop-filter:blur(26px) saturate(1.6);backdrop-filter:blur(26px) saturate(1.6);border:1px solid rgba(255,255,255,.18)!important;color:#fff!important}
 #memPage .fy-card{display:block!important;margin:4px 0 0;box-shadow:none}
+/* Accueil façon « Découvrir » de l'app Maison (12 nov., proposition 1 d'Angel) : noir profond / gris iOS, cartes #1C1C1E / blanches, texte franc, gris #8E8E93 */
+html:has(.wrap.on-home){--ad-bg:#000;--ad-card:#1C1C1E;--ad-tx:#fff;--ad-mu:#8E8E93;--ad-ln:#2C2C2E;--ad-sk:#2C2C2E;--ad-y:#FFC94A}
+html[data-theme="light"]:has(.wrap.on-home){--ad-bg:#F2F2F7;--ad-card:#fff;--ad-tx:#000;--ad-ln:#E5E5EA;--ad-sk:#EFEFF4;--ad-y:#D99A00}
+html:has(.wrap.on-home),html:has(.wrap.on-home) body{background:var(--ad-bg)!important}
+html .wrap.on-home .brand .hello{font:700 34px/1.1 var(--f-display)!important;letter-spacing:-.025em!important;color:var(--ad-tx)!important;-webkit-text-fill-color:var(--ad-tx)!important}
+html .wrap.on-home .brand .hello *{color:inherit!important;-webkit-text-fill-color:inherit!important;background:none!important}
+html .wrap.on-home .brand p.hello-l2{font:400 17px/1.35 var(--f-body)!important;letter-spacing:-.01em!important;color:var(--ad-mu)!important;-webkit-text-fill-color:var(--ad-mu)!important;opacity:1!important;margin-top:8px!important;max-width:34ch}
+.ad-sh{font:700 22px/1.2 var(--f-display);letter-spacing:-.02em;color:var(--ad-tx);margin:26px 2px 12px}
+.ad-card{background:var(--ad-card);border-radius:24px;padding:2px 0;overflow:hidden}
+.ad-row{display:flex;align-items:center;gap:12px;width:100%;padding:13px 16px;border:0;background:none;font:inherit;color:var(--ad-tx);text-align:left}
+button.ad-row{cursor:pointer}.ad-row+.ad-row,.ad-row+.ad-more{border-top:1px solid var(--ad-ln)}
+.ad-h{width:46px;flex:none;font:600 15px var(--f-body);color:var(--ad-mu);font-variant-numeric:tabular-nums}
+.ad-row.now .ad-h{color:var(--ad-y)}.ad-row.past{opacity:.45}
+.ad-t{flex:1;min-width:0}.ad-t b{display:block;font-size:17px;font-weight:600;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ad-t small{display:block;font-size:14px;color:var(--ad-mu);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ad-ck{width:26px;height:26px;border-radius:50%;border:2px solid var(--ad-mu);background:none;flex:none;cursor:pointer;padding:0;position:relative}
+.ad-ck.ok{background:#34C759;border-color:#34C759}.ad-ck.ok:after{content:"";position:absolute;left:7px;top:3px;width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+.ad-ci{width:32px;height:32px;border-radius:50%;background:var(--c);display:grid;place-items:center;flex:none;margin:-3px 0}.ad-ci svg{width:18px;height:18px;fill:#fff}.ad-ci .o{opacity:.55}.ad-ci .w{fill:var(--c);stroke:var(--c)}.ad-ci .w[fill="none"]{fill:none}
+.ad-more{display:block;width:100%;border:0;background:none;font:600 15px var(--f-body);color:var(--ad-y);padding:13px 16px;text-align:left;cursor:pointer}
+.ad-calm{padding:18px 18px}.ad-calm b{display:block;font-size:17px;color:var(--ad-tx)}.ad-calm small{color:var(--ad-mu);font-size:15px}
+/* widgets */
+html .wrap.on-home #accBudget .wg-sec{display:flex;align-items:baseline;justify-content:space-between;font:700 22px/1.2 var(--f-display)!important;letter-spacing:-.02em;text-transform:none!important;color:var(--ad-tx)!important;margin:26px 2px 12px!important}
+.wg-mod{border:0;background:none;font:500 16px var(--f-body);color:var(--ad-y,#FFC94A);cursor:pointer;padding:6px 0}
+html .wrap.on-home #accBudget .wg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+html .wrap.on-home #accBudget .wg.wgc{background:var(--ad-card)!important;border:0!important;box-shadow:none!important;border-radius:24px!important;height:132px;min-height:0!important;padding:14px!important;display:flex!important;flex-direction:column;justify-content:space-between;align-items:flex-start;color:var(--ad-tx)!important;text-align:left;grid-column:auto!important;overflow:hidden}
+html .wrap.on-home #accBudget .wg.wgc>:not(.wg-ci):not(.wg-tx):not(.wgc-cd){display:none!important}
+.wg-ci{width:40px;height:40px;border-radius:50%;background:var(--c);display:grid!important;place-items:center;font-style:normal}.wg-ci svg{width:22px;height:22px;fill:#fff}.wg-ci .o{opacity:.55}.wg-ci .w{fill:var(--c);stroke:var(--c)}.wg-ci .w[fill="none"]{fill:none}
+html .wrap.on-home #accBudget .wgc-cd{position:absolute;top:14px;right:16px;font:700 15px var(--f-body)!important;background:none!important;color:var(--ad-mu)!important;padding:0!important}
+html .wrap.on-home #accBudget .wgc-cd.hot{color:#FF453A!important}
+.wg-tx{display:block;min-width:0;max-width:100%}.wg-tx b{display:block;font-size:17px;font-weight:600;line-height:1.2;color:var(--ad-tx)}.wg-tx small{display:block;font-size:14px;color:var(--ad-mu);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wg-tx .wg-s2{font-size:13px;margin-top:0}
+.wg-add{height:132px;border-radius:24px;border:1.5px dashed var(--ad-ln,#2C2C2E);background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font:600 15px var(--f-body);color:var(--ad-mu,#8E8E93);cursor:pointer}
+.wg-add b{width:40px;height:40px;border-radius:50%;background:var(--ad-sk,#2C2C2E);display:grid;place-items:center;font-size:24px;font-weight:400;color:var(--ad-tx,#fff)}
+html .wrap.on-home #cocNote .cn{background:var(--ad-card)!important;border:0!important;border-radius:20px}
 .hub-ph.ph-mini{filter:blur(30px)!important}
 /* Accueil A (12 nov., Angel) : comme le Foyer — profils et semaine retirés, date dans le bonjour, photo du foyer floutée en fond, cartes claires givrées */
 .wrap.on-home>.fy-card,[data-view="accueil"] #daySec,[data-view="accueil"] #dayBig>.jm{display:none!important}
@@ -6320,7 +6352,7 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
     if(c) bits.push(c==="toi"?"tu cuisines":c+" cuisine"); if(v) bits.push(v==="toi"?"tu fais la vaisselle":v+" fait la vaisselle");
     const mn=Math.round(hNum(repasH(sl,m))*60); ev.push({k:MS[sl][1].toLowerCase(),m:mn,h:hl(mn),t:m.plat,s:MS[sl][1]+(bits.length?" · "+bits.join(" · "):""),c:MS[sl][2],end:mn+60,fn:go("repas")}); }
   for(const b of (S.bins||[])){ const nx=binNext(b,parse(t0)); if(!nx||iso(nx.sortie)!==t0) continue; const wh=binWho(b), m=b.veille?19*60+30:7*60+30;
-    ev.push({m,h:hl(m),t:"Sortir "+b.nom.toLowerCase().replace(/^ordures ménagères$/,"les ordures ménagères"),s:wh.label,c:"#7FD39A",end:m+90,fn:()=>{ S.mSec="bins"; go("maison")(); }}); }
+    ev.push({k:"bac",m,h:hl(m),t:"Sortir "+b.nom.toLowerCase().replace(/^ordures ménagères$/,"les ordures ménagères"),s:wh.label,c:"#7FD39A",end:m+90,fn:()=>{ S.mSec="bins"; go("maison")(); }}); }
   for(const e of evAll()) if(e.debut<=t0&&evEnd(e)>=t0){ const T=evT(e), P=evProg(e), n=daysTo(e.debut);
     ev.push({allDay:true,m:-1,end:24*60,h:"",k:"événement",t:T.e+" "+(e.titre||T.n),s:(e.debut===t0&&evEnd(e)===t0?"Événement spécial":e.debut===t0?"Commence aujourd'hui":evEnd(e)===t0?"Dernier jour":"En cours")+(P.tot?" · "+P.p+" % prêt":""),c:T.c,fn:()=>openEvent(e.id)}); }
   for(const a of annivOn(t0)) ev.push({allDay:true,m:-1,end:24*60,h:"",k:"anniversaire",t:a.titre,s:"Toute la journée",c:"#F28DB8",fn:()=>openMemberSheet(a.m.id)});
@@ -6328,12 +6360,26 @@ function renderToday(){ const w=$("todayCard"), C=$("dayCard"), H=$("dayHead"); 
   /* le bonjour résume la journée (2e ligne en dégradé) */
   if(isT){ const n=open0.length+ev.filter(e=>(e.end||e.m)>nowM).length, L=$("homeL2");
     if(L){ let dt=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"}); dt=dt.charAt(0).toUpperCase()+dt.slice(1); /* (12 nov., accueil A d'Angel) date · résumé */
-      L.textContent=dt+" · "+(n===0?"journée calme":n>=5?"grosse journée":n+(n>1?" choses":" chose")+" aujourd'hui"); L.hidden=$("homeHello").hidden; } }
+      const NB=["","Une chose","Deux choses","Trois choses","Quatre choses","Cinq choses","Six choses"], soir=(S.repas||[]).some(r=>r.date===t0&&r.slot==="soir"&&r.plat), nuit=N.getHours()>=21; /* (12 nov., accueil 1 façon « Découvrir » de Maison) une vraie phrase */
+      L.textContent=dt+". "+(n===0?"Journée calme":NB[n]?NB[n]+" aujourd'hui":n+" choses aujourd'hui")+(!soir&&!nuit?", et le dîner n'est pas encore prévu.":"."); L.hidden=$("homeHello").hidden; } }
   // à part : anniversaires et papiers qui expirent
   const extra=[];
   const dz=isT?S.docs.filter(d=>d.expire&&daysTo(d.expire)>=0&&daysTo(d.expire)<=7):S.docs.filter(d=>d.expire===t0);
   if(dz.length) extra.push(["📄",dz.length>1?dz.length+" papiers expirent cette semaine":dz[0].titre+" expire "+dueLabel(dz[0].expire),go("documents")]);
   /* la prochaine chose en grand (aujourd'hui : la prochaine à venir ; un autre jour : la première), puis la suite, puis les tâches à cocher */
+  if(isT){ /* (12 nov., accueil 1 d'Angel) « Aujourd'hui » en une carte de lignes : heure, rond à cocher ou icône de couleur, titre + détail */
+    const KI=e=>e.k==="rendez-vous"?"agenda":e.k==="bac"?"maison":e.k==="événement"||e.k==="anniversaire"?"evenements":"repas";
+    const ico=k=>{ const i=el("span",{class:"ad-ci",style:"--c:"+(HUB_TC[k]||"#888"),"aria-hidden":"true"}); i.innerHTML='<svg viewBox="0 0 32 32">'+(HUB_IC[k]||"")+'</svg>'; return i; };
+    const box=el("div",{class:"ad-card"}); let nowSet=false;
+    const row=(h,lead,t,sub,o={})=>{ const r=el(o.btn?"button":"div",Object.assign({class:"ad-row"+(o.now?" now":"")+(o.past?" past":"")},o.btn?{type:"button",onclick:o.fn}:{}),el("span",{class:"ad-h",text:h}),lead,el("span",{class:"ad-t"},el("b",{text:t}),sub?el("small",{text:sub}):null)); box.append(r); return r; };
+    for(const e of ev.filter(e=>e.allDay)) row("Journée",ico(KI(e)),e.t,e.s,{btn:1,fn:e.fn});
+    for(const t of open0.slice(0,6)){ const late=t.echeance<t0, ck=el("button",{type:"button",class:"ad-ck","aria-label":"Marquer « "+t.titre+" » comme fait"}), who=t.pour&&t.pour!=="tous"&&t.pour!==me&&membre(t.pour).nom?"Pour "+membre(t.pour).nom:"";
+      ck.addEventListener("click",async ev2=>{ ev2.stopPropagation(); if(!S.db||!needMe()) return; ck.classList.add("ok"); ck.disabled=true; haptic(12); try{ await completeTask(t); toast("✓ « "+esc(t.titre)+" » fait."); }catch(er){ ck.classList.remove("ok"); ck.disabled=false; writeErr(er); } });
+      const isNow=!nowSet; nowSet=true; row(late?"Retard":"—",ck,t.titre,late?"En retard · "+dueLabel(t.echeance):who||(isNow?"À faire maintenant":"Aujourd'hui"),{now:isNow&&!late}); }
+    if(open0.length>6) box.append(el("button",{type:"button",class:"ad-more",text:"+ "+(open0.length-6)+" autres tâches",onclick:go("foyer")}));
+    for(const e of ev.filter(e=>!e.allDay)){ const past=(e.end||e.m+60)<=nowM, isNow=!past&&!nowSet; if(isNow) nowSet=true; row(e.h||"—",ico(KI(e)),e.t,e.s,{btn:1,fn:e.fn,now:isNow,past}); }
+    for(const [ic,tx,fn] of extra) row("Bientôt",ico("documents"),tx,"",{btn:1,fn});
+    w.append(el("h3",{class:"ad-sh",text:"Aujourd'hui"}),box.childNodes.length?box:el("div",{class:"ad-card ad-calm"},el("b",{text:"Rien de prévu pour toi aujourd'hui."}),el("small",{text:"Profite !"}))); S.urgT=open0[0]||null; return; }
   const fut=isT?ev.filter(e=>(e.end||e.m+60)>nowM):ev; let hero=null, heroT=null;
   if(!isT){ if(fut[0]) hero=fut[0]; else if(open0[0]) heroT=open0[0]; }
   else { const tm=fut.find(e=>!e.allDay), soon=tm&&tm.m-nowM<=120&&!(open0[0]&&open0[0].echeance<t0&&tm.m-nowM>30)?tm:null;
@@ -7734,20 +7780,18 @@ function sortable(box,sel,done,o){ o=o||{}; const lp=o.lp==null?380:o.lp; let it
 function wgSig(){ try{ return JSON.stringify(wgList().map(x=>[x.k,x.l?1:0,wgX(x.k)]))+"|"+(document.documentElement.dataset.theme||""); }catch(_){ return String(Math.random()); } }
 function renderWidgets(){ const box=$("accBudget"); if(!box) return; if(box.querySelector(".sorting")||box._landing) return; const sig=wgSig(); if(box._sig===sig&&box.querySelector(".wg-grid")) return; box.innerHTML=""; box._sig=sig; if(!meId()) return; box.className="wg-zone";
   const g=el("div",{class:"wg-grid"});
-  const WL=wgList(); WL.forEach((x,i)=>{ const w=WG[x.k], L=WL.length%2===1&&i===WL.length-1, D=wgX(x.k);
+  const WL=wgList(); WL.forEach((x,i)=>{ const w=WG[x.k], L=false, D=wgX(x.k);
     { const X=D, b=el("button",{type:"button",class:"wg wgc"+(L?" wide":""),"data-k":x.k,style:"--wc:"+w.c+";--gc:"+w.c,"aria-label":w.t+" : "+X.big+(X.small?", "+X.small:""),onclick:()=>wgGo(x.k,D)});
       /* (10 nov., choix C d'Angel) plus d'emoji : une grande icône pleine, inclinée, en fond de la tuile (WGF) */
-      const top=X.ring!=null?el("span",{class:"wgc-ring",style:"--p:"+X.ring+"%"},el("b",{text:X.ring+"%"})):X.bin?el("span",{class:"wgc-bin",style:"--bc:"+X.bin,"aria-hidden":"true"}):null;
-      { const bg=el("i",{class:"wgc-bg","aria-hidden":"true"}); bg.innerHTML='<svg viewBox="0 0 24 24">'+(WGF[x.k]||WGF.courses)+'</svg>'; b.append(bg); }
-      if(top) b.append(top);
+      /* (12 nov., accueil 1 façon Maison) icône blanche dans un rond de couleur, compte à rebours en haut à droite, nom + infos en bas */
+      { const hk={repas:"repas",courses:"courses",budget:"budget",papiers:"documents",semaine:"foyer",anniv:"evenements",evenement:"evenements"}[x.k]||"foyer", ic=el("i",{class:"wg-ci",style:"--c:"+(HUB_TC[hk]||w.c),"aria-hidden":"true"}); ic.innerHTML='<svg viewBox="0 0 32 32">'+HUB_IC[hk]+'</svg>'; b.append(ic); }
       if(X.cd) b.append(el("span",{class:"wgc-cd"+(X.hot?" hot":""),text:X.cd}));
-      b.append(el("small",{class:"wgc-cap",text:X.cap||w.t}),el("b",{class:"wgc-big",text:X.big}),X.small?el("small",{class:"wgc-s",text:X.small}):null);
-      if(X.bar!=null) b.append(el("span",{class:"wgc-bar"},el("i",{style:"width:"+X.bar+"%"})));
-      if(X.chip) b.append(el("span",{class:"wgc-chip",text:X.chip}));
+      b.append(el("span",{class:"wg-tx"},el("b",{text:w.t}),el("small",{text:X.big}),X.small?el("small",{class:"wg-s2",text:X.small}):null));
       g.append(b); } });
   sortable(g,".wg",keys=>{ const cur=wgList(); wgSave(keys.map(k=>cur.find(x=>x.k===k)).filter(Boolean),true); box._sig=wgSig(); });
   const ed=el("button",{type:"button",class:"wg-edit",onclick:openWidgetSheet},el("span",{"aria-hidden":"true",text:"✎"}),wgList().length?"Modifier l'accueil":"Ajouter des raccourcis");
-  box.append(el("div",{class:"wg-sec"},el("span",{text:"En un coup d'œil"}),""),g,ed); wgMarquee(g); }
+  g.append(el("button",{type:"button",class:"wg-add",onclick:openWidgetSheet},el("b",{"aria-hidden":"true",text:"+"}),"Ajouter un widget"));
+  box.append(el("div",{class:"wg-sec"},el("span",{text:"Mes widgets"}),el("button",{type:"button",class:"wg-mod",onclick:openWidgetSheet,text:"Modifier"})),g); ed.hidden=true; box.append(ed); wgMarquee(g); }
 function openWidgetSheet(){ const U=upSheet("wgPage","En un coup d'œil"), sheet=U.sheet; sheet.classList.add("wg-sheet"); const inn=el("div",{class:"pp-in"}); sheet.append(inn);
   const draw=()=>{ inn.innerHTML=""; const list=wgList().map(x=>({k:x.k,l:x.l?1:0}));
     inn.append(el("div",{class:"wgs-h"},el("b",{text:"En un coup d'œil"}),el("span",{text:"Ajoute ou retire des raccourcis. Pour changer l'ordre, glisse ⠿ ici, ou maintiens un widget sur l'accueil."})));
@@ -9877,7 +9921,7 @@ async function fondCache(ref,url){ if(!ref||FOND.ref===ref||FOND.q===ref) return
 function fondPrefetch(){ if(!FOND) return; const ref=S.config&&S.config.fondFoyer; if(!ref||FOND.ref===ref) return; const u=imgUrl(ref); if(u&&!/^data:/.test(u)) fondCache(ref,u); }
 function accPhoto(){ /* (12 nov., accueil A d'Angel) la photo du foyer, floutée, en fond de l'accueil aussi */
   try{ hubPhoto(); }catch(_){} const L=$("hubPh"), u=L&&L._u; let B=$("accBg"); if(!B){ B=el("div",{id:"accBg","aria-hidden":"true"}); document.body.prepend(B); }
-  const has=S.tab==="accueil"&&!!u, R=document.documentElement; R.classList.toggle("acc-ph",has); R.classList.toggle("acc-net",has&&!!(S.config&&S.config.fondFlou===false)); B.classList.toggle("mini",!!(L&&L.classList.contains("ph-mini")));
+  const has=false&&S.tab==="accueil"&&!!u, R=document.documentElement; /* (12 nov.) accueil sans photo, façon « Découvrir » de Maison */ R.classList.toggle("acc-ph",has); R.classList.toggle("acc-net",has&&!!(S.config&&S.config.fondFlou===false)); B.classList.toggle("mini",!!(L&&L.classList.contains("ph-mini")));
   if(has&&B._u!==u){ B._u=u; B.style.backgroundImage='url("'+u+'")'; } }
 function hubPhoto(){ const L=$("hubPh"), B=$("hubPhB"); if(!L||!FOND) return; const sec=L.closest("section");
   /* base pas encore là : la copie gardée sur l'appareil */
