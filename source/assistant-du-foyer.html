@@ -4569,8 +4569,8 @@ html[data-theme] section[data-view="hub"] .hb-t>b small{font:400 17px/1.35 var(-
 html[data-theme] section[data-view="hub"] .hb-t>em,html[data-theme] section[data-view="hub"] .hb-t>em.r{top:22px!important;right:22px!important;font:700 15px/1 var(--f-body)!important;color:#fff!important;background:rgba(120,120,128,.36)!important;border-radius:14px!important;padding:6px 10px!important;min-width:0!important;height:auto!important}
 html[data-theme="light"] section[data-view="hub"] .hb-t>em{color:#000!important;background:rgba(120,120,128,.16)!important}
 html[data-theme] section[data-view="hub"] .hb-t>em.r{background:#E5484D!important;color:#fff!important}
-html:has(section[data-view="hub"]:not([hidden]):not(.has-ph)),html:has(section[data-view="hub"]:not([hidden]):not(.has-ph)) body{background:#000!important}
-html[data-theme="light"]:has(section[data-view="hub"]:not([hidden]):not(.has-ph)),html[data-theme="light"]:has(section[data-view="hub"]:not([hidden]):not(.has-ph)) body{background:#F2F2F7!important}
+html:has(section[data-view="hub"]:not([hidden]):not(.has-ph)),html:has(section[data-view="hub"]:not([hidden]):not(.has-ph)) body{background:var(--bg)!important}
+html[data-theme="light"]:has(section[data-view="hub"]:not([hidden]):not(.has-ph)),html[data-theme="light"]:has(section[data-view="hub"]:not([hidden]):not(.has-ph)) body{background:var(--bg)!important}
 /* (12 nov., Angel) cartes « Découvrir » sur 3 colonnes */
 section[data-view="hub"] #hubGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 section[data-view="hub"] #hubGrid .hb-g2{display:contents!important}
@@ -9937,7 +9937,7 @@ function hubPhoto(){ const L=$("hubPh"), B=$("hubPhB"); if(!L||!FOND) return; co
   let u=ref?(FOND.ref===ref&&FOND.data)||null:null, blur=false;
   if(ref&&!u){ const r=imgUrl(ref); if(r&&!/^data:/.test(r)) fondCache(ref,r); if(mini){ u=mini; blur=true; } else u=r; }
   L.classList.toggle("ph-mini",blur); sec.classList.toggle("ph-net",!!(S.config&&S.config.fondFlou===false));
-  sec.classList.toggle("has-ph",!!u); if(u&&!sec.hidden){ const y=Math.round(sec.getBoundingClientRect().top+window.scrollY); if(y>0) sec.style.setProperty("--hph-top",y+"px"); } if(u){ const css='url("'+u+'")'; if(L._u!==u){ L._u=u; L.style.backgroundImage=css; } } else { L._u=null; L.style.backgroundImage=""; }
+  sec.classList.toggle("has-ph",false); /* (12 nov., Angel) fond classique du thème : la photo n'est plus en fond */ if(u&&!sec.hidden){ const y=Math.round(sec.getBoundingClientRect().top+window.scrollY); if(y>0) sec.style.setProperty("--hph-top",y+"px"); } if(u){ const css='url("'+u+'")'; if(L._u!==u){ L._u=u; L.style.backgroundImage=css; } } else { L._u=null; L.style.backgroundImage=""; }
   /* (12 nov., Angel : « floue de base ») la photo en pleine qualité remplace la copie de l'appareil dès qu'elle est chargée */
   { const r=ref&&imgUrl(ref); if(r&&!/^data:/.test(r)&&L._u!==r&&L._fq!==r){ L._fq=r; const im=new Image(); im.onload=()=>{ const cur=S.configLoaded?(S.config&&S.config.fondFoyer):FOND.ref; if(cur===ref){ L._u=r; L.classList.remove("ph-mini"); L.style.backgroundImage='url("'+r+'")'; } }; im.onerror=()=>{ L._fq=null; }; im.src=r; } }
   if(B) B.hidden=!(isAdmin()&&!S.readOnly&&S.assets); }
@@ -9946,7 +9946,7 @@ async function fondSet(ref,mini,flou){ if(!S.db) return; S.config=Object.assign(
 function fondPick(){ const inp=el("input",{type:"file",accept:"image/*",hidden:true}); document.body.append(inp);
   inp.addEventListener("change",async()=>{ const f=inp.files[0]; inp.remove(); if(!f) return; let big=null, mini=null; try{ [big,mini]=await Promise.all([fondData(f,1400,.85),fondData(f,48,.6)]); }catch(_){}
     const up=uploadImg(f,2560); /* (12 nov., Angel) pleine qualité */ up.catch(()=>{}); const flou=big?await fondAsk(big):true; /* (12 nov., Angel) floutée ou nette, au choix */
-    const L=$("hubPh"); if(big&&L){ const sec=L.closest("section"); sec.classList.add("has-ph"); sec.classList.toggle("ph-net",!flou); L.classList.remove("ph-mini"); L._u=big; L.style.backgroundImage='url("'+big+'")'; }
+    const L=$("hubPh"); if(big&&L){ const sec=L.closest("section"); sec.classList.toggle("ph-net",!flou); L.classList.remove("ph-mini"); L._u=big; L.style.backgroundImage='url("'+big+'")'; }
     try{ const ref=await up; if(big) fondKeep(ref,big); await fondSet(ref,mini,flou); toast("Photo du foyer changée."); }catch(e){ imgErr(e); hubPhoto(); } },{once:true}); inp.click(); }
 function fondAsk(u){ return new Promise(res=>{ let done=false; const fin=v=>{ if(done) return; done=true; ov.classList.add("out"); setTimeout(()=>ov.remove(),180); res(v); };
   const ch=(v,l,d)=>el("button",{type:"button",class:"fa-o",onclick:()=>{ haptic(5); fin(v); }},el("span",{class:"fa-im"+(v?" fl":""),style:'background-image:url("'+u+'")'}),el("b",{text:l}),el("small",{text:d}));
