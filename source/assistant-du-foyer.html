@@ -4616,6 +4616,21 @@ section[data-view="hub"] .hub-ban[hidden],section[data-view="hub"] .hub-sep[hidd
 section[data-view="hub"] .hub-sep{display:flex;align-items:center;gap:12px;margin:26px 2px 12px;font:600 13px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 section[data-view="hub"] .hub-sep:after{content:"";flex:1;height:1px;background:var(--line)}
 section[data-view="hub"] .hub-sep~#hubGrid{margin-top:0!important}
+/* (12 nov., choix 1 d'Angel) photo du foyer en haut de l'écran (jusqu'au bord), nom en blanc dessus, membres dessous */
+section[data-view="hub"]{position:relative}
+section[data-view="hub"] .hub-hero{display:none}
+section[data-view="hub"].has-hero .hub-hero{display:block;position:absolute;z-index:0;left:50%;transform:translateX(-50%);width:100vw;top:calc(-1 * var(--hph-top,0px));height:380px;background:var(--surface) center 35%/cover no-repeat;pointer-events:none}
+section[data-view="hub"].has-hero .hub-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.28) 0%,rgba(0,0,0,0) 28%,rgba(0,0,0,0) 50%,rgba(0,0,0,.18) 72%,var(--bg) 100%)}
+html body section[data-view="hub"].has-hero .hub-h{position:relative;z-index:2;padding-top:calc(380px - var(--hph-top,0px) - 92px)!important;margin-bottom:0!important}
+html body section[data-view="hub"].has-hero .hub-h h2.hb-ttl,html body section[data-view="hub"].has-hero .hub-h h2.hb-ttl *{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+html body section[data-view="hub"].has-hero .hub-h h2.hb-ttl .hb-ttu{background:none!important;padding:0;margin:0}
+html body section[data-view="hub"].has-hero .hub-pill{position:absolute;right:0;top:calc(-1 * var(--hph-top,0px) + max(env(safe-area-inset-top),12px) + 40px);z-index:3}
+html body section[data-view="hub"].has-hero .hub-memb{background:rgba(255,255,255,.22)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#fff!important;border:0!important}
+section[data-view="hub"] #hubBan,section[data-view="hub"] #hubSep{display:none!important}
+.hub-mem{position:relative;z-index:2;display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;margin:18px -4px 6px;padding:2px 4px}.hub-mem::-webkit-scrollbar{display:none}
+.hm-m{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;padding:0;cursor:pointer;font:500 12.5px var(--f-body);color:var(--ink);width:58px}
+.hm-m span{max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html body section[data-view="hub"] .hub-mem~#hubGrid{margin-top:16px!important}
 /* (12 nov., Angel) titres des tuiles du Foyer en noir */
 html[data-theme] body section[data-view="hub"] .hb-t>b{color:#1C1B2E!important;-webkit-text-fill-color:#1C1B2E!important;font-weight:600!important}
 /* (12 nov., Angel) nom du foyer surligné (marqueur), à la couleur du thème choisi (--mark, réglée dans Personnaliser) */
@@ -10036,9 +10051,14 @@ function accPhoto(){ /* (12 nov., accueil A d'Angel) la photo du foyer, floutée
   const has=false&&S.tab==="accueil"&&!!u, R=document.documentElement; /* (12 nov.) accueil sans photo, façon « Découvrir » de Maison */ R.classList.toggle("acc-ph",has); R.classList.toggle("acc-net",has&&!!(S.config&&S.config.fondFlou===false)); B.classList.toggle("mini",!!(L&&L.classList.contains("ph-mini")));
   if(has&&B._u!==u){ B._u=u; B.style.backgroundImage='url("'+u+'")'; } }
 /* (12 nov., choix 1 d'Angel) la photo du foyer en bandeau sous le titre, séparée des catégories */
-function hubBan(u){ const g=$("hubGrid"); if(!g) return; let b=$("hubBan"), sep=$("hubSep");
-  if(!b){ b=el("div",{id:"hubBan",class:"hub-ban",role:"img","aria-label":"Photo du foyer"}); sep=el("div",{id:"hubSep",class:"hub-sep"},el("span",{text:"Catégories"})); g.parentNode.insertBefore(b,g); g.parentNode.insertBefore(sep,g); }
-  b.hidden=sep.hidden=!u; if(u&&b._u!==u){ b._u=u; b.style.backgroundImage='url("'+u+'")'; } }
+/* (12 nov., choix 1 d'Angel) la photo remplit le haut de l'écran, le nom du foyer en blanc dessus, les membres en dessous */
+function hubBan(u){ const g=$("hubGrid"); if(!g) return; const sec=g.closest("section"); let h=$("hubHero");
+  if(!h){ h=el("div",{id:"hubHero",class:"hub-hero",role:"img","aria-label":"Photo du foyer"}); sec.prepend(h); }
+  sec.classList.toggle("has-hero",!!u); if(u&&h._u!==u){ h._u=u; h.style.backgroundImage='url("'+u+'")'; }
+  if(u&&!sec.hidden){ const y=Math.round(sec.getBoundingClientRect().top+window.scrollY); if(y>0) sec.style.setProperty("--hph-top",y+"px"); }
+  hubMembers(); }
+function hubMembers(){ const g=$("hubGrid"); if(!g) return; let r=$("hubMem"); if(!r){ r=el("div",{id:"hubMem",class:"hub-mem"}); g.parentNode.insertBefore(r,g); }
+  const L=membres().filter(m=>m&&m.id); r.hidden=!L.length; r.replaceChildren(...L.map(m=>el("button",{type:"button",class:"hm-m",onclick:()=>openProfile(m.id),"aria-label":"Profil de "+(m.nom||"")},avatar(m.id,50),el("span",{text:(m.nom||"").split(" ")[0]})))); }
 function hubPhoto(){ const L=$("hubPh"), B=$("hubPhB"); if(!L||!FOND) return; const sec=L.closest("section");
   /* base pas encore là : la copie gardée sur l'appareil */
   const ref=S.configLoaded?(S.config&&S.config.fondFoyer):FOND.ref, mini=S.config&&S.config.fondMini;
