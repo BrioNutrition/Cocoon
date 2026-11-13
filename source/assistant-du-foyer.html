@@ -10773,7 +10773,7 @@ function applyPalette(p){ p=p||palGet(); const P=PALS.find(x=>x.id===p.id)||PALS
   let css="";
   if(P.id!=="soleil"){
     css+=":root,:root[data-theme]{--mark:"+P.mark+"!important;--fam-bg:"+P.mark+"!important}";
-    css+=":root,:root[data-theme],html[data-theme]:root{--y:"+P.mark+"!important;--yd:color-mix(in oklch,"+P.mark+" 58%,#000)!important}"; /* (13 nov., Angel : « tout part en sucette ») le jaune d'accent suit la palette */
+    css+=":root,:root[data-theme],html[data-theme]:root{--y:"+P.mark+"!important;--yd:color-mix(in oklch,"+P.mark+" 88%,#000)!important}"; /* (13 nov., Angel : « tout part en sucette ») le jaune d'accent suit la palette */
     css+=".coc-pill,.coc-streak,.coc-big,.coc-opt{--coc-y:color-mix(in srgb,"+P.mark+" 45%,#FFFFFF)!important}";
     { const sel=p=>[".coc-pill",".coc-streak",".coc-big",".coc-opt"].map(x=>p+" "+x).join(","), b="{--coc-y:color-mix(in srgb,"+P.mark+" 45%,#FFFFFF)!important}"; css+='@media (prefers-color-scheme: dark){'+sel(':root:not([data-theme="light"])')+b+'}'+sel(':root[data-theme="dark"]')+b; }
     css+=".nav-add,.rdv-add2 i,.sec-chat .sec-ask button,.sec-ring{background:"+G+"!important}";
