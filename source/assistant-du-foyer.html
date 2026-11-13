@@ -4781,6 +4781,8 @@ html[data-theme]:root body .wrap.on-home #accBudget .hz-t{background:linear-grad
 html[data-theme]:root body .wrap.on-home #accBudget .hz-grid{grid-template-columns:repeat(3,1fr)}html[data-theme]:root body .wrap.on-home #accBudget .hz-t{aspect-ratio:1/1}html[data-theme]:root body .wrap.on-home #accBudget .hz-fi{left:50%;top:30%;width:34px;height:34px;transform:translate(-50%,-30%)}html[data-theme]:root body .wrap.on-home #accBudget .hz-fi svg{width:34px;height:34px}html[data-theme]:root body .wrap.on-home #accBudget .hz-t>b{left:6px;right:6px;bottom:13px;text-align:center;font-size:14px}html[data-theme]:root body .wrap.on-home #accBudget .hz-t>em{top:7px;right:7px;min-width:22px;height:22px;line-height:22px;font-size:12px;padding:0 6px}
 /* (13 nov., Angel) « Les indispensables » : dégradé à 70° (clair en bas à gauche → foncé en haut), nom moins gras */
 html[data-theme]:root body .wrap.on-home #accBudget .hz-t{background:linear-gradient(70deg,color-mix(in srgb,var(--sc) 36%,#fff),color-mix(in srgb,var(--sc) 66%,#fff))!important}html[data-theme]:root body .wrap.on-home #accBudget .hz-t>b{font-weight:560!important}
+/* (13 nov., Angel) « Applications » : icônes blanches */
+html[data-theme]:root body .wrap.on-home #accBudget .hz-fi svg *{fill:#fff!important}html[data-theme]:root body .wrap.on-home #accBudget .hz-fi svg .d{fill:none!important;stroke:color-mix(in srgb,var(--sc) 55%,#fff)!important}html[data-theme]:root body .wrap.on-home #accBudget .hz-fi svg .s{fill:none!important;stroke:#fff!important}html[data-theme]:root body .wrap.on-home #accBudget .hz-fi svg .f,html[data-theme]:root body .wrap.on-home #accBudget .hz-fi svg .f *{fill:color-mix(in srgb,var(--sc) 55%,#fff)!important}html[data-theme]:root body .wrap.on-home #accBudget .hz-fi{filter:drop-shadow(0 1px 1.5px color-mix(in srgb,var(--sc) 60%,#000 10%))}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -7947,7 +7949,7 @@ function wgTile(k,w,D){ const hk=WGX_HK[k]||"foyer", c=HUB_TC[hk]||w.c; /* (13 n
 function renderWidgets(){ try{ famBar(); }catch(_){} const box=$("accBudget"); if(!box) return; /* (13 nov., choix A d'Angel) les tuiles du Foyer à la place des raccourcis, sous le titre « Le foyer » (maison) */
   { if(!meId()){ box.innerHTML=""; box._hsig=null; return; } const D=hubData(), cap=x=>x?String(x).charAt(0).toUpperCase()+String(x).slice(1):"";
     const sig=JSON.stringify(D.map(d=>[d.v,d.sub,d.o.badge||0,d.o.red?1:0])); if(box._hsig===sig&&box.querySelector(".hz-grid")) return; box._hsig=sig; box._sig=null; box.innerHTML=""; box.className="wg-zone hz";
-    box.append(el("div",{class:"wg-sec"},el("span",{text:"Les indispensables"})));
+    box.append(el("div",{class:"wg-sec"},el("span",{text:"Applications"})));
     const g=el("div",{class:"hz-grid"});
     D.forEach(d=>{ const b=el("button",{type:"button",class:"hz-t","data-go":d.v,style:"--sc:"+(HUB_SC[d.v]||d.c),"aria-label":d.title+(d.sub?", "+d.sub:"")+(d.o.badge?", "+d.o.badge:""),onclick:()=>hubGo(d.v)});
       const fi=el("span",{class:"hz-fi","aria-hidden":"true"}); fi.innerHTML='<svg viewBox="0 0 24 24">'+(HUB_FI[d.v]||"")+'</svg>'; b.append(fi);
