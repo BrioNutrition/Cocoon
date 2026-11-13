@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="13/11 15:47";</script>
+<script>window.COCOON_BUILD="13/11 15:51";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4890,6 +4890,8 @@ html[data-theme]:root body .ad-ck.ok{background:url("data:image/svg+xml;utf8,<sv
 html[data-theme]:root body .wrap.on-home #accBudget .hz-pager{gap:0!important;margin:0 -16px;width:calc(100% + 32px)}html[data-theme]:root body .wrap.on-home #accBudget .hz-pager{overflow-y:hidden!important;overscroll-behavior-y:auto}html[data-theme]:root body .wrap.on-home #accBudget .hz-pg{padding:0 16px}html[data-theme]:root body .wrap.on-home #accBudget .hz-dots button{transition:width .28s cubic-bezier(.2,.8,.2,1),background-color .28s,border-radius .28s}html[data-theme]:root body .wrap.on-home #accBudget .hz-dots button[aria-selected=true]{width:18px;border-radius:4px}html[data-theme]:root body .wrap.on-home #accBudget .hz-t>em{text-box:trim-both cap alphabetic;min-width:22px!important;padding:0 5px!important}html[data-theme]:root body section[data-view="hub"] #hubGrid .hb-t.hb-t>em{text-box:trim-both cap alphabetic}
 /* (13 nov., Angel) plus aucune bulle de Cocoony (petites remarques avec son visage) */
 html body .cn,html body #cocNote{display:none!important}
+/* (13 nov., choix 3 d'Angel) plus d'onglet Foyer dans la barre : Accueil · Cocoony · Moi (les rubriques sont dans « Applications » sur l'accueil) */
+#tabs .tab[data-tab="hub"],.tabs .tab[data-tab="hub"]{display:none!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -5014,7 +5016,7 @@ html body .cn,html body #cocNote{display:none!important}
 
   <!-- FOYER -->
   <section class="view" data-view="foyer" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Tâches</b><span class="hb-act"><button type="button" class="hub-add" data-add="foyer" aria-label="Ajouter une tâche"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour" title="Retour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Tâches</b><span class="hb-act"><button type="button" class="hub-add" data-add="foyer" aria-label="Ajouter une tâche"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
     <form class="c-add qa-add" id="tQa" autocomplete="off" hidden><input type="text" id="tQaIn" maxlength="120" placeholder="Ajouter une tâche…" aria-label="Nouvelle tâche pour le foyer" enterkeyhint="done"><button class="btn" type="submit">Ajouter</button></form>
     <div class="tk-seg" id="whoFilter" role="group" aria-label="Filtrer par personne"></div>
     <div class="tk-cats" id="tiles" role="group" aria-label="Filtrer par catégorie"></div>
@@ -5024,7 +5026,7 @@ html body .cn,html body #cocNote{display:none!important}
 
   <!-- COURSES -->
   <section class="view" data-view="courses" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Courses</b><span class="hb-act"><button type="button" class="hub-add" data-add="courses" aria-label="Nouvelle liste de courses"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour" title="Retour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Courses</b><span class="hb-act"><button type="button" class="hub-add" data-add="courses" aria-label="Nouvelle liste de courses"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
     <div id="cLive" class="c-live" hidden></div>
     <div id="cHome" class="cl-home"></div>
     <div id="cStash" hidden>
@@ -5040,14 +5042,14 @@ html body .cn,html body #cocNote{display:none!important}
   </section>
 
   <section class="view" data-view="agenda" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Calendrier</b><span class="hb-act"><button type="button" class="hub-sync" id="agSyncBtn" aria-label="Mettre le calendrier dans mon téléphone" title="Calendrier du téléphone"><span class="hs-emo" aria-hidden="true">📅</span><span class="hb-tx">Synchro</span></button><button type="button" class="hub-add" data-add="agenda" aria-label="Ajouter"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour" title="Retour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Calendrier</b><span class="hb-act"><button type="button" class="hub-sync" id="agSyncBtn" aria-label="Mettre le calendrier dans mon téléphone" title="Calendrier du téléphone"><span class="hs-emo" aria-hidden="true">📅</span><span class="hb-tx">Synchro</span></button><button type="button" class="hub-add" data-add="agenda" aria-label="Ajouter"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
     <div class="seg ag-who" id="agWho" role="group" aria-label="Pour qui"></div>
     <div class="ag-cal" id="agCal"></div>
     <div class="sub" id="rdvWrap"></div>
   </section>
 
   <section class="view" data-view="repas" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Repas</b><span class="hb-act"></span></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour" title="Retour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Repas</b><span class="hb-act"></span></div>
     <div id="rBody" class="r-body"></div>
   </section>
 
@@ -5088,7 +5090,7 @@ html body .cn,html body #cocNote{display:none!important}
 
   <!-- DOCUMENTS -->
   <section class="view" data-view="documents" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Papiers</b><span class="hb-act"><button type="button" class="hub-add" data-add="documents" aria-label="Ajouter"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour" title="Retour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Papiers</b><span class="hb-act"><button type="button" class="hub-add" data-add="documents" aria-label="Ajouter"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
     <div id="papHero"></div>
     <label class="pap-search" for="papQ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg><input type="search" id="papQ" placeholder="Chercher : bail, mutuelle, carte grise…" aria-label="Chercher un papier" autocomplete="off" enterkeyhint="search"></label>
     <button type="button" class="pap-add" id="papAdd" aria-expanded="false"><span class="pa-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v9A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.6"/></svg></span><span class="pa-t"><b>Ranger un papier</b><small>Photo, PDF, ou juste une date à ne pas oublier</small></span><span class="pa-x" aria-hidden="true">+</span></button>
@@ -5134,7 +5136,7 @@ html body .cn,html body #cocNote{display:none!important}
 
   <!-- MAISON & VÉHICULES (V3) -->
   <section class="view" data-view="maison" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Maison</b><span class="hb-act"><button type="button" class="hub-add" data-add="maison" aria-label="Ajouter"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour" title="Retour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Maison</b><span class="hb-act"><button type="button" class="hub-add" data-add="maison" aria-label="Ajouter"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
     <div class="m-dash" id="mDash"></div>
     <form class="b-form" id="mhForm" hidden autocomplete="off"></form>
     <div class="sub" id="mHome"></div>
@@ -5160,12 +5162,12 @@ html body .cn,html body #cocNote{display:none!important}
   </section>
 
   <section class="view" data-view="evenements" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Événements spéciaux</b><span class="hb-act"><button type="button" class="hub-add" data-add="evenements" aria-label="Nouvel événement spécial"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour" title="Retour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Événements spéciaux</b><span class="hb-act"><button type="button" class="hub-add" data-add="evenements" aria-label="Nouvel événement spécial"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
     <div class="ev-in evz-page" id="evView"></div>
   </section>
 
   <section class="view" data-view="budget" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour au foyer" title="Foyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Budget</b><span class="hb-act"><button type="button" class="hub-add" data-add="budget" aria-label="Ajouter"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour" title="Retour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Budget</b><span class="hb-act"><button type="button" class="hub-add" data-add="budget" aria-label="Ajouter"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
     <div class="b-hero" id="bHero"></div>
     <div class="sub b-owe" id="bBalanceWrap"></div>
     <div class="bz-envw" id="bEnvW"></div>
@@ -8407,7 +8409,7 @@ document.querySelectorAll(".hub-back").forEach(b=>b.addEventListener("click",()=
   if(S.tab==="maison"&&S.mSec){ mOpen(null); return; }
   if(S.tab==="documents"&&S.docCat){ S.docCat=null; renderDocs(); topNow(); return; }
   if(S.tab==="evenements"&&S.evOpen&&S.evOpen.v==="ev"){ evGo({v:"list"}); return; }
-  setTab("hub"); window.scrollTo({top:0}); }));
+  setTab("accueil"); window.scrollTo({top:0}); })); /* (13 nov., Angel) plus d'onglet Foyer : le retour ramène à l'accueil (tuiles « Applications ») */
 /* titre de la barre du haut : le nom de la sous-page quand on y est */
 function hubTitle(tab,t){ const b=document.querySelector('.view[data-view="'+tab+'"] .hub-bar .hb-title'); if(b&&b.textContent!==t) b.textContent=t; const sec=tab==="maison"?!!S.mSec:!!S.docCat; document.querySelectorAll('.view[data-view="'+tab+'"] .hub-bar .hub-back').forEach(x=>x.setAttribute("aria-label",sec?"Retour":"Retour au foyer")); }
 /* ===== Maison & véhicules (V3) ===== */
@@ -9517,7 +9519,7 @@ setTab("accueil");
   if(!NT) return;
   if(C.nativePromise&&!NT.menu) ["menu","haptic","topbar","theme","sheet","alert","faceid","faceidCheck","faceidKey"].forEach(m=>{ NT[m]=o=>C.nativePromise("NativeTabs",m,o||{}); });
   window.__nt=NT;
-  const TABS=[["accueil","Accueil","house.fill"],["hub","Foyer","person.2.fill"],["cocoony","Cocoony","sparkles"],["moi","Moi","person.crop.circle.fill"]];
+  const TABS=[["accueil","Accueil","house.fill"],["cocoony","Cocoony","sparkles"],["moi","Moi","person.crop.circle.fill"]]; /* (13 nov., Angel) plus d'onglet Foyer */
   document.documentElement.classList.add("native-tabs");
   /* null : au chargement on ne sait pas ce qu'affiche iOS (après « Se déconnecter », les barres de la page d'avant sont encore là) */
   let shown=null, sel=-1, bdg=null, tbSig="", thDark=null, shOpen=false;
@@ -9538,9 +9540,9 @@ setTab("accueil");
     if(!vis){ if(tbSig!=="off"){ tbSig="off"; NT.topbar({visible:false}).catch(()=>{}); } return; }
     /* une fiche ouverte depuis l'accueil (ou Moi) reste sous cet onglet */
     const cur=S.tab==="profil"&&S.prevTab?S.prevTab:S.tab;
-    const i=Math.max(0,TABS.findIndex(t=>t[0]===(cur==="cocoony"?"cocoony":["accueil","moi"].includes(cur)?cur:"hub")));
+    const i=Math.max(0,TABS.findIndex(t=>t[0]===(cur==="cocoony"?"cocoony":["accueil","moi"].includes(cur)?cur:"accueil")));
     if(i!==sel){ sel=i; NT.select({index:i}).catch(()=>{}); }
-    const n=$("nFoyer"), b=n&&!n.hidden?"":null; if(b!==bdg){ bdg=b; NT.badge({index:1,value:b}).catch(()=>{}); }
+    
     if(!cxSent){ const ic=cxIcon(); if(ic){ cxSent=true; NT.show({items:TABS.map(t=>({title:t[1],icon:t[2],image:t[0]==="cocoony"?ic:null}))}).catch(()=>{}); sel=-1; } }
     /* thème clair / sombre de l'app → éléments natifs assortis */
     { let bc=getComputedStyle(document.body).backgroundColor; if(/rgba\(.*,\s*0\)$/.test(bc)) bc=getComputedStyle(document.documentElement).backgroundColor; if(/rgba\(.*,\s*0\)$/.test(bc)) bc="rgb(246, 245, 251)"; const bg=bc.match(/\d+/g)||[255,255,255], dk=(+bg[0]*.3+ +bg[1]*.59+ +bg[2]*.11)<128; if(bc!==thDark){ thDark=bc; NT.theme({dark:dk,bg:bc}).catch(()=>{}); } }
@@ -12558,7 +12560,6 @@ function bilanAuto(){
 window.TOUR_ALL=[
   {sel:"#members",t:"Ton foyer",d:"Chaque membre a son anneau : il se remplit en vert avec les tâches faites cette semaine. Touche un avatar pour voir sa journée et sa fiche, ou « Ajouter » pour inviter quelqu'un."},
   {sel:"#dayCard",alt:"#rdvWrap",t:"Ta journée",d:"Le plus urgent en haut, puis ta journée heure par heure : tâches à cocher, événements, repas, poubelles."},
-  {sel:'.tab[data-tab="hub"]',t:"Le Foyer",d:"Toutes les rubriques en tuiles : tâches, courses, repas, calendrier, budget, papiers et maison. Dans chacune, le bouton + est en haut à droite."},
   {sel:"#accBudget",opt:true,t:"Tes raccourcis",d:"L'essentiel en un coup d'œil : budget du mois, courses, prochain événement et son avancement… Touche un raccourci pour ouvrir sa rubrique, garde le doigt dessus pour le déplacer, et « Modifier l'accueil » pour en ajouter ou en retirer."},
   {sel:"#cxBtn",t:"Voici %N",d:"Ton assistant a son propre onglet. Écris comme tu parles : « pain, lait », « dentiste jeudi 15h », « il faut payer la cantine vendredi ». %N range tout au bon endroit."},
   {sel:'.tab[data-tab="moi"]',t:"Ton espace",d:"Ta fiche (pointure, médecin, papiers…), tes tâches perso, et les Réglages : apparence, notifications, compte."},

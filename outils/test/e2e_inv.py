@@ -34,7 +34,7 @@ async def main():
     await pg.fill('#fiNom','Angel'); await pg.fill('#fiNaissance','1990-05-04'); await pg.click('#fiSave'); await pg.wait_for_timeout(2600)
     await pg.add_style_tag(content='.toast{display:none!important}')
     await pg.evaluate("document.getElementById('navAdd').click()"); await pg.fill('#quickTitle','Appeler le plombier'); await pg.click('#quickForm button[type=submit]'); await pg.wait_for_timeout(400)
-    await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hb-t[data-go="documents"]'); await pg.wait_for_timeout(200)
+    await pg.click('.tab[data-tab="accueil"]'); await pg.click('.hz-t[data-go="foyer"]'); await pg.click('section:not([hidden]) .hub-back'); await pg.click('.hz-t[data-go="documents"]'); await pg.wait_for_timeout(200)
     await pg.click('.hub-add[data-add=documents]'); await pg.fill('#dTitle','Bail'); await pg.set_input_files('#dFile','test/tst.png'); await pg.click('#dSubmit'); await pg.wait_for_timeout(600)
     print('requêtes de lecture:',await pg.evaluate("__mock.calls.filter(c=>c[0]==='select').map(c=>c[1]).join(',')"))
     n=await pg.evaluate("__mock.T.cocoon_docs.map(r=>r.path+'/'+r.id.slice(0,4)+' '+(r.data.titre||r.data.nom||''))"); print('docs en base:',len(n)); print('\n'.join(n))
@@ -44,9 +44,9 @@ async def main():
     await pg.evaluate("""(()=>{const t=__mock.T.cocoon_docs.find(r=>r.path==='taches'&&r.data.titre==='Appeler le plombier'); const r=JSON.parse(JSON.stringify(t)); r.data.titre='Appeler le plombier (Emma)'; r.updated_by='emma'; __mock.remote(r);})()""")
     await pg.wait_for_timeout(400)
     for _ in range(3):  # le retour remonte d'un niveau (classeur → Papiers → Foyer)
-      if await pg.is_visible('.hb-t[data-go="foyer"]'): break
+      if await pg.is_visible('.hz-t[data-go="foyer"]'): break
       await pg.click('section:not([hidden]) .hub-back'); await pg.wait_for_timeout(200)
-    await pg.click('.hb-t[data-go="foyer"]'); await pg.wait_for_timeout(300)
+    await pg.click('.hz-t[data-go="foyer"]'); await pg.wait_for_timeout(300)
     print('remote visible:', await pg.locator('text=Appeler le plombier (Emma)').count()>0)
     # suppression d'un papier → fichier supprimé
     await pg.click('.tab[data-tab="moi"]'); await pg.wait_for_timeout(300)
@@ -56,7 +56,7 @@ async def main():
     await pg.locator('#cxAccount').scroll_into_view_if_needed(); await pg.screenshot(path='/tmp/dk/w4.png')
     print('invitations envoyées:', await pg.evaluate("JSON.stringify((__mock.invites||[]).map(x=>[x[0],x[1].email,x[1].nom]))"))
     print('emma email en base:', await pg.evaluate("JSON.stringify(__mock.T.cocoon_docs.filter(r=>r.path==='membres').map(r=>r.id+':'+(r.data.email||'-')))"))
-    await pg.click('.tab[data-tab="hub"]'); await pg.wait_for_timeout(300); await pg.click('#hubMemB'); await pg.wait_for_timeout(300); await pg.click('.hub-pop .ev-pi'); await pg.wait_for_timeout(500)
+    await pg.click('.tab[data-tab="accueil"]'); await pg.wait_for_timeout(300); await pg.click('#famB'); await pg.wait_for_timeout(300); await pg.click('.fam-pop .ev-pi:has-text("Réglages du foyer")'); await pg.wait_for_timeout(500)
     await pg.locator('button[aria-label="Ajouter un membre"] >> visible=true').first.click(); await pg.wait_for_timeout(300)
     await pg.fill('#invNom','Lucas'); await pg.fill('#invMail','lucas@test.fr'); await pg.click('button:has-text("Créer l\'invitation")'); await pg.wait_for_timeout(600)
     print('invitations après ajout:', await pg.evaluate("JSON.stringify((__mock.invites||[]).map(x=>x[1].email))"))

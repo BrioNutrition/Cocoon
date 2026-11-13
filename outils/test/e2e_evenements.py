@@ -34,8 +34,8 @@ async def main():
     await pg.fill('#fiNom','Angel'); await pg.fill('#fiNaissance','1990-05-04'); await pg.click('#fiSave'); await pg.wait_for_timeout(2600)
     await pg.add_style_tag(content='.toast{display:none!important}')
     await pg.click('.tab[data-tab="accueil"]'); await pg.wait_for_timeout(1500)
-    await pg.click('.tab[data-tab="hub"]'); await pg.wait_for_timeout(500)
-    await pg.click('.hb-t[data-go="evenements"]'); await pg.wait_for_timeout(700)
+    await pg.click('.tab[data-tab="accueil"]'); await pg.wait_for_timeout(500)
+    await pg.click('.hz-t[data-go="evenements"]'); await pg.wait_for_timeout(700)
     await pg.click('section[data-view=evenements] .hub-add[data-add=evenements]'); await pg.wait_for_timeout(500); await pg.select_option('#evType','anniv'); await pg.fill('#evNom','Anniv de Patoune'); await pg.fill('#evDeb','2030-05-10'); await pg.dispatch_event('#evDeb','change')
     await pg.click('#evCreate'); await pg.wait_for_selector('.ev-frise', timeout=8000); await pg.wait_for_timeout(1500)
     for _ in range(25):
@@ -45,10 +45,10 @@ async def main():
     print('frise items', n); assert n==9, n
     await pg.click('.ev-seg button:has-text("Budget")'); await pg.click('.ev-add'); await pg.fill('#evDepT','Gâteau'); await pg.fill('.ev-form input[inputmode=decimal]','35'); await pg.click('.ev-form button[type=submit]'); await pg.wait_for_timeout(1200)
     t=await pg.inner_text('.ev-bud'); print('bud', t.replace('\n',' | ')); assert '35' in t
-    await pg.click('section[data-view=evenements] .hub-back'); await pg.wait_for_timeout(300); await pg.click('section[data-view=evenements] .hub-back'); await pg.wait_for_timeout(700); await pg.evaluate("document.querySelector('.hb-t[data-go=agenda]')&&document.querySelector('.hb-t[data-go=agenda]').click()"); await pg.wait_for_timeout(900); c=await pg.locator('.ag-ev').count(); print('agenda events',c); assert c==1
+    await pg.click('section[data-view=evenements] .hub-back'); await pg.wait_for_timeout(300); await pg.click('section[data-view=evenements] .hub-back'); await pg.wait_for_timeout(700); await pg.evaluate("document.querySelector('.hz-t[data-go=agenda]')&&document.querySelector('.hz-t[data-go=agenda]').click()"); await pg.wait_for_timeout(900); c=await pg.locator('.ag-ev').count(); print('agenda events',c); assert c==1
     await pg.screenshot(path='/tmp/dk/ev/h_list.png')
     # ouvrir depuis une notification : « C'est fait » sur une tâche, puis lien vers l'événement
-    await pg.click('.tab[data-tab="hub"]'); await pg.click('.hb-t[data-go="foyer"]'); await pg.wait_for_timeout(600)
+    await pg.click('.tab[data-tab="accueil"]'); await pg.click('.hz-t[data-go="foyer"]'); await pg.wait_for_timeout(600)
     # page Tâches en cartes par catégorie : sans tâche du jour, on ouvre la première carte
     key=await pg.evaluate("(document.querySelector('#openList [data-key^=\"taches:\"]')||{}).dataset?.key||''"); tid=key[7:]; tt=await pg.evaluate("(document.querySelector('#openList [data-key^=\"taches:\"]')||{}).textContent||''"); print('tâche',tid,tt[:40])
     assert tid
