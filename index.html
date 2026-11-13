@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="13/11 17:44";</script>
+<script>window.COCOON_BUILD="13/11 17:50";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -4476,7 +4476,7 @@ html #cxView .sec-text{font-size:15.5px;font-weight:400;line-height:1.38}
 html #cxView .sec-bub h2{font-size:16px!important;font-weight:700!important}
 html #cxView .sec-bub ul{font-size:15px}html #cxView .sec-bub li::before{background:var(--muted)!important;width:5px;height:5px}
 html #cxView .sec-bub .acts{display:flex;flex-wrap:nowrap;gap:0;margin:10px -14px -10px;border-top:1px solid var(--line)}
-html #cxView .sec-bub .acts .btn{flex:1 1 0;min-width:0;background:none!important;border:0!important;border-radius:0;color:#E8A800!important;font-weight:700;font-size:14.5px;line-height:1.25;padding:11px 8px;box-shadow:none!important;white-space:normal}
+html #cxView .sec-bub .acts .btn{flex:1 1 0;min-width:0;background:none!important;border:0!important;border-radius:0;color:var(--yd)!important;font-weight:700;font-size:14.5px;line-height:1.25;padding:11px 8px;box-shadow:none!important;white-space:normal}
 :root:not([data-theme="light"]) html #cxView .sec-bub .acts .btn:not(.ghost),html[data-theme="dark"] #cxView .sec-bub .acts .btn:not(.ghost){color:var(--y)!important}
 html #cxView .sec-bub .acts .btn.ghost{color:var(--muted)!important}
 html #cxView .sec-bub .acts .btn+.btn{border-left:1px solid var(--line)!important}
@@ -4906,7 +4906,7 @@ html #cxPage .sec-text{font-size:15.5px;font-weight:400;line-height:1.38}
 html #cxPage .sec-bub h2{font-size:16px!important;font-weight:700!important}
 html #cxPage .sec-bub ul{font-size:15px}html #cxPage .sec-bub li::before{background:var(--muted)!important;width:5px;height:5px}
 html #cxPage .sec-bub .acts{display:flex;flex-wrap:nowrap;gap:0;margin:10px -14px -10px;border-top:1px solid var(--line)}
-html #cxPage .sec-bub .acts .btn{flex:1 1 0;min-width:0;background:none!important;border:0!important;border-radius:0;color:#E8A800!important;font-weight:700;font-size:14.5px;line-height:1.25;padding:11px 8px;box-shadow:none!important;white-space:normal}
+html #cxPage .sec-bub .acts .btn{flex:1 1 0;min-width:0;background:none!important;border:0!important;border-radius:0;color:var(--yd)!important;font-weight:700;font-size:14.5px;line-height:1.25;padding:11px 8px;box-shadow:none!important;white-space:normal}
 :root:not([data-theme="light"]) html #cxPage .sec-bub .acts .btn:not(.ghost),html[data-theme="dark"] #cxPage .sec-bub .acts .btn:not(.ghost){color:var(--y)!important}
 html #cxPage .sec-bub .acts .btn.ghost{color:var(--muted)!important}
 html #cxPage .sec-bub .acts .btn+.btn{border-left:1px solid var(--line)!important}
@@ -4926,13 +4926,23 @@ html #cxPage .cx-sheet{padding:0 16px calc(12px + env(safe-area-inset-bottom,0px
 .cxs-h b{font-size:16px;font-weight:650;letter-spacing:-.01em;color:var(--ink)}
 .cxs-x{position:absolute;right:0;top:0;width:34px;height:34px;border-radius:50%;border:0;background:var(--sunk);color:var(--muted);font-size:14px;font-weight:700;display:grid;place-items:center;padding:0;cursor:pointer}
 html #cxPage .secretary.sec-chat.cx-mini{height:auto!important;min-height:0;overflow:visible;flex:none}
-html #cxPage .cx-mini .sec-head,html #cxPage .cx-mini #secFirst,html #cxPage .cx-mini #cxHello,html #cxPage .cx-mini #secChips,html #cxPage .cx-mini .sec-new{display:none!important}
+html #cxPage .cx-mini .sec-head,html #cxPage .cx-mini #secFirst,html #cxPage .cx-mini .cx-hav,html #cxPage .cx-mini .cx-hi,html #cxPage .cx-mini #secChips,html #cxPage .cx-mini .sec-new{display:none!important}
 html #cxPage .cx-mini .sec-thread{flex:none;min-height:0;max-height:min(46vh,420px);overflow-y:auto;overscroll-behavior:contain;padding:6px 0 10px}
 html #cxPage .cx-mini.cx-empty .sec-ans{display:none!important}
 /* (13 nov., Angel) pages de l'accueil : bande déplacée à la main (plus de défilement natif) */
 html[data-theme]:root body .wrap.on-home #accBudget .hz-pager.hz-pager{display:block;overflow:hidden!important;scroll-snap-type:none;touch-action:pan-y;-webkit-user-select:none;user-select:none}
 html[data-theme]:root body .wrap.on-home #accBudget .hz-track{display:flex;align-items:flex-start;width:100%;will-change:transform;transform:translate3d(-100%,0,0)}
 html[data-theme]:root body .wrap.on-home #accBudget .hz-track>.hz-pg{flex:0 0 100%}
+/* (13 nov., Angel) fenêtre de Cocoony : le point du jour et les questions toutes prêtes quand la discussion est vide ;
+   1er bouton d'une réponse toujours en jaune (« Voir la liste »), les suivants en gris */
+html #cxPage .cx-mini #cxHello{display:flex;align-items:stretch;text-align:left;gap:10px;padding:2px 0 4px;margin:0}
+html #cxPage .cx-mini .cx-today{margin-top:0}
+html #cxPage .cx-mini .cx-qs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+html #cxPage .cx-mini .cx-qs::-webkit-scrollbar{display:none}
+html #cxPage .cx-mini .cx-q{flex:none;flex-direction:row;align-items:center;gap:7px;border:0;border-radius:999px;background:var(--sunk);padding:9px 14px}
+html #cxPage .cx-mini .cx-q b{font-size:16px}html #cxPage .cx-mini .cx-q span{font-size:14px;white-space:nowrap}
+html #cxView .sec-bub .acts .btn:first-child:not(:disabled),html #cxPage .sec-bub .acts .btn:first-child:not(:disabled){color:var(--yd)!important}
+html[data-theme="dark"] #cxView .sec-bub .acts .btn:first-child:not(:disabled),html[data-theme="dark"] #cxPage .sec-bub .acts .btn:first-child:not(:disabled){color:var(--y)!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -9376,7 +9386,7 @@ function openCxSheet(){ if(!meId()||S.cxU) return; const card=document.querySele
   sheet.append(el("div",{class:"cxs-h"},el("img",{class:"cxs-av",alt:"","aria-hidden":"true",src:I.src||""}),el("b",{text:I.nom||"Cocoony"}),
     el("button",{type:"button",class:"cxs-x","aria-label":"Fermer",onclick:()=>U.close()},el("span",{"aria-hidden":"true",text:"✕"}))));
   let g=$("cxGreet"); if(!g) g=el("div",{class:"sec-row bot",id:"cxGreet"},secAv(),el("div",{class:"sec-bub"},el("span",{class:"sec-text",text:"Comment puis-je t'aider ?"})));
-  th.insertBefore(g,$("secAns")); card.classList.add("cx-mini"); card.style.height=""; sheet.append(card);
+  th.prepend(g); { const h=$("cxHello"); if(h) g.after(h); } card.classList.add("cx-mini"); card.style.height=""; sheet.append(card);
   try{ renderSecAns(); }catch(_){}
   requestAnimationFrame(()=>{ th.scrollTop=th.scrollHeight; });
   /* une réponse qui ouvre une page referme la fenêtre */
@@ -11090,7 +11100,7 @@ function secBotRow(X){ const bub=el("div",{class:"sec-bub"});
    puis une conversation façon Messages (bulles, réponses avec leurs boutons en bas de la bulle, suggestions sur une ligne) */
 const CX_EMO={"Poubelles":"🗑️","Document":"📄","Véhicule":"🚗","Maison":"🔧","Anniversaire":"🎂","Événement":"📅","Événement spécial":"🎉","Prélèvement":"💳","Réserves":"🥫","Courses":"🛒","Budget":"💶","Perso":"🙋"};
 function cxHello(on){ const card=document.querySelector(".secretary.sec-chat"), th=$("secThread"); if(!card||!th) return; card.classList.toggle("cx-empty",!!on);
-  let h=$("cxHello"); if(!on){ if(h) h.remove(); return; } if(!h){ h=el("div",{id:"cxHello",class:"cx-hello"}); th.prepend(h); } h.innerHTML="";
+  let h=$("cxHello"); if(!on){ if(h) h.remove(); return; } if(!h){ h=el("div",{id:"cxHello",class:"cx-hello"}); const gr=$("cxGreet"); if(gr&&gr.parentNode===th) gr.after(h); else th.prepend(h); } h.innerHTML="";
   const m=meM(), hr=new Date().getHours(), I=(()=>{ try{ return secIdent(); }catch(_){ return {}; } })(), src=I.src||((document.querySelector(".brand-logo")||{}).src)||"";
   h.append(el("img",{class:"cx-hav",alt:"",src}),el("h2",{class:"cx-hi"},(hr>=18||hr<4?"Bonsoir":"Bonjour")+(m&&m.nom?" "+m.nom:"")+",",el("br"),el("em",{text:"je m'occupe de quoi ?"})));
   /* le point du jour : 3 lignes au plus */
