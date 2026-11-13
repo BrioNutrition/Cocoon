@@ -4773,6 +4773,8 @@ html[data-theme]:root body .wrap.on-home .brand>div{display:flex;flex-direction:
 html[data-theme]:root body .wrap.on-home .brand .hello .hello-nm{background:none!important;color:var(--ad-y,var(--y))!important;-webkit-text-fill-color:var(--ad-y,var(--y))!important;padding:0;margin:0}
 /* (13 nov., choix A d'Angel) soleil et éclair au trait épais */
 html[data-theme]:root body .wrap.on-home .ad-sh{--mi:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='4.6'/><g stroke='black' stroke-width='2.6' stroke-linecap='round'><path d='M12 1.6 v2.6' transform='rotate(0 12 12)'/><path d='M12 1.6 v2.6' transform='rotate(45 12 12)'/><path d='M12 1.6 v2.6' transform='rotate(90 12 12)'/><path d='M12 1.6 v2.6' transform='rotate(135 12 12)'/><path d='M12 1.6 v2.6' transform='rotate(180 12 12)'/><path d='M12 1.6 v2.6' transform='rotate(225 12 12)'/><path d='M12 1.6 v2.6' transform='rotate(270 12 12)'/><path d='M12 1.6 v2.6' transform='rotate(315 12 12)'/></g></svg>")}html[data-theme]:root body .wrap.on-home #accBudget .wg-sec>span{--mi:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M13.2 2.2 4.6 13.4h6.6l-1 8.4 8.6-11.4h-6.6z' stroke='black' stroke-width='2.2' stroke-linejoin='round'/></svg>")}html[data-theme]:root body .wrap.on-home .ad-sh:before,html[data-theme]:root body .wrap.on-home #accBudget .wg-sec>span:before{width:21px!important;height:21px!important;vertical-align:-5px!important}
+/* (13 nov., choix A d'Angel) accueil : tuiles du Foyer en couleur dans la bulle « Le foyer » (icône maison) */
+html[data-theme]:root body .wrap.on-home #accBudget .wg-sec>span{--mi:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 3.2 2.8 11h2.6v8.6c0 .7.6 1.2 1.2 1.2h3.6v-5.6h3.6v5.6h3.6c.7 0 1.2-.6 1.2-1.2V11h2.6z' stroke='black' stroke-width='1.6' stroke-linejoin='round'/></svg>")!important}html[data-theme]:root body .wrap.on-home #accBudget .hz-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}html[data-theme]:root body .wrap.on-home #accBudget .hz-t{position:relative;display:block;aspect-ratio:1.3/1;border:0;border-radius:18px;overflow:hidden;padding:0;cursor:pointer;text-align:left;font:inherit;background:linear-gradient(180deg,color-mix(in srgb,var(--sc) 82%,#fff),var(--sc));box-shadow:0 1px 2px rgba(0,0,0,.12);-webkit-tap-highlight-color:transparent;transition:transform .15s}html[data-theme]:root body .wrap.on-home #accBudget .hz-t:active{transform:scale(.97)}html[data-theme]:root body .wrap.on-home #accBudget .hz-fi{position:absolute;left:13px;top:12px;width:28px;height:28px}html[data-theme]:root body .wrap.on-home #accBudget .hz-fi svg{width:28px;height:28px;display:block;overflow:visible}html[data-theme]:root body .wrap.on-home #accBudget .hz-fi svg *{fill:#fff;stroke:none}html[data-theme]:root body .wrap.on-home #accBudget .hz-fi svg .d{fill:none;stroke:var(--sc);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}html[data-theme]:root body .wrap.on-home #accBudget .hz-fi svg .s{fill:none;stroke:#fff;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}html[data-theme]:root body .wrap.on-home #accBudget .hz-fi svg .f,html[data-theme]:root body .wrap.on-home #accBudget .hz-fi svg .f *{fill:var(--sc)}html[data-theme]:root body .wrap.on-home #accBudget .hz-t>em{position:absolute;top:10px;right:10px;min-width:26px;height:26px;line-height:26px;padding:0 7px;box-sizing:border-box;border-radius:13px;background:rgba(255,255,255,.28);color:#fff;font:700 13px/26px var(--f-body);font-style:normal;text-align:center}html[data-theme]:root body .wrap.on-home #accBudget .hz-t>em.late{background:#fff;color:#E5484D}html[data-theme]:root body .wrap.on-home #accBudget .hz-t>b{position:absolute;left:13px;right:12px;bottom:11px;color:#fff;font:650 15.5px/1.2 var(--f-body);letter-spacing:-.01em}html[data-theme]:root body .wrap.on-home #accBudget .hz-t>b small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:2px;color:rgba(255,255,255,.88);font:500 12.5px/1.25 var(--f-body)}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -7936,7 +7938,16 @@ function wgTile(k,w,D){ const hk=WGX_HK[k]||"foyer", c=HUB_TC[hk]||w.c; /* (13 n
   b.append(el("strong",{class:"wgc3-v"+(small||String(big).length>6?" sm":""),text:big}),el("b",{class:"wgc3-n",text:w.t}),el("span",{class:"wgc3-l",text:line}));
   if(extra){ extra.classList.add("wgc3-x"); b.append(extra); }
   return b; }
-function renderWidgets(){ try{ famBar(); }catch(_){} const box=$("accBudget"); if(!box) return; if(box.querySelector(".sorting")||box._landing) return; const sig=wgSig(); if(box._sig===sig&&box.querySelector(".wg-grid")) return; box.innerHTML=""; box._sig=sig; if(!meId()) return; box.className="wg-zone";
+function renderWidgets(){ try{ famBar(); }catch(_){} const box=$("accBudget"); if(!box) return; /* (13 nov., choix A d'Angel) les tuiles du Foyer à la place des raccourcis, sous le titre « Le foyer » (maison) */
+  { if(!meId()){ box.innerHTML=""; box._hsig=null; return; } const D=hubData(), cap=x=>x?String(x).charAt(0).toUpperCase()+String(x).slice(1):"";
+    const sig=JSON.stringify(D.map(d=>[d.v,d.sub,d.o.badge||0,d.o.red?1:0])); if(box._hsig===sig&&box.querySelector(".hz-grid")) return; box._hsig=sig; box._sig=null; box.innerHTML=""; box.className="wg-zone hz";
+    box.append(el("div",{class:"wg-sec"},el("span",{text:"Le foyer"})));
+    const g=el("div",{class:"hz-grid"});
+    D.forEach(d=>{ const b=el("button",{type:"button",class:"hz-t","data-go":d.v,style:"--sc:"+(HUB_SC[d.v]||d.c),"aria-label":d.title+(d.sub?", "+d.sub:"")+(d.o.badge?", "+d.o.badge:""),onclick:()=>hubGo(d.v)});
+      const fi=el("span",{class:"hz-fi","aria-hidden":"true"}); fi.innerHTML='<svg viewBox="0 0 24 24">'+(HUB_FI[d.v]||"")+'</svg>'; b.append(fi);
+      if(d.o.badge) b.append(el("em",{class:d.o.red?"late":"",text:String(d.o.badge)}));
+      b.append(el("b",{},d.title,el("small",{text:cap(d.sub)}))); g.append(b); });
+    box.append(g); return; } if(box.querySelector(".sorting")||box._landing) return; const sig=wgSig(); if(box._sig===sig&&box.querySelector(".wg-grid")) return; box.innerHTML=""; box._sig=sig; if(!meId()) return; box.className="wg-zone";
   const g=el("div",{class:"wg-grid"});
   const WL=wgList(); WL.forEach((x,i)=>{ const w=WG[x.k], L=false, D=wgX(x.k);
     if(true){ const t=wgTile(x.k,w,D); if(x.l) t.classList.add("wide"); g.append(t); return; } /* (13 nov., Angel) carré ou long, au choix dans « Modifier » */ /* (12 nov., Angel) widgets « exclusifs » façon Foyer */
@@ -10028,6 +10039,29 @@ function emoSrcC(e){
 function emoIco(e,cls){ const i=el("i",{"aria-hidden":"true",class:cls||"emo"}), u=emoSrcC(e);
   if(u){ i.classList.add("emo-img"); i.append(el("img",{src:u,alt:""})); } else i.textContent=e; return i; }
 const HUB_EMO={foyer:"✅",courses:"🛒",repas:"🍽️",agenda:"📅",budget:"💶",documents:"📄",maison:"🏠",evenements:"🎉"};
+/* (13 nov., Angel) données des tuiles du Foyer, partagées avec l'accueil */
+function hubData(){ const me=meId(), t0=iso(today()), L=[]; const tile=(v,ic,c,title,sub,o)=>{ L.push({v,c,title,sub,o:o||{}}); };
+  // Au quotidien : Tâches, Courses, Repas, Agenda
+  const open=S.foyer.filter(t=>!t.fait).sort(sortOpen), late=open.filter(t=>t.echeance&&t.echeance<t0).length;
+  tile("foyer","","#FFC94A","Tâches",open.length?open[0].titre:"tout est fait",{gly:"taches",badge:open.length||null,red:late>0});
+  // Courses, Repas
+  const nc=(S.courses||[]).filter(i=>!i.fait).length;
+  tile("courses","","#7FD39A","Courses",nc?nc+" article"+(nc>1?"s":""):"liste vide",{gly:"courses",badge:nc||null});
+  const h=new Date().getHours(), mealOf=sl=>(S.repas||[]).find(r=>r.date===t0&&r.slot===sl&&r.plat), ms=h<11&&mealOf("matin")?["Ce matin",mealOf("matin")]:h<15&&mealOf("midi")?["Ce midi",mealOf("midi")]:mealOf("soir")?["Ce soir",mealOf("soir")]:null;
+  tile("repas","","#FF9C80","Repas",ms?ms[0].toLowerCase()+" : "+ms[1].plat:"rien de prévu ce soir",{gly:"repas"});
+  const nr=(S.rdvs||[]).filter(r=>!r.fait&&r.date&&r.date>=t0&&(!r.pour||!r.pour.length||r.pour.includes(me))).sort((a,b)=>(a.date+(a.heure||""))<(b.date+(b.heure||""))?-1:1)[0];
+  tile("agenda","","#8FB8FF","Calendrier",nr?nr.titre+" · "+(nr.date===t0?"aujourd'hui":dueLabel(nr.date))+(nr.heure?" "+heureTxt(nr.heure):""):"rien de prévu",{gly:"rdv",badge:(S.rdvs||[]).filter(r=>!r.fait&&r.date===t0).length||null});
+  const E=monthEst();
+  const soonP=(S.abos||[]).filter(a=>a.actif!==false&&(()=>{ const n=subNext(a); return n&&daysTo(n)<=7; })()).length;
+  tile("budget","","#B9A8F0","Budget",eurR(E.tot)+" en "+E.nm,{gly:"factures",badge:soonP||null});
+  const dz=S.docs.filter(d=>d.expire&&daysTo(d.expire)<=90).length;
+  tile("documents","","#FF9CB0","Papiers",dz?dz+" à refaire":S.docs.length?S.docs.length+" rangé"+(S.docs.length>1?"s":""):"rien de rangé",{gly:"documents",badge:dz||null,red:S.docs.some(d=>d.expire&&daysTo(d.expire)<0)});
+  // Maison
+  let mt=null; for(const b of (S.bins||[])){ const nx=binNext(b); if(nx&&daysTo(iso(nx.sortie))<=1){ mt=b.nom+" "+(iso(nx.sortie)===t0?(b.veille?"ce soir":"aujourd'hui"):"demain"); break; } }
+  if(!mt){ const eq=(S.equip||[]).map(x=>[x,eqNext(x)]).filter(x=>x[1]).sort((a,b)=>a[1]<b[1]?-1:1)[0]; if(eq&&daysTo(eq[1])<=45) mt="Entretien "+(eq[0].nom||"équipement").toLowerCase()+" "+dueLabel(eq[1]); }
+  tile("maison","","#7FCDB9","Maison",mt||"tout le logement",{gly:"maison"});
+  { const ne=evNext(); tile("evenements","","#FF9C80","Événements",ne?evJ(ne)+" · "+(ne.titre||evT(ne).n):"anniv, travaux, vacances…",{gly:"evenements"}); }
+  return L; }
 function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const me=meId(), t0=iso(today());
   /* (12 nov., choix H d'Angel) en-tête « Chez les … » + date, puis la carte des profils, puis les tuiles */
   { const h2=document.querySelector('section[data-view="hub"] .hub-h h2'); if(h2){ h2.classList.remove("sr-only"); h2.classList.add("hb-ttl"); const nm=S.foyerNom?"Chez les "+S.foyerNom.replace(/^(la famille|famille|les)\s+/i,""):"Le foyer"; let d=new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"}); d=d.charAt(0).toUpperCase()+d.slice(1);
@@ -10041,27 +10075,7 @@ function renderHub(){ const H=$("hubGrid"); if(!H) return; H.innerHTML=""; const
     /* (10 nov., choix B d'Angel) tuile carrée en dégradé à la couleur de la rubrique (clair en haut, soutenu en bas), texte noir, icône pleine en haut à gauche */
     { const g=HUB_GR[v]||HUB_GR.evenements; b.style.setProperty("--ga",g[0]); b.style.setProperty("--gb",g[1]); b.style.setProperty("--tc",HUB_TC[v]||HUB_TC.evenements); { const lg=HUB_LG[v]||HUB_LG.evenements; b.style.setProperty("--la",lg[0]); b.style.setProperty("--lb",lg[1]); } /* (12 nov., Angel) dégradés clairs du modèle */ const ic2=el("i",{class:"hb-ico","aria-hidden":"true"}); ic2.innerHTML='<svg viewBox="0 0 32 32">'+(HUB_IC[v]||HUB_IC.evenements)+'</svg>'; /* (12 nov., Angel) plus d'illustration : juste l'icône */ /* (12 nov.) carte façon « Découvrir » */ /* (12 nov., choix C d\'Angel « tout allumé » façon app Maison) icône blanche dans un rond de couleur */ const bt=el("b",{text:title}); if(sub) bt.append(el("small",{text:String(sub).charAt(0).toUpperCase()+String(sub).slice(1)})); b.style.setProperty("--sc",HUB_SC[v]||HUB_SC.evenements); { const fi=el("span",{class:"hb-fi","aria-hidden":"true"}); fi.innerHTML='<svg viewBox="0 0 24 24">'+(HUB_FI[v]||HUB_FI.evenements)+'</svg>'; b.append(ic2,bt,fi); } /* (13 nov., Angel) façon Raccourcis d'Apple : couleur vive + icône blanche pleine dessinée (HUB_FI) + état sous le titre */ { const bg=el("span",{class:"hb-bgi","aria-hidden":"true"}); bg.innerHTML='<svg viewBox="0 0 32 32">'+(HUB_IC[v]||HUB_IC.evenements)+'</svg>'; b.prepend(bg); { const sm=el("span",{class:"hb-smi","aria-hidden":"true"}); sm.innerHTML='<svg viewBox="0 0 24 24">'+(HUB_SM[v]||HUB_SM.evenements)+'</svg>'; b.append(sm); } } /* (12 nov., Angel) grande icône en fond, en coin ; puis petite icône pleine en bas à droite (modèle d'Angel) */ /* (12 nov., choix C « widget » d'Angel) titre + une info en bas */ /* (12 nov., modèle d'Angel) */ }
     if(o.badge) b.append(el("em",{class:o.red?"r":"",text:String(o.badge)})); if(o.extra) b.append(o.extra); G.append(b); return b; };
-  // Au quotidien : Tâches, Courses, Repas, Agenda
-  const open=S.foyer.filter(t=>!t.fait).sort(sortOpen), late=open.filter(t=>t.echeance&&t.echeance<t0).length;
-  tile("foyer","","#FFC94A","Tâches",open.length?open[0].titre:"tout est fait",{gly:"taches",badge:open.length||null,red:late>0});
-  // Courses, Repas
-  const nc=(S.courses||[]).filter(i=>!i.fait).length;
-  tile("courses","","#7FD39A","Courses",nc?nc+" article"+(nc>1?"s":""):"liste vide",{gly:"courses",badge:nc||null});
-  const h=new Date().getHours(), mealOf=sl=>(S.repas||[]).find(r=>r.date===t0&&r.slot===sl&&r.plat), ms=h<11&&mealOf("matin")?["Ce matin",mealOf("matin")]:h<15&&mealOf("midi")?["Ce midi",mealOf("midi")]:mealOf("soir")?["Ce soir",mealOf("soir")]:null;
-  tile("repas","","#FF9C80","Repas",ms?ms[0].toLowerCase()+" : "+ms[1].plat:"rien de prévu ce soir",{gly:"repas"});
-  const nr=(S.rdvs||[]).filter(r=>!r.fait&&r.date&&r.date>=t0&&(!r.pour||!r.pour.length||r.pour.includes(me))).sort((a,b)=>(a.date+(a.heure||""))<(b.date+(b.heure||""))?-1:1)[0];
-  tile("agenda","","#8FB8FF","Calendrier",nr?nr.titre+" · "+(nr.date===t0?"aujourd'hui":dueLabel(nr.date))+(nr.heure?" "+heureTxt(nr.heure):""):"rien de prévu",{gly:"rdv",badge:(S.rdvs||[]).filter(r=>!r.fait&&r.date===t0).length||null});
-  G=G2;
-  const E=monthEst();
-  const soonP=(S.abos||[]).filter(a=>a.actif!==false&&(()=>{ const n=subNext(a); return n&&daysTo(n)<=7; })()).length;
-  tile("budget","","#B9A8F0","Budget",eurR(E.tot)+" en "+E.nm,{gly:"factures",badge:soonP||null});
-  const dz=S.docs.filter(d=>d.expire&&daysTo(d.expire)<=90).length;
-  tile("documents","","#FF9CB0","Papiers",dz?dz+" à refaire":S.docs.length?S.docs.length+" rangé"+(S.docs.length>1?"s":""):"rien de rangé",{gly:"documents",badge:dz||null,red:S.docs.some(d=>d.expire&&daysTo(d.expire)<0)});
-  // Maison
-  let mt=null; for(const b of (S.bins||[])){ const nx=binNext(b); if(nx&&daysTo(iso(nx.sortie))<=1){ mt=b.nom+" "+(iso(nx.sortie)===t0?(b.veille?"ce soir":"aujourd'hui"):"demain"); break; } }
-  if(!mt){ const eq=(S.equip||[]).map(x=>[x,eqNext(x)]).filter(x=>x[1]).sort((a,b)=>a[1]<b[1]?-1:1)[0]; if(eq&&daysTo(eq[1])<=45) mt="Entretien "+(eq[0].nom||"équipement").toLowerCase()+" "+dueLabel(eq[1]); }
-  tile("maison","","#7FCDB9","Maison",mt||"tout le logement",{gly:"maison"});
-  { const ne=evNext(); tile("evenements","","#FF9C80","Événements",ne?evJ(ne)+" · "+(ne.titre||evT(ne).n):"anniv, travaux, vacances…",{gly:"evenements"}); }
+  hubData().forEach((d,i)=>{ if(i===4) G=G2; tile(d.v,"",d.c,d.title,d.sub,d.o); });
   /* (28 oct., Angel) plus de bannière Cocoon Plus ici (elle reste dans Moi et Réglages) ; à la place, la photo du foyer en haut */
   { const sec=H.closest("section"), old=sec&&sec.querySelector(".hb-pban"); if(old) old.remove(); }
   hubPhoto();
