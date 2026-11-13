@@ -4796,6 +4796,42 @@ html body .cn,html body #cocNote{display:none!important}
 /* (13 nov., choix 3 d'Angel) plus d'onglet Foyer dans la barre : Accueil · Cocoony · Moi (les rubriques sont dans « Applications » sur l'accueil) */
 #tabs .tab[data-tab="hub"],.tabs .tab[data-tab="hub"]{display:none!important}
 /* (13 nov., Angel) plus aucun rebond au toucher : rien ne rétrécit ni ne s'enfonce quand on appuie */
+/* (13 nov., Angel) fenêtre de discussion avec Cocoony (onglet Cocoony) : mêmes bulles que la page, en plus discret */
+html #cxPage .secretary.sec-chat{background:none!important;box-shadow:none!important;border:0!important;border-radius:0!important;padding:0!important;gap:8px}
+html #cxPage .sec-thread{order:1}html #cxPage .sec-chips{order:2}
+html #cxPage .sec-thread{gap:6px;padding:4px 2px 6px}
+html #cxPage .sec-row{gap:8px}html #cxPage .sec-av{width:30px;height:30px;border-radius:10px;box-shadow:none}
+html #cxPage .sec-row.bot .sec-bub{flex:0 1 auto;max-width:82%;background:var(--sunk)!important;box-shadow:none!important;border-radius:20px 20px 20px 6px;padding:10px 14px;overflow:hidden}
+html #cxPage .sec-row.bot .sec-bub,html #cxPage .sec-row.bot .sec-bub *{color:var(--ink)!important}
+html #cxPage .sec-row.me{padding-left:60px}
+html #cxPage .sec-row.me .sec-bub{background:linear-gradient(110deg,#FFC94A,#FF9C80 60%,#E79ADB)!important;color:#1C1B2E!important;border-radius:20px 20px 6px 20px;font-size:15.5px;padding:9px 14px}
+html #cxPage .sec-text{font-size:15.5px;font-weight:400;line-height:1.38}
+html #cxPage .sec-bub h2{font-size:16px!important;font-weight:700!important}
+html #cxPage .sec-bub ul{font-size:15px}html #cxPage .sec-bub li::before{background:var(--muted)!important;width:5px;height:5px}
+html #cxPage .sec-bub .acts{display:flex;flex-wrap:nowrap;gap:0;margin:10px -14px -10px;border-top:1px solid var(--line)}
+html #cxPage .sec-bub .acts .btn{flex:1 1 0;min-width:0;background:none!important;border:0!important;border-radius:0;color:#E8A800!important;font-weight:700;font-size:14.5px;line-height:1.25;padding:11px 8px;box-shadow:none!important;white-space:normal}
+:root:not([data-theme="light"]) html #cxPage .sec-bub .acts .btn:not(.ghost),html[data-theme="dark"] #cxPage .sec-bub .acts .btn:not(.ghost){color:var(--y)!important}
+html #cxPage .sec-bub .acts .btn.ghost{color:var(--muted)!important}
+html #cxPage .sec-bub .acts .btn+.btn{border-left:1px solid var(--line)!important}
+html #cxPage .sec-bub .acts .btn:disabled{opacity:.6}
+html #cxPage .sec-seen{margin:-2px 6px 2px 0}
+html #cxPage .sec-new{margin-top:6px;color:var(--muted)}
+html #cxPage .sec-chips{flex-wrap:nowrap!important;overflow-x:auto;margin:0 -16px!important;padding:2px 16px!important;gap:8px}
+html #cxPage .sec-chips button{flex:none;background:var(--sunk)!important;border:0!important;color:var(--ink)!important;font-size:14px;padding:8px 13px}
+html #cxPage .sec-ask{order:3;margin:2px 0 0!important;gap:0;align-items:center;border:1px solid var(--line);border-radius:24px;padding:4px 4px 4px 0;background:var(--surface)}
+html #cxPage .sec-ask input[type=text]{background:none!important;border:0!important;box-shadow:none!important;outline:none!important;font-size:16px;padding:8px 14px}
+html #cxPage .sec-ask:focus-within{border-color:#FF9C80}
+html #cxPage .sec-ask button{width:36px;height:36px;background:var(--y)!important;color:#1C1B2E!important;box-shadow:none!important}
+html #cxPage .sec-ask button svg{width:18px;height:18px;transform:rotate(-90deg)}
+html #cxPage .cx-sheet{padding:0 16px calc(12px + env(safe-area-inset-bottom,0px));overflow:hidden}
+.cxs-h{display:flex;align-items:center;justify-content:center;gap:8px;position:relative;padding:0 44px 10px;min-height:40px}
+.cxs-av{width:28px;height:28px;border-radius:9px;object-fit:cover}
+.cxs-h b{font-size:16px;font-weight:650;letter-spacing:-.01em;color:var(--ink)}
+.cxs-x{position:absolute;right:0;top:0;width:34px;height:34px;border-radius:50%;border:0;background:var(--sunk);color:var(--muted);font-size:14px;font-weight:700;display:grid;place-items:center;padding:0;cursor:pointer}
+html #cxPage .secretary.sec-chat.cx-mini{height:auto!important;min-height:0;overflow:visible;flex:none}
+html #cxPage .cx-mini .sec-head,html #cxPage .cx-mini #secFirst,html #cxPage .cx-mini #cxHello,html #cxPage .cx-mini #secChips,html #cxPage .cx-mini .sec-new{display:none!important}
+html #cxPage .cx-mini .sec-thread{flex:none;min-height:0;max-height:min(46vh,420px);overflow-y:auto;overscroll-behavior:contain;padding:6px 0 10px}
+html #cxPage .cx-mini.cx-empty .sec-ans{display:none!important}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -9210,7 +9246,25 @@ function cxFit(){ const c=document.querySelector("#cxView .secretary"), n=$("tab
   /* app iPhone : la barre du site est cachée, c'est celle d'iOS qui est en bas (≈ 70 px + la zone du bas de l'écran) */
   if(!n.offsetParent){ const p=el("div",{style:"position:fixed;bottom:0;height:env(safe-area-inset-bottom,0px)"}); document.body.append(p); const sb=p.offsetHeight; p.remove(); nt=window.scrollY+innerHeight-sb-70; }
   c.style.height=Math.max(320,Math.round(nt-top-14))+"px"; }
-function openCx(){ if(S.tab!=="cocoony"){ try{ closeSheet(); }catch(_){} setTab("cocoony"); } try{ renderSecChips(); renderSecAns(); }catch(_){} requestAnimationFrame(()=>{ cxFit(); const t=$("secThread"); if(t) t.scrollTop=t.scrollHeight; }); }
+function openCx(){ if(S.cxU){ S.cxU.close(); setTimeout(openCx,320); return; } if(S.tab!=="cocoony"){ try{ closeSheet(); }catch(_){} setTab("cocoony"); } try{ renderSecChips(); renderSecAns(); }catch(_){} requestAnimationFrame(()=>{ cxFit(); const t=$("secThread"); if(t) t.scrollTop=t.scrollHeight; }); }
+/* (13 nov., Angel) fenêtre de discussion avec Cocoony, comme Cocoon Plus mais discrète : la vraie conversation (.secretary.sec-chat)
+   est déplacée dans la feuille #cxPage, puis rangée dans #cxView à la fermeture */
+function openCxSheet(){ if(!meId()||S.cxU) return; const card=document.querySelector(".secretary.sec-chat"), th=$("secThread"); if(!card||!th) return; haptic(10);
+  const t0=S.tab, I=(()=>{ try{ return secIdent(); }catch(_){ return {nom:"Cocoony",src:""}; } })();
+  const U=upSheet("cxPage",I.nom||"Cocoony",()=>{ S.cxU=null; try{ $("secQ").blur(); }catch(_){}
+    setTimeout(()=>{ const g=$("cxGreet"); if(g) g.remove(); card.classList.remove("cx-mini"); card.style.height=""; $("cxView").append(card); if(S.tab==="cocoony"){ try{ cxFit(); }catch(_){} } },300); });
+  S.cxU=U; const sheet=U.sheet; sheet.classList.add("cx-sheet");
+  sheet.append(el("div",{class:"cxs-h"},el("img",{class:"cxs-av",alt:"","aria-hidden":"true",src:I.src||""}),el("b",{text:I.nom||"Cocoony"}),
+    el("button",{type:"button",class:"cxs-x","aria-label":"Fermer",onclick:()=>U.close()},el("span",{"aria-hidden":"true",text:"✕"}))));
+  let g=$("cxGreet"); if(!g) g=el("div",{class:"sec-row bot",id:"cxGreet"},secAv(),el("div",{class:"sec-bub"},el("span",{class:"sec-text",text:"Comment puis-je t'aider ?"})));
+  th.insertBefore(g,$("secAns")); card.classList.add("cx-mini"); card.style.height=""; sheet.append(card);
+  try{ renderSecAns(); }catch(_){}
+  requestAnimationFrame(()=>{ th.scrollTop=th.scrollHeight; });
+  /* une réponse qui ouvre une page referme la fenêtre */
+  sheet.addEventListener("click",()=>setTimeout(()=>{ if(S.cxU===U&&S.tab!==t0) U.close(); },60));
+  setTimeout(()=>{ try{ if(S.cxU===U) $("secQ").focus({preventScroll:true}); }catch(_){} },360); }
+/* faire défiler la discussion vers le haut ne referme pas la fenêtre */
+{ const th=$("secThread"); if(th) th.addEventListener("touchstart",e=>{ if(th.scrollTop>0&&th.closest(".cx-mini")) e.stopPropagation(); },{passive:true}); }
 function closeCx(){}
 { const card=document.querySelector(".secretary.sec-chat"); if(card) $("cxView").append(card); }
 $("cxBtn").addEventListener("click",()=>setTimeout(openCx,0)); window.addEventListener("resize",()=>{ try{ cxFit(); }catch(_){} });
@@ -9505,10 +9559,8 @@ function openRacc(anchor){ if(!meId()) return; haptic(15);
   ["pointerup","pointercancel","pointerleave"].forEach(t=>b.addEventListener(t,stop));
   b.addEventListener("click",e=>{ if(fired){ fired=false; e.preventDefault(); e.stopImmediatePropagation(); } },true);
   b.addEventListener("contextmenu",e=>e.preventDefault());
-  /* (13 nov., Angel) toucher Cocoony = petit menu refermable (ajouter vite, ou parler à Cocoony) ; retoucher ou toucher à côté le referme */
-  let wasOpen=false; const isOpen=()=>{ const M=$("addMenu"); return !!(M&&!M.hidden&&M.classList.contains("racc")); };
-  window.addEventListener("pointerdown",e=>{ if(b.contains(e.target)) wasOpen=isOpen(); },true);
-  b.addEventListener("click",e=>{ e.preventDefault(); e.stopImmediatePropagation(); const M=$("addMenu"); if(wasOpen||isOpen()){ wasOpen=false; if(M){ M.hidden=true; M.classList.remove("racc"); } return; } openRacc(b); },true); }
+  /* (13 nov., Angel) toucher Cocoony = petite fenêtre de discussion (openCxSheet) ; l'appui long garde le menu des raccourcis */
+  b.addEventListener("click",e=>{ e.preventDefault(); e.stopImmediatePropagation(); if(S.cxU){ S.cxU.close(); return; } openCxSheet(); if(window.__nt) setTimeout(()=>{ try{ window.__ntResel&&window.__ntResel(); }catch(_){} },60); },true); }
 function notifAct(h,tries){ h=String(h||""); if(!h) return; tries=tries||0;
   const clean=()=>{ try{ history.replaceState(null,"",location.pathname+location.search); }catch(_){} };
   if(h==="courses"||h==="agenda"){ setTab(h); clean(); return; }
@@ -12468,7 +12520,7 @@ window.TOUR_ALL=[
   {sel:"#members",t:"Ton foyer",d:"Chaque membre a son anneau : il se remplit en vert avec les tâches faites cette semaine. Touche un avatar pour voir sa journée et sa fiche, ou « Ajouter » pour inviter quelqu'un."},
   {sel:"#dayCard",alt:"#rdvWrap",t:"Ta journée",d:"Le plus urgent en haut, puis ta journée heure par heure : tâches à cocher, événements, repas, poubelles."},
   {sel:"#accBudget",opt:true,t:"Tes raccourcis",d:"L'essentiel en un coup d'œil : budget du mois, courses, prochain événement et son avancement… Touche un raccourci pour ouvrir sa rubrique, garde le doigt dessus pour le déplacer, et « Modifier l'accueil » pour en ajouter ou en retirer."},
-  {sel:"#cxBtn",t:"Voici %N",d:"Touche-le pour un petit menu : ajouter vite une tâche, des courses, un événement, un repas, ou lui parler. Écris comme tu parles : « pain, lait », « dentiste jeudi 15h ». %N range tout au bon endroit."},
+  {sel:"#cxBtn",t:"Voici %N",d:"Touche-le pour lui écrire. Écris comme tu parles : « pain, lait », « dentiste jeudi 15h ». %N range tout au bon endroit."},
   {sel:'.tab[data-tab="moi"]',t:"Ton espace",d:"Ta fiche (pointure, médecin, papiers…), tes tâches perso, et les Réglages : apparence, notifications, compte."},
   {sel:"#fySwBtn",opt:true,t:"Plusieurs foyers",d:"Touche le nom de ton foyer pour passer d'un foyer à l'autre, ou en créer un nouveau."},
   {sel:"#premBtn",opt:true,t:"Cocoon Plus",d:"L'étoile ouvre Cocoon Plus : papiers en photo, Cocoony intelligent, papiers illimités… Bonne installation dans ton cocon !"}];
