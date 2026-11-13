@@ -287,7 +287,7 @@ head = f"""<!doctype html>
 <meta name="apple-mobile-web-app-title" content="Cocoon">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="description" content="Cocoon, le carnet partagé de la maison : tâches, courses, papiers, budget.">
-<script>try{{var _t=localStorage.getItem("cocoon.theme");if(!localStorage.getItem("cocoon.themeD")){{localStorage.setItem("cocoon.themeD","1");if(!_t||_t==="auto"){{_t="dark";localStorage.setItem("cocoon.theme","dark");}}}}if(_t!=="auto")document.documentElement.dataset.theme=_t==="light"?"light":"dark";}}catch(e){{document.documentElement.dataset.theme="dark";}}</script>
+<script>try{{var _t=localStorage.getItem("cocoon.theme");if(!localStorage.getItem("cocoon.themeD")){{localStorage.setItem("cocoon.themeD","1");if(!_t||_t==="auto"){{_t="dark";localStorage.setItem("cocoon.theme","dark");}}}}document.documentElement.dataset.theme=_t==="auto"?(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"):_t==="light"?"light":"dark";if(_t==="auto")document.documentElement.dataset.auto="1";}}catch(e){{document.documentElement.dataset.theme="dark";}}</script>
 {INTRO_CSS}
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">

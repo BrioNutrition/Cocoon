@@ -1,5 +1,5 @@
 <title>Cocoon</title>
-<script>/* thème sombre par défaut (demandé par Angel) : « Clair » et « Automatique » restent au choix dans Personnaliser */try{var _t=localStorage.getItem("cocoon.theme");if(!localStorage.getItem("cocoon.themeD")){localStorage.setItem("cocoon.themeD","1");if(!_t||_t==="auto"){_t="dark";localStorage.setItem("cocoon.theme","dark");}}if(_t!=="auto")document.documentElement.dataset.theme=_t==="light"?"light":"dark";}catch(e){document.documentElement.dataset.theme="dark";}</script>
+<script>/* thème sombre par défaut (demandé par Angel) : « Clair » et « Automatique » restent au choix dans Personnaliser */try{var _t=localStorage.getItem("cocoon.theme");if(!localStorage.getItem("cocoon.themeD")){localStorage.setItem("cocoon.themeD","1");if(!_t||_t==="auto"){_t="dark";localStorage.setItem("cocoon.theme","dark");}}document.documentElement.dataset.theme=_t==="auto"?(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"):_t==="light"?"light":"dark";if(_t==="auto")document.documentElement.dataset.auto="1";}catch(e){document.documentElement.dataset.theme="dark";}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
 <style>
@@ -11027,8 +11027,10 @@ function applyTextSize(v){ v=v||textSizeGet(); let pct=100;
   else pct={normal:100,grand:115,tresgrand:130}[v]||100;
   const st=document.documentElement.style; st.webkitTextSizeAdjust=pct+"%"; st.textSizeAdjust=pct+"%"; document.documentElement.dataset.ts=v; }
 try{ applyTextSize(); }catch(_){}
+/* (13 nov.) « Automatique » pose quand même data-theme (clair ou sombre selon le téléphone) : beaucoup de règles en dépendent */
+const THEME_MQ=matchMedia("(prefers-color-scheme: light)"); THEME_MQ.addEventListener&&THEME_MQ.addEventListener("change",()=>{ const r=document.documentElement; if(r.dataset.auto){ r.dataset.theme=THEME_MQ.matches?"light":"dark"; try{ renderAllNow(); }catch(_){} } });
 /* ---------- Thème clair / sombre ---------- */
-function applyTheme(v){ const r=document.documentElement; if(v==="light"||v==="dark") r.dataset.theme=v; else delete r.dataset.theme; try{ localStorage.setItem("cocoon.theme",v||"auto"); }catch(_){} }
+function applyTheme(v){ const r=document.documentElement; if(v==="light"||v==="dark"){ r.dataset.theme=v; delete r.dataset.auto; } else { r.dataset.theme=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"; r.dataset.auto="1"; } try{ localStorage.setItem("cocoon.theme",v||"auto"); }catch(_){} }
 function curTheme(){ return (S.prefs&&S.prefs.theme)||(()=>{ try{ return localStorage.getItem("cocoon.theme"); }catch(_){ return null; } })()||"dark"; }
 function setTheme(v){ applyTheme(v); S.prefs=Object.assign({},S.prefs||{},{theme:v}); if(S.db&&S.uid) S.db.doc("data/users/"+S.uid+"/prefs").set(S.prefs).catch(()=>{}); }
 try{ const t=localStorage.getItem("cocoon.theme"); applyTheme(t==="light"||t==="auto"?t:"dark"); }catch(_){ document.documentElement.dataset.theme="dark"; }

@@ -3,7 +3,7 @@
   "before": null,
   "old": [
    "<title>Cocoon</title>",
-   "<script>/* thème sombre par défaut (demandé par Angel) : « Clair » et « Automatique » restent au choix dans Personnaliser */try{var _t=localStorage.getItem(\"cocoon.theme\");if(!localStorage.getItem(\"cocoon.themeD\")){localStorage.setItem(\"cocoon.themeD\",\"1\");if(!_t||_t===\"auto\"){_t=\"dark\";localStorage.setItem(\"cocoon.theme\",\"dark\");}}if(_t!==\"auto\")document.documentElement.dataset.theme=_t===\"light\"?\"light\":\"dark\";}catch(e){document.documentElement.dataset.theme=\"dark\";}</script>"
+   "<script>/* thème sombre par défaut (demandé par Angel) : « Clair » et « Automatique » restent au choix dans Personnaliser */try{var _t=localStorage.getItem(\"cocoon.theme\");if(!localStorage.getItem(\"cocoon.themeD\")){localStorage.setItem(\"cocoon.themeD\",\"1\");if(!_t||_t===\"auto\"){_t=\"dark\";localStorage.setItem(\"cocoon.theme\",\"dark\");}}document.documentElement.dataset.theme=_t===\"auto\"?(matchMedia(\"(prefers-color-scheme: light)\").matches?\"light\":\"dark\"):_t===\"light\"?\"light\":\"dark\";if(_t===\"auto\")document.documentElement.dataset.auto=\"1\";}catch(e){document.documentElement.dataset.theme=\"dark\";}</script>"
   ],
   "new": [
    "<title>Démo Cocoon</title>"
@@ -78,7 +78,7 @@
  {
   "before": "/* ---------- Thème clair / sombre ---------- */",
   "old": [
-   "function applyTheme(v){ const r=document.documentElement; if(v===\"light\"||v===\"dark\") r.dataset.theme=v; else delete r.dataset.theme; try{ localStorage.setItem(\"cocoon.theme\",v||\"auto\"); }catch(_){} }",
+   "function applyTheme(v){ const r=document.documentElement; if(v===\"light\"||v===\"dark\"){ r.dataset.theme=v; delete r.dataset.auto; } else { r.dataset.theme=matchMedia(\"(prefers-color-scheme: light)\").matches?\"light\":\"dark\"; r.dataset.auto=\"1\"; } try{ localStorage.setItem(\"cocoon.theme\",v||\"auto\"); }catch(_){} }",
    "function curTheme(){ return (S.prefs&&S.prefs.theme)||(()=>{ try{ return localStorage.getItem(\"cocoon.theme\"); }catch(_){ return null; } })()||\"dark\"; }"
   ],
   "new": [
