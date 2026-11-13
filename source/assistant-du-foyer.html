@@ -6527,7 +6527,7 @@ function cocNoteList(){ const me=meId(), out=[], td=iso(today()), h=new Date().g
   for(const ev of evAll()){ const n=daysTo(ev.debut); if(n<0||n>21) continue; const P=evProg(ev), rest=P.tot-P.done; if(rest>0){ out.push({k:"ev"+ev.id+td,t:(ev.titre||evT(ev).n)+(n===0?" aujourd'hui":n===1?" demain":" dans "+n+" j")+" : "+rest+" à préparer",go:"Ouvrir",fn:()=>openEvent(ev.id)}); break; } }
   { const nc=(S.courses||[]).filter(i=>!i.fait).length, ss=cSession&&cSession(); if(ss&&ss.par!==me&&membre(ss.par).nom) out.unshift({k:"cs"+td+ss.par,t:membre(ss.par).nom+" est au magasin 🛒",go:"Ajouter",fn:()=>setTab("courses")}); else if(nc>=8) out.push({k:"nc"+td,t:nc+" articles sur la liste 🛒",go:"Voir",fn:()=>setTab("courses")}); }
   return out; }
-function renderCocNote(){ const box=$("cocNote"); if(!box) return; box.innerHTML=""; if(!S.loaded.t||!meId()||S.readOnly){ box.hidden=true; return; }
+function renderCocNote(){ const box=$("cocNote"); if(!box) return; box.innerHTML=""; box.hidden=true; return; /* (13 nov., Angel) plus de petite note de Cocoony sur l'accueil : « ça sert à rien » */ if(!S.loaded.t||!meId()||S.readOnly){ box.hidden=true; return; }
   let no=[]; try{ no=JSON.parse(localStorage.getItem("cocoon.cocNo")||"[]"); }catch(_){}
   const n=cocNoteList().find(x=>!no.includes(x.k)); if(!n){ box.hidden=true; return; } box.hidden=false;
   const img=el("img",{class:"cn-av",alt:"","aria-hidden":"true"}); try{ const si=document.querySelector(".sec-big"); if(si&&si.src) img.src=si.src; else img.src=document.querySelector(".brand-logo").src; }catch(_){}
