@@ -9430,6 +9430,7 @@ setTab("accueil");
   let cxSent=false;
   NT.addListener("hold",e=>{ const t=TABS[e&&e.index]; if(t&&t[0]==="cocoony") openRacc(null); });
   NT.addListener("shortcut",e=>{ if(e&&e.type) runRacc(String(e.type).replace(/^fr\.cocoon\.app\./,"")); });
+  window.__ntResel=()=>{ sel=-1; try{ sync(); }catch(_){} }; /* (13 nov.) remet l'onglet natif sur la page affichée (après le menu de Cocoony) */
   NT.addListener("select",e=>{ const t=TABS[e&&e.index]; if(!t) return; const b=document.querySelector('#tabs .tab[data-tab="'+t[0]+'"]'); if(b) b.click(); });
   /* barre du haut native : bulle retour, titre, boutons en verre */
   NT.addListener("topbar",e=>{ const id=e&&e.id, bar=document.querySelector(".view:not([hidden]) .hub-bar");
@@ -9486,9 +9487,9 @@ function runRacc(k,tries){ tries=tries||0; if(!RACC.some(r=>r[0]===k)) return;
   else if(k==="courses"){ setTab("courses"); window.scrollTo({top:0}); setTimeout(()=>openCList(CL_DEF),120); }
   else if(k==="rdv"){ setTab("agenda"); fabAct("agenda",{dataset:{direct:"rdv"}}); }
   else if(k==="repas") fabAct("repas");
-  else if(k==="cocoony"){ if(S.tab!=="cocoony") $("cxBtn").click(); setTimeout(()=>{ try{ $("secQ").focus(); }catch(_){} },400); } }
+  else if(k==="cocoony"){ if(S.tab!=="cocoony") openCx(); setTimeout(()=>{ try{ $("secQ").focus(); }catch(_){} },400); } }
 function openRacc(anchor){ if(!meId()) return; haptic(15);
-  const nm=nativeMenu("Raccourcis",RACC.map(([id,title,icon])=>({id,title,icon}))); if(nm){ nm.then(id=>{ if(id) runRacc(id); }); return; }
+  const nm=nativeMenu(null,RACC.map(([id,title,icon])=>({id,title,icon}))); if(nm){ nm.then(id=>{ if(id) runRacc(id); setTimeout(()=>{ try{ window.__ntResel&&window.__ntResel(); }catch(_){} },60); }); return; }
   const M=$("addMenu"); M.innerHTML="";
   for(const [id,t,,gl] of RACC){ const i=el("i",{"aria-hidden":"true"}); if(gl) i.innerHTML=GI(gl); else i.textContent="✨"; M.append(el("button",{type:"button",role:"menuitem",onclick:()=>{ M.hidden=true; runRacc(id); }},i,t)); }
   M.classList.add("racc"); M.style.right=""; M.style.top="auto";
@@ -9503,7 +9504,11 @@ function openRacc(anchor){ if(!meId()) return; haptic(15);
   b.addEventListener("pointermove",e=>{ if(tm&&Math.hypot(e.clientX-x0,e.clientY-y0)>10) stop(); });
   ["pointerup","pointercancel","pointerleave"].forEach(t=>b.addEventListener(t,stop));
   b.addEventListener("click",e=>{ if(fired){ fired=false; e.preventDefault(); e.stopImmediatePropagation(); } },true);
-  b.addEventListener("contextmenu",e=>e.preventDefault()); }
+  b.addEventListener("contextmenu",e=>e.preventDefault());
+  /* (13 nov., Angel) toucher Cocoony = petit menu refermable (ajouter vite, ou parler à Cocoony) ; retoucher ou toucher à côté le referme */
+  let wasOpen=false; const isOpen=()=>{ const M=$("addMenu"); return !!(M&&!M.hidden&&M.classList.contains("racc")); };
+  window.addEventListener("pointerdown",e=>{ if(b.contains(e.target)) wasOpen=isOpen(); },true);
+  b.addEventListener("click",e=>{ e.preventDefault(); e.stopImmediatePropagation(); const M=$("addMenu"); if(wasOpen||isOpen()){ wasOpen=false; if(M){ M.hidden=true; M.classList.remove("racc"); } return; } openRacc(b); },true); }
 function notifAct(h,tries){ h=String(h||""); if(!h) return; tries=tries||0;
   const clean=()=>{ try{ history.replaceState(null,"",location.pathname+location.search); }catch(_){} };
   if(h==="courses"||h==="agenda"){ setTab(h); clean(); return; }
@@ -12463,7 +12468,7 @@ window.TOUR_ALL=[
   {sel:"#members",t:"Ton foyer",d:"Chaque membre a son anneau : il se remplit en vert avec les tâches faites cette semaine. Touche un avatar pour voir sa journée et sa fiche, ou « Ajouter » pour inviter quelqu'un."},
   {sel:"#dayCard",alt:"#rdvWrap",t:"Ta journée",d:"Le plus urgent en haut, puis ta journée heure par heure : tâches à cocher, événements, repas, poubelles."},
   {sel:"#accBudget",opt:true,t:"Tes raccourcis",d:"L'essentiel en un coup d'œil : budget du mois, courses, prochain événement et son avancement… Touche un raccourci pour ouvrir sa rubrique, garde le doigt dessus pour le déplacer, et « Modifier l'accueil » pour en ajouter ou en retirer."},
-  {sel:"#cxBtn",t:"Voici %N",d:"Ton assistant a son propre onglet. Écris comme tu parles : « pain, lait », « dentiste jeudi 15h », « il faut payer la cantine vendredi ». %N range tout au bon endroit."},
+  {sel:"#cxBtn",t:"Voici %N",d:"Touche-le pour un petit menu : ajouter vite une tâche, des courses, un événement, un repas, ou lui parler. Écris comme tu parles : « pain, lait », « dentiste jeudi 15h ». %N range tout au bon endroit."},
   {sel:'.tab[data-tab="moi"]',t:"Ton espace",d:"Ta fiche (pointure, médecin, papiers…), tes tâches perso, et les Réglages : apparence, notifications, compte."},
   {sel:"#fySwBtn",opt:true,t:"Plusieurs foyers",d:"Touche le nom de ton foyer pour passer d'un foyer à l'autre, ou en créer un nouveau."},
   {sel:"#premBtn",opt:true,t:"Cocoon Plus",d:"L'étoile ouvre Cocoon Plus : papiers en photo, Cocoony intelligent, papiers illimités… Bonne installation dans ton cocon !"}];
