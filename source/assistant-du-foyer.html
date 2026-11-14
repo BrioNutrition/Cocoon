@@ -4896,7 +4896,7 @@ html[data-theme="dark"] #cxView .sec-bub .acts .btn:first-child:not(:disabled),h
 .lo-hint{margin:6px 16px 0;font-size:13px;color:var(--muted)}
 
 /* (14 nov., Angel) le mur du foyer : page de gauche du menu glissant de l'accueil */
-html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--mi:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M15.6 2.4a1.4 1.4 0 0 1 1.98 0l4 4a1.4 1.4 0 0 1-.2 2.15l-3.1 2.07-2.3 4.9.9.9a1.1 1.1 0 0 1-1.56 1.56l-3.3-3.3-5.5 5.5a1 1 0 1 1-1.42-1.42l5.5-5.5-3.3-3.3a1.1 1.1 0 0 1 1.56-1.56l.9.9 4.9-2.3 2.07-3.1z'/></svg>")!important}
+html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--mi:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M7 3.5h10A3.5 3.5 0 0 1 20.5 7v6.3h-3.4a3.8 3.8 0 0 0-3.8 3.8v3.4H7A3.5 3.5 0 0 1 3.5 17V7A3.5 3.5 0 0 1 7 3.5zM8.95 8.3h6.1a.95.95 0 0 1 0 1.9h-6.1a.95.95 0 0 1 0-1.9zM8.95 11.9h3.6a.95.95 0 0 1 0 1.9h-3.6a.95.95 0 0 1 0-1.9z'/><path d='M20.4 15.1l-5.3 5.3v-3.2a2.1 2.1 0 0 1 2.1-2.1z'/></svg>")!important}
 .hz-dots button{position:relative}
 .hz-dots button.new:after{content:"";position:absolute;top:-4px;right:-5px;width:8px;height:8px;border-radius:50%;background:#FF3B30;box-shadow:0 0 0 2px var(--surface)}
 .hz-mur{display:flex;flex-direction:column;gap:10px;padding-bottom:4px}
@@ -4926,6 +4926,21 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
 :root:not([data-theme="light"]) .mur-all,html[data-theme="dark"] .mur-all{color:var(--y)}
 .mur-sheet .mur-l{padding:4px 0 24px}
 .mur-sheet .mur-n{background:var(--surface)}
+/* (14 nov., Angel) qui a réagi (appui long sur une réaction) */
+.mur-rb{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.pp-sheet.mw-sheet{min-height:0!important;height:auto!important;max-height:72%}
+.mw-sheet .mw-list{margin-bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+.mw-tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:4px 0 12px;padding:0 2px}
+.mw-tabs::-webkit-scrollbar{display:none}
+.mw-tabs button{flex:none;display:flex;align-items:center;gap:6px;border:0;border-radius:999px;background:var(--sunk);color:var(--muted);font:inherit;font-size:14.5px;font-weight:600;padding:8px 14px;min-height:38px;cursor:pointer}
+.mw-tabs button b{font-weight:700}
+.mw-tabs button .mw-te{font-size:17px;line-height:1}
+.mw-tabs button[aria-selected="true"]{background:color-mix(in srgb,var(--y) 28%,transparent);color:var(--ink)}
+.mw-r{display:flex;align-items:center;gap:12px;min-height:56px;width:100%;border:0;background:none;font:inherit;color:var(--ink);text-align:left;padding:8px 16px}
+.mw-n{flex:1;min-width:0;display:flex;flex-direction:column}
+.mw-n b{font-size:16px;font-weight:600}
+.mw-n small{font-size:12.5px;color:var(--muted)}
+.mw-e{flex:none;font-size:22px;letter-spacing:2px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -7986,7 +8001,7 @@ const HUB_IC={
 const HUB_LG={foyer:["#BAE5DC","#A2D8CD"],courses:["#BDEAD2","#A0D0B8"],repas:["#ECBDA1","#E9A378"],agenda:["#FDF2BC","#F8D992"],budget:["#C8EDF9","#A4DBEE"],documents:["#F4B7BA","#EF9C9F"],maison:["#F6E8B1","#E2C997"],evenements:["#F3CCCA","#E6AAA7"]};
 /* (12 nov., modèle d'Angel) petites icônes pleines en bas à droite des tuiles du Foyer */
 /* (13 nov.) couleurs vives et icônes pleines du Foyer, aussi pour les widgets de l'accueil */
-const HUB_SC={foyer:"#F5A524",courses:"#2EC4A0",repas:"#F2683C",agenda:"#3E7BEA",budget:"#9C5CE6",documents:"#EC5B8C",maison:"#1FAFE0",evenements:"#5DC64A",activites:"#5E60E8"}, HUB_EMO2={foyer:"✅",courses:"🛒",repas:"🍽️",agenda:"📅",budget:"💶",documents:"📄",maison:"🏠",evenements:"🎉"}, HUB_FI={"foyer": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path class=\"d\" d=\"M7.6 12.4l3 3 5.8-6.4\"/>", "courses": "<path d=\"M2.5 3.6h2.3l.6 2.3h15a.9.9 0 0 1 .87 1.1l-1.65 6.9a1.7 1.7 0 0 1-1.65 1.3H8.4a1.7 1.7 0 0 1-1.65-1.3L4.3 4.9H2.5z\"/><circle cx=\"9\" cy=\"19.6\" r=\"1.9\"/><circle cx=\"17\" cy=\"19.6\" r=\"1.9\"/><path class=\"d\" d=\"M10 9.3v3.2M13.4 9.3v3.2M16.8 9.3v3.2\"/>", "repas": "<path class=\"s\" d=\"M5.5 2.8v5.4a2.6 2.6 0 0 0 5.2 0V2.8M8.1 2.8v18.4\"/><path d=\"M18.4 2.6c-2.4.9-3.9 3.6-3.9 7.2v3.7h2.2v7.4a1.25 1.25 0 0 0 2.5 0V3.5a.9.9 0 0 0-.8-.9z\"/>", "agenda": "<rect x=\"3\" y=\"4.6\" width=\"18\" height=\"16.6\" rx=\"3.2\"/><path class=\"s\" d=\"M8 2.6v4M16 2.6v4\"/><path class=\"d\" d=\"M3.4 9.6h17.2\"/><g class=\"f\"><circle cx=\"8\" cy=\"13.6\" r=\"1.25\"/><circle cx=\"12\" cy=\"13.6\" r=\"1.25\"/><circle cx=\"16\" cy=\"13.6\" r=\"1.25\"/><circle cx=\"8\" cy=\"17.4\" r=\"1.25\"/><circle cx=\"12\" cy=\"17.4\" r=\"1.25\"/></g>", "budget": "<path d=\"M5.4 6.3L15.2 3a1.4 1.4 0 0 1 1.85 1.33V6.3z\"/><rect x=\"2.6\" y=\"6\" width=\"18.8\" height=\"14.6\" rx=\"3.2\"/><path class=\"f\" d=\"M21.4 10.6h-4.2a2.6 2.6 0 0 0 0 5.2h4.2z\"/><circle cx=\"17.3\" cy=\"13.2\" r=\"1.1\"/>", "documents": "<path d=\"M6.2 2.5h7.9l5.4 5.4V19.8a1.7 1.7 0 0 1-1.7 1.7H6.2a1.7 1.7 0 0 1-1.7-1.7V4.2a1.7 1.7 0 0 1 1.7-1.7z\"/><path class=\"d\" d=\"M14 2.8v4.3a.9.9 0 0 0 .9.9h4.3M8.3 12.3h7.4M8.3 15.9h7.4M8.3 8.8h2.8\"/>", "maison": "<path d=\"M12 2.9l9 7.5v9.6a1.6 1.6 0 0 1-1.6 1.6H15.2v-5.8a1.2 1.2 0 0 0-1.2-1.2h-4a1.2 1.2 0 0 0-1.2 1.2v5.8H4.6A1.6 1.6 0 0 1 3 20V10.4z\"/>", "activites": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path class=\"d\" d=\"M12 7.4l3.5 2.5-1.3 4.1H9.8L8.5 9.9z M12 2.6v4.8M15.5 9.9l4.3-1.5M14.2 14l2.7 3.8M9.8 14l-2.7 3.8M8.5 9.9L4.2 8.4\"/>", "evenements": "<rect x=\"2.8\" y=\"8\" width=\"18.4\" height=\"4.6\" rx=\"1.3\"/><rect x=\"4.4\" y=\"12.6\" width=\"15.2\" height=\"8.9\" rx=\"1.6\"/><path class=\"d\" d=\"M12 8.2v13.2\"/><path class=\"s\" d=\"M12 8c-1.4-3.8-5-4.4-5.4-2.4C6.2 7.5 9.4 8 12 8c2.6 0 5.8-.5 5.4-2.4C17 3.6 13.4 4.2 12 8z\"/>"};
+const HUB_SC={foyer:"#F5A524",courses:"#2EC4A0",repas:"#F2683C",agenda:"#3E7BEA",budget:"#9C5CE6",documents:"#EC5B8C",maison:"#1FAFE0",evenements:"#5DC64A",activites:"#5E60E8"}, HUB_EMO2={foyer:"✅",courses:"🛒",repas:"🍽️",agenda:"📅",budget:"💶",documents:"📄",maison:"🏠",evenements:"🎉"}, HUB_FI={"foyer": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path class=\"d\" d=\"M7.6 12.4l3 3 5.8-6.4\"/>", "courses": "<path d=\"M2.5 3.6h2.3l.6 2.3h15a.9.9 0 0 1 .87 1.1l-1.65 6.9a1.7 1.7 0 0 1-1.65 1.3H8.4a1.7 1.7 0 0 1-1.65-1.3L4.3 4.9H2.5z\"/><circle cx=\"9\" cy=\"19.6\" r=\"1.9\"/><circle cx=\"17\" cy=\"19.6\" r=\"1.9\"/><path class=\"d\" d=\"M10 9.3v3.2M13.4 9.3v3.2M16.8 9.3v3.2\"/>", "repas": "<path class=\"s\" d=\"M5.5 2.8v5.4a2.6 2.6 0 0 0 5.2 0V2.8M8.1 2.8v18.4\"/><path d=\"M18.4 2.6c-2.4.9-3.9 3.6-3.9 7.2v3.7h2.2v7.4a1.25 1.25 0 0 0 2.5 0V3.5a.9.9 0 0 0-.8-.9z\"/>", "agenda": "<rect x=\"3\" y=\"4.6\" width=\"18\" height=\"16.6\" rx=\"3.2\"/><path class=\"s\" d=\"M8 2.6v4M16 2.6v4\"/><path class=\"d\" d=\"M3.4 9.6h17.2\"/><g class=\"f\"><circle cx=\"8\" cy=\"13.6\" r=\"1.25\"/><circle cx=\"12\" cy=\"13.6\" r=\"1.25\"/><circle cx=\"16\" cy=\"13.6\" r=\"1.25\"/><circle cx=\"8\" cy=\"17.4\" r=\"1.25\"/><circle cx=\"12\" cy=\"17.4\" r=\"1.25\"/></g>", "budget": "<path d=\"M5.4 6.3L15.2 3a1.4 1.4 0 0 1 1.85 1.33V6.3z\"/><rect x=\"2.6\" y=\"6\" width=\"18.8\" height=\"14.6\" rx=\"3.2\"/><path class=\"f\" d=\"M21.4 10.6h-4.2a2.6 2.6 0 0 0 0 5.2h4.2z\"/><circle cx=\"17.3\" cy=\"13.2\" r=\"1.1\"/>", "documents": "<path d=\"M6.2 2.5h7.9l5.4 5.4V19.8a1.7 1.7 0 0 1-1.7 1.7H6.2a1.7 1.7 0 0 1-1.7-1.7V4.2a1.7 1.7 0 0 1 1.7-1.7z\"/><path class=\"d\" d=\"M14 2.8v4.3a.9.9 0 0 0 .9.9h4.3M8.3 12.3h7.4M8.3 15.9h7.4M8.3 8.8h2.8\"/>", "maison": "<path d=\"M12 2.9l9 7.5v9.6a1.6 1.6 0 0 1-1.6 1.6H15.2v-5.8a1.2 1.2 0 0 0-1.2-1.2h-4a1.2 1.2 0 0 0-1.2 1.2v5.8H4.6A1.6 1.6 0 0 1 3 20V10.4z\"/>", "activites": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path class=\"d\" d=\"M12 2.3v19.4M2.3 12h19.4M5.4 4.6c2.5 2.1 3.8 4.6 3.8 7.4s-1.3 5.3-3.8 7.4M18.6 4.6c-2.5 2.1-3.8 4.6-3.8 7.4s1.3 5.3 3.8 7.4\"/>", "evenements": "<rect x=\"2.8\" y=\"8\" width=\"18.4\" height=\"4.6\" rx=\"1.3\"/><rect x=\"4.4\" y=\"12.6\" width=\"15.2\" height=\"8.9\" rx=\"1.6\"/><path class=\"d\" d=\"M12 8.2v13.2\"/><path class=\"s\" d=\"M12 8c-1.4-3.8-5-4.4-5.4-2.4C6.2 7.5 9.4 8 12 8c2.6 0 5.8-.5 5.4-2.4C17 3.6 13.4 4.2 12 8z\"/>"};
 const HUB_SM={foyer:'<circle cx="12" cy="12" r="11"/><path class="w" d="M6.8 12.4l3.4 3.4L17.2 8.8" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>',
   courses:'<path d="M1 3.2c0-.7.5-1.2 1.2-1.2h1.9c.9 0 1.6.6 1.8 1.4L6.2 5H21.5c.9 0 1.5.8 1.3 1.6l-1.6 7.2c-.2.9-1 1.5-1.9 1.5H8.4l.4 1.7h11a1.2 1.2 0 0 1 0 2.4H7.9c-.6 0-1.1-.4-1.2-1L3.8 4.4H2.2C1.5 4.4 1 3.9 1 3.2z"/><circle cx="9" cy="21.2" r="1.8"/><circle cx="18.2" cy="21.2" r="1.8"/>',
   repas:'<path d="M4.4 2.1a.8.8 0 0 1 1.6 0V7h1V2.1a.8.8 0 0 1 1.6 0V7h1V2.1a.8.8 0 0 1 1.6 0v5.6c0 1.4-.9 2.6-2.2 3V21a1.3 1.3 0 0 1-2.6 0V10.7c-1.3-.4-2.2-1.6-2.2-3z"/><path d="M18.4 1.9c1.6.7 2.6 3.6 2.6 7.3v3.5h-1.6V21a1.3 1.3 0 0 1-2.6 0V3c0-.8.8-1.4 1.6-1.1z"/>',
@@ -8254,7 +8269,7 @@ function murSee(){ try{ localStorage.setItem("cocoon.murSeen",String(Date.now())
 function murAgo(t){ const m=Math.round((Date.now()-t)/6e4); if(m<1) return "à l'instant"; if(m<60) return "il y a "+m+" min"; const h=Math.round(m/60); if(h<24) return "il y a "+h+" h"; const d=Math.round(h/24); return d===1?"hier":d<7?"il y a "+d+" j":new Date(t).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}); }
 const murSorted=()=>(S.mur||[]).slice().sort((a,b)=>(b.epingle?1:0)-(a.epingle?1:0)||(b.at||0)-(a.at||0));
 function murNote(n){ const me=meId(), m=membre(n.par)||{}, mine=n.par===me, R=n.reac||{};
-  const reac=el("div",{class:"mur-r"},...MUR_R.map(e=>{ const ids=R[e]||[], on=ids.includes(me); return el("button",{type:"button",class:"mur-rb"+(on?" on":""),"aria-pressed":String(on),"aria-label":e+(ids.length?" "+ids.length:""),onclick:ev=>{ ev.stopPropagation(); murReact(n,e); }},el("span",{"aria-hidden":"true",text:e}),ids.length?el("b",{text:String(ids.length)}):null); }));
+  const reac=el("div",{class:"mur-r"},...MUR_R.map(e=>{ const ids=R[e]||[], on=ids.includes(me); const b=el("button",{type:"button",class:"mur-rb"+(on?" on":""),"aria-pressed":String(on),"aria-label":e+(ids.length?" "+ids.length+", rester appuyé pour voir qui":""),onclick:ev=>{ ev.stopPropagation(); murReact(n,e); }},el("span",{"aria-hidden":"true",text:e}),ids.length?el("b",{text:String(ids.length)}):null); murHold(b,n,e); return b; }));
   const more=mine||isAdmin()?el("button",{type:"button",class:"mur-more","aria-label":"Options du petit mot",onclick:ev=>{ ev.stopPropagation(); murMenu(ev.currentTarget,n); }},el("span",{"aria-hidden":"true",text:"⋯"})):null;
   return el("div",{class:"mur-n"+(n.epingle?" pin":""),"data-mid":n.id},
     el("div",{class:"mur-h"},avatar(n.par,26),el("b",{text:mine?"Moi":(m.nom||"Quelqu'un")}),el("small",{text:(n.epingle?"📌 ":"")+murAgo(n.at||Date.now())}),more),
@@ -8272,6 +8287,23 @@ function murMenu(btn,n){ const old=document.querySelector(".ev-pop"); if(old){ o
     popItem("🗑","Supprimer",async()=>{ close(); try{ await S.db.collection("mur").doc(n.id).delete(); toast("Petit mot supprimé."); }catch(e){ writeErr(e); } },"danger"));
   const r=btn.getBoundingClientRect(); pop.style.position="fixed"; pop.style.zIndex="90"; pop.style.top=Math.min(r.bottom+6,innerHeight-130)+"px"; pop.style.right=Math.max(12,innerWidth-r.right)+"px"; pop.style.left="auto"; pop.style.transformOrigin="top right";
   document.body.append(pop); requestAnimationFrame(()=>pop.classList.add("in")); setTimeout(()=>document.addEventListener("pointerdown",away,true),0); }
+/* (14 nov., Angel) rester appuyé sur une réaction = la liste de ceux qui ont réagi, comme Messenger ou Discord */
+function murHold(b,n,e){ let tm=0, x0=0, y0=0, fired=false; const any=()=>MUR_R.some(k=>((n.reac||{})[k]||[]).length);
+  const stop=()=>{ clearTimeout(tm); tm=0; };
+  b.addEventListener("pointerdown",ev=>{ fired=false; if(!any()) return; x0=ev.clientX; y0=ev.clientY; stop(); tm=setTimeout(()=>{ tm=0; fired=true; haptic(15); murWho(n,e); },430); });
+  b.addEventListener("pointermove",ev=>{ if(tm&&Math.hypot(ev.clientX-x0,ev.clientY-y0)>8) stop(); });
+  ["pointerup","pointercancel","pointerleave"].forEach(t=>b.addEventListener(t,stop));
+  b.addEventListener("click",ev=>{ if(fired){ fired=false; ev.preventDefault(); ev.stopImmediatePropagation(); } },true);
+  b.addEventListener("contextmenu",ev=>{ ev.preventDefault(); if(any()&&!fired) murWho(n,e); }); }
+function murWho(n,e0){ const R=n.reac||{}, me=meId(), E=MUR_R.filter(k=>(R[k]||[]).length); if(!E.length) return;
+  const all=E.flatMap(k=>R[k].map(id=>[id,k])), U=upSheet("murWhoPage","Réactions"), sheet=U.sheet; sheet.classList.add("ev-sheet","ap-sheet","mw-sheet");
+  const inn=el("div",{class:"pp-in ap-in"}); sheet.append(inn); let f=(R[e0]||[]).length?e0:null;
+  const tabs=el("div",{class:"mw-tabs",role:"tablist","aria-label":"Réactions"}), list=el("div",{class:"ap-opt mw-list"});
+  const draw=()=>{ tabs.replaceChildren(el("button",{type:"button",role:"tab","aria-selected":String(!f),onclick:()=>{ f=null; haptic(5); draw(); }},el("span",{text:"Tout"}),el("b",{text:String(all.length)})),
+      ...E.map(k=>el("button",{type:"button",role:"tab","aria-selected":String(f===k),"aria-label":k+" "+R[k].length,onclick:()=>{ f=k; haptic(5); draw(); }},el("span",{class:"mw-te",text:k}),el("b",{text:String(R[k].length)}))));
+    const by=new Map(); for(const [id,k] of (f?R[f].map(id=>[id,f]):all)){ if(!by.has(id)) by.set(id,[]); by.get(id).push(k); }
+    list.replaceChildren(...[...by].map(([id,ks])=>{ const m=membre(id)||{}, mine=id===me; return el(mine?"button":"div",Object.assign({class:"ap-r mw-r"},mine?{type:"button","aria-label":"Retirer ma réaction",onclick:async()=>{ for(const k of ks) await murReact(n,k); U.close(); }}:{}),avatar(id,34),el("span",{class:"mw-n"},el("b",{text:mine?(m.nom||"Moi")+" (moi)":(m.nom||"Quelqu'un")}),mine?el("small",{text:"Toucher pour retirer"}):null),el("span",{class:"mw-e","aria-label":ks.join(" "),text:ks.join(" ")})); })); };
+  draw(); const H=apHead("Réactions",()=>U.close(),{onOk:()=>U.close(),label:"Fermer"}); inn.append(H.hd,tabs,list); }
 function murPage(){ const L=murSorted(), out=[];
   const inp=el("input",{type:"text",id:"murIn",maxlength:"280",placeholder:"Un petit mot pour le foyer…","aria-label":"Écrire un petit mot au foyer",enterkeyhint:"send"}); inp.value=S.murDraft||"";
   const send=el("button",{type:"submit",class:"mur-send","aria-label":"Publier"}); send.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>';
@@ -8279,7 +8311,7 @@ function murPage(){ const L=murSorted(), out=[];
   const f=el("form",{class:"mur-f",autocomplete:"off"},inp,send);
   f.addEventListener("submit",async e=>{ e.preventDefault(); const v=inp.value; if(!v.trim()){ inp.focus(); return; } send.disabled=true; const ok=await murSend(v); send.disabled=false; if(ok){ S.murDraft=""; const i=$("murIn"); if(i){ i.value=""; i.blur(); } } });
   out.push(f);
-  if(!L.length) out.push(el("div",{class:"mur-empty"},el("b",{text:"Aucun petit mot pour l'instant."}),el("small",{text:"« Code du portail : 4521 », « Je rentre tard ce soir »… Tout le foyer le voit."})));
+  if(!L.length) out.push(el("div",{class:"mur-empty"},el("b",{text:"Aucun petit mot pour l'instant."})));
   else { out.push(el("div",{class:"mur-l"},...L.slice(0,3).map(murNote))); if(L.length>3) out.push(el("button",{type:"button",class:"mur-all",text:"Voir les "+L.length+" petits mots",onclick:openMur})); }
   return out; }
 function openMur(){ const U=upSheet("murPage","Le mur du foyer"), sheet=U.sheet; sheet.classList.add("ev-sheet","ap-sheet","mur-sheet"); const inn=el("div",{class:"pp-in ap-in"}); sheet.append(inn);
