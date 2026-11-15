@@ -12441,7 +12441,10 @@ async function clSave(l){ if(!l) return; const arts=cItemsOf(l.id).slice().sort(
   const doc={titre:l.titre||"Liste de courses",couleur:clCol(l),lieu:l.lieu||null,prive:!!l.prive,articles:arts,par:meId(),le:Date.now()};
   try{ if(old) await S.db.collection("modeles").doc(old.id).set(doc); else await S.db.collection("modeles").add(doc); haptic(8);
     toast("💾 « "+esc(doc.titre)+" » "+(old?"mise à jour":"enregistrée")+" : tu la recréeras avec le +, même après l'avoir supprimée."); }catch(e){ writeErr(e); } }
-async function clRecreer(m){ try{ if(S.clSheet&&!S.clSheet._gone) S.clSheet.close(); const id=await clNew({titre:m.titre,couleur:m.couleur,lieu:m.lieu,prive:m.prive},m.articles||[],false); openCList(id); toast("« "+esc(m.titre||"Courses")+" » est prête."); }catch(e){ writeErr(e); } }
+async function clRecreer(m){ try{ if(S.clSheet&&!S.clSheet._gone) S.clSheet.close(); const id=await clNew({titre:m.titre,couleur:m.couleur,lieu:m.lieu,prive:m.prive},m.articles||[],false);
+  /* (15 nov., Angel) la liste recréée ne s'ouvre pas : elle se range à la suite des autres */
+  if(S.tab!=="courses") setTab("courses"); renderCourses(); toast("« "+esc(m.titre||"Courses")+" » est prête.");
+  setTimeout(()=>{ const c=document.querySelector('.cl-card[data-vt="clc-'+id+'"]'); if(c) c.scrollIntoView({block:"nearest",behavior:"smooth"}); },380); }catch(e){ writeErr(e); } }
 /* « + » : nouvelle liste, ou recréer une liste enregistrée */
 function openCListPick(){ const M=clMods(); if(!M.length){ openCListForm(null); return; }
   const U=clSheet(); clClear(U); const inn=el("div",{class:"pp-in ev-in cl-in"}); U.sheet.append(inn);
