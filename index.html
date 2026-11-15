@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="15/11 15:53";</script>
+<script>window.COCOON_BUILD="15/11 16:05";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -5098,6 +5098,23 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
 .bx-feed .np-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:48px 18px}
 .bx-feed .np-empty b{font-size:18px;color:var(--ink)}
 .bx-feed .np-empty span{max-width:300px;font-size:15px;line-height:1.4;color:var(--muted)}
+
+/* (15 nov., choix F d'Angel) listes de courses fermées « façon Notes » */
+.cl-notes{background:var(--surface);border-radius:18px;overflow:hidden;margin-bottom:6px}
+.cl-card.cln{display:flex;flex-direction:row;align-items:flex-start;gap:12px;padding:13px 14px 13px 16px;border:0;border-radius:0;background:none;min-height:0;cursor:pointer;text-align:left;box-shadow:none;aspect-ratio:auto}
+.cl-card.cln+.cl-card.cln{border-top:1px solid var(--line)}
+.cln-dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--c);margin-top:6px}
+.cln-tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.cln-tx>b{font-size:16.5px;font-weight:700;color:var(--ink);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cln-p{margin-top:2px;font-size:14px;line-height:1.35;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cln-p em{font-style:normal;color:var(--ink);opacity:.82}
+.cln-m{display:flex;align-items:center;gap:7px;margin-top:8px;flex-wrap:wrap}
+.cln-m small{font-size:12.5px;color:var(--muted)}
+.cln-c{flex:none;align-self:flex-start;margin-top:1px;font-size:13px;font-weight:700;border-radius:999px;padding:3px 10px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.cln-c.go{background:color-mix(in srgb,var(--y) 22%,transparent);color:var(--yd)}
+:root:not([data-theme="light"]) .cln-c.go,html[data-theme="dark"] .cln-c.go{color:var(--y)}
+.cln-c.ok{background:color-mix(in srgb,#34C759 18%,transparent);color:#1E9E46}
+:root:not([data-theme="light"]) .cln-c.ok,html[data-theme="dark"] .cln-c.ok{color:#4ADE80}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -12398,6 +12415,23 @@ function clRow(l,open){ const its=cItemsOf(l.id).slice().sort((a,b)=>cOrd(a)-cOr
     el("small",{text:cap}),el("b",{text:l.titre||"Liste de courses"}),
     !open&&n?el("span",{class:"ka-pv ka-cnt",text:"🛒 "+ok+" / "+n}):null,
     open?el("span",{class:"ka-pv ka-cnt",text:n?"🛒 "+ok+" / "+n:"Liste vide"}):n?el("span",{class:"ka-ul"},...its.slice(0,3).map(i=>el("span",{class:"ka-li"+(i.fait?" f":"")},el("i",{},foodEmo(i.nom)?el("span",{class:"f-emo","aria-hidden":"true",text:foodEmo(i.nom)}):null,i.nom))),n>3?el("span",{class:"ka-more",text:"+ "+(n-3)+" autre"+(n>4?"s":"")}):null):el("span",{class:"ka-pv",text:"Liste vide"})); }
+/* (15 nov., choix F d'Angel) listes fermées « façon Notes » : point de couleur, nom, « date · articles à prendre » en une phrase,
+   qui y va, et « N à prendre » à droite ; rangées par Cette semaine / Plus tard / Sans date */
+function clNoteRow(l){ const its=cItemsOf(l.id).slice().sort((a,b)=>cOrd(a)-cOrd(b)), todo=its.filter(i=>!i.fait), n=its.length, me=meId();
+  const vt="clc-"+String(l.id).replace(/[^A-Za-z0-9_-]/g,"_"), tg=()=>{ haptic(5); openCList(l.id); };
+  const when=[l.date?clWhen(l.date):"",l.lieu||""].filter(Boolean).join(" · ");
+  const arts=!n?"Liste vide":!todo.length?"Tout est dans le caddie":todo.map(i=>i.nom).join(", ");
+  const who=l.qui&&membre(l.qui)&&membre(l.qui).id?l.qui:null;
+  const cnt=!n?el("span",{class:"cln-c",text:"Vide"}):!todo.length?el("span",{class:"cln-c ok",text:"✓ Tout pris"}):el("span",{class:"cln-c go",text:todo.length+" à prendre"});
+  return el("div",{class:"cl-card cln",role:"button",tabindex:"0","data-vt":vt,style:"--c:"+clCol(l)+";view-transition-name:"+(S.clClosing===l.id?"cl-x":vt),
+      "aria-label":(l.titre||"Liste")+", "+(when?when+", ":"")+(n?todo.length+" à prendre sur "+n:"liste vide"),
+      onclick:tg,onkeydown:e=>{ if(e.target===e.currentTarget&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); tg(); } }},
+    el("span",{class:"cln-dot","aria-hidden":"true"}),
+    el("span",{class:"cln-tx"},el("b",{text:l.titre||"Liste de courses"}),
+      el("span",{class:"cln-p"},when?el("em",{text:when}):null,when?" · ":null,arts),
+      (who||l.prive||l.recur)?el("span",{class:"cln-m"},who?avatar(who,22):null,who?el("small",{text:(who===me?"Tu y vas":(membre(who).nom||"Quelqu'un")+" y va")}):null,
+        l.prive?el("small",{text:"🔒 moi seul"}):null,l.recur?el("small",{text:"🔁 chaque semaine"}):null):null),
+    cnt); }
 /* le contenu déroulé : le champ, les habituels, « Pour qui », les articles (mêmes éléments qu'avant, déplacés dedans) + Valider et ⋯ */
 let CL_PANEL=null;
 function clPanelFill(id){ if(!CL_PANEL) CL_PANEL=el("div",{class:"cl-panel"}); const P=CL_PANEL; P.innerHTML="";
@@ -12416,19 +12450,14 @@ function renderCHome(){ const H=$("cHome"); if(!H) return; if(!meId()){ clStash(
   const act=clActives();
   if(S.clOpenId&&!act.some(l=>l.id===S.clOpenId)&&clLOpen()) S.clLU.close();
   const open=null;
-  if(!CL_GRID) CL_GRID=el("div",{class:"cl-grid"}); const G=CL_GRID, W=CL_OPEN, keep=!!(open&&W&&W.parentNode===G&&G.parentNode===H&&W._id===open);
+  const keep=false;
   /* le bloc déroulé reste en place (le champ garde le clavier) : on remplace seulement ce qu'il y a autour */
-  if(keep){ [...H.childNodes].forEach(n=>{ if(n!==G) n.remove(); }); [...G.childNodes].forEach(n=>{ if(n!==W) n.remove(); }); }
-  else { if(!clLOpen()&&!S.clLClosing) clStash(); H.innerHTML=""; G.innerHTML=""; }
-  const sec=el("p",{class:"cl-sec",text:"Mes listes"}); if(keep) H.insertBefore(sec,G); else H.append(sec);
-  if(!act.length) H.insertBefore(el("div",{class:"empty cl-empty"},el("strong",{text:"Aucune liste en cours"}),"Touche le + en haut à droite pour en créer une."),keep?G:null);
-  if(!keep) H.append(G);
-  const ord=open?act.filter(l=>l.id===open).concat(act.filter(l=>l.id!==open)):act;
-  for(const l of ord){ const card=clRow(l,l.id===open);
-    if(l.id!==open){ G.append(card); continue; }
-    if(keep) W.firstChild.replaceWith(card);
-    else { if(!CL_OPEN) CL_OPEN=el("div",{class:"cl-open"}); CL_OPEN.style.viewTransitionName=""; CL_OPEN.innerHTML=""; clPanelFill(open); CL_OPEN.append(card,CL_PANEL); CL_OPEN._id=open; G.append(CL_OPEN); }
-    CL_OPEN.style.viewTransitionName=card.style.viewTransitionName||""; card.style.viewTransitionName="none"; }
+  if(!clLOpen()&&!S.clLClosing) clStash(); H.innerHTML="";
+  if(!act.length){ H.append(el("p",{class:"cl-sec",text:"Mes listes"}),el("div",{class:"empty cl-empty"},el("strong",{text:"Aucune liste en cours"}),"Touche le + en haut à droite pour en créer une.")); }
+  else { const lim=iso(new Date(today().getTime()+6*864e5)), grp=[["Cette semaine",[]],["Plus tard",[]],["Sans date",[]]];
+    for(const l of act) grp[!l.date?2:l.date<=lim?0:1][1].push(l);
+    const used=grp.filter(g=>g[1].length);
+    for(const [t,L] of used){ H.append(el("p",{class:"cl-sec",text:used.length===1?"Mes listes":t}),el("div",{class:"cl-notes"},...L.map(clNoteRow))); } }
   const v=$("clVal"); if(v) v.disabled=!cItemsOf(S.cListe||CL_DEF).length; }
 /* créer / modifier une liste (feuille du bas comme « Nouveau rendez-vous ») */
 function openCListForm(l){ if(!needMe()) return; const me=meId(), edit=!!l;
