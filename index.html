@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="15/11 10:58";</script>
+<script>window.COCOON_BUILD="15/11 14:21";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -5044,6 +5044,33 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
 #bellBtn:has(#nRappels:not([hidden])) .mbx-fl{transform:none;opacity:1;fill:var(--y)}
 #bellBtn.ring svg{animation:none}
 #bellBtn .n{top:-3px;right:-10px}
+/* (15 nov., Angel) boîte aux lettres : grand panneau à deux filtres */
+#npanel.np-big{top:calc(env(safe-area-inset-top,0px) + 10px);left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);width:auto;max-width:640px;max-height:none;margin:0 auto;z-index:85;border-radius:28px;background:var(--bg);border:1px solid var(--line);transform-origin:calc(100% - 34px) 30px!important;transform:scale(.55);opacity:0;transition:transform .36s cubic-bezier(.2,.9,.25,1),opacity .2s ease}
+#npanel.np-big.on{transform:none;opacity:1}
+#npanel.np-big+.x,.np-bg:has(+#npanel.np-big){z-index:84}
+#npBg{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);background:rgba(10,9,18,.35)}
+#npanel.np-big .np-head{padding:18px 16px 10px 22px}
+#npanel.np-big .np-head b{font:700 24px var(--f-body);letter-spacing:-.02em}
+#npanel.np-big .np-x{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;padding:0;background:var(--sunk);color:var(--muted)}
+#npanel.np-big .np-x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
+.np-seg{display:flex;gap:4px;margin:2px 16px 12px;padding:3px;border-radius:12px;background:var(--sunk)}
+.np-seg button{flex:1;position:relative;display:flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:9px;background:transparent;color:var(--muted);font:600 14.5px var(--f-body);padding:8px 10px;min-height:36px;cursor:pointer;transition:background .2s,color .2s}
+.np-seg button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.np-seg .np-dot{width:7px;height:7px;border-radius:50%;background:#FF3B30}
+#npanel.np-big .np-body{flex:1;min-height:0;padding:0 12px 16px}
+#npanel .np-news{display:flex;flex-direction:column;padding:2px 16px 18px!important}
+#npanel .np-news>*{flex:none}
+#npanel .hzi-sec{font:600 12px var(--f-body);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:6px 6px 8px}
+#npanel .hzi-sec~.hzi-sec{margin-top:18px}
+#npanel .hzi-card{background:var(--surface);border-radius:18px;overflow:hidden}
+#npanel .hzi-row{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;background:none;text-align:left;font:inherit;color:var(--ink);cursor:pointer}
+#npanel .hzi-row+.hzi-row{border-top:1px solid var(--line)}
+#npanel div.hzi-row{cursor:default}
+#npanel .hzi-ic{flex:none;font-size:22px;width:28px;text-align:center}
+#npanel .hzi-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+#npanel .hzi-tx b{font:600 15.5px var(--f-body)}
+#npanel .hzi-tx small{font:400 13px/1.35 var(--f-body);color:var(--muted)}
+#npanel .hzi-go{font-style:normal;color:var(--muted);font-size:20px}
 </style>
 
 <div class="boot" id="boot" aria-hidden="true"><div class="bt-bg"></div><div class="bt-c"><div class="bt-logo-w"><i></i><i></i><img class="bt-logo" id="bootLogo" alt="" width="132" height="132"></div><div class="bt-name" id="bootName">Cocoon</div><div class="bt-dots"><i></i><i></i><i></i></div><script>try{if(localStorage.getItem("cocoon.bootSeen"))document.getElementById("boot").classList.add("quick")}catch(e){}</script></div></div>
@@ -8232,7 +8259,7 @@ function hzH(box,i){ const p=box.querySelector(".hz-pager"), tr=hzTr(box), c=tr&
   /* (13 nov., Angel) pas de défilement vertical dans la bulle : elle grandit avec son contenu (tuiles ajoutées, raccourcis…) */
   if(tr&&!p._ro&&window.ResizeObserver){ p._ro=new ResizeObserver(()=>{ const k=box._pg>=0?box._pg:1, e=tr.children[k]; if(e&&e.offsetHeight&&p.style.height!==e.offsetHeight+"px") p.style.height=e.offsetHeight+"px"; }); [...tr.children].forEach(e=>p._ro.observe(e)); } }
 function hzPos(box){ if(!hzTr(box)||box._drag) return; const pg=S.hzPg==null?1:S.hzPg; if(!box._pos||box._pg!==pg){ box._pos=true; if(box._upd) box._upd(pg); hzSet(box,pg,0,false); } hzH(box,pg); }
-const APP_NEWS=[["🏠","Applications sur l'accueil","Toutes les rubriques du foyer en un toucher."],["🎨","Couleurs du thème","Ta palette s'applique maintenant partout."],["🌗","Thème automatique","Cocoon suit le clair ou le sombre de ton téléphone."]];
+const APP_NEWS=[["⚽","Activités","Sport, musique, danse : les séances et qui accompagne."],["📌","Le mur du foyer","Des petits mots pour tout le foyer, à gauche des Applications."],["📬","Boîte aux lettres","Les nouveautés de Cocoon et l'activité du foyer, au même endroit."],["🏠","Applications sur l'accueil","Toutes les rubriques du foyer en un toucher."],["🎨","Couleurs du thème","Ta palette s'applique maintenant partout."],["🌗","Thème automatique","Cocoon suit le clair ou le sombre de ton téléphone."]];
 function hzInfo(){ const row=(ic,t,sub,fn,cls)=>el(fn?"button":"div",Object.assign({class:"hzi-row"+(cls?" "+cls:"")},fn?{type:"button",onclick:fn}:{}),el("span",{class:"hzi-ic","aria-hidden":"true",text:ic}),el("span",{class:"hzi-tx"},el("b",{text:t}),sub?el("small",{text:sub}):null),fn?el("i",{class:"hzi-go","aria-hidden":"true",text:"›"}):null);
   const ver=window.COCOON_BUILD||"";
   const chk=async()=>{ if(S.updReady){ location.reload(); return; } try{ const r=navigator.serviceWorker&&await navigator.serviceWorker.getRegistration(); if(r) await r.update(); }catch(_){} setTimeout(()=>toast(S.updReady?"Une mise à jour est prête : touche encore pour l'installer.":"Cocoon est à jour."),900); };
@@ -9880,11 +9907,15 @@ async function npValidate(list){ const me=meId(), rows=list.map(r=>document.quer
   S.npSelSet=new Set(); const bar=document.querySelector("#npanel .np-selbar"); if(bar) bar.remove();
   for(const r of list){ const task=(r.kind==="Perso"||r.kind==="Foyer"); try{ if(task&&!S.readOnly&&me) await completeTask(r.ref); else npDismiss(r); }catch(_){} }
   setTimeout(()=>{ if(!$("npanel").hidden) renderNotifs(); },420+rows.length*60); }
+/* (15 nov., Angel) la boîte aux lettres ouvre un grand panneau : ✕ en haut à droite, deux filtres « Nouveautés » (nouveautés de l'app, mise à jour, support) et « Activité » (ce que fait le foyer) */
 function renderNotifs(){
-  const p=$("npanel"); p.innerHTML=""; p.classList.remove("selecting");
-  p.append(el("div",{class:"np-head"},el("b",{text:"Activité du foyer"}),el("button",{type:"button",class:"np-x","aria-label":"Fermer",text:"×",onclick:closeNotifs})));
-  const fb=el("div",{class:"np-body np-feed"}); p.append(fb); renderFeed(fb); }
-function openNotifs(){ renderNotifs(); setTimeout(()=>{ try{ localStorage.setItem("cocoon.actSeen",String(Date.now())); }catch(_){} S.bellRung=false; renderBadges(); },600); const bb=$("bellBtn").getBoundingClientRect(), P=$("npanel"); P.style.top=Math.max(12,Math.round(bb.bottom+12))+"px"; { const pw=Math.min(380,innerWidth-24); P.style.width=pw+"px"; P.style.left=Math.round((innerWidth-pw)/2)+"px"; P.style.right="auto"; } P.style.maxHeight=Math.max(260,Math.min(620,innerHeight-bb.bottom-110))+"px"; P.hidden=false; $("npBg").hidden=false; $("bellBtn").setAttribute("aria-expanded","true"); requestAnimationFrame(()=>$("npanel").classList.add("on")); npMarkSeen(); }
+  const p=$("npanel"); p.innerHTML=""; p.classList.remove("selecting"); p.classList.add("np-big"); const tab=S.npTab||"act";
+  const x=el("button",{type:"button",class:"np-x","aria-label":"Fermer",onclick:closeNotifs}); x.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  const seg=el("div",{class:"np-seg",role:"tablist","aria-label":"Filtrer"},...[["new","Nouveautés"],["act","Activité"]].map(([k,l])=>el("button",{type:"button",role:"tab","data-np":k,"aria-selected":String(tab===k),onclick:()=>{ if((S.npTab||"act")===k) return; S.npTab=k; haptic(5); renderNotifs(); }},el("span",{text:l}),k==="new"&&S.updReady?el("i",{class:"np-dot","aria-label":"mise à jour prête"}):null)));
+  p.append(el("div",{class:"np-head"},el("b",{text:"Boîte aux lettres"}),x),seg);
+  if(tab==="new") p.append(el("div",{class:"np-body np-news"},...hzInfo()));
+  else { const fb=el("div",{class:"np-body np-feed"}); p.append(fb); renderFeed(fb); } }
+function openNotifs(){ S.npTab="act"; renderNotifs(); setTimeout(()=>{ try{ localStorage.setItem("cocoon.actSeen",String(Date.now())); }catch(_){} S.bellRung=false; renderBadges(); },600); const P=$("npanel"); ["top","left","right","width","maxHeight"].forEach(k=>P.style[k]=""); P.hidden=false; $("npBg").hidden=false; $("bellBtn").setAttribute("aria-expanded","true"); requestAnimationFrame(()=>requestAnimationFrame(()=>$("npanel").classList.add("on"))); npMarkSeen(); }
 function closeNotifs(){ const p=$("npanel"); if(p.hidden) return; S.npSelSet=new Set(); p.classList.remove("on"); $("npBg").hidden=true; $("bellBtn").setAttribute("aria-expanded","false"); setTimeout(()=>{ if(!p.classList.contains("on")) p.hidden=true; },180); }
 $("npBg").addEventListener("click",closeNotifs);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeNotifs(); });
