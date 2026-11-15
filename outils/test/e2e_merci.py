@@ -62,7 +62,7 @@ async def main():
     await mb.click(); await pg.wait_for_timeout(600); print('merci en base:', await pg.evaluate("JSON.stringify(__mock.T.cocoon_docs.filter(r=>r.path==='mercis').map(r=>r.id+':'+r.data.de+'->'+r.data.a))"))
     await pg.locator('#doneList .item:has-text("Faire les courses")').screenshot(path='/tmp/dk/mc1.png')
     await pg.evaluate("scrollTo(0,0)"); await pg.evaluate("document.getElementById('bellBtn').click()"); await pg.wait_for_timeout(400); await pg.screenshot(path='/tmp/dk/mc2.png',clip={'x':0,'y':0,'width':400,'height':520})
-    await pg.keyboard.press('Escape')
+    await pg.click('section:not([hidden]) .hub-back')
     print('pill:', await pg.inner_text('#cocBtn'))
     print('invite:', await pg.evaluate("cocoonHost.inviteUrl()"))
     print('errors',errs)
