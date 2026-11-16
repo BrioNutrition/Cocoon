@@ -6091,7 +6091,7 @@ function renderTk3(pool,me){ const box=$("openList"); box.innerHTML=""; box.clas
   const late=isToday?P.filter(t=>tkShown(t)&&t.echeance&&t.echeance<t0&&!rtState(t)).sort(sortOpen):[];
   const R=isToday?RT.map(r=>({r,...rtItems(r[0],P)})).filter(x=>x.todo.length+x.done.length):[];
   const doneD=P.filter(t=>t.fait&&tkOn(t.faitLe,D)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0));
-  { const st=dayStat(D), dd=parse(D), n=daysTo(D), lab=n===0?"Aujourd'hui":n===1?"Demain":n===-1?"Hier":TKJ.format(dd).replace(/ [a-zéû]+$/,"").replace(/^./,x=>x.toUpperCase());
+  { const st=dayStat(D), dd=parse(D), n=daysTo(D), lab=n===0?"Aujourd'hui":TKJ.format(dd).replace(/ [a-zéû]+$/,"").replace(/^./,x=>x.toUpperCase());
     const sub=isToday?(st.tot?st.done+" sur "+st.tot:""):n<0?(st.done?st.done+" faite"+(st.done>1?"s":""):""):(st.tot?st.tot+" à faire":"");
     const q=isToday?focusQueue(pool,me):[];
     box.append(el("div",{class:"tk3-dh"},el("h2",{},el("span",{text:lab}),sub?el("small",{text:(S.whoF?(S.whoF===me?"Moi":membre(S.whoF).nom)+" · ":"")+sub}):null),

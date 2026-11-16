@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="16/11 15:13";</script>
+<script>window.COCOON_BUILD="16/11 15:20";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -6190,7 +6190,7 @@ function renderTk3(pool,me){ const box=$("openList"); box.innerHTML=""; box.clas
   const late=isToday?P.filter(t=>tkShown(t)&&t.echeance&&t.echeance<t0&&!rtState(t)).sort(sortOpen):[];
   const R=isToday?RT.map(r=>({r,...rtItems(r[0],P)})).filter(x=>x.todo.length+x.done.length):[];
   const doneD=P.filter(t=>t.fait&&tkOn(t.faitLe,D)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0));
-  { const st=dayStat(D), dd=parse(D), n=daysTo(D), lab=n===0?"Aujourd'hui":n===1?"Demain":n===-1?"Hier":TKJ.format(dd).replace(/ [a-zéû]+$/,"").replace(/^./,x=>x.toUpperCase());
+  { const st=dayStat(D), dd=parse(D), n=daysTo(D), lab=n===0?"Aujourd'hui":TKJ.format(dd).replace(/ [a-zéû]+$/,"").replace(/^./,x=>x.toUpperCase());
     const sub=isToday?(st.tot?st.done+" sur "+st.tot:""):n<0?(st.done?st.done+" faite"+(st.done>1?"s":""):""):(st.tot?st.tot+" à faire":"");
     const q=isToday?focusQueue(pool,me):[];
     box.append(el("div",{class:"tk3-dh"},el("h2",{},el("span",{text:lab}),sub?el("small",{text:(S.whoF?(S.whoF===me?"Moi":membre(S.whoF).nom)+" · ":"")+sub}):null),
