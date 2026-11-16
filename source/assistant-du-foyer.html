@@ -5043,6 +5043,7 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
 .tk3-d.today .tk3-rg b{color:var(--tkc)}
 .tk3-dh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:16px 4px 0}
 .tk3-dh h2{margin:0;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font:800 26px/1.15 var(--f-body);letter-spacing:-.02em}
+.tk3-st{font:600 15px var(--f-body);color:var(--muted)}
 .tk3-dh h2 small{font-size:15.5px;font-weight:600;color:var(--muted);letter-spacing:-.01em}
 .tk3-fx{flex:none;display:flex;align-items:center;gap:6px;border:0;border-radius:999px;background:var(--tkc);color:#1C1B2E;font:700 14px var(--f-body);padding:8px 14px;cursor:pointer}
 .tk3-pb{height:6px;border-radius:3px;background:var(--tk-rbg);margin:10px 4px 0;overflow:hidden}.tk3-pb i{display:block;height:100%;border-radius:3px;background:var(--tkc);transition:width .4s}
@@ -6092,9 +6093,10 @@ function renderTk3(pool,me){ const box=$("openList"); box.innerHTML=""; box.clas
   const R=isToday?RT.map(r=>({r,...rtItems(r[0],P)})).filter(x=>x.todo.length+x.done.length):[];
   const doneD=P.filter(t=>t.fait&&tkOn(t.faitLe,D)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0));
   { const st=dayStat(D), dd=parse(D), n=daysTo(D), lab=n===0?"Aujourd'hui":TKJ.format(dd).replace(/ [a-zéû]+$/,"").replace(/^./,x=>x.toUpperCase());
-    const sub=isToday?(st.tot?st.done+" sur "+st.tot:""):n<0?(st.done?st.done+" faite"+(st.done>1?"s":""):""):(st.tot?st.tot+" à faire":"");
+    const sub=isToday?(st.tot?st.done+" sur "+st.tot+" faite"+(st.done>1?"s":""):""):n<0?(st.done?st.done+" faite"+(st.done>1?"s":""):""):(st.tot?st.tot+" à faire":"");
     const q=isToday?focusQueue(pool,me):[];
-    box.append(el("div",{class:"tk3-dh"},el("h2",{},el("span",{text:lab}),sub?el("small",{text:(S.whoF?(S.whoF===me?"Moi":membre(S.whoF).nom)+" · ":"")+sub}):null),
+    /* (16 nov., Angel) plus de titre du jour : la semaine en haut le montre déjà ; juste le compte et Focus */
+    if(sub||q.length) box.append(el("div",{class:"tk3-dh","aria-label":lab},el("span",{class:"tk3-st",text:(S.whoF?(S.whoF===me?"Moi":membre(S.whoF).nom)+" · ":"")+sub}),
       q.length?el("button",{type:"button",class:"tk3-fx",id:"tkFocus",onclick:()=>openFocus()},el("span",{"aria-hidden":"true",text:"▶"}),"Focus"):null));
     if(isToday&&st.tot) box.append(el("div",{class:"tk3-pb","aria-hidden":"true"},el("i",{style:"width:"+Math.round(st.done/st.tot*100)+"%"}))); }
   /* le retard, à part */
