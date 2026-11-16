@@ -5065,8 +5065,9 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
 .tk3-mini{display:flex;gap:4px}.tk3-mini i{width:15px;height:6px;border-radius:3px;background:var(--tk-rbg)}.tk3-mini i.f{background:#34C759}
 .tk3-rt small{font-size:13px;color:var(--muted);font-weight:600}
 .tk3-chev{color:var(--muted);font-size:18px;transition:transform .2s}.tk3-rt.on .tk3-chev{transform:rotate(90deg)}
-.tk3-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;padding:26px 14px 10px;color:var(--muted);font-size:14.5px}
-.tk3-empty b{color:var(--ink);font-size:16px}
+.tk3-empty{display:flex;align-items:center;justify-content:center;text-align:center;padding:40px 14px 26px}
+.tk3-empty b{color:var(--muted);font-size:16px;font-weight:600}
+.act-row .act-merci{flex:none;align-self:center;padding:5px 10px;font-size:13px}
 .tk3-done{display:flex;align-items:center;gap:8px;border:0;background:none;color:var(--muted);font:600 14px var(--f-body);padding:14px 6px 2px;cursor:pointer;align-self:flex-start}
 .tk3-avs{display:flex}.tk3-avs>*{margin-left:-6px;box-shadow:0 0 0 2px var(--bg);border-radius:50%}.tk3-avs>*:first-child{margin-left:0}
 .tk3-done i{font-style:normal;font-size:17px;transition:transform .2s}.tk3-done.on i{transform:rotate(90deg)}
@@ -5881,7 +5882,7 @@ function renderFoyer(){
   if(!S.loaded.t){ $("openList").innerHTML=""; $("openList").append(el("div",{class:"empty",text:"Chargement des tâches du foyer…"})); }
   else renderTk3(pool,me);
   const dl=$("doneList"); dl.innerHTML=""; { const h=histHead(done); if(h) dl.append(h); } for(const t of done) dl.append(taskRow(t));
-  $("doneWrap").hidden=!done.length; $("doneSummary").textContent="Tâches réalisées ("+done.length+")";
+  $("doneWrap").hidden=true; $("doneSummary").textContent="Tâches réalisées ("+done.length+")";
   $("nFoyer").textContent=""; $("nFoyer").hidden=!hubHasNews();
   renderFeed();
 }
@@ -6031,8 +6032,13 @@ const TK_D5=/\b(ampoule|appeler|t[ée]l[ée]phoner|rappeler|mail|e-mail|envoyer|
 const TK_DG=/\b(garage|grenier|cave|d[ée]m[ée]nag|peindre|repeindre|peinture|travaux|tapisserie|carrelage|d[ée]barrasser|monter le|montage|isoler|r[ée]nover|grand m[ée]nage|vitres)\b/i;
 function tkDur(t){ if(t.duree) return t.duree; const s=t.titre||""; return TK_DG.test(s)?"g":TK_D5.test(s)?"5":"30"; }
 const TK_DURL={"5":"5 min","30":"30 min","g":"Gros chantier"};
-function tkMoment(t){ if(t.routine==="matin") return "m"; if(t.routine==="soir") return "s"; const s=t.titre||"";
+function tkMoment(t){ if(t.moment==="m"||t.moment==="j"||t.moment==="s") return t.moment; if(t.routine==="matin") return "m"; if(t.routine==="soir") return "s"; const s=t.titre||"";
   if(/\b(soir|d[îi]ner|poubelles?|bacs?|coucher|nuit)\b/i.test(s)) return "s"; if(/\b(matin|petit[- ]d[ée]j|r[ée]veil|cartable|carnet)\b/i.test(s)) return "m"; return "j"; }
+/* (16 nov., Angel) le moment de la journée et la durée se choisissent à la création (Auto = deviné du titre) */
+function tkMomRow(o){ const g=TK_MO.find(m=>m[0]===tkMoment({titre:o.titre||"",routine:o.routine}))||TK_MO[1];
+  return apRow("sun","Moment",apSel([["",o.titre?"Auto · "+g[2].toLowerCase():"Auto"],["m","☀️ Le matin"],["j","🌤️ Dans la journée"],["s","🌙 Le soir"]],o.moment||"",v=>{ o.moment=v||null; },"Moment de la journée","tkMom")); }
+function tkDurRow(o){ const g=tkDur({titre:o.titre||""});
+  return apRow("clock","Durée",apSel([["",o.titre?"Auto · "+TK_DURL[g].toLowerCase():"Auto"],["5","5 min"],["30","30 min"],["g","Gros chantier"]],o.duree||"",v=>{ o.duree=v||null; },"Durée","tkDuree")); }
 const TK_MO=[["m","☀️","Le matin"],["j","🌤️","Dans la journée"],["s","🌙","Le soir"]];
 const TK_RTN={matin:"Routine du matin",soir:"Routine du soir",jour:"Chaque jour",semaine:"Cette semaine",mois:"Ce mois-ci"};
 function tkRingSvg(done,tot,col,sz){ sz=sz||40; const r=sz/2-3, c=2*Math.PI*r, full=tot&&done>=tot, p=tot?Math.min(1,done/tot):0;
@@ -6058,8 +6064,7 @@ function openTkFilters(){ if(!meId()) return; const U=upSheet("tkFiltPage","Affi
     const cats=new Map(); for(const t of S.foyer.concat(S.perso||[])) if(tkShown(t)) cats.set(tkCatOf(t),(cats.get(tkCatOf(t))||0)+1); if(S.catF) cats.set(S.catF,cats.get(S.catF)||0);
     inn.append(apSec("Catégories"),el("div",{class:"tkf-cats"},el("button",{type:"button",class:"tkf-c"+(!S.catF?" on":""),onclick:()=>set(()=>{ S.catF=null; })},"Toutes"),
       ...[...cats.entries()].sort((a,b)=>b[1]-a[1]).map(([k])=>el("button",{type:"button",class:"tkf-c"+(S.catF===k?" on":""),style:"--c:"+((CAT[k]||CAT.maison).c),onclick:()=>set(()=>{ S.catF=S.catF===k?null:k; })},tkEmo(k)+" "+((CAT[k]||CAT.maison).nom)))));
-    inn.append(apSec("Options"),apCard(el("div",{class:"ap-r"},el("b",{text:"Montrer les tâches faites"}),apSw(S.tkShowDone!==false,v=>{ S.tkShowDone=v; renderFoyer(); },"Montrer les tâches faites","tkfDone")),
-      apGo("<g/>","Gérer les routines","",()=>{ U.close(); setTimeout(()=>openRoutines(),320); },"","tkfRt"))); };
+    inn.append(apSec("Options"),apCard(apGo("<g/>","Gérer les routines","",()=>{ U.close(); setTimeout(()=>openRoutines(),320); },"","tkfRt"))); };
   draw(); }
 function renderTk3(pool,me){ const box=$("openList"); box.innerHTML=""; box.className="list fridge tk3"; tkFiltBtn();
   const whoOk=t=>!S.whoF||t.pour===S.whoF||(t.prive&&S.whoF===me), catOk=t=>!S.catF||tkCatOf(t)===S.catF, P=pool.filter(t=>whoOk(t)&&catOk(t));
@@ -6087,9 +6092,9 @@ function renderTk3(pool,me){ const box=$("openList"); box.innerHTML=""; box.clas
   const R=isToday?RT.map(r=>({r,...rtItems(r[0],P)})).filter(x=>x.todo.length+x.done.length):[];
   const doneD=P.filter(t=>t.fait&&tkOn(t.faitLe,D)).sort((a,b)=>(b.faitLe||0)-(a.faitLe||0));
   { const st=dayStat(D), dd=parse(D), n=daysTo(D), lab=n===0?"Aujourd'hui":n===1?"Demain":n===-1?"Hier":TKJ.format(dd).replace(/ [a-zéû]+$/,"").replace(/^./,x=>x.toUpperCase());
-    const sub=isToday?(st.tot?st.done+" sur "+st.tot:"rien à faire"):n<0?(st.done?st.done+" faite"+(st.done>1?"s":""):"rien de fait"):(st.tot?st.tot+" à faire":"rien de prévu");
+    const sub=isToday?(st.tot?st.done+" sur "+st.tot:""):n<0?(st.done?st.done+" faite"+(st.done>1?"s":""):""):(st.tot?st.tot+" à faire":"");
     const q=isToday?focusQueue(pool,me):[];
-    box.append(el("div",{class:"tk3-dh"},el("h2",{},el("span",{text:lab}),el("small",{text:(S.whoF?(S.whoF===me?"Moi":membre(S.whoF).nom)+" · ":"")+sub})),
+    box.append(el("div",{class:"tk3-dh"},el("h2",{},el("span",{text:lab}),sub?el("small",{text:(S.whoF?(S.whoF===me?"Moi":membre(S.whoF).nom)+" · ":"")+sub}):null),
       q.length?el("button",{type:"button",class:"tk3-fx",id:"tkFocus",onclick:()=>openFocus()},el("span",{"aria-hidden":"true",text:"▶"}),"Focus"):null));
     if(isToday&&st.tot) box.append(el("div",{class:"tk3-pb","aria-hidden":"true"},el("i",{style:"width:"+Math.round(st.done/st.tot*100)+"%"}))); }
   /* le retard, à part */
@@ -6110,14 +6115,8 @@ function renderTk3(pool,me){ const box=$("openList"); box.innerHTML=""; box.clas
       card.append(el("button",{type:"button",class:"tk3-rt"+(open?" on":""),"aria-expanded":String(open),onclick:()=>{ S.rtOpen=open?null:rk; haptic(5); renderFoyer(); }},el("b",{text:TK_RTN[rk]||x.r[2]}),bars,el("small",{text:d+"/"+n}),el("span",{class:"tk3-chev","aria-hidden":"true",text:"›"})));
       if(open){ for(const t of x.todo) card.append(tkLine(t,{noRec:true,noDue:daysTo(t.echeance||t0)>=0,plus:true})); for(const t of x.done) card.append(tkLine(t,{noRec:true,asDone:!t.fait})); } }
     box.append(el("div",{class:"tk3-slot"},el("em",{"aria-label":lab,text:ic}),card)); }
-  if(!any&&!late.length){ let msg=isToday?"Rien de prévu pour aujourd'hui":daysTo(D)<0?"Rien ce jour-là":"Rien de prévu ce jour-là", nx=null;
-    if(S.whoF||S.catF){ const fut=P.filter(t=>tkShown(t)&&t.echeance&&t.echeance>D).sort(sortOpen); nx=fut[0]; if(S.catF&&!P.some(t=>tkShown(t)&&t.echeance&&t.echeance<=wEnd)) msg="Rien pour "+tkEmo(S.catF)+" "+(CAT[S.catF]||CAT.maison).nom+" cette semaine"; }
-    box.append(el("div",{class:"tk3-empty"},el("b",{text:msg}),nx?el("span",{text:"La prochaine : "+nx.titre.charAt(0).toLowerCase()+nx.titre.slice(1)+", "+(daysTo(nx.echeance)<7?dueLabel(nx.echeance):"le "+fmtDue(nx.echeance))+"."}):null)); }
-  /* ce qui a été fait ce jour-là */
-  if(S.tkShowDone!==false&&doneD.length){ const ids=[...new Set(doneD.map(t=>t.faitPar).filter(Boolean))].slice(0,3);
-    box.append(el("button",{type:"button",class:"tk3-done"+(S.tk3Done?" on":""),"aria-expanded":String(!!S.tk3Done),onclick:()=>{ S.tk3Done=!S.tk3Done; haptic(5); renderFoyer(); }},
-      el("span",{text:"✓ "+doneD.length+" faite"+(doneD.length>1?"s":"")+(isToday?" aujourd'hui":"")}),el("span",{class:"tk3-avs"},...ids.map(id=>avatar(id,22))),el("i",{"aria-hidden":"true",text:"›"})));
-    if(S.tk3Done){ const c=el("div",{class:"tk3-card"}); for(const t of doneD) c.append(tkLine(t)); box.append(c); } }
+  /* (16 nov., Angel) juste une phrase au milieu ; ce qui a été fait est dans la boîte aux lettres */
+  if(!any&&!late.length) box.append(el("div",{class:"tk3-empty"},el("b",{text:isToday?"Rien de prévu aujourd'hui.":"Rien de prévu ce jour-là."})));
   /* « Quand tu as un moment » : les tâches sans date en post-it */
   { const L0=P.filter(t=>tkShown(t)&&!t.echeance&&!rtState(t)).sort((a,b)=>(b.creeLe||0)-(a.creeLe||0));
     if(L0.length){ const kinds=new Set(L0.map(tkDur)); if(S.sdDur&&!kinds.has(S.sdDur)) S.sdDur=null; const L=L0.filter(t=>!S.sdDur||tkDur(t)===S.sdDur);
@@ -6843,13 +6842,15 @@ function renderDocs(){
 }
 function renderFeed(box){
   const f=box||document.querySelector("#npanel .np-feed"); if(!f) return; f.innerHTML="";
-  const me=meId(), L=(S.activite||[]).map(a=>({at:a.at||0,who:a.par,txt:a.txt,q:[a.q],ic:a.ic})), first=L.length?Math.min(...L.map(a=>a.at)):Infinity;
+  const me=meId(), L=(S.activite||[]).map(a=>({at:a.at||0,who:a.par,txt:a.txt,q:[a.q],ic:a.ic,ref:a.ref})), first=L.length?Math.min(...L.map(a=>a.at)):Infinity;
+  /* tâches faites par les autres qui ne sont pas (encore) dans le journal : elles y apparaissent quand même, avec le merci */
+  { const refs=new Set(L.filter(a=>a.ref&&a.txt==="a fait").map(a=>a.ref)); for(const t of S.foyer) if(t.fait&&t.faitLe&&t.faitLe>=first&&t.faitPar&&!refs.has(t.id)) L.push({at:t.faitLe,who:t.faitPar,txt:"a fait",q:[t.titre],ic:"✅",ref:t.id}); }
   /* avant le journal : ce qu'on peut retrouver dans les tâches et les papiers */
-  for(const t of S.foyer){ if(t.creeLe&&t.creeLe<first) L.push({at:t.creeLe,who:t.creePar,txt:"a ajouté la tâche",q:[t.titre],ic:"✅"}); if(t.fait&&t.faitLe&&t.faitLe<first) L.push({at:t.faitLe,who:t.faitPar,txt:"a fait",q:[t.titre],ic:"✅"}); }
+  for(const t of S.foyer){ if(t.creeLe&&t.creeLe<first) L.push({at:t.creeLe,who:t.creePar,txt:"a ajouté la tâche",q:[t.titre],ic:"✅"}); if(t.fait&&t.faitLe&&t.faitLe<first) L.push({at:t.faitLe,who:t.faitPar,txt:"a fait",q:[t.titre],ic:"✅",ref:t.id}); }
   for(const d of S.docs) if(d.ajouteLe&&d.ajouteLe<first) L.push({at:d.ajouteLe,who:d.ajoutePar,txt:"a rangé le papier",q:[d.titre],ic:"📄"});
   L.sort((a,b)=>b.at-a.at);
   /* même personne, même geste, à moins de 3 min : une seule ligne (« a ajouté aux courses : Lait, Pain, Œufs ») */
-  const G=[]; for(const e of L){ const g=G.slice(-6).reverse().find(x=>x.who===e.who&&x.txt===e.txt&&x.at0-e.at<180e3); if(g){ g.q.push(...e.q); g.at0=e.at; } else G.push(Object.assign({},e,{at0:e.at})); }
+  const G=[]; for(const e of L){ const g=G.slice(-6).reverse().find(x=>x.who===e.who&&x.txt===e.txt&&x.at0-e.at<180e3); if(g){ g.q.push(...e.q); g.at0=e.at; (g.refs=g.refs||[g.ref]).push(e.ref); } else G.push(Object.assign({},e,{at0:e.at})); }
   if(!G.length){ f.append(el("div",{class:"np-empty"},el("b",{text:"Rien pour l'instant"}),el("span",{text:"Tout ce que fait le foyer (ajouts, tâches faites, suppressions…) apparaîtra ici."}))); return; }
   const seen=actSeen(); let day="";
   for(const e of G.slice(0,60)){ const n=daysTo(iso(new Date(e.at))), d=n===0?"Aujourd'hui":n===-1?"Hier":new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(new Date(e.at)).replace(/^./,x=>x.toUpperCase());
@@ -6857,6 +6858,9 @@ function renderFeed(box){
     const qs=[...new Set(e.q.filter(Boolean))], qt=qs.length>4?qs.slice(0,4).join(", ")+" et "+(qs.length-4)+" autre"+(qs.length>5?"s":""):qs.join(", ");
     const who=membre(e.who), row=el("div",{class:"act-row"+(e.who!==me&&e.at>seen?" new":"")},avatar(e.who,28),
       el("span",{class:"act-t"},el("span",{},el("b",{text:e.who===me?"Toi":(who.nom||"Quelqu'un")})," "+e.txt+(qs.length>1?" : ":" "),el("q",{text:qt})),el("small",{text:(e.ic?e.ic+" ":"")+new Intl.DateTimeFormat("fr-FR",{hour:"2-digit",minute:"2-digit"}).format(new Date(e.at))})));
+    /* (16 nov.) dire merci à qui a fait une tâche (avant : dans « Tâches réalisées », retirée de la page Tâches) */
+    if(e.txt==="a fait"&&e.who&&e.who!==me&&me&&!S.readOnly){ for(const id of (e.refs||[e.ref]).filter(Boolean).slice(0,1)){ const t=S.foyer.find(x=>x.id===id&&x.fait&&x.faitPar===e.who&&!x.prive); if(!t) continue;
+      const sent=(S.mercis||[]).some(m=>m.id===t.id+"_"+me); const mb=el("button",{type:"button",class:"merci-b act-merci"+(sent?" sent":""),"aria-label":sent?"Merci déjà envoyé":"Dire merci à "+membre(t.faitPar).nom,onclick:ev=>{ ev.stopPropagation(); sendMerci(t,mb); }},el("span",{class:"hs",text:"🤝"}),sent?"Merci envoyé":"Merci"); if(sent) mb.disabled=true; row.append(mb); } }
     f.append(row); } }
 function monthEst(){
   const t=today(), Y=t.getFullYear(), M=t.getMonth(), day=t.getDate(), dim=new Date(Y,M+1,0).getDate();
@@ -9375,7 +9379,7 @@ const persoCol=()=>S.db.doc("data/users/"+S.uid+"/espace").collection("taches");
 const colFor=t=>t.prive?persoCol():S.db.collection("taches");
 function needMe(){ if(!meId()){ toast(S.uid?"Crée d'abord ton espace, en haut de la page.":"Connecte-toi à Claude pour agir dans le foyer."); window.scrollTo({top:0,behavior:"smooth"}); return false; } return true; }
 function writeErr(e){ if(e&&e.code==="invalid_argument"){ S.readOnly=true; banner("Tu peux consulter le foyer mais pas le modifier. Demande à Angel de t'inviter comme Éditeur."); renderAll(); } else if(e&&e.code==="quota_exceeded"){ toast("Le foyer est plein : supprime d'anciennes tâches faites."); } else toast("L'enregistrement n'a pas abouti. Réessaie dans un instant."); }
-async function addTask({titre,cat,catNom,catC,where,echeance,recur,silent,tour,routine}){
+async function addTask({titre,cat,catNom,catC,where,echeance,recur,silent,tour,routine,moment,duree}){
   if(!S.db){ toast("Le stockage partagé n'est pas disponible sur cette vue."); return false; }
   if(!needMe()) return false;
   const me=meId(), g=guess(titre); let concerne=null, pour=where||"tous";
@@ -9383,7 +9387,7 @@ async function addTask({titre,cat,catNom,catC,where,echeance,recur,silent,tour,r
   if(!isAdmin()&&!pour.startsWith("concerne:")&&pour!=="perso"&&pour!=="tous"&&pour!==me){ toast("Seuls les admins peuvent confier une tâche à un membre."); return false; }
   if(pour.startsWith("concerne:")){ concerne=pour.slice(9); pour="tous"; }
   if(!concerne&&/\bchat\b/i.test(titre)) concerne=(animaux()[0]||{}).id||null;
-  const doc={titre,cat:cat||g.cat||(concerne?"animaux":"maison"),pour:prive?me:pour,concerne,echeance:echeance||null,recur:recur!=null?recur:(g.rec?g.rec.m:0),recurMsg:g.rec?g.rec.next:null,fait:false,creePar:me,creeLe:Date.now()}; if(catNom){ doc.catNom=catNom; doc.catC=catC||"#A9B4C2"; } if(routine) doc.routine=routine; if(Array.isArray(tour)&&tour.length>1) doc.tour=tour;
+  const doc={titre,cat:cat||g.cat||(concerne?"animaux":"maison"),pour:prive?me:pour,concerne,echeance:echeance||null,recur:recur!=null?recur:(g.rec?g.rec.m:0),recurMsg:g.rec?g.rec.next:null,fait:false,creePar:me,creeLe:Date.now()}; if(catNom){ doc.catNom=catNom; doc.catC=catC||"#A9B4C2"; } if(routine) doc.routine=routine; if(moment) doc.moment=moment; if(duree) doc.duree=duree; if(Array.isArray(tour)&&tour.length>1) doc.tour=tour;
   try{ const ref=await (prive?persoCol():S.db.collection("taches")).add(doc);
     if(!prive&&pour!=="tous"&&pour!==me&&doc.echeance&&daysTo(doc.echeance)>=0&&daysTo(doc.echeance)<=1&&window.cocoonHost&&cocoonHost.push) cocoonHost.push.event({type:"tache",pour,titre:doc.titre,echeance:doc.echeance,id:ref&&ref.id||null});
     const rec=recNorm(doc.recur)?" · se répète "+recText(doc.recur):"";
@@ -9543,7 +9547,7 @@ function taskEditor(t,key){
 }
 /* modifier une tâche : même feuille que « Nouvelle tâche », déjà remplie (façon Calendrier, 9 nov.) */
 function openTaskEdit(t){ if(!t||!needMe()) return; const me=meId();
-  const d=S.tdraft={key:t.id,titre:t.titre,cat:t.cat||"maison",where:t.prive?"perso":t.concerne?"concerne:"+t.concerne:(t.pour||"tous"),echeance:t.echeance||"",recur:t.recur||0,routine:t.routine||null};
+  const d=S.tdraft={key:t.id,titre:t.titre,cat:t.cat||"maison",where:t.prive?"perso":t.concerne?"concerne:"+t.concerne:(t.pour||"tous"),echeance:t.echeance||"",recur:t.recur||0,routine:t.routine||null,moment:t.moment||null,duree:t.duree||null};
   d.recOther=!!(recNorm(d.recur)&&!["1j","1s","1","12"].includes(String(d.recur)));
   const U=upSheet("taskEditPage","Modifier la tâche",()=>{ if(S.tdraft===d) S.tdraft=null; if(S.teU===U) S.teU=null; }); S.teU=U;
   U.sheet.classList.add("ev-sheet","ap-sheet"); const inn=el("div",{class:"pp-in ap-in"}); U.sheet.append(inn);
@@ -9565,7 +9569,7 @@ function openTaskEdit(t){ if(!t||!needMe()) return; const me=meId();
       else { d.recOther=false; d.recur=v==="0"?0:v==="1"?1:v==="12"?12:v; if(!d.recur) d.routine=null; } draw(); },"Se répète"));
     let rtRow=null; if(recNorm(d.recur)){ const A=RT.find(r=>r[0]===tkRoutine({recur:d.recur}));
       rtRow=apRow("sun","Routine",apSel([["","Auto"+(A?" · "+A[1]+" "+A[2]:"")]].concat(RT.map(([k,e,l])=>[k,e+" "+l]),[["aucune","Aucune"]]),d.routine||"",v=>{ d.routine=v||null; draw(); },"Routine")); }
-    body.append(apSec("Quand"),apCard(dRow,rRow,d.recOther?el("div",{class:"ap-r ap-sub ap-rec"},recBox):null,rtRow));
+    body.append(apSec("Quand"),apCard(dRow,rRow,d.recOther?el("div",{class:"ap-r ap-sub ap-rec"},recBox):null,rtRow,tkMomRow(d),tkDurRow(d)));
     const Wh=(v,lab)=>apChip(lab,d.where===v,()=>{ d.where=v; draw(); }), who=[];
     if(t.prive||t.creePar===me) who.push(Wh("perso","🔒 Moi seul"));
     who.push(Wh("tous","🏠 Le foyer"));
@@ -9583,6 +9587,7 @@ async function saveTask(t){
   const g=guess(titre);
   const fields={titre,cat:d.cat,pour:toPrive?me:pour,concerne,echeance:d.echeance||null,recur:d.recur||0,recurMsg:t.recurMsg||(g.rec?g.rec.next:null),modifiePar:me,modifieLe:Date.now()};
   if("routine" in d) fields.routine=recNorm(d.recur)?(d.routine||null):null;
+  if("moment" in d) fields.moment=d.moment||null; if("duree" in d) fields.duree=d.duree||null;
   try{
     if(!!t.prive===toPrive){ await colFor(t).doc(t.id).update(fields); }
     else { const base=Object.assign({},t); delete base.id; delete base.prive; const doc=Object.assign(base,fields);
@@ -9707,7 +9712,7 @@ const tkEx=id=>"Ex. : "+(TK_EX[id]||(id&&CAT[id]&&CAT[id].perso?CAT[id].nom+" : 
 function openTaskSheet(o){ o=o||{}; if(!needMe()) return; const me=meId();
   const U=upSheet("taskPage","Nouvelle tâche"); U.sheet.classList.add("ev-sheet","ap-sheet","tk-sheet");
   const inn=el("form",{class:"pp-in ap-in tk-in",autocomplete:"off"}); U.sheet.append(inn);
-  const st={where:o.where||"tous",when:null,due:"",cat:o.cat||null,rec:null,routine:null}, touched={};
+  const st={where:o.where||"tous",when:null,due:"",cat:o.cat||null,rec:null,routine:null,moment:null,duree:null}, touched={};
   const t0=today(), plus=n=>iso(new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+n));
   const wkend=()=>{ const d=t0.getDay(); return plus(d===6||d===0?0:6-d); };
   const ti=el("input",{type:"text",class:"ap-ti tk-ti",maxlength:"120",placeholder:tkEx(o.cat),"aria-label":"La tâche",enterkeyhint:"done"});
@@ -9743,7 +9748,7 @@ function openTaskSheet(o){ o=o||{}; if(!needMe()) return; const me=meId();
       else { st.recOther=false; st.rec=v==="0"?0:v==="1"?1:v==="12"?12:v; if(!st.rec) st.routine=null; } draw(); },"Se répète"));
     let rtRow=null; if(recNorm(st.rec)){ const A=RT.find(r=>r[0]===tkRoutine({recur:st.rec}));
       rtRow=apRow("sun","Routine",apSel([["","Auto"+(A?" · "+A[1]+" "+A[2]:"")]].concat(RT.map(([k,e,l])=>[k,e+" "+l]),[["aucune","Aucune"]]),st.routine||"",v=>{ st.routine=v||null; draw(); },"Routine")); }
-    body.append(apSec("Quand"),apCard(dRow,dayRow,rRow,st.recOther?el("div",{class:"ap-r ap-sub ap-rec"},recBox):null,rtRow));
+    body.append(apSec("Quand"),apCard(dRow,dayRow,rRow,st.recOther?el("div",{class:"ap-r ap-sub ap-rec"},recBox):null,rtRow,tkMomRow(st),tkDurRow(st)));
     /* Pour qui */
     const Wh=(v,lab)=>apChip(lab,st.where===v,()=>{ st.where=v; touched.where=1; draw(); });
     const who=[Wh("tous","🏠 Le foyer"),Wh(me,[avatar(me,20),"Moi"])];
@@ -9766,7 +9771,7 @@ function openTaskSheet(o){ o=o||{}; if(!needMe()) return; const me=meId();
     const p=parseQuick(v), titre=(p.titre||v).replace(/^./,c=>c.toUpperCase());
     const pc=st.cat&&CAT[st.cat]&&CAT[st.cat].perso?CAT[st.cat]:null;
     const isTour=st.where==="tour"&&(st.tour||[]).length>1; if(st.where==="tour"&&!isTour){ toast("Choisis au moins deux personnes pour le tour de rôle."); draw(); go.disabled=false; return; }
-    const ok=await addTask({titre,cat:st.cat||p.cat||null,catNom:pc?pc.nom:null,catC:pc?pc.c:null,where:isTour?st.tour[0]:st.where,tour:isTour?st.tour:null,echeance:st.due||null,recur:touched.rec||st.rec!=null?(st.rec||0):null,routine:recNorm(st.rec)?st.routine:null});
+    const ok=await addTask({titre,cat:st.cat||p.cat||null,catNom:pc?pc.nom:null,catC:pc?pc.c:null,where:isTour?st.tour[0]:st.where,tour:isTour?st.tour:null,echeance:st.due||null,recur:touched.rec||st.rec!=null?(st.rec||0):null,routine:recNorm(st.rec)?st.routine:null,moment:st.moment||null,duree:st.duree||null});
     if(ok){ haptic(12); U.close(); } else go.disabled=false; });
   drawCat(); draw(); setTimeout(()=>{ try{ ti.focus({preventScroll:true}); }catch(_){} },360); }
 function openSheet(o){ if(!meId()){ needMe(); return; } o=(o&&(o.where||o.text))?o:{}; resetQuick();
