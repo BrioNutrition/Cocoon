@@ -51,7 +51,7 @@ async def main():
     await pg.click('#nuPage .nu-chip:has-text("Pâtes")'); await pg.select_option('#nuQte','2'); await pg.wait_for_timeout(100)
     print('kcal pâtes ×2:', await pg.input_value('#nuKcal'))
     await pg.click('#nuGo'); await pg.wait_for_timeout(700)
-    await pg.click('.nu-mo[data-m="pd"] .nu-add'); await pg.wait_for_timeout(450)
+    await pg.click('.hub-add[data-add=nutrition]'); await pg.wait_for_timeout(450); await pg.select_option('#nuMom','pd')
     await pg.fill('#nuNom','Porridge maison'); await pg.fill('#nuP','12'); await pg.fill('#nuG','45'); await pg.fill('#nuL','8')
     print('kcal auto:', await pg.input_value('#nuKcal'))
     await pg.click('#nuGo'); await pg.wait_for_timeout(700)

@@ -5115,7 +5115,8 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
 :root[data-theme="light"] .nu-page,:root[data-theme="light"] .nu-sheet{--nu-rbg:#E4E2EE}
 .nu-page .ap-sec{margin:24px 4px 8px}
 .nu-page .ap-opt{background:var(--surface)}
-.nu-wh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 8px}
+.nu-wh{display:flex;align-items:center;justify-content:center;gap:14px;margin:2px 2px 8px}
+.nu-wh b{min-width:150px;text-align:center}
 .nu-wh b{font:700 16px var(--f-body);color:var(--ink)}
 .nu-nav{width:36px;height:36px;border-radius:50%;border:0;background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}
 .nu-nav span,.nu-nav svg{display:block;width:18px;height:18px}.nu-nav svg{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
@@ -8733,8 +8734,7 @@ function renderNutrition(){ const V=$("nuView"); if(!V) return; if(!S.uid){ V.in
   V.append(apSec("Ce que j'ai mangé"));
   const its=nuItems(day).sort((a,b)=>(a.at||0)-(b.at||0));
   for(const [mk,ml2,me] of NU_M){ const L=its.filter(x=>(x.moment||"dej")===mk), tot=L.reduce((a,x)=>a+(+x.kcal||0),0);
-    const c=el("div",{class:"nu-mo","data-m":mk},el("div",{class:"nu-moh"},el("span",{class:"e","aria-hidden":"true",text:me}),el("b",{text:ml2}),L.length?el("small",{text:nuFmt(tot)+" kcal"}):null,
-      nuH("button",{type:"button",class:"nu-add","aria-label":"Ajouter au "+ml2.toLowerCase(),onclick:()=>openNuSheet({date:day,moment:mk})},'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>')));
+    const c=el("div",{class:"nu-mo","data-m":mk},el("div",{class:"nu-moh"},el("span",{class:"e","aria-hidden":"true",text:me}),el("b",{text:ml2}),L.length?el("small",{text:nuFmt(tot)+" kcal"}):null));
     for(const x of L) c.append(el("button",{type:"button",class:"nu-it","data-nid":x.id,onclick:()=>openNuSheet(x)},
       el("span",{},el("b",{text:x.nom||"Sans nom"}),el("small",{text:["P "+nuG(x.p)+" g","G "+nuG(x.g)+" g","L "+nuG(x.l)+" g"].join(" · ")+(x.qte&&x.qte!==1?" · × "+String(x.qte).replace(".",","):"")})),
       el("em",{text:nuFmt(x.kcal)+" kcal"})));
