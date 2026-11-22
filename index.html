@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="22/11 19:15";</script>
+<script>window.COCOON_BUILD="22/11 19:16";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -5241,6 +5241,15 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
 .nu-big small{display:block;font:600 12px/1.2 var(--f-body);color:var(--muted);margin-top:5px}
 .nu-mac{flex:1;min-width:0;display:flex;flex-direction:column;gap:11px}
 .nu-rest{margin:0;font:700 15px var(--f-body);color:var(--ink)}
+.nu-day.nu-act{gap:16px;padding:18px 16px}
+.nu-rings{flex:none;width:148px;height:148px}.nu-rings svg{display:block;width:100%;height:100%}
+.nu-leg{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+.nu-lg{display:flex;align-items:center;gap:8px;font:600 13.5px var(--f-body);color:var(--muted)}
+.nu-lg i{flex:none;width:9px;height:9px;border-radius:50%;background:var(--mc)}
+.nu-lg span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nu-lg b{color:var(--ink);font-weight:750;white-space:nowrap;font-size:14px}.nu-lg b em{font-style:normal;color:var(--muted);font-weight:600;font-size:12px}
+.nu-lg.kc{font-size:14.5px}.nu-lg.kc b{font-size:15.5px}
+.nu-act .nu-rest{font:600 13px var(--f-body);color:var(--muted);margin-top:2px}.nu-act .nu-rest.over{color:#FF6B5E}
 .nu-rest.over{color:#FF6B5E}
 .nu-mr{display:flex;flex-direction:column;gap:5px}
 .nu-mr>span{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font:600 12.5px var(--f-body);color:var(--muted)}
@@ -8848,10 +8857,13 @@ function renderNutrition(){ const V=$("nuView"); if(!V) return; if(!S.uid){ V.in
   if(S.nuIn){ try{ wk.animate([{transform:"translateX("+(S.nuIn>0?70:-70)+"px)",opacity:0},{transform:"none",opacity:1}],{duration:280,easing:"cubic-bezier(.2,.8,.2,1)"}); }catch(_){} S.nuIn=0; }
   /* le jour choisi */
   const s=nuSum(day), rest=G.kcal-s.kcal;
-  V.append(el("div",{class:"nu-day"},
-    nuH("div",{class:"nu-big",role:"img","aria-label":nuFmt(s.kcal)+" kilocalories sur "+nuFmt(G.kcal)},nuRing(s.kcal,G.kcal,"var(--nu-k)",132,11)+"<span"+((nuFmt(s.kcal)+nuFmt(G.kcal)).length>8?' class="lg"':"")+"><b>"+nuFmt(s.kcal)+"<i>/"+nuFmt(G.kcal)+"</i></b><small>kcal</small></span>"),
-    el("div",{class:"nu-mac"},el("p",{class:"nu-rest"+(rest<-G.kcal*.1?" over":""),text:!s.n?"Rien de noté pour l'instant":rest>=0?"Encore "+nuFmt(rest)+" kcal":nuFmt(-rest)+" kcal de plus"}),
-      ...NU_MAC.map(([k,lab,c])=>nuBar(lab,s[k],G[k],c,"g")))));
+  /* (22 nov., choix B d'Angel) anneaux façon « Activité » : calories dehors, puis protéines, glucides, lipides ; légende à droite */
+  const RG=[["kcal","Calories","#FF7A45"],...NU_MAC], ringsSvg=RG.map(([k,lab,c],i)=>{ const r=66-13*i, cc=2*Math.PI*r, p=G[k]?Math.min(1,s[k]/G[k]):0;
+    return '<circle cx="74" cy="74" r="'+r+'" fill="none" stroke="'+c+'" stroke-opacity=".2" stroke-width="10"/>'+(p?'<circle cx="74" cy="74" r="'+r+'" fill="none" stroke="'+c+'" stroke-width="10" stroke-linecap="round" stroke-dasharray="'+(cc*p).toFixed(1)+' '+cc.toFixed(1)+'" transform="rotate(-90 74 74)"/>':''); }).join("");
+  V.append(el("div",{class:"nu-day nu-act"},
+    nuH("div",{class:"nu-rings",role:"img","aria-label":RG.map(([k,lab])=>lab+" "+nuFmt(s[k])+" sur "+nuFmt(G[k])).join(", ")},'<svg viewBox="0 0 148 148" aria-hidden="true">'+ringsSvg+'</svg>'),
+    el("div",{class:"nu-leg"},...RG.map(([k,lab,c])=>el("div",{class:"nu-lg"+(k==="kcal"?" kc":""),style:"--mc:"+c},el("i",{"aria-hidden":"true"}),el("span",{text:lab}),nuH("b",{},nuFmt(s[k])+"<em>/"+nuFmt(G[k])+(k==="kcal"?"":" g")+"</em>"))),
+      el("p",{class:"nu-rest"+(rest<-G.kcal*.1?" over":""),text:!s.n?"Rien de noté pour l'instant":rest>=0?"Encore "+nuFmt(rest)+" kcal":nuFmt(-rest)+" kcal de plus"}))));
   /* l'eau */
   const ml=nuEau(day), per=250, n=Math.max(4,Math.min(12,Math.round(G.eau/per))), full=Math.floor(ml/per);
   const gl=el("div",{class:"nu-gls"});
