@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="22/11 18:38";</script>
+<script>window.COCOON_BUILD="22/11 18:42";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -5260,13 +5260,17 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
 .nu-mo{margin-top:10px;border-radius:20px;background:var(--surface);overflow:hidden}
 .nu-mo:first-of-type{margin-top:0}
 .nu-moh{display:flex;align-items:center;gap:10px;padding:10px 12px 10px 14px;min-height:54px;box-sizing:border-box}
-.nu-moh .e{font-size:20px;width:26px;text-align:center;flex:none}
+.nu-ic{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(180deg,color-mix(in srgb,var(--ic) 82%,#fff),var(--ic))}
+.nu-ic svg{width:19px;height:19px;overflow:visible}.nu-ic svg *{fill:#fff}
+.nu-ic svg .d{fill:none;stroke:var(--ic);stroke-width:1.8;stroke-linecap:round}
+.nu-ic svg .s{fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.nu-eh b{display:flex;align-items:center;gap:10px}
 .nu-moh b{flex:1;font:700 15.5px var(--f-body);color:var(--ink)}
 .nu-moh small{font:600 14px var(--f-body);color:var(--muted)}
 .nu-add{flex:none;width:34px;height:34px;border-radius:50%;border:0;background:var(--y);color:#1C1B2E;display:grid;place-items:center;cursor:pointer;padding:0}
 .nu-add svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
-.nu-it{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:left;padding:11px 16px 11px 50px;font:inherit;color:var(--ink);cursor:pointer;position:relative}
-.nu-it:before{content:"";position:absolute;left:50px;right:0;top:0;border-top:1px solid var(--line)}
+.nu-it{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:left;padding:11px 16px 11px 54px;font:inherit;color:var(--ink);cursor:pointer;position:relative}
+.nu-it:before{content:"";position:absolute;left:54px;right:0;top:0;border-top:1px solid var(--line)}
 .nu-it>span{flex:1;min-width:0}
 .nu-it>span b{display:block;font:600 15px var(--f-body);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nu-it>span small{display:block;font:500 12.5px var(--f-body);color:var(--muted);margin-top:2px}
@@ -5586,7 +5590,7 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
     <div class="lo-page" id="loView"></div>
   </section>
   <section class="view" data-view="nutrition" hidden>
-    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour" title="Retour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Nutrition</b><span class="hb-act"><button type="button" class="hub-add" data-add="nutrition" aria-label="Ajouter ce que j'ai mangé"><span aria-hidden="true" class="hb-plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hb-tx">Ajouter</span></button></span></div>
+    <div class="hub-bar"><button type="button" class="hub-back" aria-label="Retour" title="Retour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><b class="hb-title">Nutrition</b></div>
     <div class="nu-page" id="nuView"></div>
   </section>
 
@@ -8772,6 +8776,13 @@ function openLoisirSheet(x0){ if(!needMe()) return; const me=meId(), ed=!!(x0&&x
 const nuCol=()=>S.db.doc("data/users/"+S.uid+"/espace").collection("nutrition");
 const NU_DEF={kcal:2000,p:100,g:250,l:67,eau:2000};
 const NU_M=[["pd","Petit-déj","🥐"],["dej","Déjeuner","🍽️"],["col","Goûter","🍎"],["din","Dîner","🌙"]];
+/* (22 nov., Angel) icônes pleines dessinées, dans le style des Applications (blanc sur carré de couleur, détails .d creusés, traits .s) */
+const NU_IC={pd:["#F5A524",'<path d="M3.6 9.2h12.6v4.6a5.4 5.4 0 0 1-5.4 5.4H9a5.4 5.4 0 0 1-5.4-5.4z"/><path class="s" d="M16.2 10.6h1.4a2.6 2.6 0 0 1 0 5.2h-1.6M2.8 21.6h15M7.6 2.8c-.9 1.1.9 2.1 0 3.4M11.6 2.8c-.9 1.1.9 2.1 0 3.4"/>'],
+  dej:["#F2683C",'<path class="s" d="M5.5 2.8v5.4a2.6 2.6 0 0 0 5.2 0V2.8M8.1 2.8v18.4"/><path d="M18.4 2.6c-2.4.9-3.9 3.6-3.9 7.2v3.7h2.2v7.4a1.25 1.25 0 0 0 2.5 0V3.5a.9.9 0 0 0-.8-.9z"/>'],
+  col:["#2FB86A",'<path d="M12 7.3c-1.2-.9-2.7-1.4-4.2-1.1C5 6.8 3.2 9.5 3.2 12.8c0 4.1 2.7 9 5.5 9 1.2 0 1.8-.6 3.3-.6s2.1.6 3.3.6c2.8 0 5.5-4.9 5.5-9 0-3.3-1.8-6-4.6-6.6-1.5-.3-3 .2-4.2 1.1z"/><path d="M12.6 6.2c.1-2.2 1.6-3.9 3.9-4.2-.1 2.3-1.6 4-3.9 4.2z"/><path class="d" d="M7 11.4c.3-1.2 1-2.1 2.1-2.5"/>'],
+  din:["#5E60E8",'<path d="M20.6 14.8A8.6 8.6 0 0 1 9.2 3.4a8.6 8.6 0 1 0 11.4 11.4z"/><path d="M17.2 2.6l.75 1.75 1.75.75-1.75.75-.75 1.75-.75-1.75-1.75-.75 1.75-.75z"/>'],
+  eau:["#2DA8E8",'<path d="M12 2.6c3.7 4.6 6.4 8.1 6.4 11.8a6.4 6.4 0 0 1-12.8 0c0-3.7 2.7-7.2 6.4-11.8z"/><path class="d" d="M8.9 14.6a3.1 3.1 0 0 0 2.7 3"/>']};
+function nuIc(k){ const c=NU_IC[k]||NU_IC.dej; return nuH("i",{class:"nu-ic",style:"--ic:"+c[0],"aria-hidden":"true"},'<svg viewBox="0 0 24 24">'+c[1]+'</svg>'); }
 const NU_MAC=[["p","Protéines","#4C8DFF"],["g","Glucides","#F5A524"],["l","Lipides","#E85D9E"]];
 const NU_JC=["L","M","M","J","V","S","D"];
 /* valeurs indicatives pour une portion : [nom, portion, kcal, protéines, glucides, lipides] */
@@ -8844,12 +8855,13 @@ function renderNutrition(){ const V=$("nuView"); if(!V) return; if(!S.uid){ V.in
   const gl=el("div",{class:"nu-gls"});
   for(let i=0;i<n;i++) gl.append(nuH("button",{type:"button",class:"nu-gl"+(i<full?" on":""),"aria-label":(i<full?"Retirer le verre ":"Boire le verre ")+(i+1)+" (25 cl)",onclick:()=>nuSetEau(day,i<full?i*per:(i+1)*per)},NU_GL));
   gl.append(el("button",{type:"button",class:"nu-gl more",id:"nuEauP","aria-label":"Ajouter un verre de 25 cl",text:"+",onclick:()=>nuSetEau(day,ml+per)}));
-  V.append(el("div",{class:"nu-eau"},el("div",{class:"nu-eh"},el("b",{text:"💧 Eau"}),nuH("span",{},"<em>"+nuL(ml)+"</em> sur "+nuL(G.eau))),gl));
+  V.append(el("div",{class:"nu-eau"},el("div",{class:"nu-eh"},el("b",{},nuIc("eau"),el("span",{text:"Eau"})),nuH("span",{},"<em>"+nuL(ml)+"</em> sur "+nuL(G.eau))),gl));
   /* les repas du jour */
   V.append(apSec("Ce que j'ai mangé"));
   const its=nuItems(day).sort((a,b)=>(a.at||0)-(b.at||0));
   for(const [mk,ml2,me] of NU_M){ const L=its.filter(x=>(x.moment||"dej")===mk), tot=L.reduce((a,x)=>a+(+x.kcal||0),0);
-    const c=el("div",{class:"nu-mo","data-m":mk},el("div",{class:"nu-moh"},el("span",{class:"e","aria-hidden":"true",text:me}),el("b",{text:ml2}),L.length?el("small",{text:nuFmt(tot)+" kcal"}):null));
+    const c=el("div",{class:"nu-mo","data-m":mk},el("div",{class:"nu-moh"},nuIc(mk),el("b",{text:ml2}),L.length?el("small",{text:nuFmt(tot)+" kcal"}):null,
+      nuH("button",{type:"button",class:"nu-add","aria-label":"Ajouter au "+ml2.toLowerCase(),onclick:()=>openNuSheet({date:day,moment:mk})},'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>')));
     for(const x of L) c.append(el("button",{type:"button",class:"nu-it","data-nid":x.id,onclick:()=>openNuSheet(x)},
       el("span",{},el("b",{text:x.nom||"Sans nom"}),el("small",{text:["P "+nuG(x.p)+" g","G "+nuG(x.g)+" g","L "+nuG(x.l)+" g"].join(" · ")+(x.qte&&x.qte!==1?" · × "+String(x.qte).replace(".",","):"")})),
       el("em",{text:nuFmt(x.kcal)+" kcal"})));
@@ -8901,7 +8913,7 @@ function openNuSheet(o){ if(!S.uid) return; o=o||{}; const x0=o.id?o:null, ed=!!
   const por=el("p",{class:"ap-sub nu-por"}); const drawPor=()=>{ por.textContent=(F.por?"1 portion = "+F.por+". ":"")+"Valeurs indicatives : les calories se calculent toutes seules avec les protéines, glucides et lipides."; };
   const qSel=apSel([["0.5","½ portion"],["1","1 portion"],["1.5","1 portion ½"],["2","2 portions"],["3","3 portions"]],String(F.qte||1),v=>{ const nq=+v, oq=+F.qte||1; if(nq&&oq&&nq!==oq){ ["kcal","p","g","l"].forEach(k=>{ if(F[k]!=null) F[k]=F[k]*nq/oq; setV(k); }); } F.qte=nq; },"Quantité","nuQte");
   inn.append(H.hd,
-    el("div",{class:"ap-main",style:"--apc:#FF6B4A"},ti,apRow("clock","Moment",apSel(NU_M.map(m=>[m[0],m[2]+" "+m[1]]),F.moment,v=>{ F.moment=v; },"Moment du repas","nuMom"))),
+    el("div",{class:"ap-main",style:"--apc:#FF6B4A"},ti,apRow("clock","Moment",apSel(NU_M.map(m=>[m[0],m[1]]),F.moment,v=>{ F.moment=v; },"Moment du repas","nuMom"))),
     sug,
     apSec("Valeurs"),
     apCard(apRow("<g/>","Quantité",qSel),apRow("<g/>","Calories",num("nuKcal","Calories","kcal","kcal"),"nu-kr"),
