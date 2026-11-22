@@ -5174,8 +5174,8 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
 .nu-mo{margin-top:10px;border-radius:20px;background:var(--surface);overflow:hidden}
 .nu-mo:first-of-type{margin-top:0}
 .nu-moh{display:flex;align-items:center;gap:10px;padding:10px 12px 10px 14px;min-height:54px;box-sizing:border-box}
-.nu-ic{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--y) 16%,transparent)}
-.nu-ic svg{display:block;width:19px;height:19px;overflow:visible}.nu-ic svg *{fill:var(--y)}
+.nu-ic{flex:none;display:block;width:34px;height:34px;line-height:0;font-size:0}
+.nu-ic svg{display:block;width:34px;height:34px}.nu-ic svg *{fill:var(--y)}
 .nu-ic svg .d{fill:none;stroke:var(--surface);stroke-width:1.8;stroke-linecap:round}
 .nu-ic svg .s{fill:none;stroke:var(--ic);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .nu-eh b{display:flex;align-items:center;gap:10px}
@@ -8697,7 +8697,8 @@ const NU_IC={pd:["#F5A524",'<path d="M3.4 8.6h13.2v5a5.8 5.8 0 0 1-5.8 5.8H9.2a5
   eau:["#2DA8E8",'<path d="M12 2.6c3.7 4.6 6.4 8.1 6.4 11.8a6.4 6.4 0 0 1-12.8 0c0-3.7 2.7-7.2 6.4-11.8z"/>']};
 /* (22 nov., choix C d'Angel) toutes à la couleur du thème sur un rond léger ; NU_ICO = décalage pour centrer chaque dessin (boîte englobante) */
 const NU_ICO={pd:[.7,-1.18],dej:[-.48,.45],col:[-.03,-.67],din:[.55,-.28],eau:[.02,-.33]}; /* centrage optique : moyenne du centre de la boîte et du centre de masse du dessin */
-function nuIc(k){ const c=NU_IC[k]||NU_IC.dej, o=NU_ICO[k]||[0,0]; return nuH("i",{class:"nu-ic","aria-hidden":"true"},'<svg viewBox="0 0 24 24"><g transform="translate('+o[0]+' '+o[1]+')">'+c[1]+'</g></svg>'); }
+/* (22 nov., Angel : « pas centrés » sur iPhone) le rond et l'icône sont dessinés dans le même SVG : le centrage ne dépend plus de la mise en page */
+function nuIc(k){ const c=NU_IC[k]||NU_IC.dej, o=NU_ICO[k]||[0,0]; return nuH("i",{class:"nu-ic","aria-hidden":"true"},'<svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="17" fill-opacity=".16"/><g transform="translate(7.5 7.5) scale(.79167) translate('+o[0]+' '+o[1]+')">'+c[1]+'</g></svg>'); }
 const NU_MAC=[["p","Protéines","#4C8DFF"],["g","Glucides","#F5A524"],["l","Lipides","#E85D9E"]];
 const NU_JC=["L","M","M","J","V","S","D"];
 /* valeurs indicatives pour une portion : [nom, portion, kcal, protéines, glucides, lipides] */
