@@ -5116,7 +5116,11 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
 .nu-page .ap-sec{margin:24px 4px 8px}
 .nu-page .ap-opt{background:var(--surface)}
 .nu-wh{display:flex;align-items:center;justify-content:center;gap:14px;margin:2px 2px 8px}
-.nu-wh b{min-width:150px;text-align:center}
+.nu-wh b{text-align:center}
+.nu-wh{position:relative;min-height:36px}
+.nu-today{position:absolute;right:2px;top:50%;transform:translateY(-50%);border:0;border-radius:999px;background:var(--surface);color:var(--y);font:650 13.5px var(--f-body);padding:7px 12px;cursor:pointer}
+:root[data-theme="light"] .nu-today{color:var(--yd)}
+.nu-wk{touch-action:pan-y;will-change:transform}
 .nu-wh b{font:700 16px var(--f-body);color:var(--ink)}
 .nu-nav{width:36px;height:36px;border-radius:50%;border:0;background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}
 .nu-nav span,.nu-nav svg{display:block;width:18px;height:18px}.nu-nav svg{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
@@ -8704,20 +8708,32 @@ const NU_GL='<svg viewBox="0 0 34 42" aria-hidden="true"><path d="M6 5h22l-2.3 3
 async function nuSetEau(d,ml){ if(!S.db||!S.uid) return; ml=Math.max(0,Math.min(8000,ml)); haptic(6);
   const id="eau-"+d, A=S.nutri||(S.nutri=[]), w=A.find(x=>x.id===id); if(w) w.ml=ml; else A.push({id,type:"eau",date:d,ml}); const V=$("nuView"); if(V) V._sig=null; renderNutrition();
   try{ await nuCol().doc(id).set({type:"eau",date:d,ml,at:Date.now()}); }catch(e){ writeErr(e); } }
+/* (22 nov., Angel) plus de flèches : on fait glisser la semaine au doigt (elle suit le doigt, pas de semaine future) */
+function nuSwipe(wk,off,go){ let x0=0,y0=0,t0=0,dx=0,on=false,lock=0,pid=null,moved=false;
+  wk.addEventListener("pointerdown",e=>{ if(e.pointerType==="mouse"&&e.button) return; x0=e.clientX; y0=e.clientY; t0=Date.now(); dx=0; on=true; lock=0; moved=false; pid=e.pointerId; wk.style.transition="none"; });
+  wk.addEventListener("pointermove",e=>{ if(!on||e.pointerId!==pid) return; const ddx=e.clientX-x0, ddy=e.clientY-y0;
+    if(!lock){ if(Math.abs(ddx)>8&&Math.abs(ddx)>Math.abs(ddy)*1.2){ lock=1; try{ wk.setPointerCapture(pid); }catch(_){} } else { if(Math.abs(ddy)>10) on=false; return; } }
+    moved=true; dx=ddx; const can=dx>0||off<0; wk.style.transform="translateX("+(can?dx:dx/4)+"px)"; wk.style.opacity=String(1-Math.min(.55,Math.abs(dx)/500)); });
+  const end=()=>{ if(!on) return; on=false; if(!lock) return; const w=wk.offsetWidth||320, can=dx>0||off<0, fast=Math.abs(dx)>40&&Date.now()-t0<260;
+    if(can&&(Math.abs(dx)>w*.22||fast)){ const dir=dx>0?-1:1; wk.style.transition="transform .18s ease-in, opacity .18s"; wk.style.transform="translateX("+(dx>0?w:-w)*.6+"px)"; wk.style.opacity="0"; setTimeout(()=>go(dir),170); }
+    else { wk.style.transition="transform .32s cubic-bezier(.2,.8,.2,1), opacity .32s"; wk.style.transform=""; wk.style.opacity=""; } };
+  wk.addEventListener("pointerup",end); wk.addEventListener("pointercancel",end);
+  wk.addEventListener("click",e=>{ if(moved){ moved=false; e.preventDefault(); e.stopImmediatePropagation(); } },true); }
 function renderNutrition(){ const V=$("nuView"); if(!V) return; if(!S.uid){ V.innerHTML=""; V._sig=null; return; }
   const G=nuGoal(), t0=iso(today()), off=S.nuWk||0, days=nuDays(off);
   if(!S.nuDay||!days.includes(S.nuDay)) S.nuDay=days.includes(t0)?t0:days[0];
   const day=S.nuDay, sig=JSON.stringify([S.nutri,G,off,day,t0]); if(V._sig===sig&&V.childNodes.length) return; V._sig=sig; V.innerHTML="";
   /* la semaine */
   const d0=parse(days[0]), wl=off===0?"Cette semaine":off===-1?"La semaine dernière":"Semaine du "+d0.toLocaleDateString("fr-FR",{day:"numeric",month:"long"});
-  const nav=(dir,lab,dis)=>el("button",{type:"button",class:"nu-nav","aria-label":lab,disabled:dis?"":null,onclick:()=>{ S.nuWk=off+dir; const nd=nuDays(S.nuWk); S.nuDay=nd.includes(t0)?t0:nd[(days.indexOf(day)+7)%7]; renderNutrition(); }},nuH("span",{"aria-hidden":"true"},'<svg viewBox="0 0 24 24"><path d="'+(dir<0?"M14.5 5.5L8 12l6.5 6.5":"M9.5 5.5L16 12l-6.5 6.5")+'"/></svg>'));
-  V.append(el("div",{class:"nu-wh"},nav(-1,"Semaine d'avant"),el("b",{text:wl}),nav(1,"Semaine d'après",off>=0)));
+  const go=dir=>{ haptic(5); S.nuWk=off+dir; const nd=nuDays(S.nuWk); S.nuDay=nd.includes(t0)?t0:nd[days.indexOf(day)]; S.nuIn=dir; renderNutrition(); };
+  V.append(el("div",{class:"nu-wh"},el("b",{text:wl}),off<0?el("button",{type:"button",class:"nu-today",id:"nuToday",text:"Aujourd'hui",onclick:()=>{ S.nuWk=0; S.nuDay=t0; S.nuIn=1; renderNutrition(); }}):null));
   const wk=el("div",{class:"nu-wk",role:"group","aria-label":wl});
   days.forEach((k,i)=>{ const s=nuSum(k), fut=k>t0;
     const b=el("button",{type:"button",class:"nu-d"+(k===day?" on":"")+(k===t0?" today":"")+(fut?" fut":""),"aria-pressed":String(k===day),"aria-label":parse(k).toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})+(s.n?", "+nuFmt(s.kcal)+" kilocalories":", rien de noté"),onclick:()=>{ haptic(4); S.nuDay=k; renderNutrition(); }},
       el("small",{text:NU_JC[i]}),nuH("span",{class:"nu-rg"},nuRing(s.kcal,G.kcal,"var(--nu-k)")+"<b>"+parse(k).getDate()+"</b>"));
     wk.append(b); });
-  V.append(wk);
+  V.append(wk); nuSwipe(wk,off,go);
+  if(S.nuIn){ try{ wk.animate([{transform:"translateX("+(S.nuIn>0?70:-70)+"px)",opacity:0},{transform:"none",opacity:1}],{duration:280,easing:"cubic-bezier(.2,.8,.2,1)"}); }catch(_){} S.nuIn=0; }
   /* le jour choisi */
   const s=nuSum(day), rest=G.kcal-s.kcal;
   V.append(el("div",{class:"nu-day"},
