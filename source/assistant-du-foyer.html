@@ -5153,20 +5153,20 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
 .nu-eh{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:12px}
 .nu-eh b{font:700 16px var(--f-body);color:var(--ink)}
 .nu-eh span{font:600 14px var(--f-body);color:var(--muted)}
-.nu-eh em{font-style:normal;color:#3FB6F0;font-weight:750}
+.nu-eh em{font-style:normal;color:var(--y);font-weight:750}
 .nu-gls{display:flex;flex-wrap:wrap;gap:4px 5px;align-items:center}
 .nu-gl{width:28px;height:36px;border:0;background:none;padding:0;cursor:pointer;color:color-mix(in srgb,var(--muted) 55%,transparent)}
 .nu-gl svg{display:block;width:100%;height:100%}
 .nu-gl .w{fill:transparent;transition:fill .2s}
-.nu-gl.on{color:#3FB6F0}.nu-gl.on .w{fill:#3FB6F0}
-.nu-gl.more{width:36px;height:36px;border-radius:12px;background:var(--nu-rbg);color:var(--ink);font:600 22px/1 var(--f-body);margin-left:2px}
+.nu-gl.on{color:var(--y)}.nu-gl.on .w{fill:var(--y)}
+.nu-gls .nu-eadd{margin-left:4px}
 .nu-mo{margin-top:10px;border-radius:20px;background:var(--surface);overflow:hidden}
 .nu-mo:first-of-type{margin-top:0}
 .nu-moh{display:flex;align-items:center;gap:10px;padding:10px 12px 10px 14px;min-height:54px;box-sizing:border-box}
-.nu-ic{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(180deg,color-mix(in srgb,var(--ic) 82%,#fff),var(--ic))}
-.nu-ic svg{width:19px;height:19px;overflow:visible}.nu-ic svg *{fill:#fff}
-.nu-ic svg .d{fill:none;stroke:var(--ic);stroke-width:1.8;stroke-linecap:round}
-.nu-ic svg .s{fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.nu-ic{flex:none;width:30px;height:30px;display:grid;place-items:center}
+.nu-ic svg{width:25px;height:25px;overflow:visible}.nu-ic svg *{fill:var(--ic)}
+.nu-ic svg .d{fill:none;stroke:var(--surface);stroke-width:1.8;stroke-linecap:round}
+.nu-ic svg .s{fill:none;stroke:var(--ic);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .nu-eh b{display:flex;align-items:center;gap:10px}
 .nu-moh b{flex:1;font:700 15.5px var(--f-body);color:var(--ink)}
 .nu-moh small{font:600 14px var(--f-body);color:var(--muted)}
@@ -8682,7 +8682,7 @@ const NU_IC={pd:["#F5A524",'<path d="M3.6 9.2h12.6v4.6a5.4 5.4 0 0 1-5.4 5.4H9a5
   dej:["#F2683C",'<path class="s" d="M5.5 2.8v5.4a2.6 2.6 0 0 0 5.2 0V2.8M8.1 2.8v18.4"/><path d="M18.4 2.6c-2.4.9-3.9 3.6-3.9 7.2v3.7h2.2v7.4a1.25 1.25 0 0 0 2.5 0V3.5a.9.9 0 0 0-.8-.9z"/>'],
   col:["#2FB86A",'<path d="M12 7.3c-1.2-.9-2.7-1.4-4.2-1.1C5 6.8 3.2 9.5 3.2 12.8c0 4.1 2.7 9 5.5 9 1.2 0 1.8-.6 3.3-.6s2.1.6 3.3.6c2.8 0 5.5-4.9 5.5-9 0-3.3-1.8-6-4.6-6.6-1.5-.3-3 .2-4.2 1.1z"/><path d="M12.6 6.2c.1-2.2 1.6-3.9 3.9-4.2-.1 2.3-1.6 4-3.9 4.2z"/><path class="d" d="M7 11.4c.3-1.2 1-2.1 2.1-2.5"/>'],
   din:["#5E60E8",'<path d="M20.6 14.8A8.6 8.6 0 0 1 9.2 3.4a8.6 8.6 0 1 0 11.4 11.4z"/><path d="M17.2 2.6l.75 1.75 1.75.75-1.75.75-.75 1.75-.75-1.75-1.75-.75 1.75-.75z"/>'],
-  eau:["#2DA8E8",'<path d="M12 2.6c3.7 4.6 6.4 8.1 6.4 11.8a6.4 6.4 0 0 1-12.8 0c0-3.7 2.7-7.2 6.4-11.8z"/><path class="d" d="M8.9 14.6a3.1 3.1 0 0 0 2.7 3"/>']};
+  eau:["var(--y)",'<path d="M12 2.6c3.7 4.6 6.4 8.1 6.4 11.8a6.4 6.4 0 0 1-12.8 0c0-3.7 2.7-7.2 6.4-11.8z"/><path class="d" d="M8.9 14.6a3.1 3.1 0 0 0 2.7 3"/>']};
 function nuIc(k){ const c=NU_IC[k]||NU_IC.dej; return nuH("i",{class:"nu-ic",style:"--ic:"+c[0],"aria-hidden":"true"},'<svg viewBox="0 0 24 24">'+c[1]+'</svg>'); }
 const NU_MAC=[["p","Protéines","#4C8DFF"],["g","Glucides","#F5A524"],["l","Lipides","#E85D9E"]];
 const NU_JC=["L","M","M","J","V","S","D"];
@@ -8755,7 +8755,7 @@ function renderNutrition(){ const V=$("nuView"); if(!V) return; if(!S.uid){ V.in
   const ml=nuEau(day), per=250, n=Math.max(4,Math.min(12,Math.round(G.eau/per))), full=Math.floor(ml/per);
   const gl=el("div",{class:"nu-gls"});
   for(let i=0;i<n;i++) gl.append(nuH("button",{type:"button",class:"nu-gl"+(i<full?" on":""),"aria-label":(i<full?"Retirer le verre ":"Boire le verre ")+(i+1)+" (25 cl)",onclick:()=>nuSetEau(day,i<full?i*per:(i+1)*per)},NU_GL));
-  gl.append(el("button",{type:"button",class:"nu-gl more",id:"nuEauP","aria-label":"Ajouter un verre de 25 cl",text:"+",onclick:()=>nuSetEau(day,ml+per)}));
+  gl.append(nuH("button",{type:"button",class:"nu-add nu-eadd",id:"nuEauP","aria-label":"Ajouter un verre de 25 cl",onclick:()=>nuSetEau(day,ml+per)},'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'));
   V.append(el("div",{class:"nu-eau"},el("div",{class:"nu-eh"},el("b",{},nuIc("eau"),el("span",{text:"Eau"})),nuH("span",{},"<em>"+nuL(ml)+"</em> sur "+nuL(G.eau))),gl));
   /* les repas du jour */
   V.append(apSec("Ce que j'ai mangé"));
