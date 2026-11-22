@@ -8756,14 +8756,13 @@ function renderNutrition(){ const V=$("nuView"); if(!V) return; if(!S.uid){ V.in
   V.append(wk); nuSwipe(wk,off,go);
   if(S.nuIn){ try{ wk.animate([{transform:"translateX("+(S.nuIn>0?70:-70)+"px)",opacity:0},{transform:"none",opacity:1}],{duration:280,easing:"cubic-bezier(.2,.8,.2,1)"}); }catch(_){} S.nuIn=0; }
   /* le jour choisi */
-  const s=nuSum(day), rest=G.kcal-s.kcal;
+  const s=nuSum(day);
   /* (22 nov., choix B d'Angel) anneaux façon « Activité » : calories dehors, puis protéines, glucides, lipides ; légende à droite */
   const RG=[["kcal","Calories","#FF7A45"],...NU_MAC], ringsSvg=RG.map(([k,lab,c],i)=>{ const r=66-13*i, cc=2*Math.PI*r, p=G[k]?Math.min(1,s[k]/G[k]):0;
     return '<circle cx="74" cy="74" r="'+r+'" fill="none" stroke="'+c+'" stroke-opacity=".2" stroke-width="10"/>'+(p?'<circle cx="74" cy="74" r="'+r+'" fill="none" stroke="'+c+'" stroke-width="10" stroke-linecap="round" stroke-dasharray="'+(cc*p).toFixed(1)+' '+cc.toFixed(1)+'" transform="rotate(-90 74 74)"/>':''); }).join("");
   V.append(el("div",{class:"nu-day nu-act"},
     nuH("div",{class:"nu-rings",role:"img","aria-label":RG.map(([k,lab])=>lab+" "+nuFmt(s[k])+" sur "+nuFmt(G[k])).join(", ")},'<svg viewBox="0 0 148 148" aria-hidden="true">'+ringsSvg+'</svg>'),
-    el("div",{class:"nu-leg"},...RG.map(([k,lab,c])=>el("div",{class:"nu-lg"+(k==="kcal"?" kc":""),style:"--mc:"+c},el("i",{"aria-hidden":"true"}),el("span",{text:lab}),nuH("b",{},nuFmt(s[k])+"<em>/"+nuFmt(G[k])+(k==="kcal"?"":" g")+"</em>"))),
-      s.n?el("p",{class:"nu-rest"+(rest<-G.kcal*.1?" over":""),text:rest>=0?"Encore "+nuFmt(rest)+" kcal":nuFmt(-rest)+" kcal de plus"}):null)));
+    el("div",{class:"nu-leg"},...RG.map(([k,lab,c])=>el("div",{class:"nu-lg"+(k==="kcal"?" kc":""),style:"--mc:"+c},el("i",{"aria-hidden":"true"}),el("span",{text:lab}),nuH("b",{},nuFmt(s[k])+"<em>/"+nuFmt(G[k])+(k==="kcal"?"":" g")+"</em>"))))));
   /* l'eau */
   const ml=nuEau(day), per=250, n=Math.max(4,Math.min(12,Math.round(G.eau/per))), full=Math.floor(ml/per);
   const gl=el("div",{class:"nu-gls"});
@@ -8786,8 +8785,7 @@ function renderNutrition(){ const V=$("nuView"); if(!V) return; if(!S.uid){ V.in
   const past=days.filter(k=>k<=t0).length||7, eaus=days.map(nuEau), eauTot=eaus.reduce((a,b)=>a+b,0), eauOk=eaus.filter(v=>v>=G.eau).length;
   const inGoal=noted.filter(x=>Math.abs(x.kcal-G.kcal)<=G.kcal*.1).length;
   const W=el("div",{class:"nu-ws"});
-  W.append(el("div",{class:"nu-avg"},el("b",{text:nd?nuFmt(avg("kcal")):"—"}),el("span",{text:"kcal par jour en moyenne"})),
-    el("p",{class:"nu-avs",text:nd?(nd===1?"Sur 1 jour noté":"Sur "+nd+" jours notés")+" · objectif "+nuFmt(G.kcal)+" kcal":"Note ce que tu manges : le bilan se remplit tout seul."}));
+  W.append(el("div",{class:"nu-avg"},el("b",{text:nd?nuFmt(avg("kcal")):"—"}),el("span",{text:"kcal par jour en moyenne"})));
   const mx=Math.max(G.kcal*1.25,...sums.map(x=>x.kcal)), gp=G.kcal/mx*100;
   const ch=el("div",{class:"nu-ch",role:"img","aria-label":"Calories de chaque jour de la semaine"},el("div",{class:"nu-gline",style:"bottom:"+gp.toFixed(1)+"%"},el("span",{text:nuFmt(G.kcal)})));
   sums.forEach((x,i)=>ch.append(el("div",{class:"c"+(days[i]===day?" on":"")},el("i",{class:!x.kcal?"z":x.kcal>G.kcal*1.1?"over":"",style:"height:"+(x.kcal?Math.max(3,x.kcal/mx*100):3).toFixed(1)+"%"}))));
@@ -8801,8 +8799,7 @@ function renderNutrition(){ const V=$("nuView"); if(!V) return; if(!S.uid){ V.in
     el("div",{},el("b",{text:nuL(eauTot)}),el("small",{text:"d'eau · "+(eauOk===1?"1 jour":eauOk+" jours")+" à "+nuL(G.eau)}))));
   V.append(W);
   /* objectifs */
-  V.append(apSec("Réglages"),apCard(apGo("gauge","Mes objectifs",nuFmt(G.kcal)+" kcal · "+nuL(G.eau),()=>openNuGoals(),null,"nuGoals")),
-    el("p",{class:"nu-priv",text:"🔒 Ton suivi est privé : personne d'autre dans le foyer ne le voit."})); }
+  V.append(apSec("Réglages"),apCard(apGo("gauge","Mes objectifs",nuFmt(G.kcal)+" kcal · "+nuL(G.eau),()=>openNuGoals(),null,"nuGoals"))); }
 function openNuSheet(o){ if(!S.uid) return; o=o||{}; const x0=o.id?o:null, ed=!!x0;
   const F=Object.assign({nom:"",moment:o.moment||nuMomNow(),date:o.date||S.nuDay||iso(today()),kcal:null,p:null,g:null,l:null,qte:1,por:""},x0?JSON.parse(JSON.stringify(x0)):{});
   const dl=F.date===iso(today())?"":" · "+parse(F.date).toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"});
@@ -8824,7 +8821,7 @@ function openNuSheet(o){ if(!S.uid) return; o=o||{}; const x0=o.id?o:null, ed=!!
     if(q&&L.length===1&&nuN(L[0].nom)===q&&F.kcal!=null) L=[];
     sug.innerHTML=""; sug.hidden=!L.length; for(const f of L.slice(0,12)) sug.append(el("button",{type:"button",class:"nu-chip",onclick:()=>pick(f)},el("span",{text:f.nom}),el("small",{text:nuFmt(f.kcal)+" kcal"}))); };
   ti.addEventListener("input",()=>{ F.nom=ti.value; drawSug(); });
-  const por=el("p",{class:"ap-sub nu-por"}); const drawPor=()=>{ por.textContent=(F.por?"1 portion = "+F.por+". ":"")+"Valeurs indicatives : les calories se calculent toutes seules avec les protéines, glucides et lipides."; };
+  const por=el("p",{class:"ap-sub nu-por"}); const drawPor=()=>{ por.textContent=F.por?"1 portion = "+F.por:""; por.hidden=!F.por; };
   const qSel=apSel([["0.5","½ portion"],["1","1 portion"],["1.5","1 portion ½"],["2","2 portions"],["3","3 portions"]],String(F.qte||1),v=>{ const nq=+v, oq=+F.qte||1; if(nq&&oq&&nq!==oq){ ["kcal","p","g","l"].forEach(k=>{ if(F[k]!=null) F[k]=F[k]*nq/oq; setV(k); }); } F.qte=nq; },"Quantité","nuQte");
   inn.append(H.hd,
     el("div",{class:"ap-main",style:"--apc:#FF6B4A"},ti,apRow("clock","Moment",apSel(NU_M.map(m=>[m[0],m[1]]),F.moment,v=>{ F.moment=v; },"Moment du repas","nuMom"))),
@@ -8856,8 +8853,7 @@ function openNuGoals(){ if(!S.uid) return; const G=nuGoal(), F=Object.assign({},
     apCard(apRow("gauge","Calories",num("nugK","Calories par jour","kcal","kcal")),
       ...NU_MAC.map(([k,lab,c])=>{ const r=apRow("<g/>",lab,num("nug"+k.toUpperCase(),lab+" par jour",k,"g")); r.querySelector(".ap-ic").replaceWith(el("i",{class:"nu-dot",style:"--mc:"+c,"aria-hidden":"true"})); return r; }),
       apRow("drop","Eau",apSel(eaux,String(Math.round(F.eau/250)*250),v=>{ F.eau=+v; },"Eau par jour","nugE"))),
-    apCard(apGo("<g/>","Répartir d'après les calories","20 · 50 · 30 %",()=>{ haptic(5); mTouched=false; auto(); },null,"nugAuto")),
-    el("p",{class:"ap-sub nu-por",text:"Repère courant pour un adulte : environ 2 000 kcal et 1,5 à 2 L d'eau par jour. Demande conseil à un médecin ou un diététicien pour un objectif précis."}));
+    apCard(apGo("<g/>","Répartir d'après les calories","20 · 50 · 30 %",()=>{ haptic(5); mTouched=false; auto(); },null,"nugAuto")));
   inn.addEventListener("submit",async e=>{ e.preventDefault(); if(!F.kcal||F.kcal<500){ toast("Indique un objectif de calories."); if(ins.kcal) ins.kcal.focus(); return; }
     const nu={kcal:Math.round(F.kcal),p:Math.round(F.p||0),g:Math.round(F.g||0),l:Math.round(F.l||0),eau:Math.round(F.eau||2000)};
     S.prefs=Object.assign({},S.prefs||{},{nutri:nu}); H.ok.disabled=true;
