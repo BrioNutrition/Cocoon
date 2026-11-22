@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="22/11 19:34";</script>
+<script>window.COCOON_BUILD="22/11 19:40";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -5208,7 +5208,8 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
 .tkf-c.on{background:color-mix(in srgb,var(--y) 24%,var(--surface));color:var(--yd)}
 :root:not([data-theme="light"]) .tkf-c.on,html[data-theme="dark"] .tkf-c.on{color:var(--y)}
 /* ===== Nutrition (21 nov., Angel) ===== */
-.nu-page{display:flex;flex-direction:column;padding-bottom:28px;--nu-rbg:#2A2939;--nu-k:#FF7A45}
+.nu-page{display:flex;flex-direction:column;padding-bottom:28px;--nu-rbg:#2A2939;--nu-k:var(--y)}
+:root[data-theme="light"] .nu-page{--nu-k:var(--yd)}
 :root[data-theme="light"] .nu-page,:root[data-theme="light"] .nu-sheet{--nu-rbg:#E4E2EE}
 .nu-page .ap-sec{margin:24px 4px 8px}
 .nu-page .ap-opt{background:var(--surface)}
@@ -8794,7 +8795,7 @@ const NU_IC={pd:["#F5A524",'<path d="M3.4 8.6h13.2v5a5.8 5.8 0 0 1-5.8 5.8H9.2a5
   din:["#5E60E8",'<path d="M20.6 14.8A8.6 8.6 0 0 1 9.2 3.4a8.6 8.6 0 1 0 11.4 11.4z"/><path d="M17.2 2.6l.75 1.75 1.75.75-1.75.75-.75 1.75-.75-1.75-1.75-.75 1.75-.75z"/>'],
   eau:["#2DA8E8",'<path d="M12 2.6c3.7 4.6 6.4 8.1 6.4 11.8a6.4 6.4 0 0 1-12.8 0c0-3.7 2.7-7.2 6.4-11.8z"/>']};
 /* (22 nov., choix C d'Angel) toutes à la couleur du thème sur un rond léger ; NU_ICO = décalage pour centrer chaque dessin (boîte englobante) */
-const NU_ICO={pd:[.3,-.2],dej:[-.2,-.28],col:[0,.1],din:[-.39,.79],eau:[0,.3]};
+const NU_ICO={pd:[.7,-1.18],dej:[-.48,.45],col:[-.03,-.67],din:[.55,-.28],eau:[.02,-.33]}; /* centrage optique : moyenne du centre de la boîte et du centre de masse du dessin */
 function nuIc(k){ const c=NU_IC[k]||NU_IC.dej, o=NU_ICO[k]||[0,0]; return nuH("i",{class:"nu-ic","aria-hidden":"true"},'<svg viewBox="0 0 24 24"><g transform="translate('+o[0]+' '+o[1]+')">'+c[1]+'</g></svg>'); }
 const NU_MAC=[["p","Protéines","#4C8DFF"],["g","Glucides","#F5A524"],["l","Lipides","#E85D9E"]];
 const NU_JC=["L","M","M","J","V","S","D"];

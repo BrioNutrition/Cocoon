@@ -65,6 +65,8 @@ async def main():
     wk=lambda: pg.evaluate("[...document.querySelectorAll('#nuView .nu-d b')].map(b=>b.textContent).join(',')")
     print('après glissé:', await wk()); bx=await pg.locator('#nuView .nu-wk').bounding_box(); await pg.mouse.move(bx['x']+260,bx['y']+30); await pg.mouse.down(); await pg.mouse.move(bx['x']+170,bx['y']+32,steps=8); await pg.mouse.move(bx['x']+60,bx['y']+33,steps=8); await pg.mouse.up(); await pg.wait_for_timeout(600); print('retour:', await wk())
     print('bilan:', (await pg.inner_text('#nuView .nu-ws')).replace('\n',' | '))
+    ctr=await pg.evaluate("""[...document.querySelectorAll('#nuView .nu-ic')].map(i=>{const a=i.getBoundingClientRect(),g=i.querySelector('g').getBoundingClientRect(),s=getComputedStyle(i);return [(g.x+g.width/2-a.x-a.width/2).toFixed(2),(g.y+g.height/2-a.y-a.height/2).toFixed(2),a.width,a.height,s.display,s.lineHeight].join('/')}).join('  ')""")
+    print('centrage:', ctr)
     n=await pg.evaluate("__mock.T.cocoon_docs.filter(r=>r.path.includes('nutrition')).length"); print('docs nutrition:',n)
     assert n==3, n
     await pg.evaluate('window.scrollTo(0,0)'); await pg.wait_for_timeout(200); await pg.screenshot(path='/tmp/dk/nu1.png'); await pg.locator('#nuView .nu-ws').scroll_into_view_if_needed(); await pg.screenshot(path='/tmp/dk/nu2.png')
