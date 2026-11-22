@@ -5173,17 +5173,18 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
 .nu-mo{margin-top:10px;border-radius:20px;background:var(--surface);overflow:hidden}
 .nu-mo:first-of-type{margin-top:0}
 .nu-moh{display:flex;align-items:center;gap:10px;padding:10px 12px 10px 14px;min-height:54px;box-sizing:border-box}
-.nu-ic{flex:none;width:30px;height:30px;display:grid;place-items:center}
-.nu-ic svg{width:25px;height:25px;overflow:visible}.nu-ic svg *{fill:var(--ic)}
+.nu-ic{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--y) 16%,transparent)}
+.nu-ic svg{display:block;width:19px;height:19px;overflow:visible}.nu-ic svg *{fill:var(--y)}
 .nu-ic svg .d{fill:none;stroke:var(--surface);stroke-width:1.8;stroke-linecap:round}
 .nu-ic svg .s{fill:none;stroke:var(--ic);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .nu-eh b{display:flex;align-items:center;gap:10px}
+.nu-eh b>span{font:700 15.5px var(--f-body);color:var(--ink)}
 .nu-moh b{flex:1;font:700 15.5px var(--f-body);color:var(--ink)}
 .nu-moh small{font:600 14px var(--f-body);color:var(--muted)}
 .nu-add{flex:none;width:34px;height:34px;border-radius:50%;border:0;background:var(--y);color:#1C1B2E;display:grid;place-items:center;cursor:pointer;padding:0}
 .nu-add svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
-.nu-it{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:left;padding:11px 16px 11px 54px;font:inherit;color:var(--ink);cursor:pointer;position:relative}
-.nu-it:before{content:"";position:absolute;left:54px;right:0;top:0;border-top:1px solid var(--line)}
+.nu-it{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:left;padding:11px 16px 11px 58px;font:inherit;color:var(--ink);cursor:pointer;position:relative}
+.nu-it:before{content:"";position:absolute;left:58px;right:0;top:0;border-top:1px solid var(--line)}
 .nu-it>span{flex:1;min-width:0}
 .nu-it>span b{display:block;font:600 15px var(--f-body);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nu-it>span small{display:block;font:500 12.5px var(--f-body);color:var(--muted);margin-top:2px}
@@ -8693,7 +8694,9 @@ const NU_IC={pd:["#F5A524",'<path d="M3.4 8.6h13.2v5a5.8 5.8 0 0 1-5.8 5.8H9.2a5
   col:["#2FB86A",'<path d="M12 7.3c-1.2-.9-2.7-1.4-4.2-1.1C5 6.8 3.2 9.5 3.2 12.8c0 4.1 2.7 9 5.5 9 1.2 0 1.8-.6 3.3-.6s2.1.6 3.3.6c2.8 0 5.5-4.9 5.5-9 0-3.3-1.8-6-4.6-6.6-1.5-.3-3 .2-4.2 1.1z"/><path d="M12.6 6.2c.1-2.2 1.6-3.9 3.9-4.2-.1 2.3-1.6 4-3.9 4.2z"/>'],
   din:["#5E60E8",'<path d="M20.6 14.8A8.6 8.6 0 0 1 9.2 3.4a8.6 8.6 0 1 0 11.4 11.4z"/><path d="M17.2 2.6l.75 1.75 1.75.75-1.75.75-.75 1.75-.75-1.75-1.75-.75 1.75-.75z"/>'],
   eau:["#2DA8E8",'<path d="M12 2.6c3.7 4.6 6.4 8.1 6.4 11.8a6.4 6.4 0 0 1-12.8 0c0-3.7 2.7-7.2 6.4-11.8z"/>']};
-function nuIc(k){ const c=NU_IC[k]||NU_IC.dej; return nuH("i",{class:"nu-ic",style:"--ic:"+c[0],"aria-hidden":"true"},'<svg viewBox="0 0 24 24">'+c[1]+'</svg>'); }
+/* (22 nov., choix C d'Angel) toutes à la couleur du thème sur un rond léger ; NU_ICO = décalage pour centrer chaque dessin (boîte englobante) */
+const NU_ICO={pd:[.3,-.2],dej:[-.2,-.28],col:[0,.1],din:[-.39,.79],eau:[0,.3]};
+function nuIc(k){ const c=NU_IC[k]||NU_IC.dej, o=NU_ICO[k]||[0,0]; return nuH("i",{class:"nu-ic","aria-hidden":"true"},'<svg viewBox="0 0 24 24"><g transform="translate('+o[0]+' '+o[1]+')">'+c[1]+'</g></svg>'); }
 const NU_MAC=[["p","Protéines","#4C8DFF"],["g","Glucides","#F5A524"],["l","Lipides","#E85D9E"]];
 const NU_JC=["L","M","M","J","V","S","D"];
 /* valeurs indicatives pour une portion : [nom, portion, kcal, protéines, glucides, lipides] */
