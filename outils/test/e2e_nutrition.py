@@ -62,7 +62,8 @@ async def main():
     await pg.click('#nuGoals'); await pg.wait_for_timeout(450); await pg.fill('#nugK','1800'); await pg.click('#nugOk'); await pg.wait_for_timeout(600)
     await pg.evaluate('window.scrollTo(0,0)'); await pg.wait_for_timeout(200)
     bx=await pg.locator('#nuView .nu-wk').bounding_box(); await pg.mouse.move(bx['x']+60,bx['y']+30); await pg.mouse.down(); await pg.mouse.move(bx['x']+150,bx['y']+32,steps=8); await pg.mouse.move(bx['x']+260,bx['y']+33,steps=8); await pg.mouse.up(); await pg.wait_for_timeout(600)
-    print('après glissé:', await pg.inner_text('#nuView .nu-wh')); await pg.click('#nuToday'); await pg.wait_for_timeout(400); print('retour:', await pg.inner_text('#nuView .nu-wh'))
+    wk=lambda: pg.evaluate("[...document.querySelectorAll('#nuView .nu-d b')].map(b=>b.textContent).join(',')")
+    print('après glissé:', await wk()); bx=await pg.locator('#nuView .nu-wk').bounding_box(); await pg.mouse.move(bx['x']+260,bx['y']+30); await pg.mouse.down(); await pg.mouse.move(bx['x']+170,bx['y']+32,steps=8); await pg.mouse.move(bx['x']+60,bx['y']+33,steps=8); await pg.mouse.up(); await pg.wait_for_timeout(600); print('retour:', await wk())
     print('bilan:', (await pg.inner_text('#nuView .nu-ws')).replace('\n',' | '))
     n=await pg.evaluate("__mock.T.cocoon_docs.filter(r=>r.path.includes('nutrition')).length"); print('docs nutrition:',n)
     assert n==3, n

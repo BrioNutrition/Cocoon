@@ -8747,7 +8747,6 @@ function renderNutrition(){ const V=$("nuView"); if(!V) return; if(!S.uid){ V.in
   /* la semaine */
   const d0=parse(days[0]), wl=off===0?"Cette semaine":off===-1?"La semaine dernière":"Semaine du "+d0.toLocaleDateString("fr-FR",{day:"numeric",month:"long"});
   const go=dir=>{ haptic(5); S.nuWk=off+dir; const nd=nuDays(S.nuWk); S.nuDay=nd.includes(t0)?t0:nd[days.indexOf(day)]; S.nuIn=dir; renderNutrition(); };
-  V.append(el("div",{class:"nu-wh"},el("b",{text:wl}),off<0?el("button",{type:"button",class:"nu-today",id:"nuToday",text:"Aujourd'hui",onclick:()=>{ S.nuWk=0; S.nuDay=t0; S.nuIn=1; renderNutrition(); }}):null));
   const wk=el("div",{class:"nu-wk",role:"group","aria-label":wl});
   days.forEach((k,i)=>{ const s=nuSum(k), fut=k>t0;
     const b=el("button",{type:"button",class:"nu-d"+(k===day?" on":"")+(k===t0?" today":"")+(fut?" fut":""),"aria-pressed":String(k===day),"aria-label":parse(k).toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})+(s.n?", "+nuFmt(s.kcal)+" kilocalories":", rien de noté"),onclick:()=>{ haptic(4); S.nuDay=k; renderNutrition(); }},
