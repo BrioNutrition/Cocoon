@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="22/11 19:11";</script>
+<script>window.COCOON_BUILD="22/11 19:15";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -5232,10 +5232,12 @@ html[data-theme]:root body .wrap.on-home #accBudget[data-pg="0"] .wg-sec>span{--
 .nu-rg b{position:relative;font-size:15px;font-weight:700;color:var(--ink)}
 .nu-d.today .nu-rg b{color:var(--nu-k)}
 .nu-day{margin-top:14px;border-radius:22px;background:var(--surface);padding:18px 18px 18px 16px;display:flex;gap:18px;align-items:center}
-.nu-big{flex:none;width:124px;height:124px;position:relative;display:grid;place-items:center;text-align:center}
+.nu-big{flex:none;width:132px;height:132px;position:relative;display:grid;place-items:center;text-align:center}
 .nu-big svg{position:absolute;inset:0;transform:rotate(-90deg)}
 .nu-big span{position:relative}
-.nu-big b{display:block;font:800 28px/1 var(--f-body);letter-spacing:-.02em;color:var(--ink)}
+.nu-big b{display:flex;align-items:baseline;justify-content:center;white-space:nowrap;font:800 25px/1 var(--f-body);letter-spacing:-.025em;color:var(--ink)}
+.nu-big b i{font-style:normal;font-size:14px;font-weight:650;color:var(--muted);letter-spacing:-.01em;margin-left:1px}
+.nu-big .lg b{font-size:20px}.nu-big .lg b i{font-size:12.5px}
 .nu-big small{display:block;font:600 12px/1.2 var(--f-body);color:var(--muted);margin-top:5px}
 .nu-mac{flex:1;min-width:0;display:flex;flex-direction:column;gap:11px}
 .nu-rest{margin:0;font:700 15px var(--f-body);color:var(--ink)}
@@ -8847,7 +8849,7 @@ function renderNutrition(){ const V=$("nuView"); if(!V) return; if(!S.uid){ V.in
   /* le jour choisi */
   const s=nuSum(day), rest=G.kcal-s.kcal;
   V.append(el("div",{class:"nu-day"},
-    nuH("div",{class:"nu-big",role:"img","aria-label":nuFmt(s.kcal)+" kilocalories sur "+nuFmt(G.kcal)},nuRing(s.kcal,G.kcal,"var(--nu-k)",124,11)+"<span><b>"+nuFmt(s.kcal)+"</b><small>sur "+nuFmt(G.kcal)+" kcal</small></span>"),
+    nuH("div",{class:"nu-big",role:"img","aria-label":nuFmt(s.kcal)+" kilocalories sur "+nuFmt(G.kcal)},nuRing(s.kcal,G.kcal,"var(--nu-k)",132,11)+"<span"+((nuFmt(s.kcal)+nuFmt(G.kcal)).length>8?' class="lg"':"")+"><b>"+nuFmt(s.kcal)+"<i>/"+nuFmt(G.kcal)+"</i></b><small>kcal</small></span>"),
     el("div",{class:"nu-mac"},el("p",{class:"nu-rest"+(rest<-G.kcal*.1?" over":""),text:!s.n?"Rien de noté pour l'instant":rest>=0?"Encore "+nuFmt(rest)+" kcal":nuFmt(-rest)+" kcal de plus"}),
       ...NU_MAC.map(([k,lab,c])=>nuBar(lab,s[k],G[k],c,"g")))));
   /* l'eau */
