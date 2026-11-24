@@ -56,7 +56,7 @@ html[data-theme="light"] #cxIntro{background:#F6F5FB!important}@media (prefers-c
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..900&display=swap">
-<script>window.COCOON_BUILD="24/11 16:14";</script>
+<script>window.COCOON_BUILD="24/11 16:19";</script>
 <script src="config.js"></script>
 <script id="sbjs" async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="cocoon-runtime.js"></script>
@@ -890,6 +890,7 @@ html:root .recap.rcs{display:flex;flex-direction:column;gap:0;border:0;border-to
 .rcs-sp{flex:1}
 .rcs-go{margin-top:auto;height:52px;border:0;border-radius:16px;background:var(--y);color:#1C1B2E;font:700 16px var(--f-body);cursor:pointer}.rcs-rows+.rcs-go{margin-top:18px}
 .recap.rcs .rcs-rows{margin-bottom:auto}
+#rcBlock{position:fixed;inset:0;z-index:69;background:transparent;touch-action:none}
 .rcs-sheet{padding-bottom:calc(env(safe-area-inset-bottom) + 8px)}
 html:root .rcs-sheet .recap.rcs{background:transparent;border-radius:0;padding:8px 20px 20px;min-height:min(calc(100dvh - 130px),760px)}
 .rcs-sheet .rcs-k{font-size:14px}.rcs-sheet .rcs-big{margin:34px 0 30px}.rcs-sheet .rcs-big b{font-size:88px}.rcs-sheet .rcs-big small{font-size:25px}
@@ -13809,14 +13810,17 @@ function renderRecap(){
   const show=!!me&&!S.readOnly&&S.loaded.t&&!S.recapHide&&!S.tourPending&&!S.cguOpen&&(RC_IN_ART||(S.prefsLoaded&&!(S.prefs&&S.prefs.recapVu===weekKey())&&joined>0&&joined<ws));
   if(!show||S.rcSheet||S.tab!=="accueil") return;
   S.rcSheet=true; rcWhenCalm(); }
-/* (24 nov., Angel) le récap n'arrive qu'une fois l'accueil entièrement affiché : lancement fini, rien d'autre d'ouvert, puis 1,2 s de calme */
+/* (24 nov., Angel) le récap arrive dès que l'accueil est affiché (lancement fini, rien d'autre d'ouvert) */
 function rcCalm(){ const d=document, h=d.documentElement, g=d.getElementById("cxGate"), b=d.getElementById("boot");
-  return d.visibilityState==="visible"&&!(b&&!b._done)&&!d.getElementById("cxIntro")&&!h.classList.contains("boot-lock")&&!(g&&!g.hidden)&&!h.classList.contains("prem-open")&&!h.classList.contains("nav-off")&&!d.querySelector(".prem-page.on")&&!d.querySelector(".wb")&&S.tab==="accueil"; }
-function rcWhenCalm(){ let calm=0; const t0=Date.now();
-  const tick=()=>{ if(S.tab!=="accueil"||S.recapHide){ S.rcSheet=false; return; }
-    calm=rcCalm()?calm+1:0; if(calm>=8){ openRecapSheet(); return; }
-    if(Date.now()-t0>60000){ S.rcSheet=false; return; } setTimeout(tick,150); };
-  setTimeout(tick,150);
+  return d.visibilityState==="visible"&&!(b&&!b._done)&&!d.getElementById("cxIntro")&&!(g&&!g.hidden)&&!h.classList.contains("prem-open")&&!d.querySelector(".wb")&&S.tab==="accueil"; }
+function rcWhenCalm(){ const t0=Date.now();
+  /* (24 nov., Angel) rien n'est touchable en attendant : voile transparent sous les feuilles, ouverture dès que le lancement est fini */
+  let blk=document.getElementById("rcBlock"); if(!blk){ blk=el("div",{id:"rcBlock","aria-hidden":"true"}); document.body.append(blk); }
+  const stop=()=>{ S.rcSheet=false; blk.remove(); };
+  const tick=()=>{ if(S.tab!=="accueil"||S.recapHide){ stop(); return; }
+    if(rcCalm()){ blk.remove(); openRecapSheet(); return; }
+    if(Date.now()-t0>60000){ stop(); return; } setTimeout(tick,60); };
+  tick();
 }
 function openRecapSheet(){ S.rcPg=0;
   const U=upSheet("recapPage","Le récap de la semaine",()=>{ S.rcSheet=false; S.rcBox=null; S.rcPg=0; dismissRecap(); });
