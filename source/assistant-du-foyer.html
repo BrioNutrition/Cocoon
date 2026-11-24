@@ -794,7 +794,9 @@ html:root .recap.rcs{display:flex;flex-direction:column;gap:0;border:0;border-to
 .rcs-go{margin-top:auto;height:52px;border:0;border-radius:16px;background:var(--y);color:#1C1B2E;font:700 16px var(--f-body);cursor:pointer}.rcs-rows+.rcs-go{margin-top:18px}
 .recap.rcs .rcs-rows{margin-bottom:auto}
 .rcs-sheet{padding-bottom:calc(env(safe-area-inset-bottom) + 8px)}
-html:root .rcs-sheet .recap.rcs{background:transparent;border-radius:0;padding:6px 18px 18px;min-height:470px}
+html:root .rcs-sheet .recap.rcs{background:transparent;border-radius:0;padding:8px 20px 20px;min-height:min(calc(100dvh - 130px),760px)}
+.rcs-sheet .rcs-k{font-size:14px}.rcs-sheet .rcs-big{margin:34px 0 30px}.rcs-sheet .rcs-big b{font-size:88px}.rcs-sheet .rcs-big small{font-size:25px}
+.rcs-sheet .rcs-r{padding:15px 16px;gap:14px;font-size:17px}.rcs-sheet .rcs-r+.rcs-r:before{left:66px}.rcs-sheet .rcs-rows{border-radius:22px}.rcs-sheet .rcs-go{height:56px;font-size:17px}.rcs-sheet .rcs-t b{font-size:17.5px}.rcs-sheet .rcs-t small{font-size:14px}.rcs-sheet .rcs-r em{font-size:17px}
 .rcs-sheet .rcs-hd{min-height:22px}
 .cbar.has-goal .cv{color:var(--ink);font-weight:600}
 .cbar .fillb.ok{background:#3E9B5F}
@@ -13707,7 +13709,15 @@ function renderRecap(){
   const joined=m&&m.inscritLe?m.inscritLe:0;
   const show=!!me&&!S.readOnly&&S.loaded.t&&!S.recapHide&&!S.tourPending&&!S.cguOpen&&(RC_IN_ART||(S.prefsLoaded&&!(S.prefs&&S.prefs.recapVu===weekKey())&&joined>0&&joined<ws));
   if(!show||S.rcSheet||S.tab!=="accueil") return;
-  S.rcSheet=true; setTimeout(()=>{ if(S.tab!=="accueil"||S.recapHide||document.documentElement.classList.contains("prem-open")){ S.rcSheet=false; return; } openRecapSheet(); },700);
+  S.rcSheet=true; rcWhenCalm(); }
+/* (24 nov., Angel) le récap n'arrive qu'une fois l'accueil entièrement affiché : lancement fini, rien d'autre d'ouvert, puis 1,2 s de calme */
+function rcCalm(){ const d=document, h=d.documentElement, g=d.getElementById("cxGate"), b=d.getElementById("boot");
+  return d.visibilityState==="visible"&&!(b&&!b._done)&&!d.getElementById("cxIntro")&&!h.classList.contains("boot-lock")&&!(g&&!g.hidden)&&!h.classList.contains("prem-open")&&!h.classList.contains("nav-off")&&!d.querySelector(".prem-page.on")&&!d.querySelector(".wb")&&S.tab==="accueil"; }
+function rcWhenCalm(){ let calm=0; const t0=Date.now();
+  const tick=()=>{ if(S.tab!=="accueil"||S.recapHide){ S.rcSheet=false; return; }
+    calm=rcCalm()?calm+1:0; if(calm>=8){ openRecapSheet(); return; }
+    if(Date.now()-t0>60000){ S.rcSheet=false; return; } setTimeout(tick,150); };
+  setTimeout(tick,150);
 }
 function openRecapSheet(){ S.rcPg=0;
   const U=upSheet("recapPage","Le récap de la semaine",()=>{ S.rcSheet=false; S.rcBox=null; S.rcPg=0; dismissRecap(); });

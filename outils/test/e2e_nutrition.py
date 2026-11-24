@@ -78,7 +78,7 @@ async def main():
     # (24 nov.) récap du lundi en story : membre inscrit avant cette semaine → récap visible sur l'accueil
     await pg.evaluate("""(()=>{ for(const r of __mock.T.cocoon_docs.filter(x=>x.path==='membres'&&x.data.inscritLe)){ const n=JSON.parse(JSON.stringify(r)); n.data.inscritLe=Date.now()-20*864e5; n.updated_by='x'; __mock.remote(n);} for(const r of __mock.T.cocoon_docs.filter(x=>x.path==='profils')){ const n=JSON.parse(JSON.stringify(r)); n.data.inscritLe=Date.now()-20*864e5; n.updated_by='x'; __mock.remote(n);} })()""")
     await pg.click('.tab[data-tab="accueil"]'); await pg.wait_for_timeout(600)
-    await pg.wait_for_timeout(900); vis=await pg.is_visible('#recapPage .rcs'); print('récap visible:', vis)
+    await pg.wait_for_timeout(2600); vis=await pg.is_visible('#recapPage .rcs'); print('récap visible:', vis)
     if vis:
       await pg.wait_for_timeout(400); await pg.screenshot(path='/tmp/dk/rcs1.png')
       for k in range(2,8):
