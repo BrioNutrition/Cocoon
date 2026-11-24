@@ -78,14 +78,14 @@ async def main():
     # (24 nov.) récap du lundi en story : membre inscrit avant cette semaine → récap visible sur l'accueil
     await pg.evaluate("""(()=>{ for(const r of __mock.T.cocoon_docs.filter(x=>x.path==='membres'&&x.data.inscritLe)){ const n=JSON.parse(JSON.stringify(r)); n.data.inscritLe=Date.now()-20*864e5; n.updated_by='x'; __mock.remote(n);} for(const r of __mock.T.cocoon_docs.filter(x=>x.path==='profils')){ const n=JSON.parse(JSON.stringify(r)); n.data.inscritLe=Date.now()-20*864e5; n.updated_by='x'; __mock.remote(n);} })()""")
     await pg.click('.tab[data-tab="accueil"]'); await pg.wait_for_timeout(600)
-    vis=await pg.is_visible('#recapCard.rcs'); print('récap visible:', vis)
+    await pg.wait_for_timeout(900); vis=await pg.is_visible('#recapPage .rcs'); print('récap visible:', vis)
     if vis:
-      await pg.locator('#recapCard').scroll_into_view_if_needed(); await pg.locator('#recapCard').screenshot(path='/tmp/dk/rcs1.png')
+      await pg.wait_for_timeout(400); await pg.screenshot(path='/tmp/dk/rcs1.png')
       for k in range(2,8):
         if (await pg.inner_text('#rcsGo'))=="C'est noté": break
-        await pg.click('#rcsGo'); await pg.wait_for_timeout(200); await pg.locator('#recapCard').screenshot(path=f'/tmp/dk/rcs{k}.png')
-      print('pages récap:', k, (await pg.inner_text('#recapCard')).replace('\n',' | ')[:120])
-      await pg.click('#rcsGo'); await pg.wait_for_timeout(300); print('récap fermé:', not await pg.is_visible('#recapCard'))
+        await pg.click('#rcsGo'); await pg.wait_for_timeout(200); await pg.screenshot(path=f'/tmp/dk/rcs{k}.png')
+      print('pages récap:', k, (await pg.inner_text('#recapPage .rcs')).replace('\n',' | ')[:120])
+      await pg.click('#rcsGo'); await pg.wait_for_timeout(300); await pg.wait_for_timeout(300); print('récap fermé:', not await pg.is_visible('#recapPage .rcs'))
     print('ERREURS:', errs)
     await b.close()
 asyncio.run(main()); srv.terminate()

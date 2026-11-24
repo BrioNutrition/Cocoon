@@ -793,6 +793,9 @@ html:root .recap.rcs{display:flex;flex-direction:column;gap:0;border:0;border-to
 .rcs-sp{flex:1}
 .rcs-go{margin-top:auto;height:52px;border:0;border-radius:16px;background:var(--y);color:#1C1B2E;font:700 16px var(--f-body);cursor:pointer}.rcs-rows+.rcs-go{margin-top:18px}
 .recap.rcs .rcs-rows{margin-bottom:auto}
+.rcs-sheet{padding-bottom:calc(env(safe-area-inset-bottom) + 8px)}
+html:root .rcs-sheet .recap.rcs{background:transparent;border-radius:0;padding:6px 18px 18px;min-height:470px}
+.rcs-sheet .rcs-hd{min-height:22px}
 .cbar.has-goal .cv{color:var(--ink);font-weight:600}
 .cbar .fillb.ok{background:#3E9B5F}
 .cbar .fillb.near{background:#F2A93B}
@@ -13690,19 +13693,27 @@ function objAlerts(){ const obj=(S.config&&S.config.objectifs)||{}; if(!Object.k
   return Object.entries(obj).filter(([c,g])=>g>0&&(by[c]||0)>=g*.8).map(([c,g])=>({c,g,v:by[c]||0})).sort((a,b)=>b.v/b.g-a.v/a.g); }
 /* (24 nov., choix C d'Angel) récap en « story » : une carte par sujet, traits d'avancement en haut, « Suivant » puis « C'est noté » ;
    dans l'artefact claude.ai il est toujours montré (Angel : « pour que je voie »), sinon le lundi comme avant */
-const RC_IN_ART=!!(window.claude&&window.claude.use);
+const RC_IN_ART=!window.COCOON_BUILD&&!!(window.claude&&window.claude.use); /* artefact claude.ai ou démo (le site et l'app ont COCOON_BUILD) */
 const RC_IC={ok:'<rect x="3" y="3" width="18" height="18" rx="5.5"/><path class="d" d="M7.6 12.3l3 3 5.8-6.2" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
   cal:'<rect x="3" y="5" width="18" height="16" rx="4"/><rect x="7" y="2.5" width="2.2" height="5" rx="1.1"/><rect x="14.8" y="2.5" width="2.2" height="5" rx="1.1"/><rect class="f" x="3" y="9" width="18" height="1.6"/>',
   bin:'<rect x="4" y="5" width="16" height="2.4" rx="1.2"/><rect x="9.5" y="2.6" width="5" height="2.6" rx="1.1"/><path d="M5.6 8.6h12.8l-1.1 11.2a2 2 0 0 1-2 1.8H8.7a2 2 0 0 1-2-1.8z"/>',
   card:'<rect x="2.5" y="5" width="19" height="14" rx="3"/><rect class="f" x="2.5" y="8.6" width="19" height="2.4"/>',
   gift:'<rect x="3" y="8" width="18" height="4.4" rx="1.2"/><rect x="4.5" y="12.4" width="15" height="8.6" rx="1.6"/><rect class="f" x="11.1" y="8" width="1.8" height="13"/><path d="M12 8c-1.3-3.4-4.6-4-5-2.2C6.6 7.5 9.6 8 12 8c2.4 0 5.4-.5 5-2.2-.4-1.8-3.7-1.2-5 2.2z"/>'};
 function rcIc(k){ return nuH("i",{class:"rcs-ic","aria-hidden":"true"},'<svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="17" fill-opacity=".16"/><g transform="translate(7.5 7.5) scale(.79167)">'+(RC_IC[k]||RC_IC.ok)+'</g></svg>'); }
+/* (24 nov., Angel) le récap n'est plus sur l'accueil : il s'ouvre tout seul dans une feuille du bas (fermée par la poignée, comme les autres) */
 function renderRecap(){
-  const c=$("recapCard"); if(!c) return;
-  const me=meId(), m=meM(), ws=weekStartOf(today()), we=ws+7*864e5, lws=ws-7*864e5;
+  const c=$("recapCard"); if(c){ c.hidden=true; c.innerHTML=""; }
+  const me=meId(), m=meM(), ws=weekStartOf(today());
   const joined=m&&m.inscritLe?m.inscritLe:0;
-  const show=!!me&&!S.readOnly&&S.loaded.t&&!S.recapHide&&(RC_IN_ART||(S.prefsLoaded&&!(S.prefs&&S.prefs.recapVu===weekKey())&&joined>0&&joined<ws));
-  c.hidden=!show; if(!show){ c.innerHTML=""; return; }
+  const show=!!me&&!S.readOnly&&S.loaded.t&&!S.recapHide&&!S.tourPending&&!S.cguOpen&&(RC_IN_ART||(S.prefsLoaded&&!(S.prefs&&S.prefs.recapVu===weekKey())&&joined>0&&joined<ws));
+  if(!show||S.rcSheet||S.tab!=="accueil") return;
+  S.rcSheet=true; setTimeout(()=>{ if(S.tab!=="accueil"||S.recapHide||document.documentElement.classList.contains("prem-open")){ S.rcSheet=false; return; } openRecapSheet(); },700);
+}
+function openRecapSheet(){ S.rcPg=0;
+  const U=upSheet("recapPage","Le récap de la semaine",()=>{ S.rcSheet=false; S.rcBox=null; S.rcPg=0; dismissRecap(); });
+  U.sheet.classList.add("rcs-sheet"); const box=el("div",{class:"recap rcs"}); U.sheet.append(box); S.rcBox=box; S.rcClose=U.close; rcFill(); }
+function rcFill(){ const c=S.rcBox; if(!c) return;
+  const me=meId(), ws=weekStartOf(today()), we=ws+7*864e5, lws=ws-7*864e5;
   const P=[], day=d=>{ const s=WDAYS[parse(d).getDay()]; return s.slice(0,3)+"."; };
   // la semaine dernière
   const doneLast=allTasks().filter(t=>t.fait&&t.faitLe>=lws&&t.faitLe<ws), sc={};
@@ -13726,16 +13737,16 @@ function renderRecap(){
   const st=monthStats(0);
   P.push({k:"Budget de "+String(st.mois).replace(/\s\d{4}$/,""),big:moneyR(st.tot),rows:st.top.map(([k,v])=>({dot:(BCAT[k]||BCAT.autre).c,t:(BCAT[k]||BCAT.autre).nom,v:moneyR(v)}))});
   if(S.rcPg==null||S.rcPg>=P.length) S.rcPg=0;
-  const i=S.rcPg, p=P[i], last=i===P.length-1, go=d=>{ const n=Math.max(0,Math.min(P.length-1,i+d)); if(n===i) return; S.rcPg=n; haptic(4); renderRecap(); };
+  const i=S.rcPg, p=P[i], last=i===P.length-1, go=d=>{ const n=Math.max(0,Math.min(P.length-1,i+d)); if(n===i) return; S.rcPg=n; haptic(4); rcFill(); };
   c.className="recap rcs"; c.innerHTML="";
   const rows=p.rows&&p.rows.length?el("div",{class:"rcs-rows"},...p.rows.map(r=>el("div",{class:"rcs-r"},
     r.av?avatar(r.av,34):r.dot?el("i",{class:"rcs-dot",style:"--dc:"+r.dot,"aria-hidden":"true"}):rcIc(r.ic),
     el("span",{class:"rcs-t"},el("b",{text:r.t}),r.s?el("small",{text:r.s}):null),el("em",{class:(r.late?"late":r.hi?"hi":""),text:r.v})))):null;
   c.append(el("div",{class:"rcs-prog","aria-hidden":"true"},...P.map((_,j)=>el("i",{class:j<i?"done":j===i?"on":""}))),
-    el("div",{class:"rcs-hd"},el("span",{class:"rcs-k",text:p.k}),el("button",{type:"button",class:"rcs-x","aria-label":"Fermer le récap",onclick:e=>{ e.stopPropagation(); S.rcPg=0; dismissRecap(); }},nuH("span",{"aria-hidden":"true"},'<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>'))),
+    el("div",{class:"rcs-hd"},el("span",{class:"rcs-k",text:p.k})),
     el("div",{class:"rcs-big"},el("b",{text:p.big}),p.unit?el("small",{text:p.unit}):null),
     rows||el("div",{class:"rcs-sp"}),
-    el("button",{type:"button",class:"rcs-go",id:"rcsGo",text:last?"C'est noté":"Suivant",onclick:e=>{ e.stopPropagation(); if(last){ S.rcPg=0; dismissRecap(); } else go(1); }}));
+    el("button",{type:"button",class:"rcs-go",id:"rcsGo",text:last?"C'est noté":"Suivant",onclick:e=>{ e.stopPropagation(); if(last){ S.rcClose&&S.rcClose(); } else go(1); }}));
   c.onclick=e=>{ if(e.target.closest("button")) return; const r=c.getBoundingClientRect(); go(e.clientX-r.left<r.width/3?-1:1); };
 }
 
