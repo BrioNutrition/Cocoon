@@ -777,6 +777,22 @@ button,a,input,select,textarea,label,summary,[role="button"]{touch-action:manipu
 .rc-row p{margin:2px 0 0;font-size:14.5px;font-weight:500}
 .rc-row ul{margin:4px 0 0;padding-left:16px;font-size:13.5px;color:var(--muted)}
 .rc-acts{display:flex;gap:8px;flex-wrap:wrap}
+/* récap du lundi en « story » (24 nov., choix C d'Angel) */
+html:root .recap.rcs{display:flex;flex-direction:column;gap:0;border:0;border-top:0;background:var(--surface);background-image:none;border-radius:28px;padding:16px 18px 18px;min-height:430px;cursor:pointer;-webkit-user-select:none;user-select:none}
+.rcs-prog{display:flex;gap:4px;margin-bottom:14px}.rcs-prog i{flex:1;height:3.5px;border-radius:2px;background:color-mix(in srgb,var(--ink) 18%,transparent)}.rcs-prog i.done,.rcs-prog i.on{background:var(--ink)}
+.rcs-hd{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.rcs-k{font:700 12.5px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--y)}:root[data-theme="light"] .rcs-k{color:var(--yd)}
+.rcs-x{width:36px;height:36px;border-radius:50%;border:0;background:var(--sunk);color:var(--muted);display:grid;place-items:center;padding:0;cursor:pointer}.rcs-x span,.rcs-x svg{display:block;width:16px;height:16px}.rcs-x svg{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.rcs-big{display:flex;align-items:baseline;gap:8px;margin:22px 0 22px}.rcs-big b{font:800 64px/1 var(--f-body);letter-spacing:-.04em;color:var(--ink)}.rcs-big small{font:700 21px var(--f-body);color:var(--muted)}
+.rcs-rows{border-radius:20px;background:var(--sunk);overflow:hidden}
+.rcs-r{display:flex;align-items:center;gap:12px;padding:11px 14px;position:relative}.rcs-r+.rcs-r:before{content:"";position:absolute;left:60px;right:0;top:0;border-top:1px solid var(--line)}
+.rcs-t{flex:1;min-width:0}.rcs-t b{display:block;font:600 15.5px var(--f-body);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rcs-t small{display:block;font:500 13px var(--f-body);color:var(--muted);margin-top:2px}
+.rcs-r em{font-style:normal;font:700 15px var(--f-body);color:var(--ink);white-space:nowrap}.rcs-r em.hi{color:var(--y)}:root[data-theme="light"] .rcs-r em.hi{color:var(--yd)}.rcs-r em.late{color:#FF6B5E}
+.rcs-ic{flex:none;display:block;width:34px;height:34px}.rcs-ic svg{display:block;width:34px;height:34px}.rcs-ic svg *{fill:var(--y)}.rcs-ic svg .d{fill:none;stroke:var(--sunk)}.rcs-ic svg .f{fill:var(--sunk)}
+.rcs-dot{flex:none;width:34px;height:34px;display:grid;place-items:center}.rcs-dot:before{content:"";width:12px;height:12px;border-radius:50%;background:var(--dc)}
+.rcs-sp{flex:1}
+.rcs-go{margin-top:auto;height:52px;border:0;border-radius:16px;background:var(--y);color:#1C1B2E;font:700 16px var(--f-body);cursor:pointer}.rcs-rows+.rcs-go{margin-top:18px}
+.recap.rcs .rcs-rows{margin-bottom:auto}
 .cbar.has-goal .cv{color:var(--ink);font-weight:600}
 .cbar .fillb.ok{background:#3E9B5F}
 .cbar .fillb.near{background:#F2A93B}
@@ -13672,40 +13688,55 @@ function objAlerts(){ const obj=(S.config&&S.config.objectifs)||{}; if(!Object.k
   const ms=new Date(today().getFullYear(),today().getMonth(),1).getTime(), by={};
   for(const d of S.depenses){ if(d.type==="rembt") continue; if(parse(d.date).getTime()>=ms) by[d.cat||"autre"]=(by[d.cat||"autre"]||0)+d.montant; }
   return Object.entries(obj).filter(([c,g])=>g>0&&(by[c]||0)>=g*.8).map(([c,g])=>({c,g,v:by[c]||0})).sort((a,b)=>b.v/b.g-a.v/a.g); }
+/* (24 nov., choix C d'Angel) récap en « story » : une carte par sujet, traits d'avancement en haut, « Suivant » puis « C'est noté » ;
+   dans l'artefact claude.ai il est toujours montré (Angel : « pour que je voie »), sinon le lundi comme avant */
+const RC_IN_ART=!!(window.claude&&window.claude.use);
+const RC_IC={ok:'<rect x="3" y="3" width="18" height="18" rx="5.5"/><path class="d" d="M7.6 12.3l3 3 5.8-6.2" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
+  cal:'<rect x="3" y="5" width="18" height="16" rx="4"/><rect x="7" y="2.5" width="2.2" height="5" rx="1.1"/><rect x="14.8" y="2.5" width="2.2" height="5" rx="1.1"/><rect class="f" x="3" y="9" width="18" height="1.6"/>',
+  bin:'<rect x="4" y="5" width="16" height="2.4" rx="1.2"/><rect x="9.5" y="2.6" width="5" height="2.6" rx="1.1"/><path d="M5.6 8.6h12.8l-1.1 11.2a2 2 0 0 1-2 1.8H8.7a2 2 0 0 1-2-1.8z"/>',
+  card:'<rect x="2.5" y="5" width="19" height="14" rx="3"/><rect class="f" x="2.5" y="8.6" width="19" height="2.4"/>',
+  gift:'<rect x="3" y="8" width="18" height="4.4" rx="1.2"/><rect x="4.5" y="12.4" width="15" height="8.6" rx="1.6"/><rect class="f" x="11.1" y="8" width="1.8" height="13"/><path d="M12 8c-1.3-3.4-4.6-4-5-2.2C6.6 7.5 9.6 8 12 8c2.4 0 5.4-.5 5-2.2-.4-1.8-3.7-1.2-5 2.2z"/>'};
+function rcIc(k){ return nuH("i",{class:"rcs-ic","aria-hidden":"true"},'<svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="17" fill-opacity=".16"/><g transform="translate(7.5 7.5) scale(.79167)">'+(RC_IC[k]||RC_IC.ok)+'</g></svg>'); }
 function renderRecap(){
-  const c=$("recapCard"); if(!c) return; c.innerHTML="";
+  const c=$("recapCard"); if(!c) return;
   const me=meId(), m=meM(), ws=weekStartOf(today()), we=ws+7*864e5, lws=ws-7*864e5;
   const joined=m&&m.inscritLe?m.inscritLe:0;
-  const show=!!me&&!S.readOnly&&S.prefsLoaded&&S.loaded.t&&!S.recapHide&&!(S.prefs&&S.prefs.recapVu===weekKey())&&joined>0&&joined<ws;
-  c.hidden=!show; if(!show) return;
-  const F=new Intl.DateTimeFormat("fr-FR",{day:"numeric",month:"long"}), rows=[];
-  const row=(col,icon,title,text,items)=>{ const ic=el("span",{class:"rc-ic",style:"--c:"+col}); ic.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'+icon+'</svg>';
-    const body=el("div",{},el("b",{text:title}),el("p",{text:text})); if(items&&items.length){ const ul=el("ul"); for(const i of items) ul.append(el("li",{text:i})); body.append(ul); } rows.push(el("div",{class:"rc-row"},ic,body)); };
+  const show=!!me&&!S.readOnly&&S.loaded.t&&!S.recapHide&&(RC_IN_ART||(S.prefsLoaded&&!(S.prefs&&S.prefs.recapVu===weekKey())&&joined>0&&joined<ws));
+  c.hidden=!show; if(!show){ c.innerHTML=""; return; }
+  const P=[], day=d=>{ const s=WDAYS[parse(d).getDay()]; return s.slice(0,3)+"."; };
   // la semaine dernière
   const doneLast=allTasks().filter(t=>t.fait&&t.faitLe>=lws&&t.faitLe<ws), sc={};
   for(const t of doneLast){ const w=t.prive?me:t.faitPar; if(w) sc[w]=(sc[w]||0)+1; }
-  const top=Object.entries(sc).sort((a,b)=>b[1]-a[1])[0];
-  row("#3E9B5F",'<rect x="3" y="3" width="18" height="18" rx="5.5"/><path d="M7.6 12.3l3 3 5.8-6.2" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',"La semaine dernière",
-    doneLast.length?doneLast.length+" tâche"+(doneLast.length>1?"s":"")+" validée"+(doneLast.length>1?"s":"")+(top&&humains().length>1?" · "+(top[0]===me?"toi":membre(top[0]).nom)+" en tête avec "+top[1]:"")+".":"Aucune tâche validée. Cette semaine, on s'y remet !");
+  P.push({k:"La semaine dernière",big:String(doneLast.length),unit:doneLast.length>1?"tâches":"tâche",
+    rows:humains().map(h=>({av:h.id,t:h.id===me?"Toi":h.nom,v:String(sc[h.id]||0),n:sc[h.id]||0})).sort((a,b)=>b.n-a.n).slice(0,4).map((r,j)=>Object.assign(r,{hi:j===0&&r.n>0}))});
   // cette semaine
   const due=allTasks().filter(t=>!t.fait&&t.echeance&&parse(t.echeance).getTime()<we).sort(sortOpen);
-  row("#3D7BD9",FI.rdv,"Cette semaine",due.length?due.length+" chose"+(due.length>1?"s":"")+" à faire"+(due.some(t=>daysTo(t.echeance)<0)?", dont des retards":"")+".":"Aucune échéance cette semaine.",due.slice(0,4).map(t=>t.titre+" — "+(daysTo(t.echeance)<0?"en retard":WDAYS[parse(t.echeance).getDay()])));
+  P.push({k:"Cette semaine",big:String(due.length),unit:"à faire",rows:due.slice(0,4).map(t=>({ic:"ok",t:t.titre,v:daysTo(t.echeance)<0?"en retard":day(t.echeance),late:daysTo(t.echeance)<0,hi:daysTo(t.echeance)>=0}))});
   // poubelles
   const bins=(S.bins||[]).map(b=>({b,nx:binNext(b),w:binWho(b)})).filter(x=>x.nx&&x.nx.sortie.getTime()<we);
-  if(bins.length) row("#59606B",BIN_SVG.replace(/^<svg[^>]*>|<\/svg>$/g,""),"Poubelles",bins.length+" sortie"+(bins.length>1?"s":"")+" prévue"+(bins.length>1?"s":"")+".",bins.map(x=>x.b.nom+" : "+binWhen(x.b,x.nx.sortie)+" ("+x.w.label+")"));
+  if(bins.length) P.push({k:"Poubelles",big:String(bins.length),unit:bins.length>1?"sorties":"sortie",rows:bins.slice(0,4).map(x=>({ic:"bin",t:x.b.nom,s:x.w.label,v:binWhen(x.b,x.nx.sortie),hi:true}))});
   // prélèvements
   const subs=S.abos.filter(a=>a.actif!==false).map(a=>({a,n:subNext(a)})).filter(x=>x.n&&parse(x.n).getTime()<we);
-  if(subs.length) row("#E8765A",FI.factures,"Prélèvements",subs.length+" cette semaine, "+money(subs.reduce((s,x)=>s+x.a.montant,0))+" au total.",subs.slice(0,4).map(x=>x.a.nom+" · "+money(x.a.montant)+" · "+WDAYS[parse(x.n).getDay()]));
+  if(subs.length) P.push({k:"Prélèvements",big:moneyR(subs.reduce((t,x)=>t+x.a.montant,0)),rows:subs.slice(0,4).map(x=>({ic:"card",t:x.a.nom,s:day(x.n),v:moneyR(x.a.montant)}))});
   // à ne pas oublier
-  const extra=[]; for(const mm of membres()){ const nb=nextBirthday(mm); if(nb&&parse(nb.date).getTime()<we) extra.push("Anniversaire "+de(mm.nom)+" "+WDAYS[parse(nb.date).getDay()]); }
-  for(const d of S.docs) if(d.expire&&daysTo(d.expire)>=0&&daysTo(d.expire)<=30) extra.push(d.titre+" expire le "+fmtDue(d.expire));
-  if(extra.length) row("#E0567A",FI.couple,"À ne pas oublier",extra.length===1?"Une chose à garder en tête.":extra.length+" choses à garder en tête.",extra.slice(0,4));
+  const extra=[]; for(const mm of membres()){ const nb=nextBirthday(mm); if(nb&&parse(nb.date).getTime()<we) extra.push({ic:"gift",t:"Anniversaire "+de(mm.nom),v:day(nb.date),hi:true}); }
+  for(const d of S.docs) if(d.expire&&daysTo(d.expire)>=0&&daysTo(d.expire)<=30) extra.push({ic:"cal",t:d.titre,s:"expire",v:fmtDue(d.expire),hi:true});
+  if(extra.length) P.push({k:"À ne pas oublier",big:String(extra.length),unit:extra.length>1?"choses":"chose",rows:extra.slice(0,4)});
   // budget
-  const st=monthStats(0), al=objAlerts();
-  row("#E0B21C",'<path d="M6.5 3.5H16a1.5 1.5 0 0 1 1.5 1.5v1.5h-11a1.5 1.5 0 0 1 0-3z" opacity=".55"/><path d="M2.5 9A2.5 2.5 0 0 1 5 6.5h13.5a3 3 0 0 1 3 3V18a3 3 0 0 1-3 3H5.5a3 3 0 0 1-3-3zm13 2.5a2 2 0 1 0 0 4h6v-4z"/>',"Budget du mois",money(st.tot)+" dépensés jusqu'ici"+(al.length?" · attention aux objectifs":"")+".",al.slice(0,3).map(x=>(BCAT[x.c]||BCAT.autre).nom+" : "+money(x.v)+" / "+money(x.g)+(x.v>=x.g?" (dépassé)":"")));
-  const acts=el("div",{class:"rc-acts"},el("button",{type:"button",class:"btn",text:"C'est noté",onclick:dismissRecap}));
-  if(typeof secOn==="function"&&secOn()) acts.append(el("button",{type:"button",class:"btn ghost",text:"Le secrétaire détaille",onclick:()=>{ dismissRecap(); askSecretary("Fais-moi le récap détaillé de ma semaine : priorités jour par jour, qui fait quoi, et ce qu'il ne faut pas oublier."); }}));
-  c.append(el("div",{class:"rc-head"},el("span",{class:"label",text:"Le récap du lundi"}),el("h2",{text:(()=>{ const a=new Date(ws), z=new Date(we-864e5); return "Ta semaine du "+(a.getMonth()===z.getMonth()?a.getDate():F.format(a))+" au "+F.format(z); })()}),el("button",{type:"button",class:"sec-x rc-x","aria-label":"Fermer le récap",text:"×",onclick:dismissRecap})),...rows,acts);
+  const st=monthStats(0);
+  P.push({k:"Budget de "+String(st.mois).replace(/\s\d{4}$/,""),big:moneyR(st.tot),rows:st.top.map(([k,v])=>({dot:(BCAT[k]||BCAT.autre).c,t:(BCAT[k]||BCAT.autre).nom,v:moneyR(v)}))});
+  if(S.rcPg==null||S.rcPg>=P.length) S.rcPg=0;
+  const i=S.rcPg, p=P[i], last=i===P.length-1, go=d=>{ const n=Math.max(0,Math.min(P.length-1,i+d)); if(n===i) return; S.rcPg=n; haptic(4); renderRecap(); };
+  c.className="recap rcs"; c.innerHTML="";
+  const rows=p.rows&&p.rows.length?el("div",{class:"rcs-rows"},...p.rows.map(r=>el("div",{class:"rcs-r"},
+    r.av?avatar(r.av,34):r.dot?el("i",{class:"rcs-dot",style:"--dc:"+r.dot,"aria-hidden":"true"}):rcIc(r.ic),
+    el("span",{class:"rcs-t"},el("b",{text:r.t}),r.s?el("small",{text:r.s}):null),el("em",{class:(r.late?"late":r.hi?"hi":""),text:r.v})))):null;
+  c.append(el("div",{class:"rcs-prog","aria-hidden":"true"},...P.map((_,j)=>el("i",{class:j<i?"done":j===i?"on":""}))),
+    el("div",{class:"rcs-hd"},el("span",{class:"rcs-k",text:p.k}),el("button",{type:"button",class:"rcs-x","aria-label":"Fermer le récap",onclick:e=>{ e.stopPropagation(); S.rcPg=0; dismissRecap(); }},nuH("span",{"aria-hidden":"true"},'<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>'))),
+    el("div",{class:"rcs-big"},el("b",{text:p.big}),p.unit?el("small",{text:p.unit}):null),
+    rows||el("div",{class:"rcs-sp"}),
+    el("button",{type:"button",class:"rcs-go",id:"rcsGo",text:last?"C'est noté":"Suivant",onclick:e=>{ e.stopPropagation(); if(last){ S.rcPg=0; dismissRecap(); } else go(1); }}));
+  c.onclick=e=>{ if(e.target.closest("button")) return; const r=c.getBoundingClientRect(); go(e.clientX-r.left<r.width/3?-1:1); };
 }
 
 /* ---------- Objectifs de budget ---------- */
