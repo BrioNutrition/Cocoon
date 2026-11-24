@@ -13711,16 +13711,17 @@ function renderRecap(){
   const show=!!me&&!S.readOnly&&S.loaded.t&&!S.recapHide&&!S.tourPending&&!S.cguOpen&&(RC_IN_ART||(S.prefsLoaded&&!(S.prefs&&S.prefs.recapVu===weekKey())&&joined>0&&joined<ws));
   if(!show||S.rcSheet||S.tab!=="accueil") return;
   S.rcSheet=true; rcWhenCalm(); }
-/* (24 nov., Angel) le récap arrive dès que l'accueil est affiché (lancement fini, rien d'autre d'ouvert) */
+/* (24 nov., Angel) le récap arrive pile quand le logo se pose en haut à gauche (lancement fini, rien d'autre d'ouvert) */
 function rcCalm(){ const d=document, h=d.documentElement, g=d.getElementById("cxGate"), b=d.getElementById("boot");
-  return d.visibilityState==="visible"&&!(b&&!b._done)&&!d.getElementById("cxIntro")&&!(g&&!g.hidden)&&!h.classList.contains("prem-open")&&!d.querySelector(".wb")&&S.tab==="accueil"; }
+  return d.visibilityState==="visible"&&!b&&!h.classList.contains("boot-lock")&&!d.getElementById("cxIntro")&&!(g&&!g.hidden)&&!h.classList.contains("prem-open")&&!d.querySelector(".wb")&&S.tab==="accueil"; }
 function rcWhenCalm(){ const t0=Date.now();
   /* (24 nov., Angel) rien n'est touchable en attendant : voile transparent sous les feuilles, ouverture dès que le lancement est fini */
   let blk=document.getElementById("rcBlock"); if(!blk){ blk=el("div",{id:"rcBlock","aria-hidden":"true"}); document.body.append(blk); }
   const stop=()=>{ S.rcSheet=false; blk.remove(); };
-  const tick=()=>{ if(S.tab!=="accueil"||S.recapHide){ stop(); return; }
+  const tick=()=>{ if(S.rcBox){ blk.remove(); return; } if(S.tab!=="accueil"||S.recapHide){ stop(); return; }
     if(rcCalm()){ blk.remove(); openRecapSheet(); return; }
-    if(Date.now()-t0>60000){ stop(); return; } setTimeout(tick,60); };
+    if(Date.now()-t0>60000){ stop(); return; } clearTimeout(S.rcT); S.rcT=setTimeout(tick,60); };
+  S.rcKick=()=>{ clearTimeout(S.rcT); tick(); }; /* appelé pile quand le logo se pose (fin de bootOut) */
   tick();
 }
 function openRecapSheet(){ S.rcPg=0;
@@ -13912,7 +13913,7 @@ async function flySplash(b,logo){ try{ spBackCheck(); }catch(_){}
 /* pas de défilement pendant l'animation d'entrée : on ne peut défiler qu'une fois le logo posé en haut à gauche (Angel) */
 const bootNoTouch=e=>{ if(e.cancelable) e.preventDefault(); };
 function bootLock(on){ document.documentElement.classList.toggle("boot-lock",on); if(on) document.addEventListener("touchmove",bootNoTouch,{passive:false}); else document.removeEventListener("touchmove",bootNoTouch); }
-async function bootOut(){ bootLock(true); try{ await bootOutInner(); } finally{ bootLock(false); } }
+async function bootOut(){ bootLock(true); try{ await bootOutInner(); } finally{ bootLock(false); try{ S.rcSheet&&S.rcKick&&S.rcKick(); }catch(_){} } }
 async function bootOutInner(){
   const b=$("boot"), logo=$("bootLogo"), reduced=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
   const sp=$("splash"), splashOn=sp&&!sp.hidden, wiz=$("wizard")&&!$("wizard").hidden;
